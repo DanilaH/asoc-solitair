@@ -17,16 +17,28 @@ export type Command = BoardCommand | { type: 'undo' } | { type: 'restart'; attem
 export interface Deal {
   id: string; version: number; title: string; cards: Record<string, Card>; initial: Board;
   winningPath: BoardCommand[]; editorialStatus: string;
+  campaignLevel?: number;
 }
 export interface Attempt {
   id: string; dealId: string; board: Board; undo: Board[];
   streak: { tier: number; progress: number; coins: number; counted: string[] };
+  continued?: boolean;
+  telemetry?: { started: boolean; finished: boolean; activeMs: number };
+}
+export interface PlatformState {
+  receipts: string[];
+  continuedAttempts: string[];
+  continueCredits: number;
+  completedCampaign: string[];
+  winsSinceInterstitial: number;
+  lastFullscreenAt: number;
 }
 export interface Save {
   schema: 1; rulesVersion: number; contentVersion: number; balanceVersion: number; revision: number;
   profile: { coins: number; hints: number; undos: number; rewards: string[]; wins: number };
   attempt: Attempt;
   settings: { sfx: boolean; haptics: boolean; reducedMotion: boolean };
+  platform?: PlatformState;
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart';

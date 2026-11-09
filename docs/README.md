@@ -9,3 +9,5 @@
 Requirements own rules/data/rewards; feel-spec owns presentation/timings. Research does not override either. Imported source documents are preserved verbatim; relative copies and implementation status are indexed here.
 
 Implementation tracking: [roadmap](../ROADMAP.md), [decisions](../DECISIONS.md), [verification](../VERIFICATION.md), [kit reuse](KIT_REUSE.md).
+
+Android integration: [services and ownership](platform/NATIVE_SERVICES.md), [configuration and release acceptance](platform/RELEASE_CHECKLIST.md).

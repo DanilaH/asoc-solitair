@@ -1,5 +1,7 @@
 # Product sources
 
+Resuming after a stopped chat: start at [the continuation checkpoint](SESSION_HANDOFF.md), then use the normative sources below.
+
 1. [Agent handoff](product/WORD_SOLITAIRE_AGENT_HANDOFF_2026-11-09.md)
 2. [Normative requirements](product/WORD_SOLITAIRE_REQUIREMENTS_DRAFT_2026-11-09.md)
 3. [Feel contract](product/WORD_SOLITAIRE_FEEL_SPEC_V1_2026-11-09.md)

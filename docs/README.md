@@ -17,3 +17,5 @@ Campaign bank: [authorship, coverage and limits](content/FIRST_CAMPAIGN.md), [va
 - [Rule extension chapter and compatibility](content/MODIFIERS.md): Joker, ordered categories, three keys, deals 21–26.
 
 - [Compact meta, daily bank, dates and independent saves](content/COMPACT_META.md).
+
+- [80-level release-candidate bank, UX and verification limits](content/RELEASE_BANK.md).

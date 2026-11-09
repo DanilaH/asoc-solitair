@@ -1,0 +1,236 @@
+{
+  "dealId": "campaign-036",
+  "dealVersion": 1,
+  "rulesVersion": 2,
+  "contentVersion": 5,
+  "initialSha256": "0e5c7bb9863fc8e6ff3f59ac40df264c93b0c8fd5ff3c93befd392a54916e32f",
+  "exactInitialState": {
+    "tableau": [
+      [
+        "sea",
+        "sea_1"
+      ],
+      [
+        "flowers_3",
+        "flowers_2"
+      ],
+      [
+        "sea_3",
+        "fabrics_1"
+      ]
+    ],
+    "foundations": [
+      [],
+      []
+    ],
+    "stock": [
+      "fabrics_2",
+      "flowers_1",
+      "fabrics",
+      "flowers",
+      "sea_2",
+      "fabrics_3"
+    ],
+    "waste": [],
+    "faceUp": [
+      "sea_1",
+      "flowers_2",
+      "fabrics_1"
+    ],
+    "collected": [],
+    "movesLeft": 32,
+    "phase": "playing"
+  },
+  "winningPath": [
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 2
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    }
+  ],
+  "moveCount": 20,
+  "budget": 32,
+  "slack": 12,
+  "replay": "PASS",
+  "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+  "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+  "coverage": {
+    "cards": 12,
+    "columns": 3,
+    "categories": 3,
+    "largestPacket": 3,
+    "flips": 3,
+    "recycleCount": 0,
+    "tags": [
+      "ordinary",
+      "chapter-2"
+    ]
+  }
+}

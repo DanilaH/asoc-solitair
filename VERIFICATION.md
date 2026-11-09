@@ -91,3 +91,16 @@ Version 0.5.0/code 5; rules/content/balance 2/4/3. Card rules and the 26 fixed c
 - Hosted [CI 42630973762](https://github.com/DanilaH/asoc-solitair/actions/runs/42630973762), exact implementation `8c6d277bafda8365252b9b22abcab3a76e4e6b37`: **web PASS / android PASS**. All **55 model/platform tests** and **41 browser scenarios** pass; one intentional compact duplicate full-catalog case is skipped. The complete 26-level actual-touch progression and all eight new meta scenarios pass. Demo debug and unsigned SDK-disabled R8 release both compile successfully.
 - Seven-day CI artifacts: `android-builds` id `13681395454`, SHA256 `1c6a13493f2b13482da9bae89e23c93a79aab381b51f7380a2aec364097d3835`; `browser-evidence` id `13681102062`, SHA256 `af77c5e0df3818e9b9937d0cec2a4ac359fa44a5af290c2c55882784cf771cca`. The Android outputs remain demo debug/unsigned compile checks, not a signed store candidate.
 - Follow-up changes only documentation and QA media. Executable source/dependencies match the tested implementation above exactly.
+
+## UX and release-candidate bank — 2026-11-09
+
+Version 0.6.0/code 6; rules/content/balance 2/5/3. See docs/content/RELEASE_BANK.md for exact composition and nonclaims.
+
+- Local typecheck, **58 model/platform tests**, production bundle and replay validation pass: control + **80 campaign** + **28 unchanged daily** witnesses, plus the alternate Joker tutorial. All 54 appended orders are distinct; new-deal mix is 33 ordinary / 11 ordered / 10 locks. Actual campaign uses 255 distinct member captions over 53 ordinary topic definitions. Eight new SVGs extend the same local art system.
+- First 26 order sources and daily-v1 JSON are unchanged. Compatible content-v4 migration retains active/parked attempts, rewards, wallet, spent inventory and appearance. Both deck sides are validated along all paths.
+- UX acceptance covers bounded 20-level browsing and locked future pages, restart confirm/cancel and cycle ownership, stale-daily training shown before helper use, new-date replacement cancel preserving both modes, numeric lock counter, 320×568 dock bounds and new-content touches. The Undo exhaustion telemetry marker is reopened without changing meta/reward ownership.
+- An intermediate browser run was invalidated when a concurrent recording command rebuilt dist during initial navigation, producing temporary 404s. Final runs use an immutable prebuilt bundle; recording compilation targets .recording only. This is a test-orchestration error, not a claimed passing run.
+- Complete real-touch campaign verification is split into four consecutive 20-level traversals using legitimate preceding-clear fixtures and ordinary Next controls. It is not described as a single uninterrupted fresh-profile device session. Independent human difficulty/pacing, native device/inset/banner feel, process kill/upgrade, live SDK dashboard and production signing remain pending.
+- Production GIFs under docs/qa/release-{bank,ordered,safety}.gif show level-page navigation and a complete new-topic puzzle, a rainbow-order finish, restart cancellation and old-day training/replacement protection. Recordings use valid restored profiles to keep clips compact; no runtime success bridge.
+
+Final exact hosted/source evidence follows below. Keys/signing remain deferred by the user.

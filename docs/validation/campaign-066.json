@@ -1,0 +1,267 @@
+{
+  "dealId": "campaign-066",
+  "dealVersion": 1,
+  "rulesVersion": 2,
+  "contentVersion": 5,
+  "initialSha256": "ac9713cdbc992c6b1a0cc1ff8df6312df334dcc3c56f07f5a338b8a77d9d92c8",
+  "exactInitialState": {
+    "tableau": [
+      [
+        "berries_1",
+        "berries_3",
+        "bath"
+      ],
+      [
+        "numbers_6",
+        "numbers_1",
+        "berries_2"
+      ],
+      [
+        "bath_2",
+        "numbers_3",
+        "numbers_4"
+      ],
+      [
+        "numbers",
+        "numbers_5",
+        "bath_1"
+      ]
+    ],
+    "foundations": [
+      [],
+      [],
+      []
+    ],
+    "stock": [
+      "bath_3",
+      "numbers_2",
+      "berries"
+    ],
+    "waste": [],
+    "faceUp": [
+      "bath",
+      "berries_2",
+      "numbers_4",
+      "bath_1"
+    ],
+    "collected": [],
+    "movesLeft": 28,
+    "phase": "playing"
+  },
+  "winningPath": [
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 3
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 3
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 3
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 2
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 3
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 3
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    }
+  ],
+  "moveCount": 20,
+  "budget": 28,
+  "slack": 8,
+  "replay": "PASS",
+  "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+  "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+  "coverage": {
+    "cards": 15,
+    "columns": 4,
+    "categories": 3,
+    "largestPacket": 6,
+    "flips": 8,
+    "recycleCount": 0,
+    "tags": [
+      "ordered",
+      "chapter-4"
+    ]
+  }
+}

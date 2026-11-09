@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "contentVersion": 4,
+  "contentVersion": 5,
   "deals": [
     {
       "level": 1,
@@ -8,7 +8,7 @@
       "dealId": "campaign-001",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "7b65d0713bad8010e185845bdc46818eaf5742ab4f4be844f6340d25c13b250d",
       "moveCount": 6,
       "budget": null,
@@ -36,7 +36,7 @@
       "dealId": "campaign-002",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "5b35fdd06182cb24ec8319a59c0a05e1d4ea6f858d67612db4a61f4a1e0d0b7b",
       "moveCount": 12,
       "budget": null,
@@ -63,7 +63,7 @@
       "dealId": "campaign-003",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "7922ee14d60361711e55122e78ea47101a2d81dad316152a74250c7ac6aad983",
       "moveCount": 18,
       "budget": 30,
@@ -90,7 +90,7 @@
       "dealId": "campaign-004",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "bb404a7fb4e6e23dd59be0a601e84758770e5dc1f2fbee588b65d9c6149d72e0",
       "moveCount": 15,
       "budget": 27,
@@ -117,7 +117,7 @@
       "dealId": "campaign-005",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "21f07a8b5d41c21287d6880bc6942fff7ab9fdb995cdccf61ef1f663e2966e78",
       "moveCount": 22,
       "budget": 32,
@@ -144,7 +144,7 @@
       "dealId": "campaign-006",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "bcc09f3d56c0748371114b32af6b22f73fd22bc7a6a4c992e55344d9d38fadd5",
       "moveCount": 23,
       "budget": 32,
@@ -171,7 +171,7 @@
       "dealId": "campaign-007",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "55e357642b7fe83316c9c5c93ee106c1fee521187431d7950d40c54c84cd75a3",
       "moveCount": 21,
       "budget": 30,
@@ -198,7 +198,7 @@
       "dealId": "campaign-008",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "e7ef4cfc0f118cabba7e0e82d52ff02257e4aed78ca728dcf7dce8cb6b0acf16",
       "moveCount": 21,
       "budget": 33,
@@ -225,7 +225,7 @@
       "dealId": "campaign-009",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "ad8d7beded749a8aa1fcf1eb168cfbd15232d1e15894a297b200f67130a5a1f1",
       "moveCount": 29,
       "budget": 41,
@@ -252,7 +252,7 @@
       "dealId": "campaign-010",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "9b7d14ad6f52613093b27870cf3b295a637b6eed6fc34447e1adfc5fcd58e43f",
       "moveCount": 29,
       "budget": 39,
@@ -279,7 +279,7 @@
       "dealId": "campaign-011",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "14b4318e55bd7b7843c797f0bf5a1ad24bd4315882eed0c2d1e311d862717eb0",
       "moveCount": 28,
       "budget": 38,
@@ -306,7 +306,7 @@
       "dealId": "campaign-012",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "28852cab9f9e0fd6c02e1d22e92c7771cfdb0e54851e2919a2a5b6b7edeabe22",
       "moveCount": 35,
       "budget": 47,
@@ -333,7 +333,7 @@
       "dealId": "campaign-013",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "f62c3cca85755ef24f8630fdb9763b55652b2e9e7588df4a6d0aa2db299a9da7",
       "moveCount": 39,
       "budget": 51,
@@ -360,7 +360,7 @@
       "dealId": "campaign-014",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "0de33558f94a1787392dbc1ac2e205d64f164e845a37a0b4a251825049a13f33",
       "moveCount": 34,
       "budget": 46,
@@ -387,7 +387,7 @@
       "dealId": "campaign-015",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "821ed800b0bfc11cb3e351c76d51872cc41f45da29a46f90bc73adbac3034f85",
       "moveCount": 34,
       "budget": 43,
@@ -414,7 +414,7 @@
       "dealId": "campaign-016",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "f507cf65ab93f17d71665f69b8234caccfa6cbd8c5cc65f502b775f321ff11c8",
       "moveCount": 39,
       "budget": 51,
@@ -441,7 +441,7 @@
       "dealId": "campaign-017",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "5b5c28c5078bab0431bda3b6e60f7d886eb874cbff6735bf288d2037a0ad900b",
       "moveCount": 35,
       "budget": 47,
@@ -469,7 +469,7 @@
       "dealId": "campaign-018",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "39894e51fd3707fdf445c08b338b3f905820b6b3d989ba792d7c03a40f67a88e",
       "moveCount": 49,
       "budget": 61,
@@ -496,7 +496,7 @@
       "dealId": "campaign-019",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "6557f3350b89613d19a1e1de22cbc6710c72739031f0bbac42fe7b7ec7dbf5e4",
       "moveCount": 45,
       "budget": 45,
@@ -523,7 +523,7 @@
       "dealId": "campaign-020",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "35836ef740c72e7dedf0ebcae5d252c22f92d8457366e63dbda89be7bbb0b2fb",
       "moveCount": 44,
       "budget": 56,
@@ -551,7 +551,7 @@
       "dealId": "campaign-021",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "7db4984d2e4ddc9797e4c08e8622ca7a04420ebcb2e3f290ba6512dd8153989e",
       "alternateTutorialPath": [
         {
@@ -673,7 +673,7 @@
       "dealId": "campaign-022",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "59863fb38f260adc633043c75b8693be1edd32445222ce315d822e3976c01f87",
       "moveCount": 11,
       "budget": 17,
@@ -700,7 +700,7 @@
       "dealId": "campaign-023",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "4d1dc6c6c4e4f91f0a8f96c94e13855acfa9c2c0435e7588828fe2912d1dcd61",
       "moveCount": 8,
       "budget": 14,
@@ -727,7 +727,7 @@
       "dealId": "campaign-024",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "fb31c349cbdd9cbdfd6680802b8e2055da746b479e85ce6651c563c3898e32ce",
       "moveCount": 13,
       "budget": 19,
@@ -754,7 +754,7 @@
       "dealId": "campaign-025",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "e1b360550ff564cb9b22940f21f52e56f56fb5b71590247bc4005e46defdc645",
       "moveCount": 8,
       "budget": 14,
@@ -781,7 +781,7 @@
       "dealId": "campaign-026",
       "dealVersion": 1,
       "rulesVersion": 2,
-      "contentVersion": 4,
+      "contentVersion": 5,
       "initialSha256": "67d68c7af6feee1d48e7bb5eaee084c4cd1b42c6283622c84e487c83b8c10a67",
       "moveCount": 11,
       "budget": 17,
@@ -799,6 +799,1464 @@
         "tags": [
           "keys",
           "application"
+        ]
+      }
+    },
+    {
+      "level": 27,
+      "title": "На знакомых местах",
+      "dealId": "campaign-027",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "5249ed6c8e48339e8462a7c567fd955504786fcccda054a5c02f90bedf724d3a",
+      "moveCount": 17,
+      "budget": 29,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 28,
+      "title": "Новые соседи",
+      "dealId": "campaign-028",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "8e8e53a3039aacc5e23e749036888ea269b8c91f9bf85c408c0c748f062e1309",
+      "moveCount": 18,
+      "budget": 30,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 29,
+      "title": "Собрать по смыслу",
+      "dealId": "campaign-029",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "537d01630faaba4b151d536030c403e7dee41248aa1f295602278ec541915fbc",
+      "moveCount": 16,
+      "budget": 28,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 30,
+      "title": "Цвета радуги",
+      "dealId": "campaign-030",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "b7e4284a6be9cae1373749f9576e0fd8e1ce44a0c54e8e58056b139aa9bf7eae",
+      "moveCount": 16,
+      "budget": 28,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 2,
+        "largestPacket": 7,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 31,
+      "title": "Найти свою полку",
+      "dealId": "campaign-031",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "0c94f0537bbd06135ae99cbb959c744fcc2a0624dbcb361b2e6b5ad2bbbd0733",
+      "moveCount": 17,
+      "budget": 29,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 32,
+      "title": "За тремя ключами",
+      "dealId": "campaign-032",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "77f9ac9a7e011338a53ff72c9ead484df3a8c6d8e9544f9b51aa3713bb910939",
+      "moveCount": 27,
+      "budget": 39,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 3,
+        "flips": 5,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 33,
+      "title": "В нужном кругу",
+      "dealId": "campaign-033",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "6f7161f22883f38dad4f57c865feb21cd87d15e631052d267d7858688a346458",
+      "moveCount": 16,
+      "budget": 28,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 34,
+      "title": "Одна за другой",
+      "dealId": "campaign-034",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "9bdf511a9751e37f44c076ba9f640f26e3724fb18de67c68cd02b3d9c5d1ea3b",
+      "moveCount": 18,
+      "budget": 30,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 2,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 35,
+      "title": "Времена года",
+      "dealId": "campaign-035",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "ffe2dd2d50a517044b9927ca501d06bf66dd4368d9b7fb3dc955e87c7f09521a",
+      "moveCount": 11,
+      "budget": 23,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 9,
+        "columns": 4,
+        "categories": 2,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 36,
+      "title": "Знакомые формы",
+      "dealId": "campaign-036",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "0e5c7bb9863fc8e6ff3f59ac40df264c93b0c8fd5ff3c93befd392a54916e32f",
+      "moveCount": 20,
+      "budget": 32,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 37,
+      "title": "За тремя ключами",
+      "dealId": "campaign-037",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "8d9c4f0d4f04896bfd780d0a88fef7efce81c683fecb7e11730c616dbf1755ee",
+      "moveCount": 25,
+      "budget": 37,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 3,
+        "flips": 5,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 38,
+      "title": "Тихая партия",
+      "dealId": "campaign-038",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "b854c88196e4961d279f724755a17653ddec198d16786ca46abd27883c42b02b",
+      "moveCount": 18,
+      "budget": 30,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 39,
+      "title": "Точные совпадения",
+      "dealId": "campaign-039",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "f863c3fb53016ab230143e4deaaf061916afb0b44366561adb85786e689c6105",
+      "moveCount": 16,
+      "budget": 28,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 40,
+      "title": "Числа по порядку",
+      "dealId": "campaign-040",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "0c82eba152021a51f1afce508bb248235555c9c2a2991ecd142d49110750722e",
+      "moveCount": 15,
+      "budget": 27,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 11,
+        "columns": 4,
+        "categories": 2,
+        "largestPacket": 5,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-2"
+        ]
+      }
+    },
+    {
+      "level": 41,
+      "title": "Поймать ритм",
+      "dealId": "campaign-041",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "1980ce37d50ff1a469d1701ccc7ff2175f26a061bec6c016b5aca3311742a761",
+      "moveCount": 16,
+      "budget": 28,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 42,
+      "title": "За тремя ключами",
+      "dealId": "campaign-042",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "e6352180810db4caa8d2f0628f8f5f80af230c426edd464b89ec1211f9eb1d26",
+      "moveCount": 27,
+      "budget": 39,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 3,
+        "flips": 5,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 43,
+      "title": "Почти собрано",
+      "dealId": "campaign-043",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "c33c28e0b540d67a0a323b7092b3683b7906135ee287629c67af52c62e439bcc",
+      "moveCount": 16,
+      "budget": 28,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 44,
+      "title": "Римские числа",
+      "dealId": "campaign-044",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "ab9571813c7f4922ea7af52b83a4ca04654d3428a7ac37952e65fa689617e789",
+      "moveCount": 14,
+      "budget": 26,
+      "slack": 12,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 11,
+        "columns": 4,
+        "categories": 2,
+        "largestPacket": 6,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 45,
+      "title": "На знакомых местах · 2",
+      "dealId": "campaign-045",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "1d408ce761ad38e4202e68a256f8972b2214a72716e53a89b077466f1de4a692",
+      "moveCount": 22,
+      "budget": 32,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 46,
+      "title": "Новые соседи · 2",
+      "dealId": "campaign-046",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "ebcbcef01584214d639ed0a2763880ddb0b4d56e0fd7155d8105f068e92a17a9",
+      "moveCount": 16,
+      "budget": 26,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 47,
+      "title": "Собрать по смыслу · 2",
+      "dealId": "campaign-047",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "586d59315bb0917ac2cc7bbd7046025781ab37b14d8d6b8e3bece2bbac7bac92",
+      "moveCount": 23,
+      "budget": 33,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 5,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 48,
+      "title": "Дни недели · 2",
+      "dealId": "campaign-048",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "24c3eeee772fb29d466df1fefbab4e5db2982b1079a1093809f47019af1390e0",
+      "moveCount": 26,
+      "budget": 36,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 49,
+      "title": "Найти свою полку · 2",
+      "dealId": "campaign-049",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "8edcd41c080a896608d5de764ef81cf6c06803c671c3279b8a2889e40796dfbc",
+      "moveCount": 22,
+      "budget": 32,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 50,
+      "title": "За тремя ключами · 2",
+      "dealId": "campaign-050",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "0a925405d76fef351659874ed727ff6dd297fa655b93282ae225295e96dd057c",
+      "moveCount": 25,
+      "budget": 35,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 4,
+        "flips": 5,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 51,
+      "title": "В нужном кругу · 2",
+      "dealId": "campaign-051",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "22d853bc9c3cb13b64cd37efa2c760b1a3bb3af0bca87b0e8de0e0defa00f570",
+      "moveCount": 24,
+      "budget": 34,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 52,
+      "title": "Одна за другой · 2",
+      "dealId": "campaign-052",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "dab67b29807c85cde933d5e0c93837be5ff59d7f6fed58ec8c56a3b7cac18945",
+      "moveCount": 16,
+      "budget": 26,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 2,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 53,
+      "title": "Месяцы · 2",
+      "dealId": "campaign-053",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "8ef4317f8e9bab7554b57d8c5115c061c0a618492262420bf014a7ecc31dfc66",
+      "moveCount": 40,
+      "budget": 50,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 23,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 7,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 54,
+      "title": "Знакомые формы · 2",
+      "dealId": "campaign-054",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "7c9c95e57c5b56dadb1b6b8a4eb97521c3e38594c3e854954b94ff1301cf0632",
+      "moveCount": 17,
+      "budget": 27,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 55,
+      "title": "За тремя ключами · 2",
+      "dealId": "campaign-055",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "4c1a52b863d71720f350b2a0fd30ec18b6fe00e3c24f7c179577b7a47548d6de",
+      "moveCount": 33,
+      "budget": 43,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 20,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 4,
+        "flips": 5,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 56,
+      "title": "Тихая партия · 2",
+      "dealId": "campaign-056",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "d8626a278aeb55ca571106aaf5f7e983c7f4426d18e1de675067c51ecc8b35eb",
+      "moveCount": 17,
+      "budget": 27,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 57,
+      "title": "Точные совпадения · 2",
+      "dealId": "campaign-057",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "16a60d6e02d4dfdc7fcdb886195493f6ff18f459db2ded9f283fd0acda3a812d",
+      "moveCount": 22,
+      "budget": 32,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 58,
+      "title": "Цвета радуги · 2",
+      "dealId": "campaign-058",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "db797ab2a5af0307181aa12d333add59f4505157dd914708b87358bad08350ca",
+      "moveCount": 26,
+      "budget": 36,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 7,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 59,
+      "title": "Поймать ритм · 2",
+      "dealId": "campaign-059",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "cdf72be44d4bf16340b3eb06406990533a82a87845594ca65d922a106043b0cf",
+      "moveCount": 22,
+      "budget": 32,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 60,
+      "title": "За тремя ключами · 2",
+      "dealId": "campaign-060",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "148ae433f11af2e58896a4111d3973162be7fb5328183ff85a661d0b371791f5",
+      "moveCount": 27,
+      "budget": 37,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 3,
+        "flips": 5,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-3"
+        ]
+      }
+    },
+    {
+      "level": 61,
+      "title": "Почти собрано · 2",
+      "dealId": "campaign-061",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "4cf5bb84d76a3bc4ac41531b19decfde781139a935e01954abd498f6791e4123",
+      "moveCount": 23,
+      "budget": 33,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 62,
+      "title": "Времена года · 2",
+      "dealId": "campaign-062",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "5e352376b55ba516c0733953636d6859ccae98aa419ac5d5c57f674220b9e5da",
+      "moveCount": 18,
+      "budget": 28,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 13,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 63,
+      "title": "На знакомых местах · 3",
+      "dealId": "campaign-063",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "bfbdc64da79bc81456e7aa05466acd2d1e4187ccd6efeee286fb42c4d85c2d19",
+      "moveCount": 18,
+      "budget": 26,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 2,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 64,
+      "title": "Новые соседи · 3",
+      "dealId": "campaign-064",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "a6ef72d339186d3bbcfb5021652582550af0180fd3dd9d896598307e3a109d38",
+      "moveCount": 12,
+      "budget": 20,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 65,
+      "title": "Собрать по смыслу · 3",
+      "dealId": "campaign-065",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "32a7ef325a786f783cab6adb66584ed1fccb50f79138440d2056e2b6e8c297d9",
+      "moveCount": 19,
+      "budget": 27,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 5,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 66,
+      "title": "Числа по порядку · 3",
+      "dealId": "campaign-066",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "ac9713cdbc992c6b1a0cc1ff8df6312df334dcc3c56f07f5a338b8a77d9d92c8",
+      "moveCount": 20,
+      "budget": 28,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 6,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 67,
+      "title": "Найти свою полку · 3",
+      "dealId": "campaign-067",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "5882f2183550bc75241a3a4ab2aa77f7a0ecfab9ea1347134d746954edafc24f",
+      "moveCount": 20,
+      "budget": 28,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 5,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 68,
+      "title": "За тремя ключами · 3",
+      "dealId": "campaign-068",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "fa9f1c2c4c81abbe58d13ac1d1ec07541b7a3262a2fcf5f3b79d974f95491a69",
+      "moveCount": 21,
+      "budget": 29,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 4,
+        "flips": 9,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 69,
+      "title": "В нужном кругу · 3",
+      "dealId": "campaign-069",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "bb2b9ecc009963875fb734a1fc1684662404892db8f8acd359aee0e9858c6468",
+      "moveCount": 20,
+      "budget": 28,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 70,
+      "title": "Одна за другой · 3",
+      "dealId": "campaign-070",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "eb42569863a4e214cbfbcb0ae71e93824c491586e5147ea26fa490ac90157e68",
+      "moveCount": 12,
+      "budget": 20,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 1,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 71,
+      "title": "Римские числа · 3",
+      "dealId": "campaign-071",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "afa629a99738b3e3398f1ca95a1168759626856f21a7447bd62a9e37a4395ea7",
+      "moveCount": 23,
+      "budget": 31,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 17,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 72,
+      "title": "Знакомые формы · 3",
+      "dealId": "campaign-072",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "5aba19e629aa11768039829a18bb34c1331a936e7ac11c9b83beff7f107c556f",
+      "moveCount": 12,
+      "budget": 20,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 73,
+      "title": "За тремя ключами · 3",
+      "dealId": "campaign-073",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "db60196ee79270daa20d745f3a3b4c9d405c620b800275d150c9efe130db22f7",
+      "moveCount": 31,
+      "budget": 39,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 20,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 4,
+        "flips": 9,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 74,
+      "title": "Тихая партия · 3",
+      "dealId": "campaign-074",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "3e67869edd5b8a87485a13e4d5babef1af6fc5894d5ce25a11233363fd62d6c0",
+      "moveCount": 12,
+      "budget": 20,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 75,
+      "title": "Точные совпадения · 3",
+      "dealId": "campaign-075",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "3a61e16e2f0a37907839dd02d5cd9e6dd08dda6df1d5cd9170788c42bcb5da6b",
+      "moveCount": 18,
+      "budget": 26,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 2,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 76,
+      "title": "Дни недели · 3",
+      "dealId": "campaign-076",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "20e745991f99d498dd43b3598f89d38832703adc957f1cb68e14f2fa8c3f7976",
+      "moveCount": 21,
+      "budget": 29,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 5,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordered",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 77,
+      "title": "Поймать ритм · 3",
+      "dealId": "campaign-077",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "cf63dde079b61079818668b58df070a9b15207f4216bd7541c2e8926567dfd46",
+      "moveCount": 18,
+      "budget": 26,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 78,
+      "title": "За тремя ключами · 3",
+      "dealId": "campaign-078",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "78b8120fb96621e2222eb822bd0c472699762e7e31048da493b33af4aede3a81",
+      "moveCount": 21,
+      "budget": 29,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 3,
+        "flips": 9,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 79,
+      "title": "Почти собрано · 3",
+      "dealId": "campaign-079",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "ab655f7740cc0816433f229fb802f823dd9addf781891a6aa1324c5979f0716f",
+      "moveCount": 18,
+      "budget": 26,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 8,
+        "recycleCount": 0,
+        "tags": [
+          "ordinary",
+          "chapter-4"
+        ]
+      }
+    },
+    {
+      "level": 80,
+      "title": "Всё на своих местах",
+      "dealId": "campaign-080",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 5,
+      "initialSha256": "0be80e64288d538a969b96318f64a27c6bd510af833bb49d14a5251c24e4fb63",
+      "moveCount": 21,
+      "budget": 29,
+      "slack": 8,
+      "replay": "PASS",
+      "editorialStatus": "Original fixed release-candidate puzzle; witness/semantic edit verified; independent human difficulty session pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 16,
+        "columns": 4,
+        "categories": 4,
+        "largestPacket": 3,
+        "flips": 9,
+        "recycleCount": 0,
+        "tags": [
+          "keys",
+          "chapter-4"
         ]
       }
     }
@@ -903,6 +2361,276 @@
       "id": "campaign-020",
       "seed": 203,
       "searchVisited": 13357
+    },
+    {
+      "id": "campaign-027",
+      "seed": 80001,
+      "searchVisited": 35
+    },
+    {
+      "id": "campaign-028",
+      "seed": 80978,
+      "searchVisited": 180
+    },
+    {
+      "id": "campaign-029",
+      "seed": 81955,
+      "searchVisited": 622
+    },
+    {
+      "id": "campaign-030",
+      "seed": 82932,
+      "searchVisited": 824
+    },
+    {
+      "id": "campaign-031",
+      "seed": 83909,
+      "searchVisited": 275
+    },
+    {
+      "id": "campaign-032",
+      "seed": 84886,
+      "searchVisited": 135
+    },
+    {
+      "id": "campaign-033",
+      "seed": 85863,
+      "searchVisited": 53
+    },
+    {
+      "id": "campaign-034",
+      "seed": 86840,
+      "searchVisited": 113
+    },
+    {
+      "id": "campaign-035",
+      "seed": 87817,
+      "searchVisited": 112
+    },
+    {
+      "id": "campaign-036",
+      "seed": 88794,
+      "searchVisited": 91
+    },
+    {
+      "id": "campaign-037",
+      "seed": 89771,
+      "searchVisited": 87
+    },
+    {
+      "id": "campaign-038",
+      "seed": 90748,
+      "searchVisited": 520
+    },
+    {
+      "id": "campaign-039",
+      "seed": 91725,
+      "searchVisited": 238
+    },
+    {
+      "id": "campaign-040",
+      "seed": 92702,
+      "searchVisited": 163
+    },
+    {
+      "id": "campaign-041",
+      "seed": 93679,
+      "searchVisited": 36
+    },
+    {
+      "id": "campaign-042",
+      "seed": 94656,
+      "searchVisited": 411
+    },
+    {
+      "id": "campaign-043",
+      "seed": 95633,
+      "searchVisited": 58
+    },
+    {
+      "id": "campaign-044",
+      "seed": 96610,
+      "searchVisited": 69
+    },
+    {
+      "id": "campaign-045",
+      "seed": 97587,
+      "searchVisited": 462
+    },
+    {
+      "id": "campaign-046",
+      "seed": 98564,
+      "searchVisited": 77
+    },
+    {
+      "id": "campaign-047",
+      "seed": 99541,
+      "searchVisited": 498
+    },
+    {
+      "id": "campaign-048",
+      "seed": 100518,
+      "searchVisited": 284
+    },
+    {
+      "id": "campaign-049",
+      "seed": 101495,
+      "searchVisited": 274
+    },
+    {
+      "id": "campaign-050",
+      "seed": 102472,
+      "searchVisited": 553
+    },
+    {
+      "id": "campaign-051",
+      "seed": 103449,
+      "searchVisited": 2013
+    },
+    {
+      "id": "campaign-052",
+      "seed": 104426,
+      "searchVisited": 83
+    },
+    {
+      "id": "campaign-053",
+      "seed": 105405,
+      "searchVisited": 4613
+    },
+    {
+      "id": "campaign-054",
+      "seed": 106380,
+      "searchVisited": 98
+    },
+    {
+      "id": "campaign-055",
+      "seed": 107359,
+      "searchVisited": 11435
+    },
+    {
+      "id": "campaign-056",
+      "seed": 108334,
+      "searchVisited": 73
+    },
+    {
+      "id": "campaign-057",
+      "seed": 109311,
+      "searchVisited": 675
+    },
+    {
+      "id": "campaign-058",
+      "seed": 110288,
+      "searchVisited": 4156
+    },
+    {
+      "id": "campaign-059",
+      "seed": 111265,
+      "searchVisited": 2419
+    },
+    {
+      "id": "campaign-060",
+      "seed": 112242,
+      "searchVisited": 96
+    },
+    {
+      "id": "campaign-061",
+      "seed": 113219,
+      "searchVisited": 356
+    },
+    {
+      "id": "campaign-062",
+      "seed": 114196,
+      "searchVisited": 96
+    },
+    {
+      "id": "campaign-063",
+      "seed": 115173,
+      "searchVisited": 33
+    },
+    {
+      "id": "campaign-064",
+      "seed": 116150,
+      "searchVisited": 13
+    },
+    {
+      "id": "campaign-065",
+      "seed": 117127,
+      "searchVisited": 256
+    },
+    {
+      "id": "campaign-066",
+      "seed": 118104,
+      "searchVisited": 63
+    },
+    {
+      "id": "campaign-067",
+      "seed": 119081,
+      "searchVisited": 133
+    },
+    {
+      "id": "campaign-068",
+      "seed": 120058,
+      "searchVisited": 33
+    },
+    {
+      "id": "campaign-069",
+      "seed": 121035,
+      "searchVisited": 147
+    },
+    {
+      "id": "campaign-070",
+      "seed": 122012,
+      "searchVisited": 13
+    },
+    {
+      "id": "campaign-071",
+      "seed": 122989,
+      "searchVisited": 428
+    },
+    {
+      "id": "campaign-072",
+      "seed": 123966,
+      "searchVisited": 13
+    },
+    {
+      "id": "campaign-073",
+      "seed": 124943,
+      "searchVisited": 225
+    },
+    {
+      "id": "campaign-074",
+      "seed": 125920,
+      "searchVisited": 13
+    },
+    {
+      "id": "campaign-075",
+      "seed": 126897,
+      "searchVisited": 75
+    },
+    {
+      "id": "campaign-076",
+      "seed": 127875,
+      "searchVisited": 49
+    },
+    {
+      "id": "campaign-077",
+      "seed": 128851,
+      "searchVisited": 57
+    },
+    {
+      "id": "campaign-078",
+      "seed": 129828,
+      "searchVisited": 26
+    },
+    {
+      "id": "campaign-079",
+      "seed": 130805,
+      "searchVisited": 324
+    },
+    {
+      "id": "campaign-080",
+      "seed": 131782,
+      "searchVisited": 40
     }
   ]
 }

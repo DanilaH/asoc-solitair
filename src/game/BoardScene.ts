@@ -64,8 +64,8 @@ export class BoardScene extends Phaser.Scene {
     this.jokerBadge = this.add.container(0, 0, [this.add.circle(0, 0, 11, 0xf1cc73).setStrokeStyle(1, 0xffecc0), this.add.text(0, 0, '✦', { fontFamily: 'Arial', fontSize: '15px', color: '#715321' }).setOrigin(.5)]).setDepth(425).setVisible(false);
     const lock = this.add.graphics().fillStyle(0x143f36, .96).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13).lineStyle(3, 0xd9bd7e).strokeRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 11);
     lock.lineStyle(5, 0xf3d58e).strokeRoundedRect(-16, -35, 32, 35, 15).fillStyle(0xf3d58e).fillRoundedRect(-23, -12, 46, 35, 7).fillStyle(0x5c633d).fillCircle(0, 0, 4).fillRect(-2, 0, 4, 10);
-    this.lockCount = this.label(0, 36, 'Ключи 0 / 3', 17, '#ffe6a1');
-    this.lockArt = this.add.container(0, 0, [lock, this.lockCount]).setVisible(false).setDepth(420);
+    this.lockCount = this.label(0, 36, '0 / 3', 21, '#ffe6a1');
+    this.lockArt = this.add.container(0, 0, [lock, this.label(0, -this.cardH / 2 + 12, 'ТРИ КЛЮЧА', 11, '#ffe6a1'), this.lockCount]).setVisible(false).setDepth(420);
     this.world.add([this.jokerArt, this.jokerBadge, this.lockArt]);
     this.keyFlights = Array.from({ length: 3 }, () => { const key = this.add.text(0, 0, '⚿', { fontFamily: 'Arial', fontSize: '34px', color: '#ffe09a' }).setOrigin(.5).setDepth(590).setVisible(false); this.world.add(key); return key; });
     for (const card of Object.values(this.options.deal.cards)) this.views.set(card.id, this.makeCard(card.id));
@@ -152,7 +152,7 @@ export class BoardScene extends Phaser.Scene {
     if (this.metrics.joker) this.jokerArt.setPosition(this.metrics.joker.x, this.metrics.joker.y).setDepth(this.metrics.joker.depth);
     const lockTarget = this.options.deal.lock && this.metrics.targets.find(t => t.location.kind === 'tableau' && t.location.index === this.options.deal.lock!.column);
     this.lockArt.setVisible(Boolean(lockTarget && isLocked(board, this.options.deal.lock!.column, this.options.deal)));
-    if (lockTarget) { this.lockArt.setPosition(lockTarget.x, lockTarget.y); this.lockCount.setText(`Ключи ${board.keys?.length ?? 0} / 3`); }
+    if (lockTarget) { this.lockArt.setPosition(lockTarget.x, lockTarget.y); this.lockCount.setText(`${board.keys?.length ?? 0} / 3`); }
     for (const event of events.filter(e => e.type === 'key')) {
       const from = this.metrics.poses.find(p => event.cards?.includes(p.id)), flight = this.keyFlights.find(k => !k.visible);
       if (from && flight && lockTarget && !save.settings.reducedMotion) {

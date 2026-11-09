@@ -8,7 +8,7 @@ export function authorInitial(plan: { columns: number; depth: number; slots: num
   return {tableau,foundations:Array.from({length:plan.slots},()=>[]),stock:ids,waste:[],faceUp:tableau.map(col=>col.at(-1)!).filter(Boolean),collected:[],movesLeft:200,phase:'playing'};
 }
 interface Node { board: Board; path: BoardCommand[]; score: number }
-const key = (b: Board) => JSON.stringify([b.tableau.map(col=>col.join(',')).sort(),b.foundations.map(col=>col.join(',')).sort(),b.stock,b.waste,[...b.faceUp].sort(),[...b.collected].sort()]);
+const key = (b: Board, locked = false) => JSON.stringify([locked ? b.tableau.map(col=>col.join(',')) : b.tableau.map(col=>col.join(',')).sort(),b.foundations.map(col=>col.join(',')).sort(),b.stock,b.waste,[...b.faceUp].sort(),[...b.collected].sort()]);
 export function findWitness(deal: Deal, limit=20000): {path: BoardCommand[]; visited:number} | null {
   const heap:Node[]=[], seen=new Map<string,number>();
   const push=(n:Node)=>{heap.push(n);let i=heap.length-1;while(i>0){const p=(i-1)>>1;if(heap[p].score<=n.score)break;heap[i]=heap[p];i=p;}heap[i]=n;};
@@ -16,14 +16,14 @@ export function findWitness(deal: Deal, limit=20000): {path: BoardCommand[]; vis
   const score=(b:Board,g:number)=>g*.48+(Object.keys(deal.cards).length-b.collected.length)*2+b.stock.length*.7+b.tableau.reduce((n,col)=>n+col.filter(id=>!b.faceUp.includes(id)).length,0)*.8;
   push({board:deal.initial,path:[],score:score(deal.initial,0)});let visited=0;
   while(heap.length&&visited++<limit){
-    const node=pop(), k=key(node.board), cost=node.path.length;
+    const node=pop(), k=key(node.board, Boolean(deal.lock)), cost=node.path.length;
     if(seen.has(k)&&seen.get(k)!<=cost)continue;seen.set(k,cost);
     if(node.board.phase==='won')return{path:node.path,visited};
     if(cost>=85)continue;
     for(const cmd of legalCommands(node.board,deal)){
       if(cmd.type==='transfer'&&cmd.from.kind==='tableau'&&cmd.to.kind==='tableau'&&!node.board.tableau[cmd.to.index].length&&packet(node.board,cmd.from.index,deal).length===node.board.tableau[cmd.from.index].length)continue;
       const result=applyBoard(node.board,cmd,deal);if(typeof result==='string')continue;
-      const nextKey=key(result.board);if(seen.has(nextKey)&&seen.get(nextKey)!<=cost+1)continue;
+      const nextKey=key(result.board, Boolean(deal.lock));if(seen.has(nextKey)&&seen.get(nextKey)!<=cost+1)continue;
       push({board:result.board,path:[...node.path,cmd],score:score(result.board,cost+1)});
     }
   }

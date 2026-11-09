@@ -1,3 +1,4 @@
+import { expansionDeals } from './expansion';
 import { findDaily } from './daily';
 import { modifierDeals } from './modifiers';
 import data from './campaign.json' with { type: 'json' };
@@ -14,6 +15,6 @@ export const campaignDeals: readonly Deal[] = [...campaignRecords.map(record => 
   id: record.id, version: record.version, campaignLevel: record.campaignLevel, title: record.title,
   cards: cardsFor(record.topics), initial: record.initial, winningPath: record.winningPath,
   editorialStatus: record.editorialStatus, tags: record.tags,
-})), ...modifierDeals];
+})), ...modifierDeals, ...expansionDeals];
 const all = new Map([introDeal, ...campaignDeals].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);

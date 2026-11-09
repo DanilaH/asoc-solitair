@@ -139,7 +139,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
   } else if (cmd.type === 'undo') {
     if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || next.profile.undos <= 0) return refuse('Нет доступной отмены');
-    attempt.board = attempt.undo.pop()!; next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
+    attempt.board = attempt.undo.pop()!; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
   } else if (cmd.type === 'place-joker') {
     if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || next.profile.jokers <= 0) return refuse('В этой попытке Джокер недоступен');
     const placed = placeJoker(attempt.board, cmd.column, deal);

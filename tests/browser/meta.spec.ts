@@ -51,7 +51,7 @@ test('campaign and daily keep exact separate attempts; daily reward and third-da
   for (const cmd of daily.winningPath.slice(1)) await move(page, daily, cmd);
   await expect(page.locator('#result')).toBeVisible(); await expect(page.locator('#result-rewards')).toContainText('3 дня подряд');
   const won = await read(page); expect(won.meta!.dailyStreak).toBe(3); expect(won.meta!.winCycle).toBe(3); expect(won.parked!.campaign).toEqual(campaign);
-  await page.locator('#replay').tap(); await expect(page.locator('#result')).toBeHidden();
+  await expect(page.locator('#replay')).toHaveText('Сыграть как тренировку'); await page.locator('#replay').tap(); await expect(page.locator('#result')).toBeHidden(); await expect(page.locator('#level-number')).toContainText('ТРЕНИРОВКА'); await expect(page.locator('#message')).toContainText('без награды');
   const wallet = (await read(page)).profile.coins;
   for (const cmd of daily.winningPath) await move(page, daily, cmd);
   await expect(page.locator('#result')).toBeVisible(); expect((await read(page)).profile.coins).toBe(wallet);
@@ -64,7 +64,7 @@ test('midnight keeps the old daily as training and next entry starts the new dat
   const daily = dailyForDay('2026-11-09'); await move(page, daily, daily.winningPath[0]);
   await page.clock.setSystemTime(new Date('2026-11-10T00:00:02Z')); const old = (await read(page)).attempt.id;
   await home(page); await expect(page.locator('#daily-resume-old')).toBeVisible(); await page.locator('#daily-resume-old').tap(); expect((await read(page)).attempt.id).toBe(old);
-  await home(page); await page.locator('#daily-play').tap(); await expect.poll(async () => (await read(page)).attempt.daily!.dayId).toBe('2026-11-10');
+  await home(page); await page.locator('#daily-play').tap(); await expect(page.locator('#replace-daily')).toBeVisible(); await page.locator('#replace-daily-yes').tap(); await expect.poll(async () => (await read(page)).attempt.daily!.dayId).toBe('2026-11-10');
   expect((await read(page)).parked!.campaign!.dealId).toBe(campaignDeals[2].id);
 });
 

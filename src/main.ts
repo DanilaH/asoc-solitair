@@ -7,7 +7,7 @@ import { CAMPAIGN_LENGTH, completedLevels, unlockedLevel, helperUnlocked, freeHi
 import { beginDeal } from './domain/campaign';
 import { dailyForDay } from './content/daily';
 import { switchMode } from './domain/sessions';
-import { cosmeticUnlocked, dailyRewardEligible, localDay } from './domain/meta';
+import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } from './domain/meta';
 import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
 import { lesson } from './app/tutorial';
 import { boardKey, dispatch, freshSave, STREAK } from './domain/engine';
@@ -67,6 +67,8 @@ try {
   deal = findDeal(save.attempt.dealId)!;
   let requestedLevel: number | undefined;
   let outcomeViewed = false;
+  let chapterPage = 0, chapterAttemptId = '';
+  const training = () => Boolean(save.attempt.daily && save.attempt.board.phase !== 'won' && !dailyRewardEligible(save, localDay()));
   let removeForeground: (() => void) | undefined;
   let saving = false, serviceBusy = false;
   let pendingWrites = 0;
@@ -119,7 +121,8 @@ try {
   }
   function renderHud() {
     const board = save.attempt.board;
-    $('#level-number').textContent = deal.daily ? `ЗАДАНИЕ · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
+    $('#app').dataset.practice = String(training());
+    $('#level-number').textContent = deal.daily ? `${training() ? 'ТРЕНИРОВКА' : 'ЗАДАНИЕ'} · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
     $('.level h1').textContent = deal.title;
     const hintUnlocked = helperUnlocked(save, 'hint', deal), undoUnlocked = helperUnlocked(save, 'undo', deal);
     $('#hint').hidden = !hintUnlocked; $('#undo').hidden = !undoUnlocked;
@@ -168,7 +171,7 @@ try {
     outcomeViewed = true;
     $('#result-title').textContent = won ? 'Всё сошлось!' : 'Ходы закончились';
     const daily = Boolean(save.attempt.daily), payout = save.attempt.payout;
-    $('#result-copy').textContent = won ? daily ? payout?.length ? 'Задание дня выполнено. Награда уже на вашем счёте.' : 'Тренировка завершена. Награда за эту дату уже получена или её день закончился.' : (deal.campaignLevel === CAMPAIGN_LENGTH ? 'Все 26 уровней пройдены. Любую раздачу можно сыграть ещё раз.' : 'Все категории этой раздачи собраны.') : 'Undo или продолжение сохранят серию. Рестарт кампании начнёт её заново.';
+    $('#result-copy').textContent = won ? daily ? payout?.length ? 'Задание дня выполнено. Награда уже на вашем счёте.' : 'Тренировка завершена. Награда за эту дату уже получена или её день закончился.' : (deal.campaignLevel === CAMPAIGN_LENGTH ? `Все ${CAMPAIGN_LENGTH} уровней пройдены. Любую раздачу можно сыграть ещё раз.` : 'Все категории этой раздачи собраны.') : 'Undo или продолжение сохранят серию. Рестарт кампании начнёт её заново.';
     const rewards = $('#result-rewards'); rewards.replaceChildren();
     const row = (label: string, value: string) => { const r = document.createElement('div'); r.className = 'reward-line'; const a = document.createElement('span'), b = document.createElement('strong'); a.textContent = label; b.textContent = value; r.append(a, b); rewards.append(r); };
     if (won) {
@@ -176,7 +179,8 @@ try {
       else if (!daily) row('За победу и оставшиеся ходы', `+${BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0)}`);
       if (save.attempt.streak.coins) row('Серии за партию · уже получено', String(save.attempt.streak.coins));
     }
-    $('#result-meta').textContent = daily ? `Серия дней: ${save.meta!.dailyStreak}` : `Следующий цикл · ${save.meta!.winCycle} / 5 новых побед`;
+    $('#result-meta').textContent = daily ? `Серия дней: ${currentDailyStreak(save, localDay())}` : `Следующий цикл · ${save.meta!.winCycle} / 5 новых побед`;
+    $('#replay').textContent = daily && won ? 'Сыграть как тренировку' : 'Ещё раз';
     $('#result-rewards').hidden = !won;
     $('#result-undo').hidden = won || !save.profile.undos || !save.attempt.undo.length;
     $('#next-level').hidden = !won;
@@ -267,12 +271,19 @@ try {
     $('#home-play').replaceChildren(document.createTextNode(label), Object.assign(document.createElement('span'), { textContent: '↗' }));
     $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy;
     $('#home-status').textContent = current && campaign?.telemetry?.started ? 'Незаконченная раздача сохранена' : completed === 0 ? 'Начните с простых связей' : completed === CAMPAIGN_LENGTH ? 'Можно вернуться к любимым темам' : `Дальше — «${campaignDeals[unlocked - 1].title}»`;
+    const focusId = campaign?.id ?? 'new';
+    if (chapterAttemptId !== focusId) { chapterAttemptId = focusId; chapterPage = Math.floor(((campaignDeal?.campaignLevel ?? unlocked) - 1) / 20); }
+    $('#chapter-label').textContent = `Уровни ${chapterPage * 20 + 1}–${Math.min(CAMPAIGN_LENGTH, chapterPage * 20 + 20)}`;
+    $('#chapter-name').textContent = ['Первые связи', 'Правила и новые темы', 'По своим местам', 'Последние ключи'][chapterPage];
+    $<HTMLButtonElement>('#chapter-prev').disabled = chapterPage === 0 || saving;
+    $<HTMLButtonElement>('#chapter-next').disabled = chapterPage === Math.ceil(CAMPAIGN_LENGTH / 20) - 1 || saving;
     const grid = $('#level-grid');
     if (!grid.children.length) for (const level of campaignDeals) {
       const button = document.createElement('button'); button.className = 'level-button'; button.dataset.level = String(level.campaignLevel); button.id = `level-${level.campaignLevel}`; grid.append(button);
     }
     for (const button of grid.querySelectorAll<HTMLButtonElement>('button')) {
       const level = Number(button.dataset.level), item = campaignDeals[level - 1], done = save.platform?.completedCampaign.includes(item.id) ?? false;
+      button.hidden = Math.floor((level - 1) / 20) !== chapterPage;
       button.textContent = String(level); button.disabled = level > unlocked || !ready || saving || serviceBusy;
       button.dataset.completed = String(done); button.dataset.next = String(level === unlocked && !done);
       button.setAttribute('aria-label', `Уровень ${level}: ${item.title}${done ? ', пройден' : level > unlocked ? ', закрыт' : ''}`);
@@ -281,7 +292,7 @@ try {
   function showGuidance(animate = true) {
     clearTimeout(guideTimer);
     const instruction = lesson(save, deal);
-    message(instruction?.text ?? 'Собирайте карты одной категории вместе');
+    message(training() ? 'Тренировка без награды. Помощники расходуются как обычно.' : instruction?.text ?? 'Собирайте карты одной категории вместе');
     if (animate && instruction?.action && !save.settings.reducedMotion) {
       const attemptId = save.attempt.id, revision = save.revision;
       guideTimer = setTimeout(() => {
@@ -302,9 +313,11 @@ try {
     screen = 'home'; runtime.activity.setBlocked('screen', true); $('#play-screen').hidden = true; $('#home').hidden = false;
     renderHud(); renderHome(); updateBanner();
   }
-  async function activateMode(mode: 'campaign' | 'daily', oldDaily = false) {
+  async function activateMode(mode: 'campaign' | 'daily', oldDaily = false, replaceConfirmed = false) {
     if (!ready || saving || serviceBusy) return;
     const target = mode === 'daily' ? oldDaily && dailyAttempt(save) ? findDeal(dailyAttempt(save)!.dealId)! : dailyForDay(localDay()) : campaignAttempt(save) ? findDeal(campaignAttempt(save)!.dealId)! : campaignDeals[0];
+    const previousDaily = dailyAttempt(save);
+    if (mode === 'daily' && !oldDaily && !replaceConfirmed && previousDaily?.daily?.dayId !== target.daily?.dayId && previousDaily?.board.phase === 'playing' && previousDaily.telemetry?.started) { openDialog('#replace-daily'); return; }
     if (save.attempt.dealId === target.id) { closeDialogs(); showGame(); return; }
     closeDialogs(); serviceBusy = true; runtime.activity.setBlocked('level-transition', true);
     try {
@@ -398,7 +411,7 @@ try {
     if (ready && (runtime.activity.isBlocked() || !scene?.hasMotion())) renderer.loop.sleep();
   });
   // Input and explicit UI changes wake the sleeping renderer before visual work.
-  const wake = () => { if (!runtime.activity.isBlocked()) renderer.loop.wake(); };
+  const wake = () => { if (save.attempt.daily && $('#app').dataset.practice !== String(training())) renderHud(); if (!runtime.activity.isBlocked()) renderer.loop.wake(); };
   root.addEventListener('pointerdown', wake, domOptions); root.addEventListener('pointermove', wake, domOptions);
   document.addEventListener('pointerdown', wake, { ...domOptions, capture: true });
   window.addEventListener('pointercancel', () => scene?.cancel(), domOptions);
@@ -425,6 +438,8 @@ try {
       if (key === 'deckSide' && ['left', 'right'].includes(button.dataset.deckSide!)) next.settings.deckSide = button.dataset.deckSide as 'left' | 'right';
     }); scene?.sync(); game?.loop.wake(); } catch { message('Оформление не сохранилось. Попробуйте ещё раз.', true); }
   }, domOptions);
+  $('#chapter-prev').addEventListener('click', () => { if (chapterPage > 0) { chapterPage--; renderHome(); } }, domOptions);
+  $('#chapter-next').addEventListener('click', () => { if (chapterPage < Math.ceil(CAMPAIGN_LENGTH / 20) - 1) { chapterPage++; renderHome(); } }, domOptions);
   $('#level-grid').addEventListener('click', event => {
     const button = (event.target as Element).closest<HTMLButtonElement>('[data-level]');
     if (button && !button.disabled) void openLevel(Number(button.dataset.level));
@@ -447,7 +462,12 @@ try {
   }, domOptions);
   $('#undo').addEventListener('click', () => { if (!save.profile.undos) openDialog('#helpers'); else void execute({ type: 'undo' }); }, domOptions);
   $('#inspect').addEventListener('click', () => setInspect(!inspectMode), domOptions);
-  $('#restart').addEventListener('click', () => { void replay(); }, domOptions);
+  $('#restart').addEventListener('click', () => {
+    if (save.attempt.board.phase !== 'won' && save.attempt.telemetry?.started) { $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}`; openDialog('#restart-confirm'); }
+    else void replay();
+  }, domOptions);
+  $('#restart-confirm-yes').addEventListener('click', () => { void replay(); }, domOptions);
+  $('#replace-daily-yes').addEventListener('click', () => { void activateMode('daily', false, true); }, domOptions);
   $('#replay').addEventListener('click', () => { void replay(); }, domOptions);
   $('#result-undo').addEventListener('click', () => { closeDialogs(); execute({ type: 'undo' }); }, domOptions);
   for (const [id, key] of [['sfx', 'sfx'], ['haptics', 'haptics'], ['reduced', 'reducedMotion']] as const) {

@@ -17,7 +17,7 @@ function win(save: Save, index: number) {
   return save;
 }
 describe('linear campaign ownership', () => {
-  it('replays all 26 fixed witnesses in sequence, unlocks the next level once and retains economy', () => {
+  it('replays all 80 fixed witnesses in sequence, unlocks the next level once and retains economy', () => {
     let save = freshSave(campaignDeals[0], 'attempt-1');
     for (let index=0; index<campaignDeals.length; index++) {
       if (index) beginDeal(save, campaignDeals[index], `attempt-${index+1}`);
@@ -27,7 +27,7 @@ describe('linear campaign ownership', () => {
       expect(save.attempt.board.phase).toBe('won');
       expect(decodeSave(JSON.stringify(save),findDeal)).toEqual(save);
     }
-    expect(save.platform!.completedCampaign).toHaveLength(26); expect(unlockedLevel(save)).toBe(26);
+    expect(save.platform!.completedCampaign).toHaveLength(80); expect(unlockedLevel(save)).toBe(80);
   });
   it('rejects locked levels and preserves wallet/receipts/settings through replay without another new win', () => {
     let save = freshSave(campaignDeals[0], 'a'); expect(() => beginDeal(save,campaignDeals[4],'b')).toThrow();

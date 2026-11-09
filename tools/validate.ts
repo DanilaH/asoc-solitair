@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile, access } from 'node:fs/promises';
 import { dailyPool } from '../src/content/daily';
+import { expansionRecords } from '../src/content/expansion';
 import { introDeal } from '../src/content/intro';
 import { campaignDeals, campaignRecords } from '../src/content/campaign';
 import { applyBoard, assertBoard, dispatch, freshSave } from '../src/domain/engine';
@@ -65,9 +66,13 @@ for (const deal of [introDeal, ...campaignDeals, ...dailyPool]) {
   if (deal.campaignLevel) summary.push({ level: deal.campaignLevel, title: deal.title, ...record, exactInitialState: undefined, winningPath: undefined });
   console.info(`${deal.id}: PASS, ${record.moveCount} moves, ${record.coverage.recycleCount} recycle, slack ${record.slack ?? '∞'}`);
 }
-if (campaignDeals.length !== 26 || campaignDeals[0].initial.movesLeft !== null || campaignDeals[1].initial.movesLeft !== null) throw Error('Campaign/tutor bank contract failed');
+if (campaignDeals.length !== 80 || campaignDeals[0].initial.movesLeft !== null || campaignDeals[1].initial.movesLeft !== null) throw Error('Campaign/tutor bank contract failed');
 if (!summary.some(r => r.coverage.largestPacket >= 2) || !summary.some(r => r.coverage.recycleCount >= 2) || !summary.some(r => r.slack === 0)) throw Error('Missing advertised campaign coverage');
-await writeFile('docs/validation/campaign-index.json', JSON.stringify({ version: 1, contentVersion: CONTENT_VERSION, deals: summary, authoring: campaignRecords.map(r => ({ id: r.id, seed: r.authoringSeed, searchVisited: r.searchVisited })) }, null, 2) + '\n');
+await writeFile('docs/validation/campaign-index.json', JSON.stringify({ version: 1, contentVersion: CONTENT_VERSION, deals: summary, authoring: [...campaignRecords, ...expansionRecords].map(r => ({ id: r.id, seed: r.authoringSeed, searchVisited: r.searchVisited })) }, null, 2) + '\n');
 
 if (dailySummary.length !== 28 || new Set(dailySummary.map(r => r.initialSha256)).size !== 28) throw Error('Daily bank must contain 28 distinct fixed orders');
 await writeFile('docs/validation/daily-index.json', JSON.stringify({ dailyContentVersion: 1, epoch: '2026-01-01', rotationDays: 28, deals: dailySummary }, null, 2) + '\n');
+
+const selected = new Set(campaignDeals.flatMap(d => Object.values(d.cards).filter(c => !c.leader).map(c => c.text)));
+const modes = Object.fromEntries(['ordinary','ordered','keys'].map(tag => [tag, campaignDeals.filter(d => d.campaignLevel! > 26 && d.tags?.includes(tag)).length]));
+await writeFile('docs/validation/release-bank.json', JSON.stringify({ contentVersion: CONTENT_VERSION, campaignDeals: campaignDeals.length, frozenPrefix: 26, appended: expansionRecords.length, uniqueMemberCaptions: selected.size, appendedModes: modes, maxWitnessMoves: Math.max(...summary.map(r => r.moveCount)), minFiniteSlack: Math.min(...summary.filter(r => r.slack !== null).map(r => r.slack!)), distinctNewOrders: new Set(expansionRecords.map(r => JSON.stringify([r.initial.tableau, r.initial.stock, r.initial.faceUp]))).size, independentHumanDifficultyReview: 'PENDING' }, null, 2) + '\n');

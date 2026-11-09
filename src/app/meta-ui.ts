@@ -7,16 +7,16 @@ export const campaignAttempt = (save: Save) => save.attempt.daily ? save.parked?
 export const dailyAttempt = (save: Save) => save.attempt.daily ? save.attempt : save.parked?.daily;
 const pips = (count: number) => Array.from({ length: 5 }, (_, i) => `<i class="${i < count ? 'lit' : ''}">✦</i>`).join('');
 export function renderMeta(save: Save, busy: boolean) {
-  const meta = save.meta!, today = localDay(), done = meta.dailyDates.includes(today), daily = dailyAttempt(save), n = campaignCount(save), target = Math.min(CAMPAIGN_LENGTH, (Math.floor(n / 10) + 1) * 10), end = target === CAMPAIGN_LENGTH;
+  const meta = save.meta!, today = localDay(), done = meta.dailyDates.includes(today), daily = dailyAttempt(save), n = campaignCount(save), target = Math.min(CAMPAIGN_LENGTH, (Math.floor(n / 10) + 1) * 10);
   $('#app').dataset.palette = cosmeticUnlocked(save, 'palette') ? save.settings.palette ?? 'green' : 'green';
   $('#app').dataset.back = cosmeticUnlocked(save, 'cardBack') ? save.settings.cardBack ?? 'classic' : 'classic';
   $('#win-cycle-pips').innerHTML = pips(meta.winCycle);
   $('#cycle-reward').textContent = `+${BALANCE.meta.cycleCoins} монет и подсказка`;
   $('#calendar-reward-copy').textContent = `За день — ${BALANCE.meta.dailyCoins} монет. На 3-м дне серии — ещё ${BALANCE.meta.day3Coins}; на 7-м и каждых следующих семи — ${BALANCE.meta.day7Coins} и отмена. Пропуск сбрасывает текущую серию.`;
   $('#win-cycle-count').textContent = `${meta.winCycle} / 5 новых побед`;
-  $('#milestone-title').textContent = n >= CAMPAIGN_LENGTH ? 'Глава пройдена' : end ? `Глава · ${target}` : `Веха ${target}`;
-  $('#milestone-copy').textContent = end ? 'Оформление и положение колоды' : target === 10 ? `Стол «Чернила» и ${BALANCE.meta.milestoneCoins} монет` : target === 20 ? `Рубашка «Ромбы» и ${BALANCE.meta.milestoneCoins} монет` : `${BALANCE.meta.milestoneCoins} монет`;
-  $('#milestone-fill').style.width = `${n >= CAMPAIGN_LENGTH ? 100 : end ? (n - 20) / (CAMPAIGN_LENGTH - 20) * 100 : n % 10 * 10}%`; $('#milestone-progress').textContent = n >= CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : end ? `${n} / ${CAMPAIGN_LENGTH}` : `${n % 10} / 10`;
+  $('#milestone-title').textContent = n >= CAMPAIGN_LENGTH ? 'Кампания пройдена' : `Веха ${target}`;
+  $('#milestone-copy').textContent = n >= CAMPAIGN_LENGTH ? 'Оформление и положение колоды' : target === 10 ? `Стол «Чернила» и ${BALANCE.meta.milestoneCoins} монет` : target === 20 ? `Рубашка «Ромбы» и ${BALANCE.meta.milestoneCoins} монет` : `${BALANCE.meta.milestoneCoins} монет`;
+  $('#milestone-fill').style.width = `${n >= CAMPAIGN_LENGTH ? 100 : n % 10 * 10}%`; $('#milestone-progress').textContent = n >= CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : `${n % 10} / 10`;
   $('#daily-date').textContent = new Date(`${today}T12:00:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
   $('#daily-status').textContent = done ? `Готово · серия ${currentDailyStreak(save, today)} дн.` : daily?.daily?.dayId === today && daily.board.phase === 'playing' ? 'Продолжить сохранённую партию' : `Одна раздача · награда ${BALANCE.meta.dailyCoins} монет`;
   $('#daily-play').setAttribute('aria-label', done ? 'Повторить задание дня без награды' : 'Играть в задание дня');

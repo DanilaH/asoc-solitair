@@ -55,6 +55,6 @@ try {
     }
     if (errors.length) throw Error(errors.join('\n'));
     const video = page.video()!; await context.close(); const source = `.recording/release-${name}.webm`; await video.saveAs(source);
-    execFileSync('ffmpeg', ['-hide_banner','-loglevel','error','-y','-i',source,'-vf','fps=6,scale=320:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=64:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle',`docs/qa/release-${name}.gif`]); console.info(`Recorded ${name}.`);
+    execFileSync('ffmpeg', ['-hide_banner','-loglevel','error','-y','-i',source,'-vf','fps=12,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle',`docs/qa/release-${name}.gif`]); console.info(`Recorded ${name}.`);
   }
 } finally { await browser.close(); server.httpServer.close(); }

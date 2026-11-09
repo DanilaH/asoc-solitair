@@ -1,0 +1,679 @@
+{
+  "dailyContentVersion": 1,
+  "epoch": "2026-01-01",
+  "rotationDays": 28,
+  "deals": [
+    {
+      "dealId": "daily-pool-01",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "c2afa7afa96f1684816595dbc5dd84de5907612a23941800ec81bdf0f879804a",
+      "moveCount": 23,
+      "budget": 33,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-02",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "9916262af5e3bfd2f6c7eb2680a9d90b90c0c81502e361b1a34b42c543c8a11d",
+      "moveCount": 16,
+      "budget": 26,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-03",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "f0b3fdc4d7618eab0015440a2f55b83bdd578cff8ef19ccc0556b27fe51fb782",
+      "moveCount": 20,
+      "budget": 30,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-04",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "42a5b9e08d50f5dd561e2169e70d56bd74e193ac72026506066aac7192af45ec",
+      "moveCount": 21,
+      "budget": 31,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-05",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "d62c7b0ba4f9b0a8a3b8a870659975724fab20f7710e11491b57719db19ce1af",
+      "moveCount": 16,
+      "budget": 26,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-06",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "2a95571cd934fe79289ff1e9b3e058c42c1e5418ae6faf83dc0a3ae4e03623c3",
+      "moveCount": 16,
+      "budget": 26,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-07",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "249acb0a63446635c20fafc3aa75e1229adda7ff04202ea3bee447b8a720dad3",
+      "moveCount": 26,
+      "budget": 36,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-08",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "3b0a1281028c6076b6f9b31da61238c6f9b8f2adaf6a09229b9da0fd3b861922",
+      "moveCount": 15,
+      "budget": 25,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-09",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "44060c739fbc0760685f905c0809732fbd99bc128a631c505990dec8f2d38501",
+      "moveCount": 16,
+      "budget": 26,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 2,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-10",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "3dd1dc5440cf3ca8f6580d33c9ebe7faad4943c5b2f04f34f8f0612e3cb6232a",
+      "moveCount": 22,
+      "budget": 32,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-11",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "fb6bdba730dfc6d7de9ebf96610239cb0b862ca2d887181dceb4a32bbe35f1d7",
+      "moveCount": 19,
+      "budget": 29,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-12",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "6e8b60a68c51144a87aa3a8ce8ad3846806a0b280f9eff0f4d4f75a7ad6ac123",
+      "moveCount": 15,
+      "budget": 25,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-13",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "4082d686e917a983f49155fda09b46dafe7653af3604ce74edd36aeee4d2bace",
+      "moveCount": 22,
+      "budget": 32,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-14",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "683839481e9932167682037df5e8e87d3cd0bf59fb44993b5f6fb75fb9b56f52",
+      "moveCount": 17,
+      "budget": 27,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-15",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "2a78ec0c926f7a31bdb3c0e039b4d95849307e9a1b7386226b40e7b7b0b9216f",
+      "moveCount": 18,
+      "budget": 28,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-16",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "57ba18d9b205942f748c18dd09323325d02aa41de4f668dd28f211f06f8b53d5",
+      "moveCount": 21,
+      "budget": 31,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 5,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-17",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "7022835483cd8ba62d32ff2f20d8086afeff4e1bbe91b0cad6fb20bfd8bd6d61",
+      "moveCount": 17,
+      "budget": 27,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-18",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "ceedbe77348e85beb9396abc124e9c78158cc6c2419d903616be2a65570e00af",
+      "moveCount": 16,
+      "budget": 26,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 2,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-19",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "5bfee2b774b1265574791f20422d814eda790a8b2e4b0cad49443feca19b8b35",
+      "moveCount": 25,
+      "budget": 35,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-20",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "67c8efa6aa60c9340ec2a20d8d35a34cbbb5e294b037662ac4b972e048d944b7",
+      "moveCount": 16,
+      "budget": 26,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-21",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "cd2ef6287a79b6af170e2149e12d2dbf064f0cff514f5a9a6be645d3f4e57d5d",
+      "moveCount": 17,
+      "budget": 27,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-22",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "944673f147e108fc4fc4db0d1388f331c7a885d58667b705a910eca131594acd",
+      "moveCount": 21,
+      "budget": 31,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-23",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "9a87b44de0ba051a5736c3f37248660eaf4c0c0fb2eb64d9a7e35d2fc10a9d41",
+      "moveCount": 18,
+      "budget": 28,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-24",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "22838a5ee49a82f5254cc6fb62b3cacf2f75d4370026946c8030a0b7b205852c",
+      "moveCount": 15,
+      "budget": 25,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-25",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "ca21e635da91652764a2ff692a7be21527e8a76c96674c260024c92b44aeba97",
+      "moveCount": 24,
+      "budget": 34,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 4,
+        "categories": 3,
+        "largestPacket": 5,
+        "flips": 4,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-26",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "d736733a0af452980024a7e2427e311a3d95c1207ce9d493e20be554a04f39ef",
+      "moveCount": 15,
+      "budget": 25,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-27",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "bc2bf7b0ebbdd6312e4fb668f15cb89cf5c255e083ac11d3fb4dbbba00b0d119",
+      "moveCount": 18,
+      "budget": 28,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 12,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 4,
+        "flips": 3,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    },
+    {
+      "dealId": "daily-pool-28",
+      "dealVersion": 1,
+      "rulesVersion": 2,
+      "contentVersion": 4,
+      "initialSha256": "43e82765330af660a1e619ac1b04f70fed8cdbc6c67fee6ed6991c4b27b06845",
+      "moveCount": 22,
+      "budget": 32,
+      "slack": 10,
+      "replay": "PASS",
+      "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+      "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+      "coverage": {
+        "cards": 15,
+        "columns": 3,
+        "categories": 3,
+        "largestPacket": 3,
+        "flips": 6,
+        "recycleCount": 0,
+        "tags": [
+          "daily"
+        ]
+      }
+    }
+  ]
+}

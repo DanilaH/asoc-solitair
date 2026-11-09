@@ -23,7 +23,7 @@ describe('linear campaign ownership', () => {
       if (index) beginDeal(save, campaignDeals[index], `attempt-${index+1}`);
       expect(save.attempt.board).toEqual(campaignDeals[index].initial);
       const hints=save.profile.hints; save=win(save,index);
-      expect(completedLevels(save)).toBe(index+1); expect(save.profile.hints).toBe(hints);
+      expect(completedLevels(save)).toBe(index+1); expect(save.profile.hints).toBe(hints + ((index + 1) % 5 === 0 ? 1 : 0));
       expect(save.attempt.board.phase).toBe('won');
       expect(decodeSave(JSON.stringify(save),findDeal)).toEqual(save);
     }

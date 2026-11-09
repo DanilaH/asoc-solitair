@@ -2,7 +2,7 @@
   "dealId": "intro-001",
   "dealVersion": 1,
   "rulesVersion": 2,
-  "contentVersion": 3,
+  "contentVersion": 4,
   "initialSha256": "311eb0203e5b895c8750a82cacc6780adad9a60e8c99b5155cbde7a8e56ee692",
   "exactInitialState": {
     "tableau": [

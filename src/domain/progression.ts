@@ -10,7 +10,7 @@ export function completedLevels(save: Save): number {
 }
 export const unlockedLevel = (save: Save) => Math.min(CAMPAIGN_LENGTH, completedLevels(save) + 1);
 export function helperUnlocked(save: Save, helper: 'hint' | 'undo' | 'joker', deal?: Deal): boolean {
-  return deal?.campaignLevel === undefined || unlockedLevel(save) >= HELPER_UNLOCK[helper];
+  return (!deal?.daily && deal?.campaignLevel === undefined) || unlockedLevel(save) >= HELPER_UNLOCK[helper];
 }
 export function seenTutorial(save: Save, id: string): boolean { return save.campaign?.tutorials.includes(id) ?? false; }
 export function markTutorial(save: Save, id: string): void {

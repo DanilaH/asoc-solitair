@@ -6,7 +6,7 @@ import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../
 import { boardFrame, cardMetrics, layout } from './layout';
 import type { Pose, Target } from './layout';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; backArt: Phaser.GameObjects.Graphics }
 interface Options {
   deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void;
   jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene): void;
@@ -40,6 +40,7 @@ export class BoardScene extends Phaser.Scene {
   private hintObjects: Phaser.GameObjects.GameObject[] = [];
   private hintTweens: Phaser.Tweens.Tween[] = [];
   private inspectMode = false;
+  private backStyle = '';
   private particles: Phaser.GameObjects.Arc[] = [];
   private presentedDealId: string | undefined;
   public constructor(private readonly options: Options) { super('board'); }
@@ -110,21 +111,26 @@ export class BoardScene extends Phaser.Scene {
     }
     const badge = this.label(0, 44, '', 20, '#8e7138'); face.add(badge);
     const b = this.add.graphics();
-    b.fillStyle(0x003e2d, .25).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 5, this.cardW, this.cardH, 13);
-    b.fillStyle(0xf5edda).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13);
-    b.fillStyle(0x579ac5).fillRoundedRect(-this.cardW / 2 + 5, -this.cardH / 2 + 5, this.cardW - 10, this.cardH - 10, 9);
-    b.lineStyle(1.2, 0xa6cbdc, .5);
-    for (let y = -60; y <= 60; y += 26) for (let x = -this.cardW / 2 + 23; x <= this.cardW / 2 - 17; x += 26) b.strokeCircle(x, y, 7);
-    b.lineStyle(2, 0xcce0e7, .65).strokeRoundedRect(-this.cardW / 2 + 12, -this.cardH / 2 + 12, this.cardW - 24, this.cardH - 24, 5);
+    this.paintBack(b);
     back.add(b); node.add([face, back]); this.world.add(node);
-    return { node, face, back, badge };
+    return { node, face, back, badge, backArt: b };
+  }
+  private paintBack(b: Phaser.GameObjects.Graphics) {
+    const diamonds = this.options.getSave().settings.cardBack === 'diamonds';
+    b.clear().fillStyle(0x003e2d, .25).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 5, this.cardW, this.cardH, 13);
+    b.fillStyle(0xf5edda).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13);
+    b.fillStyle(diamonds ? 0x79617d : 0x579ac5).fillRoundedRect(-this.cardW / 2 + 5, -this.cardH / 2 + 5, this.cardW - 10, this.cardH - 10, 9);
+    b.lineStyle(1.2, 0xa6cbdc, .5);
+    for (let y = -60; y <= 60; y += 26) for (let x = -this.cardW / 2 + 23; x <= this.cardW / 2 - 17; x += 26) { if (diamonds) b.beginPath().moveTo(x, y - 8).lineTo(x + 6, y).lineTo(x, y + 8).lineTo(x - 6, y).closePath().strokePath(); else b.strokeCircle(x, y, 7); }
+    b.lineStyle(2, 0xcce0e7, .65).strokeRoundedRect(-this.cardW / 2 + 12, -this.cardH / 2 + 12, this.cardW - 24, this.cardH - 24, 5);
   }
   public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand): void {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
     const save = this.options.getSave(), board = save.attempt.board;
     const frame = boardFrame(this.scale.width, this.scale.height);
     this.unit = frame.unit; this.world.setScale(this.unit).setX(frame.offsetX);
-    this.metrics = layout(board, this.options.deal, frame.height);
+    this.metrics = layout(board, this.options.deal, frame.height, save.settings.deckSide);
+    if (this.backStyle !== (save.settings.cardBack ?? 'classic')) { this.backStyle = save.settings.cardBack ?? 'classic'; for (const view of this.views.values()) this.paintBack(view.backArt); }
     const duration = save.settings.reducedMotion ? 0 : 215;
     if (events.some(e => e.type === 'undo' || e.type === 'restart')) {
       for (const key of this.keyFlights) { this.tweens.killTweensOf(key); key.setVisible(false); }
@@ -162,11 +168,11 @@ export class BoardScene extends Phaser.Scene {
     const { stock } = this.metrics;
     const deckActive = Boolean(board.stock.length || board.waste.length);
     this.stockArt.setVisible(deckActive); this.stockCount.setVisible(deckActive); this.stockLabel.setVisible(deckActive);
-    this.stockArt.clear().fillStyle(board.stock.length ? 0x61a8d2 : 0x164f3d).fillRoundedRect(stock.x - this.cardW / 2, stock.y - this.cardH / 2, this.cardW, this.cardH, 13);
+    this.stockArt.clear().fillStyle(board.stock.length ? save.settings.cardBack === 'diamonds' ? 0x79617d : 0x61a8d2 : 0x164f3d).fillRoundedRect(stock.x - this.cardW / 2, stock.y - this.cardH / 2, this.cardW, this.cardH, 13);
     this.stockArt.lineStyle(3, board.stock.length ? 0xd9e6db : 0x669b7d).strokeRoundedRect(stock.x - this.cardW / 2 + 4, stock.y - this.cardH / 2 + 4, this.cardW - 8, this.cardH - 8, 10);
     if (board.stock.length) {
       this.stockArt.lineStyle(1.5, 0xc1e0e9, .45);
-      for (let y = -52; y <= 52; y += 26) for (let x = -this.cardW / 2 + 27; x <= this.cardW / 2 - 20; x += 26) this.stockArt.strokeCircle(stock.x + x, stock.y + y, 7);
+      for (let y = -52; y <= 52; y += 26) for (let x = -this.cardW / 2 + 27; x <= this.cardW / 2 - 20; x += 26) { if (save.settings.cardBack === 'diamonds') this.stockArt.beginPath().moveTo(stock.x + x, stock.y + y - 8).lineTo(stock.x + x + 6, stock.y + y).lineTo(stock.x + x, stock.y + y + 8).lineTo(stock.x + x - 6, stock.y + y).closePath().strokePath(); else this.stockArt.strokeCircle(stock.x + x, stock.y + y, 7); }
     }
     this.stockCount.setPosition(stock.x, stock.y).setText(board.stock.length ? String(board.stock.length) : board.waste.length ? '↻' : '·');
     this.stockLabel.setPosition(stock.x, stock.y - this.cardH / 2 - 13).setText(board.stock.length ? 'Колода' : board.waste.length ? 'Повторить' : 'Колода пуста');
@@ -202,8 +208,11 @@ export class BoardScene extends Phaser.Scene {
       const moving = events.some(e => e.type === 'transfer' && e.cards?.includes(pose.id)) || events.some(e => e.type === 'draw' && e.cards?.includes(pose.id));
       const animationOn = new URLSearchParams(location.search).get(moving ? 'fxCards' : 'fxLayout') !== '0';
       const covered = board.joker?.column === group && board.tableau[group].indexOf(pose.id) < board.joker.boundary;
-      this.tweens.add({ targets: view.node, x: pose.x, y: pose.y, scaleX: 1, scaleY: 1, alpha: covered ? .5 : 1, angle: 0,
-        duration: entering && !fresh || !animationOn ? 0 : duration, delay: fresh && duration ? Math.min(400, pose.depth * 6) : 0, ease: 'Cubic.easeOut' });
+      const moveDuration = entering && !fresh || !animationOn ? 0 : duration;
+      // Zero-duration layout is synchronous: the first ready frame must already own its hit positions.
+      if (!moveDuration) view.node.setPosition(pose.x, pose.y).setScale(1).setAlpha(covered ? .5 : 1).setAngle(0);
+      else this.tweens.add({ targets: view.node, x: pose.x, y: pose.y, scaleX: 1, scaleY: 1, alpha: covered ? .5 : 1, angle: 0,
+        duration: moveDuration, delay: fresh ? Math.min(400, pose.depth * 6) : 0, ease: 'Cubic.easeOut' });
     }
     this.initial = false;
     this.world.sort('depth');

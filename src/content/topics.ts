@@ -34,7 +34,7 @@ export const topics = {
 } as const;
 export type TopicId = keyof typeof topics;
 export interface TopicSelection { id: TopicId; count: number; images?: number[] }
-const imageByCard: Record<string, string> = {
+export const imageByCard: Record<string, string> = {
   fruit_1: 'apple', birds_4: 'owl', tools_1: 'hammer', vegetables_1: 'carrot', flowers_2: 'tulip', fish_2: 'pike',
   dishes_1: 'cup', clothes_2: 'shirt', shoes_2: 'boot', hats_4: 'cap', furniture_1: 'wardrobe', lights_4: 'candle',
   music_2: 'drum', sports_3: 'rope', road_1: 'bus', water_3: 'sailboat', air_1: 'helicopter', weather_2: 'storm',

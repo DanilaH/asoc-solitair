@@ -1,3 +1,4 @@
+import { campaignRewards } from './meta';
 import { BALANCE } from './balance';
 import type { PlatformState, Save } from './types';
 
@@ -50,10 +51,11 @@ export function interstitialEligible(save: Save, level: number, mode: 'campaign'
     state.winsSinceInterstitial >= BALANCE.ads.winsPerInterstitial &&
     now >= state.lastFullscreenAt && now - Math.max(state.lastFullscreenAt, launchedAt) >= BALANCE.ads.fullscreenGapMs;
 }
-export function markCampaignWin(save: Save, dealId: string, level?: number): void {
+export function markCampaignWin(save: Save, dealId: string, level?: number): import('./types').RewardGrant[] {
   // Control deal/replays are not new campaign progress.
   const state = platformState(save);
-  if (level === undefined || state.completedCampaign.includes(dealId)) return;
+  if (level === undefined || state.completedCampaign.includes(dealId)) return [];
   state.completedCampaign.push(dealId);
   if (level > BALANCE.ads.interstitialAfterLevel) state.winsSinceInterstitial++;
+  return campaignRewards(save);
 }

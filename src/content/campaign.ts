@@ -1,3 +1,4 @@
+import { findDaily } from './daily';
 import { modifierDeals } from './modifiers';
 import data from './campaign.json' with { type: 'json' };
 import { cardsFor, type TopicSelection } from './topics';
@@ -15,4 +16,4 @@ export const campaignDeals: readonly Deal[] = [...campaignRecords.map(record => 
   editorialStatus: record.editorialStatus, tags: record.tags,
 })), ...modifierDeals];
 const all = new Map([introDeal, ...campaignDeals].map(deal => [deal.id, deal]));
-export const findDeal = (id: string) => all.get(id);
+export const findDeal = (id: string) => all.get(id) ?? findDaily(id);

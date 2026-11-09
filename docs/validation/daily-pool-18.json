@@ -1,0 +1,215 @@
+{
+  "dealId": "daily-pool-18",
+  "dealVersion": 1,
+  "rulesVersion": 2,
+  "contentVersion": 4,
+  "initialSha256": "ceedbe77348e85beb9396abc124e9c78158cc6c2419d903616be2a65570e00af",
+  "exactInitialState": {
+    "tableau": [
+      [
+        "dishes_3",
+        "dishes_2",
+        "baking_2"
+      ],
+      [
+        "baking_1",
+        "dishes",
+        "baking"
+      ],
+      [
+        "baking_3",
+        "drinks",
+        "drinks_1"
+      ]
+    ],
+    "foundations": [
+      [],
+      []
+    ],
+    "stock": [
+      "drinks_2",
+      "drinks_3",
+      "dishes_1"
+    ],
+    "waste": [],
+    "faceUp": [
+      "baking_2",
+      "baking",
+      "drinks_1"
+    ],
+    "collected": [],
+    "movesLeft": 26,
+    "phase": "playing"
+  },
+  "winningPath": [
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    }
+  ],
+  "moveCount": 16,
+  "budget": 26,
+  "slack": 10,
+  "replay": "PASS",
+  "editorialStatus": "Own fixed daily bank; independent human difficulty playtest pending.",
+  "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+  "coverage": {
+    "cards": 12,
+    "columns": 3,
+    "categories": 3,
+    "largestPacket": 2,
+    "flips": 6,
+    "recycleCount": 0,
+    "tags": [
+      "daily"
+    ]
+  }
+}

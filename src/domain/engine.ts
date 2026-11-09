@@ -3,14 +3,17 @@ import { BALANCE } from './balance';
 import { freeHintDemo, helperUnlocked, markTutorial } from './progression';
 import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, Result, Save } from './types';
 
+import { abandonCampaign, dailyRewardEligible, finishDaily } from './meta';
+import { markCampaignWin } from './services';
+
 export const STREAK = BALANCE.streak;
 export function freshAttempt(deal: Deal, id: string): Attempt {
-  return { id, dealId: deal.id, board: structuredClone(deal.initial), undo: [], streak: { tier: 0, progress: 0, coins: 0, counted: [] } };
+  return { id, dealId: deal.id, ...(deal.daily ? { daily: { dayId: deal.daily.dayId, contentVersion: deal.daily.contentVersion } } : {}), board: structuredClone(deal.initial), undo: [], streak: { tier: 0, progress: 0, coins: 0, counted: [] } };
 }
 export function freshSave(deal: Deal, id: string): Save {
   return { schema: 1, rulesVersion: RULES_VERSION, contentVersion: CONTENT_VERSION, balanceVersion: BALANCE_VERSION,
     revision: 0, profile: { coins: BALANCE.initialCoins, hints: BALANCE.initialHints, undos: BALANCE.initialUndos, jokers: BALANCE.initialJokers, rewards: [], wins: 0 },
-    attempt: freshAttempt(deal, id), settings: { sfx: true, haptics: true, reducedMotion: false } };
+    meta: { version: 1, winCycle: 0, cycles: 0, dailyDates: [], dailyStreak: 0 }, attempt: freshAttempt(deal, id), settings: { sfx: true, haptics: true, reducedMotion: false } };
 }
 export function packet(board: Board, index: number, deal: Deal): string[] {
   const col = board.tableau[index];
@@ -122,7 +125,7 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
   return { board, events };
 }
 
-export function dispatch(input: Save, cmd: Command, deal: Deal): Result {
+export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Result {
   const next = structuredClone(input);
   const attempt = next.attempt;
   let events: GameEvent[] = [];
@@ -132,6 +135,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal): Result {
   };
   if (cmd.type === 'restart') {
     if (cmd.attemptId === attempt.id) return refuse('Для повтора нужен новый номер попытки');
+    abandonCampaign(next);
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
   } else if (cmd.type === 'undo') {
     if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || next.profile.undos <= 0) return refuse('Нет доступной отмены');
@@ -158,18 +162,28 @@ export function dispatch(input: Save, cmd: Command, deal: Deal): Result {
         attempt.streak.counted.push(key); attempt.streak.progress++;
         const tier = STREAK[attempt.streak.tier];
         if (attempt.streak.progress >= tier.count) {
-          next.profile.coins += tier.coins; attempt.streak.coins += tier.coins; attempt.streak.progress = 0;
+          const amount = !attempt.daily || dailyRewardEligible(next, today) ? tier.coins : 0;
+          next.profile.coins += amount; attempt.streak.coins += amount; attempt.streak.progress = 0;
           attempt.streak.tier = Math.min(3, attempt.streak.tier + 1);
-          events.push({ type: 'coins', amount: tier.coins });
+          if (amount) events.push({ type: 'coins', amount });
         }
       }
     }
     if (attempt.board.phase === 'won') {
-      const rewardKey = `win:${attempt.id}`;
-      if (!next.profile.rewards.includes(rewardKey)) {
-        const amount = BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (attempt.board.movesLeft ?? 0);
-        next.profile.coins += amount; next.profile.wins++; next.profile.rewards.push(rewardKey);
-        events.push({ type: 'win', amount });
+      if (attempt.daily) {
+        const rewards = finishDaily(next, today);
+        attempt.payout = rewards; if (rewards.length) next.profile.wins++;
+        events.push({ type: 'win', amount: rewards.reduce((n, r) => n + r.coins, 0) });
+        events.push(...rewards.map(r => ({ type: 'meta-reward' as const, amount: r.coins, reason: r.reason })));
+      } else {
+        const rewardKey = `win:${attempt.id}`;
+        if (!next.profile.rewards.includes(rewardKey)) {
+          const amount = BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (attempt.board.movesLeft ?? 0);
+          next.profile.coins += amount; next.profile.wins++; next.profile.rewards.push(rewardKey);
+          attempt.payout = [{ key: rewardKey, reason: 'win', label: 'За победу и оставшиеся ходы', coins: amount }, ...markCampaignWin(next, deal.id, deal.campaignLevel)];
+          events.push({ type: 'win', amount });
+          events.push(...attempt.payout.filter(r => r.reason !== 'win').map(r => ({ type: 'meta-reward' as const, amount: r.coins, reason: r.reason })));
+        }
       }
     }
   }

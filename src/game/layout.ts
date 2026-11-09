@@ -10,22 +10,24 @@ export function boardFrame(width: number, height: number) {
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
 export interface Target { location: Location; x: number; y: number; width: number; height: number }
-export function layout(board: Board, deal: Deal, height: number): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
+export function layout(board: Board, deal: Deal, height: number, deckSide: 'left' | 'right' = 'right'): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
   const poses: Pose[] = [], targets: Target[] = [];
   let joker: { x: number; y: number; depth: number } | undefined;
   const { width: cardW, height: cardH } = cardMetrics(deal);
   const four = board.tableau.length >= 4;
   const topCenters = deal.campaignLevel === 1 ? [160, 380, 445] : four ? [72, 204, 336, 468] : [95, 270, 445];
   const centers = board.tableau.length === 2 ? [160, 380] : topCenters;
+  const left = deckSide === 'left' && Boolean(deal.initial.stock.length || deal.initial.waste.length);
+  const sideWaste = four && board.foundations.length === 2;
+  const foundationCenters = left ? topCenters.slice(sideWaste ? 2 : 1) : topCenters;
   const top = cardH / 2 + 26;
   board.foundations.forEach((ids, index) => {
-    const x = topCenters[index];
+    const x = foundationCenters[index];
     targets.push({ location: { kind: 'foundation', index }, x, y: top, width: cardW + 12, height: cardH + 8 });
     ids.forEach((id, i) => poses.push({ id, x: x + Math.min(i, 3) * 1.5, y: top - Math.min(i, 3), depth: 20 + i, faceUp: true }));
   });
-  const sideWaste = four && board.foundations.length === 2;
-  const stock = { x: topCenters.at(-1)!, y: top };
-  const waste = { x: sideWaste ? topCenters[2] : stock.x, y: sideWaste ? top : top + cardH };
+  const stock = { x: left ? topCenters[0] : topCenters.at(-1)!, y: top };
+  const waste = { x: sideWaste ? topCenters[left ? 1 : 2] : stock.x, y: sideWaste ? top : top + cardH };
   // A deal without a deck needs no reserved waste row; leave room for a visible Joker header.
   const tableauY = sideWaste ? top + cardH + 45 : deal.initial.stock.length || deal.initial.waste.length ? top + cardH * 2 + 14 : top + cardH + 60;
   board.tableau.forEach((ids, index) => {

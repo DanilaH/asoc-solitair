@@ -47,7 +47,7 @@ test('a new player completes all twenty-six levels through actual touch input an
   }
   await expect(page.locator('#home')).toBeVisible();await expect(page.locator('#campaign-progress')).toHaveText('26 / 26');
   const completed=await read(page);expect(completed.platform!.completedCampaign).toHaveLength(26);expect(completed.profile.wins).toBe(26);
-  expect(completed.profile.hints).toBe(3);expect(completed.profile.undos).toBe(5);
+  expect(completed.profile.hints).toBe(8);expect(completed.profile.undos).toBe(5);
   await page.locator('#level-5').tap();await ready(page,campaignDeals[4]);await move(page,campaignDeals[4],campaignDeals[4].winningPath[0]);
   const current=await read(page);await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
   await expect(page.locator('#campaign-progress')).toHaveText('26 / 26');await page.locator('#home-play').tap();await ready(page,campaignDeals[4]);

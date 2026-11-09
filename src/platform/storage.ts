@@ -1,5 +1,6 @@
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import { JsonStorageRepository, type StorageAdapter } from '@danilah/mini-games-kit/platform';
+import { dayNumber, metaState, milestoneRewards } from '../domain/meta';
 import { BALANCE } from '../domain/balance';
 import { assertBoard } from '../domain/engine';
 import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION, type Deal, type Save } from '../domain/types';
@@ -25,8 +26,9 @@ export function decodeSave(raw: string, source: DealSource): Save {
   const deal = typeof source === 'function' ? source(save.attempt?.dealId) : source;
   if (!deal) throw Error('Неизвестная раздача. Сохранение оставлено без изменений.');
   const legacy = save.rulesVersion === 1 && save.balanceVersion === 1 && ((save.contentVersion === 1 && deal.id === 'intro-001') || (save.contentVersion === 2 && (deal.campaignLevel ?? 0) <= 20));
-  if (save.schema !== 1 || (!legacy && (save.rulesVersion !== RULES_VERSION || save.contentVersion !== CONTENT_VERSION || save.balanceVersion !== BALANCE_VERSION)) || save.attempt.dealId !== deal.id) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
-  if (legacy) { save.profile.jokers ??= BALANCE.initialJokers; save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
+  const previous = save.rulesVersion === 2 && save.contentVersion === 3 && save.balanceVersion === 2;
+  if (save.schema !== 1 || (!(legacy || previous) && (save.rulesVersion !== RULES_VERSION || save.contentVersion !== CONTENT_VERSION || save.balanceVersion !== BALANCE_VERSION)) || save.attempt.dealId !== deal.id) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
+  if (legacy || previous) { save.profile.jokers ??= BALANCE.initialJokers; save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
   assertBoard(save.attempt.board, deal);
   if (!natural(save.revision) || typeof save.attempt.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(save.attempt.id)) throw Error('Повреждён номер сохранения');
   for (const value of [save.profile.coins, save.profile.hints, save.profile.undos, save.profile.jokers, save.profile.wins, save.attempt.streak.coins]) if (!natural(value)) throw Error('Повреждён профиль');
@@ -45,6 +47,27 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.campaign && (save.campaign.version !== 1 || !strings(save.campaign.tutorials))) throw Error('Повреждено обучение');
   if (save.attempt.jokerUsed !== undefined && typeof save.attempt.jokerUsed !== 'boolean') throw Error('Повреждён Джокер');
   if ((save.attempt.board.joker || save.attempt.undo.some(board => board.joker)) && !save.attempt.jokerUsed) throw Error('Джокер без расхода');
+  if (save.attempt.daily && (save.attempt.daily.dayId !== deal.daily?.dayId || save.attempt.daily.contentVersion !== deal.daily?.contentVersion)) throw Error('Повреждена дата попытки');
+  if (Boolean(save.attempt.daily) !== Boolean(deal.daily)) throw Error('Повреждён режим');
+  if (save.parked) {
+    const active = save.attempt.daily ? 'daily' : 'campaign';
+    if (save.parked[active]) throw Error('Два активных состояния режима');
+    for (const [mode, attempt] of Object.entries(save.parked)) {
+      if (!['daily', 'campaign'].includes(mode) || !attempt || Boolean(attempt.daily) !== (mode === 'daily') || attempt.id === save.attempt.id) throw Error('Повреждён резерв попытки');
+      decodeSave(JSON.stringify({ ...save, attempt, parked: undefined }), source);
+    }
+  }
+  if (save.meta) {
+    const m = save.meta;
+    if (m.version !== 1 || !natural(m.winCycle) || m.winCycle > 4 || !natural(m.cycles) || !natural(m.dailyStreak) || !strings(m.dailyDates)) throw Error('Повреждён прогресс');
+    m.dailyDates.forEach(dayNumber);
+    if (m.lastDaily !== undefined && (!m.dailyDates.includes(m.lastDaily) || m.dailyStreak < 1)) throw Error('Повреждена серия дней');
+  } else { metaState(save); milestoneRewards(save); }
+  for (const [key, values] of Object.entries({ palette: ['green', 'ink'], cardBack: ['classic', 'diamonds'], deckSide: ['right', 'left'] })) {
+    const value = save.settings[key as keyof Save['settings']];
+    if (value !== undefined && !values.includes(String(value))) throw Error('Повреждено оформление');
+  }
+  if (save.attempt.payout && (!Array.isArray(save.attempt.payout) || save.attempt.payout.some(r => !strings([r.key]) || !natural(r.coins) || !['win', 'campaign_milestone', 'campaign_win_cycle', 'daily_completion', 'daily_streak_milestone'].includes(r.reason) || typeof r.label !== 'string' || r.label.length > 200 || (r.hints !== undefined && !natural(r.hints)) || (r.undos !== undefined && !natural(r.undos))))) throw Error('Повреждён результат');
   return save;
 }
 

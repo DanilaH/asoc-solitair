@@ -22,7 +22,7 @@ export function createTelemetry(getSave: () => Save, activity: GameplayActivityC
     ready() { enabled = true; sync(); },
     track(event: AnalyticsEvent, params: AnalyticsParams = {}) {
       const save = getSave();
-      analytics.track(event, { schema: 1, mode: 'campaign', attemptId: save.attempt.id, dealId: save.attempt.dealId,
+      analytics.track(event, { schema: 1, mode: save.attempt.daily ? 'daily' : 'campaign', attemptId: save.attempt.id, dealId: save.attempt.dealId,
         rulesVersion: RULES_VERSION, contentVersion: CONTENT_VERSION, balanceVersion: BALANCE_VERSION,
         movesLeft: save.attempt.board.movesLeft ?? -1, activeMs: elapsed(), ...params });
     },

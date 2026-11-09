@@ -15,3 +15,5 @@ Android integration: [services and ownership](platform/NATIVE_SERVICES.md), [con
 Campaign bank: [authorship, coverage and limits](content/FIRST_CAMPAIGN.md), [validation index](validation/campaign-index.json).
 
 - [Rule extension chapter and compatibility](content/MODIFIERS.md): Joker, ordered categories, three keys, deals 21–26.
+
+- [Compact meta, daily bank, dates and independent saves](content/COMPACT_META.md).

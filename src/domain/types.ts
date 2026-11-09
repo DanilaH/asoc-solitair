@@ -1,6 +1,6 @@
 export const RULES_VERSION = 2;
-export const CONTENT_VERSION = 3;
-export const BALANCE_VERSION = 2;
+export const CONTENT_VERSION = 4;
+export const BALANCE_VERSION = 3;
 export interface Card {
   id: string; category: string; text: string; leader?: boolean; image?: string; rank?: number; ordered?: boolean; keyId?: string; explanation: string;
 }
@@ -23,12 +23,15 @@ export interface Deal {
   tags?: string[];
   lock?: { column: number; requiredKeys: string[] };
   tutorialPath?: Command[];
+  daily?: { dayId: string; contentVersion: number; poolId: string };
 }
 export interface Attempt {
   id: string; dealId: string; board: Board; undo: Board[];
   streak: { tier: number; progress: number; coins: number; counted: string[] };
   continued?: boolean;
   jokerUsed?: boolean;
+  daily?: { dayId: string; contentVersion: number };
+  payout?: RewardGrant[];
   telemetry?: { started: boolean; finished: boolean; activeMs: number };
 }
 export interface PlatformState {
@@ -39,16 +42,20 @@ export interface PlatformState {
   winsSinceInterstitial: number;
   lastFullscreenAt: number;
 }
+export interface RewardGrant { key: string; reason: 'win' | 'campaign_milestone' | 'campaign_win_cycle' | 'daily_completion' | 'daily_streak_milestone'; label: string; coins: number; hints?: number; undos?: number }
+export interface MetaState { version: 1; winCycle: number; cycles: number; dailyDates: string[]; dailyStreak: number; lastDaily?: string }
 export interface Save {
   schema: 1; rulesVersion: number; contentVersion: number; balanceVersion: number; revision: number;
   profile: { coins: number; hints: number; undos: number; jokers: number; rewards: string[]; wins: number };
   attempt: Attempt;
-  settings: { sfx: boolean; haptics: boolean; reducedMotion: boolean };
+  settings: { sfx: boolean; haptics: boolean; reducedMotion: boolean; palette?: 'green' | 'ink'; cardBack?: 'classic' | 'diamonds'; deckSide?: 'right' | 'left' };
+  meta?: MetaState;
+  parked?: { campaign?: Attempt; daily?: Attempt };
   platform?: PlatformState;
   campaign?: { version: 1; tutorials: string[] };
 }
 export interface GameEvent {
-  type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock';
+  type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';
   cards?: string[]; category?: string; amount?: number; reason?: string;
 }
 export interface Result { next: Save; accepted: boolean; events: GameEvent[]; reason?: string }

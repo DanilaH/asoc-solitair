@@ -1,0 +1,16 @@
+{
+  "contentVersion": 5,
+  "campaignDeals": 80,
+  "frozenPrefix": 26,
+  "appended": 54,
+  "uniqueMemberCaptions": 255,
+  "appendedModes": {
+    "ordinary": 33,
+    "ordered": 11,
+    "keys": 10
+  },
+  "maxWitnessMoves": 49,
+  "minFiniteSlack": 0,
+  "distinctNewOrders": 54,
+  "independentHumanDifficultyReview": "PENDING"
+}

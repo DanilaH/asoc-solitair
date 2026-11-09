@@ -26,7 +26,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
   const deal = typeof source === 'function' ? source(save.attempt?.dealId) : source;
   if (!deal) throw Error('Неизвестная раздача. Сохранение оставлено без изменений.');
   const legacy = save.rulesVersion === 1 && save.balanceVersion === 1 && ((save.contentVersion === 1 && deal.id === 'intro-001') || (save.contentVersion === 2 && (deal.campaignLevel ?? 0) <= 20));
-  const previous = save.rulesVersion === 2 && save.contentVersion === 3 && save.balanceVersion === 2;
+  const previous = save.rulesVersion === 2 && ((save.contentVersion === 3 && save.balanceVersion === 2) || (save.contentVersion === 4 && save.balanceVersion === 3));
   if (save.schema !== 1 || (!(legacy || previous) && (save.rulesVersion !== RULES_VERSION || save.contentVersion !== CONTENT_VERSION || save.balanceVersion !== BALANCE_VERSION)) || save.attempt.dealId !== deal.id) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
   if (legacy || previous) { save.profile.jokers ??= BALANCE.initialJokers; save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
   assertBoard(save.attempt.board, deal);

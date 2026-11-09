@@ -1,6 +1,6 @@
 {
   "name": "asoc-solitair",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -21,7 +21,9 @@
     "qa:campaign": "npm run build && vite build --ssr tools/record-campaign.ts --outDir .recording/campaign-source && node .recording/campaign-source/record-campaign.js",
     "qa:modifiers": "npm run build && vite build --ssr tools/record-modifiers.ts --outDir .recording/modifiers-source && node .recording/modifiers-source/record-modifiers.js",
     "content:daily": "vite build --ssr tools/content/build-daily.ts --outDir .authoring/daily && node .authoring/daily/build-daily.js",
-    "qa:meta": "npm run build && vite build --ssr tools/record-meta.ts --outDir .recording/meta-source && node .recording/meta-source/record-meta.js"
+    "qa:meta": "npm run build && vite build --ssr tools/record-meta.ts --outDir .recording/meta-source && node .recording/meta-source/record-meta.js",
+    "content:expansion": "vite build --ssr tools/content/build-expansion.ts --outDir .authoring/expansion && node .authoring/expansion/build-expansion.js",
+    "qa:release": "npm run build && vite build --ssr tools/record-release.ts --outDir .recording/release-source && node .recording/release-source/record-release.js"
   },
   "dependencies": {
     "@capacitor/android": "8.6.0",

@@ -2,7 +2,7 @@
   "dealId": "campaign-005",
   "dealVersion": 1,
   "rulesVersion": 2,
-  "contentVersion": 4,
+  "contentVersion": 5,
   "initialSha256": "21f07a8b5d41c21287d6880bc6942fff7ab9fdb995cdccf61ef1f663e2966e78",
   "exactInitialState": {
     "tableau": [

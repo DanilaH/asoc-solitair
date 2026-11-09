@@ -1,6 +1,6 @@
 # Android services — 2026-11-09
 
-Target: `com.danilah.asocsolitair`, portrait RuStore Android, version 0.5.0/code 5. No Yandex Games web SDK, server, account, push, purchases or cloud saves are introduced.
+Target: `com.danilah.asocsolitair`, portrait RuStore Android, version 0.6.0/code 6. No Yandex Games web SDK, server, account, push, purchases or cloud saves are introduced.
 
 ## Reuse and ownership
 

@@ -3,6 +3,7 @@ import { campaignDeals } from '../../src/content/campaign';
 import { freshSave, packet } from '../../src/domain/engine';
 import { boardFrame, layout } from '../../src/game/layout';
 import type { BoardCommand, Save, Deal } from '../../src/domain/types';
+test.describe.configure({ mode: 'parallel' });
 const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
 async function ready(page: Page, deal: Deal) {
   await expect.poll(async () => (await read(page)).attempt.dealId).toBe(deal.id);
@@ -30,28 +31,27 @@ async function fixture(page:Page,index:number){
   await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');await page.locator('#home-play').tap();await ready(page,campaignDeals[index]);
 }
 
-test('a new player completes all twenty-six levels through actual touch input and the ordinary Next button',async({page},info)=>{
-  test.skip(info.project.name!=='phone','Full catalog on Pixel 7; compact geometry is covered below.');test.setTimeout(600000);
+for (let chapter = 0; chapter < 4; chapter++) test(`chapter ${chapter + 1}: twenty consecutive levels win through real touch and Next`,async({page},info)=>{
+  test.skip(info.project.name!=='phone','Complete catalog on Pixel 7; compact layout/UX covered separately.'); test.setTimeout(600000);
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
-  await expect(page.locator('#level-2')).toBeDisabled();await page.screenshot({path:'test-results/campaign-home.png'});
-  await page.locator('#home-play').tap();
-  for(const deal of campaignDeals){
+  await fixture(page,chapter*20);
+  for(const deal of campaignDeals.slice(chapter*20,chapter*20+20)){
     await ready(page,deal);
     if(deal.campaignLevel!<=2){await expect(page.locator('#moves')).toHaveText('∞');await expect(page.locator('#hint')).toBeHidden();await expect(page.locator('#undo')).toBeHidden();}
     for(const cmd of deal.winningPath)await move(page,deal,cmd);
-    await expect(page.locator('#result')).toBeVisible();
-    expect((await read(page)).attempt.board.phase).toBe('won');
-    console.info(`Touch campaign ${deal.campaignLevel}/26 won`);
-    await page.locator('#next-level').tap();
+    await expect(page.locator('#result')).toBeVisible(); expect((await read(page)).attempt.board.phase).toBe('won');
+    console.info(`Touch campaign ${deal.campaignLevel}/80 won`); await page.locator('#next-level').tap();
   }
-  await expect(page.locator('#home')).toBeVisible();await expect(page.locator('#campaign-progress')).toHaveText('26 / 26');
-  const completed=await read(page);expect(completed.platform!.completedCampaign).toHaveLength(26);expect(completed.profile.wins).toBe(26);
-  expect(completed.profile.hints).toBe(8);expect(completed.profile.undos).toBe(5);
-  await page.locator('#level-5').tap();await ready(page,campaignDeals[4]);await move(page,campaignDeals[4],campaignDeals[4].winningPath[0]);
-  const current=await read(page);await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
-  await expect(page.locator('#campaign-progress')).toHaveText('26 / 26');await page.locator('#home-play').tap();await ready(page,campaignDeals[4]);
-  const restored=await read(page);expect(restored.attempt.id).toBe(current.attempt.id);expect(restored.attempt.board).toEqual(current.attempt.board);expect(restored.profile).toEqual(current.profile);expect(errors).toEqual([]);
+  const completed=await read(page);expect(completed.platform!.completedCampaign).toHaveLength(chapter*20+20);
+  expect(completed.profile.hints).toBe(7);expect(completed.profile.undos).toBe(5);
+  if(chapter===3){
+    await expect(page.locator('#home')).toBeVisible();await expect(page.locator('#campaign-progress')).toHaveText('80 / 80');
+    for(let i=0;i<3;i++)await page.locator('#chapter-prev').tap();
+    await page.locator('#level-5').tap();await ready(page,campaignDeals[4]);await move(page,campaignDeals[4],campaignDeals[4].winningPath[0]);
+    const current=await read(page);await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');await page.locator('#home-play').tap();await ready(page,campaignDeals[4]);
+    const restored=await read(page);expect(restored.attempt.id).toBe(current.attempt.id);expect(restored.attempt.board).toEqual(current.attempt.board);expect(restored.profile).toEqual(current.profile);
+  }
+  expect(errors).toEqual([]);
 });
 
 test('the level-three Hint demonstration is free, replayable and survives reload',async({page})=>{

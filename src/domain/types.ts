@@ -1,5 +1,5 @@
 export const RULES_VERSION = 2;
-export const CONTENT_VERSION = 4;
+export const CONTENT_VERSION = 5;
 export const BALANCE_VERSION = 3;
 export interface Card {
   id: string; category: string; text: string; leader?: boolean; image?: string; rank?: number; ordered?: boolean; keyId?: string; explanation: string;

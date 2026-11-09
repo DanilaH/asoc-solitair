@@ -52,3 +52,11 @@ The user requested all platform reuse needed by the final store project now. Thi
 - Keep the active attempt canonical and park only the other mode. A mode switch never abandons a campaign. Temporary exhaustion preserves the cycle; deliberate restart/confirmed replacement finalizes abandonment. The single writer commits boards, shared inventory, progress and reasons together before any result animation.
 - Author 28 new ordinary daily puzzles offline, freeze orders and witnesses, use a versioned epoch-day rotation. Repeat every 28 days; do not promise unique daily content indefinitely. Physical/human difficulty and release-bank size remain open acceptance work.
 - Cosmetics reuse the established procedural cards and background. Free left/right stock placement mirrors foundations/waste with the same input transform. No image-generation asset pipeline or kit upgrade is required for this code-native variation.
+
+## 2026-11-09 — release-candidate bank and UX package
+
+- Choose 80 as a concrete initial campaign bank for the candidate build, not a validated optimal retention size. Preserve the existing 26 deals and the exact daily pool/date mapping; append 54 new authored/verified puzzles with 24 new ordinary topics, four additional familiar ordered sequences and eight matching SVGs.
+- Version 0.6.0/code 6, rules/content/balance 2/5/3. Content-v4 migration only advances versions and retains the whole active/parked/profile/receipt state. No additional cosmetic tiers or excluded mechanics.
+- Bound level navigation to 20 buttons per page. Keep ordinary progression and ten-level rewards through 80. Explain daily training before resource spending, and confirm explicit restart/old-daily replacement with exact cancel preservation.
+- Fix short-screen dock clipping, narrow lock counter wrapping and the Undo-after-exhaustion telemetry marker. Keep board rules/economy unchanged.
+- Candidate generation takes 35.7s of machine time after manual preparation; do not equate it with measured editorial cost or human puzzle quality. Frozen witnesses, semantic self-edit, browser execution and independent human pacing review are distinct evidence levels.

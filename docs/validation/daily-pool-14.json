@@ -2,7 +2,7 @@
   "dealId": "daily-pool-14",
   "dealVersion": 1,
   "rulesVersion": 2,
-  "contentVersion": 4,
+  "contentVersion": 5,
   "initialSha256": "683839481e9932167682037df5e8e87d3cd0bf59fb44993b5f6fb75fb9b56f52",
   "exactInitialState": {
     "tableau": [

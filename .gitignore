@@ -17,3 +17,4 @@ native/android/app/src/main/assets/public/
 native/android/app/src/main/assets/capacitor.config.json
 native/android/app/src/main/assets/capacitor.plugins.json
 native/android/capacitor-cordova-android-plugins/
+native/android/app/src/main/assets/solitaire-analytics-contract.json

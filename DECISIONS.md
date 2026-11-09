@@ -12,3 +12,15 @@
 8. Native ad/analytics/haptic integrations are unavailable services. No fake currency reward, web portal SDK or mocked native-success path. SDK integration and settings belong to stage 5, without blocking first paint.
 9. Renderer uses kit-capped backing-store density and sharp Text. It sleeps after the last rendered animation frame and wakes for input/resize/foreground. Motion density is bounded; optional service startup cannot block play. Three sources were confirmed through Drive; selected source frames already materialized in the workspace were inspected for first-slice styling. No new claim of full audio/video review.
 10. Initial Android application ID is `com.danilah.asocsolitair`, version 0.1.0/code 1, portrait orientation. Default CI produces debug and unsigned release; signing requires supplied secrets. Nothing is published to a store automatically.
+
+## 2026-11-09 — complete native services package
+
+The user requested all platform reuse needed by the final store project now. This supersedes the initial synchronous-storage/unavailable-service choices (4, 8) and default unsigned-release policy (10), without expanding excluded product systems. See [native ownership and recovery](docs/platform/NATIVE_SERVICES.md) and [release acceptance](docs/platform/RELEASE_CHECKLIST.md).
+
+- Use consumer-owned Android adapters from the inspected Arrows/Road Lines recipes, with actual Yandex Mobile Ads/AppMetrica 8.6.0 dependencies, rather than treating kit contracts as a bundled native plugin.
+- Single coordinated async SaveStore commits commands/settings/economy/receipts. Android AtomicFile and no-backup receipt/profile lifetime prevent mismatched backup restore; old WebView state imports only after a confirmed empty native read. Ambiguous writes reconcile by exact read-back before later valuable changes.
+- Late earned continuation for an abandoned attempt becomes a retained consumable credit. It cannot silently add moves to a different board or be lost on ack. Continuation allowance remains outside Undo and is limited to one per attempt.
+- Real ordinal campaign metadata authorizes cadence. The first control deal is not level 1, cannot advance new-level cadence, and has no banner/interstitial. Rewarded helpers and ordinary coin exchange are usable on the control surface.
+- Shared analytics schema is prepared into Android assets from one source. Attempt start and outcome markers are saved with commands; custom event delivery remains best-effort. Active time uses a monotonic clock and excludes independent blockers.
+- Native system insets are owned once by the root; SDK-measured banner projection uses the kit helper. Vibration cancellation is independent of sound and includes a generation barrier. Audio focus is separate from game visibility.
+- Version 0.2.0/code 2, R8/resource shrinking and explicit keep rules. Debug is demo; production requires complete live identifiers and the existing signing identity. The unsigned disabled-SDK CI build is explicitly compile-only and cannot be signed using its bypass. No store publication is performed.

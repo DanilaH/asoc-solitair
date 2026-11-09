@@ -1,0 +1,37 @@
+// Native portfolio recipe; SDK 8.6.0 API checked against official docs 2026-11-09.
+def quoted = { String value -> groovy.json.JsonOutput.toJson(value) }
+def adMode = System.getenv('ASOC_AD_MODE') ?: 'test'
+if (!(adMode in ['disabled', 'test', 'live'])) throw new GradleException('Invalid ASOC_AD_MODE')
+def bannerId = adMode == 'test' ? 'demo-banner-yandex' : adMode == 'live' ? System.getenv('YANDEX_BANNER_AD_UNIT_ID') ?: '' : ''
+def interstitialId = adMode == 'test' ? 'demo-interstitial-yandex' : adMode == 'live' ? System.getenv('YANDEX_INTERSTITIAL_AD_UNIT_ID') ?: '' : ''
+def rewardedId = adMode == 'test' ? 'demo-rewarded-yandex' : adMode == 'live' ? System.getenv('YANDEX_REWARDED_AD_UNIT_ID') ?: '' : ''
+def analyticsKey = (adMode == 'live' ? System.getenv('APPMETRICA_API_KEY') : System.getenv('APPMETRICA_DEBUG_API_KEY')) ?: ''
+if (adMode == 'live' && (!bannerId || !interstitialId || !rewardedId || !analyticsKey || [bannerId, interstitialId, rewardedId].any { it.startsWith('demo-') }))
+    throw new GradleException('Live configuration requires three real ad units and AppMetrica key')
+android {
+    buildFeatures { buildConfig true }
+    defaultConfig {
+        buildConfigField 'String', 'AD_MODE', quoted(adMode)
+        buildConfigField 'String', 'BANNER_AD_UNIT_ID', quoted(bannerId)
+        buildConfigField 'String', 'INTERSTITIAL_AD_UNIT_ID', quoted(interstitialId)
+        buildConfigField 'String', 'REWARDED_AD_UNIT_ID', quoted(rewardedId)
+        buildConfigField 'String', 'ANALYTICS_API_KEY', quoted(analyticsKey)
+    }
+}
+dependencies {
+    implementation 'com.yandex.android:mobileads:8.6.0'
+    implementation 'io.appmetrica.analytics:analytics:8.6.0'
+}
+configurations.configureEach {
+    ['identifiers', 'location', 'ad-revenue', 'billing', 'screenshot', 'ndkcrashes'].each { module ->
+        exclude group: 'io.appmetrica.analytics', module: "analytics-${module}"
+    }
+}
+tasks.configureEach { task ->
+    if (task.name == 'preReleaseBuild') task.doFirst {
+        // CI may compile a clearly labelled unsigned disabled-SDK artifact to verify R8.
+        def compileOnly = System.getenv('ASOC_UNSIGNED_CHECK') == '1' && adMode == 'disabled' && !System.getenv('ASOC_STORE_FILE')
+        if (!compileOnly && (adMode != 'live' || !System.getenv('ASOC_STORE_FILE')))
+            throw new GradleException('Store release requires live configuration and configured signing identity')
+    }
+}

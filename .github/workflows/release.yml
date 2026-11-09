@@ -25,6 +25,11 @@ jobs:
       - run: npm run check && npm run android:sync
       - name: Build using configured signing identity
         env:
+          ASOC_AD_MODE: live
+          YANDEX_BANNER_AD_UNIT_ID: ${{ secrets.YANDEX_BANNER_AD_UNIT_ID }}
+          YANDEX_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.YANDEX_INTERSTITIAL_AD_UNIT_ID }}
+          YANDEX_REWARDED_AD_UNIT_ID: ${{ secrets.YANDEX_REWARDED_AD_UNIT_ID }}
+          APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
           STORE_BASE64: ${{ secrets.ASOC_STORE_BASE64 }}
           ASOC_STORE_PASSWORD: ${{ secrets.ASOC_STORE_PASSWORD }}
           ASOC_KEY_ALIAS: ${{ secrets.ASOC_KEY_ALIAS }}
@@ -43,4 +48,5 @@ jobs:
           path: |
             native/android/app/build/outputs/apk/release/*.apk
             native/android/app/build/outputs/bundle/release/*.aab
+            native/android/app/build/outputs/mapping/release/
           retention-days: 7

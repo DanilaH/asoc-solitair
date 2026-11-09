@@ -12,3 +12,5 @@ Read [the product index](docs/README.md), the handoff, requirements and feel spe
 - Browser tests/builds do not establish Android device feel, native ads or analytics delivery. Unconfigured ads must never give fake rewards.
 - Keep decisions, roadmap and verification honest and current. Native changes require Android compilation where available and explicit device limitations.
 - Do not commit signing keys, SDK paths, node_modules, generated web assets or APKs. No changes to other portfolio projects or kit without need.
+
+- Native services are integrated; read docs/platform/NATIVE_SERVICES.md before modifying saves, ads or lifecycle. SaveStore is the single authoritative async writer; never reintroduce independent whole-save writes. Keep native receipt/effect/dedup ordering and optional-service startup independent of playability. Production release requires live configuration and the existing signing identity.

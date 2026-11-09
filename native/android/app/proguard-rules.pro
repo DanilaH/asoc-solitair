@@ -1,4 +1,9 @@
 # Add project specific ProGuard rules here.
+-keep @com.getcapacitor.annotation.CapacitorPlugin class * { *; }
+-keepclassmembers class * extends com.getcapacitor.Plugin {
+    @com.getcapacitor.PluginMethod <methods>;
+}
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
 #

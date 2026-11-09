@@ -13,3 +13,5 @@ Implementation tracking: [roadmap](../ROADMAP.md), [decisions](../DECISIONS.md),
 Android integration: [services and ownership](platform/NATIVE_SERVICES.md), [configuration and release acceptance](platform/RELEASE_CHECKLIST.md).
 
 Campaign bank: [authorship, coverage and limits](content/FIRST_CAMPAIGN.md), [validation index](validation/campaign-index.json).
+
+- [Rule extension chapter and compatibility](content/MODIFIERS.md): Joker, ordered categories, three keys, deals 21–26.

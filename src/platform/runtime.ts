@@ -25,7 +25,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   let mute = false;
   const handles: { remove: () => Promise<void> }[] = [];
   const buffers = new Map<string, AudioBuffer>();
-  const tones: Record<string, [number, number]> = { lift: [330, .035], transfer: [650, .075], flip: [420, .045], draw: [480, .055], invalid: [190, .07], complete: [880, .19], coins: [1250, .11], win: [1046, .28], undo: [370, .09], ui: [520, .04] };
+  const tones: Record<string, [number, number]> = { joker: [740, .12], key: [1320, .14], unlock: [990, .25], lift: [330, .035], transfer: [650, .075], flip: [420, .045], draw: [480, .055], invalid: [190, .07], complete: [880, .19], coins: [1250, .11], win: [1046, .28], undo: [370, .09], ui: [520, .04] };
   const eligibility = () => {
     const reasons = activity.getBlockReasons();
     audio.setEligibility({ gameplay: audioFocused && !mute && reasons.length === 0, ui: audioFocused && !mute && reasons.every(r => r === 'modal' || r === 'screen') });

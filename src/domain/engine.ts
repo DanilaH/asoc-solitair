@@ -9,16 +9,18 @@ export function freshAttempt(deal: Deal, id: string): Attempt {
 }
 export function freshSave(deal: Deal, id: string): Save {
   return { schema: 1, rulesVersion: RULES_VERSION, contentVersion: CONTENT_VERSION, balanceVersion: BALANCE_VERSION,
-    revision: 0, profile: { coins: BALANCE.initialCoins, hints: BALANCE.initialHints, undos: BALANCE.initialUndos, rewards: [], wins: 0 },
+    revision: 0, profile: { coins: BALANCE.initialCoins, hints: BALANCE.initialHints, undos: BALANCE.initialUndos, jokers: BALANCE.initialJokers, rewards: [], wins: 0 },
     attempt: freshAttempt(deal, id), settings: { sfx: true, haptics: true, reducedMotion: false } };
 }
 export function packet(board: Board, index: number, deal: Deal): string[] {
   const col = board.tableau[index];
-  if (!col?.length) return [];
+  if (!col?.length || isLocked(board, index, deal)) return [];
+  const boundary = board.joker?.column === index ? board.joker.boundary : 0;
+  if (col.length === boundary) return [];
   const last = col.at(-1)!;
   if (!board.faceUp.includes(last)) return [];
   let start = col.length - 1;
-  while (start > 0 && board.faceUp.includes(col[start - 1]) && deal.cards[col[start - 1]].category === deal.cards[last].category) start--;
+  while (start > boundary && board.faceUp.includes(col[start - 1]) && deal.cards[col[start - 1]].category === deal.cards[last].category && !orderError(col.slice(start - 1), deal)) start--;
   return col.slice(start);
 }
 export function sourceCards(board: Board, loc: Location, deal: Deal): string[] {
@@ -27,7 +29,37 @@ export function sourceCards(board: Board, loc: Location, deal: Deal): string[] {
   return [];
 }
 const sameLocation = (a: Location, b: Location) => a.kind === b.kind && (a.kind === 'waste' || a.index === b.index);
-const normalize = (ids: string[], deal: Deal) => [...ids.filter(id => !deal.cards[id].leader), ...ids.filter(id => deal.cards[id].leader)];
+const normalize = (ids: string[], deal: Deal) => [...ids.filter(id => !deal.cards[id].leader).sort((a, b) => (deal.cards[a].rank ?? 0) - (deal.cards[b].rank ?? 0)), ...ids.filter(id => deal.cards[id].leader)];
+export function isLocked(board: Board, index: number, deal: Deal): boolean {
+  return deal.lock?.column === index && !deal.lock.requiredKeys.every(key => board.keys?.includes(key));
+}
+/** An ordered group is one interval; its category card requires a prefix starting at one. */
+function orderError(ids: string[], deal: Deal): string | undefined {
+  if (!ids.length || !Object.values(deal.cards).some(c => c.category === deal.cards[ids[0]].category && c.ordered)) return;
+  const ranks = ids.filter(id => !deal.cards[id].leader).map(id => deal.cards[id].rank!).sort((a, b) => a - b);
+  if (ids.some(id => deal.cards[id].leader) && ranks.length && ranks[0] !== 1) return 'Сначала нужен элемент №1';
+  for (let i = 1; i < ranks.length; i++) if (ranks[i] !== ranks[i - 1] + 1) return `Нужен элемент №${ranks[i - 1] + 1} — порядок без пропусков`;
+}
+export function placeJoker(board: Board, column: number, deal: Deal): Board | string {
+  if (board.phase !== 'playing' || board.joker) return 'Джокер уже на поле';
+  if (!Number.isInteger(column) || !board.tableau[column]?.length || isLocked(board, column, deal)) return 'Выберите непустой открытый столбец';
+  const next = structuredClone(board);
+  next.joker = { column, boundary: board.tableau[column].length };
+  assertBoard(next, deal); return next;
+}
+function reveal(board: Board, id: string | undefined, deal: Deal, events: GameEvent[]): void {
+  if (!id || board.faceUp.includes(id)) return;
+  board.faceUp.push(id); events.push({ type: 'flip', cards: [id] });
+  const key = deal.cards[id].keyId;
+  if (key && !(board.keys ??= []).includes(key)) {
+    board.keys.push(key); events.push({ type: 'key', cards: [id], amount: board.keys.length });
+    if (deal.lock && !isLocked(board, deal.lock.column, deal)) {
+      events.push({ type: 'unlock', amount: 3 });
+      reveal(board, board.tableau[deal.lock.column].at(-1), deal, events);
+    }
+  }
+}
+
 
 /** Pure board transition, shared by play and validation. Never mutates the supplied board. */
 export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board: Board; events: GameEvent[] } | string {
@@ -45,21 +77,25 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
       if (!target) return 'Здесь нет слота';
       if (!target.length && !hasLeader) return 'Сначала нужна карта категории';
       if (target.length && (deal.cards[target[0]].category !== category || hasLeader)) return 'Это другая категория';
+      const error = orderError([...target, ...moving], deal); if (error) return error;
       board.foundations[cmd.to.index] = normalize([...target, ...moving], deal);
     } else if (cmd.to.kind === 'tableau') {
       const target = board.tableau[cmd.to.index];
       if (!target) return 'Здесь нет столбца';
+      if (isLocked(board, cmd.to.index, deal)) return 'Нужны все три ключа';
       const available = packet(board, cmd.to.index, deal);
-      if (target.length && (!available.length || deal.cards[available[0]].category !== category)) return 'Это другая категория';
+      const support = board.joker?.column === cmd.to.index;
+      if (support && target.length > board.joker!.boundary) return 'Джокер держит только одну группу';
+      if (!support && target.length && (!available.length || deal.cards[available[0]].category !== category)) return 'Это другая категория';
+      const error = orderError([...available, ...moving], deal); if (error) return error;
       board.tableau[cmd.to.index] = [...target.slice(0, target.length - available.length), ...normalize([...available, ...moving], deal)];
     } else return 'В сброс переносить нельзя';
     if (cmd.from.kind === 'tableau') {
       const source = board.tableau[cmd.from.index];
       source.splice(source.length - moving.length, moving.length);
       const exposed = source.at(-1);
-      if (exposed && !board.faceUp.includes(exposed)) {
-        board.faceUp.push(exposed); events.push({ type: 'flip', cards: [exposed] });
-      }
+      if (board.joker?.column === cmd.from.index && source.length === board.joker.boundary) delete board.joker;
+      reveal(board, exposed, deal, events);
     } else board.waste.pop();
     events.unshift({ type: 'transfer', cards: moving, category });
     if (cmd.to.kind === 'foundation') {
@@ -100,6 +136,12 @@ export function dispatch(input: Save, cmd: Command, deal: Deal): Result {
   } else if (cmd.type === 'undo') {
     if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || next.profile.undos <= 0) return refuse('Нет доступной отмены');
     attempt.board = attempt.undo.pop()!; next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
+  } else if (cmd.type === 'place-joker') {
+    if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || next.profile.jokers <= 0) return refuse('В этой попытке Джокер недоступен');
+    const placed = placeJoker(attempt.board, cmd.column, deal);
+    if (typeof placed === 'string') return refuse(placed);
+    attempt.undo.push(attempt.board); attempt.board = placed; attempt.jokerUsed = true; next.profile.jokers--;
+    markTutorial(next, 'joker-used'); events = [{ type: 'joker' }];
   } else if (cmd.type === 'hint') {
     const demo = freeHintDemo(input, deal);
     if (!helperUnlocked(next, 'hint', deal) || cmd.revision !== input.revision || (!demo && next.profile.hints <= 0) || typeof applyBoard(attempt.board, cmd.action, deal) === 'string') return refuse('Подсказка больше не подходит');
@@ -151,10 +193,31 @@ export function legalCommands(board: Board, deal: Deal): BoardCommand[] {
 }
 
 export function boardKey(board: Board): string {
-  return JSON.stringify([board.tableau, board.foundations, board.stock, board.waste, [...board.faceUp].sort(), [...board.collected].sort()]);
+  return JSON.stringify([board.tableau, board.foundations, board.stock, board.waste, [...board.faceUp].sort(), [...board.collected].sort(), board.joker ?? null, [...(board.keys ?? [])].sort()]);
 }
 export function assertBoard(board: Board, deal: Deal): void {
   if (board.tableau.length !== deal.initial.tableau.length || board.foundations.length !== deal.initial.foundations.length) throw Error('Неверное число столбцов');
+  if (board.joker) {
+    const j = board.joker;
+    if (!Number.isInteger(j.column) || !Number.isInteger(j.boundary) || j.boundary < 1 || !board.tableau[j.column] || j.boundary > board.tableau[j.column].length || isLocked(board, j.column, deal)) throw Error('Некорректный Джокер');
+    const held = board.tableau[j.column].slice(j.boundary);
+    if (held.some(id => !board.faceUp.includes(id)) || new Set(held.map(id => deal.cards[id]?.category)).size > 1 || orderError(held, deal)) throw Error('Некорректная группа Джокера');
+  }
+  for (const leader of Object.values(deal.cards).filter(c => c.ordered)) {
+    const ranks = Object.values(deal.cards).filter(c => c.category === leader.category && !c.leader).map(c => c.rank).sort((a, b) => (a ?? 0) - (b ?? 0));
+    if (!leader.leader || !ranks.length || ranks.some((rank, i) => rank !== i + 1)) throw Error('Некорректный порядок категории');
+  }
+  const keys = board.keys ?? [];
+  if (new Set(keys).size !== keys.length || keys.some(key => !deal.lock?.requiredKeys.includes(key))) throw Error('Некорректные ключи');
+  if (deal.lock) {
+    if (deal.lock.requiredKeys.length !== 3 || new Set(deal.lock.requiredKeys).size !== 3 || !board.tableau[deal.lock.column]) throw Error('Некорректный замок');
+    for (const key of deal.lock.requiredKeys) {
+      const card = Object.values(deal.cards).find(c => c.keyId === key);
+      if (!card || Object.values(deal.cards).filter(c => c.keyId === key).length !== 1 || deal.initial.faceUp.includes(card.id) || deal.initial.tableau[deal.lock.column].includes(card.id) || !deal.initial.tableau.some(col => col.includes(card.id))) throw Error('Некорректная карта ключа');
+      if (board.faceUp.includes(card.id) !== keys.includes(key)) throw Error('Ключ не согласован с открытием карты');
+    }
+    if (isLocked(board, deal.lock.column, deal) && board.tableau[deal.lock.column].some(id => board.faceUp.includes(id))) throw Error('Закрытый столбец открыт');
+  }
   const ids = [...board.tableau.flat(), ...board.foundations.flat(), ...board.stock, ...board.waste, ...board.collected];
   const expected = Object.keys(deal.cards);
   if (ids.length !== expected.length || new Set(ids).size !== ids.length || ids.some(id => !deal.cards[id])) throw Error('Нарушена целостность карт');

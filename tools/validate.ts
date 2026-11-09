@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, writeFile, access } from 'node:fs/promises';
 import { introDeal } from '../src/content/intro';
 import { campaignDeals, campaignRecords } from '../src/content/campaign';
-import { applyBoard, assertBoard } from '../src/domain/engine';
+import { applyBoard, assertBoard, dispatch, freshSave } from '../src/domain/engine';
 import { RULES_VERSION, CONTENT_VERSION } from '../src/domain/types';
 import { layout, cardMetrics } from '../src/game/layout';
 
@@ -30,6 +30,18 @@ for (const deal of [introDeal, ...campaignDeals]) {
     }
   }
   if (board.phase !== 'won') throw Error(`${deal.id}: recorded path did not win`);
+  const finalBoard = board;
+  if (deal.tutorialPath) {
+    let save = freshSave(deal, 'validation-joker');
+    save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0, completedCampaign: campaignDeals.filter(d => d.campaignLevel! < deal.campaignLevel!).map(d => d.id) };
+    for (const cmd of deal.tutorialPath) {
+      const result = dispatch(save, cmd, deal);
+      if (!result.accepted) throw Error(`${deal.id}: alternate witness refused: ${result.reason}`);
+      save = result.next; board = save.attempt.board; independent();
+    }
+    if (board.phase !== 'won' || save.profile.jokers !== 0) throw Error(`${deal.id}: alternate Joker witness failed`);
+    board = finalBoard;
+  }
   const texts = Object.values(deal.cards).map(c => c.text.toLocaleLowerCase('ru-RU'));
   if (new Set(texts).size !== texts.length) throw Error(`${deal.id}: ambiguous duplicate caption`);
   for (const card of Object.values(deal.cards)) {
@@ -39,6 +51,7 @@ for (const deal of [introDeal, ...campaignDeals]) {
   const record = {
     dealId: deal.id, dealVersion: deal.version, rulesVersion: RULES_VERSION, contentVersion: CONTENT_VERSION,
     initialSha256: createHash('sha256').update(JSON.stringify(deal.initial)).digest('hex'),
+    ...(deal.tutorialPath ? { alternateTutorialPath: deal.tutorialPath, alternateReplay: 'PASS' } : {}),
     exactInitialState: deal.initial, winningPath: deal.winningPath, moveCount: deal.winningPath.length,
     budget: deal.initial.movesLeft, slack: board.movesLeft, replay: 'PASS', editorialStatus: deal.editorialStatus,
     independence: 'Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.',
@@ -48,6 +61,6 @@ for (const deal of [introDeal, ...campaignDeals]) {
   if (deal.campaignLevel) summary.push({ level: deal.campaignLevel, title: deal.title, ...record, exactInitialState: undefined, winningPath: undefined });
   console.info(`${deal.id}: PASS, ${record.moveCount} moves, ${record.coverage.recycleCount} recycle, slack ${record.slack ?? '∞'}`);
 }
-if (campaignDeals.length !== 20 || campaignDeals[0].initial.movesLeft !== null || campaignDeals[1].initial.movesLeft !== null) throw Error('Campaign/tutor bank contract failed');
+if (campaignDeals.length !== 26 || campaignDeals[0].initial.movesLeft !== null || campaignDeals[1].initial.movesLeft !== null) throw Error('Campaign/tutor bank contract failed');
 if (!summary.some(r => r.coverage.largestPacket >= 2) || !summary.some(r => r.coverage.recycleCount >= 2) || !summary.some(r => r.slack === 0)) throw Error('Missing advertised campaign coverage');
 await writeFile('docs/validation/campaign-index.json', JSON.stringify({ version: 1, contentVersion: CONTENT_VERSION, deals: summary, authoring: campaignRecords.map(r => ({ id: r.id, seed: r.authoringSeed, searchVisited: r.searchVisited })) }, null, 2) + '\n');

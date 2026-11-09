@@ -30,8 +30,8 @@ async function fixture(page:Page,index:number){
   await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');await page.locator('#home-play').tap();await ready(page,campaignDeals[index]);
 }
 
-test('a new player completes all twenty levels through actual touch input and the ordinary Next button',async({page},info)=>{
-  test.skip(info.project.name!=='phone','Full catalog on Pixel 7; compact geometry is covered below.');test.setTimeout(480000);
+test('a new player completes all twenty-six levels through actual touch input and the ordinary Next button',async({page},info)=>{
+  test.skip(info.project.name!=='phone','Full catalog on Pixel 7; compact geometry is covered below.');test.setTimeout(600000);
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
   await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
   await expect(page.locator('#level-2')).toBeDisabled();await page.screenshot({path:'test-results/campaign-home.png'});
@@ -42,15 +42,15 @@ test('a new player completes all twenty levels through actual touch input and th
     for(const cmd of deal.winningPath)await move(page,deal,cmd);
     await expect(page.locator('#result')).toBeVisible();
     expect((await read(page)).attempt.board.phase).toBe('won');
-    console.info(`Touch campaign ${deal.campaignLevel}/20 won`);
+    console.info(`Touch campaign ${deal.campaignLevel}/26 won`);
     await page.locator('#next-level').tap();
   }
-  await expect(page.locator('#home')).toBeVisible();await expect(page.locator('#campaign-progress')).toHaveText('20 / 20');
-  const completed=await read(page);expect(completed.platform!.completedCampaign).toHaveLength(20);expect(completed.profile.wins).toBe(20);
+  await expect(page.locator('#home')).toBeVisible();await expect(page.locator('#campaign-progress')).toHaveText('26 / 26');
+  const completed=await read(page);expect(completed.platform!.completedCampaign).toHaveLength(26);expect(completed.profile.wins).toBe(26);
   expect(completed.profile.hints).toBe(3);expect(completed.profile.undos).toBe(5);
   await page.locator('#level-5').tap();await ready(page,campaignDeals[4]);await move(page,campaignDeals[4],campaignDeals[4].winningPath[0]);
   const current=await read(page);await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
-  await expect(page.locator('#campaign-progress')).toHaveText('20 / 20');await page.locator('#home-play').tap();await ready(page,campaignDeals[4]);
+  await expect(page.locator('#campaign-progress')).toHaveText('26 / 26');await page.locator('#home-play').tap();await ready(page,campaignDeals[4]);
   const restored=await read(page);expect(restored.attempt.id).toBe(current.attempt.id);expect(restored.attempt.board).toEqual(current.attempt.board);expect(restored.profile).toEqual(current.profile);expect(errors).toEqual([]);
 });
 

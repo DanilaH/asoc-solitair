@@ -1,3 +1,4 @@
+import { modifierDeals } from './modifiers';
 import data from './campaign.json' with { type: 'json' };
 import { cardsFor, type TopicSelection } from './topics';
 import { introDeal } from './intro';
@@ -8,10 +9,10 @@ export interface CampaignRecord {
   initial: Board; winningPath: BoardCommand[]; tags: string[]; authoringSeed: number; searchVisited: number; editorialStatus: string;
 }
 export const campaignRecords = data as unknown as CampaignRecord[];
-export const campaignDeals: readonly Deal[] = campaignRecords.map(record => ({
+export const campaignDeals: readonly Deal[] = [...campaignRecords.map(record => ({
   id: record.id, version: record.version, campaignLevel: record.campaignLevel, title: record.title,
   cards: cardsFor(record.topics), initial: record.initial, winningPath: record.winningPath,
   editorialStatus: record.editorialStatus, tags: record.tags,
-}));
+})), ...modifierDeals];
 const all = new Map([introDeal, ...campaignDeals].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id);

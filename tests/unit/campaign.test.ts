@@ -17,7 +17,7 @@ function win(save: Save, index: number) {
   return save;
 }
 describe('linear campaign ownership', () => {
-  it('replays all 20 fixed witnesses in sequence, unlocks the next level once and retains economy', () => {
+  it('replays all 26 fixed witnesses in sequence, unlocks the next level once and retains economy', () => {
     let save = freshSave(campaignDeals[0], 'attempt-1');
     for (let index=0; index<campaignDeals.length; index++) {
       if (index) beginDeal(save, campaignDeals[index], `attempt-${index+1}`);
@@ -27,7 +27,7 @@ describe('linear campaign ownership', () => {
       expect(save.attempt.board.phase).toBe('won');
       expect(decodeSave(JSON.stringify(save),findDeal)).toEqual(save);
     }
-    expect(save.platform!.completedCampaign).toHaveLength(20); expect(unlockedLevel(save)).toBe(20);
+    expect(save.platform!.completedCampaign).toHaveLength(26); expect(unlockedLevel(save)).toBe(26);
   });
   it('rejects locked levels and preserves wallet/receipts/settings through replay without another new win', () => {
     let save = freshSave(campaignDeals[0], 'a'); expect(() => beginDeal(save,campaignDeals[4],'b')).toThrow();
@@ -51,7 +51,7 @@ describe('linear campaign ownership', () => {
     save=win(save,2);beginDeal(save,campaignDeals[3],'d');expect(helperUnlocked(save,'undo',campaignDeals[3])).toBe(true);
   });
   it('migrates the old control save without losing its attempt, rewards or spent helpers', async () => {
-    const old=freshSave(introDeal,'legacy');old.contentVersion=1;old.profile.coins=378;old.profile.hints=0;old.profile.rewards=['win:old'];
+    const old=freshSave(introDeal,'legacy');old.contentVersion=1;old.rulesVersion=1;old.balanceVersion=1;old.profile.coins=378;old.profile.hints=0;old.profile.rewards=['win:old'];
     const migrated=decodeSave(JSON.stringify(old),findDeal);
     expect(migrated.contentVersion).toBe(CONTENT_VERSION);expect(migrated.profile).toEqual(old.profile);expect(migrated.attempt).toEqual(old.attempt);
     let raw=JSON.stringify(old);const store=new SaveStore({getItem:async()=>raw,setItem:async(_k,v)=>{raw=v},removeItem:async()=>undefined},findDeal,()=>freshSave(campaignDeals[0],'new'));

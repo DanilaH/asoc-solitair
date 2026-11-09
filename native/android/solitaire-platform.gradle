@@ -23,7 +23,7 @@ dependencies {
     implementation 'io.appmetrica.analytics:analytics:8.6.0'
 }
 configurations.configureEach {
-    ['identifiers', 'location', 'appsetid', 'ad-revenue', 'billing', 'screenshot', 'ndkcrashes'].each { module ->
+    ['identifiers', 'location', 'ad-revenue', 'billing', 'screenshot', 'ndkcrashes'].each { module ->
         exclude group: 'io.appmetrica.analytics', module: "analytics-${module}"
     }
 }

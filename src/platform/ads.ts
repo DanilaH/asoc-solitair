@@ -3,7 +3,7 @@ import { DurableReceiptQueue, type ReceiptCommitResult, type GameplayActivityCoo
 import type { NativeBannerPlacement, NativeBannerPlacementInput } from '@danilah/mini-games-kit/layout';
 import { parseReceipt, type EarnedReceipt, type RewardPlacement } from '../domain/services';
 
-export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: RewardPlacement; attempt: string; mode: 'campaign' | 'daily' }
+export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: RewardPlacement; attempt: string; dealId: string; mode: 'campaign' | 'daily' }
 export interface AdOutcome { shown: boolean; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
 export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean }
 export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string }
@@ -32,6 +32,7 @@ export function createAds(options: {
 }, bridge?: AdsBridge) {
   const native = bridge ?? (Capacitor.isNativePlatform() ? registerPlugin<AdsBridge>('SolitaireAds') : undefined);
   let alive = true, showing = false;
+  let retryDelay = 1000;
   let status = disabledStatus;
   let listener: PluginListenerHandle | undefined;
   let recoveryFlight: Promise<void> | undefined, prepareFlight: Promise<void> | undefined, statusFlight: Promise<void> | undefined;
@@ -42,7 +43,7 @@ export function createAds(options: {
   }, acknowledge: async id => { if (!alive) throw Error('Disposed receipt receiver'); await native?.acknowledge({ id }); } });
   function schedule() {
     if (!alive || !native || retry !== undefined) return;
-    retry = setTimeout(() => { retry = undefined; void refresh(); void recover(); schedule(); }, status.ready ? 30_000 : 2000);
+    retry = setTimeout(() => { retry = undefined; void refresh(); void recover(); retryDelay = Math.min(30_000, retryDelay * 2); schedule(); }, status.ready ? 30_000 : retryDelay);
   }
   function recover(): Promise<void> {
     if (!alive || !native) return Promise.resolve();
@@ -86,12 +87,16 @@ export function createAds(options: {
       return prepareFlight;
     },
     async show(request: AdRequest): Promise<AdOutcome> {
-      if (!alive || !native || showing || options.activity.isBlocked() || !status[request.kind]) return unavailable;
+      if (!alive || !native || showing || options.activity.isBlocked()) return unavailable;
+      options.onEvent({ kind: request.kind, phase: 'show_request' });
+      if (!status[request.kind]) { options.onEvent({ kind: request.kind, phase: 'unavailable' }); return unavailable; }
       showing = true; options.activity.setBlocked('ad', true);
       try {
         await options.beforeShow({ ...request });
         if (!alive) return unavailable;
-        return await native.show({ ...request });
+        const result = await native.show({ ...request });
+        if (!result.shown) options.onEvent({ kind: request.kind, phase: result.outcome });
+        return result;
       } catch { return { shown: false, outcome: 'error' }; }
       finally { showing = false; options.activity.setBlocked('ad', false); if (alive) void recover(); }
     },

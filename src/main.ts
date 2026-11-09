@@ -74,7 +74,7 @@ try {
     },
     async commit(receipt) {
       const result = await store.mutate(next => applyReceipt(next, receipt));
-      if (result === 'applied') telemetry.track('reward_granted', { reason: `rewarded_${receipt.placement}`, amount: receipt.placement === 'continue' ? BALANCE.continueMoves : BALANCE.rewardedCharges[receipt.placement] });
+      if (result === 'applied') telemetry.track('reward_granted', { attemptId: receipt.attempt, dealId: receipt.dealId, mode: receipt.mode, reason: `rewarded_${receipt.placement}`, amount: receipt.placement === 'continue' ? BALANCE.continueMoves : BALANCE.rewardedCharges[receipt.placement] });
       // Ack failure must not freeze spending/restart or replay the already durable grant.
       if (runtime.activity.getBlockReasons().every(r => r === 'modal')) { scene?.sync(); if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs(); }
       return result;
@@ -191,7 +191,7 @@ try {
     if (serviceBusy || saving) return;
     const requestAttempt = save.attempt.id;
     serviceBusy = true; closeDialogs(); renderHud();
-    const result = await ads.show({ kind: 'rewarded', placement, attempt: requestAttempt, mode: 'campaign' });
+    const result = await ads.show({ kind: 'rewarded', placement, attempt: requestAttempt, dealId: deal.id, mode: 'campaign' });
     // Dismissal itself grants nothing; receipt recovery independently commits an earned reward.
     serviceBusy = false; renderHud();
     if (!result.shown) message('Сейчас видео недоступно. Попробуйте позже.', true);
@@ -201,7 +201,7 @@ try {
     if (serviceBusy || saving) return;
     serviceBusy = true; closeDialogs();
     if (save.attempt.board.phase === 'won' && deal.campaignLevel !== undefined && interstitialEligible(save, deal.campaignLevel, 'campaign', Date.now(), launchedAt))
-      await ads.show({ kind: 'interstitial', placement: 'continue', attempt: save.attempt.id, mode: 'campaign' });
+      await ads.show({ kind: 'interstitial', placement: 'continue', attempt: save.attempt.id, dealId: deal.id, mode: 'campaign' });
     serviceBusy = false;
     if (!alive) return;
     // Dismissal and foreground are independent. Never continue behind a displayed ad.

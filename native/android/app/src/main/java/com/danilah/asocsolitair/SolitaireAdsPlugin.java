@@ -34,17 +34,22 @@ public class SolitaireAdsPlugin extends Plugin {
     private RewardedAd rewarded;
     private RewardJournal journal;
     private Session session;
+    private final android.view.ViewTreeObserver.OnWindowFocusChangeListener focusListener = focused -> {
+        if (focused && session != null && session.invoked && !session.shown) checkUnshown(session);
+    };
     private static final class Session {
         final PluginCall call;
-        final String kind, placement, attempt, mode;
+        final String kind, placement, attempt, mode, dealId;
         final String id = UUID.randomUUID().toString();
         boolean invoked, shown, earned;
-        Session(PluginCall call, String kind, String placement, String attempt, String mode) {
-            this.call = call; this.kind = kind; this.placement = placement; this.attempt = attempt; this.mode = mode;
+        long invokedAt;
+        Session(PluginCall call, String kind, String placement, String attempt, String mode, String dealId) {
+            this.call = call; this.kind = kind; this.placement = placement; this.attempt = attempt; this.mode = mode; this.dealId = dealId;
         }
     }
     @Override public void load() {
         journal = new RewardJournal(getContext());
+        getActivity().getWindow().getDecorView().getViewTreeObserver().addOnWindowFocusChangeListener(focusListener);
         if (BuildConfig.AD_MODE.equals("disabled")) return;
         handler.post(() -> {
             try {
@@ -97,15 +102,16 @@ public class SolitaireAdsPlugin extends Plugin {
     @PluginMethod public void show(PluginCall call) { handler.post(() -> {
         String kind = call.getString("kind", ""), placement = call.getString("placement", "");
         String attempt = call.getString("attempt", ""), mode = call.getString("mode", "");
+        String dealId = call.getString("dealId", "");
         if ((!kind.equals("interstitial") && !kind.equals("rewarded")) ||
-            !attempt.matches("[a-zA-Z0-9_-]{1,100}") || (!mode.equals("campaign") && !mode.equals("daily")) ||
+            !attempt.matches("[a-zA-Z0-9_-]{1,100}") || !dealId.matches("[a-zA-Z0-9_-]{1,100}") || (!mode.equals("campaign") && !mode.equals("daily")) ||
             (kind.equals("rewarded") ? !placement.equals("hint") && !placement.equals("undo") && !placement.equals("continue") : !placement.equals("continue"))) {
             call.reject("Invalid ad request"); return;
         }
         if (!available(kind) || session != null || background || !getActivity().hasWindowFocus()) { resolve(call, false, "unavailable"); return; }
         try { if (journal.pending() != null) { resolve(call, false, "unavailable"); return; } }
         catch (Exception error) { resolve(call, false, "unavailable"); return; }
-        Session s = new Session(call, kind, placement, attempt, mode); session = s; hide();
+        Session s = new Session(call, kind, placement, attempt, mode, dealId); session = s; hide();
         try {
             if (kind.equals("interstitial")) {
                 if (interstitial == null) { finish(s, "unavailable"); return; }
@@ -134,12 +140,14 @@ public class SolitaireAdsPlugin extends Plugin {
         } catch (RuntimeException error) { event(kind, "show_error"); finish(s, "error"); }
     }); }
     private void beforeShow(Session s) {
-        s.invoked = true;
-        handler.postDelayed(() -> {
-            if (session == s && !s.shown && !background && getActivity().hasWindowFocus()) {
-                event(s.kind, "show_error"); finish(s, "error");
-            }
-        }, 8000);
+        s.invoked = true; s.invokedAt = SystemClock.elapsedRealtime();
+        handler.postDelayed(() -> checkUnshown(s), 8000);
+    }
+    private void checkUnshown(Session s) {
+        if (session != s || s.shown || background || !getActivity().hasWindowFocus()) return;
+        long remaining = 8000 - (SystemClock.elapsedRealtime() - s.invokedAt);
+        if (remaining > 0) { handler.postDelayed(() -> checkUnshown(s), remaining); return; }
+        event(s.kind, "show_error"); finish(s, "error");
     }
     private void shown(Session s) { if (session == s) { s.shown = true; event(s.kind, "show"); } }
     private void displayRewarded(Session s) {
@@ -154,7 +162,7 @@ public class SolitaireAdsPlugin extends Plugin {
                 s.earned = true;
                 try {
                     JSONObject receipt = new JSONObject(); receipt.put("schema", 1); receipt.put("id", s.id);
-                    receipt.put("placement", s.placement); receipt.put("attempt", s.attempt); receipt.put("mode", s.mode);
+                    receipt.put("placement", s.placement); receipt.put("attempt", s.attempt); receipt.put("mode", s.mode); receipt.put("dealId", s.dealId);
                     journal.record(receipt); event(s.kind, "earned");
                 } catch (Exception error) { event(s.kind, "receipt_pending"); }
             }
@@ -247,10 +255,11 @@ public class SolitaireAdsPlugin extends Plugin {
     @PluginMethod public void hideBanner(PluginCall call) { handler.post(() -> { bannerGeneration=Math.max(bannerGeneration,call.getLong("generation",bannerGeneration));hide();call.resolve(); }); }
     private void destroyBanner() { if (banner!=null) { banner.setBannerAdEventListener(null);if (banner.getParent() instanceof FrameLayout) ((FrameLayout)banner.getParent()).removeView(banner);banner.destroy();banner=null; } bannerLoaded=false;bannerRetryAt=0; }
     @Override protected void handleOnPause() { background = true; hide(); if (session != null && !session.invoked) finish(session, "cancelled"); }
-    @Override protected void handleOnResume() { background = false; }
+    @Override protected void handleOnResume() { background = false; if (session != null && session.invoked && !session.shown) handler.postDelayed(() -> { if (session != null) checkUnshown(session); }, 200); }
     @PluginMethod public void dispose(PluginCall call) { handler.post(() -> { handleOnDestroy(); call.resolve(); }); }
     @Override protected void handleOnDestroy() {
         destroyed = true; hide(); destroyBanner(); preloadGeneration++; handler.removeCallbacksAndMessages(null);
+        getActivity().getWindow().getDecorView().getViewTreeObserver().removeOnWindowFocusChangeListener(focusListener);
         if (session != null) finish(session, "cancelled");
         if (interLoader != null) interLoader.cancelLoading();
         if (rewardLoader != null) rewardLoader.cancelLoading();

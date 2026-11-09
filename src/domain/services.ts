@@ -2,7 +2,7 @@ import { BALANCE } from './balance';
 import type { PlatformState, Save } from './types';
 
 export type RewardPlacement = 'hint' | 'undo' | 'continue';
-export interface EarnedReceipt { schema: 1; id: string; attempt: string; mode: 'campaign' | 'daily'; placement: RewardPlacement }
+export interface EarnedReceipt { schema: 1; id: string; attempt: string; dealId: string; mode: 'campaign' | 'daily'; placement: RewardPlacement }
 export function platformState(save: Save): PlatformState {
   return save.platform ??= { receipts: [], continuedAttempts: [], continueCredits: 0, completedCampaign: [], winsSinceInterstitial: 0, lastFullscreenAt: 0 };
 }
@@ -11,8 +11,9 @@ export function parseReceipt(value: unknown): EarnedReceipt {
   const r = value as Record<string, unknown>;
   if (r.schema !== 1 || typeof r.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.id) ||
     typeof r.attempt !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.attempt) ||
+    typeof r.dealId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.dealId) ||
     !['hint', 'undo', 'continue'].includes(String(r.placement)) || !['campaign', 'daily'].includes(String(r.mode))) throw Error('Invalid receipt');
-  return { schema: 1, id: r.id, attempt: r.attempt, placement: r.placement as RewardPlacement, mode: r.mode as EarnedReceipt['mode'] };
+  return { schema: 1, id: r.id, attempt: r.attempt, dealId: r.dealId, placement: r.placement as RewardPlacement, mode: r.mode as EarnedReceipt['mode'] };
 }
 /** All effects and identities enter the same coordinated snapshot; Undo never owns these fields. */
 export function applyReceipt(save: Save, receipt: EarnedReceipt): 'applied' | 'already-applied' {
@@ -32,8 +33,10 @@ export function useContinue(save: Save): boolean {
   const state = platformState(save), attempt = save.attempt;
   if (state.continueCredits < 1 || attempt.continued || attempt.board.phase !== 'exhausted' || attempt.board.movesLeft !== 0) return false;
   state.continueCredits--; attempt.continued = true; attempt.board.movesLeft = BALANCE.continueMoves; attempt.board.phase = 'playing';
+  if (!state.continuedAttempts.includes(attempt.id)) state.continuedAttempts.push(attempt.id);
   if (attempt.telemetry) attempt.telemetry.finished = false;
-  // Undo may restore a pre-exhaustion board, but can never restore the spent continuation allowance.
+  // Keep the earned budget when undoing an earlier board move. The allowance itself is never rolled back.
+  for (const board of attempt.undo) if (board.movesLeft !== null) board.movesLeft += BALANCE.continueMoves;
   save.revision++; return true;
 }
 export function purchaseHelper(save: Save, helper: 'hint' | 'undo'): boolean {

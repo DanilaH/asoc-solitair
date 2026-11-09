@@ -48,4 +48,5 @@ jobs:
           path: |
             native/android/app/build/outputs/apk/release/*.apk
             native/android/app/build/outputs/bundle/release/*.aab
+            native/android/app/build/outputs/mapping/release/
           retention-days: 7

@@ -9,7 +9,7 @@ import { createHaptics } from '../../src/platform/haptics';
 import { createTelemetry } from '../../src/platform/telemetry';
 import { validEvent, createAnalytics } from '../../src/platform/analytics';
 
-const receipt: EarnedReceipt = { schema: 1, id: 'receipt-1', attempt: 'attempt-1', placement: 'hint', mode: 'campaign' };
+const receipt: EarnedReceipt = { schema: 1, id: 'receipt-1', attempt: 'attempt-1', dealId: deal.id, placement: 'hint', mode: 'campaign' };
 const fresh = () => freshSave(deal, 'attempt-1');
 function memory() {
   let value: string | null = null;
@@ -105,6 +105,15 @@ describe('coordinated save writer and earned effects', () => {
     expect(interstitialEligible(save, 8, 'campaign', 200_000, 100_000)).toBe(false);
     expect(() => parseReceipt({ ...receipt, placement: 'money', amount: 999999 })).toThrow();
   });
+  it('keeps an earned continuation budget through Undo without restoring its allowance', () => {
+    let save = fresh(); save.attempt.board.movesLeft = 1;
+    save = dispatch(save, deal.winningPath[0], deal).next;
+    expect(save.attempt.board.phase).toBe('exhausted');
+    applyReceipt(save, { ...receipt, placement: 'continue' });
+    save = dispatch(save, { type: 'undo' }, deal).next;
+    expect(save.attempt.board.movesLeft).toBe(11); expect(save.attempt.continued).toBe(true);
+    expect(useContinue(save)).toBe(false);
+  });
 });
 
 describe('optional native services', () => {
@@ -121,7 +130,7 @@ describe('optional native services', () => {
     const b = bridge(), shown = deferred<Awaited<ReturnType<AdsBridge['show']>>>(); b.api.show = vi.fn(() => shown.promise);
     const activity = new GameplayActivityCoordinator(() => undefined, () => undefined), commit = vi.fn(async () => 'applied' as const);
     const ads = createAds({ activity, commit, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined }, b.api);
-    await ads.refresh(); const display = ads.show({ kind: 'rewarded', placement: 'hint', attempt: 'attempt-1', mode: 'campaign' });
+    await ads.refresh(); const display = ads.show({ kind: 'rewarded', placement: 'hint', attempt: 'attempt-1', dealId: deal.id, mode: 'campaign' });
     await Promise.resolve(); expect(activity.getBlockReasons()).toContain('ad'); activity.setBlocked('native-background', true);
     shown.resolve({ shown: true, outcome: 'dismissed' }); await display; await ads.recover();
     expect(commit).not.toHaveBeenCalled(); expect(activity.getBlockReasons()).toEqual(['native-background']); ads.destroy();

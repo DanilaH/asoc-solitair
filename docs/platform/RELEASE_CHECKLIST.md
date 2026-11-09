@@ -36,4 +36,4 @@ Debug: `npm ci && npm run android:sync`, then `ASOC_AD_MODE=test native/android/
 - Listen to sound and check distinct vibration on a physical Android phone, focus interruption, background, ad return, mute persistence and no burst of stale effects.
 - Confirm this game's custom events and active-play durations in its AppMetrica dashboard using a separate debug app where appropriate.
 - Verify the actual signed R8 APK: stable application ID/signing certificate, versionCode, manifest, SDK mode, embedded web payload, native bridges and all ad paths. Record APK SHA256, size and public signer fingerprint. Compilation alone is insufficient.
-- Finish the agreed content bank, modifiers and compact campaign/daily meta; twenty verified deals is a development milestone, not an approved final release bank.
+- Finish the agreed release-size content bank and compact campaign/daily meta; twenty ordinary plus six modifier deals is a development milestone, not an approved final release bank. Verify Joker selection/Back, spent charge across Undo/restart/upgrade, ordered refusal and third-key unlock/Undo/process-kill on a physical phone.

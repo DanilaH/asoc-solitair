@@ -1,0 +1,382 @@
+{
+  "dealId": "campaign-018",
+  "dealVersion": 1,
+  "rulesVersion": 1,
+  "contentVersion": 2,
+  "initialSha256": "39894e51fd3707fdf445c08b338b3f905820b6b3d989ba792d7c03a40f67a88e",
+  "exactInitialState": {
+    "tableau": [
+      [
+        "vegetables"
+      ],
+      [
+        "flowers"
+      ],
+      [
+        "trees"
+      ],
+      [
+        "fish"
+      ]
+    ],
+    "foundations": [
+      [],
+      []
+    ],
+    "stock": [
+      "forest_1",
+      "trees_1",
+      "fish_1",
+      "vegetables_1",
+      "flowers_1",
+      "forest_2",
+      "trees_2",
+      "fish_2",
+      "vegetables_2",
+      "flowers_2",
+      "forest_3",
+      "trees_3",
+      "fish_3",
+      "forest",
+      "vegetables_3",
+      "flowers_3"
+    ],
+    "waste": [],
+    "faceUp": [
+      "vegetables",
+      "flowers",
+      "trees",
+      "fish"
+    ],
+    "collected": [],
+    "movesLeft": 61,
+    "phase": "playing"
+  },
+  "winningPath": [
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "recycle"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 3
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "recycle"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    }
+  ],
+  "moveCount": 49,
+  "budget": 61,
+  "slack": 12,
+  "replay": "PASS",
+  "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен.",
+  "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+  "coverage": {
+    "cards": 20,
+    "columns": 4,
+    "categories": 5,
+    "largestPacket": 1,
+    "flips": 0,
+    "recycleCount": 2,
+    "tags": [
+      "repeated-stock-cycle",
+      "images"
+    ]
+  }
+}

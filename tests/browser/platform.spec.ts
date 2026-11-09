@@ -1,9 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { openIntro, resume } from './fixtures';
 const read = (page: import('@playwright/test').Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!));
 
 test('helper exchange persists charges and wallet; unavailable video never grants a reward', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
-  await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await openIntro(page);
   const before = await read(page);
   await page.locator('#menu').tap(); await page.locator('#helpers-open').tap();
   await expect(page.locator('#helpers')).toBeVisible(); await expect(page.locator('#video-hint')).toBeDisabled();
@@ -12,18 +13,18 @@ test('helper exchange persists charges and wallet; unavailable video never grant
   expect((await read(page)).attempt.board).toEqual(before.attempt.board);
   expect((await read(page)).profile.hints).toBe(4);
   await page.screenshot({ path: `test-results/${test.info().project.name}-helpers.png` });
-  await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await resume(page);
   expect((await read(page)).profile.hints).toBe(4); expect((await read(page)).profile.coins).toBe(0);
   expect(errors).toEqual([]);
 });
 
 test('sound and haptic settings persist independently and dialogs fit compact viewport', async ({ page }) => {
-  await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await openIntro(page);
   await page.locator('#menu').tap(); await page.locator('#haptics').uncheck();
   await expect.poll(async () => (await read(page)).settings.haptics).toBe(false);
   expect((await read(page)).settings.sfx).toBe(true);
   const rect = await page.locator('#settings').boundingBox(); expect(rect!.height).toBeLessThanOrEqual(page.viewportSize()!.height - 16);
-  await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await resume(page);
   await page.locator('#menu').tap(); await expect(page.locator('#haptics')).not.toBeChecked(); await expect(page.locator('#sfx')).toBeChecked();
   await page.locator('#helpers-open').tap();
   expect(await page.locator('#helpers').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
@@ -31,7 +32,7 @@ test('sound and haptic settings persist independently and dialogs fit compact vi
 });
 
 test('a failed purchase preserves funds and a retry commits exactly once', async ({ page }) => {
-  await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await openIntro(page);
   await page.locator('#menu').tap(); await page.locator('#helpers-open').tap();
   await page.evaluate(() => {
     const original = Storage.prototype.setItem;

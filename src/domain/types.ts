@@ -1,5 +1,5 @@
 export const RULES_VERSION = 1;
-export const CONTENT_VERSION = 1;
+export const CONTENT_VERSION = 2;
 export const BALANCE_VERSION = 1;
 export interface Card {
   id: string; category: string; text: string; leader?: boolean; image?: string; explanation: string;
@@ -18,6 +18,7 @@ export interface Deal {
   id: string; version: number; title: string; cards: Record<string, Card>; initial: Board;
   winningPath: BoardCommand[]; editorialStatus: string;
   campaignLevel?: number;
+  tags?: string[];
 }
 export interface Attempt {
   id: string; dealId: string; board: Board; undo: Board[];
@@ -39,6 +40,7 @@ export interface Save {
   attempt: Attempt;
   settings: { sfx: boolean; haptics: boolean; reducedMotion: boolean };
   platform?: PlatformState;
+  campaign?: { version: 1; tutorials: string[] };
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart';

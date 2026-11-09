@@ -1,0 +1,121 @@
+{
+  "dealId": "campaign-001",
+  "dealVersion": 1,
+  "rulesVersion": 1,
+  "contentVersion": 2,
+  "initialSha256": "7b65d0713bad8010e185845bdc46818eaf5742ab4f4be844f6340d25c13b250d",
+  "exactInitialState": {
+    "tableau": [
+      [
+        "fruit_2",
+        "birds_1",
+        "fruit"
+      ],
+      [
+        "birds_2",
+        "fruit_1",
+        "birds"
+      ]
+    ],
+    "foundations": [
+      [],
+      []
+    ],
+    "stock": [],
+    "waste": [],
+    "faceUp": [
+      "fruit",
+      "birds"
+    ],
+    "collected": [],
+    "movesLeft": null,
+    "phase": "playing"
+  },
+  "winningPath": [
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    }
+  ],
+  "moveCount": 6,
+  "budget": null,
+  "slack": null,
+  "replay": "PASS",
+  "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен.",
+  "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+  "coverage": {
+    "cards": 6,
+    "columns": 2,
+    "categories": 2,
+    "largestPacket": 1,
+    "flips": 4,
+    "recycleCount": 0,
+    "tags": [
+      "tutorial-transfer",
+      "leader",
+      "flip"
+    ]
+  }
+}

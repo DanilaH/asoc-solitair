@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openIntro, resume } from './fixtures';
 import type { Page } from '@playwright/test';
 import { introDeal as deal } from '../../src/content/intro';
 import { packet } from '../../src/domain/engine';
@@ -22,7 +23,7 @@ async function action(page: Page, cmd: BoardCommand, settle = true) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true'); await page.waitForTimeout(700);
+  await openIntro(page); await page.waitForTimeout(700);
 });
 
 test('real touch play wins, reload keeps the result and wallet, replay keeps the deal', async ({ page }) => {
@@ -32,7 +33,7 @@ test('real touch play wins, reload keeps the result and wallet, replay keeps the
   await expect(page.locator('#result')).toBeVisible(); await expect(page.locator('#result-title')).toHaveText('Всё сошлось!');
   const won = await readSave(page); expect(won.attempt.board.phase).toBe('won'); expect(won.attempt.board.movesLeft).toBe(11);
   await page.screenshot({ path: `test-results/${test.info().project.name}-result.png` });
-  await page.reload(); await expect(page.locator('#result')).toBeVisible();
+  await resume(page); await expect(page.locator('#result')).toBeVisible();
   expect((await readSave(page)).profile.coins).toBe(won.profile.coins);
   await page.locator('#replay').tap();
   expect((await readSave(page)).attempt.board).toEqual(deal.initial);
@@ -48,7 +49,7 @@ test('hint is a demonstration, only charged once; Undo survives reload', async (
   await page.locator('#hint').tap(); expect((await readSave(page)).profile.hints).toBe(2);
   await action(page, deal.winningPath[0]); await page.locator('#undo').tap();
   expect((await readSave(page)).attempt.board).toEqual(before.attempt.board);
-  await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await resume(page);
   expect((await readSave(page)).profile.undos).toBe(4); expect((await readSave(page)).profile.hints).toBe(2);
 });
 
@@ -57,7 +58,7 @@ test('next move works while coins fly, invalid drop resets progress without spen
   await action(page, deal.winningPath[3], false);
   await action(page, deal.winningPath[4], false);
   const save = await readSave(page); expect(save.attempt.streak.tier).toBe(1); expect(save.profile.coins).toBe(102);
-  await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true'); await page.waitForTimeout(300);
+  await resume(page); await page.waitForTimeout(300);
   await action(page, { type: 'transfer', from: { kind: 'tableau', index: 2 }, to: { kind: 'foundation', index: 0 } });
   const after = await readSave(page); expect(after.attempt.board.movesLeft).toBe(save.attempt.board.movesLeft);
   expect(after.attempt.streak.progress).toBe(0); await expect(page.locator('#message')).toHaveClass('error');
@@ -94,7 +95,7 @@ test('the last hint remains replayable at zero charges', async ({ page }) => {
     const key = 'asoc-solitaire.save.v1'; const save = JSON.parse(localStorage.getItem(key)!);
     save.profile.hints = 1; localStorage.setItem(key, JSON.stringify(save));
   });
-  await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await resume(page);
   await page.locator('#hint').tap(); await expect(page.locator('#hint-count')).toHaveText('0');
   await expect(page.locator('#hint')).toBeEnabled(); await page.locator('#hint').tap();
   expect((await readSave(page)).profile.hints).toBe(0);

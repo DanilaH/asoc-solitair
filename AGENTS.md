@@ -14,3 +14,5 @@ Read [the product index](docs/README.md), the handoff, requirements and feel spe
 - Do not commit signing keys, SDK paths, node_modules, generated web assets or APKs. No changes to other portfolio projects or kit without need.
 
 - Native services are integrated; read docs/platform/NATIVE_SERVICES.md before modifying saves, ads or lifecycle. SaveStore is the single authoritative async writer; never reintroduce independent whole-save writes. Keep native receipt/effect/dedup ordering and optional-service startup independent of playability. Production release requires live configuration and the existing signing identity.
+
+- Campaign contentVersion 2 is frozen under src/content/campaign.json. Read docs/content/FIRST_CAMPAIGN.md before changing a deal. Keep old in-progress attempts compatible when adding modifiers. Home/level changes must keep SaveStore ownership, unlock bounds, tutorial charges and the presentedDealId scene barrier.

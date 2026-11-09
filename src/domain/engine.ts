@@ -1,5 +1,6 @@
 import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION } from './types';
 import { BALANCE } from './balance';
+import { freeHintDemo, helperUnlocked, markTutorial } from './progression';
 import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, Result, Save } from './types';
 
 export const STREAK = BALANCE.streak;
@@ -97,11 +98,12 @@ export function dispatch(input: Save, cmd: Command, deal: Deal): Result {
     if (cmd.attemptId === attempt.id) return refuse('Для повтора нужен новый номер попытки');
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
   } else if (cmd.type === 'undo') {
-    if (attempt.board.phase === 'won' || !attempt.undo.length || next.profile.undos <= 0) return refuse('Нет доступной отмены');
-    attempt.board = attempt.undo.pop()!; next.profile.undos--; events = [{ type: 'undo' }];
+    if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || next.profile.undos <= 0) return refuse('Нет доступной отмены');
+    attempt.board = attempt.undo.pop()!; next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
   } else if (cmd.type === 'hint') {
-    if (cmd.revision !== input.revision || next.profile.hints <= 0 || typeof applyBoard(attempt.board, cmd.action, deal) === 'string') return refuse('Подсказка больше не подходит');
-    next.profile.hints--; events = [{ type: 'hint' }];
+    const demo = freeHintDemo(input, deal);
+    if (!helperUnlocked(next, 'hint', deal) || cmd.revision !== input.revision || (!demo && next.profile.hints <= 0) || typeof applyBoard(attempt.board, cmd.action, deal) === 'string') return refuse('Подсказка больше не подходит');
+    if (demo) markTutorial(next, 'hint-demo'); else next.profile.hints--; events = [{ type: 'hint' }];
   } else {
     const result = applyBoard(attempt.board, cmd, deal);
     if (typeof result === 'string') return refuse(result, cmd.type === 'transfer' && attempt.board.phase === 'playing');
@@ -152,11 +154,13 @@ export function boardKey(board: Board): string {
   return JSON.stringify([board.tableau, board.foundations, board.stock, board.waste, [...board.faceUp].sort(), [...board.collected].sort()]);
 }
 export function assertBoard(board: Board, deal: Deal): void {
+  if (board.tableau.length !== deal.initial.tableau.length || board.foundations.length !== deal.initial.foundations.length) throw Error('Неверное число столбцов');
   const ids = [...board.tableau.flat(), ...board.foundations.flat(), ...board.stock, ...board.waste, ...board.collected];
   const expected = Object.keys(deal.cards);
   if (ids.length !== expected.length || new Set(ids).size !== ids.length || ids.some(id => !deal.cards[id])) throw Error('Нарушена целостность карт');
   if (new Set(board.faceUp).size !== board.faceUp.length || board.faceUp.some(id => !deal.cards[id]) || board.stock.some(id => board.faceUp.includes(id))) throw Error('Некорректная открытая карта');
   if (board.movesLeft !== null && (!Number.isInteger(board.movesLeft) || board.movesLeft < 0)) throw Error('Некорректный бюджет');
+  if ((board.phase === 'playing' && board.movesLeft === 0) || (board.phase === 'exhausted' && board.movesLeft !== 0)) throw Error('Несогласованный бюджет');
   if (!['playing', 'exhausted', 'won'].includes(board.phase)) throw Error('Некорректная фаза');
   if ((board.collected.length === expected.length) !== (board.phase === 'won')) throw Error('Некорректная победа');
 }

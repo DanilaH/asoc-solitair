@@ -11,3 +11,5 @@ Requirements own rules/data/rewards; feel-spec owns presentation/timings. Resear
 Implementation tracking: [roadmap](../ROADMAP.md), [decisions](../DECISIONS.md), [verification](../VERIFICATION.md), [kit reuse](KIT_REUSE.md).
 
 Android integration: [services and ownership](platform/NATIVE_SERVICES.md), [configuration and release acceptance](platform/RELEASE_CHECKLIST.md).
+
+Campaign bank: [authorship, coverage and limits](content/FIRST_CAMPAIGN.md), [validation index](validation/campaign-index.json).

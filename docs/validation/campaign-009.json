@@ -1,0 +1,331 @@
+{
+  "dealId": "campaign-009",
+  "dealVersion": 1,
+  "rulesVersion": 1,
+  "contentVersion": 2,
+  "initialSha256": "ad8d7beded749a8aa1fcf1eb168cfbd15232d1e15894a297b200f67130a5a1f1",
+  "exactInitialState": {
+    "tableau": [
+      [
+        "shapes_3",
+        "shapes_4",
+        "sports_1"
+      ],
+      [
+        "office_1",
+        "sports_3",
+        "sports_2"
+      ],
+      [
+        "music_1",
+        "office_3",
+        "music_3"
+      ],
+      [
+        "shapes_2",
+        "office_4",
+        "sports_4"
+      ]
+    ],
+    "foundations": [
+      [],
+      [],
+      []
+    ],
+    "stock": [
+      "shapes",
+      "music_2",
+      "music_4",
+      "shapes_1",
+      "office",
+      "office_2",
+      "sports",
+      "music"
+    ],
+    "waste": [],
+    "faceUp": [
+      "sports_1",
+      "sports_2",
+      "music_3",
+      "sports_4"
+    ],
+    "collected": [],
+    "movesLeft": 41,
+    "phase": "playing"
+  },
+  "winningPath": [
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 3
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 3
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 3
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 2
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 3
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 3
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "tableau",
+        "index": 3
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 3
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    }
+  ],
+  "moveCount": 29,
+  "budget": 41,
+  "slack": 12,
+  "replay": "PASS",
+  "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен.",
+  "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+  "coverage": {
+    "cards": 20,
+    "columns": 4,
+    "categories": 4,
+    "largestPacket": 4,
+    "flips": 8,
+    "recycleCount": 0,
+    "tags": [
+      "long-titles",
+      "four-columns"
+    ]
+  }
+}

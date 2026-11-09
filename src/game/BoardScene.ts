@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import { installSceneTextSharpness } from '@danilah/mini-games-kit/phaser';
+import { cardCaption } from './captions';
 import { applyBoard, packet, sourceCards } from '../domain/engine';
 import type { BoardCommand, Deal, GameEvent, Location, Save } from '../domain/types';
-import { CARD_H, CARD_W, layout, WIDTH } from './layout';
+import { boardFrame, cardMetrics, layout } from './layout';
 import type { Pose, Target } from './layout';
 
 interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text }
@@ -34,11 +35,16 @@ export class BoardScene extends Phaser.Scene {
   private hintTweens: Phaser.Tweens.Tween[] = [];
   private inspectMode = false;
   private particles: Phaser.GameObjects.Arc[] = [];
+  private presentedDealId: string | undefined;
   public constructor(private readonly options: Options) { super('board'); }
+  private get cardW() { return cardMetrics(this.options.deal).width; }
+  private get cardH() { return cardMetrics(this.options.deal).height; }
+  public setDeal(deal: Deal) { this.enabled = false; this.presentedDealId = undefined; this.options.deal = deal; this.scene.restart(); this.game.loop.wake(); }
   public preload(): void {
-    for (const card of Object.values(this.options.deal.cards)) if (card.image) this.load.image(card.id, card.image);
+    for (const card of Object.values(this.options.deal.cards)) if (card.image && !this.textures.exists(card.id)) this.load.image(card.id, card.image);
   }
   public create(): void {
+    this.selected = null; this.press = null; this.initial = true; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = [];
     installSceneTextSharpness(this);
     this.world = this.add.container(0, 0);
     this.slots = this.add.graphics(); this.stockArt = this.add.graphics(); this.focus = this.add.graphics().setDepth(450);
@@ -54,13 +60,14 @@ export class BoardScene extends Phaser.Scene {
     this.input.on('pointerupoutside', () => this.cancel());
     const resize = () => { this.cancel(); this.sync([], false); };
     this.scale.on('resize', resize);
-    this.events.once('shutdown', () => { this.scale.off('resize', resize); this.clearHint(); this.views.clear(); });
+    this.events.once('shutdown', () => { this.presentedDealId = undefined; this.scale.off('resize', resize); this.clearHint(); this.views.clear(); this.input.removeAllListeners(); });
+    this.presentedDealId = this.options.deal.id;
     this.sync([], true);
     this.options.ready(this);
   }
   private label(x: number, y: number, text: string, size: number, color: string) {
-    const label = this.add.text(x, y, text, { fontFamily: 'Arial', fontSize: `${size}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: CARD_W - 18 } }).setOrigin(.5, 0);
-    label.setScale(Math.min(1, (CARD_W - 18) / Math.max(1, label.width)));
+    const label = this.add.text(x, y, cardCaption(text, this.cardW < 125), { fontFamily: 'Arial', fontSize: `${size * Math.min(1, this.cardW / 125)}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: this.cardW - 18 } }).setOrigin(.5, 0);
+    label.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, label.width)));
     return label;
   }
   private makeCard(id: string): CardView {
@@ -68,56 +75,59 @@ export class BoardScene extends Phaser.Scene {
     const node = this.add.container(0, 0).setVisible(false);
     const face = this.add.container(0, 0), back = this.add.container(0, 0);
     const g = this.add.graphics();
-    g.fillStyle(0x003e2d, .28).fillRoundedRect(-CARD_W / 2, -CARD_H / 2 + 5, CARD_W, CARD_H, 13);
-    g.fillStyle(0xfaf5e8).fillRoundedRect(-CARD_W / 2, -CARD_H / 2, CARD_W, CARD_H, 13);
-    g.lineStyle(card.leader ? 3 : 1.5, card.leader ? 0xe5bf6c : 0xd6d7be).strokeRoundedRect(-CARD_W / 2 + 3, -CARD_H / 2 + 3, CARD_W - 6, CARD_H - 6, 11);
-    if (card.leader) g.fillStyle(0xf2dfae).fillRoundedRect(-CARD_W / 2 + 6, -CARD_H / 2 + 6, CARD_W - 12, 28, 7);
+    g.fillStyle(0x003e2d, .28).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 5, this.cardW, this.cardH, 13);
+    g.fillStyle(0xfaf5e8).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13);
+    g.lineStyle(card.leader ? 3 : 1.5, card.leader ? 0xe5bf6c : 0xd6d7be).strokeRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 11);
+    if (card.leader) g.fillStyle(0xf2dfae).fillRoundedRect(-this.cardW / 2 + 6, -this.cardH / 2 + 6, this.cardW - 12, 28, 7);
     face.add(g);
     if (card.leader) {
-      face.add(this.label(0, -72, 'КАТЕГОРИЯ', 11, '#8a6934'));
+      face.add(this.label(0, -this.cardH / 2 + 11, 'КАТЕГОРИЯ', 11, '#8a6934'));
       face.add(this.label(0, -23, card.text, card.text.length > 10 ? 20 : 24, '#3d4e3c'));
     } else if (card.image) {
-      face.add(this.add.image(0, 0, id).setDisplaySize(104, 104));
+      face.add(this.add.image(0, 0, id).setDisplaySize(Math.min(104, this.cardW - 20), Math.min(104, this.cardW - 20)));
     } else {
-      face.add(this.label(0, -64, card.text, card.text.length > 11 ? 19 : 23, '#374d43'));
+      face.add(this.label(0, -this.cardH / 2 + 19, card.text, card.text.length > 11 ? 19 : 23, '#374d43'));
       face.add(this.label(0, 20, '✦', 28, '#d6d6ba'));
     }
     const badge = this.label(0, 44, '', 20, '#8e7138'); face.add(badge);
     const b = this.add.graphics();
-    b.fillStyle(0x003e2d, .25).fillRoundedRect(-CARD_W / 2, -CARD_H / 2 + 5, CARD_W, CARD_H, 13);
-    b.fillStyle(0xf5edda).fillRoundedRect(-CARD_W / 2, -CARD_H / 2, CARD_W, CARD_H, 13);
-    b.fillStyle(0x579ac5).fillRoundedRect(-CARD_W / 2 + 5, -CARD_H / 2 + 5, CARD_W - 10, CARD_H - 10, 9);
+    b.fillStyle(0x003e2d, .25).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 5, this.cardW, this.cardH, 13);
+    b.fillStyle(0xf5edda).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13);
+    b.fillStyle(0x579ac5).fillRoundedRect(-this.cardW / 2 + 5, -this.cardH / 2 + 5, this.cardW - 10, this.cardH - 10, 9);
     b.lineStyle(1.2, 0xa6cbdc, .5);
-    for (let y = -60; y <= 60; y += 26) for (let x = -46; x <= 46; x += 26) b.strokeCircle(x, y, 7);
-    b.lineStyle(2, 0xcce0e7, .65).strokeRoundedRect(-CARD_W / 2 + 12, -CARD_H / 2 + 12, CARD_W - 24, CARD_H - 24, 5);
+    for (let y = -60; y <= 60; y += 26) for (let x = -this.cardW / 2 + 23; x <= this.cardW / 2 - 17; x += 26) b.strokeCircle(x, y, 7);
+    b.lineStyle(2, 0xcce0e7, .65).strokeRoundedRect(-this.cardW / 2 + 12, -this.cardH / 2 + 12, this.cardW - 24, this.cardH - 24, 5);
     back.add(b); node.add([face, back]); this.world.add(node);
     return { node, face, back, badge };
   }
   public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand): void {
-    if (!this.world) return;
+    if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
     const save = this.options.getSave(), board = save.attempt.board;
-    this.unit = this.scale.width / WIDTH; this.world.setScale(this.unit);
-    this.metrics = layout(board, this.options.deal, this.scale.height / this.unit);
+    const frame = boardFrame(this.scale.width, this.scale.height);
+    this.unit = frame.unit; this.world.setScale(this.unit).setX(frame.offsetX);
+    this.metrics = layout(board, this.options.deal, frame.height);
     const duration = save.settings.reducedMotion ? 0 : 215;
     this.slots.clear().lineStyle(2, 0x7ab594, .35).fillStyle(0x023f2d, .25);
     for (const target of this.metrics.targets) {
       const { x, y } = target;
-      this.slots.fillRoundedRect(x - CARD_W / 2, y - CARD_H / 2, CARD_W, CARD_H, 13);
-      this.slots.strokeRoundedRect(x - CARD_W / 2, y - CARD_H / 2, CARD_W, CARD_H, 13);
+      this.slots.fillRoundedRect(x - this.cardW / 2, y - this.cardH / 2, this.cardW, this.cardH, 13);
+      this.slots.strokeRoundedRect(x - this.cardW / 2, y - this.cardH / 2, this.cardW, this.cardH, 13);
       if (target.location.kind === 'foundation') {
         this.slots.lineStyle(2, 0x8bb895, .35).strokeCircle(x, y, 22);
         this.slots.lineStyle(2, 0x8bb895, .35).lineBetween(x - 8, y, x + 8, y).lineBetween(x, y - 8, x, y + 8);
       }
     }
     const { stock } = this.metrics;
-    this.stockArt.clear().fillStyle(board.stock.length ? 0x61a8d2 : 0x164f3d).fillRoundedRect(stock.x - CARD_W / 2, stock.y - CARD_H / 2, CARD_W, CARD_H, 13);
-    this.stockArt.lineStyle(3, board.stock.length ? 0xd9e6db : 0x669b7d).strokeRoundedRect(stock.x - CARD_W / 2 + 4, stock.y - CARD_H / 2 + 4, CARD_W - 8, CARD_H - 8, 10);
+    const deckActive = Boolean(board.stock.length || board.waste.length);
+    this.stockArt.setVisible(deckActive); this.stockCount.setVisible(deckActive); this.stockLabel.setVisible(deckActive);
+    this.stockArt.clear().fillStyle(board.stock.length ? 0x61a8d2 : 0x164f3d).fillRoundedRect(stock.x - this.cardW / 2, stock.y - this.cardH / 2, this.cardW, this.cardH, 13);
+    this.stockArt.lineStyle(3, board.stock.length ? 0xd9e6db : 0x669b7d).strokeRoundedRect(stock.x - this.cardW / 2 + 4, stock.y - this.cardH / 2 + 4, this.cardW - 8, this.cardH - 8, 10);
     if (board.stock.length) {
       this.stockArt.lineStyle(1.5, 0xc1e0e9, .45);
-      for (let y = -52; y <= 52; y += 26) for (let x = -40; x <= 40; x += 26) this.stockArt.strokeCircle(stock.x + x, stock.y + y, 7);
+      for (let y = -52; y <= 52; y += 26) for (let x = -this.cardW / 2 + 27; x <= this.cardW / 2 - 20; x += 26) this.stockArt.strokeCircle(stock.x + x, stock.y + y, 7);
     }
-    this.stockCount.setPosition(stock.x, stock.y).setText(board.stock.length ? String(board.stock.length) : '↻');
-    this.stockLabel.setPosition(stock.x, stock.y - CARD_H / 2 - 13).setText(board.stock.length ? 'Колода' : 'Повторить');
+    this.stockCount.setPosition(stock.x, stock.y).setText(board.stock.length ? String(board.stock.length) : board.waste.length ? '↻' : '·');
+    this.stockLabel.setPosition(stock.x, stock.y - this.cardH / 2 - 13).setText(board.stock.length ? 'Колода' : board.waste.length ? 'Повторить' : 'Колода пуста');
     const visible = new Set(this.metrics.poses.map(p => p.id));
     const completed = events.find(e => e.type === 'complete');
     for (const [id, view] of this.views) {
@@ -175,12 +185,12 @@ export class BoardScene extends Phaser.Scene {
         alpha: 0, duration: 500 + i % 3 * 50, ease: 'Cubic.easeOut', onComplete: () => dot.setVisible(false) });
     }
   }
-  private point(pointer: Phaser.Input.Pointer) { return { x: pointer.x / this.unit, y: pointer.y / this.unit }; }
+  private point(pointer: Phaser.Input.Pointer) { return { x: (pointer.x - this.world.x) / this.unit, y: pointer.y / this.unit }; }
   private hitSource(x: number, y: number): Location | null {
     const board = this.options.getSave().attempt.board;
     for (const pose of [...this.metrics.poses].sort((a, b) => b.depth - a.depth)) {
       const view = this.views.get(pose.id)!;
-      if (!pose.faceUp || !inside(x, y, { x: view.node.x, y: view.node.y, width: CARD_W, height: CARD_H })) continue;
+      if (!pose.faceUp || !inside(x, y, { x: view.node.x, y: view.node.y, width: this.cardW, height: this.cardH })) continue;
       if (board.waste.at(-1) === pose.id) return { kind: 'waste', index: 0 };
       const index = board.tableau.findIndex(col => packet(board, board.tableau.indexOf(col), this.options.deal).includes(pose.id));
       if (index >= 0) return { kind: 'tableau', index };
@@ -196,7 +206,8 @@ export class BoardScene extends Phaser.Scene {
     const { x, y } = this.point(pointer), board = this.options.getSave().attempt.board;
     const source = this.hitSource(x, y);
     if (this.inspectMode) {
-      if (source) this.options.inspect(sourceCards(board, source, this.options.deal).at(-1)!);
+      const pose = [...this.metrics.poses].sort((a, b) => b.depth - a.depth).find(p => p.faceUp && inside(x, y, { x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y, width: this.cardW, height: this.cardH }));
+      if (pose) this.options.inspect(pose.id);
       return;
     }
     if (board.phase !== 'playing') return;
@@ -205,7 +216,7 @@ export class BoardScene extends Phaser.Scene {
     const chosenTarget = this.selected && target && !same(this.selected, target.location) ? target : null;
     const from = chosenTarget ? this.selected : source;
     const ids = from ? sourceCards(board, from, this.options.deal) : [];
-    this.press = { pointerId: pointer.id, toggle: Boolean(source && this.selected && same(source, this.selected)), from, x, y, moved: false, stock: !chosenTarget && inside(x, y, { ...this.metrics.stock, width: CARD_W, height: CARD_H }),
+    this.press = { pointerId: pointer.id, toggle: Boolean(source && this.selected && same(source, this.selected)), from, x, y, moved: false, stock: Boolean(board.stock.length || board.waste.length) && !chosenTarget && inside(x, y, { ...this.metrics.stock, width: this.cardW, height: this.cardH }),
       target: chosenTarget, poses: this.metrics.poses.filter(p => ids.includes(p.id)).map(p => ({ ...p, x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y })) };
     if (source && !chosenTarget) { this.selected = source; this.options.sound('lift'); this.drawFocus(); }
   }
@@ -228,7 +239,7 @@ export class BoardScene extends Phaser.Scene {
     if (!this.enabled || !press) return;
     const { x, y } = this.point(pointer);
     if (press.stock) {
-      if (inside(x, y, { ...this.metrics.stock, width: CARD_W, height: CARD_H }) && Math.hypot(x - press.x, y - press.y) < 11) {
+      if (inside(x, y, { ...this.metrics.stock, width: this.cardW, height: this.cardH }) && Math.hypot(x - press.x, y - press.y) < 11) {
         this.selected = null; this.options.command({ type: this.options.getSave().attempt.board.stock.length ? 'draw' : 'recycle' });
       }
       return;
@@ -244,11 +255,11 @@ export class BoardScene extends Phaser.Scene {
     this.focus.clear();
     if (this.selected) for (const id of sourceCards(this.options.getSave().attempt.board, this.selected, this.options.deal)) {
       const view = this.views.get(id)!;
-      this.focus.lineStyle(3, 0xffe5a3, .95).strokeRoundedRect(view.node.x - CARD_W / 2 - 2, view.node.y - CARD_H / 2 - 2, CARD_W + 4, CARD_H + 4, 14);
+      this.focus.lineStyle(3, 0xffe5a3, .95).strokeRoundedRect(view.node.x - this.cardW / 2 - 2, view.node.y - this.cardH / 2 - 2, this.cardW + 4, this.cardH + 4, 14);
     }
     if (hover && this.selected) {
       const valid = typeof applyBoard(this.options.getSave().attempt.board, { type: 'transfer', from: this.selected, to: hover.location }, this.options.deal) !== 'string';
-      this.focus.lineStyle(4, valid ? 0xffdf7b : 0xd5aa8d, .95).strokeRoundedRect(hover.x - CARD_W / 2 - 5, hover.y - CARD_H / 2 - 5, CARD_W + 10, CARD_H + 10, 15);
+      this.focus.lineStyle(4, valid ? 0xffdf7b : 0xd5aa8d, .95).strokeRoundedRect(hover.x - this.cardW / 2 - 5, hover.y - this.cardH / 2 - 5, this.cardW + 10, this.cardH + 10, 15);
     }
   }
   public cancel(): void { this.press = null; this.selected = null; if (this.world) this.sync([], false); }
@@ -263,7 +274,7 @@ export class BoardScene extends Phaser.Scene {
     const target = action.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, action.to)) : this.metrics.stock;
     if (!from || !target) return;
     const ghost = this.add.graphics().fillStyle(0xffe39c, .3).lineStyle(4, 0xffe6a2, .9)
-      .fillRoundedRect(-CARD_W / 2, -CARD_H / 2, CARD_W, CARD_H, 13).strokeRoundedRect(-CARD_W / 2, -CARD_H / 2, CARD_W, CARD_H, 13)
+      .fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13).strokeRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13)
       .setPosition(from.x, from.y).setDepth(700);
     this.world.add(ghost); this.world.sort('depth'); this.hintObjects.push(ghost);
     this.hintTweens.push(this.tweens.add({ targets: ghost, x: target.x, y: target.y, alpha: .25, duration: 750, hold: 180, repeat: 1,

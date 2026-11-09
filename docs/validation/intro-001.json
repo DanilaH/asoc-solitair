@@ -2,7 +2,7 @@
   "dealId": "intro-001",
   "dealVersion": 1,
   "rulesVersion": 1,
-  "contentVersion": 1,
+  "contentVersion": 2,
   "initialSha256": "311eb0203e5b895c8750a82cacc6780adad9a60e8c99b5155cbde7a8e56ee692",
   "exactInitialState": {
     "tableau": [
@@ -234,5 +234,14 @@
   "slack": 11,
   "replay": "PASS",
   "editorialStatus": "Самостоятельная редактура: бытовые непересекающиеся категории. Независимый человеческий плейтест ещё не выполнен.",
-  "independence": "Path replay uses the game engine; card count/identity invariants are checked separately. No optimality or human-difficulty claim."
+  "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+  "coverage": {
+    "cards": 15,
+    "columns": 3,
+    "categories": 3,
+    "largestPacket": 3,
+    "flips": 6,
+    "recycleCount": 0,
+    "tags": []
+  }
 }

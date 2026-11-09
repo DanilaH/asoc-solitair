@@ -1,0 +1,6697 @@
+[
+  {
+    "id": "campaign-001",
+    "version": 1,
+    "campaignLevel": 1,
+    "title": "Найдите общее",
+    "topics": [
+      {
+        "id": "fruit",
+        "count": 2
+      },
+      {
+        "id": "birds",
+        "count": 2
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "fruit_2",
+          "birds_1",
+          "fruit"
+        ],
+        [
+          "birds_2",
+          "fruit_1",
+          "birds"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [],
+      "waste": [],
+      "faceUp": [
+        "fruit",
+        "birds"
+      ],
+      "collected": [],
+      "movesLeft": null,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      }
+    ],
+    "tags": [
+      "tutorial-transfer",
+      "leader",
+      "flip"
+    ],
+    "authoringSeed": 0,
+    "searchVisited": 0,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-002",
+    "version": 1,
+    "campaignLevel": 2,
+    "title": "Ещё одна карта",
+    "topics": [
+      {
+        "id": "dishes",
+        "count": 3
+      },
+      {
+        "id": "clothes",
+        "count": 3,
+        "images": [
+          2
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "dishes_1",
+          "dishes"
+        ],
+        [
+          "clothes_1",
+          "clothes"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "dishes_2",
+        "clothes_2",
+        "dishes_3",
+        "clothes_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "dishes",
+        "clothes"
+      ],
+      "collected": [],
+      "movesLeft": null,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      }
+    ],
+    "tags": [
+      "tutorial-stock",
+      "images"
+    ],
+    "authoringSeed": 0,
+    "searchVisited": 0,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-003",
+    "version": 1,
+    "campaignLevel": 3,
+    "title": "Небольшая подсказка",
+    "topics": [
+      {
+        "id": "vegetables",
+        "count": 3
+      },
+      {
+        "id": "flowers",
+        "count": 3
+      },
+      {
+        "id": "tools",
+        "count": 3
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "flowers_2",
+          "vegetables_1"
+        ],
+        [
+          "tools_3",
+          "tools"
+        ],
+        [
+          "vegetables_3",
+          "flowers"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "flowers_1",
+        "tools_1",
+        "flowers_3",
+        "tools_2",
+        "vegetables",
+        "vegetables_2"
+      ],
+      "waste": [],
+      "faceUp": [
+        "vegetables_1",
+        "tools",
+        "flowers"
+      ],
+      "collected": [],
+      "movesLeft": 30,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      }
+    ],
+    "tags": [
+      "hint-demo",
+      "finite-budget"
+    ],
+    "authoringSeed": 31,
+    "searchVisited": 158,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-004",
+    "version": 1,
+    "campaignLevel": 4,
+    "title": "Можно передумать",
+    "topics": [
+      {
+        "id": "shoes",
+        "count": 3
+      },
+      {
+        "id": "hats",
+        "count": 3
+      },
+      {
+        "id": "furniture",
+        "count": 3
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "hats_3",
+          "furniture_1",
+          "shoes_1"
+        ],
+        [
+          "shoes_2",
+          "hats_1",
+          "furniture"
+        ],
+        [
+          "shoes",
+          "hats",
+          "furniture_2"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "hats_2",
+        "furniture_3",
+        "shoes_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "shoes_1",
+        "furniture",
+        "furniture_2"
+      ],
+      "collected": [],
+      "movesLeft": 27,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "undo",
+      "completion-undo"
+    ],
+    "authoringSeed": 45,
+    "searchVisited": 33,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-005",
+    "version": 1,
+    "campaignLevel": 5,
+    "title": "Узнать по картинке",
+    "topics": [
+      {
+        "id": "fruit",
+        "count": 4,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "birds",
+        "count": 4,
+        "images": [
+          4
+        ]
+      },
+      {
+        "id": "tools",
+        "count": 4,
+        "images": [
+          1
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "tools_1",
+          "fruit_4",
+          "birds_3"
+        ],
+        [
+          "tools",
+          "fruit_1",
+          "fruit_2"
+        ],
+        [
+          "birds_4",
+          "tools_4",
+          "birds_1"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "tools_2",
+        "fruit",
+        "birds_2",
+        "birds",
+        "tools_3",
+        "fruit_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "birds_3",
+        "fruit_2",
+        "birds_1"
+      ],
+      "collected": [],
+      "movesLeft": 32,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "images",
+      "packet"
+    ],
+    "authoringSeed": 52,
+    "searchVisited": 69,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-006",
+    "version": 1,
+    "campaignLevel": 6,
+    "title": "Домашние мелочи",
+    "topics": [
+      {
+        "id": "kitchen",
+        "count": 4
+      },
+      {
+        "id": "dishes",
+        "count": 4,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "lights",
+        "count": 4,
+        "images": [
+          4
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "lights_4",
+          "dishes",
+          "lights_3"
+        ],
+        [
+          "lights_1",
+          "lights_2",
+          "lights"
+        ],
+        [
+          "dishes_1",
+          "dishes_3",
+          "kitchen_2"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "dishes_2",
+        "kitchen",
+        "kitchen_1",
+        "dishes_4",
+        "kitchen_4",
+        "kitchen_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "lights_3",
+        "lights",
+        "kitchen_2"
+      ],
+      "collected": [],
+      "movesLeft": 32,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "mixed-words",
+      "staging"
+    ],
+    "authoringSeed": 67,
+    "searchVisited": 696,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-007",
+    "version": 1,
+    "campaignLevel": 7,
+    "title": "За городом",
+    "topics": [
+      {
+        "id": "trees",
+        "count": 4,
+        "images": [
+          4
+        ]
+      },
+      {
+        "id": "insects",
+        "count": 4
+      },
+      {
+        "id": "forest",
+        "count": 4
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "trees_1",
+          "insects_4",
+          "insects_3"
+        ],
+        [
+          "forest_3",
+          "insects",
+          "forest_1"
+        ],
+        [
+          "forest_4",
+          "insects_1",
+          "insects_2"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "trees_2",
+        "trees",
+        "trees_4",
+        "forest",
+        "forest_2",
+        "trees_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "insects_3",
+        "forest_1",
+        "insects_2"
+      ],
+      "collected": [],
+      "movesLeft": 30,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "packet",
+      "nature"
+    ],
+    "authoringSeed": 73,
+    "searchVisited": 206,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-008",
+    "version": 1,
+    "campaignLevel": 8,
+    "title": "Четыре стопки",
+    "topics": [
+      {
+        "id": "road",
+        "count": 3,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "water",
+        "count": 3,
+        "images": [
+          3
+        ]
+      },
+      {
+        "id": "air",
+        "count": 3,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "space",
+        "count": 3
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "water_1",
+          "space_3",
+          "space"
+        ],
+        [
+          "water_3",
+          "air_3",
+          "water_2"
+        ],
+        [
+          "road_3",
+          "road_2",
+          "space_2"
+        ],
+        [
+          "air",
+          "road_1",
+          "road"
+        ]
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "stock": [
+        "air_1",
+        "space_1",
+        "air_2",
+        "water"
+      ],
+      "waste": [],
+      "faceUp": [
+        "space",
+        "water_2",
+        "space_2",
+        "road"
+      ],
+      "collected": [],
+      "movesLeft": 33,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "four-columns",
+      "images"
+    ],
+    "authoringSeed": 82,
+    "searchVisited": 108,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-009",
+    "version": 1,
+    "campaignLevel": 9,
+    "title": "На своём месте",
+    "topics": [
+      {
+        "id": "office",
+        "count": 4,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "music",
+        "count": 4,
+        "images": [
+          2
+        ]
+      },
+      {
+        "id": "sports",
+        "count": 4,
+        "images": [
+          3
+        ]
+      },
+      {
+        "id": "shapes",
+        "count": 4,
+        "images": [
+          1
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "shapes_3",
+          "shapes_4",
+          "sports_1"
+        ],
+        [
+          "office_1",
+          "sports_3",
+          "sports_2"
+        ],
+        [
+          "music_1",
+          "office_3",
+          "music_3"
+        ],
+        [
+          "shapes_2",
+          "office_4",
+          "sports_4"
+        ]
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "stock": [
+        "shapes",
+        "music_2",
+        "music_4",
+        "shapes_1",
+        "office",
+        "office_2",
+        "sports",
+        "music"
+      ],
+      "waste": [],
+      "faceUp": [
+        "sports_1",
+        "sports_2",
+        "music_3",
+        "sports_4"
+      ],
+      "collected": [],
+      "movesLeft": 41,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "long-titles",
+      "four-columns"
+    ],
+    "authoringSeed": 91,
+    "searchVisited": 68,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-010",
+    "version": 1,
+    "campaignLevel": 10,
+    "title": "К чаю",
+    "topics": [
+      {
+        "id": "baking",
+        "count": 4,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "sweets",
+        "count": 4,
+        "images": [
+          3
+        ]
+      },
+      {
+        "id": "drinks",
+        "count": 4,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "soups",
+        "count": 4
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "drinks_4",
+          "soups_1",
+          "baking_2"
+        ],
+        [
+          "drinks_2",
+          "baking_3",
+          "soups_3"
+        ],
+        [
+          "baking_4",
+          "soups_2",
+          "soups_4"
+        ],
+        [
+          "sweets_2",
+          "baking_1",
+          "drinks_3"
+        ]
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "stock": [
+        "soups",
+        "drinks",
+        "sweets_4",
+        "baking",
+        "sweets_3",
+        "sweets_1",
+        "drinks_1",
+        "sweets"
+      ],
+      "waste": [],
+      "faceUp": [
+        "baking_2",
+        "soups_3",
+        "soups_4",
+        "drinks_3"
+      ],
+      "collected": [],
+      "movesLeft": 39,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "four-categories",
+      "images"
+    ],
+    "authoringSeed": 103,
+    "searchVisited": 689,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-011",
+    "version": 1,
+    "campaignLevel": 11,
+    "title": "Перед прогулкой",
+    "topics": [
+      {
+        "id": "clothes",
+        "count": 4,
+        "images": [
+          2
+        ]
+      },
+      {
+        "id": "shoes",
+        "count": 4,
+        "images": [
+          2
+        ]
+      },
+      {
+        "id": "hats",
+        "count": 4,
+        "images": [
+          4
+        ]
+      },
+      {
+        "id": "weather",
+        "count": 4,
+        "images": [
+          2
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "clothes_3",
+          "hats_4",
+          "clothes_1"
+        ],
+        [
+          "shoes_4",
+          "hats_2",
+          "hats_3"
+        ],
+        [
+          "clothes",
+          "hats",
+          "clothes_2"
+        ],
+        [
+          "shoes_3",
+          "shoes_2",
+          "shoes_1"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "weather_3",
+        "weather_2",
+        "weather_4",
+        "hats_1",
+        "weather_1",
+        "clothes_4",
+        "weather",
+        "shoes"
+      ],
+      "waste": [],
+      "faceUp": [
+        "clothes_1",
+        "hats_3",
+        "clothes_2",
+        "shoes_1"
+      ],
+      "collected": [],
+      "movesLeft": 38,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "two-slots",
+      "category-queue"
+    ],
+    "authoringSeed": 116,
+    "searchVisited": 104,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-012",
+    "version": 1,
+    "campaignLevel": 12,
+    "title": "Не торопитесь",
+    "topics": [
+      {
+        "id": "tools",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "kitchen",
+        "count": 5
+      },
+      {
+        "id": "office",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "music",
+        "count": 5,
+        "images": [
+          2
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "office_4",
+          "tools_3",
+          "music_1",
+          "office"
+        ],
+        [
+          "office_5",
+          "music",
+          "music_3",
+          "kitchen_2"
+        ],
+        [
+          "office_1",
+          "office_3",
+          "music_4",
+          "kitchen_3"
+        ],
+        [
+          "tools_2",
+          "music_2",
+          "office_2",
+          "tools_1"
+        ]
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "stock": [
+        "tools_5",
+        "music_5",
+        "kitchen_5",
+        "kitchen_1",
+        "tools_4",
+        "tools",
+        "kitchen_4",
+        "kitchen"
+      ],
+      "waste": [],
+      "faceUp": [
+        "office",
+        "kitchen_2",
+        "kitchen_3",
+        "tools_1"
+      ],
+      "collected": [],
+      "movesLeft": 47,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "long-words",
+      "dense-field"
+    ],
+    "authoringSeed": 123,
+    "searchVisited": 2745,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-013",
+    "version": 1,
+    "campaignLevel": 13,
+    "title": "Живые связи",
+    "topics": [
+      {
+        "id": "birds",
+        "count": 4,
+        "images": [
+          4
+        ]
+      },
+      {
+        "id": "fish",
+        "count": 4,
+        "images": [
+          2
+        ]
+      },
+      {
+        "id": "insects",
+        "count": 4
+      },
+      {
+        "id": "forest",
+        "count": 4
+      },
+      {
+        "id": "flowers",
+        "count": 4,
+        "images": [
+          2
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "fish_4",
+          "birds_3",
+          "fish_3"
+        ],
+        [
+          "insects_4",
+          "forest_3",
+          "birds"
+        ],
+        [
+          "flowers_1",
+          "fish",
+          "insects_3"
+        ],
+        [
+          "forest_1",
+          "forest",
+          "forest_4"
+        ]
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "stock": [
+        "flowers",
+        "birds_1",
+        "forest_2",
+        "birds_2",
+        "insects_1",
+        "insects",
+        "flowers_2",
+        "flowers_3",
+        "flowers_4",
+        "insects_2",
+        "birds_4",
+        "fish_1",
+        "fish_2"
+      ],
+      "waste": [],
+      "faceUp": [
+        "fish_3",
+        "birds",
+        "insects_3",
+        "forest_4"
+      ],
+      "collected": [],
+      "movesLeft": 51,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "five-categories",
+      "mixed-images"
+    ],
+    "authoringSeed": 132,
+    "searchVisited": 624,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-014",
+    "version": 1,
+    "campaignLevel": 14,
+    "title": "Под одной крышей",
+    "topics": [
+      {
+        "id": "furniture",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "lights",
+        "count": 5,
+        "images": [
+          4
+        ]
+      },
+      {
+        "id": "dishes",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "clothes",
+        "count": 5,
+        "images": [
+          2
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "lights_5",
+          "clothes",
+          "clothes_4",
+          "dishes_4"
+        ],
+        [
+          "lights_3",
+          "clothes_1",
+          "dishes_5",
+          "lights"
+        ],
+        [
+          "dishes_1",
+          "furniture_3",
+          "lights_2",
+          "furniture"
+        ],
+        [
+          "dishes_3",
+          "furniture_1",
+          "clothes_2",
+          "furniture_4"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "furniture_5",
+        "dishes",
+        "clothes_3",
+        "clothes_5",
+        "furniture_2",
+        "lights_4",
+        "dishes_2",
+        "lights_1"
+      ],
+      "waste": [],
+      "faceUp": [
+        "dishes_4",
+        "lights",
+        "furniture",
+        "furniture_4"
+      ],
+      "collected": [],
+      "movesLeft": 46,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "dense-field",
+      "two-slots"
+    ],
+    "authoringSeed": 147,
+    "searchVisited": 413,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-015",
+    "version": 1,
+    "campaignLevel": 15,
+    "title": "Полезные вещи",
+    "topics": [
+      {
+        "id": "office",
+        "count": 5
+      },
+      {
+        "id": "sports",
+        "count": 5,
+        "images": [
+          3
+        ]
+      },
+      {
+        "id": "tools",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "music",
+        "count": 5,
+        "images": [
+          2
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "sports_4",
+          "sports_2",
+          "music_1",
+          "music_2"
+        ],
+        [
+          "office_2",
+          "sports_5",
+          "sports_3",
+          "music_4"
+        ],
+        [
+          "tools_4",
+          "office_4",
+          "tools_2",
+          "tools_3"
+        ],
+        [
+          "music_3",
+          "office_1",
+          "music",
+          "tools_5"
+        ]
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "stock": [
+        "tools_1",
+        "office_5",
+        "office",
+        "music_5",
+        "sports",
+        "tools",
+        "office_3",
+        "sports_1"
+      ],
+      "waste": [],
+      "faceUp": [
+        "music_2",
+        "music_4",
+        "tools_3",
+        "tools_5"
+      ],
+      "collected": [],
+      "movesLeft": 43,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "long-words",
+      "packets"
+    ],
+    "authoringSeed": 153,
+    "searchVisited": 144,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-016",
+    "version": 1,
+    "campaignLevel": 16,
+    "title": "Дальняя дорога",
+    "topics": [
+      {
+        "id": "road",
+        "count": 4,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "water",
+        "count": 4,
+        "images": [
+          3
+        ]
+      },
+      {
+        "id": "air",
+        "count": 4,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "weather",
+        "count": 4,
+        "images": [
+          2
+        ]
+      },
+      {
+        "id": "space",
+        "count": 4
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "weather_4",
+          "weather_1",
+          "water_1"
+        ],
+        [
+          "air_2",
+          "space_3",
+          "road_4"
+        ],
+        [
+          "road_3",
+          "air_4",
+          "road_2"
+        ],
+        [
+          "air_3",
+          "water_3",
+          "space"
+        ]
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "stock": [
+        "air",
+        "water",
+        "weather_3",
+        "space_1",
+        "space_4",
+        "weather_2",
+        "air_1",
+        "space_2",
+        "road",
+        "weather",
+        "water_4",
+        "road_1",
+        "water_2"
+      ],
+      "waste": [],
+      "faceUp": [
+        "water_1",
+        "road_4",
+        "road_2",
+        "space"
+      ],
+      "collected": [],
+      "movesLeft": 51,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "five-categories",
+      "stock-use"
+    ],
+    "authoringSeed": 163,
+    "searchVisited": 775,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-017",
+    "version": 1,
+    "campaignLevel": 17,
+    "title": "Длинные названия",
+    "topics": [
+      {
+        "id": "shapes",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "office",
+        "count": 5
+      },
+      {
+        "id": "kitchen",
+        "count": 5
+      },
+      {
+        "id": "music",
+        "count": 5,
+        "images": [
+          2
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "kitchen_2",
+          "shapes_4",
+          "music",
+          "office_5"
+        ],
+        [
+          "kitchen_3",
+          "office_3",
+          "kitchen",
+          "office_4"
+        ],
+        [
+          "music_4",
+          "kitchen_5",
+          "shapes_5",
+          "office_2"
+        ],
+        [
+          "shapes_3",
+          "music_2",
+          "music_5",
+          "kitchen_4"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "shapes",
+        "music_1",
+        "kitchen_1",
+        "office",
+        "shapes_2",
+        "music_3",
+        "shapes_1",
+        "office_1"
+      ],
+      "waste": [],
+      "faceUp": [
+        "office_5",
+        "office_4",
+        "office_2",
+        "kitchen_4"
+      ],
+      "collected": [],
+      "movesLeft": 47,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "long-titles",
+      "long-words",
+      "dense-field"
+    ],
+    "authoringSeed": 174,
+    "searchVisited": 6487,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-018",
+    "version": 1,
+    "campaignLevel": 18,
+    "title": "Ещё один круг",
+    "topics": [
+      {
+        "id": "vegetables",
+        "count": 3,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "flowers",
+        "count": 3,
+        "images": [
+          2
+        ]
+      },
+      {
+        "id": "trees",
+        "count": 3
+      },
+      {
+        "id": "fish",
+        "count": 3,
+        "images": [
+          2
+        ]
+      },
+      {
+        "id": "forest",
+        "count": 3
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "vegetables"
+        ],
+        [
+          "flowers"
+        ],
+        [
+          "trees"
+        ],
+        [
+          "fish"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "forest_1",
+        "trees_1",
+        "fish_1",
+        "vegetables_1",
+        "flowers_1",
+        "forest_2",
+        "trees_2",
+        "fish_2",
+        "vegetables_2",
+        "flowers_2",
+        "forest_3",
+        "trees_3",
+        "fish_3",
+        "forest",
+        "vegetables_3",
+        "flowers_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "vegetables",
+        "flowers",
+        "trees",
+        "fish"
+      ],
+      "collected": [],
+      "movesLeft": 61,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "recycle"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "recycle"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "repeated-stock-cycle",
+      "images"
+    ],
+    "authoringSeed": 0,
+    "searchVisited": 0,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-019",
+    "version": 1,
+    "campaignLevel": 19,
+    "title": "Ход в ход",
+    "topics": [
+      {
+        "id": "baking",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "sweets",
+        "count": 5,
+        "images": [
+          3
+        ]
+      },
+      {
+        "id": "soups",
+        "count": 5
+      },
+      {
+        "id": "drinks",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "dishes",
+        "count": 5,
+        "images": [
+          1
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "drinks_2",
+          "drinks",
+          "dishes_2",
+          "soups_1"
+        ],
+        [
+          "dishes",
+          "baking_4",
+          "soups_4",
+          "baking_3"
+        ],
+        [
+          "dishes_4",
+          "sweets_5",
+          "sweets_2",
+          "drinks_1"
+        ],
+        [
+          "baking_5",
+          "sweets",
+          "dishes_1",
+          "baking_1"
+        ]
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "stock": [
+        "dishes_5",
+        "baking_2",
+        "soups_5",
+        "sweets_1",
+        "soups_2",
+        "soups_3",
+        "sweets_4",
+        "soups",
+        "drinks_5",
+        "baking",
+        "drinks_3",
+        "dishes_3",
+        "drinks_4",
+        "sweets_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "soups_1",
+        "baking_3",
+        "drinks_1",
+        "baking_1"
+      ],
+      "collected": [],
+      "movesLeft": 45,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "last-move-win",
+      "five-categories"
+    ],
+    "authoringSeed": 193,
+    "searchVisited": 1999,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  },
+  {
+    "id": "campaign-020",
+    "version": 1,
+    "campaignLevel": 20,
+    "title": "Всё сошлось",
+    "topics": [
+      {
+        "id": "tools",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "furniture",
+        "count": 5,
+        "images": [
+          1
+        ]
+      },
+      {
+        "id": "clothes",
+        "count": 5,
+        "images": [
+          2
+        ]
+      },
+      {
+        "id": "hats",
+        "count": 5,
+        "images": [
+          4
+        ]
+      },
+      {
+        "id": "lights",
+        "count": 5,
+        "images": [
+          4
+        ]
+      }
+    ],
+    "initial": {
+      "tableau": [
+        [
+          "lights_5",
+          "lights_2",
+          "lights",
+          "clothes_3"
+        ],
+        [
+          "hats_1",
+          "furniture",
+          "furniture_2",
+          "furniture_5"
+        ],
+        [
+          "tools",
+          "clothes",
+          "furniture_1",
+          "hats_3"
+        ],
+        [
+          "tools_2",
+          "tools_3",
+          "clothes_1",
+          "hats_5"
+        ]
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "stock": [
+        "tools_1",
+        "clothes_4",
+        "lights_3",
+        "hats",
+        "tools_5",
+        "lights_1",
+        "clothes_2",
+        "lights_4",
+        "furniture_4",
+        "clothes_5",
+        "tools_4",
+        "hats_4",
+        "hats_2",
+        "furniture_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "clothes_3",
+        "furniture_5",
+        "hats_3",
+        "hats_5"
+      ],
+      "collected": [],
+      "movesLeft": 56,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "tags": [
+      "chapter-finale",
+      "dense-field",
+      "five-categories"
+    ],
+    "authoringSeed": 203,
+    "searchVisited": 13357,
+    "editorialStatus": "Авторская редактура слов, пояснений и пересечений внутри раздачи; независимый человеческий плейтест ещё не выполнен."
+  }
+]

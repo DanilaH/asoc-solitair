@@ -1,6 +1,6 @@
 # Android services — 2026-11-09
 
-Target: `com.danilah.asocsolitair`, portrait RuStore Android, version 0.2.0/code 2. No Yandex Games web SDK, server, account, push, purchases or cloud saves are introduced.
+Target: `com.danilah.asocsolitair`, portrait RuStore Android, version 0.3.0/code 3. No Yandex Games web SDK, server, account, push, purchases or cloud saves are introduced.
 
 ## Reuse and ownership
 
@@ -26,7 +26,7 @@ Native loaders and SDK views run on the main thread. Interstitial preload has it
 
 The native root owns system-bar/cutout insets once. The WebView uses its contained safe bounds, avoiding duplicate CSS insets. Banner reservation lives below the helper dock, remains reserved during temporary hiding and uses SDK-measured sticky height plus the kit's CSS/native projection. Epochs cross hide/place calls; stale layout callbacks cannot redisplay a hidden view. Background, dialogs and fullscreen hide the view. Resizes remeasure instead of multiplying CSS coordinates by screen density.
 
-Product policy: campaign levels 1–2 have no banner; first five new campaign levels have no interstitial. Later, at least three new wins and 120s since the last fullscreen are required. Relaunch applies a conservative additional 120s grace. Replays/control deals do not advance cadence; daily cannot request an interstitial; settings restart never requests one mid-level. Only a deliberate post-win transition may show. The current control deal has no campaign ordinal, so it cannot accidentally become campaign progress or show a banner/interstitial. Actual campaign/daily integration remains part of their separate content/meta stages.
+Product policy: campaign levels 1–2 have no banner; first five new campaign levels have no interstitial. Later, at least three new wins and 120s since the last fullscreen are required. Relaunch applies a conservative additional 120s grace. Replays/control deals do not advance cadence; daily cannot request an interstitial; settings restart never requests one mid-level. Only a deliberate post-win transition may show. The current control deal has no campaign ordinal, so it cannot accidentally become campaign progress or show a banner/interstitial. Campaign ordinals now authorize the banner/cadence policy; the home screen remains ad-free. Daily integration remains part of its separate meta stage.
 
 Helper exchange is accessible from settings or an empty stock of charges. It spends ordinary coins (+1 Hint/Undo for 100/60), saves before presentation and does not make a move. Native video buttons are unavailable until the SDK reports availability; the browser never substitutes a successful mock.
 

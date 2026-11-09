@@ -33,3 +33,10 @@ The first control deal is independently authored but only self-edited. Its valid
 - No phone/emulator is attached locally. Native ad inventory/earned callback display, haptic/audio feel, physical process-kill/upgrade, AppMetrica dashboard delivery, live configuration and production signing remain unverified. The unsigned disabled-SDK R8 artifact is compile-only, not a store candidate. See docs/platform/RELEASE_CHECKLIST.md.
 
 The original first-slice limitations above describe that earlier revision. Native services and storage are now implemented; remaining hardware/live limits are still real. Campaign bank, modifiers and compact meta were not added by this infrastructure package.
+
+### Corrected hosted verification
+
+- CI [42610405612](https://github.com/DanilaH/asoc-solitair/actions/runs/42610405612), implementation commit `930f77df7820107b2c3361773059aa090cd98ddc`: web PASS (29 model/platform tests, content replay/build, 18 browser scenarios); Android PASS (`assembleDebug` in demo mode and unsigned `assembleRelease` in disabled-SDK compile-only mode with R8/resource shrinking). App Set ID dependency closure is fixed; no missing-class suppression was introduced.
+- Native artifact `android-builds`, id `13668779787`, 16,367,729 archive bytes, digest `sha256:55033798d546defa91bea4d43c6dca3d336b476b41a30a75833ad41175b55511`, retains both APKs and R8 mapping output. This is an archive identity/size, not an APK-size or signing claim.
+- New compact helper screenshot and [GIF](docs/qa/platform-services.gif) recorded from the actual production browser bundle at 360×640, showing independent haptic preference and a persisted Undo purchase. This proves the visible UI flow, not a native haptic pulse. The helper dialog was tightened after visual inspection to avoid clipping the return button.
+- Subsequent verification/media documentation changes do not alter the tested implementation. Live configuration, signing and physical-device acceptance above remain pending.

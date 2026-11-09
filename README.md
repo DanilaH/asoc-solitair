@@ -42,3 +42,5 @@ Android: JDK 21, Android SDK 36 / build-tools 36.0.0. Затем `native/android
 Для сопоставимой диагностики есть независимые URL-флаги `fxCards=0`, `fxLayout=0`, `fxCoins=0`, `fxParticles=0`; правила и сохранения они не меняют. Это средство будущего замера, а не измерение скорости телефона.
 
 Первая партия: [начало](docs/qa/opening.png), [середина](docs/qa/midgame.png), [результат](docs/qa/result.png), [короткая запись без звука](docs/qa/first-party.webm). Запись воспроизводится командой `npm run qa:record`.
+
+Нативная обвязка: [компактное окно помощников](docs/qa/helpers.png), [GIF настроек и покупки](docs/qa/platform-services.gif). Записано из production web-сборки, не с физического телефона. Android debug и unsigned SDK-disabled R8 сборки подтверждены [CI 42610405612](https://github.com/DanilaH/asoc-solitair/actions/runs/42610405612).

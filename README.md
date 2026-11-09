@@ -19,6 +19,7 @@ npm run dev
 npm run check
 npx playwright install chromium
 npm run test:browser
+npm run qa:record
 npm run android:sync
 ```
 
@@ -39,3 +40,5 @@ Android: JDK 21, Android SDK 36 / build-tools 36.0.0. Затем `native/android
 Сервисы рекламы, аналитики и нативной вибрации сейчас явно недоступны. Успех мока не выдаётся за нативный показ; fake rewarded отсутствует. Следующий практический шаг — 20 собственных отредактированных раздач и расширение ядра по ТЗ.
 
 Для сопоставимой диагностики есть независимые URL-флаги `fxCards=0`, `fxLayout=0`, `fxCoins=0`, `fxParticles=0`; правила и сохранения они не меняют. Это средство будущего замера, а не измерение скорости телефона.
+
+Первая партия: [начало](docs/qa/opening.png), [середина](docs/qa/midgame.png), [результат](docs/qa/result.png), [короткая запись без звука](docs/qa/first-party.webm). Запись воспроизводится командой `npm run qa:record`.

@@ -12,6 +12,7 @@
     "test": "vitest run tests/unit",
     "test:browser": "playwright test",
     "content:validate": "vite build --ssr tools/validate.ts --outDir .validation && node .validation/validate.js",
+    "qa:record": "npm run build && vite build --ssr tools/record.ts --outDir .recording && node .recording/record.js",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "check": "npm run typecheck && npm test && npm run content:validate && npm run build",

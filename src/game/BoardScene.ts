@@ -117,7 +117,7 @@ export class BoardScene extends Phaser.Scene {
       for (let y = -52; y <= 52; y += 26) for (let x = -40; x <= 40; x += 26) this.stockArt.strokeCircle(stock.x + x, stock.y + y, 7);
     }
     this.stockCount.setPosition(stock.x, stock.y).setText(board.stock.length ? String(board.stock.length) : '↻');
-    this.stockLabel.setPosition(stock.x, stock.y + CARD_H / 2 + 16).setText(board.stock.length ? 'Колода' : 'Повторить');
+    this.stockLabel.setPosition(stock.x, stock.y - CARD_H / 2 - 13).setText(board.stock.length ? 'Колода' : 'Повторить');
     const visible = new Set(this.metrics.poses.map(p => p.id));
     const completed = events.find(e => e.type === 'complete');
     for (const [id, view] of this.views) {

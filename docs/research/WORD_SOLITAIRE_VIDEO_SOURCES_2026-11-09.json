@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "analysis_date": "2026-11-09",
+  "candidate_id": 208,
+  "folder_url": "https://drive.google.com/drive/folders/1W5uEIfwwR6vPzYsp5EYt1r2RFxuWCKgL?usp=sharing",
+  "sources": [
+    {
+      "code": "S1",
+      "filename": "Screenrecorder-2026-11-09-12-12-38-159.mp4",
+      "drive_file_id": "1BLB3aShGKDB1qC0cukvoe-1zHTCX3IfX",
+      "source_url": "https://drive.google.com/file/d/1BLB3aShGKDB1qC0cukvoe-1zHTCX3IfX/view",
+      "duration_seconds": 931.688821,
+      "bytes": 323337693,
+      "width": 1080,
+      "height": 2400,
+      "average_frame_rate": "22512000/931487",
+      "audio_present": true,
+      "sha256": "9cecd67d00e42c07e9af727a89d9f110a0eb776ec605eca08c0bd172a2a0b686",
+      "game": {
+        "name": "Solitaire Associations Journey",
+        "publisher": "Hitapps Games",
+        "store_url": "https://play.google.com/store/apps/details?id=com.hitappsgames.wordsolitaire",
+        "identity_evidence": "HITAPPS launch screen and original Level 48 screenshot reproduced; package/version screen absent"
+      },
+      "dense_sample_interval_seconds": 3,
+      "dense_frames_reviewed": 310
+    },
+    {
+      "code": "S2",
+      "filename": "Screenrecorder-2026-11-09-12-29-25-199.mp4",
+      "drive_file_id": "1i3a71rYs9Ja9ETa0eyqGEpSjYh83zKEE",
+      "source_url": "https://drive.google.com/file/d/1i3a71rYs9Ja9ETa0eyqGEpSjYh83zKEE/view",
+      "duration_seconds": 565.66508,
+      "bytes": 144070644,
+      "width": 1080,
+      "height": 2400,
+      "average_frame_rate": "1370100/56557",
+      "audio_present": true,
+      "sha256": "671b8403bdc25a248817cdda3990f4d08d42d2a0acaa8f0901daaec111271fe2",
+      "game": {
+        "name": "Word Solitaire: Categories",
+        "publisher": "CASUAL AZUR GAMES",
+        "store_url": "https://play.google.com/store/apps/details?id=com.solitaire.match.words",
+        "identity_evidence": "Launch/UI match; settings show 1.3.3.8; package screen absent",
+        "visible_version": "1.3.3.8"
+      },
+      "dense_sample_interval_seconds": 2,
+      "dense_frames_reviewed": 283
+    },
+    {
+      "code": "S3",
+      "filename": "Screenrecorder-2026-11-09-12-41-14-87.mp4",
+      "drive_file_id": "1svpsKFIqZ7m4UcxQV4kJwV2nkFWw6-9s",
+      "source_url": "https://drive.google.com/file/d/1svpsKFIqZ7m4UcxQV4kJwV2nkFWw6-9s/view",
+      "duration_seconds": 814.973923,
+      "bytes": 311753469,
+      "width": 1080,
+      "height": 2400,
+      "average_frame_rate": "3951000/162977",
+      "audio_present": true,
+      "sha256": "695d26e28bbeebd4d6d591a535c864b59c4498855030b2de566f8b4ec3a20460",
+      "game": {
+        "name": "Word Solitaire: Match & Play",
+        "publisher": "Unico Studio",
+        "store_url": "https://play.google.com/store/apps/details?id=com.unicostudio.wordsolitaire",
+        "identity_evidence": "UI matches official reference; no publisher splash/package/version screen in recording"
+      },
+      "dense_sample_interval_seconds": 3,
+      "dense_frames_reviewed": 272
+    }
+  ],
+  "total_duration_seconds": 2312.327824,
+  "review": {
+    "method": "Full timeline contact sheets at 8-second intervals, all dense sheets at S1/S3 3 seconds and S2 2 seconds; selected hint/key/failure moments reviewed more densely; selected full-resolution stills.",
+    "dense_frames_reviewed": 865,
+    "selected_hint_fps": 4,
+    "selected_key_and_failure_fps": 2,
+    "continuous_realtime_playback": false,
+    "audio_subjectively_reviewed": false,
+    "audio_stream_detected": true,
+    "apk_installed": false,
+    "independent_phone_playtest": false
+  },
+  "limits": [
+    "Game identity does not prove exact installed package or build unless visible.",
+    "No competitor level-bank extraction.",
+    "Move/recycle/undo and economy edge cases remain partly unresolved.",
+    "No revenue, organic-acquisition or retention measurements."
+  ],
+  "privacy": "Only source metadata and gameplay findings; no download authorization URLs or personal system screens.",
+  "followup_review_2026_11_09": {
+    "purpose": "User scope clarification: affordable mechanics and comprehensive feel; detailed streak, dealing, reflow and category-clear review.",
+    "selected_scenes": [
+      {
+        "source": "S1",
+        "start_seconds": 110.5,
+        "end_seconds": 112.5,
+        "fps": 8
+      },
+      {
+        "source": "S1",
+        "start_seconds": 226,
+        "end_seconds": 234,
+        "fps": 4
+      },
+      {
+        "source": "S1",
+        "start_seconds": 237,
+        "end_seconds": 239.5,
+        "fps": 8
+      },
+      {
+        "source": "S1",
+        "start_seconds": 241,
+        "end_seconds": 245,
+        "fps": 4
+      },
+      {
+        "source": "S1",
+        "start_seconds": 296,
+        "end_seconds": 308,
+        "fps": 3
+      },
+      {
+        "source": "S1",
+        "start_seconds": 303.3,
+        "end_seconds": 305.1,
+        "fps": 8
+      },
+      {
+        "source": "S1",
+        "start_seconds": 482,
+        "end_seconds": 486,
+        "fps": 8
+      },
+      {
+        "source": "S2",
+        "start_seconds": 44,
+        "end_seconds": 49,
+        "fps": 4
+      },
+      {
+        "source": "S3",
+        "start_seconds": 85,
+        "end_seconds": 90,
+        "fps": 4
+      }
+    ],
+    "additional_native_hud_stills_seconds_S1": [
+      226.5,
+      230.7,
+      244.5,
+      440,
+      810
+    ],
+    "findings": [
+      "Observed tiers: 4 cells/+2, 5/+3, 6/+4, 7/+5.",
+      "Draw preserved progress in the checked scene; invalid drop reset progress without lowering tier or spending a move.",
+      "Coin bursts fly to a temporary safe; ordinary wallet stayed unchanged in two checked payouts.",
+      "Group count badges, dealing cascade, responsive stack geometry and non-modal category praise separately specified."
+    ],
+    "audio_subjectively_reviewed": false,
+    "scope_document": "RuStore/WORD_SOLITAIRE_FEEL_SPEC_V1_2026-11-09.md"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "asoc-solitair",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run tests/unit",
+    "test:browser": "playwright test",
+    "content:validate": "vite build --ssr tools/validate.ts --outDir .validation && node .validation/validate.js",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "check": "npm run typecheck && npm test && npm run content:validate && npm run build",
+    "android:sync": "npm run build && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.6.0",
+    "@danilah/mini-games-kit": "git+https://github.com/DanilaH/mini-games-kit.git#a9325265e87583a4872cf6a158e1e881a0d7508e",
+    "phaser": "4.2.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.0",
+    "@playwright/test": "1.56.1",
+    "@types/node": "26.4.1",
+    "typescript": "7.0.2",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
+  }
+}

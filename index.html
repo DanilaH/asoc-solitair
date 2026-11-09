@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#075741"><title>Солитёр ассоциаций</title></head>
+<body>
+<div id="app">
+  <header><button id="menu" class="round" aria-label="Настройки"><span class="hamburger"></span></button><span class="brand">Ассоциации</span><div class="wallet"><span class="coin-icon">✦</span><span id="coins">100</span></div></header>
+  <section class="progress-row"><div class="moves"><span>ХОДЫ</span><strong id="moves">32</strong><div class="move-track"><i id="move-fill"></i></div></div><div class="level"><span>РАЗДАЧА 1</span><h1>Найдите общее</h1></div></section>
+  <section class="streak-row" aria-label="Серия переносов"><div><span class="streak-title">Удачный ход</span><div id="streak" class="streak"></div></div><span id="streak-reward" class="streak-reward">+2 <span>✦</span></span></section>
+  <main id="game" aria-label="Карточное поле"><div id="game-root"></div><div id="loading">Раскладываем карты…</div></main>
+  <p id="message" role="status">Перенесите категорию в свободный верхний слот</p>
+  <footer id="dock"><button id="hint"><span class="helper-icon">☀</span><span>Подсказка</span><b id="hint-count">3</b></button><button id="undo"><span class="helper-icon undo-icon">↶</span><span>Отмена</span><b id="undo-count">5</b></button><button id="inspect" aria-pressed="false"><span class="helper-icon word-icon">Aa</span><span>Рассмотреть</span></button></footer>
+  <div class="bottom-note">Собирайте карты одной категории вместе</div>
+</div>
+<div id="coin-layer" aria-hidden="true"></div>
+<dialog id="settings"><button class="close" data-close aria-label="Закрыть">×</button><span class="eyebrow">КАК ВАМ УДОБНЕЕ</span><h2>Настройки</h2><label class="setting"><span>Звуки</span><input type="checkbox" id="sfx" checked></label><label class="setting"><span>Меньше движения</span><input type="checkbox" id="reduced"></label><button class="secondary" id="restart">Начать раздачу заново</button><p class="small">Карты вернутся на исходные места. Потраченные подсказки и отмены не восстановятся.</p><button class="primary" data-close>Продолжить</button></dialog>
+<dialog id="inspect-dialog"><button class="close" data-close aria-label="Закрыть">×</button><span class="eyebrow">КАРТОЧКА</span><h2 id="word-title"></h2><p id="word-description"></p><button class="primary" data-close>Понятно</button></dialog>
+<dialog id="result"><span class="result-star">✦</span><h2 id="result-title">Всё сошлось!</h2><p id="result-copy"></p><div id="result-rewards"></div><button id="result-undo" class="secondary">Отменить последний ход</button><button id="replay" class="primary">Ещё раз</button></dialog>
+<script type="module" src="/src/main.ts"></script>
+</body></html>

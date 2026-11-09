@@ -120,7 +120,13 @@ try {
     const hintUnlocked = helperUnlocked(save, 'hint', deal), undoUnlocked = helperUnlocked(save, 'undo', deal);
     $('#hint').hidden = !hintUnlocked; $('#undo').hidden = !undoUnlocked;
     $('#hint-offer').hidden = !hintUnlocked; $('#undo-offer').hidden = !undoUnlocked;
-    $('#helpers-open').hidden = !hintUnlocked && !undoUnlocked;
+    const jokerUnlocked = helperUnlocked(save, 'joker', deal);
+    $('#joker').hidden = !jokerUnlocked; $('#joker-offer').hidden = !jokerUnlocked;
+    $('#joker-count').textContent = String(save.profile.jokers); $('#joker-stock').textContent = String(save.profile.jokers);
+    $<HTMLButtonElement>('#joker').disabled = board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving;
+    $<HTMLButtonElement>('#buy-joker').disabled = serviceBusy || saving || save.profile.coins < BALANCE.helperPrices.joker;
+    $('#joker').classList.toggle('attention', lesson(save, deal)?.attention === 'joker');
+    $('#helpers-open').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
     $('#restart').hidden = screen === 'home'; $('#restart-copy').hidden = screen === 'home'; $('#levels-open').hidden = screen === 'home';
     $('#settings-done').textContent = screen === 'home' ? 'Готово' : 'Вернуться к картам';
     const instruction = lesson(save, deal);
@@ -157,7 +163,7 @@ try {
     const won = save.attempt.board.phase === 'won';
     outcomeViewed = true;
     $('#result-title').textContent = won ? 'Всё сошлось!' : 'Ходы закончились';
-    $('#result-copy').textContent = won ? (deal.campaignLevel === CAMPAIGN_LENGTH ? 'Все 20 уровней пройдены. Любую раздачу можно сыграть ещё раз.' : 'Все категории этой раздачи собраны.') : 'Можно отменить последний ход или попробовать тот же расклад снова.';
+    $('#result-copy').textContent = won ? (deal.campaignLevel === CAMPAIGN_LENGTH ? 'Все 26 уровней пройдены. Любую раздачу можно сыграть ещё раз.' : 'Все категории этой раздачи собраны.') : 'Можно отменить последний ход или попробовать тот же расклад снова.';
     $('#result-rewards').innerHTML = won ? `<div class="reward-line"><span>За победу</span><strong>+${BALANCE.winCoins}</strong></div>${save.attempt.board.movesLeft === null ? '' : `<div class="reward-line"><span>Осталось ходов: ${save.attempt.board.movesLeft}</span><strong>+${BALANCE.coinsPerRemainingMove * save.attempt.board.movesLeft}</strong></div>`}<div class="reward-line"><span>Серии за партию · уже получено</span><strong>${save.attempt.streak.coins}</strong></div>` : '';
     $('#result-rewards').hidden = !won;
     $('#result-undo').hidden = won || !save.profile.undos || !save.attempt.undo.length;
@@ -190,16 +196,17 @@ try {
     if (result.accepted) {
       if (started) telemetry.track('level_start');
       if (cmd.type === 'restart') telemetry.track('level_restart');
-      if (cmd.type === 'hint' || cmd.type === 'undo') telemetry.track('helper_used', { helper: cmd.type });
+      if (cmd.type === 'hint' || cmd.type === 'undo' || cmd.type === 'place-joker') telemetry.track('helper_used', { helper: cmd.type === 'place-joker' ? 'joker' : cmd.type });
       if (finished) telemetry.track(save.attempt.board.phase === 'won' ? 'level_win' : 'level_fail');
       for (const event of result.events) if (event.type === 'coins' || event.type === 'win') telemetry.track('reward_granted', { reason: event.type === 'coins' ? 'core_streak' : 'level_win', amount: event.amount ?? 0 });
       if (cmd.type !== 'hint') activeHint = undefined;
       scene?.clearHint();
       const boardCommand = ['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined;
       scene?.sync(result.events, cmd.type === 'restart', boardCommand);
-      const major = result.events.find(e => e.type === 'win') ?? result.events.find(e => e.type === 'complete') ?? result.events.find(e => e.type === 'coins') ?? result.events[0];
+      const major = result.events.find(e => e.type === 'win') ?? result.events.find(e => e.type === 'unlock') ?? result.events.find(e => e.type === 'complete') ?? result.events.find(e => e.type === 'key') ?? result.events.find(e => e.type === 'coins') ?? result.events[0];
       if (major) {
         runtime.play(major.type);
+        if (major.type === 'key' || major.type === 'unlock' || major.type === 'joker') runtime.pulse(major.type === 'key' ? 'coins' : major.type === 'unlock' ? 'complete' : 'hint');
         if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type as 'transfer' | 'complete' | 'coins' | 'win' | 'undo' | 'hint');
       }
       if (result.events.some(e => e.type === 'coins')) coinBurst();
@@ -317,7 +324,7 @@ try {
     return { rect, backing: getBackingStoreSize(Math.max(1, rect.width), Math.max(1, rect.height), ratio) };
   }
   const initial = size();
-  scene = new BoardScene({ deal, getSave: () => save, command: execute, sound: name => runtime.play(name),
+  scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, command: execute, sound: name => runtime.play(name),
     inspect(id) {
       const card = deal.cards[id];
       if (card.image) { message('Пояснения доступны карточкам со словами'); return; }
@@ -384,6 +391,17 @@ try {
   $('#levels-open').addEventListener('click', goHome, domOptions);
   $('#switch-confirm').addEventListener('click', () => { const level = requestedLevel; requestedLevel = undefined; if (level) void openLevel(level, true); }, domOptions);
   $('#menu').addEventListener('click', () => { runtime.play('ui'); openDialog('#settings'); }, domOptions);
+  $('#joker').addEventListener('click', () => {
+    if (!save.profile.jokers) { openDialog('#helpers'); return; }
+    const active = $('#joker').getAttribute('aria-pressed') !== 'true'; setInspect(false); scene?.setJoker(active);
+    message(active ? 'Выберите непустой открытый столбец. Повторное нажатие отменит выбор.' : 'Выбор Джокера отменён — заряд сохранён');
+  }, domOptions);
+  $('#buy-joker').addEventListener('click', async () => {
+    if (serviceBusy || saving || !helperUnlocked(save, 'joker', deal)) return;
+    try { if (await write(next => purchaseHelper(next, 'joker'))) { telemetry.track('helper_purchase', { helper: 'joker', cost: BALANCE.helperPrices.joker }); runtime.play('ui'); } }
+    catch { message('Не удалось сохранить покупку. Попробуйте ещё раз.', true); }
+    renderHud();
+  }, domOptions);
   $('#undo').addEventListener('click', () => { if (!save.profile.undos) openDialog('#helpers'); else void execute({ type: 'undo' }); }, domOptions);
   $('#inspect').addEventListener('click', () => setInspect(!inspectMode), domOptions);
   $('#restart').addEventListener('click', () => { void replay(); }, domOptions);

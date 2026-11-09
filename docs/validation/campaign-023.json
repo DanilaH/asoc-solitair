@@ -1,0 +1,147 @@
+{
+  "dealId": "campaign-023",
+  "dealVersion": 1,
+  "rulesVersion": 2,
+  "contentVersion": 3,
+  "initialSha256": "4d1dc6c6c4e4f91f0a8f96c94e13855acfa9c2c0435e7588828fe2912d1dcd61",
+  "exactInitialState": {
+    "tableau": [
+      [
+        "days_7",
+        "days"
+      ],
+      [
+        "days_5",
+        "days_3",
+        "days_1"
+      ],
+      [
+        "days_6",
+        "days_4",
+        "days_2"
+      ]
+    ],
+    "foundations": [
+      [],
+      []
+    ],
+    "stock": [],
+    "waste": [],
+    "faceUp": [
+      "days",
+      "days_1",
+      "days_2"
+    ],
+    "collected": [],
+    "movesLeft": 14,
+    "phase": "playing"
+  },
+  "winningPath": [
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    }
+  ],
+  "moveCount": 8,
+  "budget": 14,
+  "slack": 6,
+  "replay": "PASS",
+  "editorialStatus": "Authored development teaching chapter; rules/witness verified, release pacing pending.",
+  "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+  "coverage": {
+    "cards": 8,
+    "columns": 3,
+    "categories": 1,
+    "largestPacket": 1,
+    "flips": 5,
+    "recycleCount": 0,
+    "tags": [
+      "ordered",
+      "teaching"
+    ]
+  }
+}

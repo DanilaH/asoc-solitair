@@ -1,0 +1,166 @@
+{
+  "dealId": "campaign-022",
+  "dealVersion": 1,
+  "rulesVersion": 2,
+  "contentVersion": 3,
+  "initialSha256": "59863fb38f260adc633043c75b8693be1edd32445222ce315d822e3976c01f87",
+  "exactInitialState": {
+    "tableau": [
+      [
+        "trees_2",
+        "flowers"
+      ],
+      [
+        "flowers_2",
+        "trees"
+      ],
+      [
+        "fish_2",
+        "trees_1",
+        "flowers_1"
+      ]
+    ],
+    "foundations": [
+      [],
+      []
+    ],
+    "stock": [
+      "fish",
+      "fish_1"
+    ],
+    "waste": [],
+    "faceUp": [
+      "flowers",
+      "trees",
+      "flowers_1"
+    ],
+    "collected": [],
+    "movesLeft": 17,
+    "phase": "playing"
+  },
+  "winningPath": [
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 1
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 1
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "tableau",
+        "index": 2
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    },
+    {
+      "type": "draw"
+    },
+    {
+      "type": "transfer",
+      "from": {
+        "kind": "waste",
+        "index": 0
+      },
+      "to": {
+        "kind": "foundation",
+        "index": 0
+      }
+    }
+  ],
+  "moveCount": 11,
+  "budget": 17,
+  "slack": 6,
+  "replay": "PASS",
+  "editorialStatus": "Authored development teaching chapter; rules/witness verified, release pacing pending.",
+  "independence": "Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.",
+  "coverage": {
+    "cards": 9,
+    "columns": 3,
+    "categories": 3,
+    "largestPacket": 1,
+    "flips": 4,
+    "recycleCount": 0,
+    "tags": [
+      "joker",
+      "application"
+    ]
+  }
+}

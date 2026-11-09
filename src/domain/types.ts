@@ -1,29 +1,34 @@
-export const RULES_VERSION = 1;
-export const CONTENT_VERSION = 2;
-export const BALANCE_VERSION = 1;
+export const RULES_VERSION = 2;
+export const CONTENT_VERSION = 3;
+export const BALANCE_VERSION = 2;
 export interface Card {
-  id: string; category: string; text: string; leader?: boolean; image?: string; explanation: string;
+  id: string; category: string; text: string; leader?: boolean; image?: string; rank?: number; ordered?: boolean; keyId?: string; explanation: string;
 }
 export interface Board {
   tableau: string[][]; foundations: string[][]; stock: string[]; waste: string[];
   faceUp: string[]; collected: string[]; movesLeft: number | null;
   phase: 'playing' | 'exhausted' | 'won';
+  joker?: { column: number; boundary: number };
+  keys?: string[];
 }
 export interface Location { kind: 'tableau' | 'waste' | 'foundation'; index: number }
 export type BoardCommand = { type: 'transfer'; from: Location; to: Location }
   | { type: 'draw' } | { type: 'recycle' };
-export type Command = BoardCommand | { type: 'undo' } | { type: 'restart'; attemptId: string }
+export type Command = BoardCommand | { type: 'place-joker'; column: number } | { type: 'undo' } | { type: 'restart'; attemptId: string }
   | { type: 'hint'; revision: number; action: BoardCommand };
 export interface Deal {
   id: string; version: number; title: string; cards: Record<string, Card>; initial: Board;
   winningPath: BoardCommand[]; editorialStatus: string;
   campaignLevel?: number;
   tags?: string[];
+  lock?: { column: number; requiredKeys: string[] };
+  tutorialPath?: Command[];
 }
 export interface Attempt {
   id: string; dealId: string; board: Board; undo: Board[];
   streak: { tier: number; progress: number; coins: number; counted: string[] };
   continued?: boolean;
+  jokerUsed?: boolean;
   telemetry?: { started: boolean; finished: boolean; activeMs: number };
 }
 export interface PlatformState {
@@ -36,14 +41,14 @@ export interface PlatformState {
 }
 export interface Save {
   schema: 1; rulesVersion: number; contentVersion: number; balanceVersion: number; revision: number;
-  profile: { coins: number; hints: number; undos: number; rewards: string[]; wins: number };
+  profile: { coins: number; hints: number; undos: number; jokers: number; rewards: string[]; wins: number };
   attempt: Attempt;
   settings: { sfx: boolean; haptics: boolean; reducedMotion: boolean };
   platform?: PlatformState;
   campaign?: { version: 1; tutorials: string[] };
 }
 export interface GameEvent {
-  type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart';
+  type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock';
   cards?: string[]; category?: string; amount?: number; reason?: string;
 }
 export interface Result { next: Save; accepted: boolean; events: GameEvent[]; reason?: string }

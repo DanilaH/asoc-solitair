@@ -1,15 +1,15 @@
 import Phaser from 'phaser';
 import { installSceneTextSharpness } from '@danilah/mini-games-kit/phaser';
 import { cardCaption } from './captions';
-import { applyBoard, packet, sourceCards } from '../domain/engine';
-import type { BoardCommand, Deal, GameEvent, Location, Save } from '../domain/types';
+import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
+import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
 import { boardFrame, cardMetrics, layout } from './layout';
 import type { Pose, Target } from './layout';
 
 interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text }
 interface Options {
-  deal: Deal; getSave(): Save; command(command: BoardCommand): void; sound(name: string): void;
-  inspect(id: string): void; ready(scene: BoardScene): void;
+  deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void;
+  jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene): void;
 }
 const inside = (x: number, y: number, target: { x: number; y: number; width: number; height: number }) =>
   Math.abs(x - target.x) <= target.width / 2 && Math.abs(y - target.y) <= target.height / 2;
@@ -26,8 +26,14 @@ export class BoardScene extends Phaser.Scene {
   private praise!: Phaser.GameObjects.Text;
   private views = new Map<string, CardView>();
   private metrics!: ReturnType<typeof layout>;
+  private jokerSelecting = false;
+  private jokerArt!: Phaser.GameObjects.Container;
+  private jokerBadge!: Phaser.GameObjects.Container;
+  private lockArt!: Phaser.GameObjects.Container;
+  private lockCount!: Phaser.GameObjects.Text;
+  private keyFlights: Phaser.GameObjects.Text[] = [];
   private selected: Location | null = null;
-  private press: { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[] } | null = null;
+  private press: { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; jokerColumn?: number } | null = null;
   private unit = 1;
   private enabled = true;
   private initial = true;
@@ -44,7 +50,7 @@ export class BoardScene extends Phaser.Scene {
     for (const card of Object.values(this.options.deal.cards)) if (card.image && !this.textures.exists(card.id)) this.load.image(card.id, card.image);
   }
   public create(): void {
-    this.selected = null; this.press = null; this.initial = true; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = [];
+    this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.initial = true; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = [];
     installSceneTextSharpness(this);
     this.world = this.add.container(0, 0);
     this.slots = this.add.graphics(); this.stockArt = this.add.graphics(); this.focus = this.add.graphics().setDepth(450);
@@ -52,12 +58,21 @@ export class BoardScene extends Phaser.Scene {
     this.stockLabel = this.add.text(0, 0, '', { fontFamily: 'Arial', fontSize: '17px', color: '#b0d7bf' }).setOrigin(.5).setDepth(38);
     this.praise = this.add.text(270, 235, '', { fontFamily: 'Georgia', fontSize: '36px', fontStyle: 'bold', color: '#ffe89b', stroke: '#2e6245', strokeThickness: 4 }).setOrigin(.5).setDepth(600).setAlpha(0);
     this.world.add([this.slots, this.stockArt, this.focus, this.stockCount, this.stockLabel, this.praise]);
+    const gold = this.add.graphics().fillStyle(0xe7be63).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13).lineStyle(2, 0xffe6a1).strokeRoundedRect(-this.cardW / 2 + 4, -this.cardH / 2 + 4, this.cardW - 8, this.cardH - 8, 10);
+    this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.label(0, -15, '✦', 38, '#fff0bc')]).setVisible(false);
+    this.jokerBadge = this.add.container(0, 0, [this.add.circle(0, 0, 11, 0xf1cc73).setStrokeStyle(1, 0xffecc0), this.add.text(0, 0, '✦', { fontFamily: 'Arial', fontSize: '15px', color: '#715321' }).setOrigin(.5)]).setDepth(425).setVisible(false);
+    const lock = this.add.graphics().fillStyle(0x143f36, .96).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13).lineStyle(3, 0xd9bd7e).strokeRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 11);
+    lock.lineStyle(5, 0xf3d58e).strokeRoundedRect(-16, -35, 32, 35, 15).fillStyle(0xf3d58e).fillRoundedRect(-23, -12, 46, 35, 7).fillStyle(0x5c633d).fillCircle(0, 0, 4).fillRect(-2, 0, 4, 10);
+    this.lockCount = this.label(0, 36, 'Ключи 0 / 3', 17, '#ffe6a1');
+    this.lockArt = this.add.container(0, 0, [lock, this.lockCount]).setVisible(false).setDepth(420);
+    this.world.add([this.jokerArt, this.jokerBadge, this.lockArt]);
+    this.keyFlights = Array.from({ length: 3 }, () => { const key = this.add.text(0, 0, '⚿', { fontFamily: 'Arial', fontSize: '34px', color: '#ffe09a' }).setOrigin(.5).setDepth(590).setVisible(false); this.world.add(key); return key; });
     for (const card of Object.values(this.options.deal.cards)) this.views.set(card.id, this.makeCard(card.id));
     for (let i = 0; i < 36; i++) { const dot = this.add.circle(0, 0, 3 + i % 3, i % 2 ? 0xffdc79 : 0x99e5bd).setDepth(510).setVisible(false); this.world.add(dot); this.particles.push(dot); }
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.down(pointer));
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.move(pointer));
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.up(pointer));
-    this.input.on('pointerupoutside', () => this.cancel());
+    this.input.on('pointerupoutside', () => { if (this.press) this.cancel(); });
     const resize = () => { this.cancel(); this.sync([], false); };
     this.scale.on('resize', resize);
     this.events.once('shutdown', () => { this.presentedDealId = undefined; this.scale.off('resize', resize); this.clearHint(); this.views.clear(); this.input.removeAllListeners(); });
@@ -81,13 +96,17 @@ export class BoardScene extends Phaser.Scene {
     if (card.leader) g.fillStyle(0xf2dfae).fillRoundedRect(-this.cardW / 2 + 6, -this.cardH / 2 + 6, this.cardW - 12, 28, 7);
     face.add(g);
     if (card.leader) {
-      face.add(this.label(0, -this.cardH / 2 + 11, 'КАТЕГОРИЯ', 11, '#8a6934'));
+      face.add(this.label(0, -this.cardH / 2 + 11, card.ordered ? 'ПО ПОРЯДКУ' : 'КАТЕГОРИЯ', 11, '#8a6934'));
       face.add(this.label(0, -23, card.text, card.text.length > 10 ? 20 : 24, '#3d4e3c'));
     } else if (card.image) {
       face.add(this.add.image(0, 0, id).setDisplaySize(Math.min(104, this.cardW - 20), Math.min(104, this.cardW - 20)));
     } else {
       face.add(this.label(0, -this.cardH / 2 + 19, card.text, card.text.length > 11 ? 19 : 23, '#374d43'));
       face.add(this.label(0, 20, '✦', 28, '#d6d6ba'));
+    }
+    if (card.keyId) {
+      const key = this.add.graphics().lineStyle(3, 0xb18b36).strokeCircle(this.cardW / 2 - 17, -this.cardH / 2 + 17, 5).lineBetween(this.cardW / 2 - 20, -this.cardH / 2 + 21, this.cardW / 2 - 31, -this.cardH / 2 + 32).lineBetween(this.cardW / 2 - 28, -this.cardH / 2 + 29, this.cardW / 2 - 24, -this.cardH / 2 + 33);
+      face.add(key);
     }
     const badge = this.label(0, 44, '', 20, '#8e7138'); face.add(badge);
     const b = this.add.graphics();
@@ -107,6 +126,10 @@ export class BoardScene extends Phaser.Scene {
     this.unit = frame.unit; this.world.setScale(this.unit).setX(frame.offsetX);
     this.metrics = layout(board, this.options.deal, frame.height);
     const duration = save.settings.reducedMotion ? 0 : 215;
+    if (events.some(e => e.type === 'undo' || e.type === 'restart')) {
+      for (const key of this.keyFlights) { this.tweens.killTweensOf(key); key.setVisible(false); }
+      this.tweens.killTweensOf(this.praise); this.praise.setAlpha(0);
+    }
     this.slots.clear().lineStyle(2, 0x7ab594, .35).fillStyle(0x023f2d, .25);
     for (const target of this.metrics.targets) {
       const { x, y } = target;
@@ -116,6 +139,25 @@ export class BoardScene extends Phaser.Scene {
         this.slots.lineStyle(2, 0x8bb895, .35).strokeCircle(x, y, 22);
         this.slots.lineStyle(2, 0x8bb895, .35).lineBetween(x - 8, y, x + 8, y).lineBetween(x, y - 8, x, y + 8);
       }
+    }
+    this.jokerArt.setVisible(Boolean(this.metrics.joker));
+    this.jokerBadge.setVisible(Boolean(this.metrics.joker));
+    if (this.metrics.joker) this.jokerBadge.setPosition(this.metrics.joker.x + this.cardW / 2 + 6, this.metrics.joker.y - this.cardH / 2 + 12);
+    if (this.metrics.joker) this.jokerArt.setPosition(this.metrics.joker.x, this.metrics.joker.y).setDepth(this.metrics.joker.depth);
+    const lockTarget = this.options.deal.lock && this.metrics.targets.find(t => t.location.kind === 'tableau' && t.location.index === this.options.deal.lock!.column);
+    this.lockArt.setVisible(Boolean(lockTarget && isLocked(board, this.options.deal.lock!.column, this.options.deal)));
+    if (lockTarget) { this.lockArt.setPosition(lockTarget.x, lockTarget.y); this.lockCount.setText(`Ключи ${board.keys?.length ?? 0} / 3`); }
+    for (const event of events.filter(e => e.type === 'key')) {
+      const from = this.metrics.poses.find(p => event.cards?.includes(p.id)), flight = this.keyFlights.find(k => !k.visible);
+      if (from && flight && lockTarget && !save.settings.reducedMotion) {
+        flight.setPosition(from.x, from.y).setVisible(true).setAlpha(1);
+        this.tweens.add({ targets: flight, x: lockTarget.x, y: lockTarget.y, alpha: .2, duration: 650, ease: 'Sine.easeInOut', onComplete: () => flight.setVisible(false) });
+      }
+    }
+    if (events.some(e => e.type === 'unlock')) {
+      this.tweens.killTweensOf(this.praise);
+      this.praise.setText('Замок открыт!').setPosition(270, 240).setAlpha(1);
+      this.tweens.add({ targets: this.praise, y: 215, alpha: 0, duration: save.settings.reducedMotion ? 300 : 1100 });
     }
     const { stock } = this.metrics;
     const deckActive = Boolean(board.stock.length || board.waste.length);
@@ -149,7 +191,7 @@ export class BoardScene extends Phaser.Scene {
       const group = board.tableau.findIndex(col => col.includes(pose.id));
       const groupIds = group >= 0 ? packet(board, group, this.options.deal) : board.foundations.find(col => col.includes(pose.id)) ?? [];
       const total = Object.values(this.options.deal.cards).filter(c => c.category === def.category && !c.leader).length;
-      view.badge.setText(def.leader ? `${groupIds.filter(id => !this.options.deal.cards[id].leader).length} / ${total}` : groupIds.length > 1 ? `×${groupIds.length}` : '');
+      view.badge.setText(def.leader ? `${groupIds.filter(id => !this.options.deal.cards[id].leader).length} / ${total}` : def.rank ? `${def.rank} / ${total}` : groupIds.length > 1 ? `×${groupIds.length}` : '');
       const fresh = entering && this.initial;
       if (fresh) view.node.setPosition(stock.x, stock.y).setAlpha(0).setAngle(-9).setScale(.82);
       view.node.setVisible(true).setDepth(pose.depth);
@@ -159,7 +201,8 @@ export class BoardScene extends Phaser.Scene {
       }
       const moving = events.some(e => e.type === 'transfer' && e.cards?.includes(pose.id)) || events.some(e => e.type === 'draw' && e.cards?.includes(pose.id));
       const animationOn = new URLSearchParams(location.search).get(moving ? 'fxCards' : 'fxLayout') !== '0';
-      this.tweens.add({ targets: view.node, x: pose.x, y: pose.y, scaleX: 1, scaleY: 1, alpha: 1, angle: 0,
+      const covered = board.joker?.column === group && board.tableau[group].indexOf(pose.id) < board.joker.boundary;
+      this.tweens.add({ targets: view.node, x: pose.x, y: pose.y, scaleX: 1, scaleY: 1, alpha: covered ? .5 : 1, angle: 0,
         duration: entering && !fresh || !animationOn ? 0 : duration, delay: fresh && duration ? Math.min(400, pose.depth * 6) : 0, ease: 'Cubic.easeOut' });
     }
     this.initial = false;
@@ -205,6 +248,10 @@ export class BoardScene extends Phaser.Scene {
     if (!this.enabled || !pointer.primaryDown || this.press) return;
     const { x, y } = this.point(pointer), board = this.options.getSave().attempt.board;
     const source = this.hitSource(x, y);
+    if (this.jokerSelecting) {
+      const target = this.hitTarget(x, y);
+      this.press = { pointerId: pointer.id, toggle: false, from: null, x, y, moved: false, stock: false, target: null, poses: [], jokerColumn: target?.location.kind === 'tableau' ? target.location.index : -1 }; return;
+    }
     if (this.inspectMode) {
       const pose = [...this.metrics.poses].sort((a, b) => b.depth - a.depth).find(p => p.faceUp && inside(x, y, { x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y, width: this.cardW, height: this.cardH }));
       if (pose) this.options.inspect(pose.id);
@@ -238,6 +285,13 @@ export class BoardScene extends Phaser.Scene {
     const press = this.press; this.press = null;
     if (!this.enabled || !press) return;
     const { x, y } = this.point(pointer);
+    if (press.jokerColumn !== undefined) {
+      const target = this.hitTarget(x, y);
+      if (Math.hypot(x - press.x, y - press.y) < 11 && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
+        this.jokerSelecting = false; this.options.jokerMode?.(false); this.options.command({ type: 'place-joker', column: press.jokerColumn });
+      } else this.cancel();
+      return;
+    }
     if (press.stock) {
       if (inside(x, y, { ...this.metrics.stock, width: this.cardW, height: this.cardH }) && Math.hypot(x - press.x, y - press.y) < 11) {
         this.selected = null; this.options.command({ type: this.options.getSave().attempt.board.stock.length ? 'draw' : 'recycle' });
@@ -253,6 +307,7 @@ export class BoardScene extends Phaser.Scene {
   private drawFocus(hover?: Target | null) {
     if (!this.focus) return;
     this.focus.clear();
+    if (this.jokerSelecting) for (const t of this.metrics.targets.filter(t => t.location.kind === 'tableau' && this.options.getSave().attempt.board.tableau[t.location.index].length && !isLocked(this.options.getSave().attempt.board, t.location.index, this.options.deal))) this.focus.lineStyle(3, 0xffdf7b, .9).strokeRoundedRect(t.x - this.cardW / 2 - 3, t.y - this.cardH / 2 - 3, this.cardW + 6, this.cardH + 6, 14);
     if (this.selected) for (const id of sourceCards(this.options.getSave().attempt.board, this.selected, this.options.deal)) {
       const view = this.views.get(id)!;
       this.focus.lineStyle(3, 0xffe5a3, .95).strokeRoundedRect(view.node.x - this.cardW / 2 - 2, view.node.y - this.cardH / 2 - 2, this.cardW + 4, this.cardH + 4, 14);
@@ -262,8 +317,9 @@ export class BoardScene extends Phaser.Scene {
       this.focus.lineStyle(4, valid ? 0xffdf7b : 0xd5aa8d, .95).strokeRoundedRect(hover.x - this.cardW / 2 - 5, hover.y - this.cardH / 2 - 5, this.cardW + 10, this.cardH + 10, 15);
     }
   }
-  public cancel(): void { this.press = null; this.selected = null; if (this.world) this.sync([], false); }
-  public back(): boolean { if (!this.press && !this.selected && !this.hintObjects.length) return false; this.clearHint(); this.cancel(); return true; }
+  public setJoker(active: boolean): void { this.cancel(); this.jokerSelecting = active; this.options.jokerMode?.(active); this.drawFocus(); this.game.loop.wake(); }
+  public cancel(): void { this.jokerSelecting = false; this.options.jokerMode?.(false); this.press = null; this.selected = null; if (this.world) this.sync([], false); }
+  public back(): boolean { if (!this.jokerSelecting && !this.press && !this.selected && !this.hintObjects.length) return false; this.clearHint(); this.cancel(); return true; }
   public setEnabled(value: boolean): void { this.enabled = value; if (!value) { this.clearHint(); this.cancel(); } }
   public setInspect(value: boolean): void { this.inspectMode = value; this.cancel(); }
   public clearHint(): void { this.hintTweens.forEach(t => t.stop()); this.hintTweens = []; this.hintObjects.forEach(o => o.destroy()); this.hintObjects = []; }

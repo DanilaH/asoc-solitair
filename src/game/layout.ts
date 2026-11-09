@@ -10,8 +10,9 @@ export function boardFrame(width: number, height: number) {
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
 export interface Target { location: Location; x: number; y: number; width: number; height: number }
-export function layout(board: Board, deal: Deal, height: number): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number }; waste: { x: number; y: number } } {
+export function layout(board: Board, deal: Deal, height: number): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
   const poses: Pose[] = [], targets: Target[] = [];
+  let joker: { x: number; y: number; depth: number } | undefined;
   const { width: cardW, height: cardH } = cardMetrics(deal);
   const four = board.tableau.length >= 4;
   const topCenters = deal.campaignLevel === 1 ? [160, 380, 445] : four ? [72, 204, 336, 468] : [95, 270, 445];
@@ -25,21 +26,25 @@ export function layout(board: Board, deal: Deal, height: number): { poses: Pose[
   const sideWaste = four && board.foundations.length === 2;
   const stock = { x: topCenters.at(-1)!, y: top };
   const waste = { x: sideWaste ? topCenters[2] : stock.x, y: sideWaste ? top : top + cardH };
-  const tableauY = sideWaste ? top + cardH + 45 : top + cardH * 2 + 14;
+  // A deal without a deck needs no reserved waste row; leave room for a visible Joker header.
+  const tableauY = sideWaste ? top + cardH + 45 : deal.initial.stock.length || deal.initial.waste.length ? top + cardH * 2 + 14 : top + cardH + 60;
   board.tableau.forEach((ids, index) => {
     let y = tableauY;
-    const steps = ids.slice(0, -1), open = steps.filter(id => board.faceUp.includes(id)).length, closed = steps.length - open;
+    const entries: (string | null)[] = [...ids];
+    if (board.joker?.column === index) entries.splice(board.joker.boundary, 0, null);
+    const steps = entries.slice(0, -1), open = steps.filter(id => id === null || board.faceUp.includes(id)).length, closed = steps.length - open;
     const available = Math.max(0, height - tableauY - cardH / 2 - 12);
     let closedStep = 18, openStep = 44;
     if (open * openStep + closed * closedStep > available) closedStep = Math.max(4, Math.min(18, (available - open * openStep) / Math.max(1, closed)));
     if (open * openStep + closed * closedStep > available) openStep = Math.max(0, (available - closed * closedStep) / Math.max(1, open));
     // The front card remains fully inside the board; closed strips compress before open captions.
-    ids.forEach((id, i) => {
-      poses.push({ id, x: centers[index], y, depth: 50 + i, faceUp: board.faceUp.includes(id) });
-      if (i < ids.length - 1) y += board.faceUp.includes(id) ? openStep : closedStep;
+    entries.forEach((id, i) => {
+      if (id === null) joker = { x: centers[index], y, depth: 50 + i };
+      else poses.push({ id, x: centers[index], y, depth: 50 + i, faceUp: board.faceUp.includes(id) });
+      if (i < entries.length - 1) y += id === null || board.faceUp.includes(id) ? openStep : closedStep;
     });
     targets.push({ location: { kind: 'tableau', index }, x: centers[index], y, width: cardW + 12, height: cardH + 8 });
   });
   board.waste.slice(-3).forEach((id, i, shown) => poses.push({ id, x: waste.x + (i - shown.length + 1) * 7, y: waste.y, depth: 35 + i, faceUp: true }));
-  return { poses, targets, stock, waste };
+  return { poses, targets, stock, waste, joker };
 }

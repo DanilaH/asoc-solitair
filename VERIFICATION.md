@@ -58,3 +58,21 @@ The original first-slice limitations above describe that earlier revision. Nativ
 - `android-builds` artifact id `13675460909`, 16,416,876 archive bytes, digest `sha256:d9363d097d45e4386608fa8eb72c91e24c1c0771b3e85c190300f5b8b575bcc8`, associated with the implementation above. Archive size is not an APK-size claim.
 - Authentic media: [home](docs/qa/campaign-home.png), [first level](docs/qa/campaign-first.png), [dense field](docs/qa/campaign-dense.png), [first win / next level GIF](docs/qa/campaign-first.gif), [dense field / inspection / Hint GIF](docs/qa/campaign-dense.gif). Captured at 360×640 from the production bundle. Dense media restores a valid fixture; it does not replace the separate full touch reachability run.
 - The following documentation/media-only commit changes no tested runtime behavior.
+
+## Rule extensions package — 2026-11-09
+
+Version 0.4.0/code 4, rules/content/balance 2/3/2. Added six teaching/application deals (26 total) without editing the frozen twenty ordinary initial orders or witnesses. Exact scope and save migration are documented in docs/content/MODIFIERS.md.
+
+- Local `npm run check` passes: TypeScript, 46 model/platform tests, replay/invariant/asset/layout validation of control + 26 campaign witnesses, alternate Joker witness, production bundle.
+- Modifier tests cover zero-move valid placement, free invalid target, one Joker per attempt even after Undo, spent inventory across restart, held packet boundary/release, restored support, helper-free solver continuations with empty and occupied support, ordered interval/prefix/refusal, stock/recycle/Undo, locked source/destination, atomic third-key unlock+flip/rollback/reveal deduplication, and old profile/attempt/receipt migration without replenishing a spent migrated Joker.
+- A complete actual-touch catalog traversal won all 26 levels via ordinary Next controls. The initial expanded browser run exposed unconditional pointerupoutside cancelling a newly selected Joker from the DOM dock; fixed by cancelling only an active board gesture. Targeted tests then confirmed the selector and charge boundary on both viewports. Final hosted evidence follows below.
+- Inspected real production screenshots/recordings at 360×640. Deals without a deck reserve no waste row; Joker support retains a visible gold heading and side badge. Rank badges and locked-column 0/3 counter are code-native graphics. The bounded key flights/praise are cleared on Undo/restart.
+- Silent GIFs in docs/qa/modifier-{joker,ordered,keys}.gif show completed-touch production play: support held/released, skipped rank refusal and ordered completion, three-key unlock, Undo to two keys, unlock again and win. They are development recordings using valid restored chapter profiles, without runtime test bridges.
+
+No physical Android/device/live SDK/signing acceptance is implied. Phone touch/audio/haptics, native kill/upgrade, final content pacing/bank, compact meta/daily, live IDs and signed release remain pending; keys/signing are deferred by user instruction.
+
+- Final local modifier browser rerun after selector/layout fixes: **8/8 PASS** (Pixel 7 and 360×640), including all six teaching/application witnesses, Joker cancel/release/hint/reload/Undo, skipped-rank budget preservation and third-key Undo/reload.
+
+- Hosted [CI 42624412629](https://github.com/DanilaH/asoc-solitair/actions/runs/42624412629) on implementation commit `8d06c17c038e414241189d3ec1482881541f34eb`: **web PASS / android PASS**. All 46 model/platform checks and 33 browser scenarios pass; one intentional compact duplicate of the full catalog is skipped. The full 26-level real-touch traversal and all eight modifier scenarios pass. Native demo debug and unsigned SDK-disabled R8 release both compile successfully.
+- CI artifacts (7-day retention): `android-builds` id `13678960218`, SHA256 `60c8504f355a7a86d2fba92f49d477aca46af48821ff4e16f38c3cac83418300`; `browser-evidence` id `13678306928`, SHA256 `c5b4e5e3b58ec1f6f0a9be66dfdfeb3d4c98d7411bade8b4dc30fcfe14543edf`. The Android archive contains demo debug/unsigned compile outputs and release mapping, not a production signed store candidate.
+- Follow-up commit changes only documentation and QA media. Executable source and dependencies remain exactly those tested in the implementation commit above.

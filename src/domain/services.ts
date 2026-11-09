@@ -39,10 +39,10 @@ export function useContinue(save: Save): boolean {
   for (const board of attempt.undo) if (board.movesLeft !== null) board.movesLeft += BALANCE.continueMoves;
   save.revision++; return true;
 }
-export function purchaseHelper(save: Save, helper: 'hint' | 'undo'): boolean {
+export function purchaseHelper(save: Save, helper: 'hint' | 'undo' | 'joker'): boolean {
   const cost = BALANCE.helperPrices[helper];
   if (save.profile.coins < cost) return false;
-  save.profile.coins -= cost; save.profile[helper === 'hint' ? 'hints' : 'undos']++; save.revision++; return true;
+  save.profile.coins -= cost; save.profile[helper === 'hint' ? 'hints' : helper === 'undo' ? 'undos' : 'jokers']++; save.revision++; return true;
 }
 export function interstitialEligible(save: Save, level: number, mode: 'campaign' | 'daily', now: number, launchedAt: number): boolean {
   const state = platformState(save);

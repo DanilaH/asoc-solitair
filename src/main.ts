@@ -4,6 +4,7 @@ import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
 import { introDeal } from './content/intro';
 import { boardKey, dispatch, freshSave, STREAK } from './domain/engine';
+import { BALANCE } from './domain/balance';
 import type { BoardCommand, Command } from './domain/types';
 import { BoardScene } from './game/BoardScene';
 import { createRuntime, storage } from './platform/runtime';
@@ -63,9 +64,9 @@ try {
     const board = save.attempt.board;
     $('#coins').textContent = String(save.profile.coins);
     $('#moves').textContent = board.movesLeft === null ? '∞' : String(board.movesLeft);
-    $('#move-fill').style.width = `${100 * (board.movesLeft ?? 32) / 32}%`;
+    $('#move-fill').style.width = `${100 * (board.movesLeft ?? 1) / (deal.initial.movesLeft ?? 1)}%`;
     $('#hint-count').textContent = String(save.profile.hints); $('#undo-count').textContent = String(save.profile.undos);
-    $<HTMLButtonElement>('#hint').disabled = board.phase !== 'playing' || save.profile.hints === 0 || Boolean(workerDeadline);
+    $<HTMLButtonElement>('#hint').disabled = board.phase !== 'playing' || (save.profile.hints === 0 && activeHint?.key !== boardKey(board)) || Boolean(workerDeadline);
     $<HTMLButtonElement>('#undo').disabled = board.phase === 'won' || save.profile.undos === 0 || !save.attempt.undo.length;
     const tier = STREAK[save.attempt.streak.tier];
     $('#streak').replaceChildren(...Array.from({ length: tier.count }, (_, index) => { const cell = document.createElement('i'); cell.className = index < save.attempt.streak.progress ? 'filled' : ''; return cell; }));
@@ -79,7 +80,7 @@ try {
     const won = save.attempt.board.phase === 'won';
     $('#result-title').textContent = won ? 'Всё сошлось!' : 'Ходы закончились';
     $('#result-copy').textContent = won ? 'Все три категории собраны' : 'Можно отменить последний ход или попробовать тот же расклад снова.';
-    $('#result-rewards').innerHTML = won ? `<div class="reward-line"><span>За победу</span><strong>+25</strong></div><div class="reward-line"><span>Осталось ходов: ${save.attempt.board.movesLeft ?? 0}</span><strong>+${2 * (save.attempt.board.movesLeft ?? 0)}</strong></div><div class="reward-line"><span>Серии за партию · уже получено</span><strong>${save.attempt.streak.coins}</strong></div>` : '';
+    $('#result-rewards').innerHTML = won ? `<div class="reward-line"><span>За победу</span><strong>+${BALANCE.winCoins}</strong></div><div class="reward-line"><span>Осталось ходов: ${save.attempt.board.movesLeft ?? 0}</span><strong>+${BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0)}</strong></div><div class="reward-line"><span>Серии за партию · уже получено</span><strong>${save.attempt.streak.coins}</strong></div>` : '';
     $('#result-rewards').hidden = !won;
     $('#result-undo').hidden = won || !save.profile.undos || !save.attempt.undo.length;
     openDialog('#result');
@@ -115,6 +116,8 @@ try {
   scene = new BoardScene({ deal, getSave: () => save, command: execute, sound: name => runtime.play(name),
     inspect(id) {
       const card = deal.cards[id];
+      if (card.image) { message('Пояснения доступны карточкам со словами'); return; }
+      setInspect(false);
       $('#word-title').textContent = card.text; $('#word-description').textContent = card.explanation;
       openDialog('#inspect-dialog');
     },
@@ -182,6 +185,7 @@ try {
       if (hint.revision !== save.revision || !hint.action || runtime.activity.isBlocked()) { message('Сейчас подходящей подсказки нет'); renderHud(); return; }
       if (!execute({ type: 'hint', revision: hint.revision, action: hint.action })) return;
       activeHint = { key: boardKey(save.attempt.board), action: hint.action, guaranteed: hint.guaranteed };
+      renderHud();
       renderer.loop.wake(); scene?.hint(hint.action);
       message(hint.guaranteed ? 'Попробуйте так — карты перенесите сами' : 'Допустимый ход — продолжение не гарантировано');
     };

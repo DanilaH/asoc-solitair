@@ -87,3 +87,15 @@ test('dragging a whole packet performs one move and Undo restores its members', 
   expect(after.attempt.board.movesLeft).toBe(before.attempt.board.movesLeft! - 1);
   await page.locator('#undo').tap(); expect((await readSave(page)).attempt.board).toEqual(before.attempt.board);
 });
+
+test('the last hint remains replayable at zero charges', async ({ page }) => {
+  // Fault/boundary fixture is injected by the test; there is no release debug bridge.
+  await page.evaluate(() => {
+    const key = 'asoc-solitaire.save.v1'; const save = JSON.parse(localStorage.getItem(key)!);
+    save.profile.hints = 1; localStorage.setItem(key, JSON.stringify(save));
+  });
+  await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await page.locator('#hint').tap(); await expect(page.locator('#hint-count')).toHaveText('0');
+  await expect(page.locator('#hint')).toBeEnabled(); await page.locator('#hint').tap();
+  expect((await readSave(page)).profile.hints).toBe(0);
+});

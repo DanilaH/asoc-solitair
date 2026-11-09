@@ -1,13 +1,14 @@
 import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION } from './types';
+import { BALANCE } from './balance';
 import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, Result, Save } from './types';
 
-export const STREAK = [{ count: 4, coins: 2 }, { count: 5, coins: 3 }, { count: 6, coins: 4 }, { count: 7, coins: 5 }];
+export const STREAK = BALANCE.streak;
 export function freshAttempt(deal: Deal, id: string): Attempt {
   return { id, dealId: deal.id, board: structuredClone(deal.initial), undo: [], streak: { tier: 0, progress: 0, coins: 0, counted: [] } };
 }
 export function freshSave(deal: Deal, id: string): Save {
   return { schema: 1, rulesVersion: RULES_VERSION, contentVersion: CONTENT_VERSION, balanceVersion: BALANCE_VERSION,
-    revision: 0, profile: { coins: 100, hints: 3, undos: 5, rewards: [], wins: 0 },
+    revision: 0, profile: { coins: BALANCE.initialCoins, hints: BALANCE.initialHints, undos: BALANCE.initialUndos, rewards: [], wins: 0 },
     attempt: freshAttempt(deal, id), settings: { sfx: true, haptics: true, reducedMotion: false } };
 }
 export function packet(board: Board, index: number, deal: Deal): string[] {
@@ -122,7 +123,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal): Result {
     if (attempt.board.phase === 'won') {
       const rewardKey = `win:${attempt.id}`;
       if (!next.profile.rewards.includes(rewardKey)) {
-        const amount = 25 + 2 * (attempt.board.movesLeft ?? 0);
+        const amount = BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (attempt.board.movesLeft ?? 0);
         next.profile.coins += amount; next.profile.wins++; next.profile.rewards.push(rewardKey);
         events.push({ type: 'win', amount });
       }

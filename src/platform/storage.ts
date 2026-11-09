@@ -18,9 +18,13 @@ export function createStorage(bridge?: StorageBridge): StorageAdapter {
 }
 const natural = (n: unknown) => Number.isSafeInteger(n) && (n as number) >= 0;
 const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every(s => typeof s === 'string' && s.length <= 200) && new Set(v).size === v.length;
-export function decodeSave(raw: string, deal: Deal): Save {
+export type DealSource = Deal | ((id: string) => Deal | undefined);
+export function decodeSave(raw: string, source: DealSource): Save {
   const save = JSON.parse(raw) as Save;
-  if (save.schema !== 1 || save.rulesVersion !== RULES_VERSION || save.contentVersion !== CONTENT_VERSION || save.balanceVersion !== BALANCE_VERSION || save.attempt.dealId !== deal.id) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
+  const deal = typeof source === 'function' ? source(save.attempt?.dealId) : source;
+  if (!deal) throw Error('Неизвестная раздача. Сохранение оставлено без изменений.');
+  const legacy = save.contentVersion === 1 && deal.id === 'intro-001';
+  if (save.schema !== 1 || save.rulesVersion !== RULES_VERSION || (!legacy && save.contentVersion !== CONTENT_VERSION) || save.balanceVersion !== BALANCE_VERSION || save.attempt.dealId !== deal.id) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
   assertBoard(save.attempt.board, deal);
   if (!natural(save.revision) || typeof save.attempt.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(save.attempt.id)) throw Error('Повреждён номер сохранения');
   for (const value of [save.profile.coins, save.profile.hints, save.profile.undos, save.profile.wins, save.attempt.streak.coins]) if (!natural(value)) throw Error('Повреждён профиль');
@@ -36,6 +40,8 @@ export function decodeSave(raw: string, deal: Deal): Save {
   if (save.attempt.continued !== undefined && typeof save.attempt.continued !== 'boolean') throw Error('Повреждено продолжение');
   const t = save.attempt.telemetry;
   if (t && (typeof t.started !== 'boolean' || typeof t.finished !== 'boolean' || !natural(t.activeMs))) throw Error('Повреждён счётчик времени');
+  if (save.campaign && (save.campaign.version !== 1 || !strings(save.campaign.tutorials))) throw Error('Повреждено обучение');
+  if (legacy) save.contentVersion = CONTENT_VERSION;
   return save;
 }
 
@@ -48,7 +54,7 @@ export class SaveStore {
   private uncertain: { before: string; after: string; next: Save } | undefined;
   private repository: JsonStorageRepository<Save>;
   private value!: Save;
-  constructor(private adapter: StorageAdapter, private deal: Deal, createDefault: () => Save) {
+  constructor(private adapter: StorageAdapter, private deal: DealSource, createDefault: () => Save) {
     this.repository = new JsonStorageRepository({ storage: adapter, key: SAVE_KEY, createDefault, codec: { decode: value => decodeSave(JSON.stringify(value), deal) } });
   }
   get state(): Save { return this.value; }

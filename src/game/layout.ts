@@ -1,33 +1,45 @@
-import { packet } from '../domain/engine';
 import type { Board, Deal, Location } from '../domain/types';
 export const WIDTH = 540;
 export const CARD_W = 138;
 export const CARD_H = 166;
+export const cardMetrics = (deal: Deal) => deal.initial.tableau.length >= 4 ? { width: 108, height: 148 } : { width: CARD_W, height: CARD_H };
+/** Reserve enough logical height even when a real native banner shortens the canvas. */
+export function boardFrame(width: number, height: number) {
+  const unit = Math.min(width / WIDTH, height / 565);
+  return { unit, offsetX: (width - WIDTH * unit) / 2, height: height / unit };
+}
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
 export interface Target { location: Location; x: number; y: number; width: number; height: number }
 export function layout(board: Board, deal: Deal, height: number): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number }; waste: { x: number; y: number } } {
   const poses: Pose[] = [], targets: Target[] = [];
-  const centers = [95, 270, 445];
-  const top = 109;
+  const { width: cardW, height: cardH } = cardMetrics(deal);
+  const four = board.tableau.length >= 4;
+  const topCenters = deal.campaignLevel === 1 ? [160, 380, 445] : four ? [72, 204, 336, 468] : [95, 270, 445];
+  const centers = board.tableau.length === 2 ? [160, 380] : topCenters;
+  const top = cardH / 2 + 26;
   board.foundations.forEach((ids, index) => {
-    const x = centers[index];
-    targets.push({ location: { kind: 'foundation', index }, x, y: top, width: CARD_W + 16, height: CARD_H + 12 });
+    const x = topCenters[index];
+    targets.push({ location: { kind: 'foundation', index }, x, y: top, width: cardW + 12, height: cardH + 8 });
     ids.forEach((id, i) => poses.push({ id, x: x + Math.min(i, 3) * 1.5, y: top - Math.min(i, 3), depth: 20 + i, faceUp: true }));
   });
-  const tableauY = 455;
+  const sideWaste = four && board.foundations.length === 2;
+  const stock = { x: topCenters.at(-1)!, y: top };
+  const waste = { x: sideWaste ? topCenters[2] : stock.x, y: sideWaste ? top : top + cardH };
+  const tableauY = sideWaste ? top + cardH + 45 : top + cardH * 2 + 14;
   board.tableau.forEach((ids, index) => {
     let y = tableauY;
-    const available = packet(board, index, deal);
-    const maxOffset = Math.max(12, Math.min(45, (height - tableauY - CARD_H / 2 - 18) / Math.max(1, ids.length - 1)));
+    const steps = ids.slice(0, -1), open = steps.filter(id => board.faceUp.includes(id)).length, closed = steps.length - open;
+    const available = Math.max(0, height - tableauY - cardH / 2 - 12);
+    let closedStep = 18, openStep = 44;
+    if (open * openStep + closed * closedStep > available) closedStep = Math.max(4, Math.min(18, (available - open * openStep) / Math.max(1, closed)));
+    if (open * openStep + closed * closedStep > available) openStep = Math.max(0, (available - closed * closedStep) / Math.max(1, open));
+    // The front card remains fully inside the board; closed strips compress before open captions.
     ids.forEach((id, i) => {
       poses.push({ id, x: centers[index], y, depth: 50 + i, faceUp: board.faceUp.includes(id) });
-      y += board.faceUp.includes(id) ? maxOffset : Math.min(20, maxOffset);
+      if (i < ids.length - 1) y += board.faceUp.includes(id) ? openStep : closedStep;
     });
-    targets.push({ location: { kind: 'tableau', index }, x: centers[index], y: ids.length ? y - (ids.at(-1) && board.faceUp.includes(ids.at(-1)!) ? maxOffset : Math.min(20, maxOffset)) : tableauY,
-      width: CARD_W + 16, height: CARD_H + 12 + Math.max(0, available.length - 1) * 5 });
+    targets.push({ location: { kind: 'tableau', index }, x: centers[index], y, width: cardW + 12, height: cardH + 8 });
   });
-  const stock = { x: centers[2], y: top };
-  const waste = { x: centers[2], y: top + CARD_H / 2 + 83 };
-  board.waste.slice(-3).forEach((id, i, shown) => poses.push({ id, x: waste.x + (i - shown.length + 1) * 9, y: waste.y, depth: 35 + i, faceUp: true }));
+  board.waste.slice(-3).forEach((id, i, shown) => poses.push({ id, x: waste.x + (i - shown.length + 1) * 7, y: waste.y, depth: 35 + i, faceUp: true }));
   return { poses, targets, stock, waste };
 }

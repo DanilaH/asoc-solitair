@@ -2,7 +2,10 @@ import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
-import { introDeal } from './content/intro';
+import { campaignDeals, findDeal } from './content/campaign';
+import { CAMPAIGN_LENGTH, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo } from './domain/progression';
+import { beginDeal } from './domain/campaign';
+import { lesson } from './app/tutorial';
 import { boardKey, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import type { BoardCommand, Command } from './domain/types';
@@ -17,12 +20,14 @@ import type { Save, Result } from './domain/types';
 import './style.css';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
-const deal = introDeal;
+let deal = campaignDeals[0];
+let screen: 'home' | 'game' = 'home';
 let scene: BoardScene | undefined;
 let game: Phaser.Game | undefined;
 let worker: Worker | undefined;
 let workerDeadline: ReturnType<typeof setTimeout> | undefined;
 let outcomeTimer: ReturnType<typeof setTimeout> | undefined;
+let guideTimer: ReturnType<typeof setTimeout> | undefined;
 let messageTimer: ReturnType<typeof setTimeout> | undefined;
 let inspectMode = false;
 let alive = true;
@@ -31,8 +36,8 @@ const abort = new AbortController();
 const domOptions = { signal: abort.signal };
 const dialogs = [...document.querySelectorAll<HTMLDialogElement>('dialog')];
 const runtime = createRuntime(() => { scene?.cancel(); }, () => {
-  if (runtime.activity.getBlockReasons().some(r => r !== 'modal')) return;
-  if (scene?.back()) return;
+  if (runtime.activity.getBlockReasons().some(r => r !== 'modal' && r !== 'screen')) return;
+  if (screen === 'game' && scene?.back()) return;
   if (dialogs.some(d => d.open)) closeDialogs();
   else if (inspectMode) setInspect(false);
   else openDialog('#settings');
@@ -48,24 +53,29 @@ function setInspect(value: boolean) { inspectMode = value; $('#inspect').setAttr
 
 async function start() {
 try {
-  const store = new SaveStore(createStorage(), deal, () => {
+  runtime.activity.setBlocked('screen', true);
+  const store = new SaveStore(createStorage(), findDeal, () => {
     const initial = freshSave(deal, crypto.randomUUID());
     initial.settings.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     return initial;
   });
   let save = await store.open();
+  deal = findDeal(save.attempt.dealId)!;
+  let requestedLevel: number | undefined;
+  let outcomeViewed = false;
+  let removeForeground: (() => void) | undefined;
   let saving = false, serviceBusy = false;
   let pendingWrites = 0;
   let banner: NativeBanner | undefined;
   const launchedAt = Date.now();
   const telemetry = createTelemetry(() => save, runtime.activity);
-  const setInput = () => scene?.setEnabled(!saving && !runtime.activity.isBlocked() && !store.needsRecovery);
-  const updateBanner = () => banner?.setEligible(Boolean(ads.status.banner && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
-  store.onChange = value => { save = value; telemetry.sync(); renderHud(); updateBanner(); };
+  const setInput = () => scene?.setEnabled(screen === 'game' && ready && !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
+  const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
+  store.onChange = value => { save = value; deal = findDeal(value.attempt.dealId)!; telemetry.sync(); renderHud(); renderHome(); updateBanner(); };
   async function write<T>(change: (next: Save) => T): Promise<T> {
     pendingWrites++; saving = true; setInput();
     try { return await store.mutate(change); }
-    finally { saving = --pendingWrites > 0; setInput(); renderHud(); }
+    finally { saving = --pendingWrites > 0; setInput(); renderHud(); renderHome(); }
   }
   const ads = createAds({
     activity: runtime.activity,
@@ -105,6 +115,18 @@ try {
   }
   function renderHud() {
     const board = save.attempt.board;
+    $('#level-number').textContent = deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
+    $('.level h1').textContent = deal.title;
+    const hintUnlocked = helperUnlocked(save, 'hint', deal), undoUnlocked = helperUnlocked(save, 'undo', deal);
+    $('#hint').hidden = !hintUnlocked; $('#undo').hidden = !undoUnlocked;
+    $('#hint-offer').hidden = !hintUnlocked; $('#undo-offer').hidden = !undoUnlocked;
+    $('#helpers-open').hidden = !hintUnlocked && !undoUnlocked;
+    $('#restart').hidden = screen === 'home'; $('#restart-copy').hidden = screen === 'home'; $('#levels-open').hidden = screen === 'home';
+    $('#settings-done').textContent = screen === 'home' ? 'Готово' : 'Вернуться к картам';
+    const instruction = lesson(save, deal);
+    $('#hint').classList.toggle('attention', instruction?.attention === 'hint');
+    $('#undo').classList.toggle('attention', instruction?.attention === 'undo');
+    $('#app').dataset.lesson = String(Boolean(instruction));
     $('#coins').textContent = String(save.profile.coins);
     $('#moves').textContent = board.movesLeft === null ? '∞' : String(board.movesLeft);
     $('#move-fill').style.width = `${100 * (board.movesLeft ?? 1) / (deal.initial.movesLeft ?? 1)}%`;
@@ -133,15 +155,19 @@ try {
   function outcome() {
     if (save.attempt.board.phase === 'playing') return;
     const won = save.attempt.board.phase === 'won';
+    outcomeViewed = true;
     $('#result-title').textContent = won ? 'Всё сошлось!' : 'Ходы закончились';
-    $('#result-copy').textContent = won ? 'Все три категории собраны' : 'Можно отменить последний ход или попробовать тот же расклад снова.';
-    $('#result-rewards').innerHTML = won ? `<div class="reward-line"><span>За победу</span><strong>+${BALANCE.winCoins}</strong></div><div class="reward-line"><span>Осталось ходов: ${save.attempt.board.movesLeft ?? 0}</span><strong>+${BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0)}</strong></div><div class="reward-line"><span>Серии за партию · уже получено</span><strong>${save.attempt.streak.coins}</strong></div>` : '';
+    $('#result-copy').textContent = won ? (deal.campaignLevel === CAMPAIGN_LENGTH ? 'Все 20 уровней пройдены. Любую раздачу можно сыграть ещё раз.' : 'Все категории этой раздачи собраны.') : 'Можно отменить последний ход или попробовать тот же расклад снова.';
+    $('#result-rewards').innerHTML = won ? `<div class="reward-line"><span>За победу</span><strong>+${BALANCE.winCoins}</strong></div>${save.attempt.board.movesLeft === null ? '' : `<div class="reward-line"><span>Осталось ходов: ${save.attempt.board.movesLeft}</span><strong>+${BALANCE.coinsPerRemainingMove * save.attempt.board.movesLeft}</strong></div>`}<div class="reward-line"><span>Серии за партию · уже получено</span><strong>${save.attempt.streak.coins}</strong></div>` : '';
     $('#result-rewards').hidden = !won;
     $('#result-undo').hidden = won || !save.profile.undos || !save.attempt.undo.length;
+    $('#next-level').hidden = !won;
+    $('#next-level').textContent = deal.campaignLevel === CAMPAIGN_LENGTH ? 'К уровням' : `Уровень ${(deal.campaignLevel ?? 0) + 1} →`;
+    $('#result-home').hidden = deal.campaignLevel === CAMPAIGN_LENGTH;
     openDialog('#result');
   }
   async function execute(cmd: Command) {
-    if (!alive || saving || runtime.activity.isBlocked()) return false;
+    if (!alive || saving || screen !== 'game' || runtime.activity.isBlocked()) return false;
     let result: Result | undefined;
     let started = false, finished = false;
     try {
@@ -185,7 +211,9 @@ try {
       scene?.cancel(); runtime.play('invalid'); runtime.pulse('invalid');
       telemetry.track('move_rejected', { reason: result.reason ?? 'unknown' }); message(result.reason ?? 'Сюда не подходит', true);
     }
-    renderHud(); return result.accepted;
+    renderHud();
+    if (result.accepted && save.attempt.board.phase === 'playing') showGuidance(cmd.type !== 'hint');
+    return result.accepted;
   }
   async function rewarded(placement: RewardPlacement) {
     if (serviceBusy || saving) return;
@@ -209,9 +237,83 @@ try {
       const remove = runtime.activity.onBlockedChange(blocked => { if (!blocked) { remove(); if (alive) void execute({ type: 'restart', attemptId: crypto.randomUUID() }); } });
     } else await execute({ type: 'restart', attemptId: crypto.randomUUID() });
   }
+  function renderHome() {
+    const completed = completedLevels(save), unlocked = unlockedLevel(save), current = save.attempt.board.phase === 'playing';
+    $('#campaign-progress').textContent = `${completed} / ${CAMPAIGN_LENGTH}`;
+    $('#campaign-done').hidden = completed < CAMPAIGN_LENGTH;
+    const label = current ? (deal.campaignLevel ? `${save.attempt.telemetry?.started ? 'Продолжить' : 'Играть'} · уровень ${deal.campaignLevel}` : 'Продолжить пробную раздачу')
+      : !outcomeViewed ? (deal.campaignLevel ? `Результат · уровень ${deal.campaignLevel}` : 'Результат пробной раздачи') : completed === CAMPAIGN_LENGTH ? 'Выбрать уровень' : `Играть · уровень ${unlocked}`;
+    $('#home-play').replaceChildren(document.createTextNode(label), Object.assign(document.createElement('span'), { textContent: '↗' }));
+    $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy;
+    $('#home-status').textContent = current && save.attempt.telemetry?.started ? 'Незаконченная раздача сохранена' : completed === 0 ? 'Начните с простых связей' : completed === CAMPAIGN_LENGTH ? 'Можно вернуться к любимым темам' : `Дальше — «${campaignDeals[unlocked - 1].title}»`;
+    const grid = $('#level-grid');
+    if (!grid.children.length) for (const level of campaignDeals) {
+      const button = document.createElement('button'); button.className = 'level-button'; button.dataset.level = String(level.campaignLevel); button.id = `level-${level.campaignLevel}`; grid.append(button);
+    }
+    for (const button of grid.querySelectorAll<HTMLButtonElement>('button')) {
+      const level = Number(button.dataset.level), item = campaignDeals[level - 1], done = save.platform?.completedCampaign.includes(item.id) ?? false;
+      button.textContent = String(level); button.disabled = level > unlocked || !ready || saving || serviceBusy;
+      button.dataset.completed = String(done); button.dataset.next = String(level === unlocked && !done);
+      button.setAttribute('aria-label', `Уровень ${level}: ${item.title}${done ? ', пройден' : level > unlocked ? ', закрыт' : ''}`);
+    }
+  }
+  function showGuidance(animate = true) {
+    clearTimeout(guideTimer);
+    const instruction = lesson(save, deal);
+    message(instruction?.text ?? 'Собирайте карты одной категории вместе');
+    if (animate && instruction?.action && !save.settings.reducedMotion) {
+      const attemptId = save.attempt.id, revision = save.revision;
+      guideTimer = setTimeout(() => {
+        if (alive && screen === 'game' && !runtime.activity.isBlocked() && save.attempt.id === attemptId && save.revision === revision) {
+          game?.loop.wake(); scene?.hint(instruction.action!);
+        }
+      }, 650);
+    }
+  }
+  function showGame() {
+    screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false;
+    runtime.activity.setBlocked('screen', false); renderHud();
+    resizeToRoot(); game?.loop.wake(); scene?.sync(); showGuidance();
+    if (save.attempt.board.phase !== 'playing') outcome();
+  }
+  function goHome() {
+    clearTimeout(outcomeTimer); clearTimeout(guideTimer); setInspect(false); closeDialogs();
+    screen = 'home'; runtime.activity.setBlocked('screen', true); $('#play-screen').hidden = true; $('#home').hidden = false;
+    renderHud(); renderHome(); updateBanner();
+  }
+  async function openLevel(level: number, confirmed = false) {
+    if (!alive || !ready || saving || serviceBusy || level < 1 || level > unlockedLevel(save)) return;
+    const target = campaignDeals[level - 1];
+    if (target.id === deal.id && save.attempt.board.phase === 'playing') { closeDialogs(); showGame(); return; }
+    if (!confirmed && save.attempt.board.phase === 'playing' && save.attempt.telemetry?.started) {
+      requestedLevel = level; $('#switch-title').textContent = `Начать уровень ${level}?`; openDialog('#switch-level'); return;
+    }
+    closeDialogs(); serviceBusy = true; renderHome();
+    // Only the deliberate transition from a won level can request an interstitial.
+    if (screen === 'game' && save.attempt.board.phase === 'won' && deal.campaignLevel !== undefined && interstitialEligible(save, deal.campaignLevel, 'campaign', Date.now(), launchedAt))
+      await ads.show({ kind: 'interstitial', placement: 'continue', attempt: save.attempt.id, dealId: deal.id, mode: 'campaign' });
+    const enter = async () => {
+      removeForeground?.(); removeForeground = undefined;
+      runtime.activity.setBlocked('level-transition', true);
+      try {
+        clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined;
+        clearTimeout(outcomeTimer); clearTimeout(guideTimer); activeHint = undefined; setInspect(false);
+        await write(next => beginDeal(next, target, crypto.randomUUID()));
+        outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false';
+        screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
+        scene?.setDeal(target); game?.loop.wake();
+      } catch { message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
+      finally { serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome(); }
+    };
+    if (runtime.activity.getBlockReasons().some(r => r !== 'screen')) {
+      removeForeground?.(); removeForeground = runtime.activity.onBlockReasonsChange(() => {
+        if (runtime.activity.getBlockReasons().every(r => r === 'screen')) void enter();
+      });
+    } else await enter();
+  }
   const root = $('#game-root');
   function size() {
-    const rect = root.getBoundingClientRect(), ratio = getRenderPixelRatio(2);
+    const measured = root.getBoundingClientRect(), rect = { width: measured.width || Math.min(innerWidth, 520) - 24, height: measured.height || Math.max(280, innerHeight - 260) }, ratio = getRenderPixelRatio(2);
     return { rect, backing: getBackingStoreSize(Math.max(1, rect.width), Math.max(1, rect.height), ratio) };
   }
   const initial = size();
@@ -226,8 +328,9 @@ try {
     ready(active) {
       scene = active;
       active.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
-        ready = true; telemetry.ready(); setInput(); updateBanner(); $('#loading').hidden = true; $('#app').dataset.ready = 'true';
-        if (save.attempt.board.phase !== 'playing') outcome();
+        ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true';
+        if (screen === 'game') showGuidance();
+        if (screen === 'game' && save.attempt.board.phase !== 'playing') outcome();
       });
     },
   });
@@ -236,15 +339,16 @@ try {
     scale: { mode: Phaser.Scale.NONE, zoom: initial.rect.width / initial.backing.width },
   });
   const renderer = game;
-  const resize = new ResizeObserver(() => {
-    if (!ready) return;
-    const next = size(); renderer.loop.wake(); renderer.scale.setZoom(next.rect.width / next.backing.width); renderer.scale.resize(next.backing.width, next.backing.height);
-  });
+  function resizeToRoot() {
+    if (!ready || screen !== 'game' || !game?.isBooted) return;
+    const next = size(); game.loop.wake(); game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height);
+  }
+  const resize = new ResizeObserver(resizeToRoot);
   resize.observe(root);
   const unblock = runtime.activity.onBlockReasonsChange(() => {
     const blocked = runtime.activity.isBlocked();
     setInput(); updateBanner();
-    if (runtime.activity.getBlockReasons().every(r => r === 'modal') && ready) {
+    if (screen === 'game' && runtime.activity.getBlockReasons().every(r => r === 'modal') && ready) {
       scene?.sync();
       if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs();
       if (!blocked) { void ads.refresh(); void ads.recover(); }
@@ -265,6 +369,20 @@ try {
   document.addEventListener('keydown', event => { if (event.key === 'Escape') { scene?.cancel(); setInspect(false); } }, domOptions);
   dialogs.forEach(dialog => dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialogs(); }, domOptions));
   document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach(button => button.addEventListener('click', closeDialogs, domOptions));
+  $('#home-play').addEventListener('click', () => {
+    runtime.play('ui');
+    if (save.attempt.board.phase === 'playing' || !outcomeViewed) showGame();
+    else if (completedLevels(save) === CAMPAIGN_LENGTH) $('#level-grid').scrollIntoView({ block: 'nearest' });
+    else void openLevel(unlockedLevel(save));
+  }, domOptions);
+  $('#level-grid').addEventListener('click', event => {
+    const button = (event.target as Element).closest<HTMLButtonElement>('[data-level]');
+    if (button && !button.disabled) void openLevel(Number(button.dataset.level));
+  }, domOptions);
+  $('#next-level').addEventListener('click', () => { if (deal.campaignLevel === CAMPAIGN_LENGTH) goHome(); else void openLevel((deal.campaignLevel ?? 0) + 1); }, domOptions);
+  $('#result-home').addEventListener('click', goHome, domOptions);
+  $('#levels-open').addEventListener('click', goHome, domOptions);
+  $('#switch-confirm').addEventListener('click', () => { const level = requestedLevel; requestedLevel = undefined; if (level) void openLevel(level, true); }, domOptions);
   $('#menu').addEventListener('click', () => { runtime.play('ui'); openDialog('#settings'); }, domOptions);
   $('#undo').addEventListener('click', () => { if (!save.profile.undos) openDialog('#helpers'); else void execute({ type: 'undo' }); }, domOptions);
   $('#inspect').addEventListener('click', () => setInspect(!inspectMode), domOptions);
@@ -280,7 +398,7 @@ try {
   }
   $('#hint').addEventListener('click', () => {
     if (workerDeadline || saving || runtime.activity.isBlocked()) return;
-    if (save.profile.hints === 0 && activeHint?.key !== boardKey(save.attempt.board)) { openDialog('#helpers'); return; }
+    if (save.profile.hints === 0 && !freeHintDemo(save, deal) && activeHint?.key !== boardKey(save.attempt.board)) { openDialog('#helpers'); return; }
     if (activeHint?.key === boardKey(save.attempt.board)) {
       renderer.loop.wake(); scene?.hint(activeHint.action);
       message(activeHint.guaranteed ? 'Попробуйте так — карты перенесите сами' : 'Допустимый ход — продолжение не гарантировано');
@@ -327,16 +445,16 @@ try {
     renderHud();
   }, domOptions);
   const checkpoint = setInterval(() => {
-    if (!alive || saving || store.needsRecovery || !save.attempt.telemetry?.started) return;
+    if (!alive || saving || workerDeadline || store.needsRecovery || !save.attempt.telemetry?.started) return;
     const activeMs = telemetry.activeMs();
     if (activeMs - save.attempt.telemetry.activeMs < 1000) return;
     void store.mutate(next => { if (next.attempt.telemetry) next.attempt.telemetry.activeMs = activeMs; }).catch(() => undefined);
   }, 5000);
   const removeTouch = installTouchActivation($('#dock'), { resolveButton: target => target instanceof Element ? target.closest('button') : null });
-  renderHud();
+  renderHud(); renderHome();
   const cleanup = () => {
     if (!alive) return; alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
-    telemetry.track('session_end'); clearInterval(checkpoint); banner?.destroy(); ads.destroy(); telemetry.destroy();
+    telemetry.track('session_end'); clearInterval(checkpoint); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); coins.forEach(c => { c.animation?.cancel(); c.node.remove(); });
     worker?.terminate(); resize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };

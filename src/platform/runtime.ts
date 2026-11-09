@@ -28,14 +28,14 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   const tones: Record<string, [number, number]> = { lift: [330, .035], transfer: [650, .075], flip: [420, .045], draw: [480, .055], invalid: [190, .07], complete: [880, .19], coins: [1250, .11], win: [1046, .28], undo: [370, .09], ui: [520, .04] };
   const eligibility = () => {
     const reasons = activity.getBlockReasons();
-    audio.setEligibility({ gameplay: audioFocused && !mute && reasons.length === 0, ui: audioFocused && !mute && reasons.every(r => r === 'modal') });
-    haptics.setBlocked(reasons.some(reason => reason !== 'modal'));
+    audio.setEligibility({ gameplay: audioFocused && !mute && reasons.length === 0, ui: audioFocused && !mute && reasons.every(r => r === 'modal' || r === 'screen') });
+    haptics.setBlocked(reasons.some(reason => reason !== 'modal' && reason !== 'screen'));
     if (reasons.length) onCancel();
-    void nativeAudio?.configure({ enabled: !mute && !reasons.some(reason => reason !== 'modal') }).then(({ focused }) => {
+    void nativeAudio?.configure({ enabled: !mute && !reasons.some(reason => reason !== 'modal' && reason !== 'screen') }).then(({ focused }) => {
       if (disposed) return;
       audioFocused = focused;
       const current = activity.getBlockReasons();
-      audio.setEligibility({ gameplay: focused && !mute && current.length === 0, ui: focused && !mute && current.every(r => r === 'modal') });
+      audio.setEligibility({ gameplay: focused && !mute && current.length === 0, ui: focused && !mute && current.every(r => r === 'modal' || r === 'screen') });
     }).catch(() => undefined);
   };
   const removeBlocker = activity.onBlockReasonsChange(eligibility);
@@ -52,7 +52,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
     if (disposed) return;
     audioFocused = focused;
     const reasons = activity.getBlockReasons();
-    audio.setEligibility({ gameplay: focused && !mute && reasons.length === 0, ui: focused && !mute && reasons.every(r => r === 'modal') });
+    audio.setEligibility({ gameplay: focused && !mute && reasons.length === 0, ui: focused && !mute && reasons.every(r => r === 'modal' || r === 'screen') });
   }).then(handle => { if (disposed) void handle.remove(); else handles.push(handle); }).catch(() => undefined);
   activity.setGameplayDesired(true);
   return {

@@ -1,0 +1,95 @@
+{
+  "sourceSha256": "b45d810f155c111dd67e621a440e4e05bb069bd806d9b192a5d451b9c37f996b",
+  "columns": 4,
+  "rows": 2,
+  "records": [
+    {
+      "name": "carrot",
+      "source": "exec-0e8ef890-82c0-41b1-b866-4973fb889a99.png",
+      "rect": {
+        "left": 89,
+        "top": 34,
+        "width": 331,
+        "height": 385
+      },
+      "path": "public/art/generated/carrot.webp"
+    },
+    {
+      "name": "bagel",
+      "source": "exec-0e8ef890-82c0-41b1-b866-4973fb889a99.png",
+      "rect": {
+        "left": 503,
+        "top": 78,
+        "width": 335,
+        "height": 320
+      },
+      "path": "public/art/generated/bagel.webp"
+    },
+    {
+      "name": "lollipop",
+      "source": "exec-0e8ef890-82c0-41b1-b866-4973fb889a99.png",
+      "rect": {
+        "left": 976,
+        "top": 36,
+        "width": 287,
+        "height": 385
+      },
+      "path": "public/art/generated/lollipop.webp"
+    },
+    {
+      "name": "tea",
+      "source": "exec-0e8ef890-82c0-41b1-b866-4973fb889a99.png",
+      "rect": {
+        "left": 1363,
+        "top": 100,
+        "width": 375,
+        "height": 296
+      },
+      "path": "public/art/generated/tea.webp"
+    },
+    {
+      "name": "cup",
+      "source": "exec-0e8ef890-82c0-41b1-b866-4973fb889a99.png",
+      "rect": {
+        "left": 46,
+        "top": 535,
+        "width": 377,
+        "height": 290
+      },
+      "path": "public/art/generated/cup.webp"
+    },
+    {
+      "name": "shirt",
+      "source": "exec-0e8ef890-82c0-41b1-b866-4973fb889a99.png",
+      "rect": {
+        "left": 484,
+        "top": 477,
+        "width": 361,
+        "height": 373
+      },
+      "path": "public/art/generated/shirt.webp"
+    },
+    {
+      "name": "boot",
+      "source": "exec-0e8ef890-82c0-41b1-b866-4973fb889a99.png",
+      "rect": {
+        "left": 928,
+        "top": 493,
+        "width": 364,
+        "height": 350
+      },
+      "path": "public/art/generated/boot.webp"
+    },
+    {
+      "name": "cap",
+      "source": "exec-0e8ef890-82c0-41b1-b866-4973fb889a99.png",
+      "rect": {
+        "left": 1356,
+        "top": 519,
+        "width": 387,
+        "height": 301
+      },
+      "path": "public/art/generated/cap.webp"
+    }
+  ]
+}

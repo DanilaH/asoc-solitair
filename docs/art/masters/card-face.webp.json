@@ -1,0 +1,29 @@
+{
+  "sourceSha256": "781bcf5c9d372d7daf66cf3bb5f19f2dde3eef80f1478833845f1323e54e4e03",
+  "columns": 2,
+  "rows": 1,
+  "records": [
+    {
+      "name": "card-face",
+      "source": "exec-b4ac097d-6e13-4ce6-a9cc-6de3c8c19b4e.png",
+      "rect": {
+        "left": 94,
+        "top": 108,
+        "width": 613,
+        "height": 817
+      },
+      "path": "public/art/generated/card-face.webp"
+    },
+    {
+      "name": "card-category",
+      "source": "exec-b4ac097d-6e13-4ce6-a9cc-6de3c8c19b4e.png",
+      "rect": {
+        "left": 826,
+        "top": 108,
+        "width": 614,
+        "height": 818
+      },
+      "path": "public/art/generated/card-category.webp"
+    }
+  ]
+}

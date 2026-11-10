@@ -1,0 +1,29 @@
+{
+  "sourceSha256": "6f23ed556df644ab75ee0014dcde141c13addcf2d32675f153506ed02d2adb54",
+  "columns": 2,
+  "rows": 1,
+  "records": [
+    {
+      "name": "card-back-classic",
+      "source": "exec-287ef323-5754-46af-ad1c-50f812b332cd.png",
+      "rect": {
+        "left": 110,
+        "top": 105,
+        "width": 579,
+        "height": 807
+      },
+      "path": "public/art/generated/card-back-classic.webp"
+    },
+    {
+      "name": "card-back-diamonds",
+      "source": "exec-287ef323-5754-46af-ad1c-50f812b332cd.png",
+      "rect": {
+        "left": 841,
+        "top": 105,
+        "width": 583,
+        "height": 807
+      },
+      "path": "public/art/generated/card-back-diamonds.webp"
+    }
+  ]
+}

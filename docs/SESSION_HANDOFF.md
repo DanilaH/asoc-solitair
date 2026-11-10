@@ -1,5 +1,9 @@
 # Continuation checkpoint — 2026-11-10
 
+## Active work — 0.8.0 generated art / code 11
+
+The user explicitly authorized implementation of the entire detailed art plan: «давай ебашь по плану». Current work is on feat/cohesive-art: 49 original generated sprites, actual card/stock materials, presentation-only mapping for all 35 supplied illustration paths, matched helpers/HUD/home/all dialog materials, local ribbon/spark/coin/key/lock/Joker effects and short-word readability. Do not restart from the static concept. See docs/qa/GENERATED_ART_0_8_0.md for honest rolling evidence and remaining checks; docs/art/GENERATED_ART_0_8_0.md records source prompts/crops/archive. Current delivered APK is still 0.7.1 until final verification/integration of this branch. The source PNG archive is retained under libfile_3cdd278696848191ba22d7c9a5fa8a7a. No additional approval is needed for ordinary repository operations.
+
 ## Project and authorization
 
 Latest direct user instruction in this resumed thread: «пользуйся репой как своей. Давай подробный план, чё делать будем». This renews authorization for ordinary repository writes/push/PR/merge. Detailed requested plan is in docs/design/ART_IMPLEMENTATION_PLAN_2026-11-10.md; current turn writes documentation only. No new runtime work is claimed.

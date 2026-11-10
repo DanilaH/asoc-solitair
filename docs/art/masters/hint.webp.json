@@ -1,0 +1,139 @@
+{
+  "sourceSha256": "43b457fe3f759349709d21e57debbfc4e96b6027c71bff46abe891dd01d6c7bd",
+  "columns": 4,
+  "rows": 3,
+  "records": [
+    {
+      "name": "hint",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 40,
+        "top": 126,
+        "width": 239,
+        "height": 279
+      },
+      "path": "public/art/generated/hint.webp"
+    },
+    {
+      "name": "undo",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 331,
+        "top": 174,
+        "width": 267,
+        "height": 185
+      },
+      "path": "public/art/generated/undo.webp"
+    },
+    {
+      "name": "joker",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 648,
+        "top": 143,
+        "width": 268,
+        "height": 256
+      },
+      "path": "public/art/generated/joker.webp"
+    },
+    {
+      "name": "coin",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 963,
+        "top": 149,
+        "width": 245,
+        "height": 252
+      },
+      "path": "public/art/generated/coin.webp"
+    },
+    {
+      "name": "daily",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 40,
+        "top": 490,
+        "width": 239,
+        "height": 252
+      },
+      "path": "public/art/generated/daily.webp"
+    },
+    {
+      "name": "cycle",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 322,
+        "top": 505,
+        "width": 288,
+        "height": 331
+      },
+      "path": "public/art/generated/cycle.webp"
+    },
+    {
+      "name": "looks",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 639,
+        "top": 487,
+        "width": 287,
+        "height": 262
+      },
+      "path": "public/art/generated/looks.webp"
+    },
+    {
+      "name": "milestone",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 986,
+        "top": 495,
+        "width": 208,
+        "height": 240
+      },
+      "path": "public/art/generated/milestone.webp"
+    },
+    {
+      "name": "key",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 48,
+        "top": 836,
+        "width": 224,
+        "height": 267
+      },
+      "path": "public/art/generated/key.webp"
+    },
+    {
+      "name": "lock",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 355,
+        "top": 836,
+        "width": 232,
+        "height": 267
+      },
+      "path": "public/art/generated/lock.webp"
+    },
+    {
+      "name": "spark",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 689,
+        "top": 883,
+        "width": 252,
+        "height": 181
+      },
+      "path": "public/art/generated/spark.webp"
+    },
+    {
+      "name": "ribbon",
+      "source": "exec-fe00c46c-a41f-445d-9700-c4025de87ad6.png",
+      "rect": {
+        "left": 941,
+        "top": 911,
+        "width": 284,
+        "height": 136
+      },
+      "path": "public/art/generated/ribbon.webp"
+    }
+  ]
+}

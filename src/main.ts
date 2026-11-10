@@ -24,6 +24,7 @@ import { NativeBanner } from './platform/banner';
 import { applyReceipt, platformState, purchaseHelper, interstitialEligible, useContinue, type RewardPlacement } from './domain/services';
 import type { Save, Result } from './domain/types';
 import './style.css';
+import './art.css';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 let deal = campaignDeals[0];
@@ -51,7 +52,7 @@ const runtime = createRuntime(() => { scene?.cancel(); }, () => {
 });
 
 function closeDialogs() { document.body.append($('#coin-layer')); dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false); }
-function openDialog(selector: string) { clearPraise(); closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
+function openDialog(selector: string) { clearPraise(); scene?.clearFeedback(); closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
 function clearPraise() {
   if (praiseAnimation) { praiseAnimation.onfinish = null; praiseAnimation.cancel(); praiseAnimation = undefined; }
   $('#praise').hidden = true; $('#feedback-row').dataset.praising = 'false';
@@ -131,7 +132,7 @@ try {
   let activeHint: { key: string; action: BoardCommand; guaranteed: boolean } | undefined;
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
-  const coins = Array.from({ length: 24 }, () => { const node = document.createElement('span'); node.className = 'flying-coin'; node.textContent = '✦'; $('#coin-layer').append(node); return { node, busy: false, animation: null as Animation | null }; });
+  const coins = Array.from({ length: 24 }, () => { const node = document.createElement('span'); node.className = 'flying-coin'; $('#coin-layer').append(node); return { node, busy: false, animation: null as Animation | null }; });
   function coinBurst(origin = $('#streak-reward'), destination = $('.coin-icon')) {
     if (save.settings.reducedMotion || new URLSearchParams(location.search).get('fxCoins') === '0') return;
     const source = origin.getBoundingClientRect(), target = destination.getBoundingClientRect();

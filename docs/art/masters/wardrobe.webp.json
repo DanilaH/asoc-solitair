@@ -1,0 +1,95 @@
+{
+  "sourceSha256": "8f0c9d43c6ff8091e29ec20f18563d63a3747cbdeec64ff35a7503aa77885f0f",
+  "columns": 4,
+  "rows": 2,
+  "records": [
+    {
+      "name": "wardrobe",
+      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "rect": {
+        "left": 0,
+        "top": 0,
+        "width": 444,
+        "height": 444
+      },
+      "path": "public/art/generated/wardrobe.webp"
+    },
+    {
+      "name": "candle",
+      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "rect": {
+        "left": 444,
+        "top": 0,
+        "width": 443,
+        "height": 444
+      },
+      "path": "public/art/generated/candle.webp"
+    },
+    {
+      "name": "vacuum",
+      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "rect": {
+        "left": 887,
+        "top": 0,
+        "width": 444,
+        "height": 444
+      },
+      "path": "public/art/generated/vacuum.webp"
+    },
+    {
+      "name": "keyboard",
+      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "rect": {
+        "left": 1331,
+        "top": 0,
+        "width": 443,
+        "height": 444
+      },
+      "path": "public/art/generated/keyboard.webp"
+    },
+    {
+      "name": "soap",
+      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "rect": {
+        "left": 0,
+        "top": 444,
+        "width": 444,
+        "height": 443
+      },
+      "path": "public/art/generated/soap.webp"
+    },
+    {
+      "name": "brick",
+      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "rect": {
+        "left": 444,
+        "top": 444,
+        "width": 443,
+        "height": 443
+      },
+      "path": "public/art/generated/brick.webp"
+    },
+    {
+      "name": "book",
+      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "rect": {
+        "left": 887,
+        "top": 444,
+        "width": 444,
+        "height": 443
+      },
+      "path": "public/art/generated/book.webp"
+    },
+    {
+      "name": "eraser",
+      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "rect": {
+        "left": 1331,
+        "top": 444,
+        "width": 443,
+        "height": 443
+      },
+      "path": "public/art/generated/eraser.webp"
+    }
+  ]
+}

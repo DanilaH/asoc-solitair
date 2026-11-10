@@ -1,0 +1,95 @@
+{
+  "sourceSha256": "4ba751005e9bbadeca88d07994dbd309dd80d7a286ceaaf05dc01537b2cc03c4",
+  "columns": 4,
+  "rows": 2,
+  "records": [
+    {
+      "name": "drum",
+      "source": "exec-453bb4ae-eb1b-478d-8d3b-b642e8d77b88.png",
+      "rect": {
+        "left": 52,
+        "top": 39,
+        "width": 346,
+        "height": 377
+      },
+      "path": "public/art/generated/drum.webp"
+    },
+    {
+      "name": "rope",
+      "source": "exec-453bb4ae-eb1b-478d-8d3b-b642e8d77b88.png",
+      "rect": {
+        "left": 483,
+        "top": 55,
+        "width": 361,
+        "height": 363
+      },
+      "path": "public/art/generated/rope.webp"
+    },
+    {
+      "name": "bus",
+      "source": "exec-453bb4ae-eb1b-478d-8d3b-b642e8d77b88.png",
+      "rect": {
+        "left": 900,
+        "top": 107,
+        "width": 412,
+        "height": 273
+      },
+      "path": "public/art/generated/bus.webp"
+    },
+    {
+      "name": "sailboat",
+      "source": "exec-453bb4ae-eb1b-478d-8d3b-b642e8d77b88.png",
+      "rect": {
+        "left": 1377,
+        "top": 20,
+        "width": 360,
+        "height": 401
+      },
+      "path": "public/art/generated/sailboat.webp"
+    },
+    {
+      "name": "helicopter",
+      "source": "exec-453bb4ae-eb1b-478d-8d3b-b642e8d77b88.png",
+      "rect": {
+        "left": 18,
+        "top": 514,
+        "width": 407,
+        "height": 313
+      },
+      "path": "public/art/generated/helicopter.webp"
+    },
+    {
+      "name": "storm",
+      "source": "exec-453bb4ae-eb1b-478d-8d3b-b642e8d77b88.png",
+      "rect": {
+        "left": 474,
+        "top": 453,
+        "width": 387,
+        "height": 397
+      },
+      "path": "public/art/generated/storm.webp"
+    },
+    {
+      "name": "triangle",
+      "source": "exec-453bb4ae-eb1b-478d-8d3b-b642e8d77b88.png",
+      "rect": {
+        "left": 923,
+        "top": 502,
+        "width": 371,
+        "height": 325
+      },
+      "path": "public/art/generated/triangle.webp"
+    },
+    {
+      "name": "hammer",
+      "source": "exec-453bb4ae-eb1b-478d-8d3b-b642e8d77b88.png",
+      "rect": {
+        "left": 1352,
+        "top": 472,
+        "width": 371,
+        "height": 380
+      },
+      "path": "public/art/generated/hammer.webp"
+    }
+  ]
+}

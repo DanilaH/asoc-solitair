@@ -1,0 +1,95 @@
+{
+  "sourceSha256": "36ef1004479f03f6997adf67f7efd82a4c1a865893e2ed016de8dc4614393a60",
+  "columns": 4,
+  "rows": 2,
+  "records": [
+    {
+      "name": "cat",
+      "source": "exec-5ad72e59-b663-4ce5-9f8b-89fceea45e99.png",
+      "rect": {
+        "left": 0,
+        "top": 0,
+        "width": 444,
+        "height": 444
+      },
+      "path": "public/art/generated/cat.webp"
+    },
+    {
+      "name": "owl",
+      "source": "exec-5ad72e59-b663-4ce5-9f8b-89fceea45e99.png",
+      "rect": {
+        "left": 444,
+        "top": 0,
+        "width": 443,
+        "height": 444
+      },
+      "path": "public/art/generated/owl.webp"
+    },
+    {
+      "name": "octopus",
+      "source": "exec-5ad72e59-b663-4ce5-9f8b-89fceea45e99.png",
+      "rect": {
+        "left": 887,
+        "top": 0,
+        "width": 444,
+        "height": 444
+      },
+      "path": "public/art/generated/octopus.webp"
+    },
+    {
+      "name": "turtle",
+      "source": "exec-5ad72e59-b663-4ce5-9f8b-89fceea45e99.png",
+      "rect": {
+        "left": 1331,
+        "top": 0,
+        "width": 443,
+        "height": 444
+      },
+      "path": "public/art/generated/turtle.webp"
+    },
+    {
+      "name": "pike",
+      "source": "exec-5ad72e59-b663-4ce5-9f8b-89fceea45e99.png",
+      "rect": {
+        "left": 0,
+        "top": 444,
+        "width": 444,
+        "height": 443
+      },
+      "path": "public/art/generated/pike.webp"
+    },
+    {
+      "name": "spruce",
+      "source": "exec-5ad72e59-b663-4ce5-9f8b-89fceea45e99.png",
+      "rect": {
+        "left": 444,
+        "top": 444,
+        "width": 443,
+        "height": 443
+      },
+      "path": "public/art/generated/spruce.webp"
+    },
+    {
+      "name": "tulip",
+      "source": "exec-5ad72e59-b663-4ce5-9f8b-89fceea45e99.png",
+      "rect": {
+        "left": 887,
+        "top": 444,
+        "width": 444,
+        "height": 443
+      },
+      "path": "public/art/generated/tulip.webp"
+    },
+    {
+      "name": "apple",
+      "source": "exec-5ad72e59-b663-4ce5-9f8b-89fceea45e99.png",
+      "rect": {
+        "left": 1331,
+        "top": 444,
+        "width": 443,
+        "height": 443
+      },
+      "path": "public/art/generated/apple.webp"
+    }
+  ]
+}

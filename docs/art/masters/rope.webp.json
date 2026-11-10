@@ -1,0 +1,18 @@
+{
+  "sourceSha256": "7c3afcea6d2b27c4db4e1442cd50eb3e7e8c394922269476fd9abf19d11cce9a",
+  "columns": 1,
+  "rows": 1,
+  "records": [
+    {
+      "name": "rope",
+      "source": "exec-c259a508-086f-4c37-997e-214aedb51e19.png",
+      "rect": {
+        "left": 44,
+        "top": 21,
+        "width": 1195,
+        "height": 1211
+      },
+      "path": "public/art/generated/rope.webp"
+    }
+  ]
+}

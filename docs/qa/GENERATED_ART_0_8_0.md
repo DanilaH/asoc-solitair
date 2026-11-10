@@ -18,6 +18,10 @@ Working implementation of docs/design/ART_IMPLEMENTATION_PLAN_2026-11-10.md. Thi
 - Full local browser regression is in progress; no pass count claimed before completion.
 - Added a browser check that every published illustration resolves to shipped generated art and all 49 sprites decode with opaque content/transparent gutters and no external HTTP dependency.
 
+The new art check found white/near-opaque backing in 17 preliminary subject exports. Their atlas/rope backgrounds were corrected with image generation and all affected sprites re-exported. Both phone and compact resource checks now PASS (49 decoded sprites, all 35 published reference paths resolved). The exported runtime pack totals 806,892 bytes. The complete original-source archive was replaced in place with nine final source PNGs and updated metadata.
+
+A stable-build layout pass completed all 176 existing DOM/dialog/raster states with 0 issues; final CSS/pixel verification is also running against an immutable output directory. One long meta scenario in the concurrent broad local browser run hit its 30-second limit; it will be diagnosed/rerun separately and is not counted as passing yet. All 80 campaign levels have already been traversed through real touch in that run.
+
 ## Still required before delivery
 
 Exact-source build, asset decode check, final layout/raster audit, completed browser regression, updated final touch recordings, Android debug/release compilation, APK embedded-file comparison and matching preview signature. Physical-device readability, gestures, sound/haptics/FPS/insets and live production SDK behavior remain separate acceptance work.

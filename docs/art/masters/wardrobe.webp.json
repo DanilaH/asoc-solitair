@@ -1,93 +1,93 @@
 {
-  "sourceSha256": "8f0c9d43c6ff8091e29ec20f18563d63a3747cbdeec64ff35a7503aa77885f0f",
+  "sourceSha256": "0c6112c9ccd180ab44f3f00afe5e95cedc270fecc75ea1fd8e0daabf11559728",
   "columns": 4,
   "rows": 2,
   "records": [
     {
       "name": "wardrobe",
-      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "source": "exec-eed83bba-3c8c-4fbc-9c8b-e8c0f01111cc.png",
       "rect": {
-        "left": 0,
-        "top": 0,
-        "width": 444,
-        "height": 444
+        "left": 86,
+        "top": 28,
+        "width": 291,
+        "height": 390
       },
       "path": "public/art/generated/wardrobe.webp"
     },
     {
       "name": "candle",
-      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "source": "exec-eed83bba-3c8c-4fbc-9c8b-e8c0f01111cc.png",
       "rect": {
-        "left": 444,
-        "top": 0,
-        "width": 443,
-        "height": 444
+        "left": 555,
+        "top": 25,
+        "width": 266,
+        "height": 389
       },
       "path": "public/art/generated/candle.webp"
     },
     {
       "name": "vacuum",
-      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "source": "exec-eed83bba-3c8c-4fbc-9c8b-e8c0f01111cc.png",
       "rect": {
-        "left": 887,
-        "top": 0,
-        "width": 444,
-        "height": 444
+        "left": 913,
+        "top": 29,
+        "width": 381,
+        "height": 383
       },
       "path": "public/art/generated/vacuum.webp"
     },
     {
       "name": "keyboard",
-      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "source": "exec-eed83bba-3c8c-4fbc-9c8b-e8c0f01111cc.png",
       "rect": {
-        "left": 1331,
-        "top": 0,
-        "width": 443,
-        "height": 444
+        "left": 1351,
+        "top": 109,
+        "width": 407,
+        "height": 251
       },
       "path": "public/art/generated/keyboard.webp"
     },
     {
       "name": "soap",
-      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "source": "exec-eed83bba-3c8c-4fbc-9c8b-e8c0f01111cc.png",
       "rect": {
-        "left": 0,
-        "top": 444,
-        "width": 444,
-        "height": 443
+        "left": 38,
+        "top": 502,
+        "width": 365,
+        "height": 310
       },
       "path": "public/art/generated/soap.webp"
     },
     {
       "name": "brick",
-      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "source": "exec-eed83bba-3c8c-4fbc-9c8b-e8c0f01111cc.png",
       "rect": {
-        "left": 444,
-        "top": 444,
-        "width": 443,
-        "height": 443
+        "left": 475,
+        "top": 533,
+        "width": 379,
+        "height": 269
       },
       "path": "public/art/generated/brick.webp"
     },
     {
       "name": "book",
-      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "source": "exec-eed83bba-3c8c-4fbc-9c8b-e8c0f01111cc.png",
       "rect": {
-        "left": 887,
-        "top": 444,
-        "width": 444,
-        "height": 443
+        "left": 919,
+        "top": 496,
+        "width": 382,
+        "height": 331
       },
       "path": "public/art/generated/book.webp"
     },
     {
       "name": "eraser",
-      "source": "exec-d649f4e0-872e-4ad8-858a-959fc3820e89.png",
+      "source": "exec-eed83bba-3c8c-4fbc-9c8b-e8c0f01111cc.png",
       "rect": {
-        "left": 1331,
-        "top": 444,
-        "width": 443,
-        "height": 443
+        "left": 1361,
+        "top": 516,
+        "width": 378,
+        "height": 286
       },
       "path": "public/art/generated/eraser.webp"
     }

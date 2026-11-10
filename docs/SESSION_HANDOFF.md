@@ -6,7 +6,13 @@ This is **Солитёр ассоциаций**, `DanilaH/asoc-solitair`, portra
 
 The user explicitly authorized normal repository maintenance, push, PR management and integration: «я разрешаю работать тебе с репозиторием как со своим». Do not ask again for routine repository work. Production ad/analytics IDs, managed release signing and store publication remain deferred.
 
-## Latest direction after 0.6.2 — reference-based structural redesign
+## Latest design feedback — find our own character
+
+The user says the Hitapps-led structural prototype is now reasonably appealing and asks to find our own character by blending in AZUR and the third reference, Unico. Treat the earlier composition as an accepted starting point, not permission to regress to the old dashboard. Proposed identity is documented in docs/design/OWN_CHARACTER_2026-11-10.md and shown in docs/design/identity-prototype.html; the earlier reference-prototype.html is preserved.
+
+The new proposal keeps the composition and uses warm paper/petrol/coral materials, AZUR-inspired light controls/periwinkle card edges, Unico-inspired category dots/budget track, and an original ribbon-connected leaf/tree card emblem at docs/design/art/linked-cards.webp. This specific identity is a proposed variant for user feedback, not an approved final style or implemented APK. Current game runtime remains 0.6.2 below. Reproduce/check with `node tools/record-reference-design.mjs identity-prototype.html` (360×780, 320×568 and existing ink-palette preview). S3 was fully retrieved and hash-verified; no video bytes/encoded dumps belong in chat.
+
+## Structural direction after 0.6.2 — reference-based redesign
 
 The user still finds the presentation weak, especially field/menu structure, and explicitly asked to revisit their Hitapps/AZUR videos and copy the interface much more directly. Both full recordings were retrieved and SHA256-verified; new review/design lives in docs/design/REFERENCE_REBUILD_2026-11-10.md. Choose Hitapps as the primary composition, with AZUR full-face word presentation and dictionary access.
 

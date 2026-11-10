@@ -17,3 +17,9 @@ footer{gap:6px}footer button{flex:0 1 91px;min-width:0}footer b{right:calc(50% -
 #chapter-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0}#chapter-nav>span{text-align:center}#chapter-nav strong{font:17px Georgia,serif;color:#ecdfb3}#chapter-nav small{display:block;font-size:9px;color:#afcdb3;margin-top:4px}#chapter-nav button{width:40px;height:38px;border-radius:11px;border:1px solid #94b89b66;background:#003d2c66;color:#e4deba}#level-grid button[hidden]{display:none!important}#app[data-practice=true] #level-number{color:#f3d395}#restart-confirm,#replace-daily{max-height:90dvh;overflow:auto}
 
 @media(max-height:600px){header{height:50px}.brand{font-size:19px}.progress-row{height:57px}.streak-row{min-height:48px;margin-top:0;padding-top:5px;padding-bottom:5px}footer{height:65px}.bottom-note{height:16px;font-size:8px}}
+
+/* Guidance owns its full text height instead of painting over helper hit areas. */
+#message{height:auto;min-height:31px;line-height:16px;padding:6px 8px;overflow-wrap:anywhere}
+#app[data-lesson=true] #message{height:auto;min-height:45px}
+@media(max-height:700px){#message{min-height:26px}}
+.deck-side-choices{margin-top:8px}

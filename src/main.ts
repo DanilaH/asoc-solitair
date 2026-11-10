@@ -429,13 +429,14 @@ try {
   $('#daily-play').addEventListener('click', () => { void activateMode('daily'); }, domOptions);
   $('#daily-resume-old').addEventListener('click', () => { void activateMode('daily', true); }, domOptions);
   for (const [button, dialog] of [['calendar-open', '#calendar'], ['appearance-open', '#appearance'], ['appearance-settings', '#appearance'], ['win-cycle-open', '#cycle-info']]) $(`#${button}`).addEventListener('click', () => { renderMeta(save, saving); openDialog(dialog); }, domOptions);
-  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-palette], [data-card-back], [data-deck-side]')) button.addEventListener('click', async () => {
-    const key = button.dataset.palette ? 'palette' : button.dataset.cardBack ? 'cardBack' : 'deckSide';
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-palette], [data-card-back], [data-deck-side], [data-deck-position]')) button.addEventListener('click', async () => {
+    const key = button.dataset.palette ? 'palette' : button.dataset.cardBack ? 'cardBack' : button.dataset.deckSide ? 'deckSide' : 'deckPosition';
     if (saving || button.disabled) return;
     try { await write(next => {
       if (key === 'palette' && ['green', 'ink'].includes(button.dataset.palette!) && (button.dataset.palette === 'green' || cosmeticUnlocked(next, key))) next.settings.palette = button.dataset.palette as 'green' | 'ink';
       if (key === 'cardBack' && ['classic', 'diamonds'].includes(button.dataset.cardBack!) && (button.dataset.cardBack === 'classic' || cosmeticUnlocked(next, key))) next.settings.cardBack = button.dataset.cardBack as 'classic' | 'diamonds';
       if (key === 'deckSide' && ['left', 'right'].includes(button.dataset.deckSide!)) next.settings.deckSide = button.dataset.deckSide as 'left' | 'right';
+      if (key === 'deckPosition' && ['top', 'bottom'].includes(button.dataset.deckPosition!)) next.settings.deckPosition = button.dataset.deckPosition as 'top' | 'bottom';
     }); scene?.sync(); game?.loop.wake(); } catch { message('Оформление не сохранилось. Попробуйте ещё раз.', true); }
   }, domOptions);
   $('#chapter-prev').addEventListener('click', () => { if (chapterPage > 0) { chapterPage--; renderHome(); } }, domOptions);

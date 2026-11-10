@@ -48,7 +48,7 @@ export interface Save {
   schema: 1; rulesVersion: number; contentVersion: number; balanceVersion: number; revision: number;
   profile: { coins: number; hints: number; undos: number; jokers: number; rewards: string[]; wins: number };
   attempt: Attempt;
-  settings: { sfx: boolean; haptics: boolean; reducedMotion: boolean; palette?: 'green' | 'ink'; cardBack?: 'classic' | 'diamonds'; deckSide?: 'right' | 'left' };
+  settings: { sfx: boolean; haptics: boolean; reducedMotion: boolean; palette?: 'green' | 'ink'; cardBack?: 'classic' | 'diamonds'; deckSide?: 'right' | 'left'; deckPosition?: 'top' | 'bottom' };
   meta?: MetaState;
   parked?: { campaign?: Attempt; daily?: Attempt };
   platform?: PlatformState;

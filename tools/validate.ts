@@ -6,7 +6,7 @@ import { introDeal } from '../src/content/intro';
 import { campaignDeals, campaignRecords } from '../src/content/campaign';
 import { applyBoard, assertBoard, dispatch, freshSave } from '../src/domain/engine';
 import { RULES_VERSION, CONTENT_VERSION } from '../src/domain/types';
-import { layout, cardMetrics } from '../src/game/layout';
+import { boardFrame, layout, cardMetrics } from '../src/game/layout';
 
 await mkdir('docs/validation', { recursive: true });
 const summary = [];
@@ -19,8 +19,13 @@ for (const deal of [introDeal, ...campaignDeals, ...dailyPool]) {
     const ids = [...board.tableau.flat(), ...board.foundations.flat(), ...board.stock, ...board.waste, ...board.collected].sort();
     if (JSON.stringify(ids) !== JSON.stringify(expected) || new Set(ids).size !== expected.length) throw Error(`${deal.id}: card conservation failed`);
     const { width, height } = cardMetrics(deal);
-    for (const side of ['left', 'right'] as const) { const geometry = layout(board, deal, 565, side);
-    for (const pose of geometry.poses) if (pose.x - width / 2 < 0 || pose.x + width / 2 > 540 || pose.y - height / 2 < 0 || pose.y + height / 2 > 565.01) throw Error(`${deal.id}: out-of-board card ${pose.id}`); }
+    for (const side of ['left', 'right'] as const) for (const position of ['top', 'bottom'] as const) {
+      const frame = boardFrame(540, 565, position, deal), geometry = layout(board, deal, frame.height, side, position);
+      for (const pose of geometry.poses) {
+        if (pose.x - width / 2 < 0 || pose.x + width / 2 > 540 || pose.y - height / 2 < 0 || pose.y + height / 2 > frame.height + .01) throw Error(`${deal.id}: out-of-board card ${pose.id} (${position}/${side})`);
+        if (position === 'bottom' && (deal.initial.stock.length || deal.initial.waste.length) && board.tableau.some(col => col.includes(pose.id)) && pose.y + height / 2 > geometry.stock.y - height / 2 - 27.99) throw Error(`${deal.id}: tableau covers bottom deck`);
+      }
+    }
   };
   independent();
   for (const action of deal.winningPath) {

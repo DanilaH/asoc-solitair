@@ -81,9 +81,9 @@ export class BoardScene extends Phaser.Scene {
     this.sync([], true);
     this.options.ready(this);
   }
-  private label(x: number, y: number, text: string, size: number, color: string) {
+  private label(x: number, y: number, text: string, size: number, color: string, maxHeight = Infinity) {
     const label = this.add.text(x, y, cardCaption(text, this.cardW < 125), { fontFamily: 'Arial', fontSize: `${size * Math.min(1, this.cardW / 125)}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: this.cardW - 18 } }).setOrigin(.5, 0);
-    label.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, label.width)));
+    label.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, label.width), maxHeight / Math.max(1, label.height)));
     return label;
   }
   private makeCard(id: string): CardView {
@@ -98,7 +98,8 @@ export class BoardScene extends Phaser.Scene {
     face.add(g);
     if (card.leader) {
       face.add(this.label(0, -this.cardH / 2 + 11, card.ordered ? 'ПО ПОРЯДКУ' : 'КАТЕГОРИЯ', 11, '#8a6934'));
-      face.add(this.label(0, -23, card.text, card.text.length > 10 ? 20 : 24, '#3d4e3c'));
+      const titleY = -this.cardH / 2 + 41, countY = this.cardH / 2 - 32;
+      face.add(this.label(0, titleY, card.text, card.text.length > 10 ? 20 : 24, '#3d4e3c', countY - titleY - 10));
     } else if (card.image) {
       face.add(this.add.image(0, 0, id).setDisplaySize(Math.min(104, this.cardW - 20), Math.min(104, this.cardW - 20)));
     } else {
@@ -109,7 +110,7 @@ export class BoardScene extends Phaser.Scene {
       const key = this.add.graphics().lineStyle(3, 0xb18b36).strokeCircle(this.cardW / 2 - 17, -this.cardH / 2 + 17, 5).lineBetween(this.cardW / 2 - 20, -this.cardH / 2 + 21, this.cardW / 2 - 31, -this.cardH / 2 + 32).lineBetween(this.cardW / 2 - 28, -this.cardH / 2 + 29, this.cardW / 2 - 24, -this.cardH / 2 + 33);
       face.add(key);
     }
-    const badge = this.label(0, 44, '', 20, '#8e7138'); face.add(badge);
+    const badge = this.label(0, this.cardH / 2 - 32, '', 20, '#8e7138'); face.add(badge);
     const b = this.add.graphics();
     this.paintBack(b);
     back.add(b); node.add([face, back]); this.world.add(node);
@@ -127,9 +128,9 @@ export class BoardScene extends Phaser.Scene {
   public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand): void {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
     const save = this.options.getSave(), board = save.attempt.board;
-    const frame = boardFrame(this.scale.width, this.scale.height);
+    const frame = boardFrame(this.scale.width, this.scale.height, save.settings.deckPosition, this.options.deal);
     this.unit = frame.unit; this.world.setScale(this.unit).setX(frame.offsetX);
-    this.metrics = layout(board, this.options.deal, frame.height, save.settings.deckSide);
+    this.metrics = layout(board, this.options.deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
     if (this.backStyle !== (save.settings.cardBack ?? 'classic')) { this.backStyle = save.settings.cardBack ?? 'classic'; for (const view of this.views.values()) this.paintBack(view.backArt); }
     const duration = save.settings.reducedMotion ? 0 : 215;
     if (events.some(e => e.type === 'undo' || e.type === 'restart')) {

@@ -60,3 +60,9 @@ The user requested all platform reuse needed by the final store project now. Thi
 - Bound level navigation to 20 buttons per page. Keep ordinary progression and ten-level rewards through 80. Explain daily training before resource spending, and confirm explicit restart/old-daily replacement with exact cancel preservation.
 - Fix short-screen dock clipping, narrow lock counter wrapping and the Undo-after-exhaustion telemetry marker. Keep board rules/economy unchanged.
 - Candidate generation takes 35.7s of machine time after manual preparation; do not equate it with measured editorial cost or human puzzle quality. Frozen witnesses, semantic self-edit, browser execution and independent human pacing review are distinct evidence levels.
+
+## 2026-11-10 — complete deck placement and UX review (0.6.1)
+
+Complete the agreed top/bottom placement as an optional shared setting, defaulting old saves to top. SaveStore remains the sole writer; no rules/content/balance or frozen-deal change. Rendering, hints and touch use one geometry; no-deck deals retain their layout. Protect complete compact guidance and bound category titles separately from counts. Make abandonment consequences explicit and deck wording independent of earned backs.
+
+The user explicitly authorized full repository maintenance on 2026-11-10, including the pending push/PR/integration/build workflow. Production keys/signing remain deferred. Workspace maintenance removed the unpushed local branch; restore the reviewed changes from the conversation over confirmed main, reverify and push them. Do not claim previous local commit/media hashes for the restored artifacts. Review findings and limitations: docs/qa/UX_REVIEW_2026-11-10.md.

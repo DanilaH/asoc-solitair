@@ -18,7 +18,7 @@ function profile(level: number) {
 async function move(page: Page, deal: Deal, cmd: BoardCommand) {
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
-  const before = await read(page), rect = (await page.locator('canvas').boundingBox())!, frame = boardFrame(rect.width, rect.height), geo = layout(before.attempt.board, deal, frame.height, before.settings.deckSide);
+  const before = await read(page), rect = (await page.locator('canvas').boundingBox())!, frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal), geo = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
   const tap = (p: {x: number; y: number}) => page.touchscreen.tap(rect.x + frame.offsetX + p.x * frame.unit, rect.y + p.y * frame.unit);
   if (cmd.type === 'transfer') {
     const id = cmd.from.kind === 'waste' ? before.attempt.board.waste.at(-1) : packet(before.attempt.board, cmd.from.index, deal).at(-1);
@@ -42,7 +42,7 @@ test('tenth milestone and fifth win share one durable result; unlocked palette i
 
 test('campaign and daily keep exact separate attempts; daily reward and third-day bonus survive reload without replay payout', async ({page}) => {
   test.setTimeout(90000); await page.clock.install({ time: new Date('2026-11-09T12:00:00Z') });
-  const save = profile(4); save.meta!.winCycle = 3; save.meta!.dailyDates = ['2026-11-07','2026-11-08']; save.meta!.lastDaily = '2026-11-08'; save.meta!.dailyStreak = 2;
+  const save = profile(4); save.settings.deckPosition = 'bottom'; save.meta!.winCycle = 3; save.meta!.dailyDates = ['2026-11-07','2026-11-08']; save.meta!.lastDaily = '2026-11-08'; save.meta!.dailyStreak = 2;
   await seed(page, save); await page.locator('#home-play').tap(); await move(page, campaignDeals[3], campaignDeals[3].winningPath[0]); const campaign = (await read(page)).attempt;
   await home(page); await page.locator('#daily-play').tap(); await expect(page.locator('#level-number')).toContainText('2026-11-09');
   const daily = dailyForDay('2026-11-09'); await move(page, daily, daily.winningPath[0]); const attempt = (await read(page)).attempt;

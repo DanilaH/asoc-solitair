@@ -1,6 +1,6 @@
 {
   "name": "asoc-solitair",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -23,7 +23,8 @@
     "content:daily": "vite build --ssr tools/content/build-daily.ts --outDir .authoring/daily && node .authoring/daily/build-daily.js",
     "qa:meta": "npm run build && vite build --ssr tools/record-meta.ts --outDir .recording/meta-source && node .recording/meta-source/record-meta.js",
     "content:expansion": "vite build --ssr tools/content/build-expansion.ts --outDir .authoring/expansion && node .authoring/expansion/build-expansion.js",
-    "qa:release": "npm run build && vite build --ssr tools/record-release.ts --outDir .recording/release-source && node .recording/release-source/record-release.js"
+    "qa:release": "npm run build && vite build --ssr tools/record-release.ts --outDir .recording/release-source && node .recording/release-source/record-release.js",
+    "qa:review": "npm run build && vite build --ssr tools/record-review.ts --outDir .recording/review-source && node .recording/review-source/record-review.js"
   },
   "dependencies": {
     "@capacitor/android": "8.6.0",

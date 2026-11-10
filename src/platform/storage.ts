@@ -63,7 +63,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
     m.dailyDates.forEach(dayNumber);
     if (m.lastDaily !== undefined && (!m.dailyDates.includes(m.lastDaily) || m.dailyStreak < 1)) throw Error('Повреждена серия дней');
   } else { metaState(save); milestoneRewards(save); }
-  for (const [key, values] of Object.entries({ palette: ['green', 'ink'], cardBack: ['classic', 'diamonds'], deckSide: ['right', 'left'] })) {
+  for (const [key, values] of Object.entries({ palette: ['green', 'ink'], cardBack: ['classic', 'diamonds'], deckSide: ['right', 'left'], deckPosition: ['top', 'bottom'] })) {
     const value = save.settings[key as keyof Save['settings']];
     if (value !== undefined && !values.includes(String(value))) throw Error('Повреждено оформление');
   }

@@ -1,3 +1,7 @@
+# Current art
+
+0.8.0 uses the coherent generated kit documented in [GENERATED_ART_0_8_0.md](GENERATED_ART_0_8_0.md). The entries below preserve historical 0.6.2/0.7.0 provenance; they are not the current resource inventory.
+
 # UI art — 0.6.2
 
 `public/art/ui/reward-emblem.webp` is an original generated reward sprite, used by the category praise and the win result. It is decorative and has no input or domain ownership. The same small asset is reused; no per-frame filters or generated backgrounds are introduced.

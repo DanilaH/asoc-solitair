@@ -1,8 +1,21 @@
 # Continuation checkpoint — 2026-11-10
 
-## Active work — 0.8.0 generated art / code 11
+## Current implementation — 0.8.0 / code 11
 
-The user explicitly authorized implementation of the entire detailed art plan: «давай ебашь по плану». Current work is on feat/cohesive-art: 49 original generated sprites, actual card/stock materials, presentation-only mapping for all 35 supplied illustration paths, matched helpers/HUD/home/all dialog materials, local ribbon/spark/coin/key/lock/Joker effects and short-word readability. Do not restart from the static concept. See docs/qa/GENERATED_ART_0_8_0.md for honest rolling evidence and remaining checks; docs/art/GENERATED_ART_0_8_0.md records source prompts/crops/archive. Current delivered APK is still 0.7.1 until final verification/integration of this branch. The source PNG archive is retained under libfile_3cdd278696848191ba22d7c9a5fa8a7a. No additional approval is needed for ordinary repository operations.
+The user authorized the detailed art plan and ordinary repository operations. [PR #12](https://github.com/DanilaH/asoc-solitair/pull/12) is merged. Verified source `b0ea1e50dac79c4a25823f263ee69f95fa479281`; main merge `3c28908f41f5f74bed7d869f3b29b8098192c4d4`. All A/B/C presentation work is implemented: 49 local generated resources (766,066 bytes), actual card/stock materials and both backs, 33 subject sprites covering 35 published references, matched HUD/helpers/home/all dialogs, pooled ribbon/spark/coin/key/lock/Joker art and stronger short-word readability. Both palettes/four deck placements and the 0.7.1 spatial structure remain. Actual raster QA caught a blank static scene on resize; a bounded repaint tail fixes it without continuous idle rendering. No domain/content/economy/SaveStore changes.
+
+[Exact-source PR CI](https://github.com/DanilaH/asoc-solitair/actions/runs/42882165012): **59 model/platform tests, all fixed witnesses/four-layout bounds, 176 layout states with 0 DOM/raster issues, 72 browser scenarios PASS and four deliberate duplicate skips, both Android compilations/signature verification PASS**. Local production-touch recordings and both art/repaint profiles pass. Two full-journey tests now allow 60s total while keeping every per-step assertion; actual focused intro/milestone runs pass. See docs/qa/GENERATED_ART_0_8_0.md and docs/art/GENERATED_ART_0_8_0.md.
+
+Delivered APK comes from the [main artifact run](https://github.com/DanilaH/asoc-solitair/actions/runs/42884353271), Android job PASS. All **93 production files match byte-for-byte** and the APK is byte-identical to the checked final branch artifact. Package `com.danilah.asocsolitair.debug`, version 0.8.0/code 11, 10,563,724 bytes; SHA256 `f095e43f7c4e90fce1efbb30faaa4c4ea4eeb040828f18c5b091dbade82a828a`. Preview certificate remains `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e`: update over the installed 0.7.1 test app, preserving progress. No uninstall required.
+
+Persistent deliverables:
+- APK: `libfile_bc01f531c6fc8191b2e927a0eec5f501`.
+- First-level GIF: `libfile_041d06709f588191b1100d8aa02210c1`.
+- Dense/Undo/pause GIF: `libfile_18895ef5314c8191a42d23c531083e9e`.
+- Home/field/pause image: `libfile_6403fd7d8e708191bb4280c4ae7db0c0`.
+- Nine original PNG source masters + crop/export provenance: `libfile_3cdd278696848191ba22d7c9a5fa8a7a`.
+
+GIFs contain ordinary production touch input at 360×780; initial loading/fixture setup is trimmed (0.9s first, 5.0s dense). Use delivered 0.8.0 media, not the static concept or preliminary white-backed sprites. Physical-phone comfort/readability/FPS/sound/haptics/native insets/background and live SDK delivery remain unverified. Production IDs, managed release signing and store publication remain deferred. Resume from the implemented 0.8.0 and user/device feedback.
 
 ## Project and authorization
 
@@ -12,7 +25,7 @@ This is **Солитёр ассоциаций**, `DanilaH/asoc-solitair`, portra
 
 The user explicitly authorized normal repository maintenance, push, PR management and integration: «я разрешаю работать тебе с репозиторием как со своим». Do not ask again for routine repository work. Production ad/analytics IDs, managed release signing and store publication remain deferred.
 
-## Current implementation — 0.7.1 / code 10
+## Previous implementation — 0.7.1 / code 10
 
 PR #11 is merged at `de98ca30edcebe42e0e4a8d7febbf211a623acb5`. Exact runtime source: `0b73ff20a90cd8a509df7619c64fb87a956c6ee1`. The user reported overlaps after the 0.7.0 GIFs and requested an independent review. Fixes/method: docs/qa/LAYOUT_AUDIT_2026-11-10.md.
 
@@ -84,7 +97,7 @@ Read docs/qa/CASUAL_FEEL_2026-11-10.md for this pass and docs/qa/UX_REVIEW_2026-
 
 ## Next acceptance
 
-Latest user steering supersedes a phone-feedback-only next step: «Надо применять генерацию более глобально например для рубашек карт и эффектов… Надо изучить снова моменты по интерфейсу». Research and staged scope: [ART_SYSTEM_REVIEW_2026-11-10.md](design/ART_SYSTEM_REVIEW_2026-11-10.md). All three recordings were retrieved again/hash-verified and selected scenes visually compared with the delivered 0.7.1 GIF and current rendering code. An original generated concept board shows coordinated home/game/card-back/helpers/effect materials. It is a proposal, not a running build or an approved new final style. Avoid copying its heavy outer frames/background contrast literally. Next implementation, when proceeding: one coherent art kit on a real dense level, then motion and remaining menus; retain the corrected geometry, two left slots, short category titles and four deck placements. No runtime/version/APK change in this research pass.
+The generated art plan described above is implemented and delivered in 0.8.0. Use its actual screenshots/touch recordings and physical-phone feedback as the next presentation evidence.
 
 Review the new presentation on a physical phone: readability/gesture comfort, sound/haptics, frame pacing, Back/background, process-kill/relaunch, native insets/banner and actual SDK callbacks/dashboard delivery. Browser/compilation evidence does not establish these outcomes. Human pacing and semantic review remain open. User feedback may direct another bounded visual pass; do not silently add content/meta scope.
 

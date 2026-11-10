@@ -1,5 +1,16 @@
 # Verification — 2026-11-09
 
+## Latest verified delivery — 0.8.0 / code 11
+
+[PR #12](https://github.com/DanilaH/asoc-solitair/pull/12), exact source `b0ea1e50dac79c4a25823f263ee69f95fa479281`, main merge `3c28908f41f5f74bed7d869f3b29b8098192c4d4`. [PR CI 42882165012](https://github.com/DanilaH/asoc-solitair/actions/runs/42882165012) PASS: 59 model/platform tests, all fixed witnesses/four-layout bounds, 176 DOM/dialog/raster states with 0 violations, 72 browser scenarios plus four intentional duplicate skips, Android debug/signature and unsigned SDK-disabled R8 release compilation. See docs/qa/GENERATED_ART_0_8_0.md for scope and limitations.
+
+[Main run 42884353271](https://github.com/DanilaH/asoc-solitair/actions/runs/42884353271) supplies artifact 13796305606 (`android-builds`); Android job PASS. Default-branch debug APK is byte-identical to the checked final branch APK. All 93 expected production web files are present and match SHA256 byte-for-byte; two Capacitor-generated runtime files are additional. Embedded manifest was independently decoded: `com.danilah.asocsolitair.debug`, 0.8.0/code 11. APK bytes `10563724`, SHA256 `f095e43f7c4e90fce1efbb30faaa4c4ea4eeb040828f18c5b091dbade82a828a`. V2 signing certificate fingerprint `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e` matches 0.7.1; CI apksigner verification passes. Full duplicate main web execution is not needed as separate acceptance evidence for byte-identical runtime assets.
+
+Persistent APK `libfile_bc01f531c6fc8191b2e927a0eec5f501`; first GIF `libfile_041d06709f588191b1100d8aa02210c1`; dense GIF `libfile_18895ef5314c8191a42d23c531083e9e`; montage `libfile_6403fd7d8e708191bb4280c4ae7db0c0`; original art source archive `libfile_3cdd278696848191ba22d7c9a5fa8a7a`. All four delivered files saved successfully with identities applied to their local paths.
+
+No physical phone or live production SDK confirmation; production signing/store publication remain deferred. Rules/content/balance 2/5/3 and the entire fixed bank/save ownership are unchanged. The entries below are historical verification snapshots, not the current implementation status.
+
+
 ## Local environment
 
 Node 24.22.1 / npm 11.9.0. Chromium through Playwright 1.56.1. JDK 17 only; no Android SDK configured locally. Android compilation was performed in the configured JDK21/SDK36 CI environment. No physical phone attached.

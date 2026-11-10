@@ -1,35 +1,42 @@
 # Generated art implementation — 0.8.0 / code 11
 
-Working implementation of docs/design/ART_IMPLEMENTATION_PLAN_2026-11-10.md. This document starts as a checkpoint; completed evidence is recorded below as it arrives. Runtime currently pending exact-source final CI/device acceptance; do not call the APK production ready.
+Implemented and merged in [PR #12](https://github.com/DanilaH/asoc-solitair/pull/12). Exact verified source: `b0ea1e50dac79c4a25823f263ee69f95fa479281`; main merge: `3c28908f41f5f74bed7d869f3b29b8098192c4d4`. The agreed plan's A/B/C presentation work is implemented. Physical-phone and live production-service acceptance remain open.
 
-## Implemented scope
+## Result
 
-- 49 original optimized resources: 4 card surfaces/backs, 12 UI/effect icons and 33 semantic subjects covering every existing 35 illustration reference. Published data URLs, membership, IDs and order remain unchanged. Presentation-only resolver in src/game/art.ts.
-- Actual Phaser cards and stock use the generated materials; both card widths, both backs, both palettes, four deck placements and no-stock teaching layouts remain supported. Darker main text and fewer forced breaks on short words. Drag shadows lift with the group.
-- HUD/helpers/home share materials and icons. Coral main actions, paper secondary controls, coherent panels, rendered-art cosmetic previews, checkbox toggles, dialog close controls and states across all 11 dialogs. Corrected 0.7.1 layout remains authoritative.
-- Pooled local completion sparkles/coral ribbon, shared coin sprites, matching key/lock/Joker artwork. Reduced motion suppresses decorative travel. Undo/restart clear decorative effects; opening dialogs clears local ribbon/sparks. Domain/economy/save ownership are unchanged.
-- Source atlas SHA/crops and generation briefs are recorded in docs/art/GENERATED_ART_0_8_0.md. Native version is 0.8.0/code 11; debug package/signing policy unchanged.
+- **49 original optimized local sprites, 766,066 bytes**: four card surfaces/backs, twelve UI/effect resources and 33 unique subject illustrations covering all 35 existing image reference paths. Published URLs/IDs, category membership, deal order, rules/content/balance 2/5/3 and the 80+28 bank remain unchanged. Presentation-only resolution is in src/game/art.ts.
+- Actual Phaser faces/stock/backs use the material kit; both card widths, both backs/palettes, four deck placements and no-stock teaching layouts remain supported. Darker main text and fewer forced line breaks on short words. Lifted drag shadows remain within existing geometry ownership.
+- Matching HUD/helper/home art, coral primary actions, paper secondary controls, common materials across all 11 dialogs, real cosmetic previews, compact settings toggles and rounded close controls. The responsive 0.7.1 screen structure remains authoritative; no new game systems or slots.
+- Local pooled completion ribbon/sparks, common coin sprites and matching key/lock/Joker art. Reduced motion, Undo/restart and dialog cleanup retain their contracts. Domain state/reward deduplication never depends on visual completion.
+- Source PNGs, normalized generation/edit briefs and exact source SHA/crop records are preserved via docs/art/GENERATED_ART_0_8_0.md. Runtime resources are committed in Git; source bundle identity is `libfile_3cdd278696848191ba22d7c9a5fa8a7a`.
 
-## Evidence so far
+## Problems caught and fixed
 
-- 59 model/platform tests PASS; intro + all 80 campaign + 28 daily fixed witnesses and four-layout bounds PASS. No domain/content/balance changes.
-- Early real production-touch recording PASS: first level to result/Next; reachable level 17 completion, next move during effect tail, Undo and pause; 320×568 captures including bottom-left deck. This initial recording preceded replacement of the remaining semantic art; final recordings will use the complete pack.
-- Initial layout audit interrupted by a load timeout while another command rebuilt served assets. It is not passing evidence; the matrix is rerunning against stable files.
-- Full local browser regression is in progress; no pass count claimed before completion.
-- Added a browser check that every published illustration resolves to shipped generated art and all 49 sprites decode with opaque content/transparent gutters and no external HTTP dependency.
+The alpha/decode check found white backing in early subject exports; manual small-sprite inspection additionally found diffuse rectangular haze inside other sprite bounds. All affected atlases received built-in cutout edits and were re-exported. Alpha counts are a resource-integrity check, not a substitute for visual inspection.
 
-The new art check found white/near-opaque backing in 17 preliminary subject exports. Their atlas/rope backgrounds were corrected with image generation and all affected sprites re-exported. Both phone and compact resource checks now PASS (49 decoded sprites, all 35 published reference paths resolved). The exported runtime pack totals 806,892 bytes. The complete original-source archive was replaced in place with nine final source PNGs and updated metadata.
+The actual raster audit also caught a blank static scene after a backing-store/banner resize: a reduced-motion board could sleep in the POST_RENDER turn that cleared its canvas. A bounded two-frame repaint tail now survives screen entry/real resize, then normal idle sleep resumes. Resize clears local decoration. The new regression checks real painted card pixels across repeated viewport/banner changes, without a Phaser debug bridge or a geometry-derived oracle.
 
-A stable-build layout pass completed all 176 existing DOM/dialog/raster states with 0 issues; final CSS/pixel verification is also running against an immutable output directory. One long meta scenario in the concurrent broad local browser run hit its 30-second limit; it will be diagnosed/rerun separately and is not counted as passing yet. All 80 campaign levels have already been traversed through real touch in that run.
+Two whole-journey tests exhausted their old 30-second total allowances while advancing ordinary moves/reloads. Their totals are now 60 seconds, with all individual action/scene/reward assertions unchanged. Both pass on focused reruns (intro journey 30.1s; milestone/reload/theme selection 24.5s in the final focused run). These timings describe test execution, not phone frame rate.
 
-The later full raster pass caught one genuine blank-canvas frame at 520×700 after a backing-store/banner resize (no overlapping controls). Static reduced-motion scenes could sleep in the same POST_RENDER turn that cleared their backing store. The renderer now keeps a bounded two-frame repaint tail on screen entry/real resize, wakes after changing the backing store, and then resumes idle sleep. Real resize also clears decorative ribbon/spark flights. A regression checks actual painted card pixels over repeated viewport/banner changes, without a Phaser debug bridge or geometry-derived oracle.
+## Completed verification
 
-The initial broad run completed 66 scenarios with four deliberate duplicate chapter skips and two 30-second total-journey timeouts. The milestone scenario passed alone in 26 seconds. The legacy intro journey also exhausted its 30-second total while advancing ordinary moves; these two complete-level/reload/cosmetic journeys now have a 60-second total allowance. All per-step state, scene-barrier and reward assertions remain unchanged; this is not a game frame-rate claim. Exact-source final CI and focused repaint checks are pending before delivery.
+[Exact-source PR CI](https://github.com/DanilaH/asoc-solitair/actions/runs/42882165012), both jobs **PASS**:
 
-Repaint fix verification: all 176 layout states now PASS again with **0 DOM/raster issues**, including the previously blank positive-control case. Both profiles pass all art-decode and repeated static viewport/banner repaint checks (4 tests, 24s). Manual small-sprite inspection additionally removed tinted backing from seven transport/tool subjects; these are resource-only changes after the repaint verification. Final production recordings and exact-source hosted checks are being refreshed before delivery.
+- TypeScript, **59 model/platform tests**, all supplied intro/campaign/daily witnesses and four-layout bounds, production build.
+- Independent DOM/dialog/rendered-PNG audit: **176 states on seven viewport sizes, 0 violations** (119 field + 21 home + 36 dialog states). Missing painted-card/tab positive controls count as failures.
+- **72 browser scenarios PASS**, four deliberate duplicate compact chapter skips. Includes all 80 campaign levels via real touch; complete modifiers/daily/save/helper/result flows; new 49-resource decode/alpha/local-origin checks and static scene repaint checks on both profiles.
+- Android debug and unsigned SDK-disabled R8 release compilation, preview signature verification. Version is 0.8.0 / code 11; package/signing policy retained.
 
-## Still required before delivery
+Local final focused checks: both profiles' art/repaint checks PASS; intro win/reload/replay and milestone/result/reload/theme selection PASS; full post-fix layout audit PASS. Preliminary interrupted/pre-fix runs are superseded by the complete exact-source CI above.
 
-Exact-source build, asset decode check, final layout/raster audit, completed browser regression, updated final touch recordings, Android debug/release compilation, APK embedded-file comparison and matching preview signature. Physical-device readability, gestures, sound/haptics/FPS/insets and live production SDK behavior remain separate acceptance work.
+## Media and APK
 
-Final runtime art size after matte cleanup: 766,066 bytes across 49 files.
+Final recordings use the same exact production assets and ordinary touch input. First: fresh level 1, victory and Next. Dense: level 17 fixture reached through its frozen witness, category completion, the next action during the effect tail, Undo and pause. Compact/top-bottom/left-right checks are separate from demonstration capture.
+
+Delivery GIFs retain actual frames at 360×780 / 16fps. The first trims 0.9s of initial loading; the dense clip trims 5.0s of fixture setup/home reload. No gameplay frames are fabricated or replaced by the concept image. The three-screen image is a direct montage of actual home/field/pause captures.
+
+The default-branch artifact run is [42884353271](https://github.com/DanilaH/asoc-solitair/actions/runs/42884353271). The main APK has been downloaded and verified: all 93 game files match; version/package/certificate match the expected 0.8.0 preview identity. It is byte-identical to the checked branch artifact. All four deliverables are saved successfully; exact hashes and stable file identities are recorded in VERIFICATION.md and SESSION_HANDOFF.md.
+
+## Limits
+
+No attached physical Android phone. Browser pixels/touch/compilation do not establish phone readability, native insets/banner delivery, sound/haptics/FPS/thermal behavior, process-kill durability, live ads or analytics arrival. Production IDs, managed release signing and store publication remain deferred. Human content pacing/editorial acceptance is unchanged. Further work should follow phone/user feedback on this implemented version, not restart the static mockup phase.

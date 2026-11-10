@@ -6,6 +6,14 @@ This is **Солитёр ассоциаций**, `DanilaH/asoc-solitair`, portra
 
 On 2026-11-10 the user explicitly authorized normal repository maintenance, push, PR management and integration: «я разрешаю работать тебе с репозиторием как со своим». Do not ask again for routine repository work. Production ad/analytics IDs and managed release signing remain deferred; there is no store-publication step in this debug handoff.
 
+## Active visual pass — 0.6.2
+
+The user confirmed continuing the casual UI/feel redesign on 2026-11-10. Work is on `polish/casual-feel`, based on `501d54c`. Current candidate is 0.6.2 / Android code 8; the last delivered preview below remains 0.6.1 / code 7 until new CI/artifact verification is recorded.
+
+Read docs/qa/CASUAL_FEEL_2026-11-10.md and docs/art/UI_ASSETS.md. Cards/controls/rewards have a coherent cyan/gold treatment; generated reward art is bundled locally; completion animations survive the next sync; praise has a readable hold; result coins are in the dialog top layer. An actual touch recording exposed a redundant resize cancelling drags; backing-size/zoom guarding and opacity-only screen entry fix it. Rules/content/balance and frozen deals are unchanged. `npm run qa:feel` reproduces real input media, including completion/next input/Undo.
+
+At this checkpoint, local model/content/build and production recordings pass. Final full-suite/Android CI is pending; do not claim a ready APK from this source until verified. Prior production IDs/signing deferral and debug package identity remain in force.
+
 ## Current implementation
 
 PR #6 is merged. Runtime merge commit: `8c3e34f11ef9f95de7c45295a40d74c8b6969a6b`, containing final native fix `6885b14959a42155c221bf243a96652233211301`. Version **0.6.1 / Android code 7**. Rules/content/balance stay **2/5/3**; 80 campaign puzzles and the frozen 28-day daily rotation are unchanged, including the first 26 deals and daily-v1 identities/orders.

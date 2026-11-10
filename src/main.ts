@@ -47,7 +47,7 @@ const runtime = createRuntime(() => { scene?.cancel(); }, () => {
   else openDialog('#settings');
 });
 
-function closeDialogs() { dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false); }
+function closeDialogs() { document.body.append($('#coin-layer')); dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false); }
 function openDialog(selector: string) { closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
 function message(text: string, error = false) {
   clearTimeout(messageTimer); $('#message').textContent = text; $('#message').classList.toggle('error', error);
@@ -105,9 +105,9 @@ try {
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
   const coins = Array.from({ length: 24 }, () => { const node = document.createElement('span'); node.className = 'flying-coin'; node.textContent = '✦'; $('#coin-layer').append(node); return { node, busy: false, animation: null as Animation | null }; });
-  function coinBurst(origin = $('#streak-reward')) {
+  function coinBurst(origin = $('#streak-reward'), destination = $('.coin-icon')) {
     if (save.settings.reducedMotion || new URLSearchParams(location.search).get('fxCoins') === '0') return;
-    const source = origin.getBoundingClientRect(), target = $('.coin-icon').getBoundingClientRect();
+    const source = origin.getBoundingClientRect(), target = destination.getBoundingClientRect();
     for (let i = 0; i < 8; i++) {
       const coin = coins.find(c => !c.busy); if (!coin) break;
       coin.busy = true; coin.node.style.display = 'block';
@@ -116,10 +116,11 @@ try {
       coin.animation = coin.node.animate([{ transform: `translate(${sx}px,${sy}px) scale(.5)`, opacity: 0 },
         { transform: `translate(${sx + (i - 3.5) * 10}px,${sy - 35 - i % 3 * 8}px) scale(1)`, opacity: 1, offset: .27 },
         { transform: `translate(${tx}px,${ty}px) scale(.8)`, opacity: 1 }], { duration: 550, delay: i * 23, easing: 'ease-in-out' });
-      coin.animation.onfinish = () => { coin.busy = false; coin.node.style.display = 'none'; $('.wallet').classList.remove('bump'); void $('.wallet').offsetWidth; $('.wallet').classList.add('bump'); };
+      coin.animation.onfinish = () => { coin.busy = false; coin.node.style.display = 'none'; const receiver = destination.closest('.wallet') ?? destination; receiver.classList.remove('bump'); void (receiver as HTMLElement).offsetWidth; receiver.classList.add('bump'); };
     }
   }
   function renderHud() {
+    document.documentElement.dataset.reduced = String(save.settings.reducedMotion);
     const board = save.attempt.board;
     $('#app').dataset.practice = String(training());
     $('#level-number').textContent = deal.daily ? `${training() ? 'ТРЕНИРОВКА' : 'ЗАДАНИЕ'} · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
@@ -147,7 +148,13 @@ try {
     $<HTMLButtonElement>('#hint').disabled = board.phase !== 'playing' || Boolean(workerDeadline) || saving;
     $<HTMLButtonElement>('#undo').disabled = board.phase === 'won' || !save.attempt.undo.length || saving;
     const tier = STREAK[save.attempt.streak.tier];
-    $('#streak').replaceChildren(...Array.from({ length: tier.count }, (_, index) => { const cell = document.createElement('i'); cell.className = index < save.attempt.streak.progress ? 'filled' : ''; return cell; }));
+    const streak = $('#streak');
+    if (streak.children.length !== tier.count) streak.replaceChildren(...Array.from({ length: tier.count }, () => document.createElement('i')));
+    [...streak.children].forEach((cell, index) => {
+      const filled = index < save.attempt.streak.progress;
+      if (filled && !cell.classList.contains('filled') && !save.settings.reducedMotion) cell.animate([{ transform: 'scale(.8)' }, { transform: 'translateY(-2px) scale(1.2)', offset: .55 }, { transform: 'translateY(-1px) scale(1)' }], { duration: 240 });
+      cell.classList.toggle('filled', filled);
+    });
     $('#streak').setAttribute('aria-label', `${save.attempt.streak.progress} из ${tier.count}`);
     $('#streak-reward').firstChild!.textContent = save.attempt.daily && !dailyRewardEligible(save, localDay()) ? '— ' : `+${tier.coins} `;
     $<HTMLInputElement>('#sfx').checked = save.settings.sfx;
@@ -167,6 +174,8 @@ try {
   }
   function outcome() {
     if (save.attempt.board.phase === 'playing') return;
+    // A local result coin layer must join the dialog's top layer to stay visible.
+    $('#result').dataset.won = String(save.attempt.board.phase === 'won');
     const won = save.attempt.board.phase === 'won';
     outcomeViewed = true;
     $('#result-title').textContent = won ? 'Всё сошлось!' : 'Ходы закончились';
@@ -187,7 +196,13 @@ try {
     $('#next-level').textContent = daily ? 'К заданиям и уровням' : deal.campaignLevel === CAMPAIGN_LENGTH ? 'К уровням' : `Уровень ${(deal.campaignLevel ?? 0) + 1} →`;
     $('#result-home').hidden = daily || deal.campaignLevel === CAMPAIGN_LENGTH;
     openDialog('#result');
-    if (won && payout?.some(r => r.coins > 0)) coinBurst($('.result-star'));
+    if (won && payout?.some(r => r.coins > 0)) {
+      $('#result').append($('#coin-layer'));
+      const attemptId = save.attempt.id;
+      setTimeout(() => {
+        if (alive && save.attempt.id === attemptId && $<HTMLDialogElement>('#result').open && !runtime.activity.getBlockReasons().some(r => r !== 'modal')) coinBurst($('.result-star'), $('#result-rewards strong'));
+      }, 240);
+    }
   }
   async function execute(cmd: Command) {
     if (!alive || saving || screen !== 'game' || runtime.activity.isBlocked()) return false;
@@ -229,7 +244,7 @@ try {
       if (result.events.some(e => e.type === 'coins') && !result.events.some(e => e.type === 'win')) coinBurst();
       if (cmd.type === 'restart') message('Перенесите категорию в свободный верхний слот');
       if (save.attempt.board.phase !== 'playing') {
-        clearTimeout(outcomeTimer); outcomeTimer = setTimeout(outcome, save.attempt.board.phase === 'won' ? 650 : 100);
+        clearTimeout(outcomeTimer); outcomeTimer = setTimeout(outcome, save.attempt.board.phase === 'won' ? 880 : 100);
       }
     } else {
       scene?.cancel(); runtime.play('invalid'); runtime.pulse('invalid');
@@ -268,7 +283,7 @@ try {
     $('#campaign-done').hidden = completed < CAMPAIGN_LENGTH;
     const label = current ? (campaignDeal?.campaignLevel ? `${campaign?.telemetry?.started ? 'Продолжить' : 'Играть'} · уровень ${campaignDeal.campaignLevel}` : 'Продолжить пробную раздачу')
       : campaign && (!outcomeViewed || save.attempt.daily) ? (campaignDeal?.campaignLevel ? `Результат · уровень ${campaignDeal.campaignLevel}` : 'Результат пробной раздачи') : completed === CAMPAIGN_LENGTH ? 'Выбрать уровень' : `Играть · уровень ${unlocked}`;
-    $('#home-play').replaceChildren(document.createTextNode(label), Object.assign(document.createElement('span'), { textContent: '↗' }));
+    $('#home-play').replaceChildren(document.createTextNode(label), Object.assign(document.createElement('span'), { textContent: '→' }));
     $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy;
     $('#home-status').textContent = current && campaign?.telemetry?.started ? 'Незаконченная раздача сохранена' : completed === 0 ? 'Начните с простых связей' : completed === CAMPAIGN_LENGTH ? 'Можно вернуться к любимым темам' : `Дальше — «${campaignDeals[unlocked - 1].title}»`;
     const focusId = campaign?.id ?? 'new';
@@ -391,7 +406,11 @@ try {
   const renderer = game;
   function resizeToRoot() {
     if (!ready || screen !== 'game' || !game?.isBooted) return;
-    const next = size(); game.loop.wake(); game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height);
+    const next = size();
+    // ResizeObserver can report an unchanged rounded backing size. Emitting a
+    // scene resize for that notification would cancel a perfectly valid drag.
+    if (game.scale.width === next.backing.width && game.scale.height === next.backing.height && game.scale.zoom === next.rect.width / next.backing.width) return;
+    game.loop.wake(); game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height);
   }
   const resize = new ResizeObserver(resizeToRoot);
   resize.observe(root);

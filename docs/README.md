@@ -23,3 +23,5 @@ Campaign bank: [authorship, coverage and limits](content/FIRST_CAMPAIGN.md), [va
 - [80-level release-candidate bank, UX and verification limits](content/RELEASE_BANK.md).
 
 - [Content / UX review — 0.6.1](qa/UX_REVIEW_2026-11-10.md).
+
+- [Casual UI / feel pass — 0.6.2](qa/CASUAL_FEEL_2026-11-10.md).

@@ -24,6 +24,10 @@ export class BoardScene extends Phaser.Scene {
   private stockCount!: Phaser.GameObjects.Text;
   private stockLabel!: Phaser.GameObjects.Text;
   private praise!: Phaser.GameObjects.Text;
+  private rewardBanner!: Phaser.GameObjects.Container;
+  private completionRing!: Phaser.GameObjects.Arc;
+  private departing = new Set<string>();
+  private praiseIndex = 0;
   private views = new Map<string, CardView>();
   private metrics!: ReturnType<typeof layout>;
   private jokerSelecting = false;
@@ -41,24 +45,28 @@ export class BoardScene extends Phaser.Scene {
   private hintTweens: Phaser.Tweens.Tween[] = [];
   private inspectMode = false;
   private backStyle = '';
-  private particles: Phaser.GameObjects.Arc[] = [];
+  private particles: Phaser.GameObjects.Shape[] = [];
   private presentedDealId: string | undefined;
   public constructor(private readonly options: Options) { super('board'); }
   private get cardW() { return cardMetrics(this.options.deal).width; }
   private get cardH() { return cardMetrics(this.options.deal).height; }
   public setDeal(deal: Deal) { this.enabled = false; this.presentedDealId = undefined; this.options.deal = deal; this.scene.restart(); this.game.loop.wake(); }
   public preload(): void {
+    if (!this.textures.exists('reward-emblem')) this.load.image('reward-emblem', 'art/ui/reward-emblem.webp');
     for (const card of Object.values(this.options.deal.cards)) if (card.image && !this.textures.exists(card.id)) this.load.image(card.id, card.image);
   }
   public create(): void {
-    this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.initial = true; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = [];
+    this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.initial = true; this.inspectMode = false; this.particles = []; this.departing.clear(); this.hintObjects = []; this.hintTweens = [];
     installSceneTextSharpness(this);
     this.world = this.add.container(0, 0);
     this.slots = this.add.graphics(); this.stockArt = this.add.graphics(); this.focus = this.add.graphics().setDepth(450);
     this.stockCount = this.add.text(0, 0, '', { fontFamily: 'Arial', fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(.5).setDepth(38);
     this.stockLabel = this.add.text(0, 0, '', { fontFamily: 'Arial', fontSize: '17px', color: '#b0d7bf' }).setOrigin(.5).setDepth(38);
-    this.praise = this.add.text(270, 235, '', { fontFamily: 'Georgia', fontSize: '36px', fontStyle: 'bold', color: '#ffe89b', stroke: '#2e6245', strokeThickness: 4 }).setOrigin(.5).setDepth(600).setAlpha(0);
-    this.world.add([this.slots, this.stockArt, this.focus, this.stockCount, this.stockLabel, this.praise]);
+    this.praise = this.add.text(32, 0, '', { fontFamily: 'Trebuchet MS, Arial', fontSize: '38px', fontStyle: 'bold', color: '#fff5b5', stroke: '#174c54', strokeThickness: 7, shadow: { offsetY: 3, color: '#063b45', blur: 0, fill: true, stroke: true } }).setOrigin(.5);
+    const emblem = this.add.image(-122, 0, 'reward-emblem').setDisplaySize(88, 82);
+    this.rewardBanner = this.add.container(270, 245, [emblem, this.praise]).setDepth(600).setAlpha(0);
+    this.completionRing = this.add.circle(0, 0, 40).setStrokeStyle(7, 0xffdd70).setDepth(505).setVisible(false);
+    this.world.add([this.slots, this.stockArt, this.focus, this.stockCount, this.stockLabel, this.rewardBanner, this.completionRing]);
     const gold = this.add.graphics().fillStyle(0xe7be63).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13).lineStyle(2, 0xffe6a1).strokeRoundedRect(-this.cardW / 2 + 4, -this.cardH / 2 + 4, this.cardW - 8, this.cardH - 8, 10);
     this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.label(0, -15, '✦', 38, '#fff0bc')]).setVisible(false);
     this.jokerBadge = this.add.container(0, 0, [this.add.circle(0, 0, 11, 0xf1cc73).setStrokeStyle(1, 0xffecc0), this.add.text(0, 0, '✦', { fontFamily: 'Arial', fontSize: '15px', color: '#715321' }).setOrigin(.5)]).setDepth(425).setVisible(false);
@@ -69,7 +77,7 @@ export class BoardScene extends Phaser.Scene {
     this.world.add([this.jokerArt, this.jokerBadge, this.lockArt]);
     this.keyFlights = Array.from({ length: 3 }, () => { const key = this.add.text(0, 0, '⚿', { fontFamily: 'Arial', fontSize: '34px', color: '#ffe09a' }).setOrigin(.5).setDepth(590).setVisible(false); this.world.add(key); return key; });
     for (const card of Object.values(this.options.deal.cards)) this.views.set(card.id, this.makeCard(card.id));
-    for (let i = 0; i < 36; i++) { const dot = this.add.circle(0, 0, 3 + i % 3, i % 2 ? 0xffdc79 : 0x99e5bd).setDepth(510).setVisible(false); this.world.add(dot); this.particles.push(dot); }
+    for (let i = 0; i < 36; i++) { const dot = (i % 3 ? this.add.star(0, 0, 4, 3, 9, i % 2 ? 0xffdd70 : 0xe6fbff) : this.add.circle(0, 0, 4, 0x82dfe9)).setDepth(510).setVisible(false); this.world.add(dot); this.particles.push(dot); }
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.down(pointer));
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.move(pointer));
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.up(pointer));
@@ -91,26 +99,27 @@ export class BoardScene extends Phaser.Scene {
     const node = this.add.container(0, 0).setVisible(false);
     const face = this.add.container(0, 0), back = this.add.container(0, 0);
     const g = this.add.graphics();
-    g.fillStyle(0x003e2d, .28).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 5, this.cardW, this.cardH, 13);
-    g.fillStyle(0xfaf5e8).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13);
-    g.lineStyle(card.leader ? 3 : 1.5, card.leader ? 0xe5bf6c : 0xd6d7be).strokeRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 11);
-    if (card.leader) g.fillStyle(0xf2dfae).fillRoundedRect(-this.cardW / 2 + 6, -this.cardH / 2 + 6, this.cardW - 12, 28, 7);
+    g.fillStyle(0x062c43, .32).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 6, this.cardW, this.cardH, 14);
+    g.fillStyle(card.leader ? 0xf1bb50 : 0x69bede).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 2, this.cardW, this.cardH, 14);
+    g.fillStyle(card.leader ? 0xffedb5 : 0xfffcf1).fillRoundedRect(-this.cardW / 2 + 2, -this.cardH / 2, this.cardW - 4, this.cardH - 4, 13);
+    g.lineStyle(2, card.leader ? 0xffd16b : 0xb6e9f4).strokeRoundedRect(-this.cardW / 2 + 5, -this.cardH / 2 + 3, this.cardW - 10, this.cardH - 10, 10);
+    if (card.leader) g.fillStyle(0xffce64).fillRoundedRect(-this.cardW / 2 + 7, -this.cardH / 2 + 7, this.cardW - 14, 27, 7);
     face.add(g);
     if (card.leader) {
-      face.add(this.label(0, -this.cardH / 2 + 11, card.ordered ? 'ПО ПОРЯДКУ' : 'КАТЕГОРИЯ', 11, '#8a6934'));
+      face.add(this.label(0, -this.cardH / 2 + 11, card.ordered ? 'ПО ПОРЯДКУ' : 'КАТЕГОРИЯ', 11, '#835415'));
       const titleY = -this.cardH / 2 + 41, countY = this.cardH / 2 - 32;
-      face.add(this.label(0, titleY, card.text, card.text.length > 10 ? 20 : 24, '#3d4e3c', countY - titleY - 10));
+      face.add(this.label(0, titleY, card.text, card.text.length > 10 ? 20 : 24, '#40516a', countY - titleY - 10));
     } else if (card.image) {
       face.add(this.add.image(0, 0, id).setDisplaySize(Math.min(104, this.cardW - 20), Math.min(104, this.cardW - 20)));
     } else {
-      face.add(this.label(0, -this.cardH / 2 + 19, card.text, card.text.length > 11 ? 19 : 23, '#374d43'));
-      face.add(this.label(0, 20, '✦', 28, '#d6d6ba'));
+      face.add(this.label(0, -this.cardH / 2 + 19, card.text, card.text.length > 11 ? 19 : 23, '#36556f'));
+      face.add(this.label(0, 20, '✦', 24, '#a9d5df'));
     }
     if (card.keyId) {
       const key = this.add.graphics().lineStyle(3, 0xb18b36).strokeCircle(this.cardW / 2 - 17, -this.cardH / 2 + 17, 5).lineBetween(this.cardW / 2 - 20, -this.cardH / 2 + 21, this.cardW / 2 - 31, -this.cardH / 2 + 32).lineBetween(this.cardW / 2 - 28, -this.cardH / 2 + 29, this.cardW / 2 - 24, -this.cardH / 2 + 33);
       face.add(key);
     }
-    const badge = this.label(0, this.cardH / 2 - 32, '', 20, '#8e7138'); face.add(badge);
+    const badge = this.label(0, this.cardH / 2 - 32, '', 20, card.leader ? '#92611c' : '#40859c'); face.add(badge);
     const b = this.add.graphics();
     this.paintBack(b);
     back.add(b); node.add([face, back]); this.world.add(node);
@@ -135,7 +144,9 @@ export class BoardScene extends Phaser.Scene {
     const duration = save.settings.reducedMotion ? 0 : 215;
     if (events.some(e => e.type === 'undo' || e.type === 'restart')) {
       for (const key of this.keyFlights) { this.tweens.killTweensOf(key); key.setVisible(false); }
-      this.tweens.killTweensOf(this.praise); this.praise.setAlpha(0);
+      this.departing.clear();
+      this.tweens.killTweensOf(this.rewardBanner); this.rewardBanner.setAlpha(0);
+      this.tweens.killTweensOf(this.completionRing); this.completionRing.setVisible(false);
     }
     this.slots.clear().lineStyle(2, 0x7ab594, .35).fillStyle(0x023f2d, .25);
     for (const target of this.metrics.targets) {
@@ -162,9 +173,7 @@ export class BoardScene extends Phaser.Scene {
       }
     }
     if (events.some(e => e.type === 'unlock')) {
-      this.tweens.killTweensOf(this.praise);
-      this.praise.setText('Замок открыт!').setPosition(270, 240).setAlpha(1);
-      this.tweens.add({ targets: this.praise, y: 215, alpha: 0, duration: save.settings.reducedMotion ? 300 : 1100 });
+      this.showPraise('Замок открыт!');
     }
     const { stock } = this.metrics;
     const deckActive = Boolean(board.stock.length || board.waste.length);
@@ -181,16 +190,29 @@ export class BoardScene extends Phaser.Scene {
     const completed = events.find(e => e.type === 'complete');
     for (const [id, view] of this.views) {
       if (visible.has(id)) continue;
+      // An unrelated save/sync must not cut short the collection animation.
+      // Undo may restore these same nodes and will take ownership below.
+      if (this.departing.has(id)) continue;
       this.tweens.killTweensOf(view.node);
       if (completed?.cards?.includes(id)) {
         const to = command?.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, command.to)) : undefined;
-        view.node.setVisible(true).setDepth(60);
+        this.departing.add(id);
+        const leader = this.options.deal.cards[id].leader;
+        if (leader) {
+          const total = completed.cards!.filter(c => !this.options.deal.cards[c].leader).length;
+          view.badge.setText(`${total} / ${total}`);
+        }
+        view.node.setVisible(true).setDepth(leader ? 524 : 520);
         this.tweens.add({ targets: view.node, x: to?.x ?? view.node.x, y: to?.y ?? view.node.y,
-          scaleX: .65, scaleY: .65, alpha: 0, duration: save.settings.reducedMotion ? 0 : 380, ease: 'Back.easeIn', onComplete: () => view.node.setVisible(false) });
+          scaleX: 1.06, scaleY: 1.06, angle: 0, alpha: 1, duration: save.settings.reducedMotion ? 0 : 160, ease: 'Cubic.easeOut', onComplete: () => {
+            this.tweens.add({ targets: view.node, scaleX: .35, scaleY: .35, alpha: 0, delay: save.settings.reducedMotion ? 0 : 140,
+              duration: save.settings.reducedMotion ? 0 : 210, ease: 'Back.easeIn', onComplete: () => { view.node.setVisible(false); this.departing.delete(id); } });
+          } });
       } else view.node.setVisible(false);
     }
     for (const pose of this.metrics.poses) {
       const view = this.views.get(pose.id)!;
+      this.departing.delete(pose.id);
       this.tweens.killTweensOf(view.node);
       const wasFace = view.face.visible;
       view.face.setVisible(pose.faceUp); view.back.setVisible(!pose.faceUp);
@@ -227,16 +249,29 @@ export class BoardScene extends Phaser.Scene {
     const target = command?.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, command.to)) : undefined;
     const x = target?.x ?? 270, y = target?.y ?? 109;
     const reduced = this.options.getSave().settings.reducedMotion;
-    this.tweens.killTweensOf(this.praise);
-    this.praise.setText(['Отлично!', 'Есть связь!', 'Всё сошлось!'][this.options.getSave().attempt.board.collected.length % 3]).setPosition(250, 230).setAlpha(1).setScale(.85);
-    this.tweens.add({ targets: this.praise, scaleX: 1, scaleY: 1, y: 210, alpha: 0, duration: reduced ? 250 : 850, ease: 'Sine.easeOut' });
+    this.showPraise(['Отлично!', 'Есть связь!', 'Так держать!', 'Блестяще!'][this.praiseIndex++ % 4]);
+    this.tweens.killTweensOf(this.completionRing);
+    if (!reduced && new URLSearchParams(location.search).get('fxParticles') !== '0') {
+      this.completionRing.setPosition(x, y).setScale(.4).setAlpha(.9).setVisible(true);
+      this.tweens.add({ targets: this.completionRing, scaleX: 1.85, scaleY: 1.85, alpha: 0, delay: 160, duration: 440, onComplete: () => this.completionRing.setVisible(false) });
+    }
     if (!reduced && new URLSearchParams(location.search).get('fxParticles') !== '0') for (let i = 0; i < 14; i++) {
       const dot = this.particles.find(p => !p.visible); if (!dot) break;
       const angle = i * Math.PI * 2 / 14;
-      dot.setPosition(x, y).setAlpha(1).setVisible(true);
+      dot.setPosition(x, y).setAlpha(1).setScale(.45).setRotation(angle).setVisible(true);
       this.tweens.add({ targets: dot, x: x + Math.cos(angle) * (60 + i % 3 * 18), y: y + Math.sin(angle) * 65,
-        alpha: 0, duration: 500 + i % 3 * 50, ease: 'Cubic.easeOut', onComplete: () => dot.setVisible(false) });
+        scaleX: 1, scaleY: 1, angle: i % 2 ? 90 : -90, alpha: 0, delay: 170, duration: 540 + i % 3 * 50, ease: 'Cubic.easeOut', onComplete: () => dot.setVisible(false) });
     }
+  }
+  private showPraise(text: string) {
+    this.tweens.killTweensOf(this.rewardBanner);
+    this.praise.setText(text);
+    this.praise.setScale(Math.min(1, 290 / this.praise.width));
+    this.rewardBanner.setPosition(285, 245).setAlpha(1).setScale(.78);
+    const reduced = this.options.getSave().settings.reducedMotion;
+    this.tweens.add({ targets: this.rewardBanner, scaleX: 1, scaleY: 1, duration: reduced ? 0 : 230, ease: 'Back.easeOut', onComplete: () => {
+      this.tweens.add({ targets: this.rewardBanner, alpha: 0, y: reduced ? 245 : 230, delay: reduced ? 180 : 380, duration: reduced ? 120 : 220 });
+    } });
   }
   private point(pointer: Phaser.Input.Pointer) { return { x: (pointer.x - this.world.x) / this.unit, y: pointer.y / this.unit }; }
   private hitSource(x: number, y: number): Location | null {

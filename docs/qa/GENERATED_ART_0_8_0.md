@@ -22,6 +22,10 @@ The new art check found white/near-opaque backing in 17 preliminary subject expo
 
 A stable-build layout pass completed all 176 existing DOM/dialog/raster states with 0 issues; final CSS/pixel verification is also running against an immutable output directory. One long meta scenario in the concurrent broad local browser run hit its 30-second limit; it will be diagnosed/rerun separately and is not counted as passing yet. All 80 campaign levels have already been traversed through real touch in that run.
 
+The later full raster pass caught one genuine blank-canvas frame at 520×700 after a backing-store/banner resize (no overlapping controls). Static reduced-motion scenes could sleep in the same POST_RENDER turn that cleared their backing store. The renderer now keeps a bounded two-frame repaint tail on screen entry/real resize, wakes after changing the backing store, and then resumes idle sleep. Real resize also clears decorative ribbon/spark flights. A regression checks actual painted card pixels over repeated viewport/banner changes, without a Phaser debug bridge or geometry-derived oracle.
+
+The initial broad run completed 66 scenarios with four deliberate duplicate chapter skips and two 30-second total-journey timeouts. The milestone scenario passed alone in 26 seconds. The legacy intro journey also exhausted its 30-second total while advancing ordinary moves; these two complete-level/reload/cosmetic journeys now have a 60-second total allowance. All per-step state, scene-barrier and reward assertions remain unchanged; this is not a game frame-rate claim. Exact-source final CI and focused repaint checks are pending before delivery.
+
 ## Still required before delivery
 
 Exact-source build, asset decode check, final layout/raster audit, completed browser regression, updated final touch recordings, Android debug/release compilation, APK embedded-file comparison and matching preview signature. Physical-device readability, gestures, sound/haptics/FPS/insets and live production SDK behavior remain separate acceptance work.

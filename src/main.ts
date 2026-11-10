@@ -99,6 +99,9 @@ try {
   const training = () => Boolean(save.attempt.daily && save.attempt.board.phase !== 'won' && !dailyRewardEligible(save, localDay()));
   let removeForeground: (() => void) | undefined;
   let saving = false, serviceBusy = false;
+  // A backing-store resize clears the canvas even when the model is static.
+  // Keep a bounded repaint tail instead of sleeping in that POST_RENDER turn.
+  let repaintFrames = 0;
   let pendingWrites = 0;
   let banner: NativeBanner | undefined;
   const launchedAt = Date.now();
@@ -359,7 +362,7 @@ try {
   function showGame() {
     clearPraise(); screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false;
     runtime.activity.setBlocked('screen', false); renderHud();
-    resizeToRoot(); game?.loop.wake(); scene?.sync(); showGuidance();
+    repaintFrames = Math.max(repaintFrames, 2); resizeToRoot(); game?.loop.wake(); scene?.sync(); showGuidance();
     if (save.attempt.board.phase !== 'playing') outcome();
   }
   function goHome() {
@@ -449,7 +452,8 @@ try {
     // ResizeObserver can report an unchanged rounded backing size. Emitting a
     // scene resize for that notification would cancel a perfectly valid drag.
     if (game.scale.width === next.backing.width && game.scale.height === next.backing.height && game.scale.zoom === next.rect.width / next.backing.width) return;
-    game.loop.wake(); game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height);
+    repaintFrames = Math.max(repaintFrames, 2);
+    game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height); game.loop.wake();
   }
   const resize = new ResizeObserver(resizeToRoot);
   resize.observe(root);
@@ -466,6 +470,10 @@ try {
     else renderer.loop.wake();
   });
   renderer.events.on(Phaser.Core.Events.POST_RENDER, () => {
+    if (repaintFrames > 0) {
+      repaintFrames--;
+      if (!runtime.activity.isBlocked()) return;
+    }
     if (ready && (runtime.activity.isBlocked() || !scene?.hasMotion())) renderer.loop.sleep();
   });
   // Input and explicit UI changes wake the sleeping renderer before visual work.

@@ -84,7 +84,7 @@ export class BoardScene extends Phaser.Scene {
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.move(pointer));
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.up(pointer));
     this.input.on('pointerupoutside', () => { if (this.press) this.cancel(); });
-    const resize = () => { this.cancel(); this.sync([], false); };
+    const resize = () => { this.clearFeedback(); this.cancel(); this.sync([], false); };
     this.scale.on('resize', resize);
     this.events.once('shutdown', () => { this.presentedDealId = undefined; this.scale.off('resize', resize); this.clearHint(); this.views.clear(); this.input.removeAllListeners(); });
     this.presentedDealId = this.options.deal.id;

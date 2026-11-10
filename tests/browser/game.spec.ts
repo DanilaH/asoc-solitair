@@ -28,6 +28,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('real touch play wins, reload keeps the result and wallet, replay keeps the deal', async ({ page }) => {
+  // A 21-move journey plus reload/replay has many real browser round trips.
+  // Keep per-step polling assertions strict; the total is not an FPS budget.
+  test.setTimeout(60000);
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await page.screenshot({ path: `test-results/${test.info().project.name}-opening.png` });
   for (const cmd of deal.winningPath) await action(page, cmd);

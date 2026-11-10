@@ -24,6 +24,7 @@ import { NativeBanner } from './platform/banner';
 import { applyReceipt, platformState, purchaseHelper, interstitialEligible, useContinue, type RewardPlacement } from './domain/services';
 import type { Save, Result } from './domain/types';
 import './style.css';
+import './art.css';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 let deal = campaignDeals[0];
@@ -51,7 +52,7 @@ const runtime = createRuntime(() => { scene?.cancel(); }, () => {
 });
 
 function closeDialogs() { document.body.append($('#coin-layer')); dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false); }
-function openDialog(selector: string) { clearPraise(); closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
+function openDialog(selector: string) { clearPraise(); scene?.clearFeedback(); closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
 function clearPraise() {
   if (praiseAnimation) { praiseAnimation.onfinish = null; praiseAnimation.cancel(); praiseAnimation = undefined; }
   $('#praise').hidden = true; $('#feedback-row').dataset.praising = 'false';
@@ -98,6 +99,9 @@ try {
   const training = () => Boolean(save.attempt.daily && save.attempt.board.phase !== 'won' && !dailyRewardEligible(save, localDay()));
   let removeForeground: (() => void) | undefined;
   let saving = false, serviceBusy = false;
+  // A backing-store resize clears the canvas even when the model is static.
+  // Keep a bounded repaint tail instead of sleeping in that POST_RENDER turn.
+  let repaintFrames = 0;
   let pendingWrites = 0;
   let banner: NativeBanner | undefined;
   const launchedAt = Date.now();
@@ -131,7 +135,7 @@ try {
   let activeHint: { key: string; action: BoardCommand; guaranteed: boolean } | undefined;
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
-  const coins = Array.from({ length: 24 }, () => { const node = document.createElement('span'); node.className = 'flying-coin'; node.textContent = '✦'; $('#coin-layer').append(node); return { node, busy: false, animation: null as Animation | null }; });
+  const coins = Array.from({ length: 24 }, () => { const node = document.createElement('span'); node.className = 'flying-coin'; $('#coin-layer').append(node); return { node, busy: false, animation: null as Animation | null }; });
   function coinBurst(origin = $('#streak-reward'), destination = $('.coin-icon')) {
     if (save.settings.reducedMotion || new URLSearchParams(location.search).get('fxCoins') === '0') return;
     const source = origin.getBoundingClientRect(), target = destination.getBoundingClientRect();
@@ -358,7 +362,7 @@ try {
   function showGame() {
     clearPraise(); screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false;
     runtime.activity.setBlocked('screen', false); renderHud();
-    resizeToRoot(); game?.loop.wake(); scene?.sync(); showGuidance();
+    repaintFrames = Math.max(repaintFrames, 2); resizeToRoot(); game?.loop.wake(); scene?.sync(); showGuidance();
     if (save.attempt.board.phase !== 'playing') outcome();
   }
   function goHome() {
@@ -448,7 +452,8 @@ try {
     // ResizeObserver can report an unchanged rounded backing size. Emitting a
     // scene resize for that notification would cancel a perfectly valid drag.
     if (game.scale.width === next.backing.width && game.scale.height === next.backing.height && game.scale.zoom === next.rect.width / next.backing.width) return;
-    game.loop.wake(); game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height);
+    repaintFrames = Math.max(repaintFrames, 2);
+    game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height); game.loop.wake();
   }
   const resize = new ResizeObserver(resizeToRoot);
   resize.observe(root);
@@ -465,6 +470,10 @@ try {
     else renderer.loop.wake();
   });
   renderer.events.on(Phaser.Core.Events.POST_RENDER, () => {
+    if (repaintFrames > 0) {
+      repaintFrames--;
+      if (!runtime.activity.isBlocked()) return;
+    }
     if (ready && (runtime.activity.isBlocked() || !scene?.hasMotion())) renderer.loop.sleep();
   });
   // Input and explicit UI changes wake the sleeping renderer before visual work.

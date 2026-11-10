@@ -20,3 +20,4 @@ native/android/capacitor-cordova-android-plugins/
 native/android/app/src/main/assets/solitaire-analytics-contract.json
 
 .authoring/
+docs/art/masters/*.webp

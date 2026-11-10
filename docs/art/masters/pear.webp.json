@@ -1,0 +1,18 @@
+{
+  "sourceSha256": "392042517dd5af556aba70ffaec133cd6d1275b451b4e71d4beba57367fd632f",
+  "columns": 1,
+  "rows": 1,
+  "records": [
+    {
+      "name": "pear",
+      "source": "exec-ed4dd894-b8d7-4137-a7cd-ee7edfb102f9.png",
+      "rect": {
+        "left": 495,
+        "top": 120,
+        "width": 528,
+        "height": 771
+      },
+      "path": "public/art/generated/pear.webp"
+    }
+  ]
+}

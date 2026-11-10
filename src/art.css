@@ -1,0 +1,116 @@
+/* Shared materials for the DOM and Phaser art kit. Layout ownership stays in style.css. */
+:root{
+  --ink:#294d5d;--muted:#68818a;--paper:#fffaf0;--honey:#e7b35f;
+  --coral:#eb7757;--lavender:#a19bd2;--table:#126b71;
+}
+#app{
+  background:radial-gradient(ellipse at 45% 22%,#237d80 0%,#166d73 48%,#104c5b 100%);
+}
+#app[data-screen=home]{background:radial-gradient(ellipse at 50% 30%,#fffcf3 15%,#eee5d4 100%);color:var(--ink)}
+#app[data-palette=ink][data-screen=game]{background:radial-gradient(ellipse at 45% 20%,#666a97,#44496e 60%,#303650)}
+.wallet{background:#104c58;color:#fff9e9;border-radius:9px;box-shadow:inset 0 1px 0 #ffffff14,0 2px 2px #073b4433}
+#app[data-screen=home] .wallet{background:#6c9291;color:#fffdf1}
+.coin-icon{background:url('/art/generated/coin.webp') center/contain no-repeat;border:0;box-shadow:none;color:transparent;font-size:0;flex-shrink:0}
+.wallet-plus{background:#fdf9ed;color:#418a91;box-shadow:0 1px 1px #355d6355}
+.streak i{border-color:#96bfc44d;background:#0b4855;border-radius:4px;box-shadow:inset 0 1px 2px #123c5055}
+.streak i.filled{background:linear-gradient(#ffedb5,#e9b86e);border-color:#fff3cc;box-shadow:0 1px 2px #173f4d66,inset 0 1px 0 #fff9df}
+.streak i.filled:after{border-color:#ba8c4f}
+.level{color:#c4dfdb}
+#app .deck-tools .moves{
+  border:0;background:url('/art/generated/card-face.webp') center/100% 100% no-repeat;
+  box-shadow:none;color:var(--ink);padding-top:13px;
+}
+.moves>span{color:#5b7f87}
+.move-track{background:#c4d3cf}
+.move-track i{background:linear-gradient(90deg,#f0c886,#eaa168);border-radius:4px}
+#app .deck-tools #inspect{color:#cce1dc;border-color:#8eb8b366;background:#1c626c55;box-shadow:inset 0 1px 0 #ffffff0a}
+#app .deck-tools #inspect[aria-pressed=true]{background:#f5e6bd;color:#386772;border-color:#fff2cf}
+#message{color:#c2d9d2}
+footer button{color:#e1ece5}
+footer .helper-icon{
+  position:relative;isolation:isolate;background:url('/art/generated/card-face.webp') center/100% 100% no-repeat!important;
+  border:0!important;box-shadow:0 3px 2px #062c3d33!important;border-radius:19px;
+  color:transparent!important;font-size:0!important;text-shadow:none;
+}
+footer .helper-icon svg{display:none}
+footer .helper-icon::after{content:'';position:absolute;inset:8px;background:center/contain no-repeat}
+#hint .helper-icon::after{background-image:url('/art/generated/hint.webp')}
+#undo .helper-icon::after{background-image:url('/art/generated/undo.webp')}
+#joker .helper-icon::after{background-image:url('/art/generated/joker.webp')}
+footer b{background:linear-gradient(#ffe0ae,#efb47b);border-color:#fff0d1;color:#805130;box-shadow:0 1px 2px #21495666}
+footer button:disabled{opacity:.45;filter:saturate(.5)}
+footer button[aria-pressed=true] .helper-icon{outline:2px solid #ffe4a4;outline-offset:2px}
+#praise{color:#ffe2a8;text-shadow:0 2px 1px #173d4b66}
+
+.milestone-gem{display:block;width:34px;height:40px;flex-shrink:0;font-size:0;background:url('/art/generated/milestone.webp') center/contain no-repeat;text-shadow:none}
+.milestone-details strong{color:#597d7d}
+.milestone-track{height:9px;border-color:#b7c8c1;background:#d0dbd4;box-shadow:inset 0 1px 2px #819e9833}
+.milestone-track i{background:linear-gradient(#b9d4b6,#7eac99);border-radius:9px}
+.event-medal{position:relative;background:url('/art/generated/card-face.webp') center/100% 100% no-repeat!important;border:0;box-shadow:0 3px 2px #516b6833;border-radius:17px;font-size:0;color:transparent}
+.event-medal svg,.event-medal img{visibility:hidden}
+.event-medal::after{content:'';position:absolute;inset:5px;background:center/contain no-repeat}
+.daily-card .event-medal::after{background-image:url('/art/generated/daily.webp')}
+.cycle-card .event-medal::after{background-image:url('/art/generated/cycle.webp')}
+.looks-card .event-medal::after{background-image:url('/art/generated/looks.webp')}
+.daily-card strong,.cycle-card strong{background:#e7b77c;color:#fffdf1;box-shadow:0 1px 1px #7b754d22}
+.looks-card strong{background:#9892c0;color:#fffdf1}
+.daily-card small,.calendar-link,.home-status{color:#67817d}
+.cycle-pips i{color:#c3cdc5}.cycle-pips .lit{color:#c5964d}
+.brand-scene h1{color:#356a72;text-shadow:0 2px 0 #fffef7,0 4px 0 #adc8c2;letter-spacing:-1.3px}
+.brand-scene h1 small{color:#7b9485}
+.linked-emblem{filter:drop-shadow(0 5px 3px #365e5a18)}
+.primary,.home-primary{
+  background:linear-gradient(#fa9c75 0%,#ee7957 55%,#df634a 100%);border:2px solid #ffdab2;
+  color:#fffaf0;text-shadow:0 1px 1px #a24e3b;box-shadow:inset 0 2px 0 #ffcca1,0 4px 0 #ac5343,0 6px 8px #355f6322;
+}
+.home-primary{border-radius:21px}
+.primary:hover:not(:disabled),.home-primary:hover:not(:disabled){filter:brightness(1.035)}
+.secondary{
+  background:linear-gradient(#fffdf5,#f1ebdf);border:2px solid #e6dfd0;color:#496a78;
+  box-shadow:inset 0 1px 0 #fff,0 3px 0 #bcc4ca;text-shadow:0 1px 0 #fffdf5;
+}
+.primary:disabled,.secondary:disabled{box-shadow:inset 0 1px 1px #8b96932b;filter:saturate(.35);opacity:.55}
+.levels-link,.text-button{color:#628783}
+dialog{
+  background:linear-gradient(145deg,#fffdf4,#f8f0df);border:3px solid #fffcf0;color:var(--ink);
+  box-shadow:0 0 0 2px #c6c3bf,0 6px 0 #a6b3be,0 20px 60px #082d4580;
+}
+dialog::backdrop{background:#092c3d9c;backdrop-filter:none}
+dialog h2{color:#345d6b;text-shadow:0 1px 0 #fffdf5}
+dialog .small{color:#6c8180}
+.close{color:#8c8bb0;background:#eee9ee;border:1px solid #d8d5df;border-radius:10px;box-shadow:inset 0 1px 0 #fffdf7}
+.eyebrow{color:#9b8261}
+.setting{border-bottom-color:#e3ddce;color:#4e6c76}
+.setting input{appearance:none;position:relative;flex-shrink:0;width:42px;height:25px;margin:0;border:2px solid #fffaf0;border-radius:20px;background:#b8c1c6;box-shadow:inset 0 1px 2px #647e8855;cursor:pointer;transition:background .12s}
+.setting input::after{content:'';position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:linear-gradient(#fffef7,#ece8df);box-shadow:0 1px 2px #465e6655;transition:transform .12s}
+.setting input:checked{background:#69a59e}
+.setting input:checked::after{transform:translateX(17px)}
+.setting input:focus-visible{outline:2px solid #df9f62;outline-offset:2px}
+.helper-offer{border-color:#d8d9cc}
+.helper-offer h3{position:relative;padding-left:30px}
+.helper-offer h3::before{content:'';position:absolute;left:0;top:-2px;width:25px;height:25px;background:center/contain no-repeat}
+#hint-offer h3::before{background-image:url('/art/generated/hint.webp')}
+#undo-offer h3::before{background-image:url('/art/generated/undo.webp')}
+#joker-offer h3::before{background-image:url('/art/generated/joker.webp')}
+.helper-offer h3 span{color:#718481}
+.level-button{border:1px solid #d8d9d5;background:linear-gradient(#fffdf5,#edece5);color:#567782;box-shadow:0 2px 0 #bdc8c7}
+.level-button[data-completed=true]{background:linear-gradient(#d7e5d8,#b6d0c1);color:#456c61;border-color:#b4caba}
+.level-button[data-next=true]{background:linear-gradient(#ffd7a6,#edb77b);color:#855b37;border-color:#fff2d0;box-shadow:0 2px 0 #b68c66}
+#chapter-nav button{background:#eeeaf0;color:#79779f;box-shadow:0 2px 0 #c2c5d1}
+#result-rewards{background:#edeedc;box-shadow:inset 0 1px 3px #8a9a7933}
+.reward-line strong{color:#a57634}
+.result-meta{color:#6e837c}
+.result-star img{filter:drop-shadow(0 3px 2px #83683e25)}
+.calendar-day{background:#ebe7d9;color:#6e7e78;border:1px solid #e2dccd;box-shadow:0 1px 0 #d1cbbb}
+.calendar-day.today{outline-color:#e0a16c;background:#fff5de;color:#875d38}
+.calendar-day.complete{background:#83afa0;border-color:#80a897;color:#fffdf1}
+.calendar-day.future{color:#98a399;box-shadow:none}
+.choice-row button{background:linear-gradient(#fffdf5,#e8ebe3);color:#5f7a7c;border-color:#cbd5ce;box-shadow:0 2px 0 #b8c8c4}
+.choice-row button[aria-pressed=true]{background:linear-gradient(#cce2d6,#a9c9c0);border-color:#7fa99f;box-shadow:inset 0 1px 0 #e5f4e9,0 2px 0 #6f9b94;color:#315e61}
+.preview-back{border:0;background:url('/art/generated/card-back-classic.webp') center/100% 100% no-repeat!important;box-shadow:0 4px 6px #073e4844}
+.appearance-preview[data-back=diamonds] .preview-back{background-image:url('/art/generated/card-back-diamonds.webp')!important}
+.preview-face{border:0;background:url('/art/generated/card-face.webp') center/100% 100% no-repeat;color:#456878;box-shadow:0 4px 6px #073e4844}
+.preview-face b{display:block;width:26px;height:26px;margin:auto;font-size:0;background:url('/art/generated/spark.webp') center/contain no-repeat}
+.flying-coin{border:0;border-radius:0;background:url('/art/generated/coin.webp') center/contain no-repeat;box-shadow:none;color:transparent}
+@media(max-height:700px){footer .helper-icon::after{inset:7px}.event-medal{font-size:0}}
+@media(max-height:590px){.event-medal{font-size:0}.helper-offer h3{font-size:16px;padding-left:27px}.helper-offer h3 span{font-size:10px}}

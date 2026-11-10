@@ -30,6 +30,7 @@ async function move(page: Page, deal: Deal, cmd: BoardCommand) {
 async function home(page: Page) { await page.locator('#menu').tap(); await page.locator('#levels-open').tap(); await expect(page.locator('#home')).toBeVisible(); }
 
 test('tenth milestone and fifth win share one durable result; unlocked palette is immediately usable', async ({page}) => {
+  test.setTimeout(60000); // Full level + result + reload + cosmetic selection.
   const save = profile(10); save.meta!.winCycle = 4; await seed(page, save); await page.locator('#home-play').tap();
   for (const cmd of campaignDeals[9].winningPath) await move(page, campaignDeals[9], cmd);
   await expect(page.locator('#result')).toBeVisible(); await expect(page.locator('#result-rewards')).toContainText('Веха · 10'); await expect(page.locator('#result-rewards')).toContainText('Пять новых побед');

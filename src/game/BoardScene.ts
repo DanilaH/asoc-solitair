@@ -4,9 +4,10 @@ import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
 import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
 import { WIDTH, boardFrame, cardMetrics, layout } from './layout';
+import { UI_ART, artUrl, illustrationUrl } from './art';
 import type { Pose, Target } from './layout';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text; backArt: Phaser.GameObjects.Graphics }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Graphics }
 interface Options {
   deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene): void;
@@ -22,7 +23,7 @@ export class BoardScene extends Phaser.Scene {
   private foundationArt!: Phaser.GameObjects.Graphics;
   private foundationTitles: Phaser.GameObjects.Text[] = [];
   private focus!: Phaser.GameObjects.Graphics;
-  private stockArt!: Phaser.GameObjects.Graphics;
+  private stockArt!: Phaser.GameObjects.Image;
   private stockCount!: Phaser.GameObjects.Text;
   private stockLabel!: Phaser.GameObjects.Text;
   private completionRing!: Phaser.GameObjects.Arc;
@@ -35,7 +36,8 @@ export class BoardScene extends Phaser.Scene {
   private jokerBadge!: Phaser.GameObjects.Container;
   private lockArt!: Phaser.GameObjects.Container;
   private lockCount!: Phaser.GameObjects.Text;
-  private keyFlights: Phaser.GameObjects.Text[] = [];
+  private keyFlights: Phaser.GameObjects.Image[] = [];
+  private completionRibbon!: Phaser.GameObjects.Image;
   private selected: Location | null = null;
   private press: { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; jokerColumn?: number } | null = null;
   private unit = 1;
@@ -45,20 +47,21 @@ export class BoardScene extends Phaser.Scene {
   private hintTweens: Phaser.Tweens.Tween[] = [];
   private inspectMode = false;
   private backStyle = '';
-  private particles: Phaser.GameObjects.Shape[] = [];
+  private particles: Phaser.GameObjects.Image[] = [];
   private presentedDealId: string | undefined;
   public constructor(private readonly options: Options) { super('board'); }
   private get cardW() { return cardMetrics(this.options.deal).width; }
   private get cardH() { return cardMetrics(this.options.deal).height; }
   public setDeal(deal: Deal) { this.enabled = false; this.presentedDealId = undefined; this.options.deal = deal; this.scene.restart(); this.game.loop.wake(); }
   public preload(): void {
-    for (const card of Object.values(this.options.deal.cards)) if (card.image && !this.textures.exists(card.id)) this.load.image(card.id, card.image);
+    for (const name of UI_ART) if (!this.textures.exists('art-' + name)) this.load.image('art-' + name, artUrl(name));
+    for (const card of Object.values(this.options.deal.cards)) if (card.image && !this.textures.exists(card.id)) this.load.image(card.id, illustrationUrl(card.image));
   }
   public create(): void {
     this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.initial = true; this.inspectMode = false; this.particles = []; this.departing.clear(); this.hintObjects = []; this.hintTweens = [];
     installSceneTextSharpness(this);
     this.world = this.add.container(0, 0);
-    this.slots = this.add.graphics(); this.stockArt = this.add.graphics(); this.focus = this.add.graphics().setDepth(450);
+    this.slots = this.add.graphics(); this.stockArt = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH); this.focus = this.add.graphics().setDepth(450);
     this.stockCount = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(.5).setDepth(38);
     this.stockLabel = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '17px', color: '#b0d7bf' }).setOrigin(.5).setDepth(38);
     this.completionRing = this.add.circle(0, 0, 40).setStrokeStyle(7, 0xffdd70).setDepth(505).setVisible(false);
@@ -66,22 +69,22 @@ export class BoardScene extends Phaser.Scene {
     this.foundationArt = this.add.graphics().setDepth(200);
     this.foundationTitles = this.options.getSave().attempt.board.foundations.map(() => this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '15px', fontStyle: 'bold', color: '#886347' }).setOrigin(.5).setDepth(201));
     this.world.add([this.foundationArt, ...this.foundationTitles]);
-    const gold = this.add.graphics().fillStyle(0xe7be63).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13).lineStyle(2, 0xffe6a1).strokeRoundedRect(-this.cardW / 2 + 4, -this.cardH / 2 + 4, this.cardW - 8, this.cardH - 8, 10);
-    this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.label(0, -15, '✦', 38, '#fff0bc')]).setVisible(false);
+    const gold = this.add.image(0, 0, 'art-card-category').setDisplaySize(this.cardW, this.cardH);
+    this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.add.image(0, 5, 'art-joker').setDisplaySize(78, 78)]).setVisible(false);
     this.jokerBadge = this.add.container(0, 0, [this.add.circle(0, 0, 11, 0xf1cc73).setStrokeStyle(1, 0xffecc0), this.add.text(0, 0, '✦', { fontFamily: 'Nunito, Arial', fontSize: '15px', color: '#715321' }).setOrigin(.5)]).setDepth(425).setVisible(false);
-    const lock = this.add.graphics().fillStyle(0x143f36, .96).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13).lineStyle(3, 0xd9bd7e).strokeRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 11);
-    lock.lineStyle(5, 0xf3d58e).strokeRoundedRect(-16, -35, 32, 35, 15).fillStyle(0xf3d58e).fillRoundedRect(-23, -12, 46, 35, 7).fillStyle(0x5c633d).fillCircle(0, 0, 4).fillRect(-2, 0, 4, 10);
+    const lock = this.add.image(0, 0, 'art-card-back-diamonds').setDisplaySize(this.cardW, this.cardH).setTint(0x9198b9);
     this.lockCount = this.label(0, 36, '0 / 3', 21, '#ffe6a1');
-    this.lockArt = this.add.container(0, 0, [lock, this.label(0, -this.cardH / 2 + 12, 'ТРИ КЛЮЧА', 11, '#ffe6a1'), this.lockCount]).setVisible(false).setDepth(420);
+    this.lockArt = this.add.container(0, 0, [lock, this.add.image(0, -8, 'art-lock').setDisplaySize(66, 66), this.label(0, -this.cardH / 2 + 12, 'ТРИ КЛЮЧА', 11, '#fff0cf'), this.lockCount]).setVisible(false).setDepth(420);
     this.world.add([this.jokerArt, this.jokerBadge, this.lockArt]);
-    this.keyFlights = Array.from({ length: 3 }, () => { const key = this.add.text(0, 0, '⚿', { fontFamily: 'Nunito, Arial', fontSize: '34px', color: '#ffe09a' }).setOrigin(.5).setDepth(590).setVisible(false); this.world.add(key); return key; });
+    this.keyFlights = Array.from({ length: 3 }, () => { const key = this.add.image(0, 0, 'art-key').setDisplaySize(40, 40).setDepth(590).setVisible(false); this.world.add(key); return key; });
     for (const card of Object.values(this.options.deal.cards)) this.views.set(card.id, this.makeCard(card.id));
-    for (let i = 0; i < 36; i++) { const dot = (i % 3 ? this.add.star(0, 0, 4, 3, 9, i % 2 ? 0xffdd70 : 0xe6fbff) : this.add.circle(0, 0, 4, 0x82dfe9)).setDepth(510).setVisible(false); this.world.add(dot); this.particles.push(dot); }
+    for (let i = 0; i < 24; i++) { const dot = this.add.image(0, 0, 'art-spark').setDisplaySize(i % 3 ? 15 : 10, i % 3 ? 15 : 10).setDepth(510).setVisible(false); this.world.add(dot); this.particles.push(dot); }
+    this.completionRibbon = this.add.image(0, 0, 'art-ribbon').setDisplaySize(this.cardW * .94, 38).setDepth(530).setVisible(false); this.world.add(this.completionRibbon);
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.down(pointer));
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.move(pointer));
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.up(pointer));
     this.input.on('pointerupoutside', () => { if (this.press) this.cancel(); });
-    const resize = () => { this.cancel(); this.sync([], false); };
+    const resize = () => { this.clearFeedback(); this.cancel(); this.sync([], false); };
     this.scale.on('resize', resize);
     this.events.once('shutdown', () => { this.presentedDealId = undefined; this.scale.off('resize', resize); this.clearHint(); this.views.clear(); this.input.removeAllListeners(); });
     this.presentedDealId = this.options.deal.id;
@@ -89,7 +92,7 @@ export class BoardScene extends Phaser.Scene {
     this.options.ready(this);
   }
   private label(x: number, y: number, text: string, size: number, color: string, maxHeight = Infinity) {
-    const label = this.add.text(x, y, cardCaption(text, this.cardW < 125), { fontFamily: 'Nunito, Arial', fontSize: `${size * Math.min(1, this.cardW / 125)}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: this.cardW - 18 } }).setOrigin(.5, 0);
+    const label = this.add.text(x, y, cardCaption(text, this.cardW < 125 && text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size * Math.min(1, this.cardW / 125)}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: this.cardW - 18 } }).setOrigin(.5, 0);
     label.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, label.width), maxHeight / Math.max(1, label.height)));
     return label;
   }
@@ -97,11 +100,8 @@ export class BoardScene extends Phaser.Scene {
     const card = this.options.deal.cards[id];
     const node = this.add.container(0, 0).setVisible(false);
     const face = this.add.container(0, 0), back = this.add.container(0, 0);
-    const g = this.add.graphics();
-    g.fillStyle(0x163449, .23).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 7, this.cardW, this.cardH, 14);
-    g.fillStyle(card.leader ? 0xd8b68b : 0x9caac9).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 3, this.cardW, this.cardH, 14);
-    g.fillStyle(card.leader ? 0xfff0d7 : 0xfffcf4).fillRoundedRect(-this.cardW / 2 + 2, -this.cardH / 2, this.cardW - 4, this.cardH - 4, 13);
-    g.lineStyle(3, card.leader ? 0xf2cf9d : 0xd4d9ec).strokeRoundedRect(-this.cardW / 2 + 5, -this.cardH / 2 + 3, this.cardW - 10, this.cardH - 10, 10);
+    const shadow = this.add.graphics().fillStyle(0x082c3c, .22).fillRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 5, this.cardW - 6, this.cardH - 1, 14);
+    const g = this.add.image(0, 0, card.leader ? 'art-card-category' : 'art-card-face').setDisplaySize(this.cardW, this.cardH);
     const content = this.add.container(0, 0); face.add([g, content]);
     let caption: Phaser.GameObjects.Text | undefined, strip: Phaser.GameObjects.Text | undefined;
     if (card.leader) {
@@ -111,7 +111,7 @@ export class BoardScene extends Phaser.Scene {
         const crown = this.add.graphics(); content.add(crown);
         crown.fillStyle(0xd0a16b).beginPath().moveTo(x, y).lineTo(x + 5, y + 7).lineTo(x + 9, y - 2).lineTo(x + 13, y + 7).lineTo(x + 18, y).lineTo(x + 16, y + 15).lineTo(x + 2, y + 15).closePath().fillPath();
       }
-      caption = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '24px', fontStyle: 'bold', color: '#506e7a', align: 'center' }).setOrigin(.5);
+      caption = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '24px', fontStyle: 'bold', color: '#294d5d', align: 'center' }).setOrigin(.5);
       caption.setScale(Math.min(1, (this.cardW - 18) / caption.width)); content.add(caption);
       strip = this.add.text(0, -this.cardH / 2 + 9, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: '#8c7257', fontStyle: 'bold' }).setOrigin(.5, 0);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
@@ -119,31 +119,23 @@ export class BoardScene extends Phaser.Scene {
       content.add(this.add.image(0, 0, id).setDisplaySize(Math.min(104, this.cardW - 22), Math.min(104, this.cardW - 22)));
       strip = this.label(0, -this.cardH / 2 + 8, card.text, 16, '#77929d'); face.add(strip); strip.setVisible(false);
     } else {
-      caption = this.label(0, 0, card.text, card.text.length > 11 ? 23 : 26, '#506e7a', this.cardH - 72); caption.setOrigin(.5); content.add(caption);
+      caption = this.label(0, 0, card.text, card.text.length > 11 ? 23 : 26, '#294d5d', this.cardH - 72); caption.setOrigin(.5); content.add(caption);
       strip = this.add.text(0, -this.cardH / 2 + 7, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: '#79909c' }).setOrigin(.5, 0);
       strip.setScale(Math.min(1, (this.cardW - 14) / strip.width)); face.add(strip); strip.setVisible(false);
     }
     if (card.keyId) {
-      const key = this.add.graphics().lineStyle(3, 0xb18b36).strokeCircle(this.cardW / 2 - 17, -this.cardH / 2 + 17, 5).lineBetween(this.cardW / 2 - 20, -this.cardH / 2 + 21, this.cardW / 2 - 31, -this.cardH / 2 + 32).lineBetween(this.cardW / 2 - 28, -this.cardH / 2 + 29, this.cardW / 2 - 24, -this.cardH / 2 + 33);
+      const key = this.add.image(this.cardW / 2 - 23, -this.cardH / 2 + 23, 'art-key').setDisplaySize(30, 30);
       content.add(key);
     }
     const badge = this.label(0, card.leader && !card.ordered ? -this.cardH / 2 + 13 : this.cardH / 2 - 30, '', 17, card.leader ? '#a17e5d' : '#a9815f'); content.add(badge);
-    const b = this.add.graphics();
+    const b = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
     this.paintBack(b);
-    back.add(b); node.add([face, back]); this.world.add(node);
-    return { node, face, back, badge, content, caption, strip, backArt: b };
+    back.add(b); node.add([shadow, face, back]); this.world.add(node);
+    return { node, face, back, badge, content, caption, strip, backArt: b, shadow };
   }
-  private paintBack(b: Phaser.GameObjects.Graphics) {
+  private paintBack(b: Phaser.GameObjects.Image) {
     const diamonds = this.options.getSave().settings.cardBack === 'diamonds';
-    b.clear().fillStyle(0x003e2d, .25).fillRoundedRect(-this.cardW / 2, -this.cardH / 2 + 5, this.cardW, this.cardH, 13);
-    b.fillStyle(0xf5edda).fillRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13);
-    b.fillStyle(diamonds ? 0x8584a5 : 0x949dc4).fillRoundedRect(-this.cardW / 2 + 5, -this.cardH / 2 + 5, this.cardW - 10, this.cardH - 10, 9);
-    b.lineStyle(1.2, 0xd6d9ec, .5);
-    for (let y = -60; y <= 60; y += 26) for (let x = -this.cardW / 2 + 23; x <= this.cardW / 2 - 17; x += 26) { if (diamonds) b.beginPath().moveTo(x, y - 8).lineTo(x + 6, y).lineTo(x, y + 8).lineTo(x - 6, y).closePath().strokePath(); else b.strokeCircle(x, y, 7); }
-    // Linked cards repeat the home emblem as a small, inexpensive vector motif.
-    b.lineStyle(3, 0xe9dcc0).strokeRoundedRect(-23, -19, 27, 38, 4).strokeRoundedRect(-3, -14, 27, 38, 4);
-    b.lineStyle(3, 0xcac6dc).lineBetween(-7, 1, 10, 5);
-    b.lineStyle(2, 0xdddff0, .65).strokeRoundedRect(-this.cardW / 2 + 12, -this.cardH / 2 + 12, this.cardW - 24, this.cardH - 24, 5);
+    b.setTexture(diamonds ? 'art-card-back-diamonds' : 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
   }
   public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand): void {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
@@ -157,7 +149,7 @@ export class BoardScene extends Phaser.Scene {
       for (const key of this.keyFlights) { this.tweens.killTweensOf(key); key.setVisible(false); }
       this.departing.clear();
       this.options.praise('');
-      this.tweens.killTweensOf(this.completionRing); this.completionRing.setVisible(false);
+      this.clearFeedback();
     }
     this.slots.clear().lineStyle(2, 0x85b5b2, .3).fillStyle(0x114e59, .18);
     for (const target of this.metrics.targets) {
@@ -190,7 +182,8 @@ export class BoardScene extends Phaser.Scene {
     const deckActive = Boolean(board.stock.length || board.waste.length);
     this.stockArt.setVisible(deckActive); this.stockCount.setVisible(deckActive); this.stockLabel.setVisible(deckActive);
     this.stockArt.setPosition(stock.x, stock.y); this.paintBack(this.stockArt);
-    if (!board.stock.length) this.stockArt.clear().lineStyle(2, 0x85b5b2, .5).strokeRoundedRect(-this.cardW / 2, -this.cardH / 2, this.cardW, this.cardH, 13);
+    this.stockArt.setVisible(deckActive && Boolean(board.stock.length));
+    if (deckActive && !board.stock.length) this.slots.lineStyle(2, 0x85b5b2, .5).strokeRoundedRect(stock.x - this.cardW / 2, stock.y - this.cardH / 2, this.cardW, this.cardH, 13);
     this.stockCount.setPosition(stock.x + this.cardW / 2 - 17, stock.y - this.cardH / 2 + 20).setFontSize(20).setText(board.stock.length ? String(board.stock.length) : board.waste.length ? '↻' : '');
     this.stockLabel.setText('');
     this.foundationArt.clear();
@@ -204,7 +197,7 @@ export class BoardScene extends Phaser.Scene {
       title.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, title.width)));
       for (let dot = 0; dot < total; dot++) {
         const px = x + (dot - (total - 1) / 2) * Math.min(11, (this.cardW - 30) / Math.max(1, total));
-        this.foundationArt.fillStyle(dot < count ? 0x72a3a5 : 0xe7ece4).fillCircle(px, y + this.cardH / 2 - 22, 3.6).lineStyle(1, 0x9cb6b8).strokeCircle(px, y + this.cardH / 2 - 22, 3.6);
+        this.foundationArt.fillStyle(dot < count ? 0x218e95 : 0xe7ece4).fillCircle(px, y + this.cardH / 2 - 22, 3.6).lineStyle(1, 0x7b9ca5).strokeCircle(px, y + this.cardH / 2 - 22, 3.6);
       }
     });
     const foundationTops = board.foundations.filter(ids => ids.length).map(ids => ids.filter(id => !this.options.deal.cards[id].leader).at(-1) ?? ids.at(-1)!);
@@ -236,6 +229,7 @@ export class BoardScene extends Phaser.Scene {
     for (const pose of this.metrics.poses) {
       if (!visible.has(pose.id)) continue;
       const view = this.views.get(pose.id)!;
+      view.shadow.setPosition(0, 0).setScale(1);
       this.departing.delete(pose.id);
       this.tweens.killTweensOf(view.node);
       const wasFace = view.face.visible;
@@ -289,15 +283,26 @@ export class BoardScene extends Phaser.Scene {
     this.showPraise(['Отлично!', 'Есть связь!', 'Так держать!', 'Блестяще!'][this.praiseIndex++ % 4]);
     this.tweens.killTweensOf(this.completionRing);
     if (!reduced && new URLSearchParams(location.search).get('fxParticles') !== '0') {
-      this.completionRing.setPosition(x, y).setScale(.4).setAlpha(.9).setVisible(true);
-      this.tweens.add({ targets: this.completionRing, scaleX: 1.85, scaleY: 1.85, alpha: 0, delay: 160, duration: 440, onComplete: () => this.completionRing.setVisible(false) });
+      // The accent stays local to the completed slot, leaving nearby words readable.
+      this.completionRing.setPosition(x, y).setScale(.3).setAlpha(.65).setVisible(true);
+      this.tweens.add({ targets: this.completionRing, scaleX: .95, scaleY: 1.1, alpha: 0, delay: 130, duration: 340, onComplete: () => this.completionRing.setVisible(false) });
+      this.tweens.killTweensOf(this.completionRibbon);
+      this.completionRibbon.setPosition(x, y + this.cardH * .22).setDisplaySize(this.cardW * .86, 38).setAlpha(0).setVisible(true);
+      this.tweens.add({ targets: this.completionRibbon, y: y + this.cardH * .14, alpha: .95, delay: 140, duration: 100, yoyo: true, hold: 110, onComplete: () => this.completionRibbon.setVisible(false) });
     }
-    if (!reduced && new URLSearchParams(location.search).get('fxParticles') !== '0') for (let i = 0; i < 14; i++) {
+    if (!reduced && new URLSearchParams(location.search).get('fxParticles') !== '0') for (let i = 0; i < 10; i++) {
       const dot = this.particles.find(p => !p.visible); if (!dot) break;
-      const angle = i * Math.PI * 2 / 14;
-      dot.setPosition(x, y).setAlpha(1).setScale(.45).setRotation(angle).setVisible(true);
-      this.tweens.add({ targets: dot, x: x + Math.cos(angle) * (60 + i % 3 * 18), y: y + Math.sin(angle) * 65,
-        scaleX: 1, scaleY: 1, angle: i % 2 ? 90 : -90, alpha: 0, delay: 170, duration: 540 + i % 3 * 50, ease: 'Cubic.easeOut', onComplete: () => dot.setVisible(false) });
+      const angle = i * Math.PI * 2 / 10, radius = this.cardW * .4;
+      dot.setPosition(x + Math.cos(angle) * radius * .55, y + Math.sin(angle) * 40).setAlpha(1).setDisplaySize(12 + i % 3 * 3, 12 + i % 3 * 3).setRotation(angle).setVisible(true);
+      this.tweens.add({ targets: dot, x: x + Math.cos(angle) * radius, y: y + Math.sin(angle) * 64,
+        scaleX: dot.scaleX * .3, scaleY: dot.scaleY * .3, angle: i % 2 ? 65 : -65, alpha: 0, delay: 170, duration: 360 + i % 3 * 45, ease: 'Cubic.easeOut', onComplete: () => dot.setVisible(false) });
+    }
+  }
+  /** Decorative work has no domain ownership and must not outlive its screen. */
+  public clearFeedback(): void {
+    for (const object of [this.completionRing, this.completionRibbon, ...this.particles, ...this.keyFlights]) {
+      if (!object) continue;
+      this.tweens.killTweensOf(object); object.setVisible(false);
     }
   }
   private showPraise(text: string) { this.options.praise(text); }
@@ -348,6 +353,7 @@ export class BoardScene extends Phaser.Scene {
     press.poses.forEach((pose, i) => {
       const view = this.views.get(pose.id)!;
       this.tweens.killTweensOf(view.node);
+      view.shadow.setPosition(0, 4).setScale(1.03);
       view.node.setPosition(pose.x + x - press.x, pose.y + y - press.y - 10).setScale(1.035).setDepth(480 + i);
     });
     this.world.sort('depth');

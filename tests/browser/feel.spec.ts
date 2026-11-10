@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
-import { freshSave, packet } from '../../src/domain/engine';
+import { dispatch, freshSave, packet } from '../../src/domain/engine';
 import { boardFrame, layout } from '../../src/game/layout';
 import type { BoardCommand, Save } from '../../src/domain/types';
 const deal = campaignDeals[0];
@@ -68,4 +68,38 @@ test('touch drag survives entry and unchanged backing-size notifications', async
     await page.waitForTimeout(250);
   }
   await cdp.detach();
+});
+
+test('category praise has a reserved row outside cards and helpers and clears under pause', async ({ page }) => {
+  await enter(page, false);
+  for (const cmd of deal.winningPath) {
+    const completing = dispatch(await read(page), cmd, deal).events.some(event => event.type === 'complete');
+    await move(page, cmd);
+    if (completing) break;
+  }
+  await expect(page.locator('#praise')).toBeVisible();
+  const rects = await page.evaluate(() => {
+    const b = (s: string) => { const r = document.querySelector(s)!.getBoundingClientRect(); return { top: r.top, bottom: r.bottom }; };
+    return { cards: b('canvas'), praise: b('#praise'), helpers: b('#dock'), guidance: getComputedStyle(document.querySelector('#message')!).visibility };
+  });
+  expect(rects.praise.top).toBeGreaterThanOrEqual(rects.cards.bottom - 1);
+  expect(rects.praise.bottom).toBeLessThanOrEqual(rects.helpers.top + 1);
+  expect(rects.guidance).toBe('hidden');
+  const before = await read(page); await page.locator('#menu').tap();
+  await expect(page.locator('#praise')).toBeHidden(); await page.locator('#settings-done').tap();
+  expect((await read(page)).attempt.board).toEqual(before.attempt.board);
+  expect(await page.locator('#message').evaluate(e => getComputedStyle(e).visibility)).toBe('visible');
+});
+
+test('home appearance button stays under a held finger and opens reliably', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  const before = (await page.locator('#looks-open').boundingBox())!;
+  const cdp = await page.context().newCDPSession(page), point = { x: before.x + before.width / 2, y: before.y + before.height / 2 };
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
+  await page.waitForTimeout(160);
+  const pressed = (await page.locator('#looks-open').boundingBox())!;
+  expect(Math.abs(pressed.y - before.y)).toBeLessThan(4);
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await cdp.detach(); await expect(page.locator('#appearance')).toBeVisible();
 });

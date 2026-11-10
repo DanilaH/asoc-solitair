@@ -23,7 +23,7 @@ try {
   await page.reload(); await page.waitForSelector('#app[data-ready="true"]'); await page.locator('#home-play').tap(); await wait(page, 1000);
   await page.screenshot({ path: 'docs/qa/review-top-deck.png', scale: 'css' });
   await page.locator('#menu').tap(); await page.locator('#appearance-settings').tap();
-  await page.locator('[data-deck-position=bottom]').tap(); await page.locator('[data-deck-side=left]').tap(); await wait(page);
+  await page.locator('button[data-deck-position=bottom]').tap(); await page.locator('button[data-deck-side=left]').tap(); await wait(page);
   await page.screenshot({ path: 'docs/qa/review-layout-controls.png', scale: 'css' });
   await page.locator('#appearance .primary').tap(); await wait(page, 950);
   const before = await read(page);
@@ -45,7 +45,7 @@ try {
   if ((await read(page)).attempt.board.movesLeft !== before.attempt.board.movesLeft! - 1) throw Error('Drag did not commit');
   await page.locator('#undo').tap(); await wait(page, 900);
   if (JSON.stringify((await read(page)).attempt.board) !== JSON.stringify(before.attempt.board)) throw Error('Undo changed the board');
-  await page.locator('#menu').tap(); await page.locator('#appearance-settings').tap(); await page.locator('[data-deck-side=right]').tap();
+  await page.locator('#menu').tap(); await page.locator('#appearance-settings').tap(); await page.locator('button[data-deck-side=right]').tap();
   await page.locator('#appearance .primary').tap(); await wait(page, 900);
   if (errors.length) throw Error(errors.join('\n'));
   const video = page.video()!; await context.close(); const file = '.recording/review-layout.webm'; await video.saveAs(file);

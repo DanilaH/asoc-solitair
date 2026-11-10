@@ -73,7 +73,7 @@ try {
   await p.setViewportSize({ width: 320, height: 568 }); await wait(p, 300);
   await p.screenshot({ path: '.recording/feel-evidence/feel-dense-compact.png' });
   await p.locator('#menu').tap(); await p.locator('#appearance-settings').tap();
-  await p.locator('[data-deck-position=bottom]').tap(); await p.locator('[data-deck-side=left]').tap(); await p.locator('#appearance .primary').tap(); await wait(p, 300);
+  await p.locator('button[data-deck-position=bottom]').tap(); await p.locator('button[data-deck-side=left]').tap(); await p.locator('#appearance .primary').tap(); await wait(p, 300);
   await p.screenshot({ path: '.recording/feel-evidence/feel-bottom-compact.png' });
   const denseVideo = p.video()!; await dense.close(); await denseVideo.saveAs('.recording/feel-dense.webm');
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', '.recording/feel-dense.webm', '-vf', 'fps=16,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=160:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle', '.recording/feel-evidence/feel-dense.gif']);

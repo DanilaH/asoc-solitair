@@ -6,10 +6,12 @@
   <header><button id="menu" class="round" aria-label="Настройки"><span class="hamburger"></span></button><button id="wallet-open" class="wallet" aria-label="Монеты и помощники"><span class="coin-icon">✦</span><span id="coins">100</span><span class="wallet-plus">+</span></button><section class="streak-row" aria-label="Серия переносов"><div id="streak" class="streak"></div><span id="streak-reward" class="streak-reward">+2 <span>✦</span></span></section></header>
   <section id="home" aria-label="Кампания">
     <button id="appearance-open" class="milestone-card"><span class="milestone-gem" aria-hidden="true">✦</span><span class="milestone-details"><strong id="milestone-title">Веха 10</strong><span class="milestone-track"><i id="milestone-fill"></i></span><small id="milestone-copy">Стол «Чернила»</small></span><small id="milestone-progress">0 / 10</small></button>
+    <div class="home-stage">
     <section class="daily-card" aria-label="Ежедневное задание"><button id="daily-play"><span class="event-medal" aria-hidden="true">▦</span><strong>Задание дня</strong><small id="daily-date"></small><small id="daily-status"></small></button><button id="calendar-open" class="calendar-link">Календарь →</button></section>
     <button id="win-cycle-open" class="cycle-card"><span class="event-medal"><img src="art/ui/reward-emblem.webp" alt=""></span><strong>Пять побед</strong><span id="win-cycle-pips" class="cycle-pips"></span><small id="win-cycle-count">0 / 5 новых побед</small><small id="cycle-reward" class="sr-only">+20 монет и подсказка</small></button>
     <button id="looks-open" class="looks-card"><span class="event-medal" aria-hidden="true"><svg viewBox="0 0 40 40"><g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><rect x="6" y="7" width="20" height="27" rx="4" transform="rotate(-10 16 20)"/><rect x="16" y="8" width="20" height="27" rx="4" transform="rotate(10 26 20)"/><path d="M20 18h8m-9 7h10"/></g></svg></span><strong>Ваш стол</strong></button>
     <div class="brand-scene"><img class="linked-emblem" src="art/ui/linked-cards.webp" alt="Две связанные по смыслу карточки"><h1><small>СОЛИТЁР</small>Ассоциаций</h1></div>
+    </div>
     <p id="home-status" class="home-status">Начните с простых связей</p>
     <button id="daily-resume-old" class="calendar-link" hidden></button>
     <button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
@@ -18,7 +20,7 @@
   <div id="play-screen" hidden>
   <div class="level"><span id="level-number">УРОВЕНЬ 1</span><h1>Найдите общее</h1></div>
   <main id="game" aria-label="Карточное поле"><div id="game-root"></div><div class="deck-tools"><div class="moves"><span>Ходы</span><strong id="moves">32</strong><div class="move-track"><i id="move-fill"></i></div></div><button id="inspect" aria-label="Рассмотреть карту" aria-pressed="false">Aa</button></div><div id="loading">Раскладываем карты…</div></main>
-  <p id="message" role="status">Перенесите категорию в свободный верхний слот</p>
+  <div id="feedback-row"><p id="message" role="status">Перенесите категорию в свободный верхний слот</p><div id="praise" aria-live="polite" hidden><img src="art/ui/linked-cards.webp" alt=""><strong></strong></div></div>
   <footer id="dock"><button id="hint"><span class="helper-icon"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M13 24c-9-12 0-22 8-21 12 1 15 13 7 21l-3 5H16z" fill="currentColor"/><path d="M18 8l-4 5m3 20h8m-7 4h6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span>Подсказка</span><b id="hint-count">3</b></button><button id="undo"><span class="helper-icon undo-icon">↶</span><span>Отмена</span><b id="undo-count">5</b></button><button id="joker" aria-pressed="false" hidden><span class="helper-icon joker-icon"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 12l7 8 6-13 6 13 7-8-3 19H10z" fill="currentColor"/><path d="M11 35h18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span>Джокер</span><b id="joker-count">1</b></button></footer>
   <div class="bottom-note" aria-hidden="true"></div>
   <button id="save-retry" class="secondary" hidden>Повторить сохранение</button>

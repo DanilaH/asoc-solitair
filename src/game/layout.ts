@@ -6,7 +6,7 @@ export const cardMetrics = (deal: Deal) => deal.initial.tableau.length >= 4 ? { 
 /** Reserve enough logical height even when a real native banner shortens the canvas. */
 export function boardFrame(width: number, height: number, deckPosition: 'top' | 'bottom' = 'top', deal?: Deal) {
   const hasDeck = !deal || Boolean(deal.initial.stock.length || deal.initial.waste.length);
-  const unit = Math.min(width / WIDTH, height / (deckPosition === 'bottom' && hasDeck ? 760 : 650));
+  const unit = Math.min(width / WIDTH, height / (deckPosition === 'bottom' && hasDeck ? 680 : 650));
   return { unit, offsetX: (width - WIDTH * unit) / 2, height: height / unit };
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
@@ -25,7 +25,7 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
   const foundationCenters = centers;
   const stock = { x: left ? 72 : 468, y: bottom ? height - cardH / 2 - 12 : cardH / 2 + 20 };
   const waste = { x: left ? 204 : 336, y: stock.y };
-  const top = cardH / 2 + (hasDeck && !bottom ? cardH + 54 : 120);
+  const top = cardH / 2 + (bottom ? 30 : hasDeck ? cardH + 54 : 185);
   board.foundations.forEach((ids, index) => {
     const x = foundationCenters[index];
     targets.push({ location: { kind: 'foundation', index }, x, y: top, width: cardW + 8, height: cardH + 8 });

@@ -46,7 +46,7 @@ try {
       await page.locator('#home-play').tap(); await pause(page, 900);
       for (const cmd of campaignDeals[9].winningPath.slice(-2)) await move(page, campaignDeals[9], cmd);
       await page.waitForSelector('#result[open]'); await pause(page, 1800); await page.locator('#result-home').tap(); await pause(page);
-      await page.locator('#appearance-open').tap(); await pause(page); await page.locator('[data-palette=ink]').tap(); await pause(page); await page.locator('#appearance .primary').tap(); await pause(page);
+      await page.locator('#appearance-open').tap(); await pause(page); await page.locator('button[data-palette=ink]').tap(); await pause(page); await page.locator('#appearance .primary').tap(); await pause(page);
     } else if (name === 'daily') {
       const before = save.attempt.id; await page.locator('#daily-play').tap(); await pause(page, 900);
       for (const cmd of dailyForDay(day).winningPath.slice(-2)) await move(page, dailyForDay(day), cmd);
@@ -54,7 +54,7 @@ try {
       await page.locator('#home-play').tap(); await page.waitForSelector('#app[data-ready="true"][data-presented-deal="campaign-004"]'); await pause(page, 1100);
       if ((await read(page)).attempt.id !== before) throw Error('Lost campaign recording state');
     } else {
-      await page.locator('#appearance-open').tap(); await pause(page); await page.locator('[data-palette=ink]').tap(); await page.locator('[data-card-back=diamonds]').tap(); await page.locator('[data-deck-side=left]').tap(); await pause(page, 1100);
+      await page.locator('#appearance-open').tap(); await pause(page); await page.locator('button[data-palette=ink]').tap(); await page.locator('button[data-card-back=diamonds]').tap(); await page.locator('button[data-deck-side=left]').tap(); await pause(page, 1100);
       await page.screenshot({ path: 'docs/qa/meta-unlocked.png', scale: 'css' }); await page.locator('#appearance .primary').tap(); await page.locator('#home-play').tap(); await pause(page, 1000);
       for (const cmd of campaignDeals[2].winningPath.slice(0, 4)) await move(page, campaignDeals[2], cmd);
       await page.screenshot({ path: 'docs/qa/meta-ink-field.png', scale: 'css' }); await pause(page, 850);

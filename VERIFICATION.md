@@ -111,3 +111,42 @@ Final exact hosted/source evidence follows below. Keys/signing remain deferred b
 - Recovered the local checkout after the previous chat stopped. Repeated typecheck, all 58 model/platform tests, all control/campaign/daily witness validations and the production build. Confirmed the first 26 order sources and daily-v1 pool are unchanged against the preceding main revision.
 - Independent complete local browser rerun: **52 PASS / 4 intentional duplicate compact chapter skips**, 5.7 minutes. The run includes all 80 levels in four phone-browser chapters, compact UI checks, old/new daily replacement cancellation, resource-preserving restart cancellation, save restore and the 320×568 dock/new-content scenario. No failed scenario remains.
 - Re-recorded the three release clips against the immutable production bundle without rebuilding it during browser execution. Visually inspected new topics, ordered completion, level pages, training/replacement and restart confirmation. GIF encoding now uses 360×640 at 12 fps with 128 colors so card motion is more legible. The follow-up changes documentation, QA media and recorder encoding only; runtime source/native configuration/dependencies remain those tested above.
+
+## UX 0.6.1 and isolated preview — 2026-11-10
+
+PR #6 merged at `8c3e34f11ef9f95de7c45295a40d74c8b6969a6b`; native/signing follow-up is `6885b14959a42155c221bf243a96652233211301`.
+
+- Recovered local `npm run check`: PASS — types, 58 model/platform tests, control + 80 campaign + 28 daily witness replays, four top/bottom × left/right bounds on every state, production build. Web JS/CSS filenames match the earlier verified recovered implementation (`index-OStO9wYJ.js`, `index-KE6_36hh.css`).
+- Local focused UX/meta: 22 PASS, covering lower-deck real-touch wins, side changes, manual Hint, Undo, relaunch, shared settings/independent modes and a 60px banner reservation on a short dense board.
+- Full hosted web [42774757157](https://github.com/DanilaH/asoc-solitair/actions/runs/42774757157): 58 model/platform and **58 browser scenarios PASS**, four intentional duplicate compact chapters skipped; all 80 levels traversed through production touches/Next in four chapters. This is not an uninterrupted physical-phone session or human-difficulty evaluation.
+- Final PR [42776078443](https://github.com/DanilaH/asoc-solitair/actions/runs/42776078443): native debug and unsigned SDK-disabled R8 compilation, APK signature verification and successful explicit-keystore cache save PASS. Its later web rerun duplicates byte-identical web source/tests/dependencies from the successful complete run above; integration reused that green evidence. Source diff 8365629..6885b14 is confined to native manifest/Gradle, CI and docs.
+- Production-input GIF: 360×640, 123 frames, SHA256 `507762428b935b950278156306127d1b90e2dcd9233bb8d23a6018ac5e58f867`; real settings/CDP touch drag/Undo with board-preservation assertions, plus compact-guidance screenshot. Reproduce with `npm run qa:review`. It contains no audio and is browser evidence. The unpushed original was removed by workspace maintenance; this recovered recording has its own identity.
+
+### Signing diagnosis and final handoff
+
+The original 0.6.0 artifact's APK hash is `90b4355948ee26b591f86ad1866125e933a97fc55f6a2313421443e61dd9ff94`, signer certificate SHA256 `dda38c7547b009fc76ff53d56efe832597e0ce10ad08e79e1eab9c353b4f4729`.
+
+The first 0.6.1 canonical-package PR artifact (superseded, not the final handoff) had APK hash `3601ea2d596a54861bedd0add7671fdac46e37ded09d0484ac533d9985052c0d` and signer `242d7762d57b3791aa8b5102d8f8066835a09e830e715fdfb8274739abe2f7e9`. Both runs logged a cache miss and Path Validation Error for ~/.android/debug.keystore. Therefore an in-place update over the old preview could not be claimed.
+
+The final debug variant uses applicationId com.danilah.asocsolitair.debug / label «Ассоциации · тест», alongside the old app with separate storage. The release namespace/application identity/signing gate are preserved. Explicit CI keystore path/Gradle binding fixes the missing-cache-file defect; cache retention is not a managed production-signing guarantee. The final installable artifact comes from the default branch, allowing subsequent branch builds to restore that cache.
+
+Default-branch [run 42776786652](https://github.com/DanilaH/asoc-solitair/actions/runs/42776786652) builds debug and unsigned SDK-disabled R8 successfully. Its main-scope key cache is confirmed saved with `asoc-solitair-preview-signing-v2`.
+
+| Final deliverable | Verified value |
+|---|---|
+| Filename | asoc-solitaire-0.6.1-debug.apk |
+| Package / launcher label | com.danilah.asocsolitair.debug / Ассоциации · тест |
+| Version | 0.6.1 / code 7 |
+| Bytes | 9587873 |
+| APK SHA256 | a2803a2cce7a8c6bc47a1abe76dd0d9c64bdc48fb5e4ee38194b244248c7b261 |
+| Signer certificate SHA256 | 0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e |
+| Native source / CI artifact | 8c3e34f11ef9f95de7c45295a40d74c8b6969a6b / 13743429978 |
+| CI archive SHA256 | eceeb7e6f37e079ddfada0652cd3b465a9a0cef925fd28c3c51d2260fe9ed8c1 |
+| Embedded web files | All 40 match the checked production dist byte-for-byte |
+
+Android build-tools 36.0.0 apksigner verifies the v2 signature; aapt2 confirms version, package, label and launchable `com.danilah.asocsolitair.MainActivity`. The APK is the isolated preview, not a signed store release or in-place migration from the old canonical-package debug install. Binary payloads were transferred directly; no base64/GIF/archive dumps were used. The final default-branch preview replaces the superseded canonical-package 0.6.1 file in the user's handoff.
+
+The repeated main web job may still be running at handoff. The complete green web source/tests/dependencies match byte-for-byte across the native-only follow-up and merge; see the full hosted evidence above. No second complete browser pass is claimed before its actual completion. Documentation-only commits after the tested merge do not change executable sources.
+
+
+Phone sound/haptics, touch feel, process-kill, actual installation and native/live SDK/dashboard acceptance remain pending. Production IDs/signing are still deferred and nothing was published to RuStore.

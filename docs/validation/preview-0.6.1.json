@@ -1,0 +1,17 @@
+{
+  "file": "asoc-solitaire-0.6.1-debug.apk",
+  "bytes": 9587873,
+  "sha256": "a2803a2cce7a8c6bc47a1abe76dd0d9c64bdc48fb5e4ee38194b244248c7b261",
+  "certificate_sha256": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "web_files_matched": 40,
+  "package": "com.danilah.asocsolitair.debug",
+  "versionCode": 7,
+  "versionName": "0.6.1",
+  "label": "Ассоциации · тест",
+  "archive_sha256": "eceeb7e6f37e079ddfada0652cd3b465a9a0cef925fd28c3c51d2260fe9ed8c1",
+  "run_id": 42776786652,
+  "artifact_id": 13743429978,
+  "source_commit": "8c3e34f11ef9f95de7c45295a40d74c8b6969a6b",
+  "signature_scheme": "v2",
+  "physical_device_acceptance": "PENDING"
+}

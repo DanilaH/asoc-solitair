@@ -72,19 +72,42 @@ test('touch drag survives entry and unchanged backing-size notifications', async
 
 test('category praise has a reserved row outside cards and helpers and clears under pause', async ({ page }) => {
   await enter(page, false);
+  // Capture inside the browser when praise appears: a slow host must not read
+  // zero bounds after the 900ms animation has already hidden the element.
+  await page.evaluate(() => {
+    const praise = document.querySelector<HTMLElement>('#praise')!, row = document.querySelector<HTMLElement>('#feedback-row')!;
+    const observer = new MutationObserver(() => {
+      if (praise.hidden) return;
+      const animation = praise.getAnimations()[0];
+      if (!animation) throw Error('Praise must have its production animation');
+      animation.pause();
+      const b = (s: string) => { const r = document.querySelector(s)!.getBoundingClientRect(); return { top: r.top, bottom: r.bottom }; };
+      const frames = [0, 100, 450, 850].map(time => {
+        animation.currentTime = time;
+        return { time, cards: b('canvas'), praise: b('#praise'), helpers: b('#dock'), guidance: getComputedStyle(document.querySelector('#message')!).visibility };
+      });
+      animation.currentTime = 450;
+      row.dataset.qaPraise = JSON.stringify(frames);
+      observer.disconnect();
+    });
+    observer.observe(praise, { attributes: true, attributeFilter: ['hidden'] });
+  });
   for (const cmd of deal.winningPath) {
     const completing = dispatch(await read(page), cmd, deal).events.some(event => event.type === 'complete');
     await move(page, cmd);
     if (completing) break;
   }
   await expect(page.locator('#praise')).toBeVisible();
-  const rects = await page.evaluate(() => {
-    const b = (s: string) => { const r = document.querySelector(s)!.getBoundingClientRect(); return { top: r.top, bottom: r.bottom }; };
-    return { cards: b('canvas'), praise: b('#praise'), helpers: b('#dock'), guidance: getComputedStyle(document.querySelector('#message')!).visibility };
-  });
-  expect(rects.praise.top).toBeGreaterThanOrEqual(rects.cards.bottom - 1);
-  expect(rects.praise.bottom).toBeLessThanOrEqual(rects.helpers.top + 1);
-  expect(rects.guidance).toBe('hidden');
+  await expect(page.locator('#feedback-row')).toHaveAttribute('data-qa-praise', /./);
+  const frames = await page.locator('#feedback-row').evaluate(e => JSON.parse((e as HTMLElement).dataset.qaPraise!) as Array<{
+    time: number; cards: { bottom: number }; praise: { top: number; bottom: number }; helpers: { top: number }; guidance: string;
+  }>);
+  expect(frames.map(frame => frame.time)).toEqual([0, 100, 450, 850]);
+  for (const rects of frames) {
+    expect(rects.praise.top).toBeGreaterThanOrEqual(rects.cards.bottom - 1);
+    expect(rects.praise.bottom).toBeLessThanOrEqual(rects.helpers.top + 1);
+    expect(rects.guidance).toBe('hidden');
+  }
   const before = await read(page); await page.locator('#menu').tap();
   await expect(page.locator('#praise')).toBeHidden(); await page.locator('#settings-done').tap();
   expect((await read(page)).attempt.board).toEqual(before.attempt.board);

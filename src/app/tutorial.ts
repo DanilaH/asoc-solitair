@@ -15,7 +15,7 @@ export function lesson(save: Save, deal: Deal): { text: string; action?: BoardCo
   if (!deal.campaignLevel || deal.campaignLevel > 2) return;
   const action = knownContinuation(save.attempt.board, deal)?.[0] ?? legalCommands(save.attempt.board, deal)[0];
   if (!action) return;
-  if (action.type === 'draw') return { text: 'Нажмите на синюю колоду: она откроет следующую карту.', action };
+  if (action.type === 'draw') return { text: 'Нажмите на колоду: она откроет следующую карту.', action };
   if (action.type === 'recycle') return { text: 'Нажмите на пустую колоду, чтобы вернуть оставшиеся карты в том же порядке.', action };
   const ids = sourceCards(save.attempt.board, action.from, deal), card = deal.cards[ids.at(-1)!];
   if (action.from.kind === 'waste') return { text: `Перенесите «${card.text}» из сброса к подходящей категории.`, action };

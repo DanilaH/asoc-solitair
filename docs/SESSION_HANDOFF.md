@@ -1,3 +1,21 @@
+# Continuation checkpoint — 2026-11-10
+
+Project: **Солитёр ассоциаций**, `DanilaH/asoc-solitair`. Resume this game. Main PR #5 is already merged at 0672625. Current work is branch `review/content-ux`, version 0.6.1 / Android code 7; rules/content/balance remain 2/5/3.
+
+The user explicitly authorized normal repository maintenance, push, PR/integration and builds on 2026-11-10: «я разрешаю работать тебе с репозиторием как со своим». This resolves the previous push approval rejection; do not ask again for routine repository work. Production IDs/signing remain deferred. No store publication is authorized by this debug handoff.
+
+Workspace maintenance removed the unpushed old local commits a1a78a0/6e32922 and QA files. Library had no matching recovery files, and GitHub had no such branch/commit. The reviewed implementation, tests and recorder were restored from the conversation over main. The recovered production JS/CSS filenames match the previous verified build (index-OStO9wYJ.js / index-KE6_36hh.css); this supports equivalent built web payload, not recovery of original Git identities. New commits/media receive their own hashes.
+
+Implemented: top/bottom combined with left/right deck placement, full compact guidance, bounded category titles/counts, explicit campaign abandonment consequence and neutral deck/daily wording. No rule/economy/deal changes. Old saves omit deckPosition and retain top placement. SaveStore remains the sole writer; shared settings do not replace either attempt.
+
+Local recovered npm run check passes (58 model/platform tests; control + 80 campaign + 28 daily and four layouts on each path state; build). Browser/hosted Android verification and new QA reconstruction are in progress; see VERIFICATION.md for final exact results. tools/record-review.ts records production settings/touch-drag/Undo after restoring a legitimate level-17 profile. Do not claim physical phone/live SDK evidence from those recordings.
+
+Next: complete branch upload/PR, hosted web and debug/unsigned Android checks, restore QA media, retrieve and verify the actual 0.6.1 debug APK, integrate and deliver. Then phone acceptance: gestures/legibility, sound/haptics, Back/background, process kill/upgrade, insets/banner. Human pacing/content review remains open; editorial priorities in docs/qa/UX_REVIEW_2026-11-10.md.
+
+Previous 0.6.0 evidence remains below for comparison only; its APK is not the new version. Never print binary/base64 bytes; transfer files directly and show GIFs inline via absolute sandbox paths.
+
+---
+
 # Continuation checkpoint — 2026-11-09
 
 ## Where the work stands

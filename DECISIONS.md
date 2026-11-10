@@ -60,3 +60,17 @@ The user requested all platform reuse needed by the final store project now. Thi
 - Bound level navigation to 20 buttons per page. Keep ordinary progression and ten-level rewards through 80. Explain daily training before resource spending, and confirm explicit restart/old-daily replacement with exact cancel preservation.
 - Fix short-screen dock clipping, narrow lock counter wrapping and the Undo-after-exhaustion telemetry marker. Keep board rules/economy unchanged.
 - Candidate generation takes 35.7s of machine time after manual preparation; do not equate it with measured editorial cost or human puzzle quality. Frozen witnesses, semantic self-edit, browser execution and independent human pacing review are distinct evidence levels.
+
+## 2026-11-10 — complete deck placement and UX review (0.6.1)
+
+Complete the agreed top/bottom placement as an optional shared setting, defaulting old saves to top. SaveStore remains the sole writer; no rules/content/balance or frozen-deal change. Rendering, hints and touch use one geometry; no-deck deals retain their layout. Protect complete compact guidance and bound category titles separately from counts. Make abandonment consequences explicit and deck wording independent of earned backs.
+
+The user explicitly authorized full repository maintenance on 2026-11-10, including the pending push/PR/integration/build workflow. Production keys/signing remain deferred. Workspace maintenance removed the unpushed local branch; restore the reviewed changes from the conversation over confirmed main, reverify and push them. Do not claim previous local commit/media hashes for the restored artifacts. Review findings and limitations: docs/qa/UX_REVIEW_2026-11-10.md.
+
+## 2026-11-10 — isolate previews and fix ineffective debug-key caching
+
+Actual 0.6.0 and first 0.6.1 APK signatures differed. Both hosted jobs logged a cache miss followed by `Path Validation Error` for `~/.android/debug.keystore`; the intended key was never cached. The old ephemeral key is unavailable and cannot be reconstructed from an APK.
+
+Debug now installs as `com.danilah.asocsolitair.debug`, labelled «Ассоциации · тест», alongside old canonical-package previews. It has separate app storage; it does not migrate or erase their progress. Canonical release identity stays `com.danilah.asocsolitair`, with the existing explicit production-signing gate. This avoids asking the user to uninstall the old app and lose its data.
+
+CI explicitly creates/restores a standard development-only key at a runner-temp path and passes that same path to Gradle. The cached file is verified to exist before build and the APK signature is checked afterward. Deliver previews from the default-branch build so future branches can restore the default-branch cache; PR caches are ref-scoped. Cache is not a durable production signing vault: compare signer identity on future handoffs, and require the managed production identity for store builds. No signing key is committed or exported as an artifact.

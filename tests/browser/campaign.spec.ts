@@ -69,7 +69,7 @@ test('compact dense four-column layout stays inside the board and confirms aband
   await page.screenshot({path:`test-results/${test.info().project.name}-dense-campaign.png`});
   await move(page,deal,deal.winningPath[0]);const before=await read(page);
   await page.locator('#menu').tap();await page.locator('#levels-open').tap();await page.locator('#level-1').tap();
-  await expect(page.locator('#switch-level')).toBeVisible();await page.locator('#switch-level [data-close]').tap();expect((await read(page)).attempt.id).toBe(before.attempt.id);
+  await expect(page.locator('#switch-level')).toBeVisible();await expect(page.locator('#switch-level')).toContainText('отметки пяти побед сбросятся');await page.locator('#switch-level [data-close]').tap();expect((await read(page)).attempt.id).toBe(before.attempt.id);
   await page.locator('#level-1').tap();await page.locator('#switch-confirm').tap();await ready(page,campaignDeals[0]);
   expect((await read(page)).attempt.board).toEqual(campaignDeals[0].initial);expect((await read(page)).profile).toEqual(before.profile);
 });

@@ -39,3 +39,9 @@ Debug: `npm ci && npm run android:sync`, then `ASOC_AD_MODE=test native/android/
 - Finish and human-playtest the agreed release-size content bank; compact meta is implemented with a finite 28-puzzle daily rotation; the 80-level candidate bank is machine-validated; independent human difficulty/pacing and physical-device acceptance are not established by its size. Verify Joker selection/Back, spent charge across Undo/restart/upgrade, ordered refusal and third-key unlock/Undo/process-kill on a physical phone.
 
 - Verify mode switching, parked daily/campaign durability across native force-stop/upgrade, same-date reward deduplication and local midnight on target devices. Verify ink/back appearance and free mirrored deck geometry with actual native insets/banner.
+
+## Preview identity — 0.6.1
+
+Debug uses package `com.danilah.asocsolitair.debug` and label «Ассоциации · тест». It installs alongside the old `com.danilah.asocsolitair` debug APK, with separate progress. It is not an in-place update of that old APK. Canonical release package/signing remains unchanged and gated on the configured production identity.
+
+The prior implicit keystore cache path did not exist; CI now uses one explicitly generated/restored runner-temp keystore and passes it to Gradle. Deliver the default-branch artifact, verify its signature/package/version and matched web payload, and compare signer fingerprints on subsequent updates. Cache loss can still invalidate development update continuity; it must not be treated as managed production key storage.

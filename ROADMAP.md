@@ -18,4 +18,4 @@ Do not describe one control deal as the first twenty campaign levels. Do not cal
 
 ## 0.6.2 casual presentation candidate
 
-Cyan/ivory cards, gold categories and raised controls; shared original reward sprite; staged collection/praise, persistent streak-cell feedback and dialog-layer coins. Production touch recording covers a full first win/Next and dense completion/overlapping action/Undo. Local model/content/build pass; full CI, Android compilation and physical-device acceptance remain tracked separately. See docs/qa/CASUAL_FEEL_2026-11-10.md.
+Cyan/ivory cards, gold categories and raised controls; shared original reward sprite; staged collection/praise, persistent streak-cell feedback and dialog-layer coins. Production touch recording covers a full first win/Next and dense completion/overlapping action/Undo. PR CI passes 58 model/platform tests, 64 browser scenarios, fixed witnesses/layout bounds and both Android compilations. Physical-device acceptance remains open. See docs/qa/CASUAL_FEEL_2026-11-10.md.

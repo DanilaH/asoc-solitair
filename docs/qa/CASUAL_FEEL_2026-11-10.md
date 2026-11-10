@@ -22,6 +22,6 @@ All media are generated under `.recording/feel-evidence/` and delivered separate
 
 ## Verification status
 
-58 model/platform tests and all fixed deal witnesses/four-layout bounds pass locally. Focused UX/top-layer/reduced-motion tests and the production recording pass. Final full-suite/CI and Android compilation are recorded separately in VERIFICATION.md when complete. Concurrent exploratory local runs exceeded 30-second test limits under contention; they are not counted as successful evidence.
+PR CI [42799777690](https://github.com/DanilaH/asoc-solitair/actions/runs/42799777690) passes 58 model/platform tests, every fixed deal witness/four-layout bounds, 64 browser scenarios (four intentional compact skips), debug and unsigned SDK-disabled R8 compilation. Local focused UX/top-layer/reduced-motion/drag, legacy control, meta and production recordings also pass. Final default-branch APK identity is recorded separately in VERIFICATION.md. Concurrent exploratory local runs exceeded 30-second test limits under contention; they are not counted as successful evidence.
 
 Physical phone acceptance remains open: gesture comfort, sound/haptics, frame pacing, native Back/background/process kill, banner/insets and actual SDK delivery. Source references and the original normative feel contract remain unchanged.

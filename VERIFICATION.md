@@ -150,3 +150,31 @@ The repeated main web job may still be running at handoff. The complete green we
 
 
 Phone sound/haptics, touch feel, process-kill, actual installation and native/live SDK/dashboard acceptance remain pending. Production IDs/signing are still deferred and nothing was published to RuStore.
+
+
+## 0.6.2 casual presentation and verified default-branch preview — 2026-11-10
+
+PR #7 merged as `1d266072eb6dd5d75f984ecc2a9346f0c83526f4`; runtime source `c53bf4e173471e85aa7ee5f12f08e3c1cdefc3cf`. Rules/content/balance remain 2/5/3. No source/dependency/native differences exist between the tested PR head and merge.
+
+- [PR CI 42799777690](https://github.com/DanilaH/asoc-solitair/actions/runs/42799777690): PASS — 58 model/platform tests, all control/80 campaign/28 daily witnesses and four-layout bounds, 64 browser scenarios and four deliberate compact duplicate skips, debug plus unsigned SDK-disabled R8 release compilation, signature verification.
+- [Default branch 42801252715](https://github.com/DanilaH/asoc-solitair/actions/runs/42801252715), Android job `129779039950`: PASS — both compilations and `apksigner verify`. Its repeated web job was still running at delivery; unchanged source is already covered by the completed full PR run.
+- Local final focused runs: 18 UX/result/reduced-motion scenarios; 12 legacy touch/Hint/Undo/control scenarios; 8 campaign/daily/meta scenarios. New drag regression scenarios pass on both phone/compact surfaces. Earlier concurrent exploratory runs exceeded 30-second limits under load; they are not successful evidence.
+- `npm run qa:feel` records actual production touch/CDP drag: fresh first level through win/Next; reachable level-17 completion followed by input during the effect, Undo and settings. Every recorded command/Undo checks persisted board identity. No runtime test bridge. Both recordings were regenerated from the final runtime and saved separately.
+
+| Default-branch delivery | Verified identity |
+| --- | --- |
+| Version / Android code | 0.6.2 / 8 |
+| Debug package / label | com.danilah.asocsolitair.debug / Ассоциации · тест |
+| APK bytes | 9,617,970 |
+| APK SHA256 | cee34333068cf8672a3f1aa809e246f7872319eaff8cf5e715b63c2f79939f92 |
+| Signer certificate SHA256 | 0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e |
+| Android artifact ID | 13756551899 |
+| CI archive SHA256 | f145b8b57c6f77ee5f5e9469020fe3ed83065c18de98a34594077ecc189a3b39 |
+| Embedded web content | All 41 locally tested production files match byte-for-byte |
+| APK persistent file | libfile_15e32d63f5548191b7dd9412e549ae2a |
+
+The downloaded APK certificate was parsed independently and matches delivered 0.6.1; CI verifies the full APK v2 signature. The default-branch and PR debug APKs also have the same SHA256. This supports updating the same test package; cross-package migration and physical-device upgrade behavior are not claimed.
+
+GIF identities: `feel-first.gif` (15.87s) SHA256 `130fd93c5888e8f5588a15227e0240236843b27ff1143c87400eba4c72fb723f`; `feel-dense.gif` (6.81s) SHA256 `94175b5cef89346645d39f4929a4f699607e6f333c2f7b78db7997d4640bb79f`. Persistent file IDs are in SESSION_HANDOFF.md. The generated 27 KB emblem's provenance is in docs/art/UI_ASSETS.md; it is bundled/reused rather than loading external art.
+
+Physical phone feel/frame pacing, sound/haptics, Back/background/process-kill, native insets/banner and live SDK delivery remain open. Production IDs and managed release signing are still deferred. No store publication.

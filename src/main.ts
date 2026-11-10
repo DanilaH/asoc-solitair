@@ -13,6 +13,7 @@ import { lesson } from './app/tutorial';
 import { boardKey, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import type { BoardCommand, Command } from './domain/types';
+import { categoryCaption } from './game/captions';
 import { BoardScene } from './game/BoardScene';
 import { createRuntime } from './platform/runtime';
 import { SaveStore, createStorage } from './platform/storage';
@@ -63,6 +64,7 @@ try {
     initial.settings.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     return initial;
   });
+  await document.fonts.load('800 20px Nunito').catch(() => []);
   let save = await store.open();
   deal = findDeal(save.attempt.dealId)!;
   let requestedLevel: number | undefined;
@@ -120,6 +122,7 @@ try {
     }
   }
   function renderHud() {
+    $('#app').dataset.screen = screen;
     document.documentElement.dataset.reduced = String(save.settings.reducedMotion);
     const board = save.attempt.board;
     $('#app').dataset.practice = String(training());
@@ -135,8 +138,13 @@ try {
     $<HTMLButtonElement>('#buy-joker').disabled = serviceBusy || saving || save.profile.coins < BALANCE.helperPrices.joker;
     $('#joker').classList.toggle('attention', lesson(save, deal)?.attention === 'joker');
     $('#helpers-open').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
+    $('#helper-locked').hidden = hintUnlocked || undoUnlocked || jokerUnlocked;
     $('#restart').hidden = screen === 'home'; $('#restart-copy').hidden = screen === 'home'; $('#levels-open').hidden = screen === 'home';
-    $('#settings-done').textContent = screen === 'home' ? 'Готово' : 'Вернуться к картам';
+    $('#settings-done').textContent = screen === 'home' ? 'Готово' : 'Продолжить';
+    $('#pause-title').textContent = screen === 'home' ? 'Настройки' : 'Пауза';
+    $('#pause-level').textContent = screen === 'home' ? 'СОЛИТЁР АССОЦИАЦИЙ' : $('#level-number').textContent;
+    $('#pause-levels-open').hidden = screen === 'home';
+    $('#app').dataset.deckSide = save.settings.deckSide ?? 'right';
     const instruction = lesson(save, deal);
     $('#hint').classList.toggle('attention', instruction?.attention === 'hint');
     $('#undo').classList.toggle('attention', instruction?.attention === 'undo');
@@ -283,7 +291,8 @@ try {
     $('#campaign-done').hidden = completed < CAMPAIGN_LENGTH;
     const label = current ? (campaignDeal?.campaignLevel ? `${campaign?.telemetry?.started ? 'Продолжить' : 'Играть'} · уровень ${campaignDeal.campaignLevel}` : 'Продолжить пробную раздачу')
       : campaign && (!outcomeViewed || save.attempt.daily) ? (campaignDeal?.campaignLevel ? `Результат · уровень ${campaignDeal.campaignLevel}` : 'Результат пробной раздачи') : completed === CAMPAIGN_LENGTH ? 'Выбрать уровень' : `Играть · уровень ${unlocked}`;
-    $('#home-play').replaceChildren(document.createTextNode(label), Object.assign(document.createElement('span'), { textContent: '→' }));
+    const parts = label.split(' · ');
+    $('#home-play').replaceChildren(document.createTextNode(parts[0]), Object.assign(document.createElement('small'), { textContent: parts[1] ?? 'Кампания' }));
     $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy;
     $('#home-status').textContent = current && campaign?.telemetry?.started ? 'Незаконченная раздача сохранена' : completed === 0 ? 'Начните с простых связей' : completed === CAMPAIGN_LENGTH ? 'Можно вернуться к любимым темам' : `Дальше — «${campaignDeals[unlocked - 1].title}»`;
     const focusId = campaign?.id ?? 'new';
@@ -387,7 +396,7 @@ try {
       const card = deal.cards[id];
       if (card.image) { message('Пояснения доступны карточкам со словами'); return; }
       setInspect(false);
-      $('#word-title').textContent = card.text; $('#word-description').textContent = card.explanation;
+      $('#word-title').textContent = card.leader ? categoryCaption(card.text) : card.text; $('#word-description').textContent = card.explanation;
       openDialog('#inspect-dialog');
     },
     ready(active) {
@@ -442,12 +451,12 @@ try {
     runtime.play('ui');
     if (save.attempt.daily) { void activateMode('campaign'); return; }
     if (save.attempt.board.phase === 'playing' || !outcomeViewed) showGame();
-    else if (completedLevels(save) === CAMPAIGN_LENGTH) $('#level-grid').scrollIntoView({ block: 'nearest' });
+    else if (completedLevels(save) === CAMPAIGN_LENGTH) openDialog('#level-picker');
     else void openLevel(unlockedLevel(save));
   }, domOptions);
   $('#daily-play').addEventListener('click', () => { void activateMode('daily'); }, domOptions);
   $('#daily-resume-old').addEventListener('click', () => { void activateMode('daily', true); }, domOptions);
-  for (const [button, dialog] of [['calendar-open', '#calendar'], ['appearance-open', '#appearance'], ['appearance-settings', '#appearance'], ['win-cycle-open', '#cycle-info']]) $(`#${button}`).addEventListener('click', () => { renderMeta(save, saving); openDialog(dialog); }, domOptions);
+  for (const [button, dialog] of [['calendar-open', '#calendar'], ['appearance-open', '#appearance'], ['appearance-settings', '#appearance'], ['win-cycle-open', '#cycle-info'], ['looks-open', '#appearance'], ['level-picker-open', '#level-picker'], ['pause-levels-open', '#level-picker'], ['wallet-open', '#helpers']]) $(`#${button}`).addEventListener('click', () => { renderMeta(save, saving); openDialog(dialog); }, domOptions);
   for (const button of document.querySelectorAll<HTMLButtonElement>('[data-palette], [data-card-back], [data-deck-side], [data-deck-position]')) button.addEventListener('click', async () => {
     const key = button.dataset.palette ? 'palette' : button.dataset.cardBack ? 'cardBack' : button.dataset.deckSide ? 'deckSide' : 'deckPosition';
     if (saving || button.disabled) return;

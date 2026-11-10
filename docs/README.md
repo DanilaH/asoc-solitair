@@ -29,3 +29,5 @@ Campaign bank: [authorship, coverage and limits](content/FIRST_CAMPAIGN.md), [va
 - [Structural redesign proposal from the user’s Hitapps/AZUR recordings](design/REFERENCE_REBUILD_2026-11-10.md), with an inspectable three-screen prototype. Current runtime remains 0.6.2.
 
 - [Own visual character proposal — blending AZUR and Unico into the accepted structure](design/OWN_CHARACTER_2026-11-10.md), with a separate identity prototype. Runtime remains 0.6.2.
+
+- [Implementation of the chosen identity UI — 0.7.0 candidate](qa/IDENTITY_UI_2026-11-10.md), with production touch recordings and compact layout checks. See the continuation checkpoint for integration and APK status.

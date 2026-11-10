@@ -46,6 +46,7 @@ for (let chapter = 0; chapter < 4; chapter++) test(`chapter ${chapter + 1}: twen
   expect(completed.profile.hints).toBe(7);expect(completed.profile.undos).toBe(5);
   if(chapter===3){
     await expect(page.locator('#home')).toBeVisible();await expect(page.locator('#campaign-progress')).toHaveText('80 / 80');
+    await page.locator('#level-picker-open').tap();
     for(let i=0;i<3;i++)await page.locator('#chapter-prev').tap();
     await page.locator('#level-5').tap();await ready(page,campaignDeals[4]);await move(page,campaignDeals[4],campaignDeals[4].winningPath[0]);
     const current=await read(page);await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');await page.locator('#home-play').tap();await ready(page,campaignDeals[4]);
@@ -68,9 +69,9 @@ test('compact dense four-column layout stays inside the board and confirms aband
   expect(geo.targets.filter(t=>t.location.kind==='tableau')).toHaveLength(4);
   await page.screenshot({path:`test-results/${test.info().project.name}-dense-campaign.png`});
   await move(page,deal,deal.winningPath[0]);const before=await read(page);
-  await page.locator('#menu').tap();await page.locator('#levels-open').tap();await page.locator('#level-1').tap();
+  await page.locator('#menu').tap();await page.locator('#levels-open').tap();await page.locator('#level-picker-open').tap();await page.locator('#level-1').tap();
   await expect(page.locator('#switch-level')).toBeVisible();await expect(page.locator('#switch-level')).toContainText('отметки пяти побед сбросятся');await page.locator('#switch-level [data-close]').tap();expect((await read(page)).attempt.id).toBe(before.attempt.id);
-  await page.locator('#level-1').tap();await page.locator('#switch-confirm').tap();await ready(page,campaignDeals[0]);
+  await page.locator('#level-picker-open').tap();await page.locator('#level-1').tap();await page.locator('#switch-confirm').tap();await ready(page,campaignDeals[0]);
   expect((await read(page)).attempt.board).toEqual(campaignDeals[0].initial);expect((await read(page)).profile).toEqual(before.profile);
 });
 

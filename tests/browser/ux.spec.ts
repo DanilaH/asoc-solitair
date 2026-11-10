@@ -23,6 +23,7 @@ async function move(page: Page, deal: Deal, cmd: BoardCommand) {
 }
 test('all eighty levels are browsable in bounded pages, locked future pages and browsing preserve the active attempt',async({page})=>{
   await seed(page,0); const before=await read(page);
+  await expect(page.locator('#level-grid')).toBeHidden(); await page.locator('#level-picker-open').tap();
   for(let i=0;i<4;i++){
     await expect(page.locator('#level-grid button:visible')).toHaveCount(20);
     await expect(page.locator('#chapter-label')).toHaveText(`Уровни ${i*20+1}–${i*20+20}`);

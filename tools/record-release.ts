@@ -33,10 +33,10 @@ try {
     if (name === 'ordered') for (const cmd of campaignDeals[level - 1].winningPath.slice(0, -7)) save = dispatch(save, cmd, campaignDeals[level - 1]).next;
     await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), save); await page.reload(); await page.waitForSelector('#app[data-ready="true"]'); await wait(page);
     if (name === 'bank') {
-      await page.locator('#level-grid').scrollIntoViewIfNeeded(); await wait(page);
+      await page.locator('#level-picker-open').tap(); await wait(page);
       await page.screenshot({ path: 'docs/qa/release-chapters.png', scale: 'css' });
       await page.locator('#chapter-next').tap(); await wait(page, 450); await page.locator('#chapter-next').tap(); await wait(page, 600);
-      await page.locator('#chapter-prev').tap(); await page.locator('#chapter-prev').tap(); await page.locator('#home-play').tap(); await wait(page, 900);
+      await page.locator('#chapter-prev').tap(); await page.locator('#chapter-prev').tap(); await page.locator('#level-picker [data-close]').first().tap(); await page.locator('#home-play').tap(); await wait(page, 900);
       await page.screenshot({ path: 'docs/qa/release-new-topics.png', scale: 'css' }); for (const cmd of campaignDeals[26].winningPath) await move(page, campaignDeals[26], cmd); await page.waitForSelector('#result[open]'); await wait(page, 1100);
     } else if (name === 'ordered') {
       await page.locator('#home-play').tap(); await wait(page, 900); await page.screenshot({ path: 'docs/qa/release-rainbow.png', scale: 'css' });

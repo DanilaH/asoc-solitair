@@ -22,4 +22,4 @@ Cyan/ivory cards, gold categories and raised controls; shared original reward sp
 
 ## 0.7.0 selected identity implementation
 
-Home/game/pause implementation candidate is on `feat/identity-ui`; see docs/qa/IDENTITY_UI_2026-11-10.md. Local model/content/layout checks and production touch recordings are available; final hosted checks, APK identity and physical-phone acceptance are tracked separately.
+Home/game/pause implementation is merged as 0.7.0/code 9; see docs/qa/IDENTITY_UI_2026-11-10.md and VERIFICATION.md for passing CI, signed preview APK and production touch recordings. Next acceptance is the redesigned game on a physical phone; live production SDK configuration/signing remain deferred.

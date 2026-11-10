@@ -1,6 +1,6 @@
 # Android services — 2026-11-09
 
-Canonical release: `com.danilah.asocsolitair`; debug preview: `com.danilah.asocsolitair.debug` («Ассоциации · тест»), with separate storage. Portrait RuStore Android, version 0.6.2/code 8. No Yandex Games web SDK, server, account, push, purchases or cloud saves are introduced.
+Canonical release: `com.danilah.asocsolitair`; debug preview: `com.danilah.asocsolitair.debug` («Ассоциации · тест»), with separate storage. Portrait RuStore Android, version 0.7.0/code 9. No Yandex Games web SDK, server, account, push, purchases or cloud saves are introduced.
 
 ## Reuse and ownership
 

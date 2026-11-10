@@ -178,3 +178,27 @@ The downloaded APK certificate was parsed independently and matches delivered 0.
 GIF identities: `feel-first.gif` (15.87s) SHA256 `130fd93c5888e8f5588a15227e0240236843b27ff1143c87400eba4c72fb723f`; `feel-dense.gif` (6.81s) SHA256 `94175b5cef89346645d39f4929a4f699607e6f333c2f7b78db7997d4640bb79f`. Persistent file IDs are in SESSION_HANDOFF.md. The generated 27 KB emblem's provenance is in docs/art/UI_ASSETS.md; it is bundled/reused rather than loading external art.
 
 Physical phone feel/frame pacing, sound/haptics, Back/background/process-kill, native insets/banner and live SDK delivery remain open. Production IDs and managed release signing are still deferred. No store publication.
+
+
+## 0.7.0 chosen identity in the playable game — 2026-11-10
+
+PR #10: source `19b0c8eb35889efb1be16dc8cf53f81380395081`, merge `310b50c4c19568aff7e90194ade909092a258451`. [PR CI](https://github.com/DanilaH/asoc-solitair/actions/runs/42815632857) passes all 59 model/platform tests, every control/campaign/daily witness and four-layout bounds, 64 browser scenarios (four intentional duplicate compact skips), Android debug and unsigned SDK-disabled R8 release compilation. The shipped 80+28 content, domain rules/rewards, SaveStore/native service logic and kit pin are unchanged. Rules/content/balance: 2/5/3.
+
+Local production recordings replay first win/Next and a reachable level-17 collection/next move/Undo/pause using actual touch, comparing the persisted board with dispatch results. Additional 320×568 checks caught and fixed the stale-daily button being covered by the win-cycle badge; both targeted midnight/continuation cases pass after the fix. The regular local candidate suite passed 64 scenarios; exact final-source complete evidence is the linked CI.
+
+[Default-branch artifact run](https://github.com/DanilaH/asoc-solitair/actions/runs/42817904664) is the delivered APK source; its Android compilation and signature verification pass. The duplicate main-branch web run was still in progress at delivery; complete PR checks cover the byte-identical runtime. Its artifact ZIP digest matches GitHub metadata; every one of 44 embedded `assets/public` production files matches the exact local build, including Nunito/license and the linked-card emblem. CI apksigner verification passes; certificate fingerprint matches the earlier preview identity.
+
+| Field | Verified value |
+| --- | --- |
+| Version / Android code | 0.7.0 / 9 |
+| Preview package | com.danilah.asocsolitair.debug |
+| Label | Ассоциации · тест |
+| APK bytes | 9786570 |
+| APK SHA256 | `04a04c4dade077603a30fc3990a2a1580b1a711834b733aa88a80207696e2ec4` |
+| Signing certificate SHA256 | `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e` |
+| Artifact archive SHA256 | `99cdbae460a10366b263c26afe1db65e41782a1ece65447c52ab38fc8cf02f50` |
+| Persistent APK | `libfile_982c92af0a108191b92547d1f1a941b4` |
+| Production touch GIF | `libfile_1750328e57d08191bd427e78f91f7940` |
+| Three-screen preview | `libfile_06b9f0a391b4819191779e143348d4ec` |
+
+This is an update of the same preview package/signing identity. No production IDs/signing or store publication is claimed. Browser replay/compilation do not establish physical-phone gesture comfort, sound/haptics, frame pacing, native insets/lifecycle or live ad/analytics delivery.

@@ -32,4 +32,4 @@ Campaign bank: [authorship, coverage and limits](content/FIRST_CAMPAIGN.md), [va
 
 - [Implementation of the chosen identity UI — 0.7.0](qa/IDENTITY_UI_2026-11-10.md), with production touch recordings and compact layout checks. See the continuation checkpoint for integration and APK status.
 
-- [Independent layout audit and overlap fixes — 0.7.1](qa/LAYOUT_AUDIT_2026-11-10.md): rendered DOM/pixel checks, responsive home, field controls, praise and stack captions. See the checkpoint for build status.
+- [Independent layout audit and overlap fixes — 0.7.1](qa/LAYOUT_AUDIT_2026-11-10.md): rendered DOM/pixel checks, responsive home, field controls, praise and stack captions. Merged as 0.7.1/code 10; the checkpoint contains the delivered APK and completed/remaining verification.

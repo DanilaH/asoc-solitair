@@ -202,3 +202,29 @@ Local production recordings replay first win/Next and a reachable level-17 colle
 | Three-screen preview | `libfile_06b9f0a391b4819191779e143348d4ec` |
 
 This is an update of the same preview package/signing identity. No production IDs/signing or store publication is claimed. Browser replay/compilation do not establish physical-phone gesture comfort, sound/haptics, frame pacing, native insets/lifecycle or live ad/analytics delivery.
+
+
+## 0.7.1 independent layout audit and overlap correction — 2026-11-10
+
+PR #11: runtime source `0b73ff20a90cd8a509df7619c64fb87a956c6ee1`, merge `de98ca30edcebe42e0e4a8d7febbf211a623acb5`. Rules/content/balance stay 2/5/3; the entire 80+28 content and domain/native ownership are unchanged.
+
+The 0.7.0 reference checkout `427a17c` reproduces 139 violations in the original 145-case audit. These are occurrences across sizes/states, not 139 separate defects. The final expanded audit covers 7 viewports, 119 field states (four deck placements; ordinary, ordered, keys and placed Joker), 21 home states (including long coins and stale daily), and 36 real-content dialog states: **0 DOM/raster issues**, with positive controls that actual cards/tabs were rendered. The oracle uses actual DOM geometry/hit centres and PNG pixels, independently of the production layout functions.
+
+Local typecheck, 59 model/platform tests, all fixed witnesses/four-layout bounds and build pass. All 80 levels win through real touch. The full four-worker browser run completed 66 scenarios, four intentional compact skips, and two overall 30s timeouts during contention. Isolated serial reruns of both pass in 19.2s/12.7s; all 68 unique scenarios are covered. New regressions assert that praise stays within its reserved row and a held home button remains under the finger. Fresh production recordings compare saved board changes to dispatch outcomes for first win/Next and a reachable dense collection/overlapping next move/Undo/pause.
+
+[PR CI](https://github.com/DanilaH/asoc-solitair/actions/runs/42845623152) passes model/content/build/layout audit and Android debug + unsigned disabled-SDK R8 release compilation. [Main artifact run](https://github.com/DanilaH/asoc-solitair/actions/runs/42846792749) passes Android compilation/apksigner verification. The duplicate hosted full-browser jobs were still running at this verification checkpoint; completed local scenario coverage is described below. This is documented rather than calling a pending hosted duplicate green.
+
+| Field | Verified value |
+| --- | --- |
+| Version / Android code | 0.7.1 / 10 |
+| Package / label | com.danilah.asocsolitair.debug / Ассоциации · тест |
+| APK bytes | 9787514 |
+| APK SHA256 | `19c5853870c43bef60221f22cb6448071ad412c1f08e1e706ecf1154c321a97d` |
+| Signing certificate SHA256 | `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e` |
+| Main artifact ZIP SHA256 | `d0f6c923642f36bf2f8334bb46fe555f9bb5533b71d7a1eef2f02f184d9cf2a4` |
+| Embedded assets matched | 44 of 44, byte-for-byte |
+| Persistent APK | `libfile_d267cbb218608191ba43ead75e325c9b` |
+| First-level production GIF | `libfile_394d862009688191a15613849fe1e4b3` |
+| Dense production GIF | `libfile_9cb7925e47e48191899e3174e90eac55` |
+
+The final recorder keeps viewport-resize stress outside the demonstration videos; it is locally typechecked and executed. It changes QA recordings only, not the matched runtime assets. Browser bounds checks do not establish physical-phone readability/FPS/comfort or native/live SDK acceptance. The smallest stress cases scale cards down; production IDs/signing remain deferred.

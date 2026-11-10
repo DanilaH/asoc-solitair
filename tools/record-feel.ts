@@ -38,9 +38,7 @@ try {
   const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
   await page.goto('http://127.0.0.1:4186'); await page.waitForSelector('#app[data-ready=true]'); await wait(page, 500);
   await page.screenshot({ path: '.recording/feel-evidence/feel-home.png' });
-  await page.setViewportSize({ width: 320, height: 568 }); await wait(page, 250);
-  await page.screenshot({ path: '.recording/feel-evidence/feel-home-compact.png' });
-  await page.setViewportSize({ width: 360, height: 780 }); await wait(page, 250); await page.locator('#home-play').tap(); await wait(page, 1000);
+ await page.locator('#home-play').tap(); await wait(page, 1000);
   await page.screenshot({ path: '.recording/feel-evidence/feel-board.png' });
   const first = campaignDeals[0]; let didCapture = false;
   for (const cmd of first.winningPath) {
@@ -70,13 +68,19 @@ try {
   await p.locator('#undo').tap(); await wait(p, 650);
   if (JSON.stringify((await read(p)).attempt.board) !== JSON.stringify(collected.attempt.board)) throw Error('Undo after overlapped category did not restore');
   await p.locator('#menu').tap(); await wait(p, 400); await p.screenshot({ path: '.recording/feel-evidence/feel-pause.png' }); await p.locator('#settings-done').tap(); await wait(p, 400);
-  await p.setViewportSize({ width: 320, height: 568 }); await wait(p, 300);
-  await p.screenshot({ path: '.recording/feel-evidence/feel-dense-compact.png' });
-  await p.locator('#menu').tap(); await p.locator('#appearance-settings').tap();
-  await p.locator('button[data-deck-position=bottom]').tap(); await p.locator('button[data-deck-side=left]').tap(); await p.locator('#appearance .primary').tap(); await wait(p, 300);
-  await p.screenshot({ path: '.recording/feel-evidence/feel-bottom-compact.png' });
-  const denseVideo = p.video()!; await dense.close(); await denseVideo.saveAs('.recording/feel-dense.webm');
+  const compactSeed = await read(p), denseVideo = p.video()!; await dense.close(); await denseVideo.saveAs('.recording/feel-dense.webm');
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', '.recording/feel-dense.webm', '-vf', 'fps=16,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=160:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle', '.recording/feel-evidence/feel-dense.gif']);
+  // Resizing is audited separately from the fixed-viewport demonstration videos.
+  const compactContext = await browser.newContext({ viewport: { width: 320, height: 568 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+  const compactPage = await compactContext.newPage(); compactPage.on('pageerror', e => errors.push(e.message));
+  await compactPage.goto('http://127.0.0.1:4186'); await compactPage.waitForSelector('#app[data-ready=true]');
+  await compactPage.screenshot({ path: '.recording/feel-evidence/feel-home-compact.png' });
+  await compactPage.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), compactSeed);
+  await compactPage.reload(); await compactPage.waitForSelector('#app[data-ready=true]'); await compactPage.locator('#home-play').tap(); await wait(compactPage, 300);
+  await compactPage.screenshot({ path: '.recording/feel-evidence/feel-dense-compact.png' });
+  await compactPage.locator('#menu').tap(); await compactPage.locator('#appearance-settings').tap();
+  await compactPage.locator('button[data-deck-position=bottom]').tap(); await compactPage.locator('button[data-deck-side=left]').tap(); await compactPage.locator('#appearance .primary').tap(); await wait(compactPage, 300);
+  await compactPage.screenshot({ path: '.recording/feel-evidence/feel-bottom-compact.png' }); await compactContext.close();
   if (errors.length) throw Error(errors.join('\n'));
   console.info('PASS: real touch first win / Next and reachable dense completion / overlapping next move / Undo / settings.');
 } catch (error) { console.error(error); throw error; } finally { await browser.close(); await new Promise<void>(resolve => server.httpServer.close(() => resolve())); }

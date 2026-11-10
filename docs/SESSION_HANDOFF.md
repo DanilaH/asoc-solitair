@@ -6,11 +6,23 @@ This is **Солитёр ассоциаций**, `DanilaH/asoc-solitair`, portra
 
 The user explicitly authorized normal repository maintenance, push, PR management and integration: «я разрешаю работать тебе с репозиторием как со своим». Do not ask again for routine repository work. Production ad/analytics IDs, managed release signing and store publication remain deferred.
 
-## Active correction — 0.7.1 / code 10
+## Current implementation — 0.7.1 / code 10
 
-The user reported widespread overlaps in the 0.7.0 GIFs and explicitly requested an independent layout review. The bounded correction on `fix/layout-audit` is documented in docs/qa/LAYOUT_AUDIT_2026-11-10.md. It fixes the CSS/canvas scale mismatch, first-level budget/category overlap, home absolute positioning, praise over cards, covered-card content/strips, option-container selector collisions, group outline/Joker clipping and long wallet text. Rules/content/balance stay 2/5/3. `npm run qa:layout` is an independent DOM/rendered-PNG oracle and now runs before browser tests in CI. Final integration/APK evidence is pending at this checkpoint; do not present the old 0.7.0 APK as the corrected one.
+PR #11 is merged at `de98ca30edcebe42e0e4a8d7febbf211a623acb5`. Exact runtime source: `0b73ff20a90cd8a509df7619c64fb87a956c6ee1`. The user reported overlaps after the 0.7.0 GIFs and requested an independent review. Fixes/method: docs/qa/LAYOUT_AUDIT_2026-11-10.md.
 
-## Current implementation — 0.7.0 / code 9
+The correction keeps the chosen visual identity and separates the home event/artwork/title/action rows; CSS budget/Aa use the same scale/offset as canvas. No-deck foundations leave room for the budget; bottom-deck foundations sit left of the budget. Praise occupies a reserved row below cards instead of y=245 on top of them. Covered cards expose only labels that fit their visible band; images/crowns/counts are hidden beneath the front card. There is one bounded packet outline, an in-card Joker badge, compact large wallet text, and button-only settings selectors with separate presentation attributes. Rules/content/balance remain 2/5/3, the 80+28 bank and SaveStore/native ownership are unchanged.
+
+Independent `npm run qa:layout`: 7 viewports (320×480 through 520×700), 119 rendered field states + 21 home states + 36 dialog states — **0 DOM/raster violations**. The original 145-case 0.7.0 baseline reproduced 139 violations (repeated causes, not distinct bugs); the corrected matrix adds Joker support and an exhausted-result variant. The audit reads actual DOM bounds/click centres and decoded rendered PNG pixels; layout()/boardFrame() are not its oracle. It runs before browser tests in CI with image/report artifacts.
+
+Completed local evidence: 59 model/platform tests, every fixed witness/four-layout bounds, all 80 levels via actual touch. The full four-worker browser run gave 66 PASS, four intentional compact chapter skips, and two 30s total-test timeouts under contention; both serial reruns PASS (19.2s and 12.7s), covering all 68 unique scenarios. Fresh fixed-viewport production touch GIFs pass first win/Next and reachable dense collection/next move/Undo/pause. Resize stress is kept in separate unrecorded contexts so demonstration GIFs have no technical viewport jumps.
+
+[PR CI](https://github.com/DanilaH/asoc-solitair/actions/runs/42845623152) passes typecheck/model/content/build, the independent layout audit, Android debug and unsigned disabled-SDK R8 release compilation. [Main artifact run](https://github.com/DanilaH/asoc-solitair/actions/runs/42846792749) supplies the delivered APK; Android compilation/signature passes. The duplicate hosted full-browser jobs were still running at this verification checkpoint; completed local scenario coverage is described below.
+
+Delivered preview: 0.7.1/code 10, `com.danilah.asocsolitair.debug` («Ассоциации · тест»), 9787514 bytes, SHA256 `19c5853870c43bef60221f22cb6448071ad412c1f08e1e706ecf1154c321a97d`. All 44 embedded web files match the exact production build. The certificate remains `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e`, allowing an update over 0.7.0. Persistent APK: `libfile_d267cbb218608191ba43ead75e325c9b`; first-level GIF: `libfile_394d862009688191a15613849fe1e4b3`; dense GIF: `libfile_9cb7925e47e48191899e3174e90eac55`. Full archive identity is in VERIFICATION.md.
+
+The audit proves bounded browser layout in its stated cases, not physical-phone readability/gesture comfort/FPS/sound/haptics or live SDK/inset delivery. Extreme short-height + tall-banner cases scale cards down. Production IDs/signing/publication remain deferred. Resume with phone feedback on the corrected version, not another round of abstract redesign.
+
+## Previous implementation — 0.7.0 / code 9
 
 PR #10 is merged at `310b50c4c19568aff7e90194ade909092a258451`; verified runtime source is `19b0c8eb35889efb1be16dc8cf53f81380395081`. The user explicitly approved implementing the selected identity mockup («ну всё ебашь тогда»). Home/game/pause now use the accepted identity in production HTML/CSS/Phaser: left-aligned foundations, short one-line category display titles, bundled Nunito, the original linked-card emblem, aggregated foundation faces/dots and a separate level-picker dialog. See docs/qa/IDENTITY_UI_2026-11-10.md.
 

@@ -26,4 +26,4 @@ Home/game/pause implementation is merged as 0.7.0/code 9; see docs/qa/IDENTITY_U
 
 ## 0.7.1 layout correction
 
-Independent DOM/rendered-PNG audit and responsive correction are in progress on `fix/layout-audit`; see docs/qa/LAYOUT_AUDIT_2026-11-10.md. The correction preserves the chosen identity and game bank; final checks/APK are recorded in the handoff.
+Independent DOM/rendered-PNG audit and responsive correction are merged as 0.7.1/code 10; 176 layout states pass without overlaps. The matched/signed preview APK and touch GIFs are delivered; see docs/qa/LAYOUT_AUDIT_2026-11-10.md and the handoff for exact verification and pending duplicate hosted runs. Next acceptance is the corrected layout on a physical phone.

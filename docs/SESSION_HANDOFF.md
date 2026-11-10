@@ -6,6 +6,10 @@ This is **Солитёр ассоциаций**, `DanilaH/asoc-solitair`, portra
 
 The user explicitly authorized normal repository maintenance, push, PR management and integration: «я разрешаю работать тебе с репозиторием как со своим». Do not ask again for routine repository work. Production ad/analytics IDs, managed release signing and store publication remain deferred.
 
+## Active implementation candidate — 0.7.0 / code 9
+
+The user explicitly approved implementing the selected identity mockup («ну всё ебашь тогда»). The candidate on `feat/identity-ui` ports home/game/pause to production HTML/CSS/Phaser, with left-aligned foundations, short one-line category display titles, local Nunito, the original linked-card emblem, aggregated foundation faces/dots and a separate level-picker dialog. Scope/evidence: docs/qa/IDENTITY_UI_2026-11-10.md. Rules/content/balance stay 2/5/3; the frozen 80+28 bank and save/native ownership are unchanged. Hosted CI/APK verification is pending at this checkpoint; do not call the old 0.6.2 APK the redesigned version.
+
 ## Latest design feedback — find our own character
 
 The user says the Hitapps-led structural prototype is now reasonably appealing and asks to find our own character by blending in AZUR and the third reference, Unico. Treat the earlier composition as an accepted starting point, not permission to regress to the old dashboard. Proposed identity is documented in docs/design/OWN_CHARACTER_2026-11-10.md and shown in docs/design/identity-prototype.html; the earlier reference-prototype.html is preserved.

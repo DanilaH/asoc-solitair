@@ -7,3 +7,9 @@ Created with the built-in image generation tool on 2026-11-10. Transparent PNG s
 > Production asset for a polished casual word solitaire mobile puzzle: a single compact victory emblem, isolated on a genuinely transparent background. A chunky five-point golden star with rounded bevels, warm honey-gold material, luminous cream highlights, a small fan of three ivory playing cards behind it with cyan-blue edges, restrained teal enamel leaves on each side and three tiny golden sparkles. Front-facing orthographic composition, readable at 100px, soft hand-painted 3D casual puzzle rendering, clean silhouette. No letters, numbers, logos, hearts, faces, crowns, trophy cup, banners, text or background.
 
 Cards, helper controls and layout remain editable procedural/vector/CSS artwork. This asset does not replace semantic card illustrations or promise a reward amount.
+
+## 0.7.0 identity assets
+
+- `public/art/ui/linked-cards.webp` is the accepted original emblem from `docs/design/art/linked-cards.webp`, reused byte-for-byte. Provenance and prompt: `docs/design/OWN_CHARACTER_2026-11-10.md`. No new generated art was needed.
+- `public/fonts/nunito.ttf` is the variable Nunito font from the Google Fonts `ofl/nunito/Nunito[wght].ttf` source, bundled for offline Cyrillic/Latin rendering. License retained at `public/fonts/OFL-Nunito.txt` (SIL Open Font License 1.1). Source: https://github.com/google/fonts/tree/main/ofl/nunito .
+- Card faces, linked-card back motif, foundation title tabs/progress dots and helper icons are local vectors/CSS. No runtime Google Fonts request or competitor screenshot asset is used.

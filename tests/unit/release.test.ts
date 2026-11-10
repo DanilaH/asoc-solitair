@@ -4,7 +4,8 @@ import { introDeal } from '../../src/content/intro';
 import { expansionDeals } from '../../src/content/expansion';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { decodeSave } from '../../src/platform/storage';
-import { dailyForDay } from '../../src/content/daily';
+import { categoryCaption } from '../../src/game/captions';
+import { dailyPool, dailyForDay } from '../../src/content/daily';
 it('has 54 distinct appended puzzles spanning the new topics and existing modifiers with bounded witnesses', () => {
   expect(campaignDeals).toHaveLength(80); expect(expansionDeals).toHaveLength(54);
   expect(expansionDeals.filter(d => d.tags?.includes('ordered'))).toHaveLength(11);
@@ -24,4 +25,12 @@ it('Undo from temporary exhaustion reopens the telemetry outcome marker for a la
   const exhausted = dispatch(save, introDeal.winningPath[0], introDeal).next; exhausted.attempt.telemetry!.finished = true;
   const restored = dispatch(exhausted, { type: 'undo' }, introDeal).next;
   expect(restored.attempt.board.phase).toBe('playing'); expect(restored.attempt.telemetry!.started).toBe(true); expect(restored.attempt.telemetry!.finished).toBe(false); expect(restored.meta).toEqual(exhausted.meta);
+});
+
+it('short category labels preserve distinct visible categories within every shipped deal', () => {
+  for (const deal of [introDeal, ...campaignDeals, ...dailyPool]) {
+    const names = Object.values(deal.cards).filter(card => card.leader).map(card => categoryCaption(card.text));
+    expect(new Set(names).size, deal.id).toBe(names.length);
+    expect(names.every(name => !name.includes('\n')), deal.id).toBe(true);
+  }
 });

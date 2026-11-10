@@ -3,15 +3,16 @@ import { openIntro, resume } from './fixtures';
 import type { Page } from '@playwright/test';
 import { introDeal as deal } from '../../src/content/intro';
 import { packet } from '../../src/domain/engine';
-import { layout } from '../../src/game/layout';
+import { boardFrame, layout } from '../../src/game/layout';
 import type { BoardCommand, Save } from '../../src/domain/types';
 
 const readSave = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
 async function action(page: Page, cmd: BoardCommand, settle = true) {
   const save = await readSave(page);
   const rect = await page.locator('canvas').boundingBox(); if (!rect) throw Error('No canvas');
-  const metrics = layout(save.attempt.board, deal, rect.height * 540 / rect.width);
-  const tap = async (point: { x: number; y: number }) => page.touchscreen.tap(rect.x + point.x * rect.width / 540, rect.y + point.y * rect.width / 540);
+  const frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, deal);
+  const metrics = layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
+  const tap = async (point: { x: number; y: number }) => page.touchscreen.tap(rect.x + frame.offsetX + point.x * frame.unit, rect.y + point.y * frame.unit);
   if (cmd.type === 'transfer') {
     const id = cmd.from.kind === 'waste' ? save.attempt.board.waste.at(-1) : packet(save.attempt.board, cmd.from.index, deal).at(-1);
     const from = metrics.poses.find(p => p.id === id)!;

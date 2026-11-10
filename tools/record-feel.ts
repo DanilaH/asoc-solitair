@@ -9,7 +9,7 @@ import type { BoardCommand, Deal, Save } from '../src/domain/types';
 const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
 const wait = (page: Page, ms: number) => page.waitForTimeout(ms);
 await mkdir('.recording/feel-evidence', { recursive: true });
-const server = await preview({ preview: { host: '127.0.0.1', port: 4186, strictPort: true } }), browser = await chromium.launch();
+const server = await preview({ preview: { host: '127.0.0.1', port: 4186, strictPort: true }, build: { outDir: process.env.ASOC_QA_DIST ?? 'dist' } }), browser = await chromium.launch();
 async function move(page: Page, context: BrowserContext, deal: Deal, cmd: BoardCommand) {
   console.info('touch', deal.id, JSON.stringify(cmd));
   const before = await read(page), rect = (await page.locator('canvas').boundingBox())!, frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
@@ -34,10 +34,13 @@ async function move(page: Page, context: BrowserContext, deal: Deal, cmd: BoardC
 try {
   const errors: string[] = [];
   // A complete, unseeded first campaign level using only production touch input.
-  const context = await browser.newContext({ viewport: { width: 360, height: 640 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, recordVideo: { dir: '.recording/feel', size: { width: 360, height: 640 } } });
+  const context = await browser.newContext({ viewport: { width: 360, height: 780 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, recordVideo: { dir: '.recording/feel', size: { width: 360, height: 780 } } });
   const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
   await page.goto('http://127.0.0.1:4186'); await page.waitForSelector('#app[data-ready=true]'); await wait(page, 500);
-  await page.screenshot({ path: '.recording/feel-evidence/feel-home.png' }); await page.locator('#home-play').tap(); await wait(page, 1000);
+  await page.screenshot({ path: '.recording/feel-evidence/feel-home.png' });
+  await page.setViewportSize({ width: 320, height: 568 }); await wait(page, 250);
+  await page.screenshot({ path: '.recording/feel-evidence/feel-home-compact.png' });
+  await page.setViewportSize({ width: 360, height: 780 }); await wait(page, 250); await page.locator('#home-play').tap(); await wait(page, 1000);
   await page.screenshot({ path: '.recording/feel-evidence/feel-board.png' });
   const first = campaignDeals[0]; let didCapture = false;
   for (const cmd of first.winningPath) {
@@ -52,7 +55,7 @@ try {
   const video = page.video()!; await context.close(); await video.saveAs('.recording/feel-first.webm');
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', '.recording/feel-first.webm', '-vf', 'fps=16,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=160:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle', '.recording/feel-evidence/feel-first.gif']);
   // A reachable dense state: seed is replayed from the exact frozen winning path.
-  const dense = await browser.newContext({ viewport: { width: 360, height: 640 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, recordVideo: { dir: '.recording/feel-dense', size: { width: 360, height: 640 } } });
+  const dense = await browser.newContext({ viewport: { width: 360, height: 780 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, recordVideo: { dir: '.recording/feel-dense', size: { width: 360, height: 780 } } });
   const p = await dense.newPage(); p.on('pageerror', e => errors.push(e.message));
   await p.goto('http://127.0.0.1:4186'); await p.waitForSelector('#app[data-ready=true]');
   const deal = campaignDeals[16]; let index = 0, seed = freshSave(deal, 'qa-feel-dense');
@@ -66,7 +69,12 @@ try {
   await wait(p, 90); const collected = await read(p); await move(p, dense, deal, deal.winningPath[index + 1]); await wait(p, 650);
   await p.locator('#undo').tap(); await wait(p, 650);
   if (JSON.stringify((await read(p)).attempt.board) !== JSON.stringify(collected.attempt.board)) throw Error('Undo after overlapped category did not restore');
-  await p.locator('#menu').tap(); await wait(p, 400); await p.locator('#settings-done').tap(); await wait(p, 400);
+  await p.locator('#menu').tap(); await wait(p, 400); await p.screenshot({ path: '.recording/feel-evidence/feel-pause.png' }); await p.locator('#settings-done').tap(); await wait(p, 400);
+  await p.setViewportSize({ width: 320, height: 568 }); await wait(p, 300);
+  await p.screenshot({ path: '.recording/feel-evidence/feel-dense-compact.png' });
+  await p.locator('#menu').tap(); await p.locator('#appearance-settings').tap();
+  await p.locator('[data-deck-position=bottom]').tap(); await p.locator('[data-deck-side=left]').tap(); await p.locator('#appearance .primary').tap(); await wait(p, 300);
+  await p.screenshot({ path: '.recording/feel-evidence/feel-bottom-compact.png' });
   const denseVideo = p.video()!; await dense.close(); await denseVideo.saveAs('.recording/feel-dense.webm');
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', '.recording/feel-dense.webm', '-vf', 'fps=16,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=160:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle', '.recording/feel-evidence/feel-dense.gif']);
   if (errors.length) throw Error(errors.join('\n'));

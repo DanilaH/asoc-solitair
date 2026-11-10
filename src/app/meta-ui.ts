@@ -35,11 +35,11 @@ export function renderMeta(save: Save, busy: boolean) {
     cell.setAttribute('aria-label', `${id}${complete ? ', выполнено' : id === today ? ', сегодня' : ''}`); grid.append(cell);
   }
   $('#appearance-preview').dataset.palette = save.settings.palette ?? 'green'; $('#appearance-preview').dataset.back = save.settings.cardBack ?? 'classic';
-  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-palette], [data-card-back]')) {
+  for (const button of document.querySelectorAll<HTMLButtonElement>('button[data-palette], button[data-card-back]')) {
     const kind = button.dataset.palette ? 'palette' : 'cardBack', value = button.dataset.palette ?? button.dataset.cardBack!;
     const unlocked = value === 'green' || value === 'classic' || cosmeticUnlocked(save, kind);
     button.disabled = busy || !unlocked; button.setAttribute('aria-pressed', String((save.settings[kind] ?? (kind === 'palette' ? 'green' : 'classic')) === value));
   }
-  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-deck-side]')) { button.disabled = busy; button.setAttribute('aria-pressed', String((save.settings.deckSide ?? 'right') === button.dataset.deckSide)); }
-  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-deck-position]')) { button.disabled = busy; button.setAttribute('aria-pressed', String((save.settings.deckPosition ?? 'top') === button.dataset.deckPosition)); }
+  for (const button of document.querySelectorAll<HTMLButtonElement>('button[data-deck-side]')) { button.disabled = busy; button.setAttribute('aria-pressed', String((save.settings.deckSide ?? 'right') === button.dataset.deckSide)); }
+  for (const button of document.querySelectorAll<HTMLButtonElement>('button[data-deck-position]')) { button.disabled = busy; button.setAttribute('aria-pressed', String((save.settings.deckPosition ?? 'top') === button.dataset.deckPosition)); }
 }

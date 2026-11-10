@@ -13,6 +13,7 @@ import { lesson } from './app/tutorial';
 import { boardKey, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import type { BoardCommand, Command } from './domain/types';
+import { boardFrame } from './game/layout';
 import { categoryCaption } from './game/captions';
 import { BoardScene } from './game/BoardScene';
 import { createRuntime } from './platform/runtime';
@@ -34,6 +35,7 @@ let workerDeadline: ReturnType<typeof setTimeout> | undefined;
 let outcomeTimer: ReturnType<typeof setTimeout> | undefined;
 let guideTimer: ReturnType<typeof setTimeout> | undefined;
 let messageTimer: ReturnType<typeof setTimeout> | undefined;
+let praiseAnimation: Animation | undefined;
 let inspectMode = false;
 let alive = true;
 let ready = false;
@@ -49,8 +51,31 @@ const runtime = createRuntime(() => { scene?.cancel(); }, () => {
 });
 
 function closeDialogs() { document.body.append($('#coin-layer')); dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false); }
-function openDialog(selector: string) { closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
+function openDialog(selector: string) { clearPraise(); closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
+function clearPraise() {
+  if (praiseAnimation) { praiseAnimation.onfinish = null; praiseAnimation.cancel(); praiseAnimation = undefined; }
+  $('#praise').hidden = true; $('#feedback-row').dataset.praising = 'false';
+}
+function showPraise(text: string) {
+  clearPraise(); if (!text) return;
+  $('#praise strong').textContent = text; $('#praise').hidden = false; $('#feedback-row').dataset.praising = 'true';
+  const reduced = document.documentElement.dataset.reduced === 'true';
+  praiseAnimation = $('#praise').animate(reduced ? [{ opacity: 1 }, { opacity: 0 }] : [
+    { opacity: 0, transform: 'scale(.95)' }, { opacity: 1, transform: 'none', offset: .15 },
+    { opacity: 1, offset: .78 }, { opacity: 0, transform: 'scale(.98)' },
+  ], { duration: reduced ? 450 : 900, fill: 'both' });
+  praiseAnimation.onfinish = clearPraise;
+}
+function positionDeckTools() {
+  const rect = $('#game-root').getBoundingClientRect(); if (!rect.width || !rect.height) return;
+  const tools = $('.deck-tools'), app = $('#app');
+  const frame = boardFrame(rect.width, rect.height, app.dataset.deckRow as 'top' | 'bottom');
+  const right = app.dataset.deckRow === 'bottom' || app.dataset.deckEdge === 'left';
+  tools.style.transform = `scale(${frame.unit})`; tools.style.top = `${20 * frame.unit}px`;
+  tools.style.left = right ? 'auto' : `${frame.offsetX}px`; tools.style.right = right ? `${frame.offsetX}px` : 'auto';
+}
 function message(text: string, error = false) {
+  if (error) clearPraise();
   clearTimeout(messageTimer); $('#message').textContent = text; $('#message').classList.toggle('error', error);
   if (error) messageTimer = setTimeout(() => message('Собирайте карты одной категории вместе'), 1800);
 }
@@ -144,12 +169,16 @@ try {
     $('#pause-title').textContent = screen === 'home' ? 'Настройки' : 'Пауза';
     $('#pause-level').textContent = screen === 'home' ? 'СОЛИТЁР АССОЦИАЦИЙ' : $('#level-number').textContent;
     $('#pause-levels-open').hidden = screen === 'home';
-    $('#app').dataset.deckSide = save.settings.deckSide ?? 'right';
+    const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
+    $('#app').dataset.deckEdge = hasDeck ? save.settings.deckSide ?? 'right' : 'right';
+    $('#app').dataset.deckRow = hasDeck ? save.settings.deckPosition ?? 'top' : 'top';
+    positionDeckTools();
     const instruction = lesson(save, deal);
     $('#hint').classList.toggle('attention', instruction?.attention === 'hint');
     $('#undo').classList.toggle('attention', instruction?.attention === 'undo');
     $('#app').dataset.lesson = String(Boolean(instruction));
-    $('#coins').textContent = String(save.profile.coins);
+    $('#coins').textContent = save.profile.coins < 100000 ? String(save.profile.coins) : new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(save.profile.coins);
+    $('#wallet-open').setAttribute('aria-label', `${save.profile.coins} монет. Монеты и помощники`);
     $('#moves').textContent = board.movesLeft === null ? '∞' : String(board.movesLeft);
     $('#move-fill').style.width = `${100 * (board.movesLeft ?? 1) / (deal.initial.movesLeft ?? 1)}%`;
     $('#hint-count').textContent = String(save.profile.hints); $('#undo-count').textContent = String(save.profile.undos);
@@ -327,13 +356,13 @@ try {
     }
   }
   function showGame() {
-    screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false;
+    clearPraise(); screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false;
     runtime.activity.setBlocked('screen', false); renderHud();
     resizeToRoot(); game?.loop.wake(); scene?.sync(); showGuidance();
     if (save.attempt.board.phase !== 'playing') outcome();
   }
   function goHome() {
-    clearTimeout(outcomeTimer); clearTimeout(guideTimer); setInspect(false); closeDialogs();
+    clearPraise(); clearTimeout(outcomeTimer); clearTimeout(guideTimer); setInspect(false); closeDialogs();
     screen = 'home'; runtime.activity.setBlocked('screen', true); $('#play-screen').hidden = true; $('#home').hidden = false;
     renderHud(); renderHome(); updateBanner();
   }
@@ -391,7 +420,7 @@ try {
     return { rect, backing: getBackingStoreSize(Math.max(1, rect.width), Math.max(1, rect.height), ratio) };
   }
   const initial = size();
-  scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, command: execute, sound: name => runtime.play(name),
+  scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, command: execute, praise: showPraise, sound: name => runtime.play(name),
     inspect(id) {
       const card = deal.cards[id];
       if (card.image) { message('Пояснения доступны карточкам со словами'); return; }
@@ -415,7 +444,7 @@ try {
   const renderer = game;
   function resizeToRoot() {
     if (!ready || screen !== 'game' || !game?.isBooted) return;
-    const next = size();
+    const next = size(); positionDeckTools();
     // ResizeObserver can report an unchanged rounded backing size. Emitting a
     // scene resize for that notification would cancel a perfectly valid drag.
     if (game.scale.width === next.backing.width && game.scale.height === next.backing.height && game.scale.zoom === next.rect.width / next.backing.width) return;
@@ -457,7 +486,7 @@ try {
   $('#daily-play').addEventListener('click', () => { void activateMode('daily'); }, domOptions);
   $('#daily-resume-old').addEventListener('click', () => { void activateMode('daily', true); }, domOptions);
   for (const [button, dialog] of [['calendar-open', '#calendar'], ['appearance-open', '#appearance'], ['appearance-settings', '#appearance'], ['win-cycle-open', '#cycle-info'], ['looks-open', '#appearance'], ['level-picker-open', '#level-picker'], ['pause-levels-open', '#level-picker'], ['wallet-open', '#helpers']]) $(`#${button}`).addEventListener('click', () => { renderMeta(save, saving); openDialog(dialog); }, domOptions);
-  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-palette], [data-card-back], [data-deck-side], [data-deck-position]')) button.addEventListener('click', async () => {
+  for (const button of document.querySelectorAll<HTMLButtonElement>('button[data-palette], button[data-card-back], button[data-deck-side], button[data-deck-position]')) button.addEventListener('click', async () => {
     const key = button.dataset.palette ? 'palette' : button.dataset.cardBack ? 'cardBack' : button.dataset.deckSide ? 'deckSide' : 'deckPosition';
     if (saving || button.disabled) return;
     try { await write(next => {
@@ -565,7 +594,7 @@ try {
   const removeTouch = installTouchActivation($('#dock'), { resolveButton: target => target instanceof Element ? target.closest('button') : null });
   renderHud(); renderHome();
   const cleanup = () => {
-    if (!alive) return; alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
+    if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); coins.forEach(c => { c.animation?.cancel(); c.node.remove(); });
     worker?.terminate(); resize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);

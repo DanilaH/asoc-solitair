@@ -36,8 +36,8 @@ test('tenth milestone and fifth win share one durable result; unlocked palette i
   const won = await read(page); expect(won.meta!.winCycle).toBe(0); expect(won.profile.hints).toBe(4);
   await page.screenshot({path:`test-results/${test.info().project.name}-meta-result.png`});
   await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true'); expect((await read(page)).profile).toEqual(won.profile);
-  await page.locator('#appearance-open').tap(); await expect(page.locator('[data-palette=ink]')).toBeEnabled(); await expect(page.locator('[data-card-back=diamonds]')).toBeDisabled();
-  await page.locator('[data-palette=ink]').tap(); await expect(page.locator('#app')).toHaveAttribute('data-palette', 'ink');
+  await page.locator('#appearance-open').tap(); await expect(page.locator('button[data-palette=ink]')).toBeEnabled(); await expect(page.locator('button[data-card-back=diamonds]')).toBeDisabled();
+  await page.locator('button[data-palette=ink]').tap(); await expect(page.locator('#app')).toHaveAttribute('data-palette', 'ink');
 });
 
 test('campaign and daily keep exact separate attempts; daily reward and third-day bonus survive reload without replay payout', async ({page}) => {
@@ -70,7 +70,7 @@ test('midnight keeps the old daily as training and next entry starts the new dat
 
 test('alternative back and left deck persist, accept real stock and packet touches and fit the screen', async ({page}) => {
   const save = profile(21); save.attempt = freshSave(campaignDeals[2], 'left-deck').attempt; await seed(page, save);
-  await page.locator('#appearance-open').tap(); await page.locator('[data-palette=ink]').tap(); await page.locator('[data-card-back=diamonds]').tap(); await page.locator('[data-deck-side=left]').tap(); await page.locator('#appearance .primary').tap();
+  await page.locator('#appearance-open').tap(); await page.locator('button[data-palette=ink]').tap(); await page.locator('button[data-card-back=diamonds]').tap(); await page.locator('button[data-deck-side=left]').tap(); await page.locator('#appearance .primary').tap();
   await page.locator('#home-play').tap(); const deal = campaignDeals[2];
   for (const cmd of deal.winningPath.slice(0, 6)) await move(page, deal, cmd);
   await page.screenshot({path:`test-results/${test.info().project.name}-ink-left-deck.png`});

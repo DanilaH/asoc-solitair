@@ -6,6 +6,10 @@ This is **Солитёр ассоциаций**, `DanilaH/asoc-solitair`, portra
 
 The user explicitly authorized normal repository maintenance, push, PR management and integration: «я разрешаю работать тебе с репозиторием как со своим». Do not ask again for routine repository work. Production ad/analytics IDs, managed release signing and store publication remain deferred.
 
+## Active correction — 0.7.1 / code 10
+
+The user reported widespread overlaps in the 0.7.0 GIFs and explicitly requested an independent layout review. The bounded correction on `fix/layout-audit` is documented in docs/qa/LAYOUT_AUDIT_2026-11-10.md. It fixes the CSS/canvas scale mismatch, first-level budget/category overlap, home absolute positioning, praise over cards, covered-card content/strips, option-container selector collisions, group outline/Joker clipping and long wallet text. Rules/content/balance stay 2/5/3. `npm run qa:layout` is an independent DOM/rendered-PNG oracle and now runs before browser tests in CI. Final integration/APK evidence is pending at this checkpoint; do not present the old 0.7.0 APK as the corrected one.
+
 ## Current implementation — 0.7.0 / code 9
 
 PR #10 is merged at `310b50c4c19568aff7e90194ade909092a258451`; verified runtime source is `19b0c8eb35889efb1be16dc8cf53f81380395081`. The user explicitly approved implementing the selected identity mockup («ну всё ебашь тогда»). Home/game/pause now use the accepted identity in production HTML/CSS/Phaser: left-aligned foundations, short one-line category display titles, bundled Nunito, the original linked-card emblem, aggregated foundation faces/dots and a separate level-picker dialog. See docs/qa/IDENTITY_UI_2026-11-10.md.

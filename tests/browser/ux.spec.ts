@@ -58,7 +58,7 @@ for (const level of [3, 17]) test(`level ${level}: bottom deck works on both sid
   async function place(side: 'left' | 'right') {
     const before = await read(page);
     await page.locator('#menu').tap(); await page.locator('#appearance-settings').tap();
-    await page.locator('[data-deck-position=bottom]').tap(); await page.locator(`[data-deck-side=${side}]`).tap();
+    await page.locator('button[data-deck-position=bottom]').tap(); await page.locator(`button[data-deck-side=${side}]`).tap();
     await page.locator('#appearance .primary').tap();
     const after = await read(page);
     expect(after.attempt.board).toEqual(before.attempt.board); expect(after.attempt.id).toBe(before.attempt.id);

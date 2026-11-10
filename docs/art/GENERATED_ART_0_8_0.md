@@ -16,7 +16,7 @@ Production raster assets for Russian word-association solitaire. Polished softly
 | exec-1758d77f-a401-4e00-910a-0c89194d1728.png | 4×2: cat, owl, octopus, turtle / pike, spruce, tulip, apple |
 | exec-0e8ef890-82c0-41b1-b866-4973fb889a99.png | 4×2: carrot, bagel, lollipop, tea / empty cup, shirt, boot, cap |
 | exec-eed83bba-3c8c-4fbc-9c8b-e8c0f01111cc.png | 4×2: wardrobe, candle, vacuum, keyboard / soap, brick, book, eraser |
-| exec-453bb4ae-eb1b-478d-8d3b-b642e8d77b88.png | 4×2: drum, skipping rope, bus, sailboat / helicopter, storm, triangle, hammer |
+| exec-40a231b9-19c6-4286-89e5-4c705a79d258.png | 4×2: drum, skipping rope, bus, sailboat / helicopter, storm, triangle, hammer |
 | exec-ed4dd894-b8d7-4137-a7cd-ee7edfb102f9.png | Single ripe yellow-green pear with stem and leaf |
 
 | exec-c259a508-086f-4c37-997e-214aedb51e19.png | Final transparent rope cutout; overrides the rope cell of the drum atlas |
@@ -42,3 +42,5 @@ Decorative ribbon/sparks/keys are pooled Phaser images. Monies use the same coin
 The decode/alpha acceptance check caught white or near-opaque backing in 17 early subject exports. The animal/plant and household atlases and the rope were edited with built-in image generation, preserving silhouettes/materials/order while removing backdrop, floor shadows, pale haze and white backing to genuine alpha-zero gutters. The final PNGs listed above supersede those early exports. The rope standalone export supersedes its original cell in the drum atlas.
 
 Correction prompt: background-extraction of the supplied edit target; preserve all existing objects in the same grid locations, scale, colors and details; remove ONLY the entire background, floor/backdrop shadows, white backing plates, haze/glow/fog outside the silhouettes; genuine RGBA alpha zero outside objects and in empty gaps/rope-coil holes; retain white/cream pixels that belong to objects; no fake checkerboard or solid background; do not invent/replace objects or alter atlas aspect ratio.
+
+Final small-sprite inspection also identified tinted rectangular haze behind seven transport/tool subjects from the original drum atlas. That atlas received the same strict cutout edit; all seven final sprites were re-exported. Food/pear/UI sprites were inspected separately. Alpha-count tests establish resource/gutter integrity, while visual inspection remains necessary to detect diffuse backing within an exported bounding rectangle.

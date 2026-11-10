@@ -26,6 +26,10 @@ The later full raster pass caught one genuine blank-canvas frame at 520×700 aft
 
 The initial broad run completed 66 scenarios with four deliberate duplicate chapter skips and two 30-second total-journey timeouts. The milestone scenario passed alone in 26 seconds. The legacy intro journey also exhausted its 30-second total while advancing ordinary moves; these two complete-level/reload/cosmetic journeys now have a 60-second total allowance. All per-step state, scene-barrier and reward assertions remain unchanged; this is not a game frame-rate claim. Exact-source final CI and focused repaint checks are pending before delivery.
 
+Repaint fix verification: all 176 layout states now PASS again with **0 DOM/raster issues**, including the previously blank positive-control case. Both profiles pass all art-decode and repeated static viewport/banner repaint checks (4 tests, 24s). Manual small-sprite inspection additionally removed tinted backing from seven transport/tool subjects; these are resource-only changes after the repaint verification. Final production recordings and exact-source hosted checks are being refreshed before delivery.
+
 ## Still required before delivery
 
 Exact-source build, asset decode check, final layout/raster audit, completed browser regression, updated final touch recordings, Android debug/release compilation, APK embedded-file comparison and matching preview signature. Physical-device readability, gestures, sound/haptics/FPS/insets and live production SDK behavior remain separate acceptance work.
+
+Final runtime art size after matte cleanup: 766,066 bytes across 49 files.

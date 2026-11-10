@@ -6,6 +6,12 @@ This is **Солитёр ассоциаций**, `DanilaH/asoc-solitair`, portra
 
 The user explicitly authorized normal repository maintenance, push, PR management and integration: «я разрешаю работать тебе с репозиторием как со своим». Do not ask again for routine repository work. Production ad/analytics IDs, managed release signing and store publication remain deferred.
 
+## Latest direction after 0.6.2 — reference-based structural redesign
+
+The user still finds the presentation weak, especially field/menu structure, and explicitly asked to revisit their Hitapps/AZUR videos and copy the interface much more directly. Both full recordings were retrieved and SHA256-verified; new review/design lives in docs/design/REFERENCE_REBUILD_2026-11-10.md. Choose Hitapps as the primary composition, with AZUR full-face word presentation and dictionary access.
+
+A concrete three-screen prototype is in docs/design/reference-prototype.html; reproduce its 360×780 and 320×568 checks/screens with `node tools/record-reference-design.mjs`. It is a proposed interface example, not a new game/APK, not an exact saved attempt, and not proof of new Phaser/native behavior. The actual runtime below is unchanged. Next presentation package: compact HUD, independent deck/moves zone, distinct category row, aggregate foundation face with title tab, centered open-card content, uncluttered home with separate level picker, coherent cream pause. Preserve two actual foundation slots, four deck placements and the frozen bank/save ownership; do not add meta systems from the references.
+
 ## Current implementation — 0.6.2 / code 8
 
 PR #7 is merged. Runtime source: `c53bf4e173471e85aa7ee5f12f08e3c1cdefc3cf`; merge: `1d266072eb6dd5d75f984ecc2a9346f0c83526f4`. Later documentation-only changes do not change the tested runtime. Rules/content/balance remain **2/5/3**. The 80 campaign puzzles, first 26 deals, daily-v1 identities/orders and frozen 28-day rotation are unchanged.

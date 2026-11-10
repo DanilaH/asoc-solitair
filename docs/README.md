@@ -25,3 +25,5 @@ Campaign bank: [authorship, coverage and limits](content/FIRST_CAMPAIGN.md), [va
 - [Content / UX review — 0.6.1](qa/UX_REVIEW_2026-11-10.md).
 
 - [Casual UI / feel pass — 0.6.2](qa/CASUAL_FEEL_2026-11-10.md).
+
+- [Structural redesign proposal from the user’s Hitapps/AZUR recordings](design/REFERENCE_REBUILD_2026-11-10.md), with an inspectable three-screen prototype. Current runtime remains 0.6.2.

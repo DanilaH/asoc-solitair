@@ -1,5 +1,9 @@
 # Product sources
 
+Latest presentation research: [cohesive art-system review after 0.7.1](design/ART_SYSTEM_REVIEW_2026-11-10.md). User requests broader generated artwork for card backs/effects/UI; a new concept is proposed, not implemented or approved as the final style.
+
+Detailed next-work plan: [art kit, real field, motion, all dialogs and acceptance](design/ART_IMPLEMENTATION_PLAN_2026-11-10.md). Three delivery packages: A — actual field, B — motion/rewards, C — remaining UI and APK. Planned work, not implemented.
+
 Resuming after a stopped chat: start at [the continuation checkpoint](SESSION_HANDOFF.md), then use the normative sources below.
 
 1. [Agent handoff](product/WORD_SOLITAIRE_AGENT_HANDOFF_2026-11-09.md)

@@ -2,6 +2,8 @@
 
 ## Project and authorization
 
+Latest direct user instruction in this resumed thread: «пользуйся репой как своей. Давай подробный план, чё делать будем». This renews authorization for ordinary repository writes/push/PR/merge. Detailed requested plan is in docs/design/ART_IMPLEMENTATION_PLAN_2026-11-10.md; current turn writes documentation only. No new runtime work is claimed.
+
 This is **Солитёр ассоциаций**, `DanilaH/asoc-solitair`, portrait Android/RuStore. Resume this game, not adjacent portfolio projects. Read AGENTS.md, docs/README.md and the normative product documents before extending scope.
 
 The user explicitly authorized normal repository maintenance, push, PR management and integration: «я разрешаю работать тебе с репозиторием как со своим». Do not ask again for routine repository work. Production ad/analytics IDs, managed release signing and store publication remain deferred.
@@ -77,6 +79,8 @@ Canonical release package remains **com.danilah.asocsolitair**, gated on live co
 Read docs/qa/CASUAL_FEEL_2026-11-10.md for this pass and docs/qa/UX_REVIEW_2026-11-10.md for the prior editorial review. Level 19's 45/45 witness and broad «Инструменты» in 12/15/daily-03/17 remain human-review priorities, not measured difficulty or confirmed rule defects.
 
 ## Next acceptance
+
+Latest user steering supersedes a phone-feedback-only next step: «Надо применять генерацию более глобально например для рубашек карт и эффектов… Надо изучить снова моменты по интерфейсу». Research and staged scope: [ART_SYSTEM_REVIEW_2026-11-10.md](design/ART_SYSTEM_REVIEW_2026-11-10.md). All three recordings were retrieved again/hash-verified and selected scenes visually compared with the delivered 0.7.1 GIF and current rendering code. An original generated concept board shows coordinated home/game/card-back/helpers/effect materials. It is a proposal, not a running build or an approved new final style. Avoid copying its heavy outer frames/background contrast literally. Next implementation, when proceeding: one coherent art kit on a real dense level, then motion and remaining menus; retain the corrected geometry, two left slots, short category titles and four deck placements. No runtime/version/APK change in this research pass.
 
 Review the new presentation on a physical phone: readability/gesture comfort, sound/haptics, frame pacing, Back/background, process-kill/relaunch, native insets/banner and actual SDK callbacks/dashboard delivery. Browser/compilation evidence does not establish these outcomes. Human pacing and semantic review remain open. User feedback may direct another bounded visual pass; do not silently add content/meta scope.
 

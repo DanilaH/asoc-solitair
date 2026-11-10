@@ -1,5 +1,7 @@
 # Roadmap
 
+Next presentation work is planned in [ART_IMPLEMENTATION_PLAN_2026-11-10.md](docs/design/ART_IMPLEMENTATION_PLAN_2026-11-10.md): A — coherent generated art on an actual dense field; B — movement/effects/rewards; C — all existing menus and Android evidence. No package is implemented yet. This follows the user's request for broader generation and a detailed plan after 0.7.1.
+
 Full agreed v1 remains the target. Checked status is evidence-based, not a claim of release parity.
 
 | Stage | Status | Result / completion condition |

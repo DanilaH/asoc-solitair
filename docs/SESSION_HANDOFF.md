@@ -1,5 +1,9 @@
 # Continuation checkpoint — 2026-11-10
 
+## Latest art feedback — simplify card subjects
+
+After viewing the 0.9.0 media, the user rejected the overly detailed subject illustrations, naming the drum, and requested much more casual shapes. [Direction and first real-card comparison](design/CASUAL_SUBJECTS_2026-11-11.md). A simpler generated drum sample is prepared and previewed in the actual card/reader; comparison `libfile_d50db6f7130881919b2941ce3939c60b`. This is a direction sample; shipped art/APK are still 0.9.0. Keep broad matte shapes, few colors, minimal fixtures/grain/highlights, recognizable at 50–65px, no object faces. Continue from this feedback rather than repeating the 0.8.0 rich painted-object direction.
+
 ## Current delivery — 0.9.0 / code 12
 
 The latest «давай, приступай» authorized all four UI/UX/feel packages; all are implemented and integrated. [PR #13](https://github.com/DanilaH/asoc-solitair/pull/13) is merged at `5d45b2013af259bcee7ecb84f1640d1faaf07ae6`, tested runtime source `16d8ee3301bdae4e4bafb26f0585fad592fe8da0`. [Scope and evidence](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). Keep compact edge-aligned groups and no permanent service captions. Do not resume the historical review below as unfinished work.

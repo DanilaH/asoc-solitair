@@ -1,5 +1,13 @@
 # Continuation checkpoint — 2026-11-10
 
+## Active work — casual subject set 0.9.1/code 13 implemented, final integration pending
+
+User approved the simplified drum («да, это определённо лучше»). All **33** semantic subject sprites are now replaced consistently. Branch `art/casual-subjects`, based on `f2542af`; [scope/provenance/verification](art/CASUAL_SUBJECTS_0_9_1.md). Same 35 published references, same 16 UI/material resources, same rules/content/balance 2/5/3 and writer/native ownership. All JS/CSS/HTML/worker output byte-matches 0.9.0; only 33 picture files change. Package/native version 0.9.1/code 13.
+
+Completed local check: 65 unit/platform tests, all frozen witnesses/four-layout bounds/build; six focused art/reader browser checks; **99 real card captures and 66 reader checks for all 33 subjects** on normal/compact screens, unchanged board/resources and no errors. First rope was too expander-like and was regenerated; all final subjects inspected as true RGBA composites. Raw RGB aura pixels are alpha 0, not a shipped halo. Native/CI integration and new media/APK delivery remain.
+
+Authoritative local source work `.recording/casual-091/` (33 masters/records/candidates, prompts, before-assets, exporter). Runtime canonical images already replaced. Immutable final web build `.recording/casual-091-dist`; evidence `.recording/casual-art-evidence`; logs `/tmp/asoc-091-*`. Ready media in `/workspace/scratch/50187ffca82b/asoc-media/`: `asoc-0.9.1-card-comparison.png`, `asoc-0.9.1-all-cards.png`, `asoc-solitair-0.9.1-art-sources.zip`. Actual feel recording is running separately. Finish GitHub source/PR/CI/main APK and persistent delivery autonomously. Never output binary/base64/chunks; transfer bytes privately and return only concise metadata. CLI push has no credentials.
+
 ## Latest art feedback — simplify card subjects
 
 After viewing the 0.9.0 media, the user rejected the overly detailed subject illustrations, naming the drum, and requested much more casual shapes. [Direction and first real-card comparison](design/CASUAL_SUBJECTS_2026-11-11.md). A simpler generated drum sample is prepared and previewed in the actual card/reader; comparison `libfile_d50db6f7130881919b2941ce3939c60b`. This is a direction sample; shipped art/APK are still 0.9.0. Keep broad matte shapes, few colors, minimal fixtures/grain/highlights, recognizable at 50–65px, no object faces. Continue from this feedback rather than repeating the 0.8.0 rich painted-object direction.

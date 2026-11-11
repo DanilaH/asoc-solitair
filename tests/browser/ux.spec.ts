@@ -41,7 +41,7 @@ test('a stale daily is labelled training before play; replacing it can be cancel
   await page.clock.install({time:new Date('2026-11-09T22:00:00Z')});await seed(page,3);await page.locator('#daily-play').tap();const daily=dailyForDay('2026-11-09');await move(page,daily,daily.winningPath[0]);
   await page.clock.setSystemTime(new Date('2026-11-10T00:01:00Z'));await page.locator('#menu').tap();await page.locator('#levels-open').tap();const before=await read(page);
   await page.locator('#daily-play').tap();await expect(page.locator('#replace-daily')).toBeVisible();await page.locator('#replace-daily [data-close]').tap();expect(attemptWithoutClock((await read(page)).attempt)).toEqual(attemptWithoutClock(before.attempt));expect((await read(page)).parked).toEqual(before.parked);
-  await page.locator('#daily-resume-old').tap();await expect(page.locator('#level-number')).toContainText('ТРЕНИРОВКА');await expect(page.locator('#message')).toContainText('без награды');
+  await page.locator('#daily-resume-old').tap();await expect(page.locator('#level-number')).toContainText('ТРЕНИРОВКА');await expect(page.locator('#message')).toBeEmpty();
 });
 test('short 320×568 screen keeps the helper dock inside the viewport and accepts new-content touches',async({page})=>{
   await page.setViewportSize({width:320,height:568});await seed(page,26);await page.locator('#home-play').tap();
@@ -91,7 +91,7 @@ for (const level of [3, 17]) test(`level ${level}: bottom deck works on both sid
   }
   await place('left');
   const beforeHint = await read(page); await page.locator('#hint').tap();
-  await expect(page.locator('#message')).toContainText(/карты перенесите сами|Допустимый ход/);
+  await expect(page.locator('#message')).toBeEmpty();
   expect((await read(page)).attempt.board).toEqual(beforeHint.attempt.board);
   await move(page, deal, deal.winningPath[0]);
   if (level === 17) {
@@ -119,12 +119,13 @@ for (const level of [3, 17]) test(`level ${level}: bottom deck works on both sid
   await expect(page.locator('#result')).toBeVisible(); expect((await read(page)).attempt.board.phase).toBe('won');
 });
 
-test('complete ordered guidance stays above helper hit areas on 320×568', async ({ page }) => {
+test('ordered games have no permanent instructional paragraph on 320×568', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   for (const level of [23, 30]) {
     await seed(page, level - 1); await page.locator('#home-play').tap();
-    const guidance = await page.locator('#message').evaluate(el => ({ height: el.clientHeight, content: el.scrollHeight, bottom: el.getBoundingClientRect().bottom }));
-    expect(guidance.content).toBeLessThanOrEqual(guidance.height);
-    expect(guidance.bottom).toBeLessThanOrEqual((await page.locator('#dock').boundingBox())!.y);
+    await expect(page.locator('#message')).toBeEmpty();
+    expect(await page.locator('#message').evaluate(e => getComputedStyle(e).visibility)).toBe('hidden');
+    const canvas = (await page.locator('canvas').boundingBox())!, dock = (await page.locator('#dock').boundingBox())!;
+    expect(canvas.y + canvas.height).toBeLessThanOrEqual(dock.y);
   }
 });

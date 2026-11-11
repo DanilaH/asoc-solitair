@@ -59,8 +59,8 @@ canvas{display:block!important;width:100%!important;height:100%!important;touch-
 #app[data-deck-edge=left] .deck-tools{left:auto;right:0;flex-direction:row-reverse}
 
 #message{min-height:26px;flex-shrink:0;margin:0;padding:4px 8px;text-align:center;font-size:10px;line-height:15px;color:#b3d3ce;overflow-wrap:anywhere}
+#message:empty{visibility:hidden}
 #message.error{color:#ffdda6}
-#app[data-lesson=true] #message{min-height:40px;color:#fff0c8}
 footer{height:88px;flex-shrink:0;display:flex;justify-content:flex-start;gap:8px;align-items:center;padding-top:4px}
 footer button{position:relative;width:72px;height:76px;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:10px;font-weight:800;color:#c1d9d3;padding:0}
 footer .helper-icon{width:59px;height:59px;border-radius:19px;display:grid;place-items:center;font-size:45px;color:#5b96bd;border:3px solid #fffdf0;background:linear-gradient(#fffdf5,#e8edf1);box-shadow:0 4px 0 #a2b0c7,inset 0 -3px 0 #dce3ec;text-shadow:0 2px 0 #ccd8e7}
@@ -76,7 +76,7 @@ footer button[aria-pressed=true] .helper-icon{outline:3px solid #f7d69e}
 #banner-slot{height:60px;flex-shrink:0;width:100%;background:#164e58}
 #save-retry{margin:0;flex-shrink:0}
 
-/* The home stage uses separate rows for events, artwork, title and actions. */
+/* Keep the emblem/title and event shortcuts in separate compact groups. */
 #home{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:0;padding:0 3px 5px;scrollbar-width:thin}
 
 .milestone-card{flex-shrink:0;display:flex;align-items:center;gap:10px;width:100%;min-height:57px;border:0;background:none;padding:0 15px;text-align:center;color:#8b9d94}
@@ -112,7 +112,6 @@ footer button[aria-pressed=true] .helper-icon{outline:3px solid #f7d69e}
 .brand-scene h1{text-align:center;font-size:clamp(30px,9vw,42px);line-height:1.04;color:#477b7e;text-shadow:0 2px 0 #fffdf1,0 4px 0 #b2ccc2;letter-spacing:-1.6px;font-weight:1000;margin:0}
 .brand-scene h1 small{display:block;font-size:.44em;letter-spacing:4px;line-height:1.8;color:#9aaa8f;text-shadow:none;font-weight:900}
 
-.home-status{flex-shrink:0;font-size:10px;color:#8b9f96;text-align:center;margin:6px 8px 10px;line-height:1.4}
 .home-primary{position:relative;flex-shrink:0;margin:0 auto 8px;width:calc(100% - 52px);min-height:72px;border-radius:19px;font-size:24px;line-height:1.05}
 .home-primary small{display:block;font-size:12px;line-height:1.5;font-weight:800}
 .levels-link{flex-shrink:0;margin:0 auto;width:calc(100% - 40px);padding:8px;font-size:12px;background:none;border:0;color:#8fa297;min-height:44px}
@@ -225,7 +224,6 @@ footer svg{width:33px;height:33px}
 .moves strong{font-size:26px;line-height:29px}
 .deck-tools{gap:10px;top:9px}
 #message{min-height:23px;font-size:9px;line-height:14px}
-#app[data-lesson=true] #message{min-height:36px}
 .bottom-note{height:4px}
 }
 
@@ -274,7 +272,6 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 .brand-scene h1{font-size:32px}
 .milestone-card{min-height:49px}
 .home-primary{min-height:64px}
-.home-status{font-size:9px}
 .linked-emblem{width:145px;height:125px}
 }
 
@@ -291,7 +288,6 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 .milestone-details small{font-size:8px}
 .home-primary{min-height:59px;font-size:22px}
 .levels-link{min-height:44px;padding:5px}
-.home-status{font-size:8px;margin:4px 5px 7px}
 .linked-emblem{width:120px;height:104px}
 #feedback-row{min-height:39px}
 #praise{font-size:18px}
@@ -299,3 +295,7 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 
 
 .wallet #coins{white-space:nowrap}
+
+/* Teaching points at the existing helper; it never intercepts a touch. */
+#dock .attention::after{content:'';position:absolute;pointer-events:none;left:34px;top:24px;width:36px;height:45px;background:url('/art/ui/tutorial-hand.svg') center/contain no-repeat;filter:drop-shadow(0 2px 1px #103d4466);animation:teach-tap 1.25s ease-in-out infinite}
+@keyframes teach-tap{0%,100%{transform:translateY(6px)}40%,65%{transform:translateY(0)}}

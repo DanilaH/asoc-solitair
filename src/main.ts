@@ -78,9 +78,9 @@ function positionDeckTools() {
 function message(text: string, error = false) {
   if (error) clearPraise();
   clearTimeout(messageTimer); $('#message').textContent = text; $('#message').classList.toggle('error', error);
-  if (error) messageTimer = setTimeout(() => message('Собирайте карты одной категории вместе'), 1800);
+  if (text) messageTimer = setTimeout(() => message(''), error ? 2500 : 1800);
 }
-function setInspect(value: boolean) { inspectMode = value; $('#inspect').setAttribute('aria-pressed', String(value)); scene?.setInspect(value); message(value ? 'Нажмите на открытую карточку' : 'Собирайте карты одной категории вместе'); }
+function setInspect(value: boolean) { inspectMode = value; $('#inspect').setAttribute('aria-pressed', String(value)); scene?.setInspect(value); message(''); }
 
 async function start() {
 try {
@@ -112,7 +112,10 @@ try {
   async function write<T>(change: (next: Save) => T): Promise<T> {
     pendingWrites++; saving = true; setInput();
     try { return await store.mutate(change); }
-    finally { saving = --pendingWrites > 0; setInput(); renderHud(); renderHome(); }
+    finally {
+      saving = --pendingWrites > 0; setInput(); renderHud(); renderHome();
+      if (!saving && ready && screen === 'game' && !runtime.activity.isBlocked()) showGuidance();
+    }
   }
   const ads = createAds({
     activity: runtime.activity,
@@ -180,7 +183,6 @@ try {
     const instruction = lesson(save, deal);
     $('#hint').classList.toggle('attention', instruction?.attention === 'hint');
     $('#undo').classList.toggle('attention', instruction?.attention === 'undo');
-    $('#app').dataset.lesson = String(Boolean(instruction));
     $('#coins').textContent = save.profile.coins < 100000 ? String(save.profile.coins) : new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(save.profile.coins);
     $('#wallet-open').setAttribute('aria-label', `${save.profile.coins} монет. Монеты и помощники`);
     $('#moves').textContent = board.movesLeft === null ? '∞' : String(board.movesLeft);
@@ -283,7 +285,6 @@ try {
         if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type as 'transfer' | 'complete' | 'coins' | 'win' | 'undo' | 'hint');
       }
       if (result.events.some(e => e.type === 'coins') && !result.events.some(e => e.type === 'win')) coinBurst();
-      if (cmd.type === 'restart') message('Перенесите категорию в свободный верхний слот');
       if (save.attempt.board.phase !== 'playing') {
         clearTimeout(outcomeTimer); outcomeTimer = setTimeout(outcome, save.attempt.board.phase === 'won' ? 880 : 100);
       }
@@ -292,7 +293,7 @@ try {
       telemetry.track('move_rejected', { reason: result.reason ?? 'unknown' }); message(result.reason ?? 'Сюда не подходит', true);
     }
     renderHud();
-    if (result.accepted && save.attempt.board.phase === 'playing') showGuidance(cmd.type !== 'hint');
+    if (save.attempt.board.phase === 'playing') showGuidance(cmd.type !== 'hint');
     return result.accepted;
   }
   async function rewarded(placement: RewardPlacement) {
@@ -327,7 +328,6 @@ try {
     const parts = label.split(' · ');
     $('#home-play').replaceChildren(document.createTextNode(parts[0]), Object.assign(document.createElement('small'), { textContent: parts[1] ?? 'Кампания' }));
     $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy;
-    $('#home-status').textContent = current && campaign?.telemetry?.started ? 'Незаконченная раздача сохранена' : completed === 0 ? 'Начните с простых связей' : completed === CAMPAIGN_LENGTH ? 'Можно вернуться к любимым темам' : `Дальше — «${campaignDeals[unlocked - 1].title}»`;
     const focusId = campaign?.id ?? 'new';
     if (chapterAttemptId !== focusId) { chapterAttemptId = focusId; chapterPage = Math.floor(((campaignDeal?.campaignLevel ?? unlocked) - 1) / 20); }
     $('#chapter-label').textContent = `Уровни ${chapterPage * 20 + 1}–${Math.min(CAMPAIGN_LENGTH, chapterPage * 20 + 20)}`;
@@ -349,18 +349,17 @@ try {
   function showGuidance(animate = true) {
     clearTimeout(guideTimer);
     const instruction = lesson(save, deal);
-    message(training() ? 'Тренировка без награды. Помощники расходуются как обычно.' : instruction?.text ?? 'Собирайте карты одной категории вместе');
-    if (animate && instruction?.action && !save.settings.reducedMotion) {
+    if (animate && instruction?.action && !inspectMode) {
       const attemptId = save.attempt.id, revision = save.revision;
       guideTimer = setTimeout(() => {
         if (alive && screen === 'game' && !runtime.activity.isBlocked() && save.attempt.id === attemptId && save.revision === revision) {
-          game?.loop.wake(); scene?.hint(instruction.action!);
+          game?.loop.wake(); scene?.teach(instruction.action!);
         }
       }, 650);
     }
   }
   function showGame() {
-    clearPraise(); screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false;
+    clearPraise(); message(''); screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false;
     runtime.activity.setBlocked('screen', false); renderHud();
     repaintFrames = Math.max(repaintFrames, 2); resizeToRoot(); game?.loop.wake(); scene?.sync(); showGuidance();
     if (save.attempt.board.phase !== 'playing') outcome();
@@ -454,6 +453,7 @@ try {
     if (game.scale.width === next.backing.width && game.scale.height === next.backing.height && game.scale.zoom === next.rect.width / next.backing.width) return;
     repaintFrames = Math.max(repaintFrames, 2);
     game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height); game.loop.wake();
+    if (ready && screen === 'game') showGuidance();
   }
   const resize = new ResizeObserver(resizeToRoot);
   resize.observe(root);
@@ -463,7 +463,7 @@ try {
     if (screen === 'game' && runtime.activity.getBlockReasons().every(r => r === 'modal') && ready) {
       scene?.sync();
       if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs();
-      if (!blocked) { void ads.refresh(); void ads.recover(); }
+      if (!blocked) { void ads.refresh(); void ads.recover(); showGuidance(); }
     }
     if (!renderer.isBooted) return;
     if (blocked && ready) { renderer.loop.sleep(); coins.forEach(c => { c.animation?.cancel(); c.busy = false; c.node.style.display = 'none'; }); }
@@ -519,7 +519,7 @@ try {
   $('#joker').addEventListener('click', () => {
     if (!save.profile.jokers) { openDialog('#helpers'); return; }
     const active = $('#joker').getAttribute('aria-pressed') !== 'true'; setInspect(false); scene?.setJoker(active);
-    message(active ? 'Выберите непустой открытый столбец. Повторное нажатие отменит выбор.' : 'Выбор Джокера отменён — заряд сохранён');
+    message('');
   }, domOptions);
   $('#buy-joker').addEventListener('click', async () => {
     if (serviceBusy || saving || !helperUnlocked(save, 'joker', deal)) return;
@@ -528,7 +528,7 @@ try {
     renderHud();
   }, domOptions);
   $('#undo').addEventListener('click', () => { if (!save.profile.undos) openDialog('#helpers'); else void execute({ type: 'undo' }); }, domOptions);
-  $('#inspect').addEventListener('click', () => setInspect(!inspectMode), domOptions);
+  $('#inspect').addEventListener('click', () => { setInspect(!inspectMode); if (!inspectMode) showGuidance(); }, domOptions);
   $('#restart').addEventListener('click', () => {
     if (save.attempt.board.phase !== 'won' && save.attempt.telemetry?.started) { $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}`; openDialog('#restart-confirm'); }
     else void replay();
@@ -549,10 +549,10 @@ try {
     if (save.profile.hints === 0 && !freeHintDemo(save, deal) && activeHint?.key !== boardKey(save.attempt.board)) { openDialog('#helpers'); return; }
     if (activeHint?.key === boardKey(save.attempt.board)) {
       renderer.loop.wake(); scene?.hint(activeHint.action);
-      message(activeHint.guaranteed ? 'Попробуйте так — карты перенесите сами' : 'Допустимый ход — продолжение не гарантировано');
+      message(activeHint.guaranteed ? '' : 'Допустимый ход · продолжение не гарантировано');
       return;
     }
-    scene?.cancel(); message('Ищем связь…');
+    scene?.cancel(); message('');
     worker ??= new Worker(new URL('./game/hint.worker.ts', import.meta.url), { type: 'module' });
     worker.onmessage = async (event: MessageEvent<{ revision: number; action?: BoardCommand; guaranteed: boolean }>) => {
       clearTimeout(workerDeadline); workerDeadline = undefined;
@@ -562,7 +562,7 @@ try {
       activeHint = { key: boardKey(save.attempt.board), action: hint.action, guaranteed: hint.guaranteed };
       renderHud();
       renderer.loop.wake(); scene?.hint(hint.action);
-      message(hint.guaranteed ? 'Попробуйте так — карты перенесите сами' : 'Допустимый ход — продолжение не гарантировано');
+      message(hint.guaranteed ? '' : 'Допустимый ход · продолжение не гарантировано');
     };
     worker.onerror = () => { clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined; message('Не удалось подготовить подсказку', true); renderHud(); };
     workerDeadline = setTimeout(() => { worker?.terminate(); worker = undefined; workerDeadline = undefined; message('Поиск занял слишком много времени. Подсказка не потрачена.', true); renderHud(); }, 5000);

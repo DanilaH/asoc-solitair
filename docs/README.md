@@ -1,5 +1,7 @@
 # Product sources
 
+Latest teaching follow-up: [action-based learning without permanent captions](qa/ACTION_TUTORIAL_2026-11-11.md), based on the verified AZUR recording. Supersedes the proposal to enlarge service captions.
+
 Latest user-feedback follow-up: [compact edge-aligned UI and remaining UX priorities](qa/COMPACT_LAYOUT_2026-11-11.md). Source branch follow-up to the delivered 0.8.0; see its verification/integration status.
 
 Current presentation implementation: [generated art kit — implemented 0.8.0 and passing CI](qa/GENERATED_ART_0_8_0.md), with [resource provenance and source bundle](art/GENERATED_ART_0_8_0.md). Verification and delivery status are explicit in that checkpoint.

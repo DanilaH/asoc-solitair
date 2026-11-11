@@ -111,7 +111,7 @@ test('category praise has a reserved row outside cards and helpers and clears un
   const before = await read(page); await page.locator('#menu').tap();
   await expect(page.locator('#praise')).toBeHidden(); await page.locator('#settings-done').tap();
   expect((await read(page)).attempt.board).toEqual(before.attempt.board);
-  expect(await page.locator('#message').evaluate(e => getComputedStyle(e).visibility)).toBe('visible');
+  expect(await page.locator('#message').evaluate(e => getComputedStyle(e).visibility)).toBe('hidden');
 });
 
 test('home appearance button stays under a held finger and opens reliably', async ({ page }) => {

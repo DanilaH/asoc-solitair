@@ -60,7 +60,7 @@ test('Joker selection cancels freely, holds one group, survives reload and Undo 
   const held = await read(page); expect(held.attempt.board.joker).toEqual({ column: 0, boundary: 2 });
   await page.screenshot({ path: `test-results/${test.info().project.name}-joker-held.png` });
   await resume(page); expect((await read(page)).attempt.board).toEqual(held.attempt.board);
-  await page.locator('#hint').tap(); await expect(page.locator('#message')).toContainText('карты перенесите сами');
+  await page.locator('#hint').tap(); await expect(page.locator('#message')).toBeEmpty();
   for (const cmd of deal.tutorialPath!.slice(2, 6)) await move(page, deal, cmd as BoardCommand);
   expect((await read(page)).attempt.board.joker).toBeUndefined();
   await page.locator('#undo').tap(); await expect.poll(async () => (await read(page)).attempt.board.joker).toEqual({ column: 0, boundary: 2 });

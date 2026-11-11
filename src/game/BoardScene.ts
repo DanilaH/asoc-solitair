@@ -54,6 +54,7 @@ export class BoardScene extends Phaser.Scene {
   private get cardH() { return cardMetrics(this.options.deal).height; }
   public setDeal(deal: Deal) { this.enabled = false; this.presentedDealId = undefined; this.options.deal = deal; this.scene.restart(); this.game.loop.wake(); }
   public preload(): void {
+    if (!this.textures.exists('tutorial-hand')) this.load.svg('tutorial-hand', 'art/ui/tutorial-hand.svg');
     for (const name of UI_ART) if (!this.textures.exists('art-' + name)) this.load.image('art-' + name, artUrl(name));
     for (const card of Object.values(this.options.deal.cards)) if (card.image && !this.textures.exists(card.id)) this.load.image(card.id, illustrationUrl(card.image));
   }
@@ -84,7 +85,7 @@ export class BoardScene extends Phaser.Scene {
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.move(pointer));
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.up(pointer));
     this.input.on('pointerupoutside', () => { if (this.press) this.cancel(); });
-    const resize = () => { this.clearFeedback(); this.cancel(); this.sync([], false); };
+    const resize = () => { this.clearHint(); this.clearFeedback(); this.cancel(); this.sync([], false); };
     this.scale.on('resize', resize);
     this.events.once('shutdown', () => { this.presentedDealId = undefined; this.scale.off('resize', resize); this.clearHint(); this.views.clear(); this.input.removeAllListeners(); });
     this.presentedDealId = this.options.deal.id;
@@ -410,7 +411,7 @@ export class BoardScene extends Phaser.Scene {
   public cancel(): void { this.jokerSelecting = false; this.options.jokerMode?.(false); this.press = null; this.selected = null; if (this.world) this.sync([], false); }
   public back(): boolean { if (!this.jokerSelecting && !this.press && !this.selected && !this.hintObjects.length) return false; this.clearHint(); this.cancel(); return true; }
   public setEnabled(value: boolean): void { this.enabled = value; if (!value) { this.clearHint(); this.cancel(); } }
-  public setInspect(value: boolean): void { this.inspectMode = value; this.cancel(); }
+  public setInspect(value: boolean): void { this.inspectMode = value; this.clearHint(); this.cancel(); }
   public clearHint(): void { this.hintTweens.forEach(t => t.stop()); this.hintTweens = []; this.hintObjects.forEach(o => o.destroy()); this.hintObjects = []; }
   public hint(action: BoardCommand): void {
     this.clearHint();
@@ -424,6 +425,27 @@ export class BoardScene extends Phaser.Scene {
     this.world.add(ghost); this.world.sort('depth'); this.hintObjects.push(ghost);
     this.hintTweens.push(this.tweens.add({ targets: ghost, x: target.x, y: target.y, alpha: .25, duration: 750, hold: 180, repeat: 1,
       onRepeat: () => ghost.setPosition(from.x, from.y).setAlpha(1), onComplete: () => this.clearHint() }));
+    this.game.loop.wake();
+  }
+  /** One action at a time, following the real board; cosmetic and non-blocking. */
+  public teach(action: BoardCommand): void {
+    this.clearHint();
+    if (!this.enabled || this.press || this.inspectMode) return;
+    const source = action.type === 'transfer' ? sourceCards(this.options.getSave().attempt.board, action.from, this.options.deal) : [];
+    const from = action.type === 'transfer' ? this.metrics.poses.find(p => p.id === source.at(-1)) : this.metrics.stock;
+    const target = action.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, action.to)) : this.metrics.stock;
+    if (!from || !target) return;
+    const focus = this.add.graphics().lineStyle(4, 0xffe39c, .95).setDepth(698);
+    for (const p of [from, target]) focus.strokeRoundedRect(p.x - this.cardW / 2 + 3, p.y - this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
+    const handH = Math.max(70, 32 / this.unit);
+    const hand = this.add.image(from.x, from.y, 'tutorial-hand').setOrigin(25 / 64, 5 / 80).setDisplaySize(handH * .8, handH).setDepth(701);
+    this.world.add([focus, hand]); this.world.sort('depth'); this.hintObjects.push(focus, hand);
+    if (this.options.getSave().settings.reducedMotion) { this.game.loop.wake(); return; }
+    const tap = action.type !== 'transfer';
+    this.hintTweens.push(this.tweens.add({ targets: hand, x: target.x, y: target.y + (tap ? 12 : 0),
+      duration: tap ? 450 : 1000, delay: 280, hold: 300, repeatDelay: 450, repeat: -1, ease: 'Sine.easeInOut',
+      onRepeat: () => hand.setPosition(from.x, from.y) }));
+    this.game.loop.wake();
   }
   public hasMotion(): boolean { return this.tweens.getTweens().length > 0 || Boolean(this.press?.moved); }
   public geometry() { return this.metrics; }

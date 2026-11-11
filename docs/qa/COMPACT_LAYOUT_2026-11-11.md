@@ -26,7 +26,7 @@ Reproduce: `npm run check`, `npm run qa:layout`, `npx playwright test tests/brow
 ## Remaining UX priorities
 
 1. The unlimited-budget teaching HUD still spends a large card on ∞. A future pass can use a compact learning indicator and bring the first two rows higher; this requires a separate vertical/touch audit, not another horizontal spacing adjustment.
-2. Several secondary home/status labels are 7–10px on short screens. They need less copy and larger type together, rather than merely scaling the entire UI down further. Physical-phone readability is still unverified.
+2. Superseded by the user: do not enlarge permanent service captions. [The action-teaching follow-up](ACTION_TUTORIAL_2026-11-11.md) removes them and replaces beginner instruction with an on-field hand. Physical-phone readability remains unverified.
 3. Pause contains both preferences and game navigation. The grouped row shortens it, but a future simplification should separate settings from the primary Continue/Restart/Home actions while preserving current entry points and cancellation behavior.
 
 Physical-device comfort, haptics/sound/FPS/native insets and live SDK delivery remain outside browser evidence. CI/Android and repository integration status must not be inferred from local checks.

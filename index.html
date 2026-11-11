@@ -14,7 +14,6 @@
     <button id="looks-open" class="looks-card"><span class="event-medal" aria-hidden="true"><svg viewBox="0 0 40 40"><g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"><rect x="6" y="7" width="20" height="27" rx="4" transform="rotate(-10 16 20)"/><rect x="16" y="8" width="20" height="27" rx="4" transform="rotate(10 26 20)"/><path d="M20 18h8m-9 7h10"/></g></svg></span><strong>Ваш стол</strong></button>
     </div>
     </div>
-    <p id="home-status" class="home-status">Начните с простых связей</p>
     <button id="daily-resume-old" class="calendar-link" hidden></button>
     <button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
     <button id="level-picker-open" class="levels-link">Выбрать уровень</button>
@@ -22,7 +21,7 @@
   <div id="play-screen" hidden>
   <div class="level"><span id="level-number">УРОВЕНЬ 1</span><h1>Найдите общее</h1></div>
   <main id="game" aria-label="Карточное поле"><div id="game-root"></div><div class="deck-tools"><div class="moves"><span>Ходы</span><strong id="moves">32</strong><div class="move-track"><i id="move-fill"></i></div></div></div><div id="loading">Раскладываем карты…</div></main>
-  <div id="feedback-row"><p id="message" role="status">Перенесите категорию в свободный верхний слот</p><div id="praise" aria-live="polite" hidden><img src="art/ui/linked-cards.webp" alt=""><strong></strong></div></div>
+  <div id="feedback-row"><p id="message" role="status"></p><div id="praise" aria-live="polite" hidden><img src="art/ui/linked-cards.webp" alt=""><strong></strong></div></div>
   <footer id="dock"><button id="hint"><span class="helper-icon"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M13 24c-9-12 0-22 8-21 12 1 15 13 7 21l-3 5H16z" fill="currentColor"/><path d="M18 8l-4 5m3 20h8m-7 4h6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span>Подсказка</span><b id="hint-count">3</b></button><button id="undo"><span class="helper-icon undo-icon">↶</span><span>Отмена</span><b id="undo-count">5</b></button><button id="joker" aria-pressed="false" hidden><span class="helper-icon joker-icon"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 12l7 8 6-13 6 13 7-8-3 19H10z" fill="currentColor"/><path d="M11 35h18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span>Джокер</span><b id="joker-count">1</b></button><button id="inspect" aria-label="Рассмотреть карту" aria-pressed="false"><span class="inspect-icon">Aa</span><span>Карточка</span></button></footer>
   <div class="bottom-note" aria-hidden="true"></div>
   <button id="save-retry" class="secondary" hidden>Повторить сохранение</button>

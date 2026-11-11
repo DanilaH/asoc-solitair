@@ -36,7 +36,7 @@ async function audit(page: Page, state: string, home = false) {
   const result: string[] = [], rect = (s:string)=>document.querySelector(s)!.getBoundingClientRect();
   const shown=(e:Element)=>e.getBoundingClientRect().width>0&&getComputedStyle(e).visibility!=='hidden';
   const overlap=(a:DOMRect,b:DOMRect)=>Math.min(a.right,b.right)-Math.max(a.left,b.left)>2&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>2;
-  const selectors=home?['#appearance-open','.daily-card','#win-cycle-open','#looks-open','.linked-emblem','.brand-scene h1','#home-status','#daily-resume-old','#home-play','#level-picker-open']:['#menu','#wallet-open','.streak-row','#dock button:not([hidden])'];
+  const selectors=home?['#appearance-open','.daily-card','#win-cycle-open','#looks-open','.linked-emblem','.brand-scene h1','#daily-resume-old','#home-play','#level-picker-open']:['#menu','#wallet-open','.streak-row','#dock button:not([hidden])'];
   const elements=selectors.flatMap(s=>[...document.querySelectorAll(s)]).filter(shown);
   for(let i=0;i<elements.length;i++)for(let j=i+1;j<elements.length;j++)if(overlap(elements[i].getBoundingClientRect(),elements[j].getBoundingClientRect()))result.push('DOM overlap: '+(elements[i].id||elements[i].className)+' / '+(elements[j].id||elements[j].className));
   for(const e of document.querySelectorAll<HTMLElement>('header button,header #coins,header .streak-row'))if(shown(e)){

@@ -38,14 +38,14 @@ try {
   const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
   await page.goto('http://127.0.0.1:4186'); await page.waitForSelector('#app[data-ready=true]'); await wait(page, 500);
   await page.screenshot({ path: '.recording/feel-evidence/feel-home.png' });
- await page.locator('#home-play').tap(); await wait(page, 1000);
+ await page.locator('#home-play').tap(); await wait(page, 2200);
   await page.screenshot({ path: '.recording/feel-evidence/feel-board.png' });
   const first = campaignDeals[0]; let didCapture = false;
-  for (const cmd of first.winningPath) {
+  for (const [index, cmd] of first.winningPath.entries()) {
     const before = await read(page), completes = dispatch(before, cmd, first).events.some(e => e.type === 'complete');
     await move(page, context, first, cmd);
     if (completes && !didCapture) { await wait(page, 340); await page.screenshot({ path: '.recording/feel-evidence/feel-category.png' }); didCapture = true; await wait(page, 550); }
-    else await wait(page, 400);
+    else await wait(page, index < 2 ? 1600 : 400);
   }
   await page.waitForSelector('#result[open]'); await wait(page, 1000); await page.screenshot({ path: '.recording/feel-evidence/feel-result.png' });
   await page.locator('#next-level').tap(); await wait(page, 950);

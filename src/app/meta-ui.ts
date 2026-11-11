@@ -18,7 +18,7 @@ export function renderMeta(save: Save, busy: boolean) {
   $('#milestone-copy').textContent = n >= CAMPAIGN_LENGTH ? 'Оформление и положение колоды' : target === 10 ? `Стол «Чернила» и ${BALANCE.meta.milestoneCoins} монет` : target === 20 ? `Рубашка «Ромбы» и ${BALANCE.meta.milestoneCoins} монет` : `${BALANCE.meta.milestoneCoins} монет`;
   $('#milestone-fill').style.width = `${n >= CAMPAIGN_LENGTH ? 100 : n % 10 * 10}%`; $('#milestone-progress').textContent = n >= CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : `${n % 10} / 10`;
   $('#daily-date').textContent = new Date(`${today}T12:00:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
-  $('#daily-status').textContent = done ? `Готово · серия ${currentDailyStreak(save, today)} дн.` : daily?.daily?.dayId === today && daily.board.phase === 'playing' ? 'Продолжить сохранённую партию' : `Одна раздача · награда ${BALANCE.meta.dailyCoins} монет`;
+  $('#daily-status').textContent = done ? `Готово · серия ${currentDailyStreak(save, today)} дн.` : daily?.daily?.dayId === today && daily.board.phase === 'playing' ? 'Продолжить' : '';
   $('#daily-play').setAttribute('aria-label', done ? 'Повторить задание дня без награды' : 'Играть в задание дня');
   $<HTMLButtonElement>('#daily-play').disabled = busy;
   $('#daily-resume-old').hidden = !daily || daily.daily?.dayId === today || daily.board.phase === 'won';

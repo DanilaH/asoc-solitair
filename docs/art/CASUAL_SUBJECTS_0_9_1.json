@@ -1,0 +1,653 @@
+{
+  "version": "0.9.1",
+  "generation": "built-in image generation",
+  "referenceDrum": "masters/drum.png",
+  "promptBases": {
+    "initialAnimals": "Use case: stylized-concept. Asset type: one production subject sprite for a Russian word-association solitaire card, viewed at 50–65 CSS pixels. Reference image 1 is ONLY the approved STYLE reference, a simplified drum. Replace its subject completely with the subject described below. Match its clean chunky soft 2.5D casual-game language: a recognizable silhouette, broad rounded forms, few broad color masses, matte smooth surfaces, one gentle broad shade per surface, soft upper-left light. Keep the same low level of detail as the reference. No realistic rendering, metallic glints, grain, painterly noise, fine outlines, tiny repeated details or photoreal texture. Neutral objects have no faces; animals have only simple natural features without babyish proportions. One single centered subject, true RGBA transparent background and generous transparent gutters. No backplate, floor, cast ground shadow, ambient haze, glow, particles, scenery, letters, numbers, logo or watermark. Ensure transparent empty gaps and holes. Do not include any drum, card, UI, sheet, comparison, labels or multiple variants. Subject: ",
+    "remainingSubjects": "Use case: stylized-concept. Asset type: one production subject sprite for a Russian word-association solitaire card, viewed at 50–65 CSS pixels. Reference image 1 is ONLY the approved STYLE reference, a simplified drum. Replace its subject completely with the subject described below. Match its clean chunky soft 2.5D casual-game language: a recognizable silhouette, broad rounded forms, few broad color masses, matte smooth surfaces, one gentle broad shade per surface, soft upper-left light. Keep the same low level of detail as the reference. No realistic rendering, metallic glints, grain, painterly noise, fine outlines, tiny repeated details or photoreal texture. Neutral objects have no faces; animals have only simple natural features without babyish proportions. One single centered subject, true RGBA transparent background and generous transparent gutters. No backplate, floor, cast ground shadow, ambient haze, glow, particles, scenery, letters, numbers, logo or watermark. Ensure transparent empty gaps and holes. Do not include any drum, card, UI, sheet, comparison, labels or multiple variants.  Use a crisp clean silhouette boundary: all pixels outside the object must have zero alpha, without any colored glow, fog or diffuse edge aura. Reference transfers ONLY rendering simplicity, never drum geometry, golden rings or object features. Give each subject its own natural colors and parts.\nSubject: "
+  },
+  "export": {
+    "dimensions": [
+      192,
+      192
+    ],
+    "innerBox": [
+      176,
+      176
+    ],
+    "gutter": 8,
+    "webpQuality": 92,
+    "alphaQuality": 100,
+    "operations": "alpha-bound crop and resize only; no redraw or background removal"
+  },
+  "subjects": [
+    {
+      "name": "apple",
+      "sourceSha256": "b26a76919f893d210656a08f8144719e1851dca59c0b5079de855a2304b506f3",
+      "rect": {
+        "left": 145,
+        "top": 63,
+        "width": 927,
+        "height": 1126
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "fb245e29d32f8d126d46e66698636385340b68ccb9a4ae5e9cbc9e24d02ef398",
+      "bytes": 8218,
+      "sourceFile": "exec-ad90fbca-c41b-4965-9487-46e06f4c7665.png",
+      "archivePath": "masters/apple.png",
+      "runtimePath": "public/art/generated/apple.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One rounded coral-red apple with a short brown stem and one broad green leaf. Smooth matte body with a single gentle shaded plane. No shine spots, texture, face or cut section."
+    },
+    {
+      "name": "bagel",
+      "sourceSha256": "cdaa8e5bc66a501e27f8dd178ef9f7234ee5583c89df2107a92efa3304139178",
+      "rect": {
+        "left": 94,
+        "top": 135,
+        "width": 1037,
+        "height": 1038
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "3c266bd185327d4ce91a3508ddec48b458f87520bad0d83a9c48199c919b0035",
+      "bytes": 11332,
+      "sourceFile": "exec-d6dc4019-8b3a-4dbf-9133-1bb0cd276600.png",
+      "archivePath": "masters/bagel.png",
+      "runtimePath": "public/art/generated/bagel.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One plain golden-brown ring-shaped bagel or Russian bublik with a large clearly open central hole. Smooth baked matte surface, no seeds, sprinkles, crumbs, plate or extra pastry."
+    },
+    {
+      "name": "book",
+      "sourceSha256": "e141e57c434ee2771f4b61a014d3d3b9b802f82d9890e1a56760c2360562dec8",
+      "rect": {
+        "left": 42,
+        "top": 154,
+        "width": 1137,
+        "height": 989
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "0bedf31a11a511a4eb82432dec3518920f7fe45153e7ed0b872de12f98dd35b5",
+      "bytes": 7672,
+      "sourceFile": "exec-ce18d92c-b150-472a-9112-3ee0083e6928.png",
+      "archivePath": "masters/book.png",
+      "runtimePath": "public/art/generated/book.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One single closed coral-red book in a slight three-quarter view, a thick cream page block and one broad short honey bookmark ribbon. No title, tiny page lines, writing, decorative cover marks or extra books."
+    },
+    {
+      "name": "boot",
+      "sourceSha256": "51215ab3255f285686386a70061484a93c9efee994983fa67724416158b847d1",
+      "rect": {
+        "left": 186,
+        "top": 21,
+        "width": 869,
+        "height": 1224
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "b1fd8d2b3f93fd9c898f5fe2594a7b57cc5750e0276126675117d775443dd298",
+      "bytes": 6238,
+      "sourceFile": "exec-e15ad8b8-c3f8-415b-a3e4-5318d0d36c59.png",
+      "archivePath": "masters/boot.png",
+      "runtimePath": "public/art/generated/boot.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One brown knee-high boot, recognizable tall shaft well above the ankle, rounded foot, simple thick sole and small block heel. No laces, zipper teeth, buckles, stitched seams or leather texture. It represents Russian 'сапоги', not an ankle shoe."
+    },
+    {
+      "name": "brick",
+      "sourceSha256": "5b1344c586c29e7ede623c032a006a8851a221ec029f60e2be2a7d0ae75adc1b",
+      "rect": {
+        "left": 118,
+        "top": 132,
+        "width": 1293,
+        "height": 822
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "a86807fb95bf11abb571fbb80ef676d1f7f33efa5ec0f3bc88d9c3cbbdaeded7",
+      "bytes": 7452,
+      "sourceFile": "exec-87aa2e82-980f-45de-b445-a576108a24d2.png",
+      "archivePath": "masters/brick.png",
+      "runtimePath": "public/art/generated/brick.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One red-orange rectangular construction brick in simple three-quarter view, three broad planes and only TWO large recessed holes. No granular texture, chipped edges, many holes, cement or extra bricks."
+    },
+    {
+      "name": "bus",
+      "sourceSha256": "b9d4036ba81263875a690718fb9dfb8cdf04145934cd8eae8f5f4983bb2bb630",
+      "rect": {
+        "left": 81,
+        "top": 57,
+        "width": 1377,
+        "height": 955
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "38271ff6417fa41e021de8dff8f2cab21a9fdbb0471ddf45c7eeeb9b4e9b8568",
+      "bytes": 8222,
+      "sourceFile": "exec-0dfe1bde-248f-4090-a5f1-433b900146ca.png",
+      "archivePath": "masters/bus.png",
+      "runtimePath": "public/art/generated/bus.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One simple yellow city bus in front three-quarter view, a large dark blue windshield, two broad side window groups, one plain door shape and two large dark wheels. No mirrors, tiny lamps, logos, route text, panel seams, wheel spokes or engine detail."
+    },
+    {
+      "name": "candle",
+      "sourceSha256": "a73ead92dfd0e5aa07c72e2406e13e37eb9fbd77781025a8614d1ed458ca1cd6",
+      "rect": {
+        "left": 257,
+        "top": 23,
+        "width": 710,
+        "height": 1227
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "010f0bd6099afbcd69e42e2f6e63e16c681d9b74567641bd73b6452928da955d",
+      "bytes": 5054,
+      "sourceFile": "exec-7420f18e-0f32-47c8-904f-604832e79275.png",
+      "archivePath": "masters/candle.png",
+      "runtimePath": "public/art/generated/candle.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One short warm-ivory pillar candle with a single large gold/coral teardrop flame, a short dark wick and at most one broad wax drip. No metal holder, ornaments, glow cloud or surface texture."
+    },
+    {
+      "name": "cap",
+      "sourceSha256": "40c4604cad4752d5817536117ee65de816758267d81a79c929517e89fe0ddf7f",
+      "rect": {
+        "left": 61,
+        "top": 244,
+        "width": 1080,
+        "height": 823
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "76e876ec8f432012da2bd1314403f4b4ac41fcfb2d97e161ba9870824222e38b",
+      "bytes": 6578,
+      "sourceFile": "exec-cbbba998-10f3-4926-8868-2804d47708b1.png",
+      "archivePath": "masters/cap.png",
+      "runtimePath": "public/art/generated/cap.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One simple blue baseball cap with a round crown and a broad coral visor, slight three-quarter view. No seams, eyelet holes, logo, mesh texture or tiny button details."
+    },
+    {
+      "name": "carrot",
+      "sourceSha256": "ba7abc4d7131ea0debc0baae937e0348d113f6a6b06844ce12908fb30461fd0a",
+      "rect": {
+        "left": 152,
+        "top": 14,
+        "width": 983,
+        "height": 1230
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "5db0dafe37fb325884dbb4ada04d7078e2f819a62fe19b054511059a5045fdb7",
+      "bytes": 7012,
+      "sourceFile": "exec-d2524513-d04b-4d67-af07-5343bb8bce73.png",
+      "archivePath": "masters/carrot.png",
+      "runtimePath": "public/art/generated/carrot.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One orange carrot, chunky tapered root with rounded point and three broad green leaf shapes. At most two short broad root marks, no hair roots or intricate leaves."
+    },
+    {
+      "name": "cat",
+      "sourceSha256": "9018fd0d524e024633894f2e908591bf0ee37990903d547be9c944df493ec556",
+      "rect": {
+        "left": 240,
+        "top": 21,
+        "width": 818,
+        "height": 1209
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "cd3aa957c994bfc9ca8841cbc5411131decc8b4da901b5a555b3116dbb9867b3",
+      "bytes": 8372,
+      "sourceFile": "exec-c122a869-c7da-40b2-991a-fe2227655753.png",
+      "archivePath": "masters/cat.png",
+      "runtimePath": "public/art/generated/cat.webp",
+      "promptBase": "initialAnimals",
+      "subjectPrompt": "One sitting domestic ginger cat, natural small eyes, upright ears and a curled tail. Simple cream chest patch, no individual fur strands, no repeated tabby stripes, no cute oversized baby head."
+    },
+    {
+      "name": "cup",
+      "sourceSha256": "c9627ccf574366b38d5abc451d3ef028ade4aec53f2acf6a8956cfca387a3b18",
+      "rect": {
+        "left": 77,
+        "top": 211,
+        "width": 1103,
+        "height": 878
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "2738b6497a3a99b3fb7ce4b9a8e34ea032a3d72570f3ab7bcaf34e7e99eebd5c",
+      "bytes": 7162,
+      "sourceFile": "exec-de47c184-03c6-446f-8168-49c8bccc4741.png",
+      "archivePath": "masters/cup.png",
+      "runtimePath": "public/art/generated/cup.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One EMPTY simple ivory ceramic cup with a single thick handle. Slight top-down angle with a broad visibly EMPTY pale gray/ivory inner cavity, no liquid at all, to distinguish it from the tea illustration. No saucer, pattern or text."
+    },
+    {
+      "name": "drum",
+      "sourceSha256": "0f3acf329df2ff5f9f21b0b6caf937ca5374137d8189b6b5168904c03c054f1f",
+      "rect": {
+        "left": 110,
+        "top": 24,
+        "width": 1029,
+        "height": 1224
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "186c6b4b01646c90f6cebef48128caa319e1a69e5c54a06f5bf8a6d58d218d23",
+      "bytes": 11304,
+      "sourceFile": "exec-e2ec61f9-9d30-4e16-b013-32eb329f057e.png",
+      "archivePath": "masters/drum.png",
+      "runtimePath": "public/art/generated/drum.webp",
+      "prompt": "Approved simplified drum prototype from docs/design/CASUAL_SUBJECTS_2026-11-11.md."
+    },
+    {
+      "name": "eraser",
+      "sourceSha256": "4778f0538ccb5050c32abd95220cfdf4ad315c7d6aa07805bd95a5ffec38330c",
+      "rect": {
+        "left": 166,
+        "top": 96,
+        "width": 1342,
+        "height": 802
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "fb9cdf602e1450e925807e237ebabaadf4f4f3aa54fe916d6c036e92a09fdf2a",
+      "bytes": 5022,
+      "sourceFile": "exec-089ed53e-933d-4d97-8f69-1887bb7b9a8c.png",
+      "archivePath": "masters/eraser.png",
+      "runtimePath": "public/art/generated/eraser.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One plain chunky two-color pink-and-blue rectangular pencil eraser with a single slanted end. Clear large color blocks, no paper sleeve, brand name, crumb particles or texture."
+    },
+    {
+      "name": "hammer",
+      "sourceSha256": "5ab8b1a157f3de26a8fdeb0bb512444e5ec3989cab720dfb300cd6dbaaa77886",
+      "rect": {
+        "left": 301,
+        "top": 23,
+        "width": 862,
+        "height": 992
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "23d6d10b22e511e68212863cce0164ce4d0076de524c7930e02d1e3f15dd71f0",
+      "bytes": 6806,
+      "sourceFile": "exec-19d81728-22d9-4007-9d44-25ea988b0370.png",
+      "archivePath": "masters/hammer.png",
+      "runtimePath": "public/art/generated/hammer.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One simple carpenter's hammer: one broad matte dark gray metal head with a flat striking end and a short simplified split claw on the other, one chunky honey wooden handle. No wood grain, metal glints, screws, branding or extra tools."
+    },
+    {
+      "name": "helicopter",
+      "sourceSha256": "798e9443f6fdb1c45efa521180cd4f6f13536111cbeffc3de4797588c522ca1f",
+      "rect": {
+        "left": 59,
+        "top": 159,
+        "width": 1148,
+        "height": 982
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "ebddb445cd0e2f7d4a24f705bc29d94d07bfe4d2d281a003a4b817fdf15ed168",
+      "bytes": 11080,
+      "sourceFile": "exec-42527bf1-2b94-4a0c-adbe-b59046556ce0.png",
+      "archivePath": "masters/helicopter.png",
+      "runtimePath": "public/art/generated/helicopter.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One simple coral-red helicopter in side three-quarter view: rounded body, ONE large blue cockpit window, thick tail boom, TWO broad main rotor blades, one small simple tail rotor and two plain landing skids. No engine parts, rivets, metal joints, vents, bolts, glints or extra windows."
+    },
+    {
+      "name": "keyboard",
+      "sourceSha256": "d5e5fc8086f0ca215771d22222502102f394673dcbc965995e91f44ee09398bb",
+      "rect": {
+        "left": 101,
+        "top": 183,
+        "width": 1332,
+        "height": 721
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "7341031ebadec5df3c85b5073bd7c2ae30ad696e023df83667b6d595a22ca8f7",
+      "bytes": 6120,
+      "sourceFile": "exec-9126b8bc-c300-4786-9be9-95817659e48b.png",
+      "archivePath": "masters/keyboard.png",
+      "runtimePath": "public/art/generated/keyboard.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One computer keyboard, slightly top-down in three-quarter view, a single soft periwinkle rectangular body, only three rows of chunky light blank key blocks and one broad space bar. No letters, numbers, cables, RGB lights or individual fine key outlines."
+    },
+    {
+      "name": "lollipop",
+      "sourceSha256": "c20dbf18cb7b3078ccabc83f56e6f93850d0537a130fe41a766ca605559be841",
+      "rect": {
+        "left": 220,
+        "top": 36,
+        "width": 796,
+        "height": 1190
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "a096af06460569527d7ec87e3ec9ed139dbdd790baf7331a670a8754ec2d4a02",
+      "bytes": 6574,
+      "sourceFile": "exec-8dddc0b6-a4ef-4523-816f-6c5042621485.png",
+      "archivePath": "masters/lollipop.png",
+      "runtimePath": "public/art/generated/lollipop.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One round lollipop on a short cream stick. Only two broad coral and ivory spiral color bands. No shiny wrapper, ridges, sparkles or multiple thin spiral lines."
+    },
+    {
+      "name": "octopus",
+      "sourceSha256": "60fecb9227038ff3b2c580e371bc4dcb13bd3b6bd94535f6a34d3fc57cc9b0c2",
+      "rect": {
+        "left": 39,
+        "top": 43,
+        "width": 1169,
+        "height": 1191
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "eb5676dfde95129273962f1d275f62b5658c5d6070c2d2048a16ae069f770b96",
+      "bytes": 11484,
+      "sourceFile": "exec-3d9f4d8c-4b2c-4c25-9302-828d0e82c73f.png",
+      "archivePath": "masters/octopus.png",
+      "runtimePath": "public/art/generated/octopus.webp",
+      "promptBase": "initialAnimals",
+      "subjectPrompt": "One coral-purple octopus, rounded mantle and eight short rounded arms forming a clearly readable octopus silhouette. Minimal natural eyes, no eyelashes or grin. No rows of tiny suction cups or surface speckles."
+    },
+    {
+      "name": "owl",
+      "sourceSha256": "6e8e6c838dd30202b719f1e8a470798c428c04b93e379bc66e8a9e922b13f9e3",
+      "rect": {
+        "left": 125,
+        "top": 49,
+        "width": 975,
+        "height": 1189
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "619f61b5e0ea94e6cf8204797628af764d799278239815a8fdcd253326e86bcb",
+      "bytes": 10000,
+      "sourceFile": "exec-7d84dd46-453b-403e-905d-3a442102a982.png",
+      "archivePath": "masters/owl.png",
+      "runtimePath": "public/art/generated/owl.webp",
+      "promptBase": "initialAnimals",
+      "subjectPrompt": "One perched brown owl, recognizable round facial disk, two simple natural dark eyes, two broad folded wing shapes and short feet. No detailed feathers or dozens of chest marks, no branch or surroundings."
+    },
+    {
+      "name": "pear",
+      "sourceSha256": "b7f30e42a9507761d9344fa200daccf00dd5228955ceacd276b7ce6d0e172a12",
+      "rect": {
+        "left": 187,
+        "top": 18,
+        "width": 897,
+        "height": 1227
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "f4e46edcf57529f1c23411577d441bb5e69789be75eadeb2628de15997032af5",
+      "bytes": 6460,
+      "sourceFile": "exec-be4a7f57-f622-42bc-a8e4-6fdb83b5c012.png",
+      "archivePath": "masters/pear.png",
+      "runtimePath": "public/art/generated/pear.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One ripe yellow-green pear, broad rounded bottom and clearly narrow neck, short brown stem and ONE broad green leaf. Smooth matte surface with a single gentle shade, no speckles, shine dots, face or extra fruit."
+    },
+    {
+      "name": "pike",
+      "sourceSha256": "875bd7d855591fce1d714b1695d8a37518b3642f1106e2881ad5a14a575b12e2",
+      "rect": {
+        "left": 63,
+        "top": 62,
+        "width": 2061,
+        "height": 613
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "749474459e168b18e9bde8ded87bbf7a076fe6f305121968c7d3fe40718c96b4",
+      "bytes": 6204,
+      "sourceFile": "exec-7ad3de90-4868-4ff0-81c9-1225be283b46.png",
+      "archivePath": "masters/pike.png",
+      "runtimePath": "public/art/generated/pike.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One freshwater pike fish, horizontal silhouette, elongated green body, long pointed duckbill-like snout, rear dorsal fin and forked tail. Only two or three broad body marks, simple natural eye, no detailed scales, no water."
+    },
+    {
+      "name": "rope",
+      "sourceSha256": "82782b18a99e6c38a4f92a965685242c4d9115bb77181f6ced6ce9cf112646c3",
+      "rect": {
+        "left": 90,
+        "top": 166,
+        "width": 1078,
+        "height": 1047
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "9de929063c90c51e1d6d5e87464a9a5338eb0dc0ac3f703c39e07ddcb98d0438",
+      "bytes": 13184,
+      "sourceFile": "exec-b1f87774-7d27-4e08-b2c6-3297a4a5792b.png",
+      "archivePath": "masters/rope.png",
+      "runtimePath": "public/art/generated/rope.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One skipping/jump rope, TWO chunky teal handles joined by ONE thick coral U-shaped rope loop. Entire rope continuous and readable, no multiple coils, knots, tiny grip ribs or ground shadow.",
+      "correctionPrompt": "Use case: style-transfer. Image 1 is the EDIT TARGET and semantic reference: an actual long skipping/jump rope with two short handles and a long coiled cord. Image 2 (the simplified drum) is ONLY the rendering style reference. Redesign image 1 as one clear casual mobile puzzle sprite. Preserve the identity SKIPPING ROPE, Russian скакалка, not a spring expander, headphones, cable or rubber tube. Make TWO SHORT chunky teal handles, each only about one fifth of the overall icon height, placed a little asymmetrically in the lower foreground. From their ends ONE LONG SLENDER plain coral cord makes one broad loose oval coil occupying most of the image above them. Cord width about ONE QUARTER of handle width. It must visibly have a long slack flexible cord, not a stiff short U-shaped arch between large grips. Keep the composition/readability of image 1 but use just ONE loose coil, no multiple coils, stripes, knots or grip ribs. Match image 2's matte broad clean color masses and soft simple volume, no realistic grain, gloss, metal glints, fine details or decoration. Transparent background with true zero alpha outside the rope and in all loop gaps, no floor, haze, halo, backplate, text, face or watermark. One complete centered object, ample transparent padding, no drum or UI.",
+      "additionalReference": "references/rope-0.8.webp"
+    },
+    {
+      "name": "sailboat",
+      "sourceSha256": "79eee7103d7ec9122d083f4462084b8f07c930d8e3a641e3e4b9522754961889",
+      "rect": {
+        "left": 58,
+        "top": 18,
+        "width": 1138,
+        "height": 1228
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "8c34ab3b65828d8b19dec66a7eda7d1e25606052afbfadcc63bc3bcc7c8a1c98",
+      "bytes": 7024,
+      "sourceFile": "exec-defb1276-558f-4ed4-8c1c-3c5982491c28.png",
+      "archivePath": "masters/sailboat.png",
+      "runtimePath": "public/art/generated/sailboat.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One simple sailboat, coral hull, one thick mast and TWO broad ivory triangular sails. A few large smooth shapes, no rigging strings, cabin windows, people, water or scenery."
+    },
+    {
+      "name": "shirt",
+      "sourceSha256": "6dd99cf57cb9ef910f5b9ebf242a5a970862fa43a393f3010112fee61ab707eb",
+      "rect": {
+        "left": 101,
+        "top": 69,
+        "width": 1051,
+        "height": 1152
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "27f4a2c8314794720af2d3dac33ee5fbdd38199d9201df09e8a9d297681c4c3a",
+      "bytes": 6948,
+      "sourceFile": "exec-9f599c8b-5f51-4d72-b340-825640632fbe.png",
+      "archivePath": "masters/shirt.png",
+      "runtimePath": "public/art/generated/shirt.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One folded blue button-up shirt with a clear broad collar, one plain chest pocket and only two large simple buttons. No stitching, cloth weave, fine folds, labels or decorative seams. Clean large blue shapes."
+    },
+    {
+      "name": "soap",
+      "sourceSha256": "9dd743b7ad35acab4fc97d76269c3bfadce4f40d17e1d9a23aa816834bb47236",
+      "rect": {
+        "left": 251,
+        "top": 177,
+        "width": 984,
+        "height": 739
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "66e725ad09128e0f69d3e141a786fc0c6235c0b7790320d77c925c9a591ee9bc",
+      "bytes": 6994,
+      "sourceFile": "exec-90a4f93f-fb7b-40ed-8609-ff5654321f3a.png",
+      "archivePath": "masters/soap.png",
+      "runtimePath": "public/art/generated/soap.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One rounded turquoise oval soap bar with one shallow broad inset oval on its top and TWO large simple pale bubbles beside it for recognition. No letters such as SOAP, foam clusters, water splashes, grain or shine."
+    },
+    {
+      "name": "spruce",
+      "sourceSha256": "deb3d2aca38ea47c1046e29add2ccad99dc651a9913a39cc1c7c4d828d0c1c69",
+      "rect": {
+        "left": 154,
+        "top": 15,
+        "width": 945,
+        "height": 1232
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "0e39e2521b3bd0d26a3f3a0bf3ece945007ffdce6fdb33ab823fbc0ae886359b",
+      "bytes": 6192,
+      "sourceFile": "exec-55652966-9b24-477f-b54d-3fe06f1e0c02.png",
+      "archivePath": "masters/spruce.png",
+      "runtimePath": "public/art/generated/spruce.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One evergreen spruce tree: three broad tiered triangular bough masses and a short brown trunk. Solid deep green with one broad lighter plane, no individual needles, ornaments, snow or scenery."
+    },
+    {
+      "name": "storm",
+      "sourceSha256": "94264ddf6e4f712b3862faa7433993f3816fa4fb3f8b03102562240afbb2ac7a",
+      "rect": {
+        "left": 97,
+        "top": 95,
+        "width": 1053,
+        "height": 1108
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "b72b9137b7fe1a9342bddeec805e4c527f535c06d7d1620780d85a631d4731b2",
+      "bytes": 9790,
+      "sourceFile": "exec-880e6b15-f6ed-4b35-8b7b-8ae9a59c8d8b.png",
+      "archivePath": "masters/storm.png",
+      "runtimePath": "public/art/generated/storm.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One dark periwinkle storm cloud made of three large rounded lobes, ONE broad golden lightning bolt and TWO chunky pale blue raindrops beneath it. No sunlight, repeated tiny droplets, particles, texture or extra clouds."
+    },
+    {
+      "name": "tea",
+      "sourceSha256": "19dc2743e465912302b49434113993e808a0245313f629a1f00a9e542a94fead",
+      "rect": {
+        "left": 239,
+        "top": 132,
+        "width": 1071,
+        "height": 806
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "06aa3d8e77a83d4c35a9145ec2cfa2b67fdb707697957d1b35184eb85d299ca8",
+      "bytes": 7450,
+      "sourceFile": "exec-9c18e7d1-8459-4ba0-ab50-57af31813c9d.png",
+      "archivePath": "masters/tea.png",
+      "runtimePath": "public/art/generated/tea.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One simple ivory ceramic cup with a single thick handle, visibly filled with amber-brown tea. The broad exposed oval of dark amber tea MUST be clearly visible to distinguish this subject from an empty cup. No saucer, decoration or elaborate steam."
+    },
+    {
+      "name": "triangle",
+      "sourceSha256": "095951a7aced42847906622c16782f7d3a58fb8f6173bd9ac34eae35ef7d75d8",
+      "rect": {
+        "left": 36,
+        "top": 130,
+        "width": 1178,
+        "height": 1032
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "5b52fa44df3644d075088c3020a7512b01c1773bf5dc3934a537ea53c6e13d3c",
+      "bytes": 5030,
+      "sourceFile": "exec-0096fe19-3896-40c6-9925-049fc07a78aa.png",
+      "archivePath": "masters/triangle.png",
+      "runtimePath": "public/art/generated/triangle.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One plain solid golden equilateral GEOMETRIC TRIANGLE, frontal view, large smooth face with only one slightly darker narrow side plane for soft volume. No frame, hole, musical instrument, stand, face, symbols, decorations or beveled facet pattern."
+    },
+    {
+      "name": "tulip",
+      "sourceSha256": "10da339228e6cc8ca096803108f94166049f75d9b5c15ffb155853eedb7ecd75",
+      "rect": {
+        "left": 173,
+        "top": 28,
+        "width": 906,
+        "height": 1221
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "c48beb5bab1e195ac9c342e08c8432b67646e6c2e46eb84fcaee0b3a54187a4c",
+      "bytes": 10628,
+      "sourceFile": "exec-8cccbb4a-747a-4373-915f-d5c4f1826697.png",
+      "archivePath": "masters/tulip.png",
+      "runtimePath": "public/art/generated/tulip.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One red tulip flower, a single simple three-lobed cupped bloom, one thick green stem and two broad green leaves. No petal veins or fine foliage."
+    },
+    {
+      "name": "turtle",
+      "sourceSha256": "3893a917ccbaa491805fcbbc12e2fc1e0d26b033166dc5a7a998f3e0c4748d9a",
+      "rect": {
+        "left": 146,
+        "top": 132,
+        "width": 1191,
+        "height": 794
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "987044b4c63bf097f20186a3ff33446feeda72909373d4e39cc1384c043fbf71",
+      "bytes": 8630,
+      "sourceFile": "exec-980de969-2652-403e-90ee-596bc65d5eda.png",
+      "archivePath": "masters/turtle.png",
+      "runtimePath": "public/art/generated/turtle.webp",
+      "promptBase": "initialAnimals",
+      "subjectPrompt": "One green land turtle in a slight three-quarter view, dome-shaped shell with only three broad shell panels, small natural head, four stubby legs and a tiny tail. No scaly skin texture or many shell facets."
+    },
+    {
+      "name": "vacuum",
+      "sourceSha256": "5512636f266110a150dffb59e2e3046557ac68cadf5a577cd5552da65bfe525b",
+      "rect": {
+        "left": 34,
+        "top": 28,
+        "width": 1184,
+        "height": 1217
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "41ab4615819c0717304a3672b9b6a1ab5a51c7160e29aa679fd9ce91472b9709",
+      "bytes": 10306,
+      "sourceFile": "exec-3eda2bb9-e997-4502-93c3-9b61c2ab0c8f.png",
+      "archivePath": "masters/vacuum.png",
+      "runtimePath": "public/art/generated/vacuum.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One simple teal canister vacuum cleaner: a small rounded canister body with two broad wheels, ONE smooth arched hose, ONE straight wand and ONE flat floor head. Keep these large parts readable with no mechanical fixtures, ribs, buttons, tiny vents or many hose coils."
+    },
+    {
+      "name": "wardrobe",
+      "sourceSha256": "e4bee4ca11b75d4f3fbe4186a315142b36d1abf91842ecde8fa158743f02bf26",
+      "rect": {
+        "left": 131,
+        "top": 28,
+        "width": 978,
+        "height": 1219
+      },
+      "width": 192,
+      "height": 192,
+      "outputSha256": "1b90d6ff88b8c86adc46de01d00645888d7d51bdb16cb32a349f337b9d5005f8",
+      "bytes": 6174,
+      "sourceFile": "exec-1f81cf67-a276-42d6-9765-6ed32ac72b1a.png",
+      "archivePath": "masters/wardrobe.png",
+      "runtimePath": "public/art/generated/wardrobe.webp",
+      "promptBase": "remainingSubjects",
+      "subjectPrompt": "One simple warm honey-brown two-door clothes wardrobe, front three-quarter view, TWO large plain door panels and TWO chunky round handles. Short broad feet. No wood grain, carvings, molding, shelves or extra furniture."
+    }
+  ]
+}

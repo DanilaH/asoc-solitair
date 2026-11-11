@@ -3,7 +3,7 @@ import { installSceneTextSharpness } from '@danilah/mini-games-kit/phaser';
 import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
 import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
-import { WIDTH, boardFrame, cardMetrics, layout } from './layout';
+import { WIDTH, boardFrame, cardMetrics, dropTarget, layout } from './layout';
 import { UI_ART, artUrl, illustrationUrl } from './art';
 import type { Pose, Target } from './layout';
 
@@ -48,12 +48,15 @@ export class BoardScene extends Phaser.Scene {
   private inspectMode = false;
   private backStyle = '';
   private particles: Phaser.GameObjects.Image[] = [];
+  private cues: Phaser.GameObjects.Graphics[] = [];
+  private dragCount!: Phaser.GameObjects.Text;
   private presentedDealId: string | undefined;
   public constructor(private readonly options: Options) { super('board'); }
   private get cardW() { return cardMetrics(this.options.deal).width; }
   private get cardH() { return cardMetrics(this.options.deal).height; }
   public setDeal(deal: Deal) { this.enabled = false; this.presentedDealId = undefined; this.options.deal = deal; this.scene.restart(); this.game.loop.wake(); }
   public preload(): void {
+    if (!this.textures.exists('tutorial-hand')) this.load.svg('tutorial-hand', 'art/ui/tutorial-hand.svg');
     for (const name of UI_ART) if (!this.textures.exists('art-' + name)) this.load.image('art-' + name, artUrl(name));
     for (const card of Object.values(this.options.deal.cards)) if (card.image && !this.textures.exists(card.id)) this.load.image(card.id, illustrationUrl(card.image));
   }
@@ -61,13 +64,16 @@ export class BoardScene extends Phaser.Scene {
     this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.initial = true; this.inspectMode = false; this.particles = []; this.departing.clear(); this.hintObjects = []; this.hintTweens = [];
     installSceneTextSharpness(this);
     this.world = this.add.container(0, 0);
+    this.cues = [];
+    this.dragCount = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '20px', fontStyle: 'bold', color: '#4d4269', backgroundColor: '#fff0c9', padding: { x: 6, y: 3 } }).setDepth(750).setVisible(false);
+    this.world.add(this.dragCount);
     this.slots = this.add.graphics(); this.stockArt = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH); this.focus = this.add.graphics().setDepth(450);
     this.stockCount = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(.5).setDepth(38);
     this.stockLabel = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '17px', color: '#b0d7bf' }).setOrigin(.5).setDepth(38);
     this.completionRing = this.add.circle(0, 0, 40).setStrokeStyle(7, 0xffdd70).setDepth(505).setVisible(false);
     this.world.add([this.slots, this.stockArt, this.focus, this.stockCount, this.stockLabel, this.completionRing]);
     this.foundationArt = this.add.graphics().setDepth(200);
-    this.foundationTitles = this.options.getSave().attempt.board.foundations.map(() => this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '15px', fontStyle: 'bold', color: '#886347' }).setOrigin(.5).setDepth(201));
+    this.foundationTitles = this.options.getSave().attempt.board.foundations.map(() => this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold', color: '#886347' }).setOrigin(.5).setDepth(201));
     this.world.add([this.foundationArt, ...this.foundationTitles]);
     const gold = this.add.image(0, 0, 'art-card-category').setDisplaySize(this.cardW, this.cardH);
     this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.add.image(0, 5, 'art-joker').setDisplaySize(78, 78)]).setVisible(false);
@@ -84,7 +90,7 @@ export class BoardScene extends Phaser.Scene {
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => this.move(pointer));
     this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => this.up(pointer));
     this.input.on('pointerupoutside', () => { if (this.press) this.cancel(); });
-    const resize = () => { this.clearFeedback(); this.cancel(); this.sync([], false); };
+    const resize = () => { this.clearHint(); this.clearFeedback(); this.cancel(); this.sync([], false); };
     this.scale.on('resize', resize);
     this.events.once('shutdown', () => { this.presentedDealId = undefined; this.scale.off('resize', resize); this.clearHint(); this.views.clear(); this.input.removeAllListeners(); });
     this.presentedDealId = this.options.deal.id;
@@ -112,7 +118,7 @@ export class BoardScene extends Phaser.Scene {
         crown.fillStyle(0xd0a16b).beginPath().moveTo(x, y).lineTo(x + 5, y + 7).lineTo(x + 9, y - 2).lineTo(x + 13, y + 7).lineTo(x + 18, y).lineTo(x + 16, y + 15).lineTo(x + 2, y + 15).closePath().fillPath();
       }
       caption = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '24px', fontStyle: 'bold', color: '#294d5d', align: 'center' }).setOrigin(.5);
-      caption.setScale(Math.min(1, (this.cardW - 18) / caption.width)); content.add(caption);
+      caption.setScale(Math.max(.74, Math.min(1, (this.cardW - 18) / caption.width))); content.add(caption);
       strip = this.add.text(0, -this.cardH / 2 + 9, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: '#8c7257', fontStyle: 'bold' }).setOrigin(.5, 0);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
     } else if (card.image) {
@@ -140,6 +146,7 @@ export class BoardScene extends Phaser.Scene {
   public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand): void {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
     const save = this.options.getSave(), board = save.attempt.board;
+    const previous = this.metrics;
     const frame = boardFrame(this.scale.width, this.scale.height, save.settings.deckPosition, this.options.deal);
     this.unit = frame.unit; this.world.setScale(this.unit).setX(frame.offsetX);
     this.metrics = layout(board, this.options.deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
@@ -184,7 +191,7 @@ export class BoardScene extends Phaser.Scene {
     this.stockArt.setPosition(stock.x, stock.y); this.paintBack(this.stockArt);
     this.stockArt.setVisible(deckActive && Boolean(board.stock.length));
     if (deckActive && !board.stock.length) this.slots.lineStyle(2, 0x85b5b2, .5).strokeRoundedRect(stock.x - this.cardW / 2, stock.y - this.cardH / 2, this.cardW, this.cardH, 13);
-    this.stockCount.setPosition(stock.x + this.cardW / 2 - 17, stock.y - this.cardH / 2 + 20).setFontSize(20).setText(board.stock.length ? String(board.stock.length) : board.waste.length ? '↻' : '');
+    this.stockCount.setPosition(board.stock.length ? stock.x + this.cardW / 2 - 17 : stock.x, board.stock.length ? stock.y - this.cardH / 2 + 20 : stock.y).setFontSize(board.stock.length ? 20 : 42).setText(board.stock.length ? String(board.stock.length) : board.waste.length ? '↻' : '');
     this.stockLabel.setText('');
     this.foundationArt.clear();
     board.foundations.forEach((ids, i) => {
@@ -266,12 +273,19 @@ export class BoardScene extends Phaser.Scene {
       // Zero-duration layout is synchronous: the first ready frame must already own its hit positions.
       if (!moveDuration) view.node.setPosition(pose.x, pose.y).setScale(1).setAlpha(covered ? .5 : 1).setAngle(0);
       else this.tweens.add({ targets: view.node, x: pose.x, y: pose.y, scaleX: 1, scaleY: 1, alpha: covered ? .5 : 1, angle: 0,
-        duration: moveDuration, delay: fresh ? Math.min(400, pose.depth * 6) : 0, ease: 'Cubic.easeOut' });
+        duration: moveDuration, delay: fresh ? Math.min(400, pose.depth * 6) : 0, ease: 'Cubic.easeOut', onComplete: () => {
+          if (moving && !this.press && view.node.visible && !save.settings.reducedMotion) this.tweens.add({ targets: view.node, scaleX: 1.02, scaleY: 1.02, duration: 65, yoyo: true });
+        } });
     }
     this.initial = false;
     this.world.sort('depth');
     this.drawFocus();
     if (completed) this.celebrate(command);
+    else if (command?.type === 'transfer' && events.some(e => e.type === 'transfer')) {
+      const target = this.metrics.targets.find(t => same(t.location, command.to));
+      if (target) this.cue(target.x, target.y, 0xffd990);
+    }
+    if (previous && events.some(e => e.type === 'undo')) for (const pose of this.metrics.poses.filter(p => p.faceUp && visible.has(p.id) && !previous.poses.some(old => old.id === p.id && old.x === p.x && old.y === p.y && old.faceUp === p.faceUp)).slice(-3)) this.cue(pose.x, pose.y, 0xc3b3ec);
     // A completed touch may arrive after the pointerdown frame already slept.
     // Starting visual work must own its wake, independently of a future input.
     if (this.enabled && this.game.isRunning) this.game.loop.wake();
@@ -300,6 +314,7 @@ export class BoardScene extends Phaser.Scene {
   }
   /** Decorative work has no domain ownership and must not outlive its screen. */
   public clearFeedback(): void {
+    this.cues.forEach(c => { this.tweens.killTweensOf(c); c.destroy(); }); this.cues = [];
     for (const object of [this.completionRing, this.completionRibbon, ...this.particles, ...this.keyFlights]) {
       if (!object) continue;
       this.tweens.killTweensOf(object); object.setVisible(false);
@@ -307,6 +322,19 @@ export class BoardScene extends Phaser.Scene {
   }
   private showPraise(text: string) { this.options.praise(text); }
   private point(pointer: Phaser.Input.Pointer) { return { x: (pointer.x - this.world.x) / this.unit, y: pointer.y / this.unit }; }
+  private get cssUnit() { return this.unit * this.scale.zoom; }
+  private cue(x: number, y: number, color: number, shake = false) {
+    while (this.cues.length >= 4) { const old = this.cues.shift()!; this.tweens.killTweensOf(old); old.destroy(); }
+    const cue = this.add.graphics().lineStyle(4, color, .95).strokeRoundedRect(-this.cardW / 2 + 2, -this.cardH / 2 + 2, this.cardW - 4, this.cardH - 4, 13).setPosition(x, y).setDepth(690);
+    this.world.add(cue); this.world.sort('depth'); this.cues.push(cue);
+    if (shake && !this.options.getSave().settings.reducedMotion) this.tweens.add({ targets: cue, x: x + 5, duration: 45, yoyo: true, repeat: 2 });
+    this.tweens.add({ targets: cue, alpha: 0, delay: 160, duration: 220, onComplete: () => { this.cues = this.cues.filter(c => c !== cue); cue.destroy(); } });
+    this.game.loop.wake();
+  }
+  public reject(command?: BoardCommand, point?: { x: number; y: number }) {
+    const target = command?.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, command.to)) : point;
+    if (target) this.cue(target.x, target.y, 0xe9a08a, true);
+  }
   private hitSource(x: number, y: number): Location | null {
     const board = this.options.getSave().attempt.board;
     for (const pose of [...this.metrics.poses].sort((a, b) => b.depth - a.depth)) {
@@ -319,8 +347,8 @@ export class BoardScene extends Phaser.Scene {
     }
     return null;
   }
-  private hitTarget(x: number, y: number): Target | null {
-    return this.metrics.targets.find(t => inside(x, y, t)) ?? null;
+  private hitTarget(x: number, y: number, forgiving = false): Target | null {
+    return dropTarget(this.metrics.targets, x, y, forgiving ? 12 / this.cssUnit : 0);
   }
   private down(pointer: Phaser.Input.Pointer) {
     if (!this.enabled || !pointer.primaryDown || this.press) return;
@@ -350,18 +378,23 @@ export class BoardScene extends Phaser.Scene {
     const { x, y } = this.point(pointer), press = this.press;
     if (Math.hypot(x - press.x, y - press.y) > 11) press.moved = true;
     if (!press.moved) return;
+    const lift = Math.max(0, Math.min(30 / this.cssUnit, ...press.poses.map(p => p.y + y - press.y - this.cardH / 2 - 2)));
     press.poses.forEach((pose, i) => {
       const view = this.views.get(pose.id)!;
       this.tweens.killTweensOf(view.node);
       view.shadow.setPosition(0, 4).setScale(1.03);
-      view.node.setPosition(pose.x + x - press.x, pose.y + y - press.y - 10).setScale(1.035).setDepth(480 + i);
+      view.node.setPosition(pose.x + x - press.x, pose.y + y - press.y - lift).setScale(1.035).setDepth(480 + i);
     });
+    const front = press.poses.at(-1);
+    this.dragCount.setVisible(press.poses.length > 1);
+    if (front) this.dragCount.setText(`×${press.poses.length}`).setFontSize(Math.max(20, 12 / this.cssUnit)).setPosition(front.x + x - press.x - this.cardW / 2, Math.max(0, front.y + y - press.y - lift - this.cardH / 2 - 25));
     this.world.sort('depth');
-    this.drawFocus(this.hitTarget(x, y));
+    this.drawFocus(this.hitTarget(x, y, true));
   }
   private up(pointer: Phaser.Input.Pointer) {
     if (this.press && this.press.pointerId !== pointer.id) return;
     const press = this.press; this.press = null;
+    this.dragCount.setVisible(false);
     if (!this.enabled || !press) return;
     const { x, y } = this.point(pointer);
     if (press.jokerColumn !== undefined) {
@@ -377,10 +410,10 @@ export class BoardScene extends Phaser.Scene {
       }
       return;
     }
-    const target = press.target ?? (press.moved ? this.hitTarget(x, y) : null);
+    const target = press.target ?? (press.moved ? this.hitTarget(x, y, true) : null);
     if (press.from && target && !same(press.from, target.location)) {
       this.selected = null; this.options.command({ type: 'transfer', from: press.from, to: target.location });
-    } else if (press.moved || !press.from || press.toggle) this.cancel();
+    } else if (press.moved || !press.from || press.toggle) { this.cancel(); if (press.moved && press.from) this.reject(undefined, { x, y }); }
     else this.drawFocus();
   }
   private focusBox(x: number, y: number, width: number, height: number) {
@@ -407,10 +440,10 @@ export class BoardScene extends Phaser.Scene {
     }
   }
   public setJoker(active: boolean): void { this.cancel(); this.jokerSelecting = active; this.options.jokerMode?.(active); this.drawFocus(); this.game.loop.wake(); }
-  public cancel(): void { this.jokerSelecting = false; this.options.jokerMode?.(false); this.press = null; this.selected = null; if (this.world) this.sync([], false); }
+  public cancel(): void { this.jokerSelecting = false; this.options.jokerMode?.(false); this.press = null; this.selected = null; this.dragCount?.setVisible(false); if (this.world) this.sync([], false); }
   public back(): boolean { if (!this.jokerSelecting && !this.press && !this.selected && !this.hintObjects.length) return false; this.clearHint(); this.cancel(); return true; }
   public setEnabled(value: boolean): void { this.enabled = value; if (!value) { this.clearHint(); this.cancel(); } }
-  public setInspect(value: boolean): void { this.inspectMode = value; this.cancel(); }
+  public setInspect(value: boolean): void { this.inspectMode = value; this.clearHint(); this.cancel(); }
   public clearHint(): void { this.hintTweens.forEach(t => t.stop()); this.hintTweens = []; this.hintObjects.forEach(o => o.destroy()); this.hintObjects = []; }
   public hint(action: BoardCommand): void {
     this.clearHint();
@@ -418,12 +451,43 @@ export class BoardScene extends Phaser.Scene {
     const from = action.type === 'transfer' ? this.metrics.poses.find(p => p.id === source.at(-1)) : this.metrics.stock;
     const target = action.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, action.to)) : this.metrics.stock;
     if (!from || !target) return;
-    const ghost = this.add.graphics().fillStyle(0xffe39c, .3).lineStyle(4, 0xffe6a2, .9)
-      .fillRoundedRect(-this.cardW / 2 + 2, -this.cardH / 2 + 2, this.cardW - 4, this.cardH - 4, 13).strokeRoundedRect(-this.cardW / 2 + 2, -this.cardH / 2 + 2, this.cardW - 4, this.cardH - 4, 13)
-      .setPosition(from.x, from.y).setDepth(700);
-    this.world.add(ghost); this.world.sort('depth'); this.hintObjects.push(ghost);
-    this.hintTweens.push(this.tweens.add({ targets: ghost, x: target.x, y: target.y, alpha: .25, duration: 750, hold: 180, repeat: 1,
-      onRepeat: () => ghost.setPosition(from.x, from.y).setAlpha(1), onComplete: () => this.clearHint() }));
+    const rings = this.add.graphics().lineStyle(4, 0xffe39c, .95).setDepth(699);
+    for (const p of [from, target]) rings.strokeRoundedRect(p.x - this.cardW / 2 + 2, p.y - this.cardH / 2 + 2, this.cardW - 4, this.cardH - 4, 13);
+    let ghost: Phaser.GameObjects.Container | Phaser.GameObjects.Image;
+    if (action.type === 'transfer') {
+      const copy = this.makeCard(source.at(-1)!);
+      copy.face.setVisible(true); copy.back.setVisible(false);
+      copy.badge.setText(source.length > 1 ? `×${source.length}` : this.views.get(source.at(-1)!)!.badge.text);
+      ghost = copy.node;
+    } else {
+      ghost = this.add.image(0, 0, this.options.getSave().settings.cardBack === 'diamonds' ? 'art-card-back-diamonds' : 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
+      this.world.add(ghost);
+    }
+    ghost.setPosition(from.x, from.y).setVisible(true).setAlpha(.62).setDepth(700);
+    this.world.add(rings); this.world.sort('depth'); this.hintObjects.push(rings, ghost);
+    if (!this.options.getSave().settings.reducedMotion) this.hintTweens.push(this.tweens.add({ targets: ghost, x: target.x, y: target.y + (action.type === 'transfer' ? 0 : 10), alpha: .35, duration: 850, hold: 200, repeat: 1,
+      onRepeat: () => ghost.setPosition(from.x, from.y).setAlpha(.62), onComplete: () => this.clearHint() }));
+    this.game.loop.wake();
+  }
+  /** One action at a time, following the real board; cosmetic and non-blocking. */
+  public teach(action: BoardCommand): void {
+    this.clearHint();
+    if (!this.enabled || this.press || this.selected || this.inspectMode) return;
+    const source = action.type === 'transfer' ? sourceCards(this.options.getSave().attempt.board, action.from, this.options.deal) : [];
+    const from = action.type === 'transfer' ? this.metrics.poses.find(p => p.id === source.at(-1)) : this.metrics.stock;
+    const target = action.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, action.to)) : this.metrics.stock;
+    if (!from || !target) return;
+    const focus = this.add.graphics().lineStyle(4, 0xffe39c, .95).setDepth(698);
+    for (const p of [from, target]) focus.strokeRoundedRect(p.x - this.cardW / 2 + 3, p.y - this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
+    const handH = Math.max(70, 32 / this.unit);
+    const hand = this.add.image(from.x, from.y, 'tutorial-hand').setOrigin(25 / 64, 5 / 80).setDisplaySize(handH * .8, handH).setDepth(701);
+    this.world.add([focus, hand]); this.world.sort('depth'); this.hintObjects.push(focus, hand);
+    if (this.options.getSave().settings.reducedMotion) { this.game.loop.wake(); return; }
+    const tap = action.type !== 'transfer';
+    this.hintTweens.push(this.tweens.add({ targets: hand, x: target.x, y: target.y + (tap ? 12 : 0),
+      duration: tap ? 450 : 1000, delay: 280, hold: 300, repeatDelay: 450, repeat: -1, ease: 'Sine.easeInOut',
+      onRepeat: () => hand.setPosition(from.x, from.y) }));
+    this.game.loop.wake();
   }
   public hasMotion(): boolean { return this.tweens.getTweens().length > 0 || Boolean(this.press?.moved); }
   public geometry() { return this.metrics; }

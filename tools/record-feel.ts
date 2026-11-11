@@ -1,3 +1,4 @@
+import { pauseOptions } from './qa/navigation';
 import { mkdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
@@ -37,19 +38,19 @@ try {
   const context = await browser.newContext({ viewport: { width: 360, height: 780 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, recordVideo: { dir: '.recording/feel', size: { width: 360, height: 780 } } });
   const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
   await page.goto('http://127.0.0.1:4186'); await page.waitForSelector('#app[data-ready=true]'); await wait(page, 500);
-  await page.screenshot({ path: '.recording/feel-evidence/feel-home.png' });
- await page.locator('#home-play').tap(); await wait(page, 1000);
+  if (await page.locator('#home-play').isVisible()) await page.locator('#home-play').tap(); await wait(page, 2200);
   await page.screenshot({ path: '.recording/feel-evidence/feel-board.png' });
   const first = campaignDeals[0]; let didCapture = false;
-  for (const cmd of first.winningPath) {
+  for (const [index, cmd] of first.winningPath.entries()) {
     const before = await read(page), completes = dispatch(before, cmd, first).events.some(e => e.type === 'complete');
     await move(page, context, first, cmd);
     if (completes && !didCapture) { await wait(page, 340); await page.screenshot({ path: '.recording/feel-evidence/feel-category.png' }); didCapture = true; await wait(page, 550); }
-    else await wait(page, 400);
+    else await wait(page, index < 2 ? 1600 : 400);
   }
   await page.waitForSelector('#result[open]'); await wait(page, 1000); await page.screenshot({ path: '.recording/feel-evidence/feel-result.png' });
   await page.locator('#next-level').tap(); await wait(page, 950);
   if ((await read(page)).attempt.dealId !== campaignDeals[1].id) throw Error('Next did not open level 2');
+  await page.locator('#menu').tap(); await page.locator('#levels-open').tap(); await page.screenshot({ path: '.recording/feel-evidence/feel-home.png' });
   const video = page.video()!; await context.close(); await video.saveAs('.recording/feel-first.webm');
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', '.recording/feel-first.webm', '-vf', 'fps=16,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=160:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle', '.recording/feel-evidence/feel-first.gif']);
   // A reachable dense state: seed is replayed from the exact frozen winning path.
@@ -74,11 +75,11 @@ try {
   const compactContext = await browser.newContext({ viewport: { width: 320, height: 568 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   const compactPage = await compactContext.newPage(); compactPage.on('pageerror', e => errors.push(e.message));
   await compactPage.goto('http://127.0.0.1:4186'); await compactPage.waitForSelector('#app[data-ready=true]');
-  await compactPage.screenshot({ path: '.recording/feel-evidence/feel-home-compact.png' });
+  await compactPage.locator('#menu').tap(); await compactPage.locator('#levels-open').tap(); await compactPage.screenshot({ path: '.recording/feel-evidence/feel-home-compact.png' });
   await compactPage.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), compactSeed);
   await compactPage.reload(); await compactPage.waitForSelector('#app[data-ready=true]'); await compactPage.locator('#home-play').tap(); await wait(compactPage, 300);
   await compactPage.screenshot({ path: '.recording/feel-evidence/feel-dense-compact.png' });
-  await compactPage.locator('#menu').tap(); await compactPage.locator('#appearance-settings').tap();
+  await compactPage.locator('#menu').tap(); await pauseOptions(compactPage); await compactPage.locator('#appearance-settings').tap();
   await compactPage.locator('button[data-deck-position=bottom]').tap(); await compactPage.locator('button[data-deck-side=left]').tap(); await compactPage.locator('#appearance .primary').tap(); await wait(compactPage, 300);
   await compactPage.screenshot({ path: '.recording/feel-evidence/feel-bottom-compact.png' }); await compactContext.close();
   if (errors.length) throw Error(errors.join('\n'));

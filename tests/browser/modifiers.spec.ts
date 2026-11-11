@@ -1,3 +1,4 @@
+import { dismissTeaching } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
 import { modifierDeals } from '../../src/content/modifiers';
 import { campaignDeals } from '../../src/content/campaign';
@@ -14,7 +15,7 @@ async function open(page: Page, deal: Deal) {
 }
 async function resume(page: Page) {
   await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
-  await page.locator('#home-play').tap(); await expect(page.locator('#play-screen')).toBeVisible();
+  await page.locator('#home-play').tap(); await expect(page.locator('#play-screen')).toBeVisible(); await dismissTeaching(page);
   await page.evaluate(() => new Promise<void>(r => requestAnimationFrame(() => r())));
 }
 async function geometry(page: Page, deal: Deal) {
@@ -60,7 +61,7 @@ test('Joker selection cancels freely, holds one group, survives reload and Undo 
   const held = await read(page); expect(held.attempt.board.joker).toEqual({ column: 0, boundary: 2 });
   await page.screenshot({ path: `test-results/${test.info().project.name}-joker-held.png` });
   await resume(page); expect((await read(page)).attempt.board).toEqual(held.attempt.board);
-  await page.locator('#hint').tap(); await expect(page.locator('#message')).toContainText('карты перенесите сами');
+  await page.locator('#hint').tap(); await expect(page.locator('#hint')).toBeEnabled(); await expect(page.locator('#message')).toBeEmpty();
   for (const cmd of deal.tutorialPath!.slice(2, 6)) await move(page, deal, cmd as BoardCommand);
   expect((await read(page)).attempt.board.joker).toBeUndefined();
   await page.locator('#undo').tap(); await expect.poll(async () => (await read(page)).attempt.board.joker).toEqual({ column: 0, boundary: 2 });

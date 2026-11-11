@@ -1,5 +1,7 @@
 # Roadmap
 
+The four approved follow-up UI/UX/feel packages are implemented locally as **0.9.0/code 12**. [Current verification and integration](docs/qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md) supersedes the historical status below.
+
 The generated art plan is implemented and merged as **0.8.0 / code 11**, PR #12. [Evidence](docs/qa/GENERATED_ART_0_8_0.md): 49 local resources, coherent actual field/HUD/home/dialogs, pooled effects and bounded static-scene repaint. Exact-source PR CI passes 59 model/platform tests, all fixed witnesses, 176 layout states, 72 browser scenarios (four deliberate duplicate skips) and Android debug/release compilation. Physical-device/live service acceptance remains open.
 
 Full agreed v1 remains the target. Checked status is evidence-based, not a claim of release parity.

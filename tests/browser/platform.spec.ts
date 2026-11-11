@@ -1,3 +1,4 @@
+import { pauseOptions } from '../../tools/qa/navigation';
 import { expect, test } from '@playwright/test';
 import { openIntro, resume } from './fixtures';
 const read = (page: import('@playwright/test').Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!));
@@ -6,7 +7,7 @@ test('helper exchange persists charges and wallet; unavailable video never grant
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await openIntro(page);
   const before = await read(page);
-  await page.locator('#menu').tap(); await page.locator('#helpers-open').tap();
+  await page.locator('#menu').tap(); await pauseOptions(page); await page.locator('#helpers-open').tap();
   await expect(page.locator('#helpers')).toBeVisible(); await expect(page.locator('#video-hint')).toBeDisabled();
   await page.locator('#buy-hint').tap(); await expect(page.locator('#coins')).toHaveText('0');
   await expect(page.locator('#hint-stock')).toHaveText('4'); await expect(page.locator('#buy-hint')).toBeDisabled();
@@ -20,20 +21,20 @@ test('helper exchange persists charges and wallet; unavailable video never grant
 
 test('sound and haptic settings persist independently and dialogs fit compact viewport', async ({ page }) => {
   await openIntro(page);
-  await page.locator('#menu').tap(); await page.locator('#haptics').uncheck();
+  await page.locator('#menu').tap(); await pauseOptions(page); await page.locator('#haptics').uncheck();
   await expect.poll(async () => (await read(page)).settings.haptics).toBe(false);
   expect((await read(page)).settings.sfx).toBe(true);
   const rect = await page.locator('#settings').boundingBox(); expect(rect!.height).toBeLessThanOrEqual(page.viewportSize()!.height - 16);
   await resume(page);
   await page.locator('#menu').tap(); await expect(page.locator('#haptics')).not.toBeChecked(); await expect(page.locator('#sfx')).toBeChecked();
-  await page.locator('#helpers-open').tap();
+  await pauseOptions(page); await page.locator('#helpers-open').tap();
   expect(await page.locator('#helpers').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   expect(await page.locator('#banner-slot').isVisible()).toBe(false);
 });
 
 test('a failed purchase preserves funds and a retry commits exactly once', async ({ page }) => {
   await openIntro(page);
-  await page.locator('#menu').tap(); await page.locator('#helpers-open').tap();
+  await page.locator('#menu').tap(); await pauseOptions(page); await page.locator('#helpers-open').tap();
   await page.evaluate(() => {
     const original = Storage.prototype.setItem;
     let fail = true;

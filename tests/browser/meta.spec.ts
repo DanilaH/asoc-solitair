@@ -52,7 +52,7 @@ test('campaign and daily keep exact separate attempts; daily reward and third-da
   for (const cmd of daily.winningPath.slice(1)) await move(page, daily, cmd);
   await expect(page.locator('#result')).toBeVisible(); await expect(page.locator('#result-rewards')).toContainText('3 дня подряд');
   const won = await read(page); expect(won.meta!.dailyStreak).toBe(3); expect(won.meta!.winCycle).toBe(3); expect(won.parked!.campaign).toEqual(campaign);
-  await expect(page.locator('#replay')).toHaveText('Сыграть как тренировку'); await page.locator('#replay').tap(); await expect(page.locator('#result')).toBeHidden(); await expect(page.locator('#level-number')).toContainText('ТРЕНИРОВКА'); await expect(page.locator('#message')).toContainText('без награды');
+  await expect(page.locator('#replay')).toHaveText('Сыграть как тренировку'); await page.locator('#replay').tap(); await expect(page.locator('#result')).toBeHidden(); await expect(page.locator('#level-number')).toContainText('ТРЕНИРОВКА'); await expect(page.locator('#message')).toBeEmpty();
   const wallet = (await read(page)).profile.coins;
   for (const cmd of daily.winningPath) await move(page, daily, cmd);
   await expect(page.locator('#result')).toBeVisible(); expect((await read(page)).profile.coins).toBe(wallet);

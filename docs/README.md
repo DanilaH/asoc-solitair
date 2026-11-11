@@ -1,5 +1,13 @@
 # Product sources
 
+Current work: [four-package UI/UX/feel implementation — 0.9.0](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). All four packages are implemented; final integration and Android verification are tracked there.
+
+Pre-implementation review: [independent full UI/UX/feel pass — 16 opportunities and an implementation order](qa/INDEPENDENT_EXPERIENCE_REVIEW_2026-11-11.md). Findings that led to the implementation above; see its current status.
+
+Latest teaching follow-up: [action-based learning without permanent captions](qa/ACTION_TUTORIAL_2026-11-11.md), based on the verified AZUR recording. Supersedes the proposal to enlarge service captions.
+
+Latest user-feedback follow-up: [compact edge-aligned UI and remaining UX priorities](qa/COMPACT_LAYOUT_2026-11-11.md). Source branch follow-up to the delivered 0.8.0; see its verification/integration status.
+
 Current presentation implementation: [generated art kit — implemented 0.8.0 and passing CI](qa/GENERATED_ART_0_8_0.md), with [resource provenance and source bundle](art/GENERATED_ART_0_8_0.md). Verification and delivery status are explicit in that checkpoint.
 
 Latest presentation research: [cohesive art-system review after 0.7.1](design/ART_SYSTEM_REVIEW_2026-11-10.md). Historical research behind the generated art implementation; see the current 0.8.0 evidence above.

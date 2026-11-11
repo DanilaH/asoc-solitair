@@ -1,5 +1,10 @@
 # Verification — 2026-11-09
 
+## 0.9.0 / code 12 — final integration in progress
+
+All four approved UI/UX/feel packages are implemented; see [scope and evidence](docs/qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). Final versioned `npm run check` passes 65 unit/platform tests, every frozen control/80 campaign/28 daily witness and four-layout bounds, typecheck and production build. Combined pre-version runtime: 46 focused phone/compact browser scenarios pass; independent rendered audit covers 191 states (119 fields, 21 homes, 51 dialogs), zero DOM/raster issues. Final full browser/native CI and new media/APK delivery are pending. No physical-device or live SDK acceptance claimed.
+
+
 ## Latest verified delivery — 0.8.0 / code 11
 
 [PR #12](https://github.com/DanilaH/asoc-solitair/pull/12), exact source `b0ea1e50dac79c4a25823f263ee69f95fa479281`, main merge `3c28908f41f5f74bed7d869f3b29b8098192c4d4`. [PR CI 42882165012](https://github.com/DanilaH/asoc-solitair/actions/runs/42882165012) PASS: 59 model/platform tests, all fixed witnesses/four-layout bounds, 176 DOM/dialog/raster states with 0 violations, 72 browser scenarios plus four intentional duplicate skips, Android debug/signature and unsigned SDK-disabled R8 release compilation. See docs/qa/GENERATED_ART_0_8_0.md for scope and limitations.

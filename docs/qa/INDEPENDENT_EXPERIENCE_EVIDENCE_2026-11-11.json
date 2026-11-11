@@ -1,0 +1,479 @@
+{
+  "source": "f200d42e1979f8e8438bf8704f9bb7d64af9af1e",
+  "scope": "Independent UX review; no runtime changes",
+  "evidence": {
+    "appearance-return": {
+      "name": "appearance-return",
+      "label": "К картам",
+      "actualScreen": "home"
+    },
+    "image-inspection": {
+      "name": "image-inspection",
+      "id": "clothes_2",
+      "inspectPressed": "true",
+      "dialogOpen": false,
+      "notice": "Пояснения доступны карточкам со словами"
+    },
+    "category-caption-font-estimate-360-wide": {
+      "name": "category-caption-font-estimate-360-wide",
+      "fontMetrics": [
+        {
+          "level": 29,
+          "columns": 4,
+          "text": "Пресмыкающиеся",
+          "shown": "Пресмыкающиеся",
+          "estimatedCssFont": 7.43
+        },
+        {
+          "level": 40,
+          "columns": 4,
+          "text": "Числа по порядку",
+          "shown": "Числа по порядку",
+          "estimatedCssFont": 7.47
+        },
+        {
+          "level": 27,
+          "columns": 4,
+          "text": "Стройматериалы",
+          "shown": "Стройматериалы",
+          "estimatedCssFont": 7.91
+        },
+        {
+          "level": 11,
+          "columns": 4,
+          "text": "Головные уборы",
+          "shown": "Головные уборы",
+          "estimatedCssFont": 8.12
+        },
+        {
+          "level": 44,
+          "columns": 4,
+          "text": "Римские числа",
+          "shown": "Римские числа",
+          "estimatedCssFont": 9.05
+        },
+        {
+          "level": 35,
+          "columns": 4,
+          "text": "Времена года",
+          "shown": "Времена года",
+          "estimatedCssFont": 9.77
+        },
+        {
+          "level": 30,
+          "columns": 4,
+          "text": "Цвета радуги",
+          "shown": "Цвета радуги",
+          "estimatedCssFont": 9.96
+        },
+        {
+          "level": 12,
+          "columns": 4,
+          "text": "Инструменты",
+          "shown": "Инструменты",
+          "estimatedCssFont": 10.02
+        },
+        {
+          "level": 9,
+          "columns": 4,
+          "text": "Канцелярия",
+          "shown": "Канцелярия",
+          "estimatedCssFont": 11.15
+        },
+        {
+          "level": 48,
+          "columns": 4,
+          "text": "Дни недели",
+          "shown": "Дни недели",
+          "estimatedCssFont": 11.23
+        }
+      ]
+    },
+    "drop-probe": [
+      {
+        "near": true,
+        "boardChanged": false,
+        "from": {
+          "x": 50.577777777777776,
+          "y": 428.8
+        },
+        "to": {
+          "x": 136.85925925925926,
+          "y": 490.93333333333334
+        },
+        "dropOutsideHitboxCss": 8,
+        "dragLiftCss": 6.222222222222222,
+        "notice": ""
+      },
+      {
+        "near": false,
+        "boardChanged": true,
+        "from": {
+          "x": 50.577777777777776,
+          "y": 428.8
+        },
+        "to": {
+          "x": 136.85925925925926,
+          "y": 428.8
+        },
+        "dropOutsideHitboxCss": 0,
+        "dragLiftCss": 6.222222222222222,
+        "notice": ""
+      }
+    ],
+    "smallTargets": [
+      {
+        "state": "01-fresh-home",
+        "key": [
+          "wallet-open",
+          "✦100+",
+          77,
+          29
+        ],
+        "target": {
+          "id": "wallet-open",
+          "text": "✦100+",
+          "w": 77,
+          "h": 29,
+          "disabled": false
+        }
+      },
+      {
+        "state": "02-appearance-from-home",
+        "key": [
+          "",
+          "Сверху",
+          131,
+          38
+        ],
+        "target": {
+          "id": "",
+          "text": "Сверху",
+          "w": 131,
+          "h": 38,
+          "disabled": false
+        }
+      },
+      {
+        "state": "02-appearance-from-home",
+        "key": [
+          "",
+          "Снизу",
+          131,
+          38
+        ],
+        "target": {
+          "id": "",
+          "text": "Снизу",
+          "w": 131,
+          "h": 38,
+          "disabled": false
+        }
+      },
+      {
+        "state": "02-appearance-from-home",
+        "key": [
+          "",
+          "Слева",
+          131,
+          38
+        ],
+        "target": {
+          "id": "",
+          "text": "Слева",
+          "w": 131,
+          "h": 38,
+          "disabled": false
+        }
+      },
+      {
+        "state": "02-appearance-from-home",
+        "key": [
+          "",
+          "Справа",
+          131,
+          38
+        ],
+        "target": {
+          "id": "",
+          "text": "Справа",
+          "w": 131,
+          "h": 38,
+          "disabled": false
+        }
+      },
+      {
+        "state": "08-level-17",
+        "key": [
+          "wallet-open",
+          "✦109+",
+          77,
+          29
+        ],
+        "target": {
+          "id": "wallet-open",
+          "text": "✦109+",
+          "w": 77,
+          "h": 29,
+          "disabled": false
+        }
+      },
+      {
+        "state": "09-pause",
+        "key": [
+          "appearance-settings",
+          "Оформление и положение колоды",
+          270,
+          40
+        ],
+        "target": {
+          "id": "appearance-settings",
+          "text": "Оформление и положение колоды",
+          "w": 270,
+          "h": 40,
+          "disabled": false
+        }
+      },
+      {
+        "state": "09-pause",
+        "key": [
+          "helpers-open",
+          "Помощники",
+          270,
+          40
+        ],
+        "target": {
+          "id": "helpers-open",
+          "text": "Помощники",
+          "w": 270,
+          "h": 40,
+          "disabled": false
+        }
+      },
+      {
+        "state": "09-pause",
+        "key": [
+          "restart",
+          "Начать раздачу заново",
+          270,
+          40
+        ],
+        "target": {
+          "id": "restart",
+          "text": "Начать раздачу заново",
+          "w": 270,
+          "h": 40,
+          "disabled": false
+        }
+      },
+      {
+        "state": "11-result-4",
+        "key": [
+          "result-home",
+          "К уровням",
+          270,
+          40
+        ],
+        "target": {
+          "id": "result-home",
+          "text": "К уровням",
+          "w": 270,
+          "h": 40,
+          "disabled": false
+        }
+      },
+      {
+        "state": "16-level-picker",
+        "key": [
+          "chapter-next",
+          "→",
+          36,
+          36
+        ],
+        "target": {
+          "id": "chapter-next",
+          "text": "→",
+          "w": 36,
+          "h": 36,
+          "disabled": false
+        }
+      },
+      {
+        "state": "19-picker-320",
+        "key": [
+          "level-1",
+          "1",
+          39.6,
+          44
+        ],
+        "target": {
+          "id": "level-1",
+          "text": "1",
+          "w": 39.6,
+          "h": 44,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-320",
+        "key": [
+          "sfx",
+          "",
+          236,
+          42
+        ],
+        "target": {
+          "id": "sfx",
+          "text": "",
+          "w": 236,
+          "h": 42,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-320",
+        "key": [
+          "haptics",
+          "",
+          236,
+          42
+        ],
+        "target": {
+          "id": "haptics",
+          "text": "",
+          "w": 236,
+          "h": 42,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-320",
+        "key": [
+          "reduced",
+          "",
+          236,
+          42
+        ],
+        "target": {
+          "id": "reduced",
+          "text": "",
+          "w": 236,
+          "h": 42,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-320",
+        "key": [
+          "helpers-open",
+          "Помощники",
+          236,
+          38
+        ],
+        "target": {
+          "id": "helpers-open",
+          "text": "Помощники",
+          "w": 236,
+          "h": 38,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-320",
+        "key": [
+          "restart",
+          "Начать раздачу заново",
+          236,
+          38
+        ],
+        "target": {
+          "id": "restart",
+          "text": "Начать раздачу заново",
+          "w": 236,
+          "h": 38,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-412",
+        "key": [
+          "appearance-settings",
+          "Оформление и положение колоды",
+          318,
+          40
+        ],
+        "target": {
+          "id": "appearance-settings",
+          "text": "Оформление и положение колоды",
+          "w": 318,
+          "h": 40,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-412",
+        "key": [
+          "helpers-open",
+          "Помощники",
+          318,
+          40
+        ],
+        "target": {
+          "id": "helpers-open",
+          "text": "Помощники",
+          "w": 318,
+          "h": 40,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-412",
+        "key": [
+          "levels-open",
+          "Главное меню",
+          155,
+          40
+        ],
+        "target": {
+          "id": "levels-open",
+          "text": "Главное меню",
+          "w": 155,
+          "h": 40,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-412",
+        "key": [
+          "pause-levels-open",
+          "Выбрать уровень",
+          155,
+          40
+        ],
+        "target": {
+          "id": "pause-levels-open",
+          "text": "Выбрать уровень",
+          "w": 155,
+          "h": 40,
+          "disabled": false
+        }
+      },
+      {
+        "state": "21-pause-412",
+        "key": [
+          "restart",
+          "Начать раздачу заново",
+          318,
+          40
+        ],
+        "target": {
+          "id": "restart",
+          "text": "Начать раздачу заново",
+          "w": 318,
+          "h": 40,
+          "disabled": false
+        }
+      }
+    ]
+  }
+}

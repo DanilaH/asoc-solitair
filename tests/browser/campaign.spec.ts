@@ -1,3 +1,4 @@
+import { dismissTeaching } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
 import { freshSave, packet } from '../../src/domain/engine';
@@ -8,7 +9,7 @@ const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem
 async function ready(page: Page, deal: Deal) {
   await expect.poll(async () => (await read(page)).attempt.dealId).toBe(deal.id);
   await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
-  await expect(page.locator('#play-screen')).toBeVisible();
+  await expect(page.locator('#play-screen')).toBeVisible(); await dismissTeaching(page);
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
 }
 export async function move(page: Page, deal: Deal, cmd: BoardCommand) {
@@ -56,7 +57,7 @@ for (let chapter = 0; chapter < 4; chapter++) test(`chapter ${chapter + 1}: twen
 });
 
 test('the level-three Hint demonstration is free, replayable and survives reload',async({page})=>{
-  await fixture(page,2);await page.locator('#hint').tap();await expect(page.locator('#message')).toContainText('карты перенесите сами');
+  await fixture(page,2);await page.locator('#hint').tap();await expect(page.locator('#hint')).toBeEnabled();await expect(page.locator('#message')).toBeEmpty();
   expect((await read(page)).profile.hints).toBe(3);await page.locator('#hint').tap();expect((await read(page)).profile.hints).toBe(3);
   await move(page,campaignDeals[2],campaignDeals[2].winningPath[0]);await page.locator('#hint').tap();await expect(page.locator('#hint-count')).toHaveText('2');
   await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');await page.locator('#home-play').tap();await ready(page,campaignDeals[2]);

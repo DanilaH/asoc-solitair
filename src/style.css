@@ -18,7 +18,7 @@ body.platform-native #app{padding:0 12px}
 #app[data-palette=ink][data-screen=game]{background:radial-gradient(ellipse at 40% 15%,#65668a,#414a71 65%,#303a60)}
 
 header{height:58px;flex-shrink:0;display:flex;align-items:center;gap:9px;padding:5px 0;z-index:2}
-.round{width:24px;height:36px;padding:0;display:grid;place-items:center;background:none;border:0}
+.round{width:44px;height:44px;flex-shrink:0;padding:0;display:grid;place-items:center;background:none;border:0}
 .hamburger,.hamburger:before,.hamburger:after{display:block;width:18px;height:3px;border-radius:3px;background:#c2ddda;position:relative}
 .hamburger:before,.hamburger:after{content:'';position:absolute;left:0;top:-6px}
 .hamburger:after{top:6px}
@@ -38,6 +38,7 @@ header{height:58px;flex-shrink:0;display:flex;align-items:center;gap:9px;padding
 .streak-reward{font-size:13px;color:#ffe7b7;font-weight:900;white-space:nowrap}
 .streak-reward>span{display:none}
 #app[data-screen=home] .streak-row{display:none}
+@media(max-width:360px){header{gap:7px}.streak-row{gap:5px}.streak{gap:2px}.streak i{width:13px}}
 
 #play-screen{display:flex;flex:1;flex-direction:column;min-height:0}
 .level{height:18px;flex-shrink:0;color:#acd1cf;font-size:9px;letter-spacing:.6px;text-align:center}
@@ -55,14 +56,12 @@ canvas{display:block!important;width:100%!important;height:100%!important;touch-
 .moves strong{font-size:29px;line-height:32px;font-weight:900}
 .move-track{width:36px;height:4px;border-radius:4px;background:#89b9b64d;margin-top:8px;overflow:hidden}
 .move-track i{display:block;height:100%;background:#e5b884;transition:width .2s}
-#inspect{margin-top:4px;width:40px;height:44px;border:1px solid #7cb0ad66;background:#ffffff08;color:#b8d6d1;border-radius:11px;font-size:18px;font-weight:900}
-#inspect[aria-pressed=true]{background:#d5e4d7;color:#326771;border-color:#f1ebca}
 #app[data-deck-edge=left] .deck-tools{left:auto;right:0;flex-direction:row-reverse}
 
 #message{min-height:26px;flex-shrink:0;margin:0;padding:4px 8px;text-align:center;font-size:10px;line-height:15px;color:#b3d3ce;overflow-wrap:anywhere}
+#message:empty{visibility:hidden}
 #message.error{color:#ffdda6}
-#app[data-lesson=true] #message{min-height:40px;color:#fff0c8}
-footer{height:88px;flex-shrink:0;display:flex;justify-content:center;gap:24px;align-items:center;padding-top:4px}
+footer{height:88px;flex-shrink:0;display:flex;justify-content:flex-start;gap:8px;align-items:center;padding-top:4px}
 footer button{position:relative;width:72px;height:76px;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:10px;font-weight:800;color:#c1d9d3;padding:0}
 footer .helper-icon{width:59px;height:59px;border-radius:19px;display:grid;place-items:center;font-size:45px;color:#5b96bd;border:3px solid #fffdf0;background:linear-gradient(#fffdf5,#e8edf1);box-shadow:0 4px 0 #a2b0c7,inset 0 -3px 0 #dce3ec;text-shadow:0 2px 0 #ccd8e7}
 footer svg{width:37px;height:37px}
@@ -77,7 +76,7 @@ footer button[aria-pressed=true] .helper-icon{outline:3px solid #f7d69e}
 #banner-slot{height:60px;flex-shrink:0;width:100%;background:#164e58}
 #save-retry{margin:0;flex-shrink:0}
 
-/* The home stage uses separate rows for events, artwork, title and actions. */
+/* Keep the emblem/title and event shortcuts in separate compact groups. */
 #home{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:0;padding:0 3px 5px;scrollbar-width:thin}
 
 .milestone-card{flex-shrink:0;display:flex;align-items:center;gap:10px;width:100%;min-height:57px;border:0;background:none;padding:0 15px;text-align:center;color:#8b9d94}
@@ -90,20 +89,16 @@ footer button[aria-pressed=true] .helper-icon{outline:3px solid #f7d69e}
 .milestone-details small{display:block;font-size:9px}
 .milestone-card>small{font-size:10px;white-space:nowrap}
 
-.home-stage{display:grid;grid-template-columns:80px minmax(0,1fr) 80px;grid-template-rows:minmax(min-content,1fr) max-content max-content minmax(12px,.45fr);flex:1 0 297px;min-height:min-content;align-items:start;padding-top:12px}
-
-.daily-card,.cycle-card,.looks-card{position:relative;width:80px;max-width:100%;text-align:center;z-index:1}
-.daily-card{grid-column:1;grid-row:1}
-.daily-card>button:first-child,.cycle-card,.looks-card{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;width:80px}
-.cycle-card{grid-column:1;grid-row:2}
-.looks-card{grid-column:3;grid-row:2;top:-25px}
-
+.home-stage{display:flex;flex-direction:column;gap:24px;flex:1 0 auto;min-height:min-content;padding:16px 0 12px}
+.home-shortcuts{display:flex;justify-content:flex-start;align-items:flex-start;gap:12px}
+.daily-card,.cycle-card,.looks-card{position:relative;width:88px;max-width:100%;text-align:center;flex-shrink:0}
+.daily-card>button:first-child,.cycle-card,.looks-card{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;width:88px}
 .event-medal{width:56px;height:57px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(#ecf2e7,#cbdcd6);border:3px solid #fff9e8;box-shadow:0 3px 0 #a2b5b0;font-size:39px;color:#7d9ca5;line-height:1}
 .event-medal svg{width:39px;height:39px}
 .event-medal img{width:60px;height:56px;object-fit:contain}
 .daily-card strong,.cycle-card strong,.looks-card strong{font-size:10px;background:#e3b687;color:#fff9e9;padding:2px 5px;border-radius:4px;white-space:nowrap;margin-top:2px}
 .daily-card small{font-size:8px;line-height:1.3;display:block;color:#869c96;margin-top:3px}
-.calendar-link{font-size:9px;background:none;border:0;color:#8b9e98;padding:3px}
+.calendar-link{font-size:10px;background:none;border:0;color:#67817d;padding:7px 3px;min-height:44px}
 .cycle-card .event-medal{background:#f6e7b7;border-color:#fff3d1}
 .cycle-card small{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .cycle-pips{display:flex;gap:2px}
@@ -112,15 +107,14 @@ footer button[aria-pressed=true] .helper-icon{outline:3px solid #f7d69e}
 .looks-card .event-medal{color:#8f8db6;background:#dedfec}
 .looks-card strong{background:#b4b3cc}
 
-.brand-scene{display:contents;pointer-events:none}
-.linked-emblem{grid-column:2;grid-row:1/3;align-self:center;justify-self:center;display:block;width:100%;max-width:190px;height:auto;max-height:175px;object-fit:contain}
-.brand-scene h1{grid-column:1/-1;grid-row:3;align-self:center;text-align:center;font-size:clamp(30px,9vw,42px);line-height:1.04;color:#477b7e;text-shadow:0 2px 0 #fffdf1,0 4px 0 #b2ccc2;letter-spacing:-1.6px;font-weight:1000;margin:0}
+.brand-scene{display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.linked-emblem{display:block;width:170px;height:150px;object-fit:contain}
+.brand-scene h1{text-align:center;font-size:clamp(30px,9vw,42px);line-height:1.04;color:#477b7e;text-shadow:0 2px 0 #fffdf1,0 4px 0 #b2ccc2;letter-spacing:-1.6px;font-weight:1000;margin:0}
 .brand-scene h1 small{display:block;font-size:.44em;letter-spacing:4px;line-height:1.8;color:#9aaa8f;text-shadow:none;font-weight:900}
 
-.home-status{flex-shrink:0;font-size:10px;color:#8b9f96;text-align:center;margin:6px 8px 10px;line-height:1.4}
 .home-primary{position:relative;flex-shrink:0;margin:0 auto 8px;width:calc(100% - 52px);min-height:72px;border-radius:19px;font-size:24px;line-height:1.05}
 .home-primary small{display:block;font-size:12px;line-height:1.5;font-weight:800}
-.levels-link{flex-shrink:0;margin:0 auto;width:calc(100% - 40px);padding:8px;font-size:12px;background:none;border:0;color:#8fa297;min-height:34px}
+.levels-link{flex-shrink:0;margin:0 auto;width:calc(100% - 40px);padding:8px;font-size:12px;background:none;border:0;color:#8fa297;min-height:44px}
 
 #daily-resume-old{flex-shrink:0;width:calc(100% - 36px);margin:0 auto 10px;padding:8px;border:1px solid #d9dfce;border-radius:11px;background:#eef0e2;color:#79958e;font-size:10px;text-align:center}
 
@@ -131,7 +125,7 @@ dialog[open]{animation:panel-in .22s cubic-bezier(.2,.8,.3,1.15)}
 dialog h2{font-size:29px;line-height:1.1;margin:9px 0 20px;font-weight:1000;letter-spacing:-.6px}
 dialog p{line-height:1.5;font-size:14px}
 .eyebrow{font-size:9px;letter-spacing:1.2px;color:#a3ad97;font-weight:900}
-.close{position:absolute;right:10px;top:7px;border:0;background:none;font-size:30px;color:#98aaa2;line-height:1}
+.close{position:absolute;right:10px;top:7px;width:44px;height:44px;border:0;background:none;font-size:30px;color:#98aaa2;line-height:1}
 .primary,.home-primary{background:linear-gradient(#fbd7ac,#edb585);color:#8b6041;border:2px solid #ffe7c7;box-shadow:inset 0 2px 0 #fff1d7,0 4px 0 #bd916c;text-shadow:0 1px 0 #ffe9c7}
 .primary,.secondary{display:block;border-radius:14px;padding:12px 13px;font-weight:900;width:100%;margin-top:12px}
 .primary{font-size:17px}
@@ -147,6 +141,7 @@ dialog p{line-height:1.5;font-size:14px}
 #settings .small{line-height:1.35;font-size:9px!important;margin:8px 0 0}
 #settings-done{margin:10px 0 9px;font-size:21px;padding:13px}
 #settings .eyebrow{font-size:10px}
+.pause-navigation{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 #restart{color:#a38b76;background:#f1e9dc}
 
 .helper-offer{padding:12px 0;border-top:1px solid #d8dccd}
@@ -221,16 +216,14 @@ to{opacity:1}
 
 @media(max-height:700px){header{height:49px}
 .level{height:15px}
-footer{height:78px;gap:20px}
+footer{height:78px}
 footer button{height:68px;font-size:9px;gap:6px}
 footer .helper-icon{width:52px;height:52px;border-radius:17px}
 footer svg{width:33px;height:33px}
 .moves{width:54px;min-height:73px;padding:5px 7px 7px}
 .moves strong{font-size:26px;line-height:29px}
 .deck-tools{gap:10px;top:9px}
-#inspect{width:35px;height:39px;font-size:16px}
 #message{min-height:23px;font-size:9px;line-height:14px}
-#app[data-lesson=true] #message{min-height:36px}
 .bottom-note{height:4px}
 }
 
@@ -259,7 +252,10 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 
 #app .deck-tools .move-track{width:54px;height:6px;margin-top:10px}
 
-#app .deck-tools #inspect{width:58px;height:64px;margin-top:5px;font-size:26px;border-radius:17px}
+#dock #inspect{width:52px;flex-shrink:0}
+.inspect-icon{display:grid;place-items:center;width:44px;height:59px;border:1px solid #8eb8b366;border-radius:15px;background:#1c626c55;color:#cce1dc;font-size:22px}
+#inspect[aria-pressed=true] .inspect-icon{background:#f5e6bd;color:#386772;border-color:#fff2cf}
+@media(max-height:700px){.inspect-icon{height:52px}}
 
 #feedback-row{position:relative;flex-shrink:0;min-height:42px;display:grid;align-items:center}
 
@@ -269,20 +265,18 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 
 #feedback-row[data-praising=true] #message{visibility:hidden}
 
-@media(max-height:700px){.home-stage{grid-template-rows:minmax(min-content,1fr) max-content max-content minmax(8px,.4fr);flex-basis:250px;grid-template-columns:76px minmax(0,1fr) 76px}
-.daily-card,.daily-card>button:first-child,.cycle-card,.looks-card{width:76px}
+@media(max-height:700px){.home-stage{gap:18px;padding:12px 0 8px}
 .event-medal{width:48px;height:49px;font-size:32px}
 .event-medal img{width:51px;height:48px}
 .event-medal svg{width:33px;height:33px}
 .brand-scene h1{font-size:32px}
 .milestone-card{min-height:49px}
 .home-primary{min-height:64px}
-.home-status{font-size:9px}
-.linked-emblem{max-height:145px}
+.linked-emblem{width:145px;height:125px}
 }
 
-@media(max-height:590px){.home-stage{grid-template-rows:minmax(min-content,1fr) max-content max-content minmax(4px,.25fr);flex-basis:224px;grid-template-columns:72px minmax(0,1fr) 72px;padding-top:4px}
-.daily-card,.daily-card>button:first-child,.cycle-card,.looks-card{width:72px}
+@media(max-height:590px){.home-stage{gap:12px;padding:6px 0}
+.brand-scene{gap:4px}
 .event-medal{width:43px;height:44px;font-size:28px}
 .event-medal img{width:46px;height:43px}
 .event-medal svg{width:29px;height:29px}
@@ -293,12 +287,65 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 .milestone-details strong{font-size:9px}
 .milestone-details small{font-size:8px}
 .home-primary{min-height:59px;font-size:22px}
-.levels-link{min-height:29px;padding:5px}
-.home-status{font-size:8px;margin:4px 5px 7px}
-.linked-emblem{max-height:130px}
+.levels-link{min-height:44px;padding:5px}
+.linked-emblem{width:120px;height:104px}
 #feedback-row{min-height:39px}
 #praise{font-size:18px}
 }
 
 
 .wallet #coins{white-space:nowrap}
+
+/* Teaching points at the existing helper; it never intercepts a touch. */
+#dock .attention::after{content:'';position:absolute;pointer-events:none;left:34px;top:24px;width:36px;height:45px;background:url('/art/ui/tutorial-hand.svg') center/contain no-repeat;filter:drop-shadow(0 2px 1px #103d4466);animation:teach-tap 1.25s ease-in-out 3 forwards}
+@keyframes teach-tap{0%{transform:translateY(6px);opacity:0}20%,70%{opacity:1}40%,65%{transform:translateY(0)}100%{transform:translateY(6px);opacity:0}}
+
+#word-image{display:block;width:min(100%,220px);height:210px;object-fit:contain;margin:12px auto 18px}
+#result-copy:empty{display:none}
+#joker-next-attempt{padding:9px;background:#eee5d4;border-radius:9px}
+
+/* Touch targets grow without inflating the wallet's painted material. */
+#app .wallet{height:44px;background:transparent;box-shadow:none;isolation:isolate}
+#app .wallet::before{content:'';position:absolute;inset:7.5px 0;border-radius:9px;background:#104c58;box-shadow:inset 0 1px 0 #ffffff14,0 2px 2px #073b4433;z-index:-1}
+#app[data-screen=home] .wallet::before{background:#6c9291}
+.wallet-plus{bottom:3px}
+.choice-row button,#settings .secondary,.setting,.text-button{min-height:44px}
+#chapter-nav button{width:44px;height:44px;flex-shrink:0}
+@media(max-width:340px){#level-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+#app .wallet:disabled{opacity:1;filter:none}
+.level-button[data-active=true]{outline:2px solid #587b87;outline-offset:2px}
+#learn-rule{text-align:center}
+#learn-rule h2{margin-top:26px}
+.rule-example{display:none;align-items:center;justify-content:center;gap:8px;min-height:136px;margin:10px 0 15px}
+#learn-rule[data-rule=ordered] .ordered-example,#learn-rule[data-rule=keys] .keys-example,#learn-rule[data-rule=joker] .joker-example{display:flex}
+.rule-card{display:grid;place-items:center;width:64px;height:98px;background:url('/art/generated/card-face.webp') center/100% 100% no-repeat;color:#345d6b;font-size:36px;font-weight:1000;box-shadow:0 3px 2px #516b6822;border-radius:13px}
+.rule-arrow{font-size:22px;color:#a68a60}
+.rule-example img{width:38px;height:52px;object-fit:contain}
+.rule-example .demo-lock{width:48px;height:65px}
+.ordered-example .rule-card:nth-of-type(3){animation:rule-arrive .9s ease-in-out 2}
+.joker-support{background-image:url('/art/generated/card-category.webp');width:85px;height:112px}
+.joker-support img{width:58px;height:65px}
+.demo-group{font-size:14px;animation:rule-arrive 1.2s ease-in-out 2}
+@keyframes rule-arrive{0%{transform:translate(15px,-8px);opacity:.5}75%,100%{transform:none;opacity:1}}
+
+#dock .attention::after{opacity:0}
+html[data-reduced=true] #dock .attention .helper-icon{outline:2px solid #ffe4a4;outline-offset:2px}
+
+#pause-options{margin-top:20px;border-top:1px solid #ded8cb;padding-top:8px;text-align:left}
+summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#537782}
+#pause-options summary{text-align:center}
+#result-earnings{display:flex;align-items:center;justify-content:center;gap:12px;margin:15px 0 18px;color:#8b6539}
+#result-earnings span{font-size:12px}
+#result-total{font-size:40px;line-height:1.1;font-weight:1000;white-space:nowrap}
+#result-earnings::before{content:'';width:31px;height:31px;background:url('/art/generated/coin.webp') center/contain no-repeat}
+#unlock-reward{display:grid;grid-template-columns:100px 1fr;align-items:center;gap:12px;text-align:left;padding:10px;margin:10px 0 18px;background:#e8eee2;border-radius:14px}
+#unlock-title{font-size:13px;line-height:1.3}
+#unlock-reward .secondary{margin-top:8px;padding:8px;font-size:12px}
+.unlock-preview{height:100px}
+.unlock-preview .preview-back,.unlock-preview .preview-face{width:52px;height:72px;top:14px;left:12px}
+.unlock-preview .preview-face{left:36px;padding-top:20px}
+#reward-details{text-align:left;margin-top:13px;border-top:1px solid #e1dccd}
+#reward-details summary{text-align:center;font-size:12px}
+#result-rewards{margin:4px 0 12px}
+@media(max-height:700px){#result .result-star{height:72px;margin-bottom:5px}#result h2{font-size:27px}#result-total{font-size:34px}#unlock-reward{grid-template-columns:82px 1fr;gap:9px;padding:8px}.unlock-preview{height:88px}.unlock-preview .preview-back{left:3px;top:8px}.unlock-preview .preview-face{left:25px;top:8px}}

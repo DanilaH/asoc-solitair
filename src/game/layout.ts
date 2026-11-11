@@ -7,24 +7,33 @@ export const cardMetrics = (deal: Deal) => deal.initial.tableau.length >= 4 ? { 
 export function boardFrame(width: number, height: number, deckPosition: 'top' | 'bottom' = 'top', deal?: Deal) {
   const hasDeck = !deal || Boolean(deal.initial.stock.length || deal.initial.waste.length);
   const unit = Math.min(width / WIDTH, height / (deckPosition === 'bottom' && hasDeck ? 680 : 650));
-  return { unit, offsetX: (width - WIDTH * unit) / 2, height: height / unit };
+  return { unit, offsetX: 0, height: height / unit };
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
 export interface Target { location: Location; x: number; y: number; width: number; height: number }
+/** Forgive only an unambiguous geometric near miss; the engine still validates the move. */
+export function dropTarget(targets: Target[], x: number, y: number, tolerance: number): Target | null {
+  const distance = (t: Target) => Math.hypot(Math.max(0, Math.abs(x - t.x) - t.width / 2), Math.max(0, Math.abs(y - t.y) - t.height / 2));
+  const direct = targets.find(t => distance(t) === 0);
+  if (direct) return direct;
+  const near = targets.filter(t => distance(t) <= tolerance);
+  return near.length === 1 ? near[0] : null;
+}
 export function layout(board: Board, deal: Deal, height: number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
   const poses: Pose[] = [], targets: Target[] = [];
   let joker: { x: number; y: number; depth: number } | undefined;
   const { width: cardW, height: cardH } = cardMetrics(deal);
-  const four = board.tableau.length >= 4;
-  const topCenters = four ? [62, 200.6666666667, 339.3333333333, 478] : [95, 270, 445];
-  const centers = board.tableau.length === 2 ? [95, 445] : topCenters;
+  // A short row stays together at the left edge rather than stretching to fill
+  // the table. The dense four-column row retains its established safe spacing.
+  const gap = board.tableau.length >= 4 ? (WIDTH - cardW * 4) / 3 : 14;
+  const centers = board.tableau.map((_, index) => cardW / 2 + index * (cardW + gap));
   const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
   const bottom = deckPosition === 'bottom' && hasDeck;
   const left = deckSide === 'left' && hasDeck;
   // Foundation slots keep the left edge, independently of the deck's side.
   const foundationCenters = centers;
-  const stock = { x: left ? 72 : 468, y: bottom ? height - cardH / 2 - 12 : cardH / 2 + 20 };
-  const waste = { x: left ? 204 : 336, y: stock.y };
+  const stock = { x: left ? cardW / 2 : WIDTH - cardW / 2, y: bottom ? height - cardH / 2 - 12 : cardH / 2 + 20 };
+  const waste = { x: stock.x + (left ? 1 : -1) * (cardW + gap), y: stock.y };
   const top = cardH / 2 + (bottom ? 30 : hasDeck ? cardH + 54 : 185);
   board.foundations.forEach((ids, index) => {
     const x = foundationCenters[index];
@@ -50,6 +59,7 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
     });
     targets.push({ location: { kind: 'tableau', index }, x: centers[index], y, width: cardW + 12, height: cardH + 8 });
   });
-  board.waste.slice(-3).forEach((id, i, shown) => poses.push({ id, x: waste.x + (i - shown.length + 1) * 3, y: waste.y, depth: 35 + i, faceUp: true }));
+  // Fan away from the stock: even the rear waste cards keep a visible gap.
+  board.waste.slice(-3).forEach((id, i, shown) => poses.push({ id, x: waste.x + (i - shown.length + 1) * (left ? -3 : 3), y: waste.y, depth: 35 + i, faceUp: true }));
   return { poses, targets, stock, waste, joker };
 }

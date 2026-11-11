@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { GameplayActivityCoordinator, installDocumentVisibilityBlocker } from '@danilah/mini-games-kit/platform';
 import { OneShotPlayer } from '@danilah/mini-games-kit/audio';
 import { registerPlugin, type PluginListenerHandle } from '@capacitor/core';
+import { cueSamples } from './sounds';
 import { createHaptics, type HapticCue } from './haptics';
 export { decodeSave } from './storage';
 interface AudioBridge {
@@ -25,7 +26,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   let mute = false;
   const handles: { remove: () => Promise<void> }[] = [];
   const buffers = new Map<string, AudioBuffer>();
-  const tones: Record<string, [number, number]> = { joker: [740, .12], key: [1320, .14], unlock: [990, .25], lift: [330, .035], transfer: [650, .075], flip: [420, .045], draw: [480, .055], invalid: [190, .07], complete: [880, .19], coins: [1250, .11], win: [1046, .28], undo: [370, .09], ui: [520, .04] };
+  const variants = new Map<string, number>();
   const eligibility = () => {
     const reasons = activity.getBlockReasons();
     audio.setEligibility({ gameplay: audioFocused && !mute && reasons.length === 0, ui: audioFocused && !mute && reasons.every(r => r === 'modal' || r === 'screen') });
@@ -61,19 +62,16 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
     setHaptics(value: boolean) { haptics.setEnabled(value); },
     pulse(cue: HapticCue) { haptics.pulse(cue); },
     play(name: string) {
-      const tone = tones[name] ?? tones.ui;
+      const variant = (variants.get(name) ?? 0) % 3; variants.set(name, variant + 1);
+      const key = `${name}:${variant}`;
       const group = ['coins', 'win', 'complete'].includes(name) ? 'reward' : name === 'flip' ? 'flip' : name === 'ui' ? 'ui' : 'card';
       audio.play({ group, channel: name === 'ui' ? 'ui' : 'gameplay', gain: .32, buffer(ctx) {
-        let buffer = buffers.get(name);
+        let buffer = buffers.get(key);
         if (!buffer) {
-          buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * tone[1]), ctx.sampleRate);
-          const data = buffer.getChannelData(0);
-          for (let i = 0; i < data.length; i++) {
-            const time = i / ctx.sampleRate;
-            const attack = Math.min(1, time / .004);
-            data[i] = Math.sin(time * 2 * Math.PI * tone[0]) * attack * Math.exp(-time / (tone[1] * .23)) * .5;
-          }
-          buffers.set(name, buffer);
+          const samples = cueSamples(name, ctx.sampleRate, variant);
+          buffer = ctx.createBuffer(1, samples.length, ctx.sampleRate);
+          buffer.copyToChannel(samples, 0);
+          buffers.set(key, buffer);
         }
         return buffer;
       } });

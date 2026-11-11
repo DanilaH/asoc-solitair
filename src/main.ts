@@ -13,7 +13,7 @@ import { lesson } from './app/tutorial';
 import { boardKey, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import type { BoardCommand, Command } from './domain/types';
-import { boardFrame } from './game/layout';
+import { WIDTH, boardFrame } from './game/layout';
 import { categoryCaption } from './game/captions';
 import { BoardScene } from './game/BoardScene';
 import { createRuntime } from './platform/runtime';
@@ -73,7 +73,7 @@ function positionDeckTools() {
   const frame = boardFrame(rect.width, rect.height, app.dataset.deckRow as 'top' | 'bottom');
   const right = app.dataset.deckRow === 'bottom' || app.dataset.deckEdge === 'left';
   tools.style.transform = `scale(${frame.unit})`; tools.style.top = `${20 * frame.unit}px`;
-  tools.style.left = right ? 'auto' : `${frame.offsetX}px`; tools.style.right = right ? `${frame.offsetX}px` : 'auto';
+  tools.style.left = right ? 'auto' : `${frame.offsetX}px`; tools.style.right = right ? `${rect.width - frame.offsetX - WIDTH * frame.unit}px` : 'auto';
 }
 function message(text: string, error = false) {
   if (error) clearPraise();

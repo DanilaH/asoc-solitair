@@ -51,6 +51,30 @@ test('short 320×568 screen keeps the helper dock inside the viewport and accept
   await page.screenshot({path:`test-results/${test.info().project.name}-short-new-content.png`});
 });
 
+test('card reading stays finger-sized on a short field and never spends a move', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await seed(page, 16); await page.locator('#home-play').tap();
+  for (const selector of ['#menu', '#inspect']) {
+    const box = (await page.locator(selector).boundingBox())!;
+    expect(box.width).toBeGreaterThanOrEqual(44);
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+  const before = await read(page), deal = campaignDeals[16];
+  await page.locator('#inspect').tap();
+  const rect = (await page.locator('canvas').boundingBox())!;
+  const frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
+  const g = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
+  const pose = g.poses.find(p => p.faceUp && before.attempt.board.tableau.some(col => col.at(-1) === p.id))!;
+  await page.touchscreen.tap(rect.x + frame.offsetX + pose.x * frame.unit, rect.y + pose.y * frame.unit);
+  await expect(page.locator('#inspect-dialog')).toBeVisible();
+  await expect(page.locator('#word-title')).toHaveText(deal.cards[pose.id].text);
+  await page.locator('#inspect-dialog .primary').tap();
+  const after = await read(page);
+  expect(after.attempt.board).toEqual(before.attempt.board);
+  expect(after.profile).toEqual(before.profile);
+  await expect(page.locator('#inspect')).toHaveAttribute('aria-pressed', 'false');
+});
+
 for (const level of [3, 17]) test(`level ${level}: bottom deck works on both sides through Hint, reload and a complete touch win`, async ({ page }) => {
   test.setTimeout(120000);
   await seed(page, level - 1); await page.locator('#home-play').tap();

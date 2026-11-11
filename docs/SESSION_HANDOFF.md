@@ -1,5 +1,9 @@
 # Continuation checkpoint — 2026-11-10
 
+## Latest presentation follow-up — compact edge-aligned UI
+
+The user requested compact groups against an edge and a fresh UX review. Implemented on `ux/compact-edge-layout`: left-aligned two/three-column rows and foundations, left-anchored height-constrained boards, properly spaced stock/waste pair, grouped helper dock with a full-size card reader, grouped home events, larger menu/close targets and compact pause navigation. No domain/content/economy/save/native or release-version changes. The last delivered APK remains 0.8.0 below. See [scope, local checks and remaining UX priorities](qa/COMPACT_LAYOUT_2026-11-11.md); do not claim merge/CI/device acceptance from the local checks.
+
 ## Current implementation — 0.8.0 / code 11
 
 The user authorized the detailed art plan and ordinary repository operations. [PR #12](https://github.com/DanilaH/asoc-solitair/pull/12) is merged. Verified source `b0ea1e50dac79c4a25823f263ee69f95fa479281`; main merge `3c28908f41f5f74bed7d869f3b29b8098192c4d4`. All A/B/C presentation work is implemented: 49 local generated resources (766,066 bytes), actual card/stock materials and both backs, 33 subject sprites covering 35 published references, matched HUD/helpers/home/all dialogs, pooled ribbon/spark/coin/key/lock/Joker art and stronger short-word readability. Both palettes/four deck placements and the 0.7.1 spatial structure remain. Actual raster QA caught a blank static scene on resize; a bounded repaint tail fixes it without continuous idle rendering. No domain/content/economy/SaveStore changes.

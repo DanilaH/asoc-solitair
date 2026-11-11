@@ -23,8 +23,6 @@
 .moves>span{color:#5b7f87}
 .move-track{background:#c4d3cf}
 .move-track i{background:linear-gradient(90deg,#f0c886,#eaa168);border-radius:4px}
-#app .deck-tools #inspect{color:#cce1dc;border-color:#8eb8b366;background:#1c626c55;box-shadow:inset 0 1px 0 #ffffff0a}
-#app .deck-tools #inspect[aria-pressed=true]{background:#f5e6bd;color:#386772;border-color:#fff2cf}
 #message{color:#c2d9d2}
 footer button{color:#e1ece5}
 footer .helper-icon{

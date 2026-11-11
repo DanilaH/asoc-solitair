@@ -117,6 +117,8 @@ test('category praise has a reserved row outside cards and helpers and clears un
 test('home appearance button stays under a held finger and opens reliably', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  const returning = freshSave(campaignDeals[1], 'returning-home'); returning.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: [campaignDeals[0].id] };
+  await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), returning); await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   const before = (await page.locator('#looks-open').boundingBox())!;
   const cdp = await page.context().newCDPSession(page), point = { x: before.x + before.width / 2, y: before.y + before.height / 2 };
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });

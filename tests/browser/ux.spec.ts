@@ -1,3 +1,4 @@
+import { pauseOptions } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
 import { freshSave, packet } from '../../src/domain/engine';
@@ -10,7 +11,7 @@ const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem
 const attemptWithoutClock = (attempt: Save['attempt']) => ({ ...attempt, telemetry: attempt.telemetry && { ...attempt.telemetry, activeMs: 0 } });
 async function seed(page: Page, index: number) {
   await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
-  const save = freshSave(campaignDeals[index], `ux-${index}`); save.settings.reducedMotion=true; save.meta!.winCycle=3;
+  const save = freshSave(campaignDeals[index], `ux-${index}`); save.settings.reducedMotion=true;save.campaign={version:1,tutorials:['intro:joker','intro:ordered','intro:keys']}; save.meta!.winCycle=3;
   save.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d=>d.id)};
   await page.evaluate(s=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(s)),save); await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
 }
@@ -81,7 +82,7 @@ for (const level of [3, 17]) test(`level ${level}: bottom deck works on both sid
   const deal = campaignDeals[level - 1];
   async function place(side: 'left' | 'right') {
     const before = await read(page);
-    await page.locator('#menu').tap(); await page.locator('#appearance-settings').tap();
+    await page.locator('#menu').tap(); await pauseOptions(page); await page.locator('#appearance-settings').tap();
     await page.locator('button[data-deck-position=bottom]').tap(); await page.locator(`button[data-deck-side=${side}]`).tap();
     await page.locator('#appearance .primary').tap();
     const after = await read(page);

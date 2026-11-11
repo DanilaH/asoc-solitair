@@ -1,5 +1,9 @@
 # Continuation checkpoint — 2026-11-10
 
+## Active implementation — all four UI/UX/feel packages authorized
+
+Latest user instruction: «давай, приступай» approves the concrete four-package plan. Work is ongoing on `ux/compact-edge-layout`; [implementation progress and outstanding scope](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). All four packages are implemented locally for 0.9.0/code 12: 65 unit/platform tests, all fixed witnesses, 46 focused browser passes and 191 independent layout states with zero issues. Finish final exact-source checks, real-input media, full CI/Android and integration. Do not mistake the older review-only notes below for the current task or stop at package 1. No new APK has been delivered for this work yet.
+
 ## Latest request — independent UI/UX/feel review
 
 The user requested a fresh whole-project review. [Findings and implementation order](qa/INDEPENDENT_EXPERIENCE_REVIEW_2026-11-11.md), with concise measured evidence next to it, cover the current `f200d42` runtime. Current source CI [42980025806](https://github.com/DanilaH/asoc-solitair/actions/runs/42980025806) is fully green (web and Android); PR #13 remains open. This pass changes documentation only and does not claim the next improvements are implemented. Priorities: core card-title readability, picture inspection/mode exit, context-specific helper offers and failure recovery hierarchy; then drag/Hint/Undo feel, teaching pacing and first modifier introductions, rewards and menu hierarchy. Keep the user's compact-edge/no-service-caption direction. See the review's acceptance criteria before starting that scope.

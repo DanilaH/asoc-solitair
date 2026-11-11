@@ -297,5 +297,55 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 .wallet #coins{white-space:nowrap}
 
 /* Teaching points at the existing helper; it never intercepts a touch. */
-#dock .attention::after{content:'';position:absolute;pointer-events:none;left:34px;top:24px;width:36px;height:45px;background:url('/art/ui/tutorial-hand.svg') center/contain no-repeat;filter:drop-shadow(0 2px 1px #103d4466);animation:teach-tap 1.25s ease-in-out infinite}
-@keyframes teach-tap{0%,100%{transform:translateY(6px)}40%,65%{transform:translateY(0)}}
+#dock .attention::after{content:'';position:absolute;pointer-events:none;left:34px;top:24px;width:36px;height:45px;background:url('/art/ui/tutorial-hand.svg') center/contain no-repeat;filter:drop-shadow(0 2px 1px #103d4466);animation:teach-tap 1.25s ease-in-out 3 forwards}
+@keyframes teach-tap{0%{transform:translateY(6px);opacity:0}20%,70%{opacity:1}40%,65%{transform:translateY(0)}100%{transform:translateY(6px);opacity:0}}
+
+#word-image{display:block;width:min(100%,220px);height:210px;object-fit:contain;margin:12px auto 18px}
+#result-copy:empty{display:none}
+#joker-next-attempt{padding:9px;background:#eee5d4;border-radius:9px}
+
+/* Touch targets grow without inflating the wallet's painted material. */
+#app .wallet{height:44px;background:transparent;box-shadow:none;isolation:isolate}
+#app .wallet::before{content:'';position:absolute;inset:7.5px 0;border-radius:9px;background:#104c58;box-shadow:inset 0 1px 0 #ffffff14,0 2px 2px #073b4433;z-index:-1}
+#app[data-screen=home] .wallet::before{background:#6c9291}
+.wallet-plus{bottom:3px}
+.choice-row button,#settings .secondary,.setting,.text-button{min-height:44px}
+#chapter-nav button{width:44px;height:44px;flex-shrink:0}
+@media(max-width:340px){#level-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+#app .wallet:disabled{opacity:1;filter:none}
+.level-button[data-active=true]{outline:2px solid #587b87;outline-offset:2px}
+#learn-rule{text-align:center}
+#learn-rule h2{margin-top:26px}
+.rule-example{display:none;align-items:center;justify-content:center;gap:8px;min-height:136px;margin:10px 0 15px}
+#learn-rule[data-rule=ordered] .ordered-example,#learn-rule[data-rule=keys] .keys-example,#learn-rule[data-rule=joker] .joker-example{display:flex}
+.rule-card{display:grid;place-items:center;width:64px;height:98px;background:url('/art/generated/card-face.webp') center/100% 100% no-repeat;color:#345d6b;font-size:36px;font-weight:1000;box-shadow:0 3px 2px #516b6822;border-radius:13px}
+.rule-arrow{font-size:22px;color:#a68a60}
+.rule-example img{width:38px;height:52px;object-fit:contain}
+.rule-example .demo-lock{width:48px;height:65px}
+.ordered-example .rule-card:nth-of-type(3){animation:rule-arrive .9s ease-in-out 2}
+.joker-support{background-image:url('/art/generated/card-category.webp');width:85px;height:112px}
+.joker-support img{width:58px;height:65px}
+.demo-group{font-size:14px;animation:rule-arrive 1.2s ease-in-out 2}
+@keyframes rule-arrive{0%{transform:translate(15px,-8px);opacity:.5}75%,100%{transform:none;opacity:1}}
+
+#dock .attention::after{opacity:0}
+html[data-reduced=true] #dock .attention .helper-icon{outline:2px solid #ffe4a4;outline-offset:2px}
+
+#pause-options{margin-top:20px;border-top:1px solid #ded8cb;padding-top:8px;text-align:left}
+summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#537782}
+#pause-options summary{text-align:center}
+#result-earnings{display:flex;align-items:center;justify-content:center;gap:12px;margin:15px 0 18px;color:#8b6539}
+#result-earnings span{font-size:12px}
+#result-total{font-size:40px;line-height:1.1;font-weight:1000;white-space:nowrap}
+#result-earnings::before{content:'';width:31px;height:31px;background:url('/art/generated/coin.webp') center/contain no-repeat}
+#unlock-reward{display:grid;grid-template-columns:100px 1fr;align-items:center;gap:12px;text-align:left;padding:10px;margin:10px 0 18px;background:#e8eee2;border-radius:14px}
+#unlock-title{font-size:13px;line-height:1.3}
+#unlock-reward .secondary{margin-top:8px;padding:8px;font-size:12px}
+.unlock-preview{height:100px}
+.unlock-preview .preview-back,.unlock-preview .preview-face{width:52px;height:72px;top:14px;left:12px}
+.unlock-preview .preview-face{left:36px;padding-top:20px}
+#reward-details{text-align:left;margin-top:13px;border-top:1px solid #e1dccd}
+#reward-details summary{text-align:center;font-size:12px}
+#result-rewards{margin:4px 0 12px}
+@media(max-height:700px){#result .result-star{height:72px;margin-bottom:5px}#result h2{font-size:27px}#result-total{font-size:34px}#unlock-reward{grid-template-columns:82px 1fr;gap:9px;padding:8px}.unlock-preview{height:88px}.unlock-preview .preview-back{left:3px;top:8px}.unlock-preview .preview-face{left:25px;top:8px}}

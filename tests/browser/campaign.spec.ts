@@ -1,3 +1,4 @@
+import { dismissTeaching } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
 import { freshSave, packet } from '../../src/domain/engine';
@@ -8,7 +9,7 @@ const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem
 async function ready(page: Page, deal: Deal) {
   await expect.poll(async () => (await read(page)).attempt.dealId).toBe(deal.id);
   await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
-  await expect(page.locator('#play-screen')).toBeVisible();
+  await expect(page.locator('#play-screen')).toBeVisible(); await dismissTeaching(page);
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
 }
 export async function move(page: Page, deal: Deal, cmd: BoardCommand) {

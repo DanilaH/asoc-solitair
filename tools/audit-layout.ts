@@ -1,3 +1,4 @@
+import { dismissTeaching } from './qa/navigation';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium, type Page } from '@playwright/test';
 import { preview } from 'vite';
@@ -32,6 +33,7 @@ async function load(page: Page, save: Save) {
  await page.reload(); await page.locator('#app[data-ready=true]').waitFor(); await page.evaluate(()=>document.fonts.ready);
 }
 async function audit(page: Page, state: string, home = false) {
+ if (!home) await dismissTeaching(page);
  const found = await page.evaluate(({home})=>{
   const result: string[] = [], rect = (s:string)=>document.querySelector(s)!.getBoundingClientRect();
   const shown=(e:Element)=>e.getBoundingClientRect().width>0&&getComputedStyle(e).visibility!=='hidden';
@@ -104,11 +106,12 @@ try {
   // Every dialog is checked at both the shortest and a normal viewport.
   if(width===320||width===360&&height===780){
    await load(page,seed(25));await page.locator('#home-play').tap();
-   for(const id of ['settings','appearance','helpers','level-picker','calendar','cycle-info','restart-confirm','replace-daily','switch-level','inspect-dialog','result','result-exhausted']){
-    const dialogId=id.startsWith('result')?'result':id;
+   for(const id of ['settings','settings-expanded','appearance','helpers','level-picker','calendar','cycle-info','restart-confirm','replace-daily','switch-level','inspect-dialog','result','result-details','result-exhausted','learn-joker','learn-ordered','learn-keys']){
+    const dialogId=id.startsWith('result')?'result':id.startsWith('learn-')?'learn-rule':id.startsWith('settings')?'settings':id;
+    if (id.startsWith('learn-')) { const index = ({'learn-joker':20,'learn-ordered':22,'learn-keys':25} as Record<string,number>)[id]; await load(page,seed(index)); await page.locator('#home-play').tap(); await page.locator('#learn-rule[open]').waitFor(); }
     if(dialogId==='result'){
-     const index=id==='result'?19:16;let state=seed(index);state.meta!.winCycle=4;
-     if(id==='result')for(const cmd of campaignDeals[index].winningPath)state=dispatch(state,cmd,campaignDeals[index]).next;
+     const index=id==='result-exhausted'?16:19;let state=seed(index);state.meta!.winCycle=4;
+     if(id!=='result-exhausted')for(const cmd of campaignDeals[index].winningPath)state=dispatch(state,cmd,campaignDeals[index]).next;
      else while(state.attempt.board.phase==='playing')state=dispatch(state,{type:state.attempt.board.stock.length?'draw':'recycle'},campaignDeals[index]).next;
      await load(page,state);await page.locator('#home-play').tap();await page.locator('#result[open]').waitFor();
     }
@@ -117,7 +120,9 @@ try {
      await page.evaluate(card=>{document.querySelector('#word-title')!.textContent=card.text;document.querySelector('#word-description')!.textContent=card.explanation;},card);
     }
     await page.evaluate(id=>{document.querySelectorAll('dialog').forEach(d=>d.close());document.querySelector<HTMLDialogElement>('#'+id)!.showModal();},dialogId);
-    const buttons=page.locator(`#${dialogId} button:visible,#${dialogId} input:visible`);
+    if(id==='settings-expanded')await page.locator('#pause-options > summary').tap();
+    if(id==='result-details')await page.locator('#reward-details > summary').tap();
+    const buttons=page.locator(`#${dialogId} button:visible,#${dialogId} input:visible,#${dialogId} summary:visible`);
     for(let i=0;i<await buttons.count();i++){
      const e=buttons.nth(i);await e.scrollIntoViewIfNeeded();
      const reason=await e.evaluate(el=>{const e=el as HTMLElement,r=e.getBoundingClientRect(),hit=document.elementFromPoint((r.left+r.right)/2,(r.top+r.bottom)/2);return e.scrollWidth>e.clientWidth+2?'Button text overflow':!hit||!(e===hit||e.contains(hit))?'Control covered or outside viewport':null;});

@@ -20,13 +20,17 @@ async function open(page: Page, reduced = false) {
     await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), save);
     await page.reload(); await page.locator('#app[data-ready=true]').waitFor();
   }
-  await page.locator('#home-play').tap();
+  if (await page.locator('#home-play').isVisible()) await page.locator('#home-play').tap();
 }
 test('painted tutorial follows accepted moves, yields to reading and returns after pause without spending resources', async ({ page }) => {
   await open(page); const before = await read(page), deal = campaignDeals[0];
   await expect(page.locator('#message')).toBeEmpty(); await expect(page.locator('#home-status')).toHaveCount(0);
   await expect.poll(() => handPixels(page), { timeout: 7000 }).toBeGreaterThan(12);
   expect((await read(page)).attempt.board).toEqual(before.attempt.board); expect((await read(page)).profile).toEqual(before.profile);
+  await page.locator('#inspect').tap(); await expect.poll(() => handPixels(page)).toBeLessThanOrEqual(12);
+  await page.locator('#inspect').tap(); await expect.poll(() => handPixels(page)).toBeGreaterThan(12);
+  await page.locator('#menu').tap(); await page.locator('#settings-done').tap();
+  await expect.poll(() => handPixels(page)).toBeGreaterThan(12);
   const rect = (await page.locator('canvas').boundingBox())!, f = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
   const g = layout(before.attempt.board, deal, f.height, before.settings.deckSide, before.settings.deckPosition);
   const cmd = deal.winningPath[0]; if (cmd.type !== 'transfer') throw Error('First teaching action changed');
@@ -35,11 +39,7 @@ test('painted tutorial follows accepted moves, yields to reading and returns aft
   await page.touchscreen.tap(rect.x + f.offsetX + from.x * f.unit, rect.y + from.y * f.unit);
   await page.touchscreen.tap(rect.x + f.offsetX + to.x * f.unit, rect.y + to.y * f.unit);
   await expect.poll(async () => (await read(page)).revision).toBeGreaterThan(before.revision);
-  await expect.poll(() => handPixels(page)).toBeGreaterThan(12);
-  await page.locator('#inspect').tap(); await expect.poll(() => handPixels(page)).toBeLessThanOrEqual(12);
-  await page.locator('#inspect').tap(); await expect.poll(() => handPixels(page)).toBeGreaterThan(12);
-  await page.locator('#menu').tap(); await page.locator('#settings-done').tap();
-  await expect.poll(() => handPixels(page)).toBeGreaterThan(12);
+  expect((await read(page)).campaign!.tutorials).toContain('learn:category');
   expect((await read(page)).profile).toEqual(before.profile);
 });
 test('reduced motion keeps a painted static teaching cue', async ({ page }) => {

@@ -1,3 +1,4 @@
+import { dismissTeaching } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
 import { modifierDeals } from '../../src/content/modifiers';
 import { campaignDeals } from '../../src/content/campaign';
@@ -14,7 +15,7 @@ async function open(page: Page, deal: Deal) {
 }
 async function resume(page: Page) {
   await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
-  await page.locator('#home-play').tap(); await expect(page.locator('#play-screen')).toBeVisible();
+  await page.locator('#home-play').tap(); await expect(page.locator('#play-screen')).toBeVisible(); await dismissTeaching(page);
   await page.evaluate(() => new Promise<void>(r => requestAnimationFrame(() => r())));
 }
 async function geometry(page: Page, deal: Deal) {

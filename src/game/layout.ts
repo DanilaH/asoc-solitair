@@ -11,6 +11,14 @@ export function boardFrame(width: number, height: number, deckPosition: 'top' | 
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
 export interface Target { location: Location; x: number; y: number; width: number; height: number }
+/** Forgive only an unambiguous geometric near miss; the engine still validates the move. */
+export function dropTarget(targets: Target[], x: number, y: number, tolerance: number): Target | null {
+  const distance = (t: Target) => Math.hypot(Math.max(0, Math.abs(x - t.x) - t.width / 2), Math.max(0, Math.abs(y - t.y) - t.height / 2));
+  const direct = targets.find(t => distance(t) === 0);
+  if (direct) return direct;
+  const near = targets.filter(t => distance(t) <= tolerance);
+  return near.length === 1 ? near[0] : null;
+}
 export function layout(board: Board, deal: Deal, height: number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
   const poses: Pose[] = [], targets: Target[] = [];
   let joker: { x: number; y: number; depth: number } | undefined;

@@ -1,5 +1,7 @@
 # Product sources
 
+Latest review: [independent full UI/UX/feel pass — 16 opportunities and an implementation order](qa/INDEPENDENT_EXPERIENCE_REVIEW_2026-11-11.md). Review only; the proposed changes are not implemented.
+
 Latest teaching follow-up: [action-based learning without permanent captions](qa/ACTION_TUTORIAL_2026-11-11.md), based on the verified AZUR recording. Supersedes the proposal to enlarge service captions.
 
 Latest user-feedback follow-up: [compact edge-aligned UI and remaining UX priorities](qa/COMPACT_LAYOUT_2026-11-11.md). Source branch follow-up to the delivered 0.8.0; see its verification/integration status.

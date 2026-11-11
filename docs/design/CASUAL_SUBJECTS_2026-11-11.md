@@ -1,5 +1,7 @@
 # Casual card subjects — 2026-11-11
 
+**Approved and implemented throughout the 33-subject set as [0.9.1/code 13](../art/CASUAL_SUBJECTS_0_9_1.md).** The prototype evidence below is historical.
+
 Latest user feedback after the 0.9.0 recordings: the generated card subjects are too detailed; the drum is the explicit example. Treat this as a direction for a substantially simpler illustration set, preserving the existing card/UI materials and semantic subject identities.
 
 ## Visual direction
@@ -21,6 +23,6 @@ Prompt: style-transfer of the supplied drum; make it substantially simpler for a
 
 Comparison `asoc-casual-drum-comparison.png`: `libfile_d50db6f7130881919b2941ce3939c60b`. It shows actual production-rendered cards enlarged ×3, rather than a mock card. Local file: `/workspace/scratch/50187ffca82b/asoc-media/asoc-casual-drum-comparison.png`.
 
-Probe `.recording/casual-subjects/probe.ts` found a reachable open drum in campaign level 12 (`music_2`). It loaded the same saved state for before/after and temporarily intercepted only the drum asset request for the candidate. Actual card and picture reader both render, there are no page errors and the saved board stays unchanged. No runtime source, mapping, rules, economy or shipped asset was modified; the delivered APK remains 0.9.0 with its original set. This is a direction sample, not a claimed whole-set replacement or a new release.
+Probe `.recording/casual-subjects/probe.ts` found a reachable open drum in campaign level 12 (`music_2`). It loaded the same saved state for before/after and temporarily intercepted only the drum asset request for the candidate. Actual card and picture reader both render, there are no page errors and the saved board stays unchanged. At the prototype checkpoint no runtime source, mapping, rules, economy or shipped asset had changed; the delivered APK was still 0.9.0. The full set is now delivered in 0.9.1 above. This was a direction sample at that checkpoint; the completed whole-set delivery is linked above.
 
 The existing helicopter and shirt were also visually inspected: metallic highlights/fine hardware and fabric/button/stitch detail are the same problem. Use this simpler direction consistently when replacing subject art; keep the 33 unique semantic subjects and all original reference mappings intact.

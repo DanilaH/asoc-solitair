@@ -1,5 +1,7 @@
 # Generated art kit — 0.8.0
 
+The 33 subject illustrations described here are superseded by the approved [simpler 0.9.1 set](CASUAL_SUBJECTS_0_9_1.md). The 16 UI/material resources remain in use. Keep this page as provenance for the original kit, not as the current subject style brief.
+
 All new artwork was produced using built-in image generation on 2026-11-10. Existing linked-card emblem and the proposed concept board are style references; competitor screenshots are not shipped assets. Normalized production briefs are recorded below. The original generation PNGs and per-cell export metadata are preserved separately as the source bundle below. Only optimized `public/art/generated/*.webp` files ship in the app.
 
 Source bundle: `libfile_3cdd278696848191ba22d7c9a5fa8a7a`, `asoc-solitair-0.8.0-art-sources.zip` . It preserves all nine final source PNG outputs, including alpha, the export script and crop/SHA metadata. Non-shipping WebP previews under docs/art/masters are intentionally ignored; the source PNG archive is authoritative. Runtime sprites and export metadata are committed in Git.

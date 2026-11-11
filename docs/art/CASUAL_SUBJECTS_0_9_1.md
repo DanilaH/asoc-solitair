@@ -17,4 +17,20 @@ Only the 33 canonical `public/art/generated/<subject>.webp` files are replaced. 
 
 Reproduce gallery: `npx vite build --ssr tools/record-casual-art.ts --outDir .recording/casual-gallery-source` then `ASOC_QA_DIST=dist node .recording/casual-gallery-source/record-casual-art.js`. Optional `ASOC_ART_BASELINE` points to the original 49 WebP files for paired baseline captures. Local immutable final build is `.recording/casual-091-dist`; card evidence `.recording/casual-art-evidence`.
 
-Integration/native compilation and final persistent artifact identities are still pending at this source checkpoint; do not mistake the earlier 0.9.0 APK for the new artwork.
+## Integration and delivered files
+
+[PR #14](https://github.com/DanilaH/asoc-solitair/pull/14) merged at `38ec02095d8ac12cdf24d0026587b18e6e2d9211`; source `55a43cdab89ba0d4b5fa5bee6ecc4a88efbb5d0d`. Source and merge have identical trees. [Source CI](https://github.com/DanilaH/asoc-solitair/actions/runs/43024135024) passes typecheck/unit/content/build, the 191-state rendered layout audit and Android debug/signature plus unsigned SDK-disabled R8 release compilation. Its broad repeated browser gameplay run was still executing at delivery; no full-workflow green status is claimed. The app JS/CSS/HTML/worker bytes are unchanged from 0.9.0, whose complete gameplay CI passed; the changed pictures have the independent focused and full-subject acceptance above.
+
+[Default-branch run](https://github.com/DanilaH/asoc-solitair/actions/runs/43024859543), Android job `130536902862` PASS, artifact `13855839486`, supplies the delivered APK. All 94 production files byte-match the final build and the APK is byte-identical to the checked branch artifact `13856702105`. Binary manifest decode and CI signature verification pass. `com.danilah.asocsolitair.debug`, 0.9.1/code 13, 10,313,440 bytes; SHA256 `7fa5f9a27e7ec0d3ff50e1fed0aafa69d2ff633e707ce1dcdc78ec1d83338547`. Certificate `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e` matches the preceding preview, so it can update that test app without uninstalling it.
+
+Production-touch first win/Next and reachable dense category completion/next action during its tail/Undo/pause recordings PASS with the new artwork. The delivered dense GIF trims the first 1.35s of setup without playback acceleration.
+
+All five persistent writes succeeded and local identity was applied:
+
+- `asoc-0.9.1-card-comparison.png`: `libfile_b30a34588ab8819194aa59a53fd683a5`.
+- `asoc-0.9.1-all-cards.png`: `libfile_805e919ec4988191ad8ce07b64610eb3`.
+- `asoc-0.9.1-dense.gif`: `libfile_d37b3acfbdbc81919ede2530e7fcb08a`.
+- `asoc-solitair-0.9.1-debug.apk`: `libfile_15558f9dcb6c8191a1feea4e73595421`.
+- `asoc-solitair-0.9.1-art-sources.zip`: `libfile_b340685148e48191b4d80c5bbc54c08c`.
+
+The source bundle is 30,618,929 bytes and preserves all 33 selected PNG masters, prompts, reference and exporter. Neither raw masters nor APKs/dist are committed into Git. Physical-phone readability/comfort/FPS/audio/haptics/native/live-SDK acceptance and production signing/store publication remain outside this artwork delivery.

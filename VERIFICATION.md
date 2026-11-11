@@ -1,6 +1,17 @@
 # Verification — 2026-11-09
 
-## Latest verified delivery — 0.9.0 / code 12
+## Latest verified art delivery — 0.9.1 / code 13
+
+[PR #14](https://github.com/DanilaH/asoc-solitair/pull/14), source `55a43cdab89ba0d4b5fa5bee6ecc4a88efbb5d0d`, merge `38ec02095d8ac12cdf24d0026587b18e6e2d9211`. All 33 subjects replaced in the approved simplified style; 35 references and 16 UI/materials preserved. [Complete scope and provenance](docs/art/CASUAL_SUBJECTS_0_9_1.md). Local acceptance PASS: 65 unit/platform tests/all frozen witnesses/four-layout bounds/build; six art/repaint/reader browser cases; 99 real card captures and 66 normal reader checks for all 33 subjects on two viewports; real touch win/Next and dense completion/next move/Undo/pause. Production JS/CSS/HTML/worker files exactly match the fully tested 0.9.0 code; only 33 images change.
+
+[Source CI](https://github.com/DanilaH/asoc-solitair/actions/runs/43024135024) check/layout/Android steps PASS (191 layout states). Its broad repeated gameplay run and the duplicate main web run remain pending at this delivery snapshot; no full-workflow success is claimed. New picture acceptance is established by the focused/full-subject checks above.
+
+[Main artifact run](https://github.com/DanilaH/asoc-solitair/actions/runs/43024859543), Android job `130536902862` PASS, artifact `13855839486`. APK byte-identical to the checked branch APK; all 94 expected production files match the final build; independent binary manifest decode and CI apksigner verification pass. `com.danilah.asocsolitair.debug`, 0.9.1/code 13, 10,313,440 bytes; SHA256 `7fa5f9a27e7ec0d3ff50e1fed0aafa69d2ff633e707ce1dcdc78ec1d83338547`. Certificate `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e` matches the preceding preview, so it can update that test app without uninstalling it.
+
+Persistent APK `libfile_15558f9dcb6c8191a1feea4e73595421`; actual card comparison `libfile_b30a34588ab8819194aa59a53fd683a5`; all 33 actual cards `libfile_805e919ec4988191ad8ce07b64610eb3`; dense GIF `libfile_d37b3acfbdbc81919ede2530e7fcb08a`; all original masters/prompts/exporter archive `libfile_b340685148e48191b4d80c5bbc54c08c`. All five succeeded with local identity applied. No physical-device/live SDK or production publication claim.
+
+
+## Previous verified delivery — 0.9.0 / code 12
 
 [PR #13](https://github.com/DanilaH/asoc-solitair/pull/13) merged at `5d45b2013af259bcee7ecb84f1640d1faaf07ae6`. Exact runtime source `16d8ee3301bdae4e4bafb26f0585fad592fe8da0`; [CI 42990409658](https://github.com/DanilaH/asoc-solitair/actions/runs/42990409658) fully PASS: **65** unit/platform tests, every frozen witness/four-layout bounds, **191** rendered states with zero issues, **96** browser scenarios and four deliberate duplicate compact chapter skips, debug/signature and unsigned SDK-disabled R8 release compilation. Final versioned targeted local browser run adds 22 passes. [Scope and evidence](docs/qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md).
 

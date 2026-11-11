@@ -1,6 +1,8 @@
 # Product sources
 
-Current delivery: [four-package UI/UX/feel implementation — 0.9.0/code 12](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). All four packages are merged; exact-source full web/Android CI passes and the default-branch APK/media are delivered. Physical-device acceptance remains open.
+Current art delivery: [all 33 casual subject illustrations — 0.9.1/code 13](art/CASUAL_SUBJECTS_0_9_1.md). Approved drum style applied throughout; real-card comparisons, full-subject reader checks, native builds and delivered APK/source bundle are recorded there.
+
+UI/UX base: [four-package UI/UX/feel implementation — 0.9.0/code 12](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). All four packages are merged; exact-source full web/Android CI passes and the default-branch APK/media are delivered. Physical-device acceptance remains open.
 
 Pre-implementation review: [independent full UI/UX/feel pass — 16 opportunities and an implementation order](qa/INDEPENDENT_EXPERIENCE_REVIEW_2026-11-11.md). Findings that led to the implementation above; see its current status.
 
@@ -8,7 +10,7 @@ Latest teaching follow-up: [action-based learning without permanent captions](qa
 
 Latest user-feedback follow-up: [compact edge-aligned UI and remaining UX priorities](qa/COMPACT_LAYOUT_2026-11-11.md). Source branch follow-up to the delivered 0.8.0; see its verification/integration status.
 
-Current presentation implementation: [generated art kit — implemented 0.8.0 and passing CI](qa/GENERATED_ART_0_8_0.md), with [resource provenance and source bundle](art/GENERATED_ART_0_8_0.md). Verification and delivery status are explicit in that checkpoint.
+Base materials/UI art: [generated art kit — implemented 0.8.0 and passing CI](qa/GENERATED_ART_0_8_0.md), with [resource provenance and source bundle](art/GENERATED_ART_0_8_0.md). Verification and delivery status are explicit in that checkpoint.
 
 Latest presentation research: [cohesive art-system review after 0.7.1](design/ART_SYSTEM_REVIEW_2026-11-10.md). Historical research behind the generated art implementation; see the current 0.8.0 evidence above.
 

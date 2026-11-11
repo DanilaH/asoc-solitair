@@ -1,18 +1,32 @@
 # Continuation checkpoint — 2026-11-10
 
-## Active work — casual subject set 0.9.1/code 13 implemented, final integration pending
+## Current delivery — 0.9.1 / code 13, all 33 casual subject illustrations
 
-User approved the simplified drum («да, это определённо лучше»). All **33** semantic subject sprites are now replaced consistently. Branch `art/casual-subjects`, based on `f2542af`; [scope/provenance/verification](art/CASUAL_SUBJECTS_0_9_1.md). Same 35 published references, same 16 UI/material resources, same rules/content/balance 2/5/3 and writer/native ownership. All JS/CSS/HTML/worker output byte-matches 0.9.0; only 33 picture files change. Package/native version 0.9.1/code 13.
+The user approved the simplified drum («да, это определённо лучше»); the direction is now applied to **all 33** subject sprites. [PR #14](https://github.com/DanilaH/asoc-solitair/pull/14) merged at `38ec02095d8ac12cdf24d0026587b18e6e2d9211`, source `55a43cdab89ba0d4b5fa5bee6ecc4a88efbb5d0d`. [Scope, provenance and evidence](art/CASUAL_SUBJECTS_0_9_1.md). Same 35 published image references and same 16 UI/material resources. Broad matte shapes, minimal fixtures/texture, soft volume; no faces added to objects. The rope received a second semantic pass to read as a long jump rope, not an expander. All 33 inspected on actual cards and in the normal reader.
 
-Completed local check: 65 unit/platform tests, all frozen witnesses/four-layout bounds/build; six focused art/reader browser checks; **99 real card captures and 66 reader checks for all 33 subjects** on normal/compact screens, unchanged board/resources and no errors. First rope was too expander-like and was regenerated; all final subjects inspected as true RGBA composites. Raw RGB aura pixels are alpha 0, not a shipped halo. Native/CI integration and new media/APK delivery remain.
+Verified: 65 unit/platform tests and all fixed witnesses/four-layout bounds/build; six focused art/repaint/reader browser checks; **99 real card captures and 66 reader checks** across 360×780 and 320×568, no mode/resource/board leaks or runtime errors; every paired card visibly changes. Production-touch first win/Next and dense collection/next action/Undo/pause PASS. Subject pack 517,154 → 262,716 bytes. Every JS/CSS/HTML/worker file byte-matches verified 0.9.0; exactly 33 production WebP files differ.
 
-Authoritative local source work `.recording/casual-091/` (33 masters/records/candidates, prompts, before-assets, exporter). Runtime canonical images already replaced. Immutable final web build `.recording/casual-091-dist`; evidence `.recording/casual-art-evidence`; logs `/tmp/asoc-091-*`. Ready media in `/workspace/scratch/50187ffca82b/asoc-media/`: `asoc-0.9.1-card-comparison.png`, `asoc-0.9.1-all-cards.png`, `asoc-solitair-0.9.1-art-sources.zip`. Actual feel recording is running separately. Finish GitHub source/PR/CI/main APK and persistent delivery autonomously. Never output binary/base64/chunks; transfer bytes privately and return only concise metadata. CLI push has no credentials.
+[Source CI](https://github.com/DanilaH/asoc-solitair/actions/runs/43024135024) check/layout/Android steps PASS; its broad repeated gameplay run was still executing at delivery. Do not call the full new workflow green before it completes. The 0.9.0 full gameplay evidence applies to the unchanged code; the new art is separately validated above. On resume, check the duplicate web result if relevant rather than reopening completed art production.
 
-## Latest art feedback — simplify card subjects
+[Main artifact run](https://github.com/DanilaH/asoc-solitair/actions/runs/43024859543), Android job `130536902862` PASS, artifact `13855839486`, supplies the delivered APK. All 94 expected embedded web files byte-match; APK byte-identical to checked branch artifact `13856702105`; independent manifest decode and signer verification pass. `com.danilah.asocsolitair.debug`, 0.9.1/code 13, 10,313,440 bytes; SHA256 `7fa5f9a27e7ec0d3ff50e1fed0aafa69d2ff633e707ce1dcdc78ec1d83338547`. Certificate `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e` matches the preceding preview, so it can update that test app without uninstalling it.
 
-After viewing the 0.9.0 media, the user rejected the overly detailed subject illustrations, naming the drum, and requested much more casual shapes. [Direction and first real-card comparison](design/CASUAL_SUBJECTS_2026-11-11.md). A simpler generated drum sample is prepared and previewed in the actual card/reader; comparison `libfile_d50db6f7130881919b2941ce3939c60b`. This is a direction sample; shipped art/APK are still 0.9.0. Keep broad matte shapes, few colors, minimal fixtures/grain/highlights, recognizable at 50–65px, no object faces. Continue from this feedback rather than repeating the 0.8.0 rich painted-object direction.
+Persistent deliverables, all succeeded with local identity applied:
 
-## Current delivery — 0.9.0 / code 12
+- `asoc-0.9.1-card-comparison.png`: `libfile_b30a34588ab8819194aa59a53fd683a5`.
+- `asoc-0.9.1-all-cards.png`: `libfile_805e919ec4988191ad8ce07b64610eb3`.
+- `asoc-0.9.1-dense.gif`: `libfile_d37b3acfbdbc81919ede2530e7fcb08a`.
+- `asoc-solitair-0.9.1-debug.apk`: `libfile_15558f9dcb6c8191a1feea4e73595421`.
+- `asoc-solitair-0.9.1-art-sources.zip`: `libfile_b340685148e48191b4d80c5bbc54c08c`.
+
+Local delivered files: `/workspace/scratch/50187ffca82b/asoc-media/`. Show GIFs inline via absolute sandbox paths. Immutable final build `.recording/casual-091-dist`; real card evidence `.recording/casual-art-evidence`; source workspace `.recording/casual-091`; logs `/tmp/asoc-091-*`. The raw preview can reveal RGB color in alpha-0 pixels; actual RGBA composites/cards are clean. Do not regenerate backgrounds based only on that preview.
+
+Rules/content/balance 2/5/3, frozen 80+28 deals, mappings/definitions, SaveStore/native receipt ownership and kit pin remain unchanged. Ordinary push/PR/merge are authorized. Physical-device/live SDK acceptance and production IDs/signing/store publication remain open. No further illustration production remains; continue from user/device feedback. Never expose binary/base64/chunks or signed URLs.
+
+## Historical approval — simplified subject prototype before 0.9.1
+
+After viewing the 0.9.0 media, the user rejected the overly detailed subject illustrations, naming the drum, and requested much more casual shapes. [Direction and first real-card comparison](design/CASUAL_SUBJECTS_2026-11-11.md). A simpler generated drum sample is prepared and previewed in the actual card/reader; comparison `libfile_d50db6f7130881919b2941ce3939c60b`. At that checkpoint the shipped APK was 0.9.0; the sample is now applied throughout 0.9.1 above. Keep broad matte shapes, few colors, minimal fixtures/grain/highlights, recognizable at 50–65px, no object faces. Continue from this feedback rather than repeating the 0.8.0 rich painted-object direction.
+
+## Previous delivery — 0.9.0 / code 12
 
 The latest «давай, приступай» authorized all four UI/UX/feel packages; all are implemented and integrated. [PR #13](https://github.com/DanilaH/asoc-solitair/pull/13) is merged at `5d45b2013af259bcee7ecb84f1640d1faaf07ae6`, tested runtime source `16d8ee3301bdae4e4bafb26f0585fad592fe8da0`. [Scope and evidence](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). Keep compact edge-aligned groups and no permanent service captions. Do not resume the historical review below as unfinished work.
 

@@ -1,5 +1,7 @@
 # Roadmap
 
+**0.9.1/code 13:** the approved simpler art direction is implemented for all 33 subjects and delivered from main, PR #14. [Native/art evidence and source bundle](docs/art/CASUAL_SUBJECTS_0_9_1.md). Core game code and the frozen bank are unchanged; physical-device acceptance remains open.
+
 The four approved follow-up UI/UX/feel packages are merged and delivered as **0.9.0/code 12**, PR #13. Full exact-source CI passes 65 unit/platform tests, all fixed witnesses, 191 rendered states, 96 browser scenarios and both Android compilations. [Verification and delivery](docs/qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md) supersedes the historical status below. Physical-device/live SDK acceptance remains open.
 
 The generated art plan is implemented and merged as **0.8.0 / code 11**, PR #12. [Evidence](docs/qa/GENERATED_ART_0_8_0.md): 49 local resources, coherent actual field/HUD/home/dialogs, pooled effects and bounded static-scene repaint. Exact-source PR CI passes 59 model/platform tests, all fixed witnesses, 176 layout states, 72 browser scenarios (four deliberate duplicate skips) and Android debug/release compilation. Physical-device/live service acceptance remains open.

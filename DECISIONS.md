@@ -86,3 +86,7 @@ CI explicitly creates/restores a standard development-only key at a runner-temp 
 ## 2026-11-11 — approved simplified subject set, 0.9.1
 
 Apply the user-approved drum's broad matte shapes and low detail consistently across all 33 card subjects. Keep all published semantic identities/reference URLs, the 16 UI/material sprites and the renderer/domain code unchanged. Validate actual card-sized RGBA composites and every normal picture reader, rather than judging only large source previews; alpha-zero source RGB can look like an aura in preview. Preserve selected original PNGs, exact prompt bases and crop/hash metadata in a source bundle. The jump rope retains a long loose cord and short handles to avoid confusion with an expander. Package/native release 0.9.1/code 13 only; rules/content/balance remain 2/5/3.
+
+## 2026-11-11 — gameplay audit scope and recommendation, not implementation
+
+User requested independent assessment before large changes. [Audit](docs/qa/GAMEPLAY_PRODUCT_AUDIT_2026-11-11.md) selects offline semantic/strategic novelty assessment and bounded experimentation; it rejects scope expansion into runtime Directors/new meta. A paid Hint fallback in a known UNSOLVABLE state is reproduced and proposed as the first P1 fix. These are recommendations awaiting the next implementation instruction. Preserve compact layout, casual art, 80+28 fixed bank, versions 2/5/3, SaveStore and SDK settings. Agent play/simulation is not human enjoyment or retention evidence.

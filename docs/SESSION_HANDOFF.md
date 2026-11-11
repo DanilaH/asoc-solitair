@@ -1,5 +1,15 @@
 # Continuation checkpoint — 2026-11-10
 
+## Latest work — independent gameplay audit, no runtime implementation
+
+User requested a research-based independent audit and concrete plan, explicitly before large implementation. [Complete report](qa/GAMEPLAY_PRODUCT_AUDIT_2026-11-11.md), with machine evidence under `qa/gameplay-audit-2026-11-11/` and reproducible tools `tools/audit-gameplay.ts`, `tools/qa/gameplay-oracle.ts`, `tools/record-gameplay-audit.ts`.
+
+Runtime reviewed: main `1f98d0360d61a313e014eaaf0309aa39c304cf94`, unchanged 0.9.1/code 13. Research corpus: kit main `60af6eeab4532e7f165c8d46665688a457b171fa` (not a dependency update). All 108 witnesses independently replay; 14953 legal transitions agree with production; 1728 simulated runs with four policies. Agent chose actual touch routes for levels 6/35/64 without winningPath/solver: 22/10/12 moves, not a human playtest. Level 19 foundation/seed-1 step 37: eight moves left, both searches UNSOLVABLE, real UI still spends Hint 3→2 and shows a whole-packet move into an empty column. Confirmed P1 proposed fix, not implemented. Other findings: recurring theme schedule, long open tails, simple ordered teaching, a utensil/dishes semantic boundary, no new member captions in 63–80. No claim that these structural findings prove human boredom.
+
+Next recommendation: trustworthy Hint outcomes and precise category context in the existing reader; then 4–6 separate QA content prototypes and a small human pilot. Do not silently replace campaign, move IDs, change economy or build Directors. No runtime/src/public/native/package changes in this audit. Existing physical-device/live SDK/production-signing/publication gates remain open.
+
+0.9.1 main CI `43024859543` has now completed successfully: web `130536902562`, Android `130536902862`. The pending-at-delivery wording below is a historical snapshot; both job conclusions were refreshed during this audit. This audit adds no native build requirement and delivers no new APK.
+
 ## Current delivery — 0.9.1 / code 13, all 33 casual subject illustrations
 
 The user approved the simplified drum («да, это определённо лучше»); the direction is now applied to **all 33** subject sprites. [PR #14](https://github.com/DanilaH/asoc-solitair/pull/14) merged at `38ec02095d8ac12cdf24d0026587b18e6e2d9211`, source `55a43cdab89ba0d4b5fa5bee6ecc4a88efbb5d0d`. [Scope, provenance and evidence](art/CASUAL_SUBJECTS_0_9_1.md). Same 35 published image references and same 16 UI/material resources. Broad matte shapes, minimal fixtures/texture, soft volume; no faces added to objects. The rope received a second semantic pass to read as a long jump rope, not an expander. All 33 inspected on actual cards and in the normal reader.

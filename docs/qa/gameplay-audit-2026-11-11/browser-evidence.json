@@ -1,0 +1,65 @@
+{
+  "runtime": "0.9.1, immutable delivered dist",
+  "evidence": [
+    {
+      "name": "hint",
+      "beforeHints": 3,
+      "afterHints": 2,
+      "moves": 8,
+      "unchangedBoard": true,
+      "message": "Допустимый ход · продолжение не гарантировано",
+      "oracle": {
+        "status": "UNSOLVABLE",
+        "visited": 284,
+        "length": null
+      }
+    },
+    {
+      "name": "semantics",
+      "beforeMoves": 27,
+      "afterMoves": 27,
+      "beforeStreak": 1,
+      "afterStreak": 0,
+      "message": "Это другая категория"
+    },
+    {
+      "name": "tail",
+      "level": 13,
+      "fixtureWitnessPrefix": 22,
+      "recordedMoves": 8,
+      "remainingKnownTail": 9,
+      "note": "17 witness transfers after last draw/tableau reveal, not proof that no strategic choices remain."
+    },
+    {
+      "name": "packets",
+      "level": 64,
+      "steps": 12,
+      "phase": "won",
+      "note": "Real-touch replay of independently selected visible-state agent route; no human enjoyment claim."
+    }
+  ],
+  "errors": [],
+  "sourceHead": "1f98d0360d61a313e014eaaf0309aa39c304cf94",
+  "media": [
+    {
+      "file": "asoc-audit-hint.gif",
+      "bytes": 1721170,
+      "sha256": "772ec5f0825e25cc75e944156b386564d64221cf513be483cba9995a8025bfcc"
+    },
+    {
+      "file": "asoc-audit-packets.gif",
+      "bytes": 3765064,
+      "sha256": "2b01a692a0db706c4ee25f5dc57fc5726b25bab76750f32c4a195a0ba8269e92"
+    },
+    {
+      "file": "asoc-audit-semantic-rejection.png",
+      "bytes": 191013,
+      "sha256": "b117a849a1eebc9b480115e172a85e63075dcb215ef891f433b192ab84f8049c"
+    },
+    {
+      "file": "asoc-audit-open-tail.gif",
+      "bytes": 2943664,
+      "sha256": "9845c95a920ffd41086fa1c711107e873c91f877d926ea602d8a725424c2d16e"
+    }
+  ]
+}

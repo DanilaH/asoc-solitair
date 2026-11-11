@@ -1,5 +1,7 @@
 # Roadmap
 
+**Gameplay audit (review only):** [findings and priority plan](docs/qa/GAMEPLAY_PRODUCT_AUDIT_2026-11-11.md). Proposed next package: reliable Hint outcomes, semantic boundaries in the existing reader, then isolated content prototypes/human pilot. Runtime Directors, bank replacement and new meta are not selected. None of these proposed changes is implemented in this audit.
+
 **0.9.1/code 13:** the approved simpler art direction is implemented for all 33 subjects and delivered from main, PR #14. [Native/art evidence and source bundle](docs/art/CASUAL_SUBJECTS_0_9_1.md). Core game code and the frozen bank are unchanged; physical-device acceptance remains open.
 
 The four approved follow-up UI/UX/feel packages are merged and delivered as **0.9.0/code 12**, PR #13. Full exact-source CI passes 65 unit/platform tests, all fixed witnesses, 191 rendered states, 96 browser scenarios and both Android compilations. [Verification and delivery](docs/qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md) supersedes the historical status below. Physical-device/live SDK acceptance remains open.

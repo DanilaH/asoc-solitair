@@ -91,7 +91,7 @@ for (const level of [3, 17]) test(`level ${level}: bottom deck works on both sid
   }
   await place('left');
   const beforeHint = await read(page); await page.locator('#hint').tap();
-  await expect(page.locator('#message')).toBeEmpty();
+  await expect(page.locator('#hint')).toBeEnabled(); await expect(page.locator('#message')).toBeEmpty();
   expect((await read(page)).attempt.board).toEqual(beforeHint.attempt.board);
   await move(page, deal, deal.winningPath[0]);
   if (level === 17) {

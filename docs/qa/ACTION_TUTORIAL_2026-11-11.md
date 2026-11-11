@@ -39,3 +39,5 @@ No new APK, native-device readability/FPS/sound/haptic/inset check or production
 GIF and screenshot use the final runtime build, not a design concept. The GIF trims only 1.2s of initial loading/entry.
 
 Repository follow-up is [PR #13](https://github.com/DanilaH/asoc-solitair/pull/13). Local checks above pass; the updated PR CI and Android builds are pending, and this source has not been delivered as a new APK.
+
+Final regression follow-up: the broader preliminary run finished 51 passes, four deliberate duplicate compact chapter skips and one compact Joker test failure. Its former wait on the removed hint caption became an immediate empty-string assertion and no longer waited for the asynchronous hint. The three affected tests now wait for Hint to become enabled again. All six exact-runtime phone/compact reruns pass (free Hint, Joker/Undo/reload, both-side bottom deck). Gameplay assertions and timeouts were preserved; no runtime change was needed.

@@ -1,6 +1,6 @@
 # Product sources
 
-Current work: [four-package UI/UX/feel implementation — 0.9.0](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). All four packages are implemented; final integration and Android verification are tracked there.
+Current delivery: [four-package UI/UX/feel implementation — 0.9.0/code 12](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). All four packages are merged; exact-source full web/Android CI passes and the default-branch APK/media are delivered. Physical-device acceptance remains open.
 
 Pre-implementation review: [independent full UI/UX/feel pass — 16 opportunities and an implementation order](qa/INDEPENDENT_EXPERIENCE_REVIEW_2026-11-11.md). Findings that led to the implementation above; see its current status.
 

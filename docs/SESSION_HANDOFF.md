@@ -1,22 +1,35 @@
 # Continuation checkpoint — 2026-11-10
 
-## Active implementation — all four UI/UX/feel packages authorized
+## Current delivery — 0.9.0 / code 12
 
-Latest user instruction: «давай, приступай» approves the concrete four-package plan. Work is ongoing on `ux/compact-edge-layout`; [implementation progress and outstanding scope](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). All four packages are implemented locally for 0.9.0/code 12: 65 unit/platform tests, all fixed witnesses, 46 focused browser passes and 191 independent layout states with zero issues. Finish final exact-source checks, real-input media, full CI/Android and integration. Do not mistake the older review-only notes below for the current task or stop at package 1. No new APK has been delivered for this work yet.
+The latest «давай, приступай» authorized all four UI/UX/feel packages; all are implemented and integrated. [PR #13](https://github.com/DanilaH/asoc-solitair/pull/13) is merged at `5d45b2013af259bcee7ecb84f1640d1faaf07ae6`, tested runtime source `16d8ee3301bdae4e4bafb26f0585fad592fe8da0`. [Scope and evidence](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). Keep compact edge-aligned groups and no permanent service captions. Do not resume the historical review below as unfinished work.
 
-## Latest request — independent UI/UX/feel review
+[Exact-source CI 42990409658](https://github.com/DanilaH/asoc-solitair/actions/runs/42990409658) is fully PASS: 65 unit/platform tests, all fixed control/80 campaign/28 daily witnesses/four-layout bounds, 191 rendered layout states with zero DOM/raster issues, 96 browser scenarios plus four deliberate duplicate compact chapter skips, debug/signature and unsigned SDK-disabled R8 release compilation. Final local targeted versioned browser run: 22 PASS. Real production-touch first win/Next and reachable dense collection/next move/Undo/pause recordings PASS. No further runtime edits followed that source.
+
+[Main artifact run](https://github.com/DanilaH/asoc-solitair/actions/runs/42993165713), Android job `130430688147` PASS, artifact `13842966512`, supplies the delivered APK. It is byte-identical to the checked branch APK; all 94 expected embedded production web files match the final local build. Package `com.danilah.asocsolitair.debug`, 0.9.0/code 12, 10,567,872 bytes; SHA256 `8b8c4c596bb95ac8fe2fed72931c1acda5696e741b72641a4fa1c7eb67cd665b`. Preview certificate `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e` matches 0.8.0, allowing an update without uninstalling the existing test app. The repeated main web run was still in progress at delivery; full PR evidence applies to the identical runtime.
+
+Persistent deliverables:
+
+- `asoc-0.9.0-first.gif`: `libfile_b6123bd4bf0c819191cf708a1afe8f8b`.
+- `asoc-0.9.0-dense.gif`: `libfile_85c9d3da45148191bde17c388aab10ef`.
+- `asoc-0.9.0-preview.png`: `libfile_efd0a032023c8191a6229e8e02c8ab96`.
+- `asoc-solitair-0.9.0-debug.apk`: `libfile_7d7057cbf95481918b492ad8661b2926`.
+
+Local copies: `/workspace/scratch/50187ffca82b/asoc-media/`; show GIFs inline with absolute sandbox paths. Rules/content/balance 2/5/3, frozen 80+28 bank, kit pin, single SaveStore writer and native receipt ownership remain unchanged. Ordinary push/PR/merge are authorized. Physical-phone comfort/readability/FPS/sound/haptics/native insets/background and live SDK acceptance remain open; production IDs/signing/store publication stay deferred. Resume from this implemented version and actual phone feedback. Never print binaries/encoded chunks or signed URLs.
+
+## Historical input — independent UI/UX/feel review before 0.9.0
 
 The user requested a fresh whole-project review. [Findings and implementation order](qa/INDEPENDENT_EXPERIENCE_REVIEW_2026-11-11.md), with concise measured evidence next to it, cover the current `f200d42` runtime. Current source CI [42980025806](https://github.com/DanilaH/asoc-solitair/actions/runs/42980025806) is fully green (web and Android); PR #13 remains open. This pass changes documentation only and does not claim the next improvements are implemented. Priorities: core card-title readability, picture inspection/mode exit, context-specific helper offers and failure recovery hierarchy; then drag/Hint/Undo feel, teaching pacing and first modifier introductions, rewards and menu hierarchy. Keep the user's compact-edge/no-service-caption direction. See the review's acceptance criteria before starting that scope.
 
-## Latest user correction — no permanent service captions
+## Historical input — no permanent service captions
 
 The user rejected service captions and asked to borrow real-game onboarding. See [action-based teaching](qa/ACTION_TUTORIAL_2026-11-11.md). On the same compact-layout PR: removed ambient home/field prose and recurring modifier paragraphs; the first two unfinished deals now use source/target outlines and an original animated hand, advancing after real actions. Existing first-use helper attention points at the actual control. Static reduced-motion cue, pause/inspect/resize cleanup and restoration are verified by actual painted-pixel browser checks. No domain/save/economy/unlock/content/native/release-version changes; the delivered APK remains 0.8.0. Do not revive the older proposal to enlarge these captions. Local final-source checks pass: 61 unit/platform tests, all fixed witnesses/four-layout bounds, 30 focused phone/compact browser scenarios (including actual hand-pixel and reduced-motion checks), 176-state independent DOM/raster audit with zero violations and fresh production-touch first win/Next plus dense completion/Undo/pause. [PR #13](https://github.com/DanilaH/asoc-solitair/pull/13) is updated; CI/Android integration is pending, and no new APK is claimed. Actual guide GIF: `libfile_0a557479a4d081919a606e1f2760a4a7`; screenshot: `libfile_7e021f2cfcdc819180b8fddf015c3804`.
 
-## Latest presentation follow-up — compact edge-aligned UI
+## Historical input — compact edge-aligned UI
 
 The user requested compact groups against an edge and a fresh UX review. Implemented on `ux/compact-edge-layout`: left-aligned two/three-column rows and foundations, left-anchored height-constrained boards, properly spaced stock/waste pair, grouped helper dock with a full-size card reader, grouped home events, larger menu/close targets and compact pause navigation. No domain/content/economy/save/native or release-version changes. The last delivered APK remains 0.8.0 below. See [scope, local checks and remaining UX priorities](qa/COMPACT_LAYOUT_2026-11-11.md); do not claim merge/CI/device acceptance from the local checks.
 
-## Current implementation — 0.8.0 / code 11
+## Previous delivery — 0.8.0 / code 11
 
 The user authorized the detailed art plan and ordinary repository operations. [PR #12](https://github.com/DanilaH/asoc-solitair/pull/12) is merged. Verified source `b0ea1e50dac79c4a25823f263ee69f95fa479281`; main merge `3c28908f41f5f74bed7d869f3b29b8098192c4d4`. All A/B/C presentation work is implemented: 49 local generated resources (766,066 bytes), actual card/stock materials and both backs, 33 subject sprites covering 35 published references, matched HUD/helpers/home/all dialogs, pooled ribbon/spark/coin/key/lock/Joker art and stronger short-word readability. Both palettes/four deck placements and the 0.7.1 spatial structure remain. Actual raster QA caught a blank static scene on resize; a bounded repaint tail fixes it without continuous idle rendering. No domain/content/economy/SaveStore changes.
 
@@ -35,7 +48,7 @@ GIFs contain ordinary production touch input at 360×780; initial loading/fixtur
 
 ## Project and authorization
 
-Latest direct user instruction in this resumed thread: «пользуйся репой как своей. Давай подробный план, чё делать будем». This renews authorization for ordinary repository writes/push/PR/merge. Detailed requested plan is in docs/design/ART_IMPLEMENTATION_PLAN_2026-11-10.md; current turn writes documentation only. No new runtime work is claimed.
+Latest direct user instruction in this resumed thread: «пользуйся репой как своей. Давай подробный план, чё делать будем». This renews authorization for ordinary repository writes/push/PR/merge. The earlier art plan is in docs/design/ART_IMPLEMENTATION_PLAN_2026-11-10.md. The subsequent four-package UI/UX/feel plan is implemented in 0.9.0; use the current checkpoint above.
 
 This is **Солитёр ассоциаций**, `DanilaH/asoc-solitair`, portrait Android/RuStore. Resume this game, not adjacent portfolio projects. Read AGENTS.md, docs/README.md and the normative product documents before extending scope.
 

@@ -1,11 +1,14 @@
 # Verification — 2026-11-09
 
-## 0.9.0 / code 12 — final integration in progress
+## Latest verified delivery — 0.9.0 / code 12
 
-All four approved UI/UX/feel packages are implemented; see [scope and evidence](docs/qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). Final versioned `npm run check` passes 65 unit/platform tests, every frozen control/80 campaign/28 daily witness and four-layout bounds, typecheck and production build. Combined pre-version runtime: 46 focused phone/compact browser scenarios pass; independent rendered audit covers 191 states (119 fields, 21 homes, 51 dialogs), zero DOM/raster issues. Final full browser/native CI and new media/APK delivery are pending. No physical-device or live SDK acceptance claimed.
+[PR #13](https://github.com/DanilaH/asoc-solitair/pull/13) merged at `5d45b2013af259bcee7ecb84f1640d1faaf07ae6`. Exact runtime source `16d8ee3301bdae4e4bafb26f0585fad592fe8da0`; [CI 42990409658](https://github.com/DanilaH/asoc-solitair/actions/runs/42990409658) fully PASS: **65** unit/platform tests, every frozen witness/four-layout bounds, **191** rendered states with zero issues, **96** browser scenarios and four deliberate duplicate compact chapter skips, debug/signature and unsigned SDK-disabled R8 release compilation. Final versioned targeted local browser run adds 22 passes. [Scope and evidence](docs/qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md).
 
+[Main run 42993165713](https://github.com/DanilaH/asoc-solitair/actions/runs/42993165713), Android job `130430688147` PASS, supplies artifact `13842966512`. Delivered APK byte-matches the checked branch APK; all **94** expected production web files match the final build. Independent binary manifest decode and CI signature check pass. Package `com.danilah.asocsolitair.debug`, 0.9.0/code 12, 10,567,872 bytes; SHA256 `8b8c4c596bb95ac8fe2fed72931c1acda5696e741b72641a4fa1c7eb67cd665b`. Preview certificate `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e` matches 0.8.0, allowing an update without uninstalling the existing test app.
 
-## Latest verified delivery — 0.8.0 / code 11
+Persistent APK `libfile_7d7057cbf95481918b492ad8661b2926`; first-touch GIF `libfile_b6123bd4bf0c819191cf708a1afe8f8b`; dense/Undo/pause GIF `libfile_85c9d3da45148191bde17c388aab10ef`; three-screen preview `libfile_efd0a032023c8191a6229e8e02c8ab96`. All four writes succeeded and local identity was applied. GIF setup trimmed 1.2s/1.35s without playback acceleration. The duplicate main web run is not yet claimed green; complete PR evidence applies to the byte-identical runtime. No physical-device/live SDK acceptance or production signing/publication claimed.
+
+## Previous verified delivery — 0.8.0 / code 11
 
 [PR #12](https://github.com/DanilaH/asoc-solitair/pull/12), exact source `b0ea1e50dac79c4a25823f263ee69f95fa479281`, main merge `3c28908f41f5f74bed7d869f3b29b8098192c4d4`. [PR CI 42882165012](https://github.com/DanilaH/asoc-solitair/actions/runs/42882165012) PASS: 59 model/platform tests, all fixed witnesses/four-layout bounds, 176 DOM/dialog/raster states with 0 violations, 72 browser scenarios plus four intentional duplicate skips, Android debug/signature and unsigned SDK-disabled R8 release compilation. See docs/qa/GENERATED_ART_0_8_0.md for scope and limitations.
 

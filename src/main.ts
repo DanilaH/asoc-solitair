@@ -348,7 +348,7 @@ try {
       }
       if (result.events.some(e => e.type === 'coins') && !result.events.some(e => e.type === 'win')) coinBurst();
       if (save.attempt.board.phase !== 'playing') {
-        clearTimeout(outcomeTimer); outcomeTimer = setTimeout(outcome, save.attempt.board.phase === 'won' ? 880 : 100);
+        clearTimeout(outcomeTimer); outcomeTimer = setTimeout(outcome, save.attempt.board.phase === 'won' ? 880 : save.settings.reducedMotion ? 100 : 380);
       }
     } else {
       scene?.cancel(); scene?.reject(['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined); runtime.play('invalid'); runtime.pulse('invalid');

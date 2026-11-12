@@ -7,7 +7,7 @@ import { WIDTH, boardFrame, cardMetrics, dragTarget, dropTarget, layout } from '
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Graphics }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; stripScale?: number; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Graphics }
 interface Options {
   deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene): void;
@@ -161,7 +161,7 @@ export class BoardScene extends Phaser.Scene {
     const b = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
     this.paintBack(b);
     back.add(b); node.add([shadow, face, back]); this.world.add(node);
-    return { node, face, back, badge, content, caption, strip, backArt: b, shadow };
+    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, stripScale: strip?.scaleX, backArt: b, shadow };
   }
   private paintBack(b: Phaser.GameObjects.Image) {
     const diamonds = this.options.getSave().settings.cardBack === 'diamonds';
@@ -214,8 +214,7 @@ export class BoardScene extends Phaser.Scene {
     this.stockArt.setVisible(deckActive); this.stockCount.setVisible(deckActive); this.stockLabel.setVisible(deckActive);
     this.stockArt.setPosition(stock.x, stock.y); this.paintBack(this.stockArt);
     this.stockArt.setVisible(deckActive && Boolean(board.stock.length));
-    const originalStock = this.options.deal.initial.stock.length + this.options.deal.initial.waste.length;
-    const thickness = board.stock.length > 1 ? 3 + 15 * Math.min(1, (board.stock.length - 1) / Math.max(1, originalStock - 1)) : 0;
+    const thickness = stock.thickness;
     this.stockLayers.forEach((layer, i) => {
       this.paintBack(layer);
       layer.setDepth(2 + i).setVisible(board.stock.length > i + 1).setPosition(stock.x, stock.y + thickness * (this.stockLayers.length - i) / this.stockLayers.length);
@@ -299,7 +298,13 @@ export class BoardScene extends Phaser.Scene {
       const rearWaste = board.waste.includes(pose.id) && board.waste.at(-1) !== pose.id;
       const band = rearWaste ? 22 : group < 0 ? this.cardH : Math.min(next ? next.y - pose.y : this.cardH, supportBelow ? support!.y - pose.y : this.cardH);
       const coveredCaption = band < this.cardH - 1;
-      if (view.strip instanceof Phaser.GameObjects.Text) view.strip.setFontSize(rearWaste ? 13 : 16).setY(-this.cardH / 2 + (rearWaste ? 1 : 7));
+      if (view.strip instanceof Phaser.GameObjects.Text) {
+        view.strip.setFontSize(16).setText(rearWaste ? def.leader ? categoryCaption(def.text) : def.text : view.stripText!).setOrigin(.5, rearWaste ? .5 : 0);
+        if (rearWaste) {
+          view.strip.setScale(Math.min(1, (this.cardH - 24) / Math.max(1, view.strip.width), 18 / Math.max(1, view.strip.height)));
+          view.strip.setAngle(save.settings.deckSide === 'left' ? -90 : 90).setPosition((save.settings.deckSide === 'left' ? -1 : 1) * (this.cardW / 2 - 11), 0);
+        } else view.strip.setAngle(0).setPosition(0, -this.cardH / 2 + 7).setScale(view.stripScale ?? 1);
+      } else if (view.strip) view.strip.setPosition(rearWaste ? (save.settings.deckSide === 'left' ? -1 : 1) * (this.cardW / 2 - 11) : 0, rearWaste ? 0 : -this.cardH / 2 + 11);
       view.content.setVisible(!coveredCaption); view.caption?.setVisible(!coveredCaption);
       view.strip?.setVisible(coveredCaption && pose.faceUp && band >= view.strip.height * view.strip.scaleY + (rearWaste ? 3 : 10));
       const fresh = entering && this.initial;
@@ -403,6 +408,7 @@ export class BoardScene extends Phaser.Scene {
   private hitTarget(x: number, y: number, forgiving = false): Target | null {
     return dropTarget(this.metrics.targets, x, y, forgiving ? 12 / this.cssUnit : 0);
   }
+  private get stockTarget() { const stock = this.metrics.stock; return { x: stock.x, y: stock.y + stock.thickness / 2, width: this.cardW, height: this.cardH + stock.thickness }; }
   private hitCard(x: number, y: number): Pose | undefined {
     return [...this.metrics.poses].sort((a, b) => b.depth - a.depth).find(p => this.views.get(p.id)!.node.visible && p.faceUp && inside(x, y, { x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y, width: this.cardW, height: this.cardH }));
   }
@@ -426,7 +432,7 @@ export class BoardScene extends Phaser.Scene {
     const chosenTarget = this.selected && target && !same(this.selected, target.location) ? target : null;
     const from = chosenTarget ? this.selected : source;
     const card = this.hitCard(x, y);
-    const stock = Boolean(board.stock.length || board.waste.length) && !chosenTarget && inside(x, y, { ...this.metrics.stock, width: this.cardW, height: this.cardH });
+    const stock = Boolean(board.stock.length || board.waste.length) && !chosenTarget && inside(x, y, this.stockTarget);
     if (stock && performance.now() < this.stockBusyUntil) return;
     const ids = from ? sourceCards(board, from, this.options.deal) : card ? [card.id] : [];
     this.press = { pointerId: pointer.id, toggle: Boolean(source && this.selected && same(source, this.selected)), from, x, y, moved: false, stock, inspectId: card?.id,
@@ -459,6 +465,7 @@ export class BoardScene extends Phaser.Scene {
     press.poses.forEach((pose, i) => {
       const view = this.views.get(pose.id)!;
       this.tweens.killTweensOf(view.node);
+      if (!press.from) { view.content.setVisible(true); view.caption?.setVisible(true); view.strip?.setVisible(false); }
       view.shadow.setPosition(0, 4 * progress).setScale(1 + .03 * progress);
       view.node.setPosition(pose.x + dx, pose.y + dy).setScale(1 + .035 * progress).setDepth(800 + i);
     });
@@ -491,7 +498,7 @@ export class BoardScene extends Phaser.Scene {
       return;
     }
     if (press.stock) {
-      if (inside(x, y, { ...this.metrics.stock, width: this.cardW, height: this.cardH }) && Math.hypot(x - press.x, y - press.y) < 11) {
+      if (inside(x, y, this.stockTarget) && Math.hypot(x - press.x, y - press.y) < 11) {
         this.selected = null; this.options.command({ type: this.options.getSave().attempt.board.stock.length ? 'draw' : 'recycle' });
       }
       return;

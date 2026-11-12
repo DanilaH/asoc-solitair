@@ -1,5 +1,13 @@
 # Continuation checkpoint — 2026-11-12
 
+## Latest work — independent rules audit, corrections pending
+
+Owner noticed the actual level-6 GIF accepts «Фонарик → Свет» onto a category leader in the lower tableau and stated this must be forbidden. [Audit and correction plan](qa/RULES_AUDIT_2026-11-12.md), source main `0d98b4a13c1de7d819df6b459df5159c84d24ab3` / unchanged 0.9.4. The move really commits and costs one turn; the original §4.2 and all transition consumers explicitly inherited that permissive design assumption. The independent oracle cannot validate the assumption merely by agreeing. Prohibiting member → lower leader invalidates 73 old witnesses (52 campaign, 21 daily), not proof of 73 impossible deals. Level 6 has an independently checked reordered opening with the same total move count. Upper-category collection must remain allowed.
+
+Second confirmed reachable defect: level 1 accepts 301 ordinary commands, but reload rejects its own history with «Повреждена история». Reproduced all commands through actual touch at 360×780 and 320×568. Raw save remains intact. Third, lower-priority defensive gap: artificial mixed upper/leaderless upper/partial collected saves pass validation; these were not reached through legal moves. No runtime, bank, version, player save, economy, art, SDK or kit changes in this audit.
+
+Evidence: 34 explicit cases; 6068 reachable sampled states; 336942 comparisons including forbidden destinations/sources; 10838 profile/rejection/Undo checks; 108 frozen witnesses; 75 unit/platform; typecheck; 32 browser regressions; four separate production-input audit cases. See tools/audit-rules.ts, tools/audit-rules-ui.ts and docs/qa/rules-audit-2026-11-12/{results,ui}.json. Next: establish the small rule table, fix bounded Undo history with legacy recovery, then version the changed lower-leader rule and revalidate all 108 deals/active+parked saves before shipping. Do not silently change rulesVersion 2 or overwrite published deals as an incidental UI fix.
+
 ## Current delivery — 0.9.4 / code17, refined slots and stock fan
 
 [Scope/evidence/downloads](qa/BOARD_REFINEMENT_0_9_4.md). PR #19 merged at `c7a66e32898d26cf8d0f5b42afe451ca3288a239`; exact source `efb3f16244f13ae0fb04d3e4e80de6512ae0aa9a`, identical merge tree. Full source CI `43215510745` PASS: 75 unit/platform, fixed witnesses/four-layout bounds/build, 119 field raster cases with 0 DOM/0 raster issues plus home/dialog checks, **124 browser scenarios + four deliberate compact catalog skips**, all 80 touch wins, Android debug/signature and unsigned SDK-disabled R8 compilation. Local first focus 36 PASS, final input 16 PASS. Source unchanged after acceptance.

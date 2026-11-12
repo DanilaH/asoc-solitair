@@ -1,0 +1,213 @@
+{
+  "source": "0d98b4a13c1de7d819df6b459df5159c84d24ab3",
+  "surface": "production browser, actual CDP touch / touchscreen taps; initial published deals only",
+  "evidence": [
+    {
+      "width": 360,
+      "height": 780,
+      "deal": "campaign-006",
+      "disputed": {
+        "accepted": true,
+        "before": {
+          "tableau": [
+            [
+              "lights_4",
+              "dishes",
+              "lights_3"
+            ],
+            [
+              "lights_1",
+              "lights_2",
+              "lights"
+            ],
+            [
+              "dishes_1",
+              "dishes_3",
+              "kitchen_2"
+            ]
+          ],
+          "foundations": [
+            [],
+            []
+          ],
+          "stock": [
+            "dishes_2",
+            "kitchen",
+            "kitchen_1",
+            "dishes_4",
+            "kitchen_4",
+            "kitchen_3"
+          ],
+          "waste": [],
+          "faceUp": [
+            "lights_3",
+            "lights",
+            "kitchen_2"
+          ],
+          "collected": [],
+          "movesLeft": 32,
+          "phase": "playing"
+        },
+        "after": {
+          "tableau": [
+            [
+              "lights_4",
+              "dishes"
+            ],
+            [
+              "lights_1",
+              "lights_2",
+              "lights_3",
+              "lights"
+            ],
+            [
+              "dishes_1",
+              "dishes_3",
+              "kitchen_2"
+            ]
+          ],
+          "foundations": [
+            [],
+            []
+          ],
+          "stock": [
+            "dishes_2",
+            "kitchen",
+            "kitchen_1",
+            "dishes_4",
+            "kitchen_4",
+            "kitchen_3"
+          ],
+          "waste": [],
+          "faceUp": [
+            "lights_3",
+            "lights",
+            "kitchen_2",
+            "dishes"
+          ],
+          "collected": [],
+          "movesLeft": 31,
+          "phase": "playing"
+        }
+      },
+      "undoRestores": true,
+      "emptyUpperRejectsMember": true,
+      "matchingUpperAccepts": true,
+      "wrongCategoryRejects": true,
+      "upperSourceUnavailable": true
+    },
+    {
+      "width": 360,
+      "height": 780,
+      "deal": "campaign-001",
+      "realAcceptedCommands": 301,
+      "history": 301,
+      "reloadError": "Повреждена история",
+      "originalRetained": true
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "deal": "campaign-006",
+      "disputed": {
+        "accepted": true,
+        "before": {
+          "tableau": [
+            [
+              "lights_4",
+              "dishes",
+              "lights_3"
+            ],
+            [
+              "lights_1",
+              "lights_2",
+              "lights"
+            ],
+            [
+              "dishes_1",
+              "dishes_3",
+              "kitchen_2"
+            ]
+          ],
+          "foundations": [
+            [],
+            []
+          ],
+          "stock": [
+            "dishes_2",
+            "kitchen",
+            "kitchen_1",
+            "dishes_4",
+            "kitchen_4",
+            "kitchen_3"
+          ],
+          "waste": [],
+          "faceUp": [
+            "lights_3",
+            "lights",
+            "kitchen_2"
+          ],
+          "collected": [],
+          "movesLeft": 32,
+          "phase": "playing"
+        },
+        "after": {
+          "tableau": [
+            [
+              "lights_4",
+              "dishes"
+            ],
+            [
+              "lights_1",
+              "lights_2",
+              "lights_3",
+              "lights"
+            ],
+            [
+              "dishes_1",
+              "dishes_3",
+              "kitchen_2"
+            ]
+          ],
+          "foundations": [
+            [],
+            []
+          ],
+          "stock": [
+            "dishes_2",
+            "kitchen",
+            "kitchen_1",
+            "dishes_4",
+            "kitchen_4",
+            "kitchen_3"
+          ],
+          "waste": [],
+          "faceUp": [
+            "lights_3",
+            "lights",
+            "kitchen_2",
+            "dishes"
+          ],
+          "collected": [],
+          "movesLeft": 31,
+          "phase": "playing"
+        }
+      },
+      "undoRestores": true,
+      "emptyUpperRejectsMember": true,
+      "matchingUpperAccepts": true,
+      "wrongCategoryRejects": true,
+      "upperSourceUnavailable": true
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "deal": "campaign-001",
+      "realAcceptedCommands": 301,
+      "history": 301,
+      "reloadError": "Повреждена история",
+      "originalRetained": true
+    }
+  ],
+  "errors": []
+}

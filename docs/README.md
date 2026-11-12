@@ -1,5 +1,7 @@
 # Product sources
 
+Latest rules review: [independent rules audit, disputed lower-leader move and reachable reload defect](qa/RULES_AUDIT_2026-11-12.md). Audit only, no runtime fix: the owner rejects member → lower category leader; the existing engine/spec/bank witnesses permit it. 52 campaign and 21 daily witnesses need fresh validation under that prohibition. A legal 301-command opening also exceeds the save loader's Undo-history limit. Do not treat passing current-contract tests as resolving either finding.
+
 Latest board delivery: [0.9.4 slots, stock fan, centered helpers and integrated reader](qa/BOARD_REFINEMENT_0_9_4.md). See its explicit acceptance/delivery status.
 
 Current phone-feedback delivery: [0.9.3 board interaction](qa/BOARD_INTERACTION_2026-11-12.md). See its explicit verification/delivery status.

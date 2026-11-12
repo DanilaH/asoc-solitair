@@ -1,0 +1,78 @@
+{
+  "results": [
+    {
+      "id": "qa-recognition",
+      "width": 360,
+      "moves": 16,
+      "phase": "won"
+    },
+    {
+      "id": "qa-wings",
+      "width": 360,
+      "moves": 16,
+      "phase": "won"
+    },
+    {
+      "id": "qa-electric",
+      "width": 360,
+      "moves": 16,
+      "phase": "won"
+    },
+    {
+      "id": "qa-buffer",
+      "width": 360,
+      "moves": 15,
+      "phase": "won"
+    },
+    {
+      "id": "qa-interval",
+      "width": 360,
+      "moves": 17,
+      "phase": "won"
+    },
+    {
+      "id": "qa-keys",
+      "width": 360,
+      "moves": 21,
+      "phase": "won"
+    },
+    {
+      "id": "qa-recognition",
+      "width": 320,
+      "moves": 16,
+      "phase": "won"
+    },
+    {
+      "id": "qa-wings",
+      "width": 320,
+      "moves": 16,
+      "phase": "won"
+    },
+    {
+      "id": "qa-electric",
+      "width": 320,
+      "moves": 16,
+      "phase": "won"
+    },
+    {
+      "id": "qa-buffer",
+      "width": 320,
+      "moves": 15,
+      "phase": "won"
+    },
+    {
+      "id": "qa-interval",
+      "width": 320,
+      "moves": 17,
+      "phase": "won"
+    },
+    {
+      "id": "qa-keys",
+      "width": 320,
+      "moves": 21,
+      "phase": "won"
+    }
+  ],
+  "errors": [],
+  "ordinarySaveUntouched": true
+}

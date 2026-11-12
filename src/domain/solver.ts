@@ -27,8 +27,21 @@ export function solve(start: Board, deal: Deal, limit = 8000): SearchResult {
 export function knownContinuation(board: Board, deal: Deal): BoardCommand[] | null {
   let current = structuredClone(deal.initial);
   for (let index = 0; index < deal.winningPath.length; index++) {
-    if (boardKey(current) === boardKey(board)) {
-      const path = deal.winningPath.slice(index);
+    // Foundation slots have identical rules. Match their contents, then map the
+    // stored route back to the player's actual slots; tableau/locks stay exact.
+    const used = new Set<number>();
+    const slots: number[] = [];
+    // Reserve matches sequentially so multiple empty slots remain a bijection.
+    for (let i = 0; i < current.foundations.length; i++) {
+      slots[i] = board.foundations.findIndex((other, j) => !used.has(j) && JSON.stringify(current.foundations[i]) === JSON.stringify(other));
+      if (slots[i] >= 0) used.add(slots[i]);
+    }
+    if (slots.every(i => i >= 0) && boardKey(current) === boardKey({ ...board, foundations: slots.map(i => board.foundations[i]) })) {
+      const path = deal.winningPath.slice(index).map(action => action.type === 'transfer' ? {
+        ...action,
+        from: action.from.kind === 'foundation' ? { ...action.from, index: slots[action.from.index] } : action.from,
+        to: action.to.kind === 'foundation' ? { ...action.to, index: slots[action.to.index] } : action.to,
+      } : action);
       if (board.movesLeft === null || path.length <= board.movesLeft) return path;
     }
     const result = applyBoard(current, deal.winningPath[index], deal);

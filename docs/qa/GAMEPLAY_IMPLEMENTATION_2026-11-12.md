@@ -4,7 +4,7 @@ User approved the four-package plan on 12 November. This change implements trust
 
 ## Delivered behavior
 
-- The hint worker returns a discriminated SOLVED/UNKNOWN/UNSOLVABLE/UNAVAILABLE outcome. Only SOLVED has an action and can reach the ordinary charge transition. There is no first-legal fallback. The existing 4000-node search budget and five-second timeout remain bounded; UNKNOWN never means a deadlock.
+- The hint worker returns a discriminated SOLVED/UNKNOWN/UNSOLVABLE/UNAVAILABLE outcome. Only SOLVED has an action and can reach the ordinary charge transition. There is no first-legal fallback. Known-path matching also remaps equivalent upper foundation slots to the player's actual slots. Tableau, locks and Joker coordinates stay exact; the search/state/save identity is unchanged. The existing 4000-node search budget and five-second timeout remain bounded; UNKNOWN never means a deadlock.
 - Replies carry request, revision, attempt and deal identity. Duplicate/stale replies cannot spend another charge or release a newer request. Errors/timeouts preserve charges. Known and searched continuations still show an ordinary ghost; repeat is free and the player moves the card.
 - A proven failure concerns the current position/budget without helpers. The message keeps the charge and mentions existing Undo when available; it does not promise a helper will solve the position or force a purchase.
 - Card inspection uses the full original category name. The utensil/dishes distinction is explained only when both groups are present; selected ambiguous contexts have a short local explanation. Ordered leaders retain their numbered instruction; picture inspection retains its image/name. No permanent field caption or membership change.
@@ -25,11 +25,11 @@ The audit is merged separately as PR #15. The implementation and test lab are a 
 
 ## Verification checkpoint
 
-Completed locally: `npm run check` (70 unit/platform tests, every fixed witness/four-layout bounds, typecheck and production build); initial 28 focused browser checks, then ten final Hint/reader cases after expanding the exact semantic-reader fixture. Actual replay of the level-19 counterexample keeps Hint **3 → 3**, Undo restores nine moves. Full category reader fits 360×780 and 320×568.
+Completed locally: `npm run check` (71 unit/platform tests, every fixed witness/four-layout bounds, typecheck and production build); initial 28 focused browser checks, then ten final Hint/reader cases after expanding the exact semantic-reader fixture. Actual replay of the level-19 counterexample keeps Hint **3 → 3**, Undo restores nine moves. Full category reader fits 360×780 and 320×568.
 
 Prototype independent replay/transition comparisons and bounded first alternatives: [validation.json](prototypes-2026-11-12/validation.json). Four strategies × four seeds × six variants: [agents.json](prototypes-2026-11-12/agents.json); all 96 simulated runs win. Perfect visible recognition/loop penalties are assumptions, not a human difficulty estimate. Final prototype real-touch evidence is recorded in [browser.json](prototypes-2026-11-12/browser.json); the recording verifies an ordinary-save sentinel stays untouched.
 
-At this checkpoint the broad layout audit, final prototype recordings and hosted web/Android checks are still being completed. Do not interpret this checkpoint as final CI/APK acceptance. Final verification/delivery details will be appended after those checks finish.
+The final local rendered audit passes 191 screens at seven viewports (119 field raster states), zero DOM/raster issues. All six prototypes finish through real touch on 360×780 and 320×568; the ordinary-save sentinel stays unchanged. The level-19 Hint/Undo and full reader fit both sizes. Hosted verification of the final source is still being completed. Do not interpret this checkpoint as final CI/APK acceptance. A follow-up probe found that moving a category to another free upper slot previously returned UNKNOWN on levels 6/17/19 after roughly 2.6/4.5/5.4 seconds locally. Equivalent-slot matching now returns SOLVED in 0/0/3 ms in the same probe. This is a machine-time sample, not a phone benchmark. A unit check remaps and replays every one of the 108 fixed continuations through reversed foundations. Final verification/delivery details will be appended after hosted checks finish.
 
 ## What is deliberately held
 

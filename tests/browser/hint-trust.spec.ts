@@ -49,6 +49,20 @@ test('real unsolvable remainder keeps its charge, board, wallet and streak', asy
   expect(after.profile).toEqual(before.profile); expect(after.attempt).toEqual(before.attempt);
   await expect(page.locator('#hint-label')).toHaveText('Подсказка');
 });
+test('choosing a different free foundation still gives a verified real-worker hint', async ({ page }) => {
+  const d = campaignDeals[5]; let board = d.initial;
+  for (const action of d.winningPath) {
+    if (action.type === 'transfer' && action.to.kind === 'foundation' && !board.foundations[action.to.index].length) {
+      const other = board.foundations.findIndex((x, i) => i !== action.to.index && !x.length);
+      if (other >= 0) { const n = applyBoard(board, { ...action, to: { ...action.to, index: other } }, d); if (typeof n === 'string') throw Error(n); board = n.board; break; }
+    }
+    const n = applyBoard(board, action, d); if (typeof n === 'string') throw Error(n); board = n.board;
+  }
+  await load(page, 5, board); const before = await read(page); await page.locator('#hint').tap();
+  await expect(page.locator('#hint-label')).toHaveText('Повторить');
+  expect((await read(page)).profile.hints).toBe(before.profile.hints - 1);
+  expect((await read(page)).attempt.board).toEqual(before.attempt.board);
+});
 test('unknown search and worker failure preserve the charge; a later retry works', async ({ page }) => {
   await controlledWorker(page); await load(page, 16); const before = await read(page);
   await page.locator('#hint').tap();
@@ -81,6 +95,12 @@ test('timeout terminates the worker and an already queued reply cannot spend a c
   await page.locator('#hint').tap(); await expect(page.locator('#message')).toContainText('Поиск занял слишком много времени', { timeout: 7000 });
   await page.evaluate(action => (window as any).hintWorkers[0].emit(0, { status: 'SOLVED', action }), campaignDeals[16].winningPath[0]);
   expect((await read(page)).profile).toEqual(before.profile); await expect(page.locator('#hint')).toBeEnabled();
+  await page.locator('#hint').tap();
+  await page.evaluate(() => (window as any).hintWorkers[0].onerror({}));
+  await expect(page.locator('#hint')).toBeDisabled();
+  await page.evaluate(action => (window as any).hintWorkers[1].emit(0, { status: 'SOLVED', action }), campaignDeals[16].winningPath[0]);
+  await expect(page.locator('#hint-label')).toHaveText('Повторить');
+  expect((await read(page)).profile.hints).toBe(before.profile.hints - 1);
 });
 test('category reader shows its full meaning without altering the compact label or save', async ({ page }) => {
   const d = campaignDeals[5]; let board = d.initial;

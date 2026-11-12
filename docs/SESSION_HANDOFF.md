@@ -2,9 +2,9 @@
 
 ## Active implementation — 0.9.2 / code 14
 
-User approved the four-package working plan («хорошо, начинай»). [Implementation/evidence checkpoint](qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). Trustworthy Hint and full category-reader context are implemented, plus six separate QA-only prototypes and a human-pilot protocol. No campaign/daily replacement or reordering. Rules/content/balance remain 2/5/3; no domain/save/economy/native SDK setting change. Audit PR #15 is merged at `e4d37c4786652ada9321b672131c1ff8ffcca456`.
+User approved the four-package working plan («хорошо, начинай»). [Implementation/evidence checkpoint](qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). Trustworthy Hint and full category-reader context are implemented, plus six separate QA-only prototypes and a human-pilot protocol. No campaign/daily replacement or reordering. Rules/content/balance remain 2/5/3; no card-rule/save/economy/native SDK setting change. Audit PR #15 is merged at `e4d37c4786652ada9321b672131c1ff8ffcca456`.
 
-Local check passes 70 unit/platform tests/all frozen witnesses/build; focused browser acceptance passes 28 scenarios plus ten final Hint/reader cases. Level-19 charged-fallback counterexample now keeps Hint 3→3. Independent prototype transitions/witnesses and 96 simulated runs pass. Full layout audit, final real-touch prototype recordings and hosted CI/native APK delivery are still being completed at this checkpoint. Do not claim final delivery until the follow-up is recorded. Human/physical-phone/live SDK acceptance remain open.
+Local check passes 71 unit/platform tests/all frozen witnesses/build; focused browser acceptance passes 28 scenarios plus ten final Hint/reader cases. Level-19 charged-fallback counterexample now keeps Hint 3→3. Independent prototype transitions/witnesses and 96 simulated runs pass. Full layout audit, final real-touch prototype recordings and hosted CI/native APK delivery are still being completed at this checkpoint. Do not claim final delivery until the follow-up is recorded. Human/physical-phone/live SDK acceptance remain open.
 
 ## Latest work — independent gameplay audit, no runtime implementation
 

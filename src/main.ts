@@ -640,8 +640,9 @@ try {
       return;
     }
     scene?.cancel(); message('');
-    worker ??= new Worker(new URL('./game/hint.worker.ts', import.meta.url), { type: 'module' });
-    worker.onmessage = async (event: MessageEvent<HintResponse>) => {
+    const hintWorker = worker ??= new Worker(new URL('./game/hint.worker.ts', import.meta.url), { type: 'module' });
+    const requestId = ++hintSequence;
+    hintWorker.onmessage = async (event: MessageEvent<HintResponse>) => {
       const hint = event.data;
       if (!alive || !pendingHint || hint.requestId !== pendingHint.requestId || hint.attemptId !== pendingHint.attemptId || hint.dealId !== pendingHint.dealId || hint.revision !== pendingHint.revision) return;
       clearTimeout(workerDeadline); workerDeadline = undefined; pendingHint = undefined;
@@ -658,11 +659,11 @@ try {
       renderer.loop.wake(); scene?.hint(hint.action);
       message('');
     };
-    worker.onerror = () => { clearTimeout(workerDeadline); workerDeadline = undefined; pendingHint = undefined; worker?.terminate(); worker = undefined; message('Не удалось подготовить подсказку', true); renderHud(); };
-    workerDeadline = setTimeout(() => { worker?.terminate(); worker = undefined; workerDeadline = undefined; pendingHint = undefined; message('Поиск занял слишком много времени. Подсказка не потрачена.', true); renderHud(); }, 5000);
-    pendingHint = { requestId: ++hintSequence, revision: save.revision, attemptId: save.attempt.id, dealId: deal.id };
+    hintWorker.onerror = () => { if (!alive || worker !== hintWorker) return; clearTimeout(workerDeadline); workerDeadline = undefined; pendingHint = undefined; hintWorker.terminate(); worker = undefined; message('Не удалось подготовить подсказку', true); renderHud(); };
+    workerDeadline = setTimeout(() => { if (!alive || worker !== hintWorker || pendingHint?.requestId !== requestId) return; hintWorker.terminate(); worker = undefined; workerDeadline = undefined; pendingHint = undefined; message('Поиск занял слишком много времени. Подсказка не потрачена.', true); renderHud(); }, 5000);
+    pendingHint = { requestId, revision: save.revision, attemptId: save.attempt.id, dealId: deal.id };
     const request: HintRequest = { ...pendingHint, board: save.attempt.board, deal };
-    worker.postMessage(request); renderHud();
+    hintWorker.postMessage(request); renderHud();
   }, domOptions);
   $('#helpers-open').addEventListener('click', () => { runtime.pulse('button'); openHelpers(); }, domOptions);
   for (const helper of ['hint', 'undo'] as const) {

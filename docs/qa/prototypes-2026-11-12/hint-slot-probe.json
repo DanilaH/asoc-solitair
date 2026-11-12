@@ -1,0 +1,32 @@
+{
+  "levels": [
+    6,
+    17,
+    19
+  ],
+  "before": {
+    "status": [
+      "UNKNOWN",
+      "UNKNOWN",
+      "UNKNOWN"
+    ],
+    "elapsedMs": [
+      2576,
+      4477,
+      5355
+    ]
+  },
+  "after": {
+    "status": [
+      "SOLVED",
+      "SOLVED",
+      "SOLVED"
+    ],
+    "elapsedMs": [
+      0,
+      0,
+      3
+    ]
+  },
+  "note": "One machine-time sample per case. Same first-foundation move into an alternative free slot. Not a phone benchmark."
+}

@@ -2,6 +2,7 @@ import { expect, it } from 'vitest';
 import { resolveHint } from '../../src/domain/hint';
 import { cardReader } from '../../src/game/card-reader';
 import { campaignDeals } from '../../src/content/campaign';
+import { dailyPool } from '../../src/content/daily';
 import { applyBoard, freshSave } from '../../src/domain/engine';
 import { knownContinuation, solve } from '../../src/domain/solver';
 import blocked from '../fixtures/hint-blocked.json' with { type: 'json' };
@@ -12,7 +13,7 @@ it('does not return an arbitrary move when the audited level-19 remainder is uns
 });
 it('distinguishes an unfinished search from an unsolvable position', () => {
   const d = campaignDeals[20];
-  const r = applyBoard(d.initial, { type: 'transfer', from: { kind: 'tableau', index: 0 }, to: { kind: 'foundation', index: 1 } }, d);
+  const r = applyBoard(d.initial, { type: 'transfer', from: { kind: 'tableau', index: 2 }, to: { kind: 'tableau', index: 0 } }, d);
   if (typeof r === 'string') throw Error(r);
   expect(knownContinuation(r.board, d)).toBeNull();
   expect(resolveHint(r.board, d, 0)).toEqual({ status: 'UNKNOWN' });
@@ -22,6 +23,19 @@ it('distinguishes an unfinished search from an unsolvable position', () => {
   const next = applyBoard(r.board, hint.action, d);
   if (typeof next === 'string') throw Error(next);
   expect(solve(next.board, d).status).toBe('SOLVED');
+});
+it('remaps every fixed continuation through reversed foundations without searching or changing card state', () => {
+  for (const d of [...campaignDeals, ...dailyPool]) {
+    let b = structuredClone(d.initial);
+    for (let i = 0; i < Math.min(3, d.winningPath.length - 1); i++) {
+      const next = applyBoard(b, d.winningPath[i], d); if (typeof next === 'string') throw Error(next); b = next.board;
+    }
+    b.foundations.reverse(); const before = structuredClone(b);
+    const path = knownContinuation(b, d); expect(path, d.id).not.toBeNull();
+    expect(b).toEqual(before);
+    for (const action of path!) { const n = applyBoard(b, action, d); if (typeof n === 'string') throw Error(d.id + ': ' + n); b = n.board; }
+    expect(b.phase, d.id).toBe('won');
+  }
 });
 it('keeps the fast known path, respects budget and gives no hint after a win', () => {
   const d = campaignDeals[0];

@@ -1,5 +1,7 @@
 # Product sources
 
+Latest gameplay review: [independent gameplay/content audit and bounded improvement plan](qa/GAMEPLAY_PRODUCT_AUDIT_2026-11-11.md). Review only: 108 deals, four agent policies, independent transition oracle, real-touch counterexamples and a human-test plan. No runtime/bank change; the confirmed Hint fallback issue is proposed work.
+
 Current art delivery: [all 33 casual subject illustrations — 0.9.1/code 13](art/CASUAL_SUBJECTS_0_9_1.md). Approved drum style applied throughout; real-card comparisons, full-subject reader checks, native builds and delivered APK/source bundle are recorded there.
 
 UI/UX base: [four-package UI/UX/feel implementation — 0.9.0/code 12](qa/EXPERIENCE_IMPLEMENTATION_2026-11-11.md). All four packages are merged; exact-source full web/Android CI passes and the default-branch APK/media are delivered. Physical-device acceptance remains open.

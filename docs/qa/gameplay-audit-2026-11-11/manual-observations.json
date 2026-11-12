@@ -1,0 +1,3902 @@
+{
+  "protocol": "Agent review using visible state and real production touch. No winningPath/solver consulted for action choices. Rules and some bank vocabulary already known. No human participants; wall-clock durations not playtime evidence. Failed daily harness routing excluded, not a game defect.",
+  "observations": [
+    {
+      "action": {
+        "level": 6,
+        "shot": "manual-06-start"
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 0,
+        "moves": 32,
+        "phase": "playing",
+        "stock": 6,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "lights_3",
+                "text": "Фонарик",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "lights",
+                "text": "Источники света",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          1,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 1,
+        "moves": 31,
+        "phase": "playing",
+        "stock": 6,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "lights_3",
+                "text": "Фонарик",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "lights_2",
+                "text": "Торшер",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Источники света"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          0,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 2,
+        "moves": 30,
+        "phase": "playing",
+        "stock": 6,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "dishes",
+                "text": "Посуда",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "lights_2",
+                "text": "Торшер",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Фонарик",
+              "Источники света"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          1,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 3,
+        "moves": 29,
+        "phase": "playing",
+        "stock": 6,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "dishes",
+                "text": "Посуда",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "lights_1",
+                "text": "Люстра",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Фонарик",
+              "Торшер",
+              "Источники света"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          0,
+          1,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 4,
+        "moves": 28,
+        "phase": "playing",
+        "stock": 6,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "lights_4",
+                "text": "Свеча",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "lights_1",
+                "text": "Люстра",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Фонарик",
+              "Торшер",
+              "Источники света"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "shot": "manual-06-progress"
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 4,
+        "moves": 28,
+        "phase": "playing",
+        "stock": 6,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "lights_4",
+                "text": "Свеча",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "lights_1",
+                "text": "Люстра",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Фонарик",
+              "Торшер",
+              "Источники света"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          0,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 5,
+        "moves": 27,
+        "phase": "playing",
+        "stock": 6,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "lights_1",
+                "text": "Люстра",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Фонарик",
+              "Торшер",
+              "Свеча",
+              "Источники света"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          1,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 6,
+        "moves": 26,
+        "phase": "playing",
+        "stock": 6,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "stock": true
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 7,
+        "moves": 25,
+        "phase": "playing",
+        "stock": 5,
+        "waste": "Тарелка",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          "w",
+          1,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 8,
+        "moves": 24,
+        "phase": "playing",
+        "stock": 5,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          2,
+          0,
+          "t"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 9,
+        "moves": 23,
+        "phase": "playing",
+        "stock": 5,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "dishes_3",
+                "text": "Блюдце",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          2,
+          1,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 10,
+        "moves": 22,
+        "phase": "playing",
+        "stock": 5,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "dishes_1",
+                "text": "Чашка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Блюдце",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "stock": true
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 11,
+        "moves": 21,
+        "phase": "playing",
+        "stock": 4,
+        "waste": "Кухонная утварь",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "dishes_1",
+                "text": "Чашка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Блюдце",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          "w",
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 12,
+        "moves": 20,
+        "phase": "playing",
+        "stock": 4,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "kitchen_2",
+                "text": "Дуршлаг",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "dishes_1",
+                "text": "Чашка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Блюдце",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          0,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 13,
+        "moves": 19,
+        "phase": "playing",
+        "stock": 4,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "dishes_1",
+                "text": "Чашка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Блюдце",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          2,
+          1,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 14,
+        "moves": 18,
+        "phase": "playing",
+        "stock": 4,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Блюдце",
+              "Чашка",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "stock": true
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 15,
+        "moves": 17,
+        "phase": "playing",
+        "stock": 3,
+        "waste": "Половник",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Блюдце",
+              "Чашка",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          "w",
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 16,
+        "moves": 16,
+        "phase": "playing",
+        "stock": 3,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Половник",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Блюдце",
+              "Чашка",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "stock": true
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 17,
+        "moves": 15,
+        "phase": "playing",
+        "stock": 2,
+        "waste": "Кувшин",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Половник",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Блюдце",
+              "Чашка",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "shot": "manual-06-late"
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 17,
+        "moves": 15,
+        "phase": "playing",
+        "stock": 2,
+        "waste": "Кувшин",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Половник",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Тарелка",
+              "Блюдце",
+              "Чашка",
+              "Посуда"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          "w",
+          1,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 18,
+        "moves": 14,
+        "phase": "playing",
+        "stock": 2,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Половник",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "stock": true
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 19,
+        "moves": 13,
+        "phase": "playing",
+        "stock": 1,
+        "waste": "Штопор",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Половник",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          "w",
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 20,
+        "moves": 12,
+        "phase": "playing",
+        "stock": 1,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Половник",
+              "Штопор",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "stock": true
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 21,
+        "moves": 11,
+        "phase": "playing",
+        "stock": 0,
+        "waste": "Скалка",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Половник",
+              "Штопор",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "shot": "manual-06-last"
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 21,
+        "moves": 11,
+        "phase": "playing",
+        "stock": 0,
+        "waste": "Скалка",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Дуршлаг",
+              "Половник",
+              "Штопор",
+              "Кухонная утварь"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          "w",
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 22,
+        "moves": 10,
+        "phase": "won",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "shot": "manual-06-result"
+      },
+      "visible": {
+        "deal": "campaign-006",
+        "step": 22,
+        "moves": 10,
+        "phase": "won",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "level": 35,
+        "shot": "manual-35-start"
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 0,
+        "moves": 23,
+        "phase": "playing",
+        "stock": 1,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_2",
+                "text": "Весна",
+                "leader": false,
+                "rank": 2
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_4",
+                "text": "Осень",
+                "leader": false,
+                "rank": 4
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_1",
+                "text": "Зима",
+                "leader": false,
+                "rank": 1
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons",
+                "text": "Времена года",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          3,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 1,
+        "moves": 22,
+        "phase": "playing",
+        "stock": 1,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_2",
+                "text": "Весна",
+                "leader": false,
+                "rank": 2
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_4",
+                "text": "Осень",
+                "leader": false,
+                "rank": 4
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_1",
+                "text": "Зима",
+                "leader": false,
+                "rank": 1
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_1",
+                "text": "Кошка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Времена года"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          2,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 2,
+        "moves": 21,
+        "phase": "playing",
+        "stock": 1,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_2",
+                "text": "Весна",
+                "leader": false,
+                "rank": 2
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_4",
+                "text": "Осень",
+                "leader": false,
+                "rank": 4
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "seasons_3",
+                "text": "Лето",
+                "leader": false,
+                "rank": 3
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_1",
+                "text": "Кошка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Зима",
+              "Времена года"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          0,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 3,
+        "moves": 20,
+        "phase": "playing",
+        "stock": 1,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_3",
+                "text": "Хомяк",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_4",
+                "text": "Осень",
+                "leader": false,
+                "rank": 4
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "seasons_3",
+                "text": "Лето",
+                "leader": false,
+                "rank": 3
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_1",
+                "text": "Кошка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Зима",
+              "Весна",
+              "Времена года"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "shot": "manual-35-progress"
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 3,
+        "moves": 20,
+        "phase": "playing",
+        "stock": 1,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_3",
+                "text": "Хомяк",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_4",
+                "text": "Осень",
+                "leader": false,
+                "rank": 4
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "seasons_3",
+                "text": "Лето",
+                "leader": false,
+                "rank": 3
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_1",
+                "text": "Кошка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Зима",
+              "Весна",
+              "Времена года"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          2,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 4,
+        "moves": 19,
+        "phase": "playing",
+        "stock": 1,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_3",
+                "text": "Хомяк",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "seasons_4",
+                "text": "Осень",
+                "leader": false,
+                "rank": 4
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_1",
+                "text": "Кошка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Зима",
+              "Весна",
+              "Лето",
+              "Времена года"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          1,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 5,
+        "moves": 18,
+        "phase": "playing",
+        "stock": 1,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_3",
+                "text": "Хомяк",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets",
+                "text": "Домашние питомцы",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_1",
+                "text": "Кошка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "stock": true
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 6,
+        "moves": 17,
+        "phase": "playing",
+        "stock": 0,
+        "waste": "Собака",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_3",
+                "text": "Хомяк",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets",
+                "text": "Домашние питомцы",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_1",
+                "text": "Кошка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          1,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 7,
+        "moves": 16,
+        "phase": "playing",
+        "stock": 0,
+        "waste": "Собака",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_3",
+                "text": "Хомяк",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_1",
+                "text": "Кошка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Домашние питомцы"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          0,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 8,
+        "moves": 15,
+        "phase": "playing",
+        "stock": 0,
+        "waste": "Собака",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "pets_1",
+                "text": "Кошка",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Хомяк",
+              "Домашние питомцы"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          3,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 9,
+        "moves": 14,
+        "phase": "playing",
+        "stock": 0,
+        "waste": "Собака",
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Хомяк",
+              "Кошка",
+              "Домашние питомцы"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          "w",
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 10,
+        "moves": 13,
+        "phase": "won",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "shot": "manual-35-result"
+      },
+      "visible": {
+        "deal": "campaign-035",
+        "step": 10,
+        "moves": 13,
+        "phase": "won",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "level": 64,
+        "shot": "manual-64-start"
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 0,
+        "moves": 20,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "appliances_2",
+                "text": "Пылесос",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "appliances_1",
+                "text": "Холодильник",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          2,
+          1,
+          "t"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 1,
+        "moves": 19,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "appliances_2",
+                "text": "Пылесос",
+                "leader": false
+              },
+              {
+                "id": "appliances_1",
+                "text": "Холодильник",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          },
+          {
+            "i": 2,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books",
+                "text": "Литературные формы",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          0,
+          3,
+          "t"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 2,
+        "moves": 18,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "appliances",
+                "text": "Бытовая техника",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "appliances_2",
+                "text": "Пылесос",
+                "leader": false
+              },
+              {
+                "id": "appliances_1",
+                "text": "Холодильник",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          },
+          {
+            "i": 2,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books",
+                "text": "Литературные формы",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              },
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          0,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 3,
+        "moves": 17,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "books_2",
+                "text": "Рассказ",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "appliances_2",
+                "text": "Пылесос",
+                "leader": false
+              },
+              {
+                "id": "appliances_1",
+                "text": "Холодильник",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          },
+          {
+            "i": 2,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books",
+                "text": "Литературные формы",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              },
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          1,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 4,
+        "moves": 16,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "books_2",
+                "text": "Рассказ",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books_1",
+                "text": "Роман",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books",
+                "text": "Литературные формы",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              },
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          2,
+          1,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 5,
+        "moves": 15,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "books_2",
+                "text": "Рассказ",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books_1",
+                "text": "Роман",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "sea",
+                "text": "Морские животные",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              },
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Литературные формы"
+            ]
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "shot": "manual-64-progress"
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 5,
+        "moves": 15,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "books_2",
+                "text": "Рассказ",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books_1",
+                "text": "Роман",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "sea",
+                "text": "Морские животные",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              },
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Литературные формы"
+            ]
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          0,
+          1,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 6,
+        "moves": 14,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books_1",
+                "text": "Роман",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "sea",
+                "text": "Морские животные",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              },
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Рассказ",
+              "Литературные формы"
+            ]
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          1,
+          1,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 7,
+        "moves": 13,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "sea_2",
+                "text": "Кит",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "sea",
+                "text": "Морские животные",
+                "leader": true
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              },
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Рассказ",
+              "Роман",
+              "Литературные формы"
+            ]
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          2,
+          2,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 8,
+        "moves": 12,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "sea_2",
+                "text": "Кит",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 2,
+            "open": [
+              {
+                "id": "sea_3",
+                "text": "Осьминог",
+                "leader": false
+              },
+              {
+                "id": "sea_1",
+                "text": "Дельфин",
+                "leader": false
+              }
+            ],
+            "packet": 2
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Рассказ",
+              "Роман",
+              "Литературные формы"
+            ]
+          },
+          {
+            "i": 2,
+            "cards": [
+              "Морские животные"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          3,
+          2,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 9,
+        "moves": 11,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "sea_2",
+                "text": "Кит",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books_3",
+                "text": "Повесть",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Рассказ",
+              "Роман",
+              "Литературные формы"
+            ]
+          },
+          {
+            "i": 2,
+            "cards": [
+              "Осьминог",
+              "Дельфин",
+              "Морские животные"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "shot": "manual-64-late"
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 9,
+        "moves": 11,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "sea_2",
+                "text": "Кит",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books_3",
+                "text": "Повесть",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Рассказ",
+              "Роман",
+              "Литературные формы"
+            ]
+          },
+          {
+            "i": 2,
+            "cards": [
+              "Осьминог",
+              "Дельфин",
+              "Морские животные"
+            ]
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          1,
+          2,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 10,
+        "moves": 10,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 1,
+            "open": [
+              {
+                "id": "books_3",
+                "text": "Повесть",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": [
+              "Рассказ",
+              "Роман",
+              "Литературные формы"
+            ]
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          3,
+          1,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 11,
+        "moves": 9,
+        "phase": "playing",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [
+              {
+                "id": "appliances_3",
+                "text": "Тостер",
+                "leader": false
+              }
+            ],
+            "packet": 1
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": [
+              "Пылесос",
+              "Холодильник",
+              "Бытовая техника"
+            ]
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "move": [
+          3,
+          0,
+          "f"
+        ]
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 12,
+        "moves": 8,
+        "phase": "won",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    },
+    {
+      "action": {
+        "shot": "manual-64-result"
+      },
+      "visible": {
+        "deal": "campaign-064",
+        "step": 12,
+        "moves": 8,
+        "phase": "won",
+        "stock": 0,
+        "waste": null,
+        "columns": [
+          {
+            "i": 0,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 1,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 2,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          },
+          {
+            "i": 3,
+            "hidden": 0,
+            "open": [],
+            "packet": 0
+          }
+        ],
+        "foundations": [
+          {
+            "i": 0,
+            "cards": []
+          },
+          {
+            "i": 1,
+            "cards": []
+          },
+          {
+            "i": 2,
+            "cards": []
+          }
+        ],
+        "dialogs": [],
+        "message": ""
+      }
+    }
+  ]
+}

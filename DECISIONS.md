@@ -90,3 +90,7 @@ Apply the user-approved drum's broad matte shapes and low detail consistently ac
 ## 2026-11-11 — gameplay audit scope and recommendation, not implementation
 
 User requested independent assessment before large changes. [Audit](docs/qa/GAMEPLAY_PRODUCT_AUDIT_2026-11-11.md) selects offline semantic/strategic novelty assessment and bounded experimentation; it rejects scope expansion into runtime Directors/new meta. A paid Hint fallback in a known UNSOLVABLE state is reproduced and proposed as the first P1 fix. These are recommendations awaiting the next implementation instruction. Preserve compact layout, casual art, 80+28 fixed bank, versions 2/5/3, SaveStore and SDK settings. Agent play/simulation is not human enjoyment or retention evidence.
+
+## 2026-11-12 — approved Hint eligibility and isolated content test
+
+The owner approved implementation of the concrete follow-up plan. A charge requires a found winning continuation; UNKNOWN/UNSOLVABLE/error/timeout never charge or fall back to an arbitrary legal action. This supersedes requirements §6.1's old paid heuristic policy without changing numerical balance or saved card rules. Restore full names and narrow semantic boundaries in the existing reader, preserving field aliases. Test six separate QA-only deals with the production renderer and no ordinary profile writes/SDK; do not promote them or reorder campaign before the human-pilot decision. [Scope/status](docs/qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md).

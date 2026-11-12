@@ -1,0 +1,677 @@
+{
+  "note": "96 simulated runs; visible recognition assumed perfect. No human enjoyment evidence.",
+  "runs": [
+    {
+      "id": "qa-recognition",
+      "policy": "foundation",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "foundation",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "foundation",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "foundation",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "reveal",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "reveal",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "reveal",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "reveal",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "slots",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 23
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "slots",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 22
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "slots",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 24
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "slots",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "explore",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 20
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "explore",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "explore",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-recognition",
+      "policy": "explore",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 22
+    },
+    {
+      "id": "qa-wings",
+      "policy": "foundation",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-wings",
+      "policy": "foundation",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-wings",
+      "policy": "foundation",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-wings",
+      "policy": "foundation",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-wings",
+      "policy": "reveal",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-wings",
+      "policy": "reveal",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-wings",
+      "policy": "reveal",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-wings",
+      "policy": "reveal",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-wings",
+      "policy": "slots",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 23
+    },
+    {
+      "id": "qa-wings",
+      "policy": "slots",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 22
+    },
+    {
+      "id": "qa-wings",
+      "policy": "slots",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 24
+    },
+    {
+      "id": "qa-wings",
+      "policy": "slots",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-wings",
+      "policy": "explore",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 20
+    },
+    {
+      "id": "qa-wings",
+      "policy": "explore",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-wings",
+      "policy": "explore",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-wings",
+      "policy": "explore",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 22
+    },
+    {
+      "id": "qa-electric",
+      "policy": "foundation",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-electric",
+      "policy": "foundation",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-electric",
+      "policy": "foundation",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-electric",
+      "policy": "foundation",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-electric",
+      "policy": "reveal",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-electric",
+      "policy": "reveal",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-electric",
+      "policy": "reveal",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-electric",
+      "policy": "reveal",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 16
+    },
+    {
+      "id": "qa-electric",
+      "policy": "slots",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 23
+    },
+    {
+      "id": "qa-electric",
+      "policy": "slots",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 22
+    },
+    {
+      "id": "qa-electric",
+      "policy": "slots",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 24
+    },
+    {
+      "id": "qa-electric",
+      "policy": "slots",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-electric",
+      "policy": "explore",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 20
+    },
+    {
+      "id": "qa-electric",
+      "policy": "explore",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-electric",
+      "policy": "explore",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-electric",
+      "policy": "explore",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 22
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "foundation",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 15
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "foundation",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 15
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "foundation",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 15
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "foundation",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 15
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "reveal",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 15
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "reveal",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 15
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "reveal",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 15
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "reveal",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 15
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "slots",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "slots",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 18
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "slots",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 20
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "slots",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "explore",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "explore",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "explore",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 18
+    },
+    {
+      "id": "qa-buffer",
+      "policy": "explore",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 20
+    },
+    {
+      "id": "qa-interval",
+      "policy": "foundation",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 18
+    },
+    {
+      "id": "qa-interval",
+      "policy": "foundation",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-interval",
+      "policy": "foundation",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 18
+    },
+    {
+      "id": "qa-interval",
+      "policy": "foundation",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-interval",
+      "policy": "reveal",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-interval",
+      "policy": "reveal",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-interval",
+      "policy": "reveal",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-interval",
+      "policy": "reveal",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 17
+    },
+    {
+      "id": "qa-interval",
+      "policy": "slots",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 19
+    },
+    {
+      "id": "qa-interval",
+      "policy": "slots",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 22
+    },
+    {
+      "id": "qa-interval",
+      "policy": "slots",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-interval",
+      "policy": "slots",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 18
+    },
+    {
+      "id": "qa-interval",
+      "policy": "explore",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 20
+    },
+    {
+      "id": "qa-interval",
+      "policy": "explore",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-interval",
+      "policy": "explore",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-interval",
+      "policy": "explore",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-keys",
+      "policy": "foundation",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-keys",
+      "policy": "foundation",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-keys",
+      "policy": "foundation",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 22
+    },
+    {
+      "id": "qa-keys",
+      "policy": "foundation",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-keys",
+      "policy": "reveal",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-keys",
+      "policy": "reveal",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-keys",
+      "policy": "reveal",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-keys",
+      "policy": "reveal",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-keys",
+      "policy": "slots",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 22
+    },
+    {
+      "id": "qa-keys",
+      "policy": "slots",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 23
+    },
+    {
+      "id": "qa-keys",
+      "policy": "slots",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 21
+    },
+    {
+      "id": "qa-keys",
+      "policy": "slots",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 28
+    },
+    {
+      "id": "qa-keys",
+      "policy": "explore",
+      "seed": 1,
+      "outcome": "won",
+      "steps": 27
+    },
+    {
+      "id": "qa-keys",
+      "policy": "explore",
+      "seed": 2,
+      "outcome": "won",
+      "steps": 26
+    },
+    {
+      "id": "qa-keys",
+      "policy": "explore",
+      "seed": 3,
+      "outcome": "won",
+      "steps": 23
+    },
+    {
+      "id": "qa-keys",
+      "policy": "explore",
+      "seed": 4,
+      "outcome": "won",
+      "steps": 24
+    }
+  ]
+}

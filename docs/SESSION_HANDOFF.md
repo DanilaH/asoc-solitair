@@ -1,5 +1,13 @@
 # Continuation checkpoint — 2026-11-12
 
+## Active implementation — 0.10.0/code18, rules v3 and compatible history
+
+Owner approved implementing the audit findings. [Implementation and validation status](qa/RULES_V3_IMPLEMENTATION_2026-11-12.md), [contract](product/RULES_V3.md). Branch `fix/rules-v3-and-save-recovery` from main `4cb668ad55d80017f474c4832d1c944a94ae05e4`. New ordinary attempts refuse member → lower leader; old active/parked/Undo remain v2 through an explicit Board.rulesVersion, envelope 3/5/3. Upper collection and leader → lower members stay allowed. Restart upgrades only the restarted attempt. Legacy Hint uses original witnesses. Preserve all frozen definitions/orders/budgets/daily rotation; 73 v3 path overrides and one Joker demonstration are separate. Level 19 wins 45/45 by taking baking_2 on its first draw.
+
+Bound history at 300 in both command paths; validate complete old histories before trimming, including parked and ownership checks. Strong semantic zone/faceUp/rules invariants refuse corrupt saves without overwrite. Legacy intro and separate content pilot remain v2. No art/layout/economy/SDK/kit changes.
+
+Local 90 unit/platform + typecheck/build/content PASS; independent 216 paths / 4503 states / 253244 accepted+rejected comparisons PASS; prototypes build+96 agents PASS; 119 layout cases with 0 DOM/0 raster. Full browser and focused new-rule runs are ongoing; Android/CI/APK/media acceptance remains pending. Do not claim delivered APK or production readiness from this checkpoint. Exact status will be updated after verification/integration.
+
 ## Latest work — independent rules audit, corrections pending
 
 Owner noticed the actual level-6 GIF accepts «Фонарик → Свет» onto a category leader in the lower tableau and stated this must be forbidden. [Audit and correction plan](qa/RULES_AUDIT_2026-11-12.md), source main `0d98b4a13c1de7d819df6b459df5159c84d24ab3` / unchanged 0.9.4. The move really commits and costs one turn; the original §4.2 and all transition consumers explicitly inherited that permissive design assumption. The independent oracle cannot validate the assumption merely by agreeing. Prohibiting member → lower leader invalidates 73 old witnesses (52 campaign, 21 daily), not proof of 73 impossible deals. Level 6 has an independently checked reordered opening with the same total move count. Upper-category collection must remain allowed.

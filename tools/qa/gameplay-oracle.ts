@@ -35,6 +35,7 @@ export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
       available=group(b,a.to.index,d);
       if(b.joker?.column===a.to.index){if(target.length>b.joker.boundary)return null;}
       else if(target.length&&(!available.length||d.cards[available[0]].category!==cat))return null;
+      if((b.rulesVersion??3)>=3&&available.some(id=>d.cards[id].leader))return null;
     }
     const merged=[...available,...ids];if(!validGroup(merged,d))return null;
     const normalized=[...merged.filter(id=>!d.cards[id].leader).sort((a,b)=>(d.cards[a].rank??0)-(d.cards[b].rank??0)),...merged.filter(id=>d.cards[id].leader)];
@@ -55,7 +56,7 @@ export function options(b:Board,d:Deal,prune=false):{action:BoardCommand;board:B
   }
   const action:BoardCommand={type:b.stock.length?'draw':'recycle'},board=advance(b,action,d);if(board)out.push({action,board});return out;
 }
-export function identity(b:Board,d:Deal){return JSON.stringify([d.lock||b.joker?b.tableau:b.tableau.map(c=>c.join(',')).sort(),b.foundations.map(c=>c.join(',')).sort(),b.stock,b.waste,[...b.faceUp].sort(),[...b.collected].sort(),b.keys??[],b.joker??null]);}
+export function identity(b:Board,d:Deal){return JSON.stringify([b.rulesVersion??3,d.lock||b.joker?b.tableau:b.tableau.map(c=>c.join(',')).sort(),b.foundations.map(c=>c.join(',')).sort(),b.stock,b.waste,[...b.faceUp].sort(),[...b.collected].sort(),b.keys??[],b.joker??null]);}
 /** Exhaustive BFS when SOLVED/UNSOLVABLE; bounded UNKNOWN is never a failure proof. */
 export function search(b:Board,d:Deal,limit=10000){
  const q=[{board:b,path:[] as BoardCommand[]}],seen=new Map([[identity(b,d),b.movesLeft??Infinity]]);let i=0;

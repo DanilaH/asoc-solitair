@@ -13,7 +13,9 @@ it('does not return an arbitrary move when the audited level-19 remainder is uns
 });
 it('distinguishes an unfinished search from an unsolvable position', () => {
   const d = campaignDeals[20];
-  const r = applyBoard(d.initial, { type: 'transfer', from: { kind: 'tableau', index: 2 }, to: { kind: 'tableau', index: 0 } }, d);
+  const first = applyBoard(d.initial, d.winningPath[0], d); if (typeof first === 'string') throw Error(first);
+  const opened = applyBoard(first.board, d.winningPath[1], d); if (typeof opened === 'string') throw Error(opened);
+  const r = applyBoard(opened.board, { type: 'transfer', from: { kind: 'tableau', index: 2 }, to: { kind: 'tableau', index: 1 } }, d);
   if (typeof r === 'string') throw Error(r);
   expect(knownContinuation(r.board, d)).toBeNull();
   expect(resolveHint(r.board, d, 0)).toEqual({ status: 'UNKNOWN' });

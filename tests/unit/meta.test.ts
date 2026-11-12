@@ -47,6 +47,7 @@ describe('compact campaign goals', () => {
   });
   it('migrates the 0.4 save once, preserving attempts/receipts and granting earned cosmetics/milestones without inventing a win cycle', () => {
     const save = freshSave(campaignDeals[19], 'old20'); completed(save, 20); save.platform!.receipts = ['already-earned']; save.rulesVersion = 2; save.contentVersion = 3; save.balanceVersion = 2; delete save.meta;
+    save.attempt.board.rulesVersion = 2;
     const before = structuredClone(save), next = decodeSave(JSON.stringify(save), findDeal);
     expect(next.attempt).toEqual(before.attempt); expect(next.platform).toEqual(before.platform); expect(next.profile.coins).toBe(before.profile.coins + 80);
     expect(next.profile.rewards).toContain('milestone:10'); expect(next.profile.rewards).toContain('milestone:20'); expect(next.meta!.winCycle).toBe(0);

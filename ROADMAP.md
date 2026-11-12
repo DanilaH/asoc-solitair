@@ -1,5 +1,7 @@
 # Roadmap
 
+**0.10.0/code18 implementation:** [rules v3 and compatible save recovery](docs/qa/RULES_V3_IMPLEMENTATION_2026-11-12.md). All 108 new witnesses and 108 legacy paths validate without altering orders/budgets. New lower-leader refusal, per-attempt rule ownership, bounded/recoverable history and semantic save checks are implemented. Local model/build/layout checks pass; browser/Android/integration/delivery acceptance is explicitly tracked in the linked report.
+
 **Rules correction is now a priority:** [independent 0.9.4 audit](docs/qa/RULES_AUDIT_2026-11-12.md) confirms the owner-disallowed member → lower category leader move is inherited by engine/spec/solutions. 52 campaign and 21 daily witnesses require revalidation under the intended prohibition. Also fix a legitimate 301-command attempt rejected on reload because of unbounded Undo history. Audit delivered, runtime fixes pending; preserve upper collection and existing/parked saves. Passing old-contract tests does not close these findings.
 
 **0.9.4/code17 delivered:** [five user-feedback details](docs/qa/BOARD_REFINEMENT_0_9_4.md). Empty card-shaped slots, fan opening from stock, centered helper group and reading area integrated with moves. Word/picture policy and bank preserved. PR #19 merged; full exact-source CI passes 75 unit/platform and 124 browser checks, all 80 touch wins and Android compilation/signature. Matched APK/media delivered; phone comfort remains acceptance.

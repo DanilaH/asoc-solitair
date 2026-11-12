@@ -145,6 +145,7 @@ describe('compatible saves and resource ownership', () => {
   it('migrates real rules-v1 control/campaign saves with spent resources and receipts intact, once', () => {
     for (const deal of [introDeal, campaignDeals[17]]) {
       const save = freshSave(deal, 'legacy-modifiers'); save.rulesVersion = 1; save.contentVersion = deal === introDeal ? 1 : 2; save.balanceVersion = 1;
+      save.attempt.board.rulesVersion = 2;
       save.profile.hints = 0; save.profile.undos = 2; save.profile.coins = 917;
       applyReceipt(save, { schema: 1, id: 'queued-reward', placement: 'continue', mode: 'campaign', attempt: 'old-attempt', dealId: deal.id });
       const raw = JSON.parse(JSON.stringify(save)); delete raw.profile.jokers;

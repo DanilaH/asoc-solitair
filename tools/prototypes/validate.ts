@@ -2,7 +2,7 @@ import { writeFile } from 'node:fs/promises';
 import { advance, options, identity } from '../qa/gameplay-oracle';
 import data from './deals.json' with { type:'json' };
 import type { Prototype } from './build';
-const deals=data as unknown as Prototype[],runs:unknown[]=[];
+const deals:Prototype[]=(data as unknown as Prototype[]).map(d=>({...d,initial:{...d.initial,rulesVersion:2 as const}})),runs:unknown[]=[];
 for(const d of deals)for(const policy of ['foundation','reveal','slots','explore'])for(let seed=1;seed<=4;seed++){
  let b=d.initial,steps=0,rng=seed*7919;const seen=new Map<string,number>();
  const random=()=>{rng=(Math.imul(rng,1664525)+1013904223)>>>0;return rng/4294967296};

@@ -30,10 +30,12 @@ for (const [category, title, words] of categories) {
 const t = (from: number, to: number, foundation = true): BoardCommand => ({ type: 'transfer', from: { kind: 'tableau', index: from }, to: { kind: foundation ? 'foundation' : 'tableau', index: to } });
 const w = (to: number, foundation = true): BoardCommand => ({ type: 'transfer', from: { kind: 'waste', index: 0 }, to: { kind: foundation ? 'foundation' : 'tableau', index: to } });
 const draw: BoardCommand = { type: 'draw' };
+/** Legacy control deal, never selected for a new normal campaign/daily attempt. */
 export const introDeal: Deal = {
   id: 'intro-001', version: 1, title: 'Найдите общее', cards,
   editorialStatus: 'Самостоятельная редактура: бытовые непересекающиеся категории. Независимый человеческий плейтест ещё не выполнен.',
   initial: {
+    rulesVersion: 2,
     tableau: [['fruit3', 'tool2', 'fruit'], ['bird3', 'fruit1', 'bird'], ['tool3', 'bird1', 'tool']],
     foundations: [[], []], stock: ['fruit2', 'bird2', 'tool1', 'fruit4', 'bird4', 'tool4'], waste: [],
     faceUp: ['fruit', 'bird', 'tool'], collected: [], movesLeft: 32, phase: 'playing',

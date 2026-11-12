@@ -4,11 +4,13 @@ import { dailyPool } from '../src/content/daily';
 import { expansionRecords } from '../src/content/expansion';
 import { introDeal } from '../src/content/intro';
 import { campaignDeals, campaignRecords } from '../src/content/campaign';
-import { applyBoard, assertBoard, dispatch, freshSave } from '../src/domain/engine';
+import { applyBoard, assertBoard, boardRules, dispatch, freshSave } from '../src/domain/engine';
 import { RULES_VERSION, CONTENT_VERSION } from '../src/domain/types';
 import { boardFrame, layout, cardMetrics } from '../src/game/layout';
 
-await mkdir('docs/validation', { recursive: true });
+const validationDir = '.validation/records';
+await mkdir(validationDir, { recursive: true });
+const verified: unknown[] = [];
 const summary = [];
 const dailySummary = [];
 for (const deal of [introDeal, ...campaignDeals, ...dailyPool]) {
@@ -58,7 +60,7 @@ for (const deal of [introDeal, ...campaignDeals, ...dailyPool]) {
     if (card.image) await access(`public/${card.image}`);
   }
   const record = {
-    dealId: deal.id, dealVersion: deal.version, rulesVersion: RULES_VERSION, contentVersion: CONTENT_VERSION,
+    dealId: deal.id, dealVersion: deal.version, rulesVersion: boardRules(deal.initial), contentVersion: CONTENT_VERSION,
     initialSha256: createHash('sha256').update(JSON.stringify(deal.initial)).digest('hex'),
     ...(deal.tutorialPath ? { alternateTutorialPath: deal.tutorialPath, alternateReplay: 'PASS' } : {}),
     exactInitialState: deal.initial, winningPath: deal.winningPath, moveCount: deal.winningPath.length,
@@ -66,18 +68,21 @@ for (const deal of [introDeal, ...campaignDeals, ...dailyPool]) {
     independence: 'Witness replay uses the game engine. Card multiset/conservation, local assets, captions and layout bounds are checked separately. No optimality or human-difficulty claim.',
     coverage: { cards: expected.length, columns: board.tableau.length, categories: completions, largestPacket, flips, recycleCount: deal.winningPath.filter(c => c.type === 'recycle').length, tags: deal.tags ?? [] },
   };
-  await writeFile(`docs/validation/${deal.id}.json`, JSON.stringify(record, null, 2) + '\n');
+  await writeFile(`${validationDir}/${deal.id}.json`, JSON.stringify(record, null, 2) + '\n');
+  verified.push({ ...record, exactInitialState: undefined, winningPath: undefined });
   if (deal.tags?.includes('daily')) dailySummary.push({ ...record, exactInitialState: undefined, winningPath: undefined });
   if (deal.campaignLevel) summary.push({ level: deal.campaignLevel, title: deal.title, ...record, exactInitialState: undefined, winningPath: undefined });
   console.info(`${deal.id}: PASS, ${record.moveCount} moves, ${record.coverage.recycleCount} recycle, slack ${record.slack ?? '∞'}`);
 }
 if (campaignDeals.length !== 80 || campaignDeals[0].initial.movesLeft !== null || campaignDeals[1].initial.movesLeft !== null) throw Error('Campaign/tutor bank contract failed');
 if (!summary.some(r => r.coverage.largestPacket >= 2) || !summary.some(r => r.coverage.recycleCount >= 2) || !summary.some(r => r.slack === 0)) throw Error('Missing advertised campaign coverage');
-await writeFile('docs/validation/campaign-index.json', JSON.stringify({ version: 1, contentVersion: CONTENT_VERSION, deals: summary, authoring: [...campaignRecords, ...expansionRecords].map(r => ({ id: r.id, seed: r.authoringSeed, searchVisited: r.searchVisited })) }, null, 2) + '\n');
+await writeFile(`${validationDir}/campaign-index.json`, JSON.stringify({ version: 1, contentVersion: CONTENT_VERSION, deals: summary, authoring: [...campaignRecords, ...expansionRecords].map(r => ({ id: r.id, seed: r.authoringSeed, searchVisited: r.searchVisited })) }, null, 2) + '\n');
 
 if (dailySummary.length !== 28 || new Set(dailySummary.map(r => r.initialSha256)).size !== 28) throw Error('Daily bank must contain 28 distinct fixed orders');
-await writeFile('docs/validation/daily-index.json', JSON.stringify({ dailyContentVersion: 1, epoch: '2026-01-01', rotationDays: 28, deals: dailySummary }, null, 2) + '\n');
+await writeFile(`${validationDir}/daily-index.json`, JSON.stringify({ dailyContentVersion: 1, epoch: '2026-01-01', rotationDays: 28, deals: dailySummary }, null, 2) + '\n');
 
 const selected = new Set(campaignDeals.flatMap(d => Object.values(d.cards).filter(c => !c.leader).map(c => c.text)));
 const modes = Object.fromEntries(['ordinary','ordered','keys'].map(tag => [tag, campaignDeals.filter(d => d.campaignLevel! > 26 && d.tags?.includes(tag)).length]));
-await writeFile('docs/validation/release-bank.json', JSON.stringify({ contentVersion: CONTENT_VERSION, campaignDeals: campaignDeals.length, frozenPrefix: 26, appended: expansionRecords.length, uniqueMemberCaptions: selected.size, appendedModes: modes, maxWitnessMoves: Math.max(...summary.map(r => r.moveCount)), minFiniteSlack: Math.min(...summary.filter(r => r.slack !== null).map(r => r.slack!)), distinctNewOrders: new Set(expansionRecords.map(r => JSON.stringify([r.initial.tableau, r.initial.stock, r.initial.faceUp]))).size, independentHumanDifficultyReview: 'PENDING' }, null, 2) + '\n');
+await writeFile(`${validationDir}/release-bank.json`, JSON.stringify({ contentVersion: CONTENT_VERSION, campaignDeals: campaignDeals.length, frozenPrefix: 26, appended: expansionRecords.length, uniqueMemberCaptions: selected.size, appendedModes: modes, maxWitnessMoves: Math.max(...summary.map(r => r.moveCount)), minFiniteSlack: Math.min(...summary.filter(r => r.slack !== null).map(r => r.slack!)), distinctNewOrders: new Set(expansionRecords.map(r => JSON.stringify([r.initial.tableau, r.initial.stock, r.initial.faceUp]))).size, independentHumanDifficultyReview: 'PENDING' }, null, 2) + '\n');
+// Preserve the original per-deal v2 records. Publish a separate, compact v3 verification.
+await writeFile('docs/validation/rules-v3.json', '{\n"rulesVersion":'+RULES_VERSION+',\n"records":[\n'+verified.map(r=>JSON.stringify(r)).join(',\n')+'\n]}\n');

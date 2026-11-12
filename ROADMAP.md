@@ -1,5 +1,7 @@
 # Roadmap
 
+**Next proposed board package — audit only:** [2026-11-13 microinteraction audit](docs/qa/BOARD_FEEL_AUDIT_2026-11-13.md). Work order: underlying surfaces and slot roles → ordinary landing/feedback → separately confirmed reveal/entry gaps → coherent category completion → device acceptance. Missing lift surface, free-floating cancel frame, intermediate empty foundation and completion layer/ribbon conflicts are reproduced. Keep compact geometry, casual art and all rules/content/save/economy contracts. Implementation is not part of this audit delivery.
+
 **0.10.0/code18 delivered:** [rules v3 and compatible save recovery](docs/qa/RULES_V3_IMPLEMENTATION_2026-11-12.md). PR #21 merged; full exact-source CI passes 92 unit/platform, 130 browser + four deliberate skips, both Android builds/signature. All 108 new and 108 legacy paths validate without changing orders/budgets. Main/source/saved APKs are independently verified and byte-identical; APK and two touch GIFs delivered. Duplicate main web run remains in progress; physical-device acceptance stays open.
 
 **Historical 0.9.4 audit:** [identified rule/save defects](docs/qa/RULES_AUDIT_2026-11-12.md) led to the implemented correction above. The old permissive contract is retained only for existing attempts; new ordinary attempts use v3. The affected 52 campaign and 21 daily witnesses have been replaced by separately validated current-rule routes, preserving frozen originals.

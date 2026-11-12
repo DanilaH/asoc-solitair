@@ -1,5 +1,9 @@
 # Verification — 2026-11-12
 
+## 2026-11-13 — Board feel audit, unchanged production
+
+[Findings and plan](docs/qa/BOARD_FEEL_AUDIT_2026-11-13.md). Fetched HEAD/origin main `848065babee8cd638fc3ba24ded008a46a636aed`. Current production build and audit-tool typecheck pass. Actual touch records cover level6 at360×780,320×568 and360 reduced-motion, with accepted board comparisons, neutral cancel/stock/recycle/completion/Undo and no page errors. Timed production screencast frames show the foundation surface gap and completion layering. A suspected error/praise priority issue is disproved by input and the existing message handler. Details and reproducible commands are in the linked audit/machine evidence. Production dist is byte-identical to the frozen delivered0.10.0 bundle; no game code or bank/version change. No new full suite/Android build is claimed for this audit-only tool/docs delivery. Phone/audio/haptics and human preference are untested here.
+
 ## Rules v3 and compatible history — 0.10.0/code18
 
 [Evidence/downloads](docs/qa/RULES_V3_IMPLEMENTATION_2026-11-12.md). PR #21 merged at `c6bd3ef68084e6dca0f6c2dfdbd55e815e6544ef`; exact runtime source `84a8cad7ad60b0096c3ba169a5d31fc907242d1f`, identical tree `86a8952412e7225cba3857ae9bc3002bf9480578`. Full source CI `43251286557` PASS: 92 unit/platform, all content witnesses, oracle 216 old/new paths / 253244 comparisons, prototype build/96 agents, 119 layout cases with 0 DOM/0 raster, 130 browser + four deliberate compact catalog skips including all 80 touch wins, Android debug/signature and unsigned SDK-disabled R8 compilation. Final local new-rule/legacy/recovery UI focus: 6 PASS. Main artifact verification is tracked in the linked delivery report.

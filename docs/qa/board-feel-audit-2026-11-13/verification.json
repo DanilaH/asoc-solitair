@@ -1,0 +1,69 @@
+{
+  "runtimeSource": "848065babee8cd638fc3ba24ded008a46a636aed",
+  "auditToolSha256": "3619e570d7a6c3d98d78f56ad37508aac7e75c92aedbf535c1ace1838dba69ff",
+  "gameChanges": [],
+  "build": "PASS",
+  "typecheck": "PASS",
+  "recordings": "3 PASS; no page errors",
+  "appDistComparedWithDelivered0100": true,
+  "productionFileCount": 186,
+  "notRun": [
+    "new full browser/unit suite",
+    "new Android build",
+    "physical phone",
+    "audio/haptics listening",
+    "human comparison"
+  ],
+  "errorPriorityHypothesis": "DISPROVED: error visible, old praise hidden",
+  "harnessNotes": [
+    "An initial predicate expected the word theme; actual existing refusal says category. Recorder predicate corrected.",
+    "A hypothesis asserted error would be hidden under praise; actual game clears praise in message(error=true). Hypothesis rejected; final recorder stores actual feedback without requiring a defect."
+  ],
+  "sources": {
+    "azurSha256": "671b8403bdc25a248817cdda3990f4d08d42d2a0acaa8f0901daaec111271fe2",
+    "azurFramesSeconds": [
+      43.5,
+      49.0
+    ],
+    "hitappsFreshDownload": "413: 323337693 bytes exceeds 268435456 byte connector limit; existing repository observations used"
+  },
+  "evidence": {
+    "ordinaryGap": {
+      "frame": {
+        "file": "ordinary-frame-002.png",
+        "epochMs": 1794512365827.781
+      },
+      "relativeToInputMs": 120,
+      "brightFraction": 0.0
+    },
+    "videoAnchors": [
+      [
+        "02-before-last-lift",
+        [
+          8.422279202279203,
+          8.8
+        ]
+      ],
+      [
+        "03-last-card-held",
+        [
+          8.475270655270656,
+          9.8
+        ]
+      ],
+      [
+        "10-outside-release",
+        [
+          8.702165242165242,
+          14.8
+        ]
+      ]
+    ],
+    "gifTrim": {
+      "startSeconds": 8.6,
+      "durationSeconds": 7.4,
+      "speed": 1,
+      "fps": 15
+    }
+  }
+}

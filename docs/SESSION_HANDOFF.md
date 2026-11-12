@@ -1,5 +1,11 @@
 # Continuation checkpoint — 2026-11-12
 
+## Latest review — 2026-11-13, board microinteractions
+
+Owner reports fragmented board feel and asks for an audit/plan. [Independent findings and ordered packages](qa/BOARD_FEEL_AUDIT_2026-11-13.md) inspect fetched main `848065babee8cd638fc3ba24ded008a46a636aed`, unchanged 0.10.0/code18. Actual-touch level6 recordings at360×780,320×568 and360 reduced-motion confirm: missing underlying surface while lifting a final card; identical upper/lower silhouettes; free-floating reject frame after a neutral off-target release; old foundation face hidden before a new card arrives; premature completion leader/layer replacement and red ribbon over the title. New error versus prior praise is already handled correctly; do not propose fixing it. Fresh-entry/flip lifecycle and physical audio feel remain hypotheses needing targeted evidence.
+
+Audit tool: tools/audit-board-feel.ts; machine evidence/media index under docs/qa/board-feel-audit-2026-11-13/. Plan A surfaces/hierarchy, B ordinary landing/feedback, C confirmed reveal/entry problems, D one coherent completion, E regression/device acceptance. No implementation, APK/version/rule/bank/save/economy/SDK/kit change. Preserve compact layout/casual art, full-screen gesture/lift/drop anchors, stock fan/recycle, reader and error-priority behavior. Do not repeat completed 0.9.3/0.9.4 work as a new deliverable.
+
 ## Current delivery — 0.10.0/code18, rules v3 and compatible history
 
 Owner approved implementing the audit findings. [Implementation and verification/downloads](qa/RULES_V3_IMPLEMENTATION_2026-11-12.md), [contract](product/RULES_V3.md). PR #21 merged at `c6bd3ef68084e6dca0f6c2dfdbd55e815e6544ef`; exact runtime source `84a8cad7ad60b0096c3ba169a5d31fc907242d1f`, identical tree `86a8952412e7225cba3857ae9bc3002bf9480578`. New ordinary attempts refuse member → lower leader; old active/parked/Undo remain v2 through an explicit Board.rulesVersion, envelope 3/5/3. Upper collection and leader → lower members stay allowed. Restart upgrades only the restarted attempt. Legacy Hint uses original witnesses. Preserve all frozen definitions/orders/budgets/daily rotation; 73 v3 path overrides and one Joker demonstration are separate. Level 19 wins 45/45 by taking baking_2 on its first draw.

@@ -1,0 +1,49 @@
+{
+  "runtimeSource": "84a8cad7ad60b0096c3ba169a5d31fc907242d1f",
+  "runs": [
+    {
+      "id": 43250271693,
+      "source": "43372f5a44ba35cebfc7a7d6de9dfa2b6b02b1fd",
+      "conclusion": "failure",
+      "passed": 128,
+      "skipped": 4,
+      "timeouts": 2
+    },
+    {
+      "id": 43251286557,
+      "source": "84a8cad7ad60b0096c3ba169a5d31fc907242d1f",
+      "conclusion": "success",
+      "passed": 130,
+      "skipped": 4,
+      "timeouts": 0
+    },
+    {
+      "id": 43251455877,
+      "source": "84a8cad7ad60b0096c3ba169a5d31fc907242d1f",
+      "conclusion": "failure",
+      "passed": 128,
+      "skipped": 4,
+      "timeouts": 2
+    }
+  ],
+  "cases": [
+    "one captured touch crosses every former field edge, keeps the card visible and cancels without a turn",
+    "dragging a whole packet performs one move and Undo restores its members"
+  ],
+  "failures": [
+    "2026-11-12T16:21:16.8418847Z   1) [phone] › tests/browser/board-interaction.spec.ts:102:1 › one captured touch crosses every former field edge, keeps the card visible and cancels without a turn ",
+    "2026-11-12T16:21:16.8420239Z     Test timeout of 30000ms exceeded.",
+    "2026-11-12T16:21:16.8421089Z     Error: page.screenshot: Test timeout of 30000ms exceeded.",
+    "2026-11-12T16:21:16.8444217Z   2) [phone] › tests/browser/game.spec.ts:126:1 › dragging a whole packet performs one move and Undo restores its members ",
+    "2026-11-12T16:21:16.8444845Z     Test timeout of 30000ms exceeded."
+  ],
+  "localFinalFocus": {
+    "passed": 8,
+    "projects": [
+      "phone",
+      "compact"
+    ],
+    "repeatEach": 2
+  },
+  "cause": "UNCONFIRMED. Overall 30-second deadlines expired during screenshot/evaluate/cancel; no domain-state assertion mismatch was reported. No runtime fix claimed."
+}

@@ -1,5 +1,11 @@
 # Continuation checkpoint — 2026-11-12
 
+## Active follow-up — 0.9.4 / code 17
+
+User requested card-shaped slots, stock-adjacent first draw/fan opening away, both word/picture topics, centered helper group, and Aa merged with moves. [Scope/status](qa/BOARD_REFINEMENT_0_9_4.md). Branch `fix/board-refinement-094` from main440427d. Empty foundation/tableau slots now have recessed card silhouettes; occupied slots keep no idle contour. The first three draws preserve older positions; previous face stays visible until the new card covers it. The whole moves tile is the reading hit area with Aa footer. Helpers center without stretching the tableau. Existing art policy remains:166 picture/174 word category occurrences across80+28; normal level2 visibly combines word-only dishes and picture-only clothes. No image generation, frozen rules/content/save/economy/SDK/kit changes.
+
+Local check75 PASS and first browser focus36 PASS. Final check/input, production recordings on360×780/320×568, hosted CI and matched Android delivery are being completed. Do not claim APK delivery or main integration before evidence is appended. Recorder `tools/record-board-refinement.ts` uses ordinary levels6/2 to avoid the misleading all-picture legacy intro demo.
+
 ## Current delivery — 0.9.3 / code 16, physical board handling
 
 [Scope/evidence/downloads](qa/BOARD_INTERACTION_2026-11-12.md). PR #17 merged at `b8b9ebd823a0f353929b02a8107f87347f5987f5`; runtime source `98e29346800c5dc4678c137770799f1adacbdf08`, head `525fc165e1a424c3aa407ad32a074fc904faf9b4` adds only total browser-test deadline headroom. Merge tree exactly equals the head. Full exact-head CI `43207567197` PASS (web 131146498100, Android 131146497811), also runtime CI `43206024546` PASS: 74 unit/platform checks, fixed witnesses/four-layout bounds/build, 119 field cases with zero DOM/raster issues plus home/dialog checks, **122 browser scenarios + four deliberate compact catalog skips**, all 80 levels won through real touch, both Android compilations/signature. Final focused local UI/tutorial/UX matrix 34 PASS; previous-card free reading passes on both sizes. First two ordinary levels also won by screenshot-guided agent drag input without winningPath/solver; not a human playtest.

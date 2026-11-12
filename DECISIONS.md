@@ -99,3 +99,8 @@ The owner approved implementation of the concrete follow-up plan. A charge requi
 ## 2026-11-12 — Physical card handling after phone feedback
 
 Use one viewport render surface with compact board coordinates and native single-pointer capture. The visible card and the finger are both drop anchors; domain legality remains authoritative. The local Aa inspection zone returns the original packet for free and never enters the command/economy path. Keep occupied source slots visually clean. Pause preferences replace inner content within fixed bounds. Category artwork is presentation-only and homogeneous; abstract/ambiguous topics remain entirely words. Frozen card definitions, initial orders, budgets, IDs, saves and kit SHA are unchanged.
+
+
+## 2026-11-12 — Board refinement from direct user feedback
+
+Empty destinations use a recessed card silhouette, with no contour behind occupied cards. The first stock draw lands next to the pile; draws two/three expand away while preserving older positions, mirrored for a left stock. Keep the previous face during flight until the new card covers it. Merge Aa into the moves tile with the whole tile as its hit area. Center the bottom helper group, retaining compact tableau placement. The existing per-category word/picture resolver already satisfies the clarified request; preserve it and demonstrate both formats on ordinary deals. No content-bank or rule change.

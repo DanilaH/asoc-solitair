@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
 import { introDeal } from '../../src/content/intro';
 import { dispatch, freshSave } from '../../src/domain/engine';
-import { UI_ART, artUrl, illustrationUrl } from '../../src/game/art';
+import { UI_ART, artUrl, cardArtwork, illustrationUrl } from '../../src/game/art';
+import { dailyPool } from '../../src/content/daily';
 
 test('the complete art pack decodes with transparent gutters and published image references resolve locally', async ({ page, baseURL }) => {
   const external: string[] = [];
@@ -13,7 +14,8 @@ test('the complete art pack decodes with transparent gutters and published image
   expect(originals.length).toBe(35);
   const illustrations = originals.map(illustrationUrl);
   expect(illustrations.every(url => url.startsWith('art/generated/'))).toBe(true);
-  const urls = [...new Set([...UI_ART.map(artUrl), ...illustrations])];
+  const rendered = [introDeal, ...campaignDeals, ...dailyPool].flatMap(deal => Object.values(deal.cards).flatMap(card => cardArtwork(card, deal) ?? []));
+  const urls = [...new Set([...UI_ART.map(artUrl), ...illustrations, ...rendered, 'art/ui/tutorial-hand.webp'])];
   const defects = await page.evaluate(async urls => {
     const defects: string[] = [];
     for (const url of urls) {
@@ -51,7 +53,7 @@ test('static reduced-motion cards remain painted after viewport and banner backi
     for (const banner of [90, 60]) {
       await page.locator('#banner-slot').evaluate((element, banner) => { (element as HTMLElement).hidden = false; (element as HTMLElement).style.height = `${banner}px`; }, banner);
       await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
-      const screenshot = await page.locator('canvas').screenshot();
+      const screenshot = await page.locator('#game-root').screenshot();
       await page.route('**/art-repaint.png', route => route.fulfill({ body: screenshot, contentType: 'image/png', headers: { 'Cache-Control': 'no-store' } }), { times: 1 });
       const visibleCardPixels = await page.evaluate(async () => {
         const image = new Image(); image.src = '/art-repaint.png'; await image.decode();

@@ -1,0 +1,1517 @@
+{
+  "method": "Built-in generation; tools/export-art.mjs 4x4 --clean-bounds crops original alpha; 1x1 override for double bass. Production exports are in public/art/generated; source hashes/crop rectangles are below.",
+  "userDirection": "Within each category use pictures or words, with a word leader. Preserve the simple casual art direction.",
+  "wordOnly": [
+    "books",
+    "building",
+    "drinks",
+    "weather"
+  ],
+  "reason": "Book forms/materials/drinks/weather would require subtle labels to distinguish; do not replace the word meaning with an ambiguous generic image.",
+  "sheets": [
+    {
+      "i": 0,
+      "items": [
+        {
+          "id": "clothes_1",
+          "name": "Свитер"
+        },
+        {
+          "id": "clothes_3",
+          "name": "Плащ"
+        },
+        {
+          "id": "clothes_4",
+          "name": "Жилет"
+        },
+        {
+          "id": "clothes_5",
+          "name": "Кардиган"
+        },
+        {
+          "id": "fruit_3",
+          "name": "Слива"
+        },
+        {
+          "id": "fruit_4",
+          "name": "Персик"
+        },
+        {
+          "id": "birds_1",
+          "name": "Синица"
+        },
+        {
+          "id": "birds_2",
+          "name": "Дятел"
+        },
+        {
+          "id": "birds_3",
+          "name": "Скворец"
+        },
+        {
+          "id": "tools_2",
+          "name": "Отвёртка"
+        },
+        {
+          "id": "tools_3",
+          "name": "Пила"
+        },
+        {
+          "id": "tools_4",
+          "name": "Гаечный ключ"
+        },
+        {
+          "id": "tools_5",
+          "name": "Плоскогубцы"
+        },
+        {
+          "id": "dishes_2",
+          "name": "Тарелка"
+        },
+        {
+          "id": "dishes_3",
+          "name": "Блюдце"
+        },
+        {
+          "id": "dishes_4",
+          "name": "Кувшин"
+        }
+      ],
+      "path": "/workspace/scratch/50187ffca82b/generated_images/exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE production sprite atlas for a casual mobile association card game. Square composition, exactly 4 columns by 4 equal rows; each of 16 cells is an invisible equal square. ONE isolated object per requested cell, centered and entirely contained inside its cell, with generous 15% transparent gutters on all sides. NO cell borders, NO grid, NO labels, NO text. All objects have same simple casual style: chunky broad matte shapes, soft rounded 3D volume, 2–4 main colors, minimal essential details, no tiny fixtures, no noise, no faces added to objects, gentle upper-left lighting, no cast shadow outside silhouette. Readable at 55px. True transparent background. Exact cell order LEFT TO RIGHT, TOP TO BOTTOM:\n1. Свитер\n2. Плащ\n3. Жилет\n4. Кардиган\n5. Слива\n6. Персик\n7. Синица\n8. Дятел\n9. Скворец\n10. Отвёртка\n11. Пила\n12. Гаечный ключ\n13. Плоскогубцы\n14. Тарелка\n15. Блюдце\n16. Кувшин\nSpecific semantic constraints when applicable: гаечный ключ is an open-ended spanner, not a house key; планер is a slim fixed-wing glider aircraft without a motor; эспандер is two handles joined by short springs, not a long jump rope; скрипка is a small violin with bow, контрабас is an upright double bass; флейта a flute; бра a wall-mounted lamp; блюдце a small shallow saucer, салатник a deep salad bowl; циркуль a geometry compass with two hinged legs, not a navigation compass; кулебяка an elongated closed Russian savory pie, ватрушка an open round pastry with visible white cheese center; гантель a dumbbell, гиря a kettlebell. Do not combine cells or omit cells.",
+      "sourceSha256": "40f228cacc5d33c9da92a8b1f1a54671feccab7cb8d8287019dd384769f26eed"
+    },
+    {
+      "i": 1,
+      "items": [
+        {
+          "id": "dishes_5",
+          "name": "Салатник"
+        },
+        {
+          "id": "lights_1",
+          "name": "Люстра"
+        },
+        {
+          "id": "lights_2",
+          "name": "Торшер"
+        },
+        {
+          "id": "lights_3",
+          "name": "Фонарик"
+        },
+        {
+          "id": "lights_5",
+          "name": "Бра"
+        },
+        {
+          "id": "trees_1",
+          "name": "Берёза"
+        },
+        {
+          "id": "trees_2",
+          "name": "Дуб"
+        },
+        {
+          "id": "trees_3",
+          "name": "Клён"
+        },
+        {
+          "id": "road_2",
+          "name": "Трамвай"
+        },
+        {
+          "id": "road_3",
+          "name": "Трактор"
+        },
+        {
+          "id": "road_4",
+          "name": "Мотоцикл"
+        },
+        {
+          "id": "water_1",
+          "name": "Катер"
+        },
+        {
+          "id": "water_2",
+          "name": "Буксир"
+        },
+        {
+          "id": "water_4",
+          "name": "Паром"
+        },
+        {
+          "id": "air_2",
+          "name": "Планер"
+        },
+        {
+          "id": "air_3",
+          "name": "Дирижабль"
+        }
+      ],
+      "path": "/workspace/scratch/50187ffca82b/generated_images/exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE production sprite atlas for a casual mobile association card game. Square composition, exactly 4 columns by 4 equal rows; each of 16 cells is an invisible equal square. ONE isolated object per requested cell, centered and entirely contained inside its cell, with generous 15% transparent gutters on all sides. NO cell borders, NO grid, NO labels, NO text. All objects have same simple casual style: chunky broad matte shapes, soft rounded 3D volume, 2–4 main colors, minimal essential details, no tiny fixtures, no noise, no faces added to objects, gentle upper-left lighting, no cast shadow outside silhouette. Readable at 55px. True transparent background. Exact cell order LEFT TO RIGHT, TOP TO BOTTOM:\n1. Салатник\n2. Люстра\n3. Торшер\n4. Фонарик\n5. Бра\n6. Берёза\n7. Дуб\n8. Клён\n9. Трамвай\n10. Трактор\n11. Мотоцикл\n12. Катер\n13. Буксир\n14. Паром\n15. Планер\n16. Дирижабль\nSpecific semantic constraints when applicable: гаечный ключ is an open-ended spanner, not a house key; планер is a slim fixed-wing glider aircraft without a motor; эспандер is two handles joined by short springs, not a long jump rope; скрипка is a small violin with bow, контрабас is an upright double bass; флейта a flute; бра a wall-mounted lamp; блюдце a small shallow saucer, салатник a deep salad bowl; циркуль a geometry compass with two hinged legs, not a navigation compass; кулебяка an elongated closed Russian savory pie, ватрушка an open round pastry with visible white cheese center; гантель a dumbbell, гиря a kettlebell. Do not combine cells or omit cells.",
+      "repair": "Generated alpha extraction removed the nonzero-alpha white haze; positions and identities retained.",
+      "sourceSha256": "2e64bd348c45ac68428886890790327bfb918253d5007656eefca7a1bcb06c16"
+    },
+    {
+      "i": 2,
+      "items": [
+        {
+          "id": "air_4",
+          "name": "Аэростат"
+        },
+        {
+          "id": "office_2",
+          "name": "Степлер"
+        },
+        {
+          "id": "office_3",
+          "name": "Циркуль"
+        },
+        {
+          "id": "office_4",
+          "name": "Скрепка"
+        },
+        {
+          "id": "office_5",
+          "name": "Текстовыделитель"
+        },
+        {
+          "id": "music_1",
+          "name": "Скрипка"
+        },
+        {
+          "id": "music_3",
+          "name": "Флейта"
+        },
+        {
+          "id": "music_4",
+          "name": "Контрабас"
+        },
+        {
+          "id": "music_5",
+          "name": "Аккордеон"
+        },
+        {
+          "id": "sports_1",
+          "name": "Ракетка"
+        },
+        {
+          "id": "sports_2",
+          "name": "Гантель"
+        },
+        {
+          "id": "sports_4",
+          "name": "Гиря"
+        },
+        {
+          "id": "sports_5",
+          "name": "Эспандер"
+        },
+        {
+          "id": "shapes_2",
+          "name": "Прямоугольник"
+        },
+        {
+          "id": "shapes_3",
+          "name": "Ромб"
+        },
+        {
+          "id": "shapes_4",
+          "name": "Трапеция"
+        }
+      ],
+      "path": "/workspace/scratch/50187ffca82b/generated_images/exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE production sprite atlas for a casual mobile association card game. Square composition, exactly 4 columns by 4 equal rows; each of 16 cells is an invisible equal square. ONE isolated object per requested cell, centered and entirely contained inside its cell, with generous 15% transparent gutters on all sides. NO cell borders, NO grid, NO labels, NO text. All objects have same simple casual style: chunky broad matte shapes, soft rounded 3D volume, 2–4 main colors, minimal essential details, no tiny fixtures, no noise, no faces added to objects, gentle upper-left lighting, no cast shadow outside silhouette. Readable at 55px. True transparent background. Exact cell order LEFT TO RIGHT, TOP TO BOTTOM:\n1. Аэростат\n2. Степлер\n3. Циркуль\n4. Скрепка\n5. Текстовыделитель\n6. Скрипка\n7. Флейта\n8. Контрабас\n9. Аккордеон\n10. Ракетка\n11. Гантель\n12. Гиря\n13. Эспандер\n14. Прямоугольник\n15. Ромб\n16. Трапеция\nSpecific semantic constraints when applicable: гаечный ключ is an open-ended spanner, not a house key; планер is a slim fixed-wing glider aircraft without a motor; эспандер is two handles joined by short springs, not a long jump rope; скрипка is a small violin with bow, контрабас is an upright double bass; флейта a flute; бра a wall-mounted lamp; блюдце a small shallow saucer, салатник a deep salad bowl; циркуль a geometry compass with two hinged legs, not a navigation compass; кулебяка an elongated closed Russian savory pie, ватрушка an open round pastry with visible white cheese center; гантель a dumbbell, гиря a kettlebell. Do not combine cells or omit cells.",
+      "sourceSha256": "78daa737d34f0b1e3a9acab48fb10585fcbd58d109e5cc3f2e615b01444f2497"
+    },
+    {
+      "i": 3,
+      "items": [
+        {
+          "id": "shapes_5",
+          "name": "Пятиугольник"
+        },
+        {
+          "id": "baking_2",
+          "name": "Круассан"
+        },
+        {
+          "id": "baking_3",
+          "name": "Ватрушка"
+        },
+        {
+          "id": "baking_4",
+          "name": "Крендель"
+        },
+        {
+          "id": "baking_5",
+          "name": "Кулебяка"
+        },
+        {
+          "id": "sweets_1",
+          "name": "Мармелад"
+        },
+        {
+          "id": "sweets_2",
+          "name": "Ириска"
+        },
+        {
+          "id": "sweets_4",
+          "name": "Зефир"
+        },
+        {
+          "id": "sweets_5",
+          "name": "Шоколад"
+        },
+        {
+          "id": "shoes_1",
+          "name": "Кеды"
+        },
+        {
+          "id": "shoes_3",
+          "name": "Тапочки"
+        },
+        {
+          "id": "shoes_4",
+          "name": "Сандалии"
+        },
+        {
+          "id": "hats_1",
+          "name": "Берет"
+        },
+        {
+          "id": "hats_2",
+          "name": "Панама"
+        },
+        {
+          "id": "hats_3",
+          "name": "Ушанка"
+        },
+        {
+          "id": "hats_5",
+          "name": "Цилиндр"
+        }
+      ],
+      "path": "/workspace/scratch/50187ffca82b/generated_images/exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE production sprite atlas for a casual mobile association card game. Square composition, exactly 4 columns by 4 equal rows; each of 16 cells is an invisible equal square. ONE isolated object per requested cell, centered and entirely contained inside its cell, with generous 15% transparent gutters on all sides. NO cell borders, NO grid, NO labels, NO text. All objects have same simple casual style: chunky broad matte shapes, soft rounded 3D volume, 2–4 main colors, minimal essential details, no tiny fixtures, no noise, no faces added to objects, gentle upper-left lighting, no cast shadow outside silhouette. Readable at 55px. True transparent background. Exact cell order LEFT TO RIGHT, TOP TO BOTTOM:\n1. Пятиугольник\n2. Круассан\n3. Ватрушка\n4. Крендель\n5. Кулебяка\n6. Мармелад\n7. Ириска\n8. Зефир\n9. Шоколад\n10. Кеды\n11. Тапочки\n12. Сандалии\n13. Берет\n14. Панама\n15. Ушанка\n16. Цилиндр\nSpecific semantic constraints when applicable: гаечный ключ is an open-ended spanner, not a house key; планер is a slim fixed-wing glider aircraft without a motor; эспандер is two handles joined by short springs, not a long jump rope; скрипка is a small violin with bow, контрабас is an upright double bass; флейта a flute; бра a wall-mounted lamp; блюдце a small shallow saucer, салатник a deep salad bowl; циркуль a geometry compass with two hinged legs, not a navigation compass; кулебяка an elongated closed Russian savory pie, ватрушка an open round pastry with visible white cheese center; гантель a dumbbell, гиря a kettlebell. Do not combine cells or omit cells.",
+      "sourceSha256": "422a00eb717bcf8bb79309af937e26890482f3258b3dd5c0b9e8be13fe7001a6"
+    },
+    {
+      "i": 4,
+      "items": [
+        {
+          "id": "fish_1",
+          "name": "Окунь"
+        },
+        {
+          "id": "fish_3",
+          "name": "Карась"
+        },
+        {
+          "id": "fish_4",
+          "name": "Сом"
+        },
+        {
+          "id": "flowers_1",
+          "name": "Роза"
+        },
+        {
+          "id": "flowers_3",
+          "name": "Ромашка"
+        },
+        {
+          "id": "flowers_4",
+          "name": "Нарцисс"
+        },
+        {
+          "id": "furniture_2",
+          "name": "Диван"
+        },
+        {
+          "id": "furniture_3",
+          "name": "Комод"
+        },
+        {
+          "id": "furniture_4",
+          "name": "Табурет"
+        },
+        {
+          "id": "furniture_5",
+          "name": "Кресло"
+        },
+        {
+          "id": "vegetables_2",
+          "name": "Огурец"
+        },
+        {
+          "id": "vegetables_3",
+          "name": "Капуста"
+        },
+        {
+          "id": "vegetables_4",
+          "name": "Свёкла"
+        },
+        {
+          "id": "pets_2",
+          "name": "Собака"
+        },
+        {
+          "id": "pets_3",
+          "name": "Хомяк"
+        },
+        {
+          "id": "pets_4",
+          "name": "Морская свинка"
+        }
+      ],
+      "path": "/workspace/scratch/50187ffca82b/generated_images/exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE production sprite atlas for a casual mobile association card game. Square composition, exactly 4 columns by 4 equal rows; each of 16 cells is an invisible equal square. ONE isolated object per requested cell, centered and entirely contained inside its cell, with generous 15% transparent gutters on all sides. NO cell borders, NO grid, NO labels, NO text. All objects have same simple casual style: chunky broad matte shapes, soft rounded 3D volume, 2–4 main colors, minimal essential details, no tiny fixtures, no noise, no faces added to objects, gentle upper-left lighting, no cast shadow outside silhouette. Readable at 55px. True transparent background. Exact cell order LEFT TO RIGHT, TOP TO BOTTOM:\n1. Окунь\n2. Карась\n3. Сом\n4. Роза\n5. Ромашка\n6. Нарцисс\n7. Диван\n8. Комод\n9. Табурет\n10. Кресло\n11. Огурец\n12. Капуста\n13. Свёкла\n14. Собака\n15. Хомяк\n16. Морская свинка\nSpecific semantic constraints when applicable: гаечный ключ is an open-ended spanner, not a house key; планер is a slim fixed-wing glider aircraft without a motor; эспандер is two handles joined by short springs, not a long jump rope; скрипка is a small violin with bow, контрабас is an upright double bass; флейта a flute; бра a wall-mounted lamp; блюдце a small shallow saucer, салатник a deep salad bowl; циркуль a geometry compass with two hinged legs, not a navigation compass; кулебяка an elongated closed Russian savory pie, ватрушка an open round pastry with visible white cheese center; гантель a dumbbell, гиря a kettlebell. Do not combine cells or omit cells.",
+      "sourceSha256": "91252d40941aac52a9f1a2f0d72caa79c73c26204e8654ef846dc09c8ec115ad"
+    },
+    {
+      "i": 5,
+      "items": [
+        {
+          "id": "sea_1",
+          "name": "Дельфин"
+        },
+        {
+          "id": "sea_2",
+          "name": "Кит"
+        },
+        {
+          "id": "appliances_1",
+          "name": "Холодильник"
+        },
+        {
+          "id": "appliances_3",
+          "name": "Тостер"
+        },
+        {
+          "id": "reptiles_1",
+          "name": "Крокодил"
+        },
+        {
+          "id": "reptiles_3",
+          "name": "Ящерица"
+        },
+        {
+          "id": "reptiles_4",
+          "name": "Змея"
+        },
+        {
+          "id": "computer_1",
+          "name": "Монитор"
+        },
+        {
+          "id": "computer_3",
+          "name": "Мышь"
+        },
+        {
+          "id": "computer_4",
+          "name": "Системный блок"
+        },
+        {
+          "id": "bath_2",
+          "name": "Шампунь"
+        },
+        {
+          "id": "bath_3",
+          "name": "Мочалка"
+        }
+      ],
+      "path": "/workspace/scratch/50187ffca82b/generated_images/exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+      "prompt": "Use case: stylized-concept. Asset type: ONE production sprite atlas for a casual mobile association card game. Square composition, exactly 4 columns by 4 equal rows; each of 16 cells is an invisible equal square. ONE isolated object per requested cell, centered and entirely contained inside its cell, with generous 15% transparent gutters on all sides. NO cell borders, NO grid, NO labels, NO text. All objects have same simple casual style: chunky broad matte shapes, soft rounded 3D volume, 2–4 main colors, minimal essential details, no tiny fixtures, no noise, no faces added to objects, gentle upper-left lighting, no cast shadow outside silhouette. Readable at 55px. True transparent background. Exact cell order LEFT TO RIGHT, TOP TO BOTTOM:\n1. Дельфин\n2. Кит\n3. Холодильник\n4. Тостер\n5. Крокодил\n6. Ящерица\n7. Змея\n8. Монитор\n9. Мышь\n10. Системный блок\n11. Шампунь\n12. Мочалка\nCells 13 through 16 MUST be completely empty/transparent.\nSpecific semantic constraints when applicable: гаечный ключ is an open-ended spanner, not a house key; планер is a slim fixed-wing glider aircraft without a motor; эспандер is two handles joined by short springs, not a long jump rope; скрипка is a small violin with bow, контрабас is an upright double bass; флейта a flute; бра a wall-mounted lamp; блюдце a small shallow saucer, салатник a deep salad bowl; циркуль a geometry compass with two hinged legs, not a navigation compass; кулебяка an elongated closed Russian savory pie, ватрушка an open round pastry with visible white cheese center; гантель a dumbbell, гиря a kettlebell. Do not combine cells or omit cells.",
+      "sourceSha256": "122d47b39e127343c213524c408ee05f9ec13c4aa589ff0d6af6706863514bd7"
+    }
+  ],
+  "overrides": [
+    {
+      "asset": "subject-music_4",
+      "path": "/workspace/scratch/50187ffca82b/generated_images/exec-55ee3db7-3450-41f0-8e1d-70fce1f3b3a5.png",
+      "reason": "The first cell read as a violin. Regenerated an upright large-body double bass with a long black end pin; no bow.",
+      "sourceSha256": "6d7205a7ad074f87ba394ab1f86dcb2a38e8ac3198183e29c64b96b5d97b7077"
+    }
+  ],
+  "hand": {
+    "path": "/workspace/scratch/50187ffca82b/generated_images/exec-b4de9bd3-2b68-4f8a-861c-f868f3a0c03e.png",
+    "method": "built-in generation; transparent soft ivory pointing glove; crop/resize only; public/art/ui/tutorial-hand.webp",
+    "sourceSha256": "43b0f2114c2b2e82648fc0e53db6b9e90f113e8718ff58575c260cdd661998d1"
+  },
+  "exports": [
+    {
+      "sourceSha256": "78daa737d34f0b1e3a9acab48fb10585fcbd58d109e5cc3f2e615b01444f2497",
+      "columns": 4,
+      "rows": 4,
+      "records": [
+        {
+          "name": "subject-air_4",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 61,
+            "top": 42,
+            "width": 217,
+            "height": 272
+          },
+          "path": "public/art/generated/subject-air_4.webp"
+        },
+        {
+          "name": "subject-office_2",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 353,
+            "top": 86,
+            "width": 249,
+            "height": 200
+          },
+          "path": "public/art/generated/subject-office_2.webp"
+        },
+        {
+          "name": "subject-office_3",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 694,
+            "top": 35,
+            "width": 178,
+            "height": 275
+          },
+          "path": "public/art/generated/subject-office_3.webp"
+        },
+        {
+          "name": "subject-office_4",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 991,
+            "top": 61,
+            "width": 203,
+            "height": 233
+          },
+          "path": "public/art/generated/subject-office_4.webp"
+        },
+        {
+          "name": "subject-office_5",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 57,
+            "top": 355,
+            "width": 235,
+            "height": 256
+          },
+          "path": "public/art/generated/subject-office_5.webp"
+        },
+        {
+          "name": "subject-music_1",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 351,
+            "top": 336,
+            "width": 231,
+            "height": 288
+          },
+          "path": "public/art/generated/subject-music_1.webp"
+        },
+        {
+          "name": "subject-music_3",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 650,
+            "top": 348,
+            "width": 267,
+            "height": 267
+          },
+          "path": "public/art/generated/subject-music_3.webp"
+        },
+        {
+          "name": "subject-music_4",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 1000,
+            "top": 322,
+            "width": 161,
+            "height": 305
+          },
+          "path": "public/art/generated/subject-music_4.webp"
+        },
+        {
+          "name": "subject-music_5",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 31,
+            "top": 676,
+            "width": 279,
+            "height": 220
+          },
+          "path": "public/art/generated/subject-music_5.webp"
+        },
+        {
+          "name": "subject-sports_1",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 360,
+            "top": 646,
+            "width": 228,
+            "height": 286
+          },
+          "path": "public/art/generated/subject-sports_1.webp"
+        },
+        {
+          "name": "subject-sports_2",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 640,
+            "top": 697,
+            "width": 282,
+            "height": 186
+          },
+          "path": "public/art/generated/subject-sports_2.webp"
+        },
+        {
+          "name": "subject-sports_4",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 986,
+            "top": 655,
+            "width": 209,
+            "height": 269
+          },
+          "path": "public/art/generated/subject-sports_4.webp"
+        },
+        {
+          "name": "subject-sports_5",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 27,
+            "top": 1016,
+            "width": 285,
+            "height": 162
+          },
+          "path": "public/art/generated/subject-sports_5.webp"
+        },
+        {
+          "name": "subject-shapes_2",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 343,
+            "top": 1011,
+            "width": 263,
+            "height": 155
+          },
+          "path": "public/art/generated/subject-shapes_2.webp"
+        },
+        {
+          "name": "subject-shapes_3",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 656,
+            "top": 967,
+            "width": 236,
+            "height": 248
+          },
+          "path": "public/art/generated/subject-shapes_3.webp"
+        },
+        {
+          "name": "subject-shapes_4",
+          "source": "exec-9d66fc40-ce1b-4dcf-8cda-2b936aa1cf60.png",
+          "rect": {
+            "left": 945,
+            "top": 1008,
+            "width": 275,
+            "height": 162
+          },
+          "path": "public/art/generated/subject-shapes_4.webp"
+        }
+      ]
+    },
+    {
+      "sourceSha256": "40f228cacc5d33c9da92a8b1f1a54671feccab7cb8d8287019dd384769f26eed",
+      "columns": 4,
+      "rows": 4,
+      "records": [
+        {
+          "name": "subject-clothes_1",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 33,
+            "top": 49,
+            "width": 273,
+            "height": 244
+          },
+          "path": "public/art/generated/subject-clothes_1.webp"
+        },
+        {
+          "name": "subject-clothes_3",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 355,
+            "top": 30,
+            "width": 233,
+            "height": 277
+          },
+          "path": "public/art/generated/subject-clothes_3.webp"
+        },
+        {
+          "name": "subject-clothes_4",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 672,
+            "top": 53,
+            "width": 216,
+            "height": 240
+          },
+          "path": "public/art/generated/subject-clothes_4.webp"
+        },
+        {
+          "name": "subject-clothes_5",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 947,
+            "top": 54,
+            "width": 275,
+            "height": 238
+          },
+          "path": "public/art/generated/subject-clothes_5.webp"
+        },
+        {
+          "name": "subject-fruit_3",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 64,
+            "top": 342,
+            "width": 225,
+            "height": 269
+          },
+          "path": "public/art/generated/subject-fruit_3.webp"
+        },
+        {
+          "name": "subject-fruit_4",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 352,
+            "top": 346,
+            "width": 245,
+            "height": 261
+          },
+          "path": "public/art/generated/subject-fruit_4.webp"
+        },
+        {
+          "name": "subject-birds_1",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 632,
+            "top": 364,
+            "width": 281,
+            "height": 239
+          },
+          "path": "public/art/generated/subject-birds_1.webp"
+        },
+        {
+          "name": "subject-birds_2",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 1001,
+            "top": 340,
+            "width": 196,
+            "height": 278
+          },
+          "path": "public/art/generated/subject-birds_2.webp"
+        },
+        {
+          "name": "subject-birds_3",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 29,
+            "top": 664,
+            "width": 278,
+            "height": 258
+          },
+          "path": "public/art/generated/subject-birds_3.webp"
+        },
+        {
+          "name": "subject-tools_2",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 340,
+            "top": 655,
+            "width": 254,
+            "height": 267
+          },
+          "path": "public/art/generated/subject-tools_2.webp"
+        },
+        {
+          "name": "subject-tools_3",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 630,
+            "top": 658,
+            "width": 295,
+            "height": 260
+          },
+          "path": "public/art/generated/subject-tools_3.webp"
+        },
+        {
+          "name": "subject-tools_4",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 962,
+            "top": 654,
+            "width": 267,
+            "height": 270
+          },
+          "path": "public/art/generated/subject-tools_4.webp"
+        },
+        {
+          "name": "subject-tools_5",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 34,
+            "top": 962,
+            "width": 249,
+            "height": 282
+          },
+          "path": "public/art/generated/subject-tools_5.webp"
+        },
+        {
+          "name": "subject-dishes_2",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 326,
+            "top": 978,
+            "width": 284,
+            "height": 243
+          },
+          "path": "public/art/generated/subject-dishes_2.webp"
+        },
+        {
+          "name": "subject-dishes_3",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 644,
+            "top": 1015,
+            "width": 269,
+            "height": 167
+          },
+          "path": "public/art/generated/subject-dishes_3.webp"
+        },
+        {
+          "name": "subject-dishes_4",
+          "source": "exec-55bff712-9be2-454a-b2a3-ffd5ca469dd1.png",
+          "rect": {
+            "left": 974,
+            "top": 961,
+            "width": 255,
+            "height": 270
+          },
+          "path": "public/art/generated/subject-dishes_4.webp"
+        }
+      ]
+    },
+    {
+      "sourceSha256": "2e64bd348c45ac68428886890790327bfb918253d5007656eefca7a1bcb06c16",
+      "columns": 4,
+      "rows": 4,
+      "records": [
+        {
+          "name": "subject-dishes_5",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 35,
+            "top": 87,
+            "width": 252,
+            "height": 187
+          },
+          "path": "public/art/generated/subject-dishes_5.webp"
+        },
+        {
+          "name": "subject-lights_1",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 332,
+            "top": 36,
+            "width": 287,
+            "height": 251
+          },
+          "path": "public/art/generated/subject-lights_1.webp"
+        },
+        {
+          "name": "subject-lights_2",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 711,
+            "top": 27,
+            "width": 147,
+            "height": 275
+          },
+          "path": "public/art/generated/subject-lights_2.webp"
+        },
+        {
+          "name": "subject-lights_3",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 965,
+            "top": 67,
+            "width": 251,
+            "height": 210
+          },
+          "path": "public/art/generated/subject-lights_3.webp"
+        },
+        {
+          "name": "subject-lights_5",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 36,
+            "top": 361,
+            "width": 261,
+            "height": 222
+          },
+          "path": "public/art/generated/subject-lights_5.webp"
+        },
+        {
+          "name": "subject-trees_1",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 368,
+            "top": 322,
+            "width": 206,
+            "height": 291
+          },
+          "path": "public/art/generated/subject-trees_1.webp"
+        },
+        {
+          "name": "subject-trees_2",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 633,
+            "top": 330,
+            "width": 290,
+            "height": 283
+          },
+          "path": "public/art/generated/subject-trees_2.webp"
+        },
+        {
+          "name": "subject-trees_3",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 958,
+            "top": 327,
+            "width": 271,
+            "height": 287
+          },
+          "path": "public/art/generated/subject-trees_3.webp"
+        },
+        {
+          "name": "subject-road_2",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 30,
+            "top": 649,
+            "width": 265,
+            "height": 279
+          },
+          "path": "public/art/generated/subject-road_2.webp"
+        },
+        {
+          "name": "subject-road_3",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 328,
+            "top": 673,
+            "width": 285,
+            "height": 246
+          },
+          "path": "public/art/generated/subject-road_3.webp"
+        },
+        {
+          "name": "subject-road_4",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 645,
+            "top": 689,
+            "width": 278,
+            "height": 229
+          },
+          "path": "public/art/generated/subject-road_4.webp"
+        },
+        {
+          "name": "subject-water_1",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 948,
+            "top": 705,
+            "width": 286,
+            "height": 174
+          },
+          "path": "public/art/generated/subject-water_1.webp"
+        },
+        {
+          "name": "subject-water_2",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 25,
+            "top": 970,
+            "width": 272,
+            "height": 250
+          },
+          "path": "public/art/generated/subject-water_2.webp"
+        },
+        {
+          "name": "subject-water_4",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 319,
+            "top": 995,
+            "width": 295,
+            "height": 210
+          },
+          "path": "public/art/generated/subject-water_4.webp"
+        },
+        {
+          "name": "subject-air_2",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 630,
+            "top": 1010,
+            "width": 289,
+            "height": 183
+          },
+          "path": "public/art/generated/subject-air_2.webp"
+        },
+        {
+          "name": "subject-air_3",
+          "source": "exec-c83511b6-a828-4e91-ba05-189914aece76.png",
+          "rect": {
+            "left": 942,
+            "top": 1011,
+            "width": 288,
+            "height": 182
+          },
+          "path": "public/art/generated/subject-air_3.webp"
+        }
+      ]
+    },
+    {
+      "sourceSha256": "91252d40941aac52a9f1a2f0d72caa79c73c26204e8654ef846dc09c8ec115ad",
+      "columns": 4,
+      "rows": 4,
+      "records": [
+        {
+          "name": "subject-fish_1",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 23,
+            "top": 61,
+            "width": 284,
+            "height": 213
+          },
+          "path": "public/art/generated/subject-fish_1.webp"
+        },
+        {
+          "name": "subject-fish_3",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 337,
+            "top": 61,
+            "width": 275,
+            "height": 217
+          },
+          "path": "public/art/generated/subject-fish_3.webp"
+        },
+        {
+          "name": "subject-fish_4",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 642,
+            "top": 63,
+            "width": 283,
+            "height": 227
+          },
+          "path": "public/art/generated/subject-fish_4.webp"
+        },
+        {
+          "name": "subject-flowers_1",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 985,
+            "top": 43,
+            "width": 228,
+            "height": 261
+          },
+          "path": "public/art/generated/subject-flowers_1.webp"
+        },
+        {
+          "name": "subject-flowers_3",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 55,
+            "top": 341,
+            "width": 224,
+            "height": 275
+          },
+          "path": "public/art/generated/subject-flowers_3.webp"
+        },
+        {
+          "name": "subject-flowers_4",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 355,
+            "top": 331,
+            "width": 231,
+            "height": 285
+          },
+          "path": "public/art/generated/subject-flowers_4.webp"
+        },
+        {
+          "name": "subject-furniture_2",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 628,
+            "top": 387,
+            "width": 298,
+            "height": 196
+          },
+          "path": "public/art/generated/subject-furniture_2.webp"
+        },
+        {
+          "name": "subject-furniture_3",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 966,
+            "top": 359,
+            "width": 261,
+            "height": 246
+          },
+          "path": "public/art/generated/subject-furniture_3.webp"
+        },
+        {
+          "name": "subject-furniture_4",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 41,
+            "top": 663,
+            "width": 236,
+            "height": 257
+          },
+          "path": "public/art/generated/subject-furniture_4.webp"
+        },
+        {
+          "name": "subject-furniture_5",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 331,
+            "top": 647,
+            "width": 272,
+            "height": 273
+          },
+          "path": "public/art/generated/subject-furniture_5.webp"
+        },
+        {
+          "name": "subject-vegetables_2",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 643,
+            "top": 659,
+            "width": 272,
+            "height": 245
+          },
+          "path": "public/art/generated/subject-vegetables_2.webp"
+        },
+        {
+          "name": "subject-vegetables_3",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 954,
+            "top": 656,
+            "width": 282,
+            "height": 252
+          },
+          "path": "public/art/generated/subject-vegetables_3.webp"
+        },
+        {
+          "name": "subject-vegetables_4",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 35,
+            "top": 945,
+            "width": 263,
+            "height": 290
+          },
+          "path": "public/art/generated/subject-vegetables_4.webp"
+        },
+        {
+          "name": "subject-pets_2",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 338,
+            "top": 947,
+            "width": 274,
+            "height": 277
+          },
+          "path": "public/art/generated/subject-pets_2.webp"
+        },
+        {
+          "name": "subject-pets_3",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 667,
+            "top": 967,
+            "width": 226,
+            "height": 251
+          },
+          "path": "public/art/generated/subject-pets_3.webp"
+        },
+        {
+          "name": "subject-pets_4",
+          "source": "exec-6321b9ef-c481-4ff0-b37a-93fdd2688261.png",
+          "rect": {
+            "left": 949,
+            "top": 992,
+            "width": 289,
+            "height": 219
+          },
+          "path": "public/art/generated/subject-pets_4.webp"
+        }
+      ]
+    },
+    {
+      "sourceSha256": "6d7205a7ad074f87ba394ab1f86dcb2a38e8ac3198183e29c64b96b5d97b7077",
+      "columns": 1,
+      "rows": 1,
+      "records": [
+        {
+          "name": "subject-music_4",
+          "source": "exec-55ee3db7-3450-41f0-8e1d-70fce1f3b3a5.png",
+          "rect": {
+            "left": 237,
+            "top": 11,
+            "width": 536,
+            "height": 1514
+          },
+          "path": "public/art/generated/subject-music_4.webp"
+        }
+      ]
+    },
+    {
+      "sourceSha256": "122d47b39e127343c213524c408ee05f9ec13c4aa589ff0d6af6706863514bd7",
+      "columns": 4,
+      "rows": 4,
+      "records": [
+        {
+          "name": "subject-sea_1",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 41,
+            "top": 86,
+            "width": 269,
+            "height": 206
+          },
+          "path": "public/art/generated/subject-sea_1.webp"
+        },
+        {
+          "name": "subject-sea_2",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 350,
+            "top": 81,
+            "width": 262,
+            "height": 209
+          },
+          "path": "public/art/generated/subject-sea_2.webp"
+        },
+        {
+          "name": "subject-appliances_1",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 698,
+            "top": 44,
+            "width": 171,
+            "height": 267
+          },
+          "path": "public/art/generated/subject-appliances_1.webp"
+        },
+        {
+          "name": "subject-appliances_3",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 965,
+            "top": 70,
+            "width": 246,
+            "height": 235
+          },
+          "path": "public/art/generated/subject-appliances_3.webp"
+        },
+        {
+          "name": "subject-reptiles_1",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 28,
+            "top": 409,
+            "width": 286,
+            "height": 157
+          },
+          "path": "public/art/generated/subject-reptiles_1.webp"
+        },
+        {
+          "name": "subject-reptiles_3",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 344,
+            "top": 378,
+            "width": 263,
+            "height": 206
+          },
+          "path": "public/art/generated/subject-reptiles_3.webp"
+        },
+        {
+          "name": "subject-reptiles_4",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 667,
+            "top": 356,
+            "width": 215,
+            "height": 240
+          },
+          "path": "public/art/generated/subject-reptiles_4.webp"
+        },
+        {
+          "name": "subject-computer_1",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 951,
+            "top": 362,
+            "width": 269,
+            "height": 233
+          },
+          "path": "public/art/generated/subject-computer_1.webp"
+        },
+        {
+          "name": "subject-computer_3",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 52,
+            "top": 692,
+            "width": 229,
+            "height": 198
+          },
+          "path": "public/art/generated/subject-computer_3.webp"
+        },
+        {
+          "name": "subject-computer_4",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 376,
+            "top": 644,
+            "width": 193,
+            "height": 271
+          },
+          "path": "public/art/generated/subject-computer_4.webp"
+        },
+        {
+          "name": "subject-bath_2",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 700,
+            "top": 644,
+            "width": 157,
+            "height": 276
+          },
+          "path": "public/art/generated/subject-bath_2.webp"
+        },
+        {
+          "name": "subject-bath_3",
+          "source": "exec-74912cf7-8aff-4843-bcdb-aab8aee8c853.png",
+          "rect": {
+            "left": 964,
+            "top": 640,
+            "width": 246,
+            "height": 277
+          },
+          "path": "public/art/generated/subject-bath_3.webp"
+        }
+      ]
+    },
+    {
+      "sourceSha256": "422a00eb717bcf8bb79309af937e26890482f3258b3dd5c0b9e8be13fe7001a6",
+      "columns": 4,
+      "rows": 4,
+      "records": [
+        {
+          "name": "subject-shapes_5",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 53,
+            "top": 60,
+            "width": 228,
+            "height": 219
+          },
+          "path": "public/art/generated/subject-shapes_5.webp"
+        },
+        {
+          "name": "subject-baking_2",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 346,
+            "top": 70,
+            "width": 257,
+            "height": 197
+          },
+          "path": "public/art/generated/subject-baking_2.webp"
+        },
+        {
+          "name": "subject-baking_3",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 653,
+            "top": 64,
+            "width": 254,
+            "height": 216
+          },
+          "path": "public/art/generated/subject-baking_3.webp"
+        },
+        {
+          "name": "subject-baking_4",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 963,
+            "top": 72,
+            "width": 260,
+            "height": 208
+          },
+          "path": "public/art/generated/subject-baking_4.webp"
+        },
+        {
+          "name": "subject-baking_5",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 36,
+            "top": 391,
+            "width": 263,
+            "height": 191
+          },
+          "path": "public/art/generated/subject-baking_5.webp"
+        },
+        {
+          "name": "subject-sweets_1",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 353,
+            "top": 373,
+            "width": 243,
+            "height": 204
+          },
+          "path": "public/art/generated/subject-sweets_1.webp"
+        },
+        {
+          "name": "subject-sweets_2",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 648,
+            "top": 395,
+            "width": 269,
+            "height": 150
+          },
+          "path": "public/art/generated/subject-sweets_2.webp"
+        },
+        {
+          "name": "subject-sweets_4",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 968,
+            "top": 364,
+            "width": 248,
+            "height": 224
+          },
+          "path": "public/art/generated/subject-sweets_4.webp"
+        },
+        {
+          "name": "subject-sweets_5",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 24,
+            "top": 688,
+            "width": 274,
+            "height": 202
+          },
+          "path": "public/art/generated/subject-sweets_5.webp"
+        },
+        {
+          "name": "subject-shoes_1",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 333,
+            "top": 673,
+            "width": 278,
+            "height": 230
+          },
+          "path": "public/art/generated/subject-shoes_1.webp"
+        },
+        {
+          "name": "subject-shoes_3",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 646,
+            "top": 675,
+            "width": 273,
+            "height": 238
+          },
+          "path": "public/art/generated/subject-shoes_3.webp"
+        },
+        {
+          "name": "subject-shoes_4",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 955,
+            "top": 671,
+            "width": 277,
+            "height": 240
+          },
+          "path": "public/art/generated/subject-shoes_4.webp"
+        },
+        {
+          "name": "subject-hats_1",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 22,
+            "top": 997,
+            "width": 275,
+            "height": 194
+          },
+          "path": "public/art/generated/subject-hats_1.webp"
+        },
+        {
+          "name": "subject-hats_2",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 327,
+            "top": 985,
+            "width": 289,
+            "height": 210
+          },
+          "path": "public/art/generated/subject-hats_2.webp"
+        },
+        {
+          "name": "subject-hats_3",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 645,
+            "top": 975,
+            "width": 269,
+            "height": 236
+          },
+          "path": "public/art/generated/subject-hats_3.webp"
+        },
+        {
+          "name": "subject-hats_5",
+          "source": "exec-4af6c253-b8f4-42de-8b9b-ec98adde08d4.png",
+          "rect": {
+            "left": 959,
+            "top": 977,
+            "width": 269,
+            "height": 233
+          },
+          "path": "public/art/generated/subject-hats_5.webp"
+        }
+      ]
+    }
+  ]
+}

@@ -19,7 +19,7 @@ try {
   await page.screenshot({ path: 'docs/qa/opening.png', scale: 'css' });
   for (const [index, cmd] of deal.winningPath.entries()) {
     const save: Save = await page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!));
-    const rect = (await page.locator('canvas').boundingBox())!;
+    const rect = (await page.locator('#game-root').boundingBox())!;
     const metrics = layout(save.attempt.board, deal, rect.height * 540 / rect.width);
     const tap = async (p: { x: number; y: number }) => page.touchscreen.tap(rect.x + p.x * rect.width / 540, rect.y + p.y * rect.width / 540);
     if (cmd.type === 'transfer') {

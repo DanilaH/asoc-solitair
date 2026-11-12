@@ -13,8 +13,8 @@ import { lesson, recordLearning, ruleIntroduction, type RuleIntro } from './app/
 import { boardKey, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import type { BoardCommand, Command } from './domain/types';
-import { WIDTH, boardFrame } from './game/layout';
-import { illustrationUrl } from './game/art';
+import { WIDTH, boardFrame, cardMetrics } from './game/layout';
+import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
 import { cardReader } from './game/card-reader';
 import type { HintRequest, HintResponse } from './domain/hint';
@@ -57,7 +57,22 @@ const runtime = createRuntime(() => { scene?.cancel(); }, () => {
 });
 
 function closeDialogs() { document.body.append($('#coin-layer')); dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false); }
-function openDialog(selector: string) { clearPraise(); scene?.clearFeedback(); closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
+function openDialog(selector: string) { peekCard(null); clearPraise(); scene?.clearFeedback(); closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
+let peeked: string | null = null;
+function peekCard(id: string | null) {
+  if (peeked === id) return;
+  peeked = id; const panel = $('#inspect-peek'); panel.hidden = !id;
+  $('#inspect').dataset.peeking = String(Boolean(id));
+  if (!id) return;
+  const card = deal.cards[id], content = cardReader(card, deal), image = $<HTMLImageElement>('#peek-image');
+  $('#peek-title').textContent = content.title; $('#peek-description').textContent = content.description ?? '';
+  const artwork = cardArtwork(card, deal);
+  $('#peek-description').hidden = !content.description; image.hidden = !artwork;
+  if (artwork) { image.src = artwork; image.alt = card.text; } else image.removeAttribute('src');
+  const zone = $('#inspect').getBoundingClientRect();
+  panel.style.left = `${Math.max(10, Math.min(innerWidth - Math.min(280, innerWidth - 20) - 10, zone.right + 9))}px`;
+  panel.style.top = `${Math.min(innerHeight - 230, Math.max(10, zone.bottom + 10))}px`;
+}
 function clearPraise() {
   if (praiseAnimation) { praiseAnimation.onfinish = null; praiseAnimation.cancel(); praiseAnimation = undefined; }
   $('#praise').hidden = true; $('#feedback-row').dataset.praising = 'false';
@@ -75,10 +90,14 @@ function showPraise(text: string) {
 function positionDeckTools() {
   const rect = $('#game-root').getBoundingClientRect(); if (!rect.width || !rect.height) return;
   const tools = $('.deck-tools'), app = $('#app');
-  const frame = boardFrame(rect.width, rect.height, app.dataset.deckRow as 'top' | 'bottom');
+  const frame = boardFrame(rect.width, rect.height, app.dataset.deckRow as 'top' | 'bottom', deal);
   const right = app.dataset.deckRow === 'bottom' || app.dataset.deckEdge === 'left';
   tools.style.transform = `scale(${frame.unit})`; tools.style.top = `${20 * frame.unit}px`;
   tools.style.left = right ? 'auto' : `${frame.offsetX}px`; tools.style.right = right ? `${rect.width - frame.offsetX - WIDTH * frame.unit}px` : 'auto';
+  const reader = $('#inspect'), bottom = app.dataset.deckRow === 'bottom', left = app.dataset.deckEdge === 'left';
+  const readerX = bottom ? left ? WIDTH - 90 : 0 : left ? WIDTH - 200 : 110;
+  const readerY = bottom ? frame.height - cardMetrics(deal).height - 12 : 20;
+  reader.style.transform = `scale(${frame.unit})`; reader.style.left = `${frame.offsetX + readerX * frame.unit}px`; reader.style.top = `${readerY * frame.unit}px`;
 }
 function message(text: string, error = false) {
   if (error) clearPraise();
@@ -175,6 +194,7 @@ try {
   }
   function renderHud() {
     $('#app').dataset.screen = screen;
+    $('#game-surface').hidden = screen !== 'game';
     document.documentElement.dataset.reduced = String(save.settings.reducedMotion);
     const board = save.attempt.board;
     $('#app').dataset.practice = String(training());
@@ -195,7 +215,7 @@ try {
     $('#helper-locked').hidden = hintUnlocked || undoUnlocked || jokerUnlocked;
     $('#restart').hidden = screen === 'home'; $('#levels-open').hidden = screen === 'home';
     $('#settings-done').textContent = screen === 'home' ? 'Готово' : 'Продолжить';
-    $('#pause-title').textContent = screen === 'home' ? 'Настройки' : 'Пауза';
+    $('#pause-title').textContent = screen === 'home' || $<HTMLDetailsElement>('#pause-options').open ? 'Настройки' : 'Пауза';
     $('#pause-level').textContent = screen === 'home' ? 'СОЛИТЁР АССОЦИАЦИЙ' : $('#level-number').textContent;
     const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
     $('#app').dataset.deckEdge = hasDeck ? save.settings.deckSide ?? 'right' : 'right';
@@ -262,20 +282,11 @@ try {
     $('#result-title').textContent = won ? 'Всё сошлось!' : 'Ходы закончились';
     const daily = Boolean(save.attempt.daily), payout = save.attempt.payout;
     $('#result-copy').textContent = won ? daily ? payout?.length ? 'Задание дня выполнено. Награда уже на вашем счёте.' : 'Тренировка завершена. Награда за эту дату уже получена или её день закончился.' : (deal.campaignLevel === CAMPAIGN_LENGTH ? `Все ${CAMPAIGN_LENGTH} уровней пройдены. Любую раздачу можно сыграть ещё раз.` : '') : '';
-    const rewards = $('#result-rewards'); rewards.replaceChildren();
-    const row = (label: string, value: string) => { const r = document.createElement('div'); r.className = 'reward-line'; const a = document.createElement('span'), b = document.createElement('strong'); a.textContent = label; b.textContent = value; r.append(a, b); rewards.append(r); };
-    if (won) {
-      if (payout) for (const reward of payout) row(reward.label, `+${reward.coins}${reward.hints ? ` · +${reward.hints} подсказка` : ''}${reward.undos ? ` · +${reward.undos} отмена` : ''}`);
-      else if (!daily) row('За победу и оставшиеся ходы', `+${BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0)}`);
-      if (save.attempt.streak.coins) row('Серии за партию · уже получено', String(save.attempt.streak.coins));
-    }
     $('#result-meta').textContent = daily ? `Серия дней · ${currentDailyStreak(save, localDay())}` : `${save.meta!.winCycle === 0 ? 'Новый цикл' : 'Пять побед'} · ${save.meta!.winCycle} / 5`;
     $('#result-meta').hidden = !won || !daily && !payout?.some(r => r.reason === 'campaign_win_cycle');
     $('#replay').textContent = daily && won ? 'Сыграть как тренировку' : 'Ещё раз';
     const earned = (payout ? payout.reduce((sum, r) => sum + r.coins, 0) : !daily ? BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0) + save.attempt.streak.coins;
     $('#result-total').textContent = `+${earned}`; $('#result-earnings').hidden = !won || earned === 0;
-    $('#reward-details').hidden = !won || rewards.children.length === 0;
-    $<HTMLDetailsElement>('#reward-details').open = false;
     unlockChoice = payout?.some(r => r.key === 'milestone:20') ? 'cardBack' : payout?.some(r => r.key === 'milestone:10') ? 'palette' : undefined;
     $('#unlock-reward').hidden = !won || !unlockChoice;
     $('#unlock-title').textContent = unlockChoice === 'palette' ? 'Открыт стол «Чернила»' : 'Открыта рубашка «Ромбы»';
@@ -493,16 +504,20 @@ try {
   }
   const root = $('#game-root');
   function size() {
-    const measured = root.getBoundingClientRect(), rect = { width: measured.width || Math.min(innerWidth, 520) - 24, height: measured.height || Math.max(280, innerHeight - 260) }, ratio = getRenderPixelRatio(2);
+    const rect = { width: innerWidth, height: innerHeight }, ratio = getRenderPixelRatio(2);
     return { rect, backing: getBackingStoreSize(Math.max(1, rect.width), Math.max(1, rect.height), ratio) };
   }
   const initial = size();
   scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, command: execute, praise: showPraise, sound: name => runtime.play(name),
+    inputRoot: () => root, readerZone: () => $('#inspect').getBoundingClientRect(), peek: peekCard,
+    boardBounds() { const rect = root.getBoundingClientRect(), zoom = game?.scale.zoom ?? initial.rect.width / initial.backing.width;
+      return { x: (rect.width ? rect.x : Math.max(0, (innerWidth - 520) / 2) + 12) / zoom, y: (rect.height ? rect.y : 76) / zoom,
+        width: (rect.width || Math.min(innerWidth, 520) - 24) / zoom, height: (rect.height || Math.max(280, innerHeight - 260)) / zoom }; },
     inspect(id) {
       const card = deal.cards[id];
       setInspect(false);
-      const image = $<HTMLImageElement>('#word-image'); image.hidden = !card.image;
-      if (card.image) { image.src = illustrationUrl(card.image); image.alt = card.text; }
+      const image = $<HTMLImageElement>('#word-image'), artwork = cardArtwork(card, deal); image.hidden = !artwork;
+      if (artwork) { image.src = artwork; image.alt = card.text; }
       else image.removeAttribute('src');
       const content = cardReader(card, deal);
       $('#word-description').hidden = content.description === undefined;
@@ -519,23 +534,30 @@ try {
       });
     },
   });
-  game = new Phaser.Game({ type: Phaser.AUTO, parent: root, width: initial.backing.width, height: initial.backing.height,
+  game = new Phaser.Game({ type: Phaser.AUTO, parent: $('#game-surface'), width: initial.backing.width, height: initial.backing.height,
     transparent: true, banner: false, audio: { noAudio: true }, scene: [scene],
     scale: { mode: Phaser.Scale.NONE, zoom: initial.rect.width / initial.backing.width },
   });
   const renderer = game;
+  let boardSize = '';
   function resizeToRoot() {
     if (!ready || screen !== 'game' || !game?.isBooted) return;
     const next = size(); positionDeckTools();
     // ResizeObserver can report an unchanged rounded backing size. Emitting a
     // scene resize for that notification would cancel a perfectly valid drag.
-    if (game.scale.width === next.backing.width && game.scale.height === next.backing.height && game.scale.zoom === next.rect.width / next.backing.width) return;
+    const rect = root.getBoundingClientRect(), key = [rect.x, rect.y, rect.width, rect.height].join(':');
+    const resized = game.scale.width !== next.backing.width || game.scale.height !== next.backing.height || game.scale.zoom !== next.rect.width / next.backing.width;
+    if (!resized && key === boardSize) return;
+    boardSize = key;
     repaintFrames = Math.max(repaintFrames, 2);
-    game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height); game.loop.wake();
+    if (resized) { game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height); }
+    else { scene?.cancel(); scene?.sync(); }
+    game.loop.wake();
     if (ready && screen === 'game') showGuidance();
   }
   const resize = new ResizeObserver(resizeToRoot);
   resize.observe(root);
+  window.addEventListener('resize', resizeToRoot, domOptions);
   const unblock = runtime.activity.onBlockReasonsChange(() => {
     const blocked = runtime.activity.isBlocked();
     setInput(); updateBanner();
@@ -603,6 +625,10 @@ try {
   $('#levels-open').addEventListener('click', goHome, domOptions);
   $('#switch-confirm').addEventListener('click', () => { const level = requestedLevel; requestedLevel = undefined; if (level) void openLevel(level, true); }, domOptions);
   $('#menu').addEventListener('click', () => { $<HTMLDetailsElement>('#pause-options').open = screen === 'home'; openDialog('#settings'); }, domOptions);
+  $('#pause-options').addEventListener('toggle', () => { const expanded = $<HTMLDetailsElement>('#pause-options').open;
+    $('#pause-options summary').textContent = expanded && screen === 'game' ? 'Назад' : 'Настройки';
+    $('#pause-title').textContent = expanded ? 'Настройки' : screen === 'home' ? 'Настройки' : 'Пауза';
+  }, domOptions);
   $('#joker').addEventListener('click', () => {
     if (!save.profile.jokers) { openHelpers('joker'); return; }
     const active = $('#joker').getAttribute('aria-pressed') !== 'true'; setInspect(false); scene?.setJoker(active);

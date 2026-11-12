@@ -297,7 +297,7 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 .wallet #coins{white-space:nowrap}
 
 /* Teaching points at the existing helper; it never intercepts a touch. */
-#dock .attention::after{content:'';position:absolute;pointer-events:none;left:34px;top:24px;width:36px;height:45px;background:url('/art/ui/tutorial-hand.svg') center/contain no-repeat;filter:drop-shadow(0 2px 1px #103d4466);animation:teach-tap 1.25s ease-in-out 3 forwards}
+#dock .attention::after{content:'';position:absolute;pointer-events:none;left:34px;top:24px;width:36px;height:45px;background:url('/art/ui/tutorial-hand.webp') center/contain no-repeat;filter:drop-shadow(0 2px 1px #103d4466);animation:teach-tap 1.25s ease-in-out 3 forwards}
 @keyframes teach-tap{0%{transform:translateY(6px);opacity:0}20%,70%{opacity:1}40%,65%{transform:translateY(0)}100%{transform:translateY(6px);opacity:0}}
 
 #word-image{display:block;width:min(100%,220px);height:210px;object-fit:contain;margin:12px auto 18px}
@@ -349,3 +349,28 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 #reward-details summary{text-align:center;font-size:12px}
 #result-rewards{margin:4px 0 12px}
 @media(max-height:700px){#result .result-star{height:72px;margin-bottom:5px}#result h2{font-size:27px}#result-total{font-size:34px}#unlock-reward{grid-template-columns:82px 1fr;gap:9px;padding:8px}.unlock-preview{height:88px}.unlock-preview .preview-back{left:3px;top:8px}.unlock-preview .preview-face{left:25px;top:8px}}
+
+/* One viewport surface: board geometry stays compact, a held card can cross it. */
+#game-surface{position:fixed;inset:0;z-index:5;pointer-events:none;overflow:visible}
+#game-root{touch-action:none}
+#inspect{position:absolute;z-index:2;transform-origin:top left;width:90px;height:120px;padding:0;display:grid;place-items:center;border:2px dashed #b8d2ce55;border-radius:18px;background:#18546135;color:#c4dcd4;flex-shrink:0}
+#inspect .inspect-icon{background:none;border:0;width:auto;height:auto;font-size:35px;font-weight:800;color:inherit}
+#inspect[aria-pressed=true],#inspect[data-peeking=true]{background:#f5e6bd;color:#386772;border-color:#fff2cf}
+#inspect-peek{position:fixed;z-index:10;width:min(280px,calc(100vw - 20px));padding:16px 18px;border:2px solid #fffaee;border-radius:17px;background:#fff9ed;color:#345d6b;box-shadow:0 5px 0 #a3adb9,0 10px 30px #062d4366;pointer-events:none}
+#peek-title{display:block;font-size:20px;line-height:1.15;overflow-wrap:anywhere}
+#peek-description{font-size:13px;line-height:1.4;margin:9px 0 0}
+#peek-image{width:86px;height:86px;object-fit:contain;float:left;margin:0 12px 5px 0}
+#inspect-peek:after{content:'';display:block;clear:both}
+/* Preferences replace the middle of the pause panel without recentering it. */
+#settings[open]{height:min(548px,calc(100dvh - 32px));display:flex;flex-direction:column;animation:pause-in .16s ease-out}
+#settings .eyebrow{flex-shrink:0}
+#settings h2{flex-shrink:0;height:42px;margin:10px 0 12px}
+#settings-done{order:5;flex-shrink:0;margin:14px 0 0}
+#settings #restart,#settings #levels-open{padding:15px;flex-shrink:0}
+#pause-options{margin:14px 0 0;padding:0;border:0;min-height:44px;overflow-y:auto;flex:1}
+#pause-options summary{list-style:none;border-radius:13px;background:#e6ebdf;margin-bottom:8px}
+#pause-options summary::-webkit-details-marker{display:none}
+#settings:has(#pause-options[open]) #restart,#settings:has(#pause-options[open]) #levels-open{display:none}
+#settings .setting{padding:10px 0;min-height:46px}
+#settings:has(#pause-options[open]) #pause-options{margin-top:0}
+@keyframes pause-in{from{opacity:0}to{opacity:1}}

@@ -1,5 +1,7 @@
 # Product sources
 
+Current phone-feedback implementation: [0.9.3 board interaction](qa/BOARD_INTERACTION_2026-11-12.md). See its explicit verification/delivery status.
+
 Current gameplay package: [0.9.2 trustworthy Hint, semantic reader and six isolated test deals](qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). Final-source full CI and default-branch APK acceptance pass; the delivered APK, media and laboratory are linked there. The human pilot is prepared, not conducted; campaign changes remain held.
 
 Latest gameplay review: [independent gameplay/content audit and bounded improvement plan](qa/GAMEPLAY_PRODUCT_AUDIT_2026-11-11.md). Review only: 108 deals, four agent policies, independent transition oracle, real-touch counterexamples and a human-test plan. No runtime/bank change; the confirmed Hint fallback issue is proposed work.

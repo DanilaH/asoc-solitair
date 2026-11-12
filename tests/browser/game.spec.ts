@@ -9,7 +9,7 @@ import type { BoardCommand, Save } from '../../src/domain/types';
 const readSave = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
 async function action(page: Page, cmd: BoardCommand, settle = true) {
   const save = await readSave(page);
-  const rect = await page.locator('canvas').boundingBox(); if (!rect) throw Error('No canvas');
+  const rect = await page.locator('#game-root').boundingBox(); if (!rect) throw Error('No canvas');
   const frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, deal);
   const metrics = layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
   const tap = async (point: { x: number; y: number }) => page.touchscreen.tap(rect.x + frame.offsetX + point.x * frame.unit, rect.y + point.y * frame.unit);
@@ -69,7 +69,7 @@ test('next move works while coins fly, invalid drop resets progress without spen
 });
 
 test('pointer cancellation restores the card without a command or charge', async ({ page }) => {
-  const before = await readSave(page), rect = await page.locator('canvas').boundingBox(); if (!rect) throw Error('No canvas');
+  const before = await readSave(page), rect = await page.locator('#game-root').boundingBox(); if (!rect) throw Error('No canvas');
   const x = rect.x + 95 * rect.width / 540, y = rect.y + 495 * rect.width / 540;
   await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x + 60, y - 80, { steps: 5 });
   await page.locator('canvas').dispatchEvent('pointercancel', { pointerId: 1, pointerType: 'mouse', bubbles: true }); await page.mouse.up();
@@ -79,7 +79,7 @@ test('pointer cancellation restores the card without a command or charge', async
 
 test('dragging a whole packet performs one move and Undo restores its members', async ({ page }) => {
   for (const cmd of deal.winningPath.slice(0, 14)) await action(page, cmd);
-  const before = await readSave(page), rect = await page.locator('canvas').boundingBox(); if (!rect) throw Error('No canvas');
+  const before = await readSave(page), rect = await page.locator('#game-root').boundingBox(); if (!rect) throw Error('No canvas');
   const metrics = layout(before.attempt.board, deal, rect.height * 540 / rect.width);
   const from = metrics.poses.find(p => p.id === packet(before.attempt.board, 2, deal).at(-1))!;
   const to = metrics.targets.find(t => t.location.kind === 'foundation' && t.location.index === 0)!;

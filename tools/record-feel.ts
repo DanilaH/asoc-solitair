@@ -13,7 +13,7 @@ await mkdir('.recording/feel-evidence', { recursive: true });
 const server = await preview({ preview: { host: '127.0.0.1', port: 4186, strictPort: true }, build: { outDir: process.env.ASOC_QA_DIST ?? 'dist' } }), browser = await chromium.launch();
 async function move(page: Page, context: BrowserContext, deal: Deal, cmd: BoardCommand) {
   console.info('touch', deal.id, JSON.stringify(cmd));
-  const before = await read(page), rect = (await page.locator('canvas').boundingBox())!, frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
+  const before = await read(page), rect = (await page.locator('#game-root').boundingBox())!, frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
   const g = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
   const point = (p: { x: number; y: number }) => ({ x: rect.x + frame.offsetX + p.x * frame.unit, y: rect.y + p.y * frame.unit });
   if (cmd.type === 'transfer') {

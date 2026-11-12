@@ -17,7 +17,7 @@ async function seed(page: Page, index: number) {
 }
 async function move(page: Page, deal: Deal, cmd: BoardCommand) {
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal',deal.id);
-  const s=await read(page), r=(await page.locator('canvas').boundingBox())!, f=boardFrame(r.width,r.height,s.settings.deckPosition,deal), g=layout(s.attempt.board,deal,f.height,s.settings.deckSide,s.settings.deckPosition);
+  const s=await read(page), r=(await page.locator('#game-root').boundingBox())!, f=boardFrame(r.width,r.height,s.settings.deckPosition,deal), g=layout(s.attempt.board,deal,f.height,s.settings.deckSide,s.settings.deckPosition);
   const tap=(p:{x:number;y:number})=>page.touchscreen.tap(r.x+f.offsetX+p.x*f.unit,r.y+p.y*f.unit);
   if(cmd.type==='transfer') {const id=cmd.from.kind==='waste'?s.attempt.board.waste.at(-1):packet(s.attempt.board,cmd.from.index,deal).at(-1);await tap(g.poses.find(p=>p.id===id)!);await tap(g.targets.find(t=>t.location.kind===cmd.to.kind&&t.location.index===cmd.to.index)!);}else await tap(g.stock);
   await expect.poll(async()=>(await read(page)).revision).toBeGreaterThan(s.revision);
@@ -46,7 +46,7 @@ test('a stale daily is labelled training before play; replacing it can be cancel
 });
 test('short 320×568 screen keeps the helper dock inside the viewport and accepts new-content touches',async({page})=>{
   await page.setViewportSize({width:320,height:568});await seed(page,26);await page.locator('#home-play').tap();
-  const dock=(await page.locator('#dock').boundingBox())!, canvas=(await page.locator('canvas').boundingBox())!;
+  const dock=(await page.locator('#dock').boundingBox())!, canvas=(await page.locator('#game-root').boundingBox())!;
   expect(dock.y+dock.height).toBeLessThanOrEqual(568);expect(canvas.y+canvas.height).toBeLessThanOrEqual(dock.y);
   for(const cmd of campaignDeals[26].winningPath.slice(0,4))await move(page,campaignDeals[26],cmd);
   await page.screenshot({path:`test-results/${test.info().project.name}-short-new-content.png`});
@@ -62,7 +62,7 @@ test('card reading stays finger-sized on a short field and never spends a move',
   }
   const before = await read(page), deal = campaignDeals[16];
   await page.locator('#inspect').tap();
-  const rect = (await page.locator('canvas').boundingBox())!;
+  const rect = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
   const g = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
   const pose = g.poses.find(p => p.faceUp && before.attempt.board.tableau.some(col => col.at(-1) === p.id))!;
@@ -112,7 +112,7 @@ for (const level of [3, 17]) test(`level ${level}: bottom deck works on both sid
   if (level === 17) {
     await page.evaluate(() => { const slot = document.querySelector<HTMLElement>('#banner-slot')!; slot.hidden = false; slot.style.height = '60px'; });
     await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
-    const canvas = (await page.locator('canvas').boundingBox())!, dock = (await page.locator('#dock').boundingBox())!, slot = (await page.locator('#banner-slot').boundingBox())!;
+    const canvas = (await page.locator('#game-root').boundingBox())!, dock = (await page.locator('#dock').boundingBox())!, slot = (await page.locator('#banner-slot').boundingBox())!;
     expect(canvas.y + canvas.height).toBeLessThanOrEqual(dock.y); expect(dock.y + dock.height).toBeLessThanOrEqual(slot.y);
   }
   await page.screenshot({ path: `test-results/${test.info().project.name}-bottom-deck-${level}.png` });
@@ -126,7 +126,7 @@ test('ordered games have no permanent instructional paragraph on 320×568', asyn
     await seed(page, level - 1); await page.locator('#home-play').tap();
     await expect(page.locator('#message')).toBeEmpty();
     expect(await page.locator('#message').evaluate(e => getComputedStyle(e).visibility)).toBe('hidden');
-    const canvas = (await page.locator('canvas').boundingBox())!, dock = (await page.locator('#dock').boundingBox())!;
+    const canvas = (await page.locator('#game-root').boundingBox())!, dock = (await page.locator('#dock').boundingBox())!;
     expect(canvas.y + canvas.height).toBeLessThanOrEqual(dock.y);
   }
 });

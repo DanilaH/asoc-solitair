@@ -94,3 +94,8 @@ User requested independent assessment before large changes. [Audit](docs/qa/GAME
 ## 2026-11-12 — approved Hint eligibility and isolated content test
 
 The owner approved implementation of the concrete follow-up plan. A charge requires a found winning continuation; UNKNOWN/UNSOLVABLE/error/timeout never charge or fall back to an arbitrary legal action. This supersedes requirements §6.1's old paid heuristic policy without changing numerical balance or saved card rules. Restore full names and narrow semantic boundaries in the existing reader, preserving field aliases. Test six separate QA-only deals with the production renderer and no ordinary profile writes/SDK; do not promote them or reorder campaign before the human-pilot decision. [Scope/status](docs/qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md).
+
+
+## 2026-11-12 — Physical card handling after phone feedback
+
+Use one viewport render surface with compact board coordinates and native single-pointer capture. The visible card and the finger are both drop anchors; domain legality remains authoritative. The local Aa inspection zone returns the original packet for free and never enters the command/economy path. Keep occupied source slots visually clean. Pause preferences replace inner content within fixed bounds. Category artwork is presentation-only and homogeneous; abstract/ambiguous topics remain entirely words. Frozen card definitions, initial orders, budgets, IDs, saves and kit SHA are unchanged.

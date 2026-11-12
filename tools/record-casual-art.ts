@@ -51,7 +51,7 @@ try{
    await page.reload();await page.locator('#app[data-ready=true]').waitFor();await page.locator('#home-play').tap();
    await page.waitForFunction(id=>document.querySelector<HTMLElement>('#app')?.dataset.presentedDeal===id,c.deal.id);
    await page.waitForTimeout(200);
-   const r=(await page.locator('canvas').boundingBox())!,f=boardFrame(r.width,r.height,seed.settings.deckPosition,c.deal),g=layout(seed.attempt.board,c.deal,f.height,seed.settings.deckSide,seed.settings.deckPosition),p=g.poses.find(p=>p.id===c.id)!,m=cardMetrics(c.deal);
+   const r=(await page.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,seed.settings.deckPosition,c.deal),g=layout(seed.attempt.board,c.deal,f.height,seed.settings.deckSide,seed.settings.deckPosition),p=g.poses.find(p=>p.id===c.id)!,m=cardMetrics(c.deal);
    const x=r.x+f.offsetX+p.x*f.unit,y=r.y+p.y*f.unit;
    const stem=`${width}-${variant}-${c.subject}`;
    const clip={x:Math.max(0,x-m.width*f.unit/2-3),y:Math.max(0,y-m.height*f.unit/2-3),width:m.width*f.unit+6,height:m.height*f.unit+10};

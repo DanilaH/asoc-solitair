@@ -7,7 +7,7 @@ import type { Save } from '../../src/domain/types';
 const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
 // A positive control from actual painted pixels, rather than a runtime debug flag.
 async function handPixels(page: Page) {
-  const png = await page.locator('canvas').screenshot({ scale: 'css' });
+  const png = await page.locator('#game-root').screenshot({ scale: 'css' });
   const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   let count = 0;
   for (let i = 0; i < data.length; i += info.channels) if (Math.abs(data[i] - 167) + Math.abs(data[i + 1] - 161) + Math.abs(data[i + 2] - 212) < 4) count++;
@@ -31,7 +31,7 @@ test('painted tutorial follows accepted moves, yields to reading and returns aft
   await page.locator('#inspect').tap(); await expect.poll(() => handPixels(page)).toBeGreaterThan(12);
   await page.locator('#menu').tap(); await page.locator('#settings-done').tap();
   await expect.poll(() => handPixels(page)).toBeGreaterThan(12);
-  const rect = (await page.locator('canvas').boundingBox())!, f = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
+  const rect = (await page.locator('#game-root').boundingBox())!, f = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
   const g = layout(before.attempt.board, deal, f.height, before.settings.deckSide, before.settings.deckPosition);
   const cmd = deal.winningPath[0]; if (cmd.type !== 'transfer') throw Error('First teaching action changed');
   const id = cmd.from.kind === 'waste' ? before.attempt.board.waste.at(-1) : packet(before.attempt.board, cmd.from.index, deal).at(-1);
@@ -45,8 +45,8 @@ test('painted tutorial follows accepted moves, yields to reading and returns aft
 test('reduced motion keeps a painted static teaching cue', async ({ page }) => {
   await open(page, true);
   await expect.poll(() => handPixels(page), { timeout: 7000 }).toBeGreaterThan(12);
-  const first = await page.locator('canvas').screenshot({ scale: 'css' });
+  const first = await page.locator('#game-root').screenshot({ scale: 'css' });
   await page.waitForTimeout(400);
-  expect((await page.locator('canvas').screenshot({ scale: 'css' })).equals(first)).toBe(true);
+  expect((await page.locator('#game-root').screenshot({ scale: 'css' })).equals(first)).toBe(true);
   await expect(page.locator('#message')).toBeEmpty();
 });

@@ -13,7 +13,7 @@ async function ready(page: Page, deal: Deal) {
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => resolve())));
 }
 export async function move(page: Page, deal: Deal, cmd: BoardCommand) {
-  const before=await read(page), rect=(await page.locator('canvas').boundingBox())!;
+  const before=await read(page), rect=(await page.locator('#game-root').boundingBox())!;
   const frame=boardFrame(rect.width,rect.height), geometry=layout(before.attempt.board,deal,frame.height);
   const tap=(p:{x:number;y:number})=>page.touchscreen.tap(rect.x+frame.offsetX+p.x*frame.unit,rect.y+p.y*frame.unit);
   if(cmd.type==='transfer'){
@@ -65,7 +65,7 @@ test('the level-three Hint demonstration is free, replayable and survives reload
 });
 
 test('compact dense four-column layout stays inside the board and confirms abandonment of an unfinished attempt',async({page})=>{
-  await fixture(page,16);const rect=(await page.locator('canvas').boundingBox())!;const deal=campaignDeals[16];
+  await fixture(page,16);const rect=(await page.locator('#game-root').boundingBox())!;const deal=campaignDeals[16];
   const geo=layout((await read(page)).attempt.board,deal,rect.height*540/rect.width);
   expect(geo.targets.filter(t=>t.location.kind==='tableau')).toHaveLength(4);
   await page.screenshot({path:`test-results/${test.info().project.name}-dense-campaign.png`});
@@ -80,7 +80,7 @@ test('a tall banner reservation shrinks the field without covering cards or help
   await fixture(page,11);await page.evaluate(()=>{const slot=document.querySelector<HTMLElement>('#banner-slot')!;slot.hidden=false;slot.style.height='90px';});
   await page.waitForTimeout(100);
   for(const cmd of campaignDeals[11].winningPath.slice(0,4))await move(page,campaignDeals[11],cmd);
-  const canvas=(await page.locator('canvas').boundingBox())!,dock=(await page.locator('#dock').boundingBox())!,slot=(await page.locator('#banner-slot').boundingBox())!;
+  const canvas=(await page.locator('#game-root').boundingBox())!,dock=(await page.locator('#dock').boundingBox())!,slot=(await page.locator('#banner-slot').boundingBox())!;
   expect(canvas.y+canvas.height).toBeLessThanOrEqual(dock.y);expect(dock.y+dock.height).toBeLessThanOrEqual(slot.y);
   await page.screenshot({path:`test-results/${test.info().project.name}-reserved-banner.png`});
 });

@@ -1,4 +1,11 @@
-# Continuation checkpoint — 2026-11-10
+# Continuation checkpoint — 2026-11-12
+
+## Active phone-feedback follow-up — 0.9.3 / code 15
+
+User requested ten concrete board/interaction fixes and renewed reference review. Work is on `fix/board-interaction-093`, based on main `9559bba`. [Scope/evidence](qa/BOARD_INTERACTION_2026-11-12.md). The implementation is local; do not claim integration or APK delivery until final CI/artifact evidence is appended. Fullscreen native pointer capture and viewport rendering; stock-origin flip and recycle, count-dependent stock layers, three-card diagonal waste fan, generated tutorial glove, local Aa preview with free return, card/finger drop anchors, fixed pause/preferences bounds, removed reward disclosure and idle source rectangles. User explicitly confirmed uniformity **within each category**. Added 92 supporting picture assets; existing card definitions remain frozen, and a view resolver uses all pictures or all words per category. Books/building/drinks/weather stay words because generic pictures would hide their meaning. Rules/content/balance remain 2/5/3.
+
+Local first input matrix and prior experience/feel: 40 PASS. Final-source checks/whole-campaign/browser/layout/native acceptance are being completed; machine captures are under `qa/board-interaction-2026-11-12/`. Focused recording on 360×780 and 320×568 checks viewport edges, free inspection/cancel, exact recycle and fixed pause bounds. Source PNGs exist in the conversation generation output; production WebPs and crop/prompt provenance are in repo. No SDK setting/signing/store-publication change.
+
 
 ## Current delivery — 0.9.2 / code 14, trusted Hint and category clarity
 

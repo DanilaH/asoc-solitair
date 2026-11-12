@@ -22,7 +22,7 @@ test('all published category names stay distinct and fit the readable title floo
   expect(overflowing).toEqual([]);
 });
 test('a picture opens a real preview and closing it ends the mode without a charge',async({page})=>{
-  await load(page,10);const before=await read(page),deal=campaignDeals[10],r=(await page.locator('canvas').boundingBox())!,f=boardFrame(r.width,r.height),g=layout(before.attempt.board,deal,f.height);
+  await load(page,10);const before=await read(page),deal=campaignDeals[10],r=(await page.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height),g=layout(before.attempt.board,deal,f.height);
   const id=deal.initial.tableau.map(c=>c.at(-1)!).find(id=>deal.cards[id].image)!,pose=g.poses.find(p=>p.id===id)!;
   await page.locator('#inspect').tap();await page.touchscreen.tap(r.x+pose.x*f.unit,r.y+pose.y*f.unit);
   await expect(page.locator('#word-image')).toBeVisible();expect(await page.locator('#word-image').evaluate(e=>(e as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
@@ -43,8 +43,8 @@ test('failure promotes available Undo, and a stored continue credit takes priori
 
 test('an isolated near drop is accepted, a distant miss is cancelled, and repeated Hint is free',async({page,context})=>{
   for(const near of [true,false]){
-    await load(page,16);const before=await read(page),deal=campaignDeals[16],r=(await page.locator('canvas').boundingBox())!,f=boardFrame(r.width,r.height),g=layout(before.attempt.board,deal,f.height),cmd=deal.winningPath[0];if(cmd.type!=='transfer')throw Error('changed witness');
-    const id=cmd.from.kind==='waste'?before.attempt.board.waste.at(-1):packet(before.attempt.board,cmd.from.index,deal).at(-1),from=g.poses.find(p=>p.id===id)!,to=g.targets.find(t=>t.location.kind===cmd.to.kind&&t.location.index===cmd.to.index)!,a={x:r.x+from.x*f.unit,y:r.y+from.y*f.unit},b={x:r.x+to.x*f.unit,y:r.y+(to.y+to.height/2)*f.unit+(near?8:28)};
+    await load(page,16);const before=await read(page),deal=campaignDeals[16],r=(await page.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height),g=layout(before.attempt.board,deal,f.height),cmd=deal.winningPath[0];if(cmd.type!=='transfer')throw Error('changed witness');
+    const id=cmd.from.kind==='waste'?before.attempt.board.waste.at(-1):packet(before.attempt.board,cmd.from.index,deal).at(-1),from=g.poses.find(p=>p.id===id)!,to=g.targets.find(t=>t.location.kind===cmd.to.kind&&t.location.index===cmd.to.index)!,a={x:r.x+from.x*f.unit,y:r.y+from.y*f.unit},b={x:r.x+to.x*f.unit,y:r.y+(to.y+to.height/2)*f.unit+(near?8:155)};
     const cdp=await context.newCDPSession(page);await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[a]});for(let i=1;i<=10;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:a.x+(b.x-a.x)*i/10,y:a.y+(b.y-a.y)*i/10}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await cdp.detach();
     if(near)await expect.poll(async()=>(await read(page)).attempt.board).toEqual(dispatch(before,cmd,deal).next.attempt.board);
     else {await page.waitForTimeout(350);expect((await read(page)).attempt.board).toEqual(before.attempt.board);expect((await read(page)).profile).toEqual(before.profile);}
@@ -69,12 +69,12 @@ test('a milestone previews its real cosmetic and applying it grants no extra rew
   await load(page,9,s=>{s.meta!.winCycle=4;for(const cmd of campaignDeals[9].winningPath)Object.assign(s,dispatch(s,cmd,campaignDeals[9]).next)});
   await expect(page.locator('#unlock-reward')).toBeVisible();await expect(page.locator('#unlock-title')).toContainText('Чернила');const before=await read(page);
   await expect(page.locator('#result-total')).toHaveText('+'+(before.attempt.payout!.reduce((n,r)=>n+r.coins,0)+before.attempt.streak.coins));
-  expect(await page.locator('#reward-details').getAttribute('open')).toBeNull();await page.locator('#apply-unlock').tap();await expect(page.locator('#apply-unlock')).toBeDisabled();expect((await read(page)).settings.palette).toBe('ink');expect((await read(page)).profile).toEqual(before.profile);expect((await read(page)).attempt.board).toEqual(before.attempt.board);
+  await expect(page.getByText('Подробнее о награде')).toHaveCount(0);await page.locator('#apply-unlock').tap();await expect(page.locator('#apply-unlock')).toBeDisabled();expect((await read(page)).settings.palette).toBe('ink');expect((await read(page)).profile).toEqual(before.profile);expect((await read(page)).attempt.board).toEqual(before.attempt.board);
   await page.reload();await page.locator('#app[data-ready=true]').waitFor();await page.locator('#home-play').tap();await expect(page.locator('#apply-unlock')).toHaveText('Применено');expect((await read(page)).profile).toEqual(before.profile);
 });
 test('pause exposes three game actions, preferences expand, and the saved replay is marked separately',async({page})=>{
   await load(page,16,s=>{s.platform!.completedCampaign=campaignDeals.slice(0,25).map(d=>d.id)});
   const wallet=(await page.locator('#wallet-open').boundingBox())!;expect(wallet.height).toBeGreaterThanOrEqual(44);
   await page.locator('#menu').tap();await expect(page.locator('#appearance-settings')).toBeHidden();await expect(page.locator('#settings-done')).toBeVisible();await expect(page.locator('#restart')).toBeVisible();await expect(page.locator('#levels-open')).toBeVisible();
-  await pauseOptions(page);await expect(page.locator('#appearance-settings')).toBeVisible();await expect(page.locator('#haptics')).toBeVisible();await page.locator('#levels-open').tap();await page.locator('#level-picker-open').tap();await expect(page.locator('#level-17')).toHaveAttribute('data-active','true');await page.locator('#chapter-next').tap();await expect(page.locator('#level-26')).toHaveAttribute('data-next','true');
+  await pauseOptions(page);await expect(page.locator('#appearance-settings')).toBeVisible();await expect(page.locator('#haptics')).toBeVisible();await page.locator('#pause-options summary').tap();await page.locator('#levels-open').tap();await page.locator('#level-picker-open').tap();await expect(page.locator('#level-17')).toHaveAttribute('data-active','true');await page.locator('#chapter-next').tap();await expect(page.locator('#level-26')).toHaveAttribute('data-next','true');
 });

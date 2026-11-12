@@ -12,7 +12,7 @@ async function enter(page: Page, reduced: boolean) {
   await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true'); await page.locator('#home-play').tap(); await page.waitForTimeout(350);
 }
 async function move(page: Page, cmd: BoardCommand) {
-  const save = await read(page), rect = (await page.locator('canvas').boundingBox())!, frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, deal);
+  const save = await read(page), rect = (await page.locator('#game-root').boundingBox())!, frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, deal);
   const g = layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
   const tap = (p: { x: number; y: number }) => page.touchscreen.tap(rect.x + frame.offsetX + p.x * frame.unit, rect.y + p.y * frame.unit);
   if (cmd.type === 'transfer') {
@@ -52,7 +52,7 @@ test('touch drag survives entry and unchanged backing-size notifications', async
   const cdp = await page.context().newCDPSession(page);
   for (const [index, cmd] of deal.winningPath.slice(0, 2).entries()) {
     if (cmd.type !== 'transfer') throw Error('Expected teaching transfers');
-    const before = await read(page), rect = (await page.locator('canvas').boundingBox())!, f = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
+    const before = await read(page), rect = (await page.locator('#game-root').boundingBox())!, f = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
     const g = layout(before.attempt.board, deal, f.height, before.settings.deckSide, before.settings.deckPosition);
     const source = g.poses.find(p => p.id === packet(before.attempt.board, cmd.from.index, deal).at(-1))!, target = g.targets.find(t => t.location.kind === cmd.to.kind && t.location.index === cmd.to.index)!;
     const point = (p: { x: number; y: number }) => ({ x: rect.x + f.offsetX + p.x * f.unit, y: rect.y + p.y * f.unit });
@@ -84,7 +84,7 @@ test('category praise has a reserved row outside cards and helpers and clears un
       const b = (s: string) => { const r = document.querySelector(s)!.getBoundingClientRect(); return { top: r.top, bottom: r.bottom }; };
       const frames = [0, 100, 450, 850].map(time => {
         animation.currentTime = time;
-        return { time, cards: b('canvas'), praise: b('#praise'), helpers: b('#dock'), guidance: getComputedStyle(document.querySelector('#message')!).visibility };
+        return { time, cards: b('#game-root'), praise: b('#praise'), helpers: b('#dock'), guidance: getComputedStyle(document.querySelector('#message')!).visibility };
       });
       animation.currentTime = 450;
       row.dataset.qaPraise = JSON.stringify(frames);

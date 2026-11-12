@@ -1,8 +1,8 @@
 # Roadmap
 
-**0.9.2/code 14 implementation:** reliable Hint outcomes and category-reader clarity are implemented; six isolated prototypes and the human-pilot protocol are prepared. [Current checks and delivery status](docs/qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). Production bank/order/budgets remain unchanged; prototype promotion/pacing edits are HOLD pending the pilot.
+**0.9.2/code 14 delivered:** reliable Hint outcomes and category-reader clarity are implemented; six isolated prototypes and the human-pilot protocol are prepared. [Current checks and delivery status](docs/qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). Production bank/order/budgets remain unchanged; prototype promotion/pacing edits are HOLD pending the pilot.
 
-**Gameplay audit (review only):** [findings and priority plan](docs/qa/GAMEPLAY_PRODUCT_AUDIT_2026-11-11.md). Proposed next package: reliable Hint outcomes, semantic boundaries in the existing reader, then isolated content prototypes/human pilot. Runtime Directors, bank replacement and new meta are not selected. None of these proposed changes is implemented in this audit.
+**Historical gameplay audit:** [findings and priority plan](docs/qa/GAMEPLAY_PRODUCT_AUDIT_2026-11-11.md). Hint/reader fixes and isolated prototypes are now delivered in 0.9.2 above. The human pilot remains open; runtime Directors, bank replacement and new meta are not selected.
 
 **0.9.1/code 13:** the approved simpler art direction is implemented for all 33 subjects and delivered from main, PR #14. [Native/art evidence and source bundle](docs/art/CASUAL_SUBJECTS_0_9_1.md). Core game code and the frozen bank are unchanged; physical-device acceptance remains open.
 

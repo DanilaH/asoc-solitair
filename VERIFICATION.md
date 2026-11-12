@@ -1,4 +1,11 @@
-# Verification — 2026-11-09
+# Verification — 2026-11-12
+
+## Latest gameplay delivery — 0.9.2 / code 14
+
+[Scope and full evidence](docs/qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). PR #16 merged; source `04dfa973c6f12c04e9a82cdc801fc2bae387e1ab`, merge `c6eb626342f238abb99bb97a2c794b4027bed852`, identical trees. Final-source CI `43173919521` fully PASS: 71 unit/platform tests/all fixed witnesses/build, 191 rendered screens with zero DOM/raster issues, 108 browser scenarios + four deliberate skips, both Android compilations/signature. Local final Hint/reader matrix 12 PASS. Six isolated QA deals finish by real touch on two viewports, 96 simulated runs PASS; human pilot remains open.
+
+The source APK manifest/package/version, all 94 web files, absence of lab entry and signer match are independently verified. Persistent APK/media/lab links and exact hashes are in the delivery report. Main run `43176087204`, Android job `131040560912`, artifact `13923474225` PASS; main/source/saved APKs are byte-identical. Independent binary manifest decode confirms 0.9.2/code14; SHA256 `762e389f7b3c58224930549dddfe9c7888ebfb1780ecddc544e06f9445c21dd4`, 10,314,552 bytes, unchanged signer. The duplicate main web workflow is still executing at delivery; complete exact-source web evidence applies to the identical merge tree. No physical-device/live SDK or store publication claim.
+
 
 ## Latest verified art delivery — 0.9.1 / code 13
 

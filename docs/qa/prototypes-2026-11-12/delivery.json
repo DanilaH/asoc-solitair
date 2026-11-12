@@ -1,0 +1,22 @@
+{
+  "apk": "092-main-debug.apk",
+  "bytes": 10314552,
+  "sha256": "762e389f7b3c58224930549dddfe9c7888ebfb1780ecddc544e06f9445c21dd4",
+  "manifest": {
+    "package": "com.danilah.asocsolitair.debug",
+    "versionCode": 14,
+    "versionName": "0.9.2"
+  },
+  "matchedProductionFiles": 94,
+  "prototypeEntryAbsent": true,
+  "source": "04dfa973c6f12c04e9a82cdc801fc2bae387e1ab",
+  "merge": "c6eb626342f238abb99bb97a2c794b4027bed852",
+  "mainRun": 43176087204,
+  "mainArtifact": 13923474225,
+  "mainAndroidJob": 131040560912,
+  "sourceRun": 43173919521,
+  "sourceArtifact": 13923038287,
+  "signer": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "sourceAndMainByteIdentical": true,
+  "libraryApk": "libfile_7e7b353437488191a5db6820e2d83ea8"
+}

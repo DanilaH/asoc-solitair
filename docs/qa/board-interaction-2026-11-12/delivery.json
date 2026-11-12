@@ -1,0 +1,92 @@
+{
+  "versionName": "0.9.3",
+  "versionCode": 16,
+  "runtimeSource": "98e29346800c5dc4678c137770799f1adacbdf08",
+  "acceptanceHead": "525fc165e1a424c3aa407ad32a074fc904faf9b4",
+  "merge": "b8b9ebd823a0f353929b02a8107f87347f5987f5",
+  "mergeTree": "2ca6799377d941eaed0c39b6db9c41d862c6992a",
+  "runtimeCI": {
+    "run": 43206024546,
+    "webJob": 131141276622,
+    "androidJob": 131141276787,
+    "conclusion": "success",
+    "unitPlatform": 74,
+    "browserPassed": 122,
+    "deliberateCompactSkips": 4,
+    "campaignTouchWins": 80,
+    "rasterFieldCases": 119,
+    "domIssues": 0,
+    "rasterIssues": 0
+  },
+  "headDifference": "Two total scenario deadlines only; all assertions, action deadlines, runtime/public/native/package files unchanged. Android artifact 13940471076 byte-identical.",
+  "localFocusedBrowser": 34,
+  "library": [
+    {
+      "library_file_id": "libfile_1e74698eef54819190cd6194788e7e62",
+      "current_version_number": 1,
+      "status": "succeeded",
+      "local_metadata_applied": true
+    },
+    {
+      "library_file_id": "libfile_496907ccc1a881918414cca7a18e5ee5",
+      "current_version_number": 1,
+      "status": "succeeded",
+      "local_metadata_applied": true
+    },
+    {
+      "library_file_id": "libfile_66d341be10208191a0df7cadc57f1973",
+      "current_version_number": 1,
+      "status": "succeeded",
+      "local_metadata_applied": true
+    }
+  ],
+  "physicalDeviceAcceptance": "pending",
+  "main": {
+    "mainRun": 43209625163,
+    "mainAndroidJob": 131153611090,
+    "mainArtifact": 13941145382,
+    "apkProof": {
+      "apk": "093-main-debug.apk",
+      "bytes": 11450057,
+      "sha256": "2534e4f478ba529b5c0bf2feced1a020b278a62c532fb89ee5010124085ae949",
+      "manifest": {
+        "package": "com.danilah.asocsolitair.debug",
+        "versionCode": 16,
+        "versionName": "0.9.3"
+      },
+      "matchedProductionFiles": 186,
+      "prototypeEntryAbsent": true,
+      "signer": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e"
+    },
+    "byteIdenticalToSourceAndSaved": true
+  },
+  "acceptanceCI": {
+    "head": "525fc165e1a424c3aa407ad32a074fc904faf9b4",
+    "run": 43207567197,
+    "webJob": 131146498100,
+    "androidJob": 131146497811,
+    "conclusion": "success",
+    "unitPlatform": 74,
+    "browserPassed": 122,
+    "deliberateCompactSkips": 4,
+    "campaignTouchWins": 80,
+    "rasterFieldCases": 119,
+    "domIssues": 0,
+    "rasterIssues": 0
+  },
+  "duplicatePRInputProbe": {
+    "run": 43207580506,
+    "browserPassed": 121,
+    "browserFailed": 1,
+    "failure": "Daily training second rapid stock tap did not apply; expected20moves,actual21.",
+    "cause": "Unconfirmed; no speculative runtime change.",
+    "isolatedMetaRepetitions": {
+      "passed": 5,
+      "failed": 0
+    },
+    "restoredStateRapidTaps": {
+      "passed": 108,
+      "missed": 0
+    }
+  }
+}

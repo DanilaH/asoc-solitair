@@ -1,6 +1,6 @@
 # Product sources
 
-Current phone-feedback implementation: [0.9.3 board interaction](qa/BOARD_INTERACTION_2026-11-12.md). See its explicit verification/delivery status.
+Current phone-feedback delivery: [0.9.3 board interaction](qa/BOARD_INTERACTION_2026-11-12.md). See its explicit verification/delivery status.
 
 Current gameplay package: [0.9.2 trustworthy Hint, semantic reader and six isolated test deals](qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). Final-source full CI and default-branch APK acceptance pass; the delivered APK, media and laboratory are linked there. The human pilot is prepared, not conducted; campaign changes remain held.
 

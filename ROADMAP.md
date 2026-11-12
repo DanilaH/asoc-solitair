@@ -1,6 +1,6 @@
 # Roadmap
 
-**0.9.3/code 16 phone-feedback package:** [board interaction scope and acceptance](docs/qa/BOARD_INTERACTION_2026-11-12.md). Implementation is under final verification; check that report for integration/APK status. No bank, save, economy or SDK configuration change.
+**0.9.3/code 16 delivered:** [board interaction scope and acceptance](docs/qa/BOARD_INTERACTION_2026-11-12.md). PR #17 merged; full runtime CI passes 74 unit/platform checks, 122 browser scenarios and Android compilation/signature. APK and touch recordings are updated; physical-device comfort remains acceptance. No bank, save, economy or SDK configuration change.
 
 **0.9.2/code 14 delivered:** reliable Hint outcomes and category-reader clarity are implemented; six isolated prototypes and the human-pilot protocol are prepared. [Current checks and delivery status](docs/qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). Production bank/order/budgets remain unchanged; prototype promotion/pacing edits are HOLD pending the pilot.
 

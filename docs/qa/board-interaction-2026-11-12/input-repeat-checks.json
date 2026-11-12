@@ -1,0 +1,15 @@
+{
+  "run": 43207580506,
+  "browserPassed": 121,
+  "browserFailed": 1,
+  "failure": "Daily training second rapid stock tap did not apply; expected20moves,actual21.",
+  "cause": "Unconfirmed; no speculative runtime change.",
+  "isolatedMetaRepetitions": {
+    "passed": 5,
+    "failed": 0
+  },
+  "restoredStateRapidTaps": {
+    "passed": 108,
+    "missed": 0
+  }
+}

@@ -1,5 +1,15 @@
 # Verification — 2026-11-12
 
+## Latest board delivery — 0.9.3 / code 16
+
+[Complete scope, download links and machine proof](docs/qa/BOARD_INTERACTION_2026-11-12.md). PR #17 merged at `b8b9ebd823a0f353929b02a8107f87347f5987f5`. Full exact-head CI `43207567197` PASS (prior runtime-source CI 43206024546 also PASS): 74 unit/platform checks, all frozen witnesses/four-layout bounds/build, 119 raster field cases with zero DOM/raster issues plus home/dialog coverage, 122 browser scenarios with four deliberate compact catalog skips, all 80 touch wins and Android debug/signature/unsigned R8 compilation. Local final input/tutorial/UX matrix 34 PASS; both rear-waste peek cases preserve state. Limited agent-only first-two-level playthrough uses visible cards without a prepared path; human phone feel is not established.
+
+Runtime `98e29346800c5dc4678c137770799f1adacbdf08` exactly matches the shipped code16 bundle. Head `525fc165e1a424c3aa407ad32a074fc904faf9b4` adds only total test deadline headroom; assertions/action deadlines remain identical. Merge tree exactly matches head. Independent APK manifest/signer/186-file verification passes; source/head APKs and saved download are byte-identical. SHA256 `2534e4f478ba529b5c0bf2feced1a020b278a62c532fb89ee5010124085ae949`, 11,450,057 bytes; preview signer unchanged. Three existing download identities are updated successfully to version 1. Rules/content/balance 2/5/3, bank/order/budgets, saves/economy/SDK/kit pin preserved.
+
+Main run `43209625163`, Android job `131153611090`, artifact `13941145382` PASS; main/source/saved APKs byte-identical and independently verified. Duplicate main web workflow is still executing at delivery. Duplicate PR-run 43207580506 has one intermittent missed synthetic stock tap (121 passes); exact-head push-run passes 122, isolated daily repeats 5 PASS and restored-state rapid stock 108/108 PASS. Cause unconfirmed, documented for phone acceptance.
+
+
+
 ## Latest gameplay delivery — 0.9.2 / code 14
 
 [Scope and full evidence](docs/qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). PR #16 merged; source `04dfa973c6f12c04e9a82cdc801fc2bae387e1ab`, merge `c6eb626342f238abb99bb97a2c794b4027bed852`, identical trees. Final-source CI `43173919521` fully PASS: 71 unit/platform tests/all fixed witnesses/build, 191 rendered screens with zero DOM/raster issues, 108 browser scenarios + four deliberate skips, both Android compilations/signature. Local final Hint/reader matrix 12 PASS. Six isolated QA deals finish by real touch on two viewports, 96 simulated runs PASS; human pilot remains open.

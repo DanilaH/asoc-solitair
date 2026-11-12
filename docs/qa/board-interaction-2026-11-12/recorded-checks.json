@@ -5,6 +5,7 @@
       "height": 780,
       "inspectionFree": true,
       "cardAnchorTransfer": true,
+      "occupiedFoundations": true,
       "viewportEdges": [
         "left",
         "right",
@@ -25,6 +26,7 @@
       "height": 568,
       "inspectionFree": true,
       "cardAnchorTransfer": true,
+      "occupiedFoundations": true,
       "viewportEdges": [
         "left",
         "right",
@@ -41,5 +43,21 @@
       }
     }
   ],
-  "errors": []
+  "errors": [],
+  "rearWasteReading": [
+    {
+      "width": 360,
+      "id": "flowers_1",
+      "title": "Роза",
+      "previousWastePeek": true,
+      "savePreserved": true
+    },
+    {
+      "width": 320,
+      "id": "fruit2",
+      "title": "Слива",
+      "previousWastePeek": true,
+      "savePreserved": true
+    }
+  ]
 }

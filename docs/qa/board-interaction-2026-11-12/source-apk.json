@@ -1,0 +1,15 @@
+{
+  "apk": "093-source-debug.apk",
+  "bytes": 11450057,
+  "sha256": "2534e4f478ba529b5c0bf2feced1a020b278a62c532fb89ee5010124085ae949",
+  "manifest": {
+    "package": "com.danilah.asocsolitair.debug",
+    "versionCode": 16,
+    "versionName": "0.9.3"
+  },
+  "matchedProductionFiles": 186,
+  "prototypeEntryAbsent": true,
+  "signer": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "sourceCommit": "98e29346800c5dc4678c137770799f1adacbdf08",
+  "sourceArtifact": 13937318673
+}

@@ -22,7 +22,28 @@
 - 1000 принятых команд в безлимитной раздаче; границы истории 299/300/301/1000; reload/Undo; восстановление parked; отказ при повреждении отброшенного снимка; mixed-mode old/new и restart; все старые 108 быстрых Hint-continuations.
 - Шесть QA-прототипов собираются, их 96 прежних агентских прогонов проходят. Человеческий пилот не проведён.
 - Layout audit: **119 случаев, 0 DOM / 0 raster проблем**.
-- Целевые UI-проверки и полный browser-прогон выполняются; результаты будут дополнены после завершения. Android-сборка, подпись и доставка этой версии ещё не подтверждены.
+- Полный локальный browser-прогон: **130 PASS + 4 намеренных compact-пропуска повторного каталога**; все 80 уровней выиграны touch-вводом. На окончательном коде дополнительно **6/6** целевых проверок нового правила/legacy/recovery на двух экранах.
+- Полный [CI окончательного source](https://github.com/DanilaH/asoc-solitair/actions/runs/43251286557) **PASS**: 92 unit/platform, typecheck/build/content, oracle, QA-прототипы, layout, **130 browser + 4 skips**, Android debug/signature и unsigned SDK-disabled R8. [Машинная сводка](rules-v3/source-ci.json).
+- Предварительный source `43372f5` / CI `43250271693` завершился с 128 PASS, 4 skips и двумя общими 30-секундными таймаутами: CDP touchCancel после проверок четырёх границ и page.evaluate в проверке whole-packet/Undo. В финальном exact-source прогоне обе проверки проходят. Причина разницы длительности не установлена; нагрузка раннера — гипотеза. Исправление правил не объявляется исправлением этих таймаутов, лимиты/проверки ради зелёного результата не ослаблялись.
+- Эти две проверки дополнительно повторены по два раза на обоих профилях финальной версии: **8/8 PASS**. Локальные и исторические результаты разделены в [local.json](rules-v3/local.json).
+
+## Интеграция и файлы
+
+[PR #21](https://github.com/DanilaH/asoc-solitair/pull/21) слит в main: `c6bd3ef68084e6dca0f6c2dfdbd55e815e6544ef`. Source `84a8cad7ad60b0096c3ba169a5d31fc907242d1f`; дерево source и merge идентично: `86a8952412e7225cba3857ae9bc3002bf9480578`. Source после полного CI не менялся.
+
+Source APK из Android job `131297442458`, artifact `13959302289` независимо проверен: package `com.danilah.asocsolitair.debug`, 0.10.0/code18, **11 459 025 байт**, SHA256 `c694f2d029296aee8ac2f8e122d3c61c6097b86dbfe5050644cec3c682e57365`. Подпись проверена официальным apksigner; SHA256 сертификата `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e` совпадает с 0.9.4. Все **186** игровых файлов совпадают с зафиксированным production bundle; два добавленных Capacitor файла cordova.js / cordova_plugins.js пусты. Лаборатория отсутствует. [Source APK verification](rules-v3/source-apk.json), [сохранность банка/баланса/графики/зависимостей](rules-v3/frozen.json).
+
+Main run `43255421920`, Android job `131312198875`, artifact `13960979026` **PASS**. Скачанный default-branch APK независимо проверен теми же инструментами: **main/source/сохранённый APK побайтово идентичны**. [Main APK verification](rules-v3/main-apk.json), [доставка](rules-v3/delivery.json). Дублирующий main web-run ещё выполняется на момент доставки; полный source CI выше относится к точно такому же дереву.
+
+Три сохранения файлов выполнены успешно, версия 0, metadata identity применена:
+
+- [APK 0.10.0/code18](https://chatgpt.com/library?file_id=libfile_834f3b2af3848191a3e48014c9873b18&account_id=personal).
+- [GIF 360×780](https://chatgpt.com/library?file_id=libfile_b32a907dd4e48191a7eb23e27e1206b2&account_id=personal).
+- [GIF 320×568](https://chatgpt.com/library?file_id=libfile_a7cc1d7ff23081919572100f8a945e5e&account_id=personal).
+
+Запись `tools/record-rules-v3.ts` использует реальные CDP touch-события в проверенном production bundle: отказ на нижней теме, верхний сбор, завершение и Undo. [Проверки записи](rules-v3/recordings.json), [результаты сохранения](rules-v3/library-files.json). Это не запись физического Android и не человеческая оценка удобства.
+
+Установка — обновлением существующей тестовой версии. **Старая открытая партия продолжает использовать прежние правила. Чтобы попробовать новый запрет в ней, нажмите «Пауза → Начать заново».** Кошелёк и потраченные помощники сохраняются. Новый уровень и новая daily получают правила 3 автоматически.
 
 ## Воспроизведение
 

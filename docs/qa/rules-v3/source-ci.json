@@ -1,0 +1,167 @@
+{
+  "source": "84a8cad7ad60b0096c3ba169a5d31fc907242d1f",
+  "tree": "86a8952412e7225cba3857ae9bc3002bf9480578",
+  "runId": 43251286557,
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 131297442160,
+      "name": "web",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --no-audit --no-fund",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run check",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run qa:rules",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run qa:prototypes:build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run qa:prototypes:validate",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npx playwright install --with-deps chromium",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run qa:layout",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run test:browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 131297442458,
+      "name": "android",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run android-actions/setup-android@v3",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run sdkmanager \"platforms;android-36\" \"build-tools;36.0.0\"",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci --no-audit --no-fund",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run android:sync",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/cache@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Ensure the explicit preview signing key exists",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run ./gradlew --no-daemon assembleDebug",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify the preview APK signature",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run ./gradlew --no-daemon assembleRelease",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/cache@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "summary": [
+    "2026-11-12T15:46:08.3338672Z  Test Files  14 passed (14)",
+    "2026-11-12T15:46:08.3360762Z       Tests  92 passed (92)",
+    "2026-11-12T15:48:20.8840339Z DOM issues: 0 Raster issues: 0 Cases: 119",
+    "2026-11-12T16:07:27.5185623Z   4 skipped",
+    "2026-11-12T16:07:27.5185844Z   130 passed (19.1m)"
+  ],
+  "merge": "c6bd3ef68084e6dca0f6c2dfdbd55e815e6544ef",
+  "mergedTreeEqualsSource": true
+}

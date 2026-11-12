@@ -1,0 +1,18 @@
+{
+  "apk": "asoc-0100-source-debug.apk",
+  "size": 11459025,
+  "sha256": "c694f2d029296aee8ac2f8e122d3c61c6097b86dbfe5050644cec3c682e57365",
+  "manifest": {
+    "package": "com.danilah.asocsolitair.debug",
+    "versionCode": 18,
+    "versionName": "0.10.0"
+  },
+  "certificateSha256": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "signatureVerified": true,
+  "productionFilesMatched": 186,
+  "emptyNativeShimFiles": [
+    "cordova.js",
+    "cordova_plugins.js"
+  ],
+  "prototypeEntryAbsent": true
+}

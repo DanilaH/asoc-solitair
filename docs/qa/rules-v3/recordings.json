@@ -1,0 +1,30 @@
+{
+  "source": "84a8cad7ad60b0096c3ba169a5d31fc907242d1f",
+  "records": [
+    {
+      "width": 360,
+      "height": 780,
+      "deal": "campaign-006",
+      "rulesVersion": 3,
+      "lowerThemeRefused": true,
+      "upperCollection": true,
+      "completion": true,
+      "undoRestores": true,
+      "budgetUnchanged": true,
+      "trimSeconds": 1.6460000000000001
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "deal": "campaign-006",
+      "rulesVersion": 3,
+      "lowerThemeRefused": true,
+      "upperCollection": true,
+      "completion": true,
+      "undoRestores": true,
+      "budgetUnchanged": true,
+      "trimSeconds": 1.3840000000000001
+    }
+  ],
+  "errors": []
+}

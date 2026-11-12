@@ -1,0 +1,37 @@
+{
+  "runtimeSource": "84a8cad7ad60b0096c3ba169a5d31fc907242d1f",
+  "unitPlatform": 92,
+  "currentContentPaths": 108,
+  "legacyControlPaths": 1,
+  "oraclePaths": 216,
+  "oracleComparisons": 253244,
+  "layout": {
+    "cases": 119,
+    "DOMIssues": 0,
+    "rasterIssues": 0
+  },
+  "previousSourceFullBrowser": {
+    "source": "43372f5a44ba35cebfc7a7d6de9dfa2b6b02b1fd",
+    "passed": 130,
+    "deliberateSkips": 4,
+    "campaignTouchWins": 80
+  },
+  "finalSourceFocusedBrowser": {
+    "passed": 6,
+    "projects": [
+      "phone",
+      "compact"
+    ]
+  },
+  "productionFiles": 186,
+  "note": "Full final-source CI PASS is recorded in source-ci.json; local pre-follow-up full browser and final focus are distinguished.",
+  "repeatedPreviousTimeoutCases": {
+    "passed": 8,
+    "repeatEach": 2,
+    "projects": [
+      "phone",
+      "compact"
+    ],
+    "note": "Earlier 43372f5 CI timed out in two 30s UI tests. Cause unconfirmed; no claimed runtime fix."
+  }
+}

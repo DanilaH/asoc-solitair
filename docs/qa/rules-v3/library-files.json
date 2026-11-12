@@ -1,0 +1,38 @@
+{
+  "source": "84a8cad7ad60b0096c3ba169a5d31fc907242d1f",
+  "files": [
+    {
+      "local_path": "/workspace/scratch/50187ffca82b/asoc-media/asoc-solitair-0.10.0-debug.apk",
+      "purpose": "create_library_file",
+      "status": "succeeded",
+      "file_id": "file_00000000850c8212b777751f9de17201",
+      "library_file_id": "libfile_834f3b2af3848191a3e48014c9873b18",
+      "file_name": "asoc-solitair-0.10.0-debug.apk",
+      "local_metadata_applied": true,
+      "path": "/asoc-solitair-0.10.0-debug.apk",
+      "current_version_number": 0
+    },
+    {
+      "local_path": "/workspace/scratch/50187ffca82b/asoc-media/asoc-0.10.0-rules.gif",
+      "purpose": "create_library_file",
+      "status": "succeeded",
+      "file_id": "file_0000000089a88212904a0427f5175e12",
+      "library_file_id": "libfile_b32a907dd4e48191a7eb23e27e1206b2",
+      "file_name": "asoc-0.10.0-rules.gif",
+      "local_metadata_applied": true,
+      "path": "/asoc-0.10.0-rules.gif",
+      "current_version_number": 0
+    },
+    {
+      "local_path": "/workspace/scratch/50187ffca82b/asoc-media/asoc-0.10.0-rules-compact.gif",
+      "purpose": "create_library_file",
+      "status": "succeeded",
+      "file_id": "file_00000000d92482128cb55a69171a3467",
+      "library_file_id": "libfile_a7cc1d7ff23081919572100f8a945e5e",
+      "file_name": "asoc-0.10.0-rules-compact.gif",
+      "local_metadata_applied": true,
+      "path": "/asoc-0.10.0-rules-compact.gif",
+      "current_version_number": 0
+    }
+  ]
+}

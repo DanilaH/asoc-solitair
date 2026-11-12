@@ -1,8 +1,8 @@
 # Product sources
 
-Current implementation: [0.10.0 rule/save correction and verification status](qa/RULES_V3_IMPLEMENTATION_2026-11-12.md). [Rules v3](product/RULES_V3.md) supersedes the lower-leader permission for new normal attempts; existing attempts keep v2 independently. Bank orders/budgets and economy are frozen. See the explicit pending CI/delivery status before claiming acceptance.
+Current delivery: [0.10.0 rule/save correction and verified APK/media](qa/RULES_V3_IMPLEMENTATION_2026-11-12.md). [Rules v3](product/RULES_V3.md) supersedes the lower-leader permission for new normal attempts; existing attempts keep v2 independently. Bank orders/budgets and economy are frozen. PR #21 merged; full exact-source CI passes; main/source/saved APKs are verified byte-identical.
 
-Latest rules review: [independent rules audit, disputed lower-leader move and reachable reload defect](qa/RULES_AUDIT_2026-11-12.md). Audit only, no runtime fix: the owner rejects member → lower category leader; the existing engine/spec/bank witnesses permit it. 52 campaign and 21 daily witnesses need fresh validation under that prohibition. A legal 301-command opening also exceeds the save loader's Undo-history limit. Do not treat passing current-contract tests as resolving either finding.
+Historical rules review: [independent 0.9.4 audit](qa/RULES_AUDIT_2026-11-12.md). Its rule mismatch, reachable 301-command reload error and identified semantic validation gaps are addressed in 0.10.0 above. Preserve the old evidence; use the current v3 verification for present behavior.
 
 Latest board delivery: [0.9.4 slots, stock fan, centered helpers and integrated reader](qa/BOARD_REFINEMENT_0_9_4.md). See its explicit acceptance/delivery status.
 

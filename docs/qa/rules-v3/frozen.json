@@ -1,0 +1,63 @@
+{
+  "base": "4cb668ad55d80017f474c4832d1c944a94ae05e4",
+  "source": "84a8cad7ad60b0096c3ba169a5d31fc907242d1f",
+  "files": [
+    {
+      "path": "src/content/campaign.json",
+      "before": "8b4de1968f1ed844fe9bf27e7d99b9e53701941b",
+      "after": "8b4de1968f1ed844fe9bf27e7d99b9e53701941b",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/daily-pool.json",
+      "before": "072b8e032de4e4b70b27d7074eaed786c71cdb54",
+      "after": "072b8e032de4e4b70b27d7074eaed786c71cdb54",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/expansion.json",
+      "before": "a4010cdd084c5804f618a67a58939243a82ad4d0",
+      "after": "a4010cdd084c5804f618a67a58939243a82ad4d0",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/topics.ts",
+      "before": "c8ff2c862932bb34e21bc1660a6be4d1d5936a29",
+      "after": "c8ff2c862932bb34e21bc1660a6be4d1d5936a29",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/expansion-cards.ts",
+      "before": "9de9cf53527c539356d5c18dfbed7e89d21f88c1",
+      "after": "9de9cf53527c539356d5c18dfbed7e89d21f88c1",
+      "unchanged": true
+    },
+    {
+      "path": "src/domain/balance.ts",
+      "before": "bbb0349e81a31f07b91b14cf02174547ad7a226e",
+      "after": "bbb0349e81a31f07b91b14cf02174547ad7a226e",
+      "unchanged": true
+    },
+    {
+      "path": "src/game",
+      "before": "0176daad8387ba9c32d027f1c6eacdb45d43abc7",
+      "after": "0176daad8387ba9c32d027f1c6eacdb45d43abc7",
+      "unchanged": true
+    },
+    {
+      "path": "public",
+      "before": "88d67e24fe014e61161aa4a2cbd1e6aff1596e99",
+      "after": "88d67e24fe014e61161aa4a2cbd1e6aff1596e99",
+      "unchanged": true
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "before": "7e044f2e33cfacd96c228c630ad78991228018af",
+      "after": "7e044f2e33cfacd96c228c630ad78991228018af",
+      "unchanged": true
+    }
+  ],
+  "modifierDefinitionsIdenticalApartFromWrapper": true,
+  "SaveStoreWriterUnchanged": true,
+  "dependencyLockIdenticalApartFromAppVersion": true
+}

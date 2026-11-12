@@ -1,5 +1,9 @@
 # Decisions
 
+## 2026-11-13 — Board feel audit scope
+
+[Audit and proposed sequence](docs/qa/BOARD_FEEL_AUDIT_2026-11-13.md): address visual continuity and distinct slot roles before increasing effects. Read-only production-input evidence confirms a missing lift surface, identical slot treatments, an off-target rejection frame, premature foundation-face removal and competing completion layers. Keep the current compact geometry and casual art. The proposed renderer-only packages are not implemented or approved as a broad redesign. Existing error priority is correct; entry/flip/audio hypotheses need separate confirmation. No rule, content-bank, save/economy, SDK or kit change follows from this review.
+
 ## 2026-11-09 — initial implementation
 
 1. Preserve supplied specifications verbatim under docs/product and docs/research. Requirements own rules, feel-spec owns presentation. Scope exclusions remain binding.

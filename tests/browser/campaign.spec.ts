@@ -33,7 +33,9 @@ async function fixture(page:Page,index:number){
 }
 
 for (let chapter = 0; chapter < 4; chapter++) test(`chapter ${chapter + 1}: twenty consecutive levels win through real touch and Next`,async({page},info)=>{
-  test.skip(info.project.name!=='phone','Complete catalog on Pixel 7; compact layout/UX covered separately.'); test.setTimeout(600000);
+  // Twenty complete games share this deadline; keep every per-action assertion bounded.
+  // Hosted two-worker runs need more than ten minutes for the first chapter.
+  test.skip(info.project.name!=='phone','Complete catalog on Pixel 7; compact layout/UX covered separately.'); test.setTimeout(1200000);
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
   await fixture(page,chapter*20);
   for(const deal of campaignDeals.slice(chapter*20,chapter*20+20)){

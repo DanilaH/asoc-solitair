@@ -81,6 +81,8 @@ test('pause preferences keep the outer panel bounds and reward disclosure is abs
 });
 
 test('inspection stays separate from foundations for every deck side and row, and never spends a move', async ({ page, context }) => {
+  // Four fresh launches and touch routes share one test; do not extend action timeouts.
+  test.setTimeout(90000);
   const d = campaignDeals.find(d => d.initial.tableau.length === 4 && d.initial.foundations.length === 3 && d.initial.stock.length)!;
   for (const side of ['left', 'right'] as const) for (const row of ['top', 'bottom'] as const) {
     const before = await seed(page, d, s => { s.settings.deckSide = side; s.settings.deckPosition = row; });

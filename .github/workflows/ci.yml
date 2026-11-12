@@ -15,6 +15,8 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npm run check
+      - run: npm run qa:prototypes:build
+      - run: npm run qa:prototypes:validate
       - run: npx playwright install --with-deps chromium
       - run: npm run qa:layout
       - run: npm run test:browser
@@ -66,7 +68,9 @@ jobs:
           ASOC_AD_MODE: test
           ASOC_DEBUG_STORE_FILE: ${{ runner.temp }}/asoc-debug-signing/debug.keystore
       - name: Verify the preview APK signature
-        run: $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk
+        run: |
+          $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk
+          $ANDROID_HOME/build-tools/36.0.0/aapt dump badging native/android/app/build/outputs/apk/debug/app-debug.apk | head -1
       - run: ./gradlew --no-daemon assembleRelease
         working-directory: native/android
         env:

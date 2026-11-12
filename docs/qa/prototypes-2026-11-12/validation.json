@@ -1,0 +1,668 @@
+[
+  {
+    "id": "qa-recognition",
+    "seed": 92001,
+    "moves": 16,
+    "budget": 26,
+    "compared": 126,
+    "alternatives": [
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "draw"
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      }
+    ]
+  },
+  {
+    "id": "qa-wings",
+    "seed": 92102,
+    "moves": 16,
+    "budget": 26,
+    "compared": 126,
+    "alternatives": [
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "draw"
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      }
+    ]
+  },
+  {
+    "id": "qa-electric",
+    "seed": 92203,
+    "moves": 16,
+    "budget": 26,
+    "compared": 126,
+    "alternatives": [
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "draw"
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      }
+    ]
+  },
+  {
+    "id": "qa-buffer",
+    "seed": 92304,
+    "moves": 15,
+    "budget": 25,
+    "compared": 111,
+    "alternatives": [
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "draw"
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      }
+    ]
+  },
+  {
+    "id": "qa-interval",
+    "seed": 92405,
+    "moves": 17,
+    "budget": 27,
+    "compared": 137,
+    "alternatives": [
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "draw"
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      }
+    ]
+  },
+  {
+    "id": "qa-keys",
+    "seed": 92506,
+    "moves": 21,
+    "budget": 31,
+    "compared": 113,
+    "alternatives": [
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      },
+      {
+        "action": {
+          "type": "draw"
+        },
+        "status": "UNKNOWN",
+        "visited": 1500
+      }
+    ]
+  }
+]

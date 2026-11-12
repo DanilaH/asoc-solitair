@@ -16,6 +16,8 @@ import type { BoardCommand, Command } from './domain/types';
 import { WIDTH, boardFrame } from './game/layout';
 import { illustrationUrl } from './game/art';
 import { categoryCaption } from './game/captions';
+import { cardReader } from './game/card-reader';
+import type { HintRequest, HintResponse } from './domain/hint';
 import { BoardScene } from './game/BoardScene';
 import { createRuntime } from './platform/runtime';
 import { SaveStore, createStorage } from './platform/storage';
@@ -151,7 +153,9 @@ try {
     if (save.attempt.board.phase === 'exhausted') outcome();
     else { const button = $(`#${helper}`); button.classList.remove('bump'); void button.offsetWidth; button.classList.add('bump'); }
   }
-  let activeHint: { key: string; action: BoardCommand; guaranteed: boolean } | undefined;
+  let activeHint: { key: string; action: BoardCommand } | undefined;
+  let hintSequence = 0;
+  let pendingHint: Pick<HintRequest, 'requestId' | 'revision' | 'attemptId'> & { dealId: string } | undefined;
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
   const coins = Array.from({ length: 24 }, () => { const node = document.createElement('span'); node.className = 'flying-coin'; $('#coin-layer').append(node); return { node, busy: false, animation: null as Animation | null }; });
@@ -500,8 +504,9 @@ try {
       const image = $<HTMLImageElement>('#word-image'); image.hidden = !card.image;
       if (card.image) { image.src = illustrationUrl(card.image); image.alt = card.text; }
       else image.removeAttribute('src');
-      $('#word-description').hidden = Boolean(card.image);
-      $('#word-title').textContent = card.leader ? categoryCaption(card.text) : card.text; $('#word-description').textContent = card.explanation;
+      const content = cardReader(card, deal);
+      $('#word-description').hidden = content.description === undefined;
+      $('#word-title').textContent = content.title; $('#word-description').textContent = content.description ?? '';
       openDialog('#inspect-dialog');
     },
     ready(active) {
@@ -631,24 +636,34 @@ try {
     if (save.profile.hints === 0 && !freeHintDemo(save, deal) && activeHint?.key !== boardKey(save.attempt.board)) { openHelpers('hint'); return; }
     if (activeHint?.key === boardKey(save.attempt.board)) {
       renderer.loop.wake(); scene?.hint(activeHint.action);
-      message(activeHint.guaranteed ? '' : 'Допустимый ход · продолжение не гарантировано');
+      message('');
       return;
     }
     scene?.cancel(); message('');
-    worker ??= new Worker(new URL('./game/hint.worker.ts', import.meta.url), { type: 'module' });
-    worker.onmessage = async (event: MessageEvent<{ revision: number; action?: BoardCommand; guaranteed: boolean }>) => {
-      clearTimeout(workerDeadline); workerDeadline = undefined;
+    const hintWorker = worker ??= new Worker(new URL('./game/hint.worker.ts', import.meta.url), { type: 'module' });
+    const requestId = ++hintSequence;
+    hintWorker.onmessage = async (event: MessageEvent<HintResponse>) => {
       const hint = event.data;
-      if (hint.revision !== save.revision || !hint.action || runtime.activity.isBlocked()) { message('Сейчас подходящей подсказки нет'); renderHud(); return; }
+      if (!alive || !pendingHint || hint.requestId !== pendingHint.requestId || hint.attemptId !== pendingHint.attemptId || hint.dealId !== pendingHint.dealId || hint.revision !== pendingHint.revision) return;
+      clearTimeout(workerDeadline); workerDeadline = undefined; pendingHint = undefined;
+      if (hint.revision !== save.revision || hint.attemptId !== save.attempt.id || hint.dealId !== deal.id || runtime.activity.isBlocked()) { renderHud(); return; }
+      if (hint.status !== 'SOLVED') {
+        const recovery = save.attempt.undo.length && save.profile.undos > 0 ? ' Можно отменить предыдущий ход.' : '';
+        message(hint.status === 'UNSOLVABLE' ? 'Решения без помощников нет. Подсказка не потрачена.' + recovery
+          : hint.status === 'UNKNOWN' ? 'Не удалось найти продолжение. Подсказка не потрачена.' : 'Сейчас подходящей подсказки нет');
+        renderHud(); return;
+      }
       if (!await execute({ type: 'hint', revision: hint.revision, action: hint.action })) return;
-      activeHint = { key: boardKey(save.attempt.board), action: hint.action, guaranteed: hint.guaranteed };
+      activeHint = { key: boardKey(save.attempt.board), action: hint.action };
       renderHud();
       renderer.loop.wake(); scene?.hint(hint.action);
-      message(hint.guaranteed ? '' : 'Допустимый ход · продолжение не гарантировано');
+      message('');
     };
-    worker.onerror = () => { clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined; message('Не удалось подготовить подсказку', true); renderHud(); };
-    workerDeadline = setTimeout(() => { worker?.terminate(); worker = undefined; workerDeadline = undefined; message('Поиск занял слишком много времени. Подсказка не потрачена.', true); renderHud(); }, 5000);
-    worker.postMessage({ revision: save.revision, board: save.attempt.board, deal }); renderHud();
+    hintWorker.onerror = () => { if (!alive || worker !== hintWorker) return; clearTimeout(workerDeadline); workerDeadline = undefined; pendingHint = undefined; hintWorker.terminate(); worker = undefined; message('Не удалось подготовить подсказку', true); renderHud(); };
+    workerDeadline = setTimeout(() => { if (!alive || worker !== hintWorker || pendingHint?.requestId !== requestId) return; hintWorker.terminate(); worker = undefined; workerDeadline = undefined; pendingHint = undefined; message('Поиск занял слишком много времени. Подсказка не потрачена.', true); renderHud(); }, 5000);
+    pendingHint = { requestId, revision: save.revision, attemptId: save.attempt.id, dealId: deal.id };
+    const request: HintRequest = { ...pendingHint, board: save.attempt.board, deal };
+    hintWorker.postMessage(request); renderHud();
   }, domOptions);
   $('#helpers-open').addEventListener('click', () => { runtime.pulse('button'); openHelpers(); }, domOptions);
   for (const helper of ['hint', 'undo'] as const) {

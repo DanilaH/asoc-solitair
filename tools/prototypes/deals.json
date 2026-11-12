@@ -1,0 +1,1755 @@
+[
+  {
+    "id": "qa-recognition",
+    "version": 1,
+    "title": "Знакомые группы",
+    "family": "recognition",
+    "question": "Достаточно ли приятно обычное узнавание?",
+    "cards": {
+      "fruit": {
+        "id": "fruit",
+        "category": "fruit",
+        "text": "Фрукты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "fruit_1": {
+        "id": "fruit_1",
+        "category": "fruit",
+        "text": "Яблоко",
+        "explanation": "Плод яблони с сочной мякотью и семенами.",
+        "image": "art/campaign/apple.svg"
+      },
+      "fruit_2": {
+        "id": "fruit_2",
+        "category": "fruit",
+        "text": "Груша",
+        "explanation": "Сладкий плод, обычно расширенный у основания."
+      },
+      "fruit_3": {
+        "id": "fruit_3",
+        "category": "fruit",
+        "text": "Слива",
+        "explanation": "Сочный плод с гладкой кожицей и одной косточкой."
+      },
+      "birds": {
+        "id": "birds",
+        "category": "birds",
+        "text": "Птицы",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "birds_1": {
+        "id": "birds_1",
+        "category": "birds",
+        "text": "Синица",
+        "explanation": "Небольшая певчая птица; у большой синицы жёлтая грудка."
+      },
+      "birds_2": {
+        "id": "birds_2",
+        "category": "birds",
+        "text": "Дятел",
+        "explanation": "Птица, которая долбит древесину крепким клювом."
+      },
+      "birds_3": {
+        "id": "birds_3",
+        "category": "birds",
+        "text": "Скворец",
+        "explanation": "Певчая птица, часто селится в скворечниках."
+      },
+      "tools": {
+        "id": "tools",
+        "category": "tools",
+        "text": "Инструменты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "tools_1": {
+        "id": "tools_1",
+        "category": "tools",
+        "text": "Молоток",
+        "explanation": "Ручной ударный инструмент для забивания гвоздей.",
+        "image": "art/campaign/hammer.svg"
+      },
+      "tools_2": {
+        "id": "tools_2",
+        "category": "tools",
+        "text": "Отвёртка",
+        "explanation": "Инструмент для закручивания винтов и шурупов."
+      },
+      "tools_3": {
+        "id": "tools_3",
+        "category": "tools",
+        "text": "Пила",
+        "explanation": "Инструмент с зубчатым полотном для распиливания."
+      }
+    },
+    "initial": {
+      "tableau": [
+        [
+          "fruit_2",
+          "birds"
+        ],
+        [
+          "birds_2",
+          "fruit"
+        ],
+        [
+          "tools_1",
+          "birds_1"
+        ],
+        [
+          "birds_3",
+          "tools"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "fruit_1",
+        "tools_2",
+        "fruit_3",
+        "tools_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "birds",
+        "fruit",
+        "birds_1",
+        "tools"
+      ],
+      "collected": [],
+      "movesLeft": 26,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      }
+    ],
+    "editorialStatus": "QA-only. Semantic agent review; human clarity/enjoyment unverified."
+  },
+  {
+    "id": "qa-wings",
+    "version": 1,
+    "title": "Общий признак",
+    "family": "property",
+    "question": "Обнаруживает ли человек связь между разными привычными классами?",
+    "cards": {
+      "fruit": {
+        "id": "fruit",
+        "category": "fruit",
+        "text": "Фрукты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "fruit_1": {
+        "id": "fruit_1",
+        "category": "fruit",
+        "text": "Яблоко",
+        "explanation": "Плод яблони с сочной мякотью и семенами.",
+        "image": "art/campaign/apple.svg"
+      },
+      "fruit_2": {
+        "id": "fruit_2",
+        "category": "fruit",
+        "text": "Груша",
+        "explanation": "Сладкий плод, обычно расширенный у основания."
+      },
+      "fruit_3": {
+        "id": "fruit_3",
+        "category": "fruit",
+        "text": "Слива",
+        "explanation": "Сочный плод с гладкой кожицей и одной косточкой."
+      },
+      "tools": {
+        "id": "tools",
+        "category": "tools",
+        "text": "Инструменты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "tools_1": {
+        "id": "tools_1",
+        "category": "tools",
+        "text": "Молоток",
+        "explanation": "Ручной ударный инструмент для забивания гвоздей.",
+        "image": "art/campaign/hammer.svg"
+      },
+      "tools_2": {
+        "id": "tools_2",
+        "category": "tools",
+        "text": "Отвёртка",
+        "explanation": "Инструмент для закручивания винтов и шурупов."
+      },
+      "tools_3": {
+        "id": "tools_3",
+        "category": "tools",
+        "text": "Пила",
+        "explanation": "Инструмент с зубчатым полотном для распиливания."
+      },
+      "qa_wings": {
+        "id": "qa_wings",
+        "category": "qa_wings",
+        "text": "Есть крылья",
+        "leader": true,
+        "explanation": "У всех этих существ и машин есть крылья."
+      },
+      "qa_wings_1": {
+        "id": "qa_wings_1",
+        "category": "qa_wings",
+        "text": "Синица",
+        "explanation": "Небольшая певчая птица; у большой синицы жёлтая грудка. У всех этих существ и машин есть крылья."
+      },
+      "qa_wings_2": {
+        "id": "qa_wings_2",
+        "category": "qa_wings",
+        "text": "Бабочка",
+        "explanation": "Насекомое с двумя парами покрытых чешуйками крыльев. У всех этих существ и машин есть крылья."
+      },
+      "qa_wings_3": {
+        "id": "qa_wings_3",
+        "category": "qa_wings",
+        "text": "Самолёт",
+        "explanation": "Летательный аппарат с крыльями и двигателем. У всех этих существ и машин есть крылья."
+      }
+    },
+    "initial": {
+      "tableau": [
+        [
+          "fruit_2",
+          "qa_wings"
+        ],
+        [
+          "qa_wings_2",
+          "fruit"
+        ],
+        [
+          "tools_1",
+          "qa_wings_1"
+        ],
+        [
+          "qa_wings_3",
+          "tools"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "fruit_1",
+        "tools_2",
+        "fruit_3",
+        "tools_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "qa_wings",
+        "fruit",
+        "qa_wings_1",
+        "tools"
+      ],
+      "collected": [],
+      "movesLeft": 26,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      }
+    ],
+    "editorialStatus": "QA-only. Semantic agent review; human clarity/enjoyment unverified."
+  },
+  {
+    "id": "qa-electric",
+    "version": 1,
+    "title": "Общая потребность",
+    "family": "function",
+    "question": "Меняет ли общий принцип способ группировки?",
+    "cards": {
+      "fruit": {
+        "id": "fruit",
+        "category": "fruit",
+        "text": "Фрукты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "fruit_1": {
+        "id": "fruit_1",
+        "category": "fruit",
+        "text": "Яблоко",
+        "explanation": "Плод яблони с сочной мякотью и семенами.",
+        "image": "art/campaign/apple.svg"
+      },
+      "fruit_2": {
+        "id": "fruit_2",
+        "category": "fruit",
+        "text": "Груша",
+        "explanation": "Сладкий плод, обычно расширенный у основания."
+      },
+      "fruit_3": {
+        "id": "fruit_3",
+        "category": "fruit",
+        "text": "Слива",
+        "explanation": "Сочный плод с гладкой кожицей и одной косточкой."
+      },
+      "tools": {
+        "id": "tools",
+        "category": "tools",
+        "text": "Инструменты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "tools_1": {
+        "id": "tools_1",
+        "category": "tools",
+        "text": "Молоток",
+        "explanation": "Ручной ударный инструмент для забивания гвоздей.",
+        "image": "art/campaign/hammer.svg"
+      },
+      "tools_2": {
+        "id": "tools_2",
+        "category": "tools",
+        "text": "Отвёртка",
+        "explanation": "Инструмент для закручивания винтов и шурупов."
+      },
+      "tools_3": {
+        "id": "tools_3",
+        "category": "tools",
+        "text": "Пила",
+        "explanation": "Инструмент с зубчатым полотном для распиливания."
+      },
+      "qa_electric": {
+        "id": "qa_electric",
+        "category": "qa_electric",
+        "text": "Электричество",
+        "leader": true,
+        "explanation": "Этим устройствам для работы нужно электричество."
+      },
+      "qa_electric_1": {
+        "id": "qa_electric_1",
+        "category": "qa_electric",
+        "text": "Монитор",
+        "explanation": "Экран для вывода изображения компьютера. Этим устройствам для работы нужно электричество."
+      },
+      "qa_electric_2": {
+        "id": "qa_electric_2",
+        "category": "qa_electric",
+        "text": "Светофор",
+        "explanation": "Устройство с цветными сигналами для движения. Этим устройствам для работы нужно электричество."
+      },
+      "qa_electric_3": {
+        "id": "qa_electric_3",
+        "category": "qa_electric",
+        "text": "Холодильник",
+        "explanation": "Домашний прибор для хранения продуктов в холоде. Этим устройствам для работы нужно электричество."
+      }
+    },
+    "initial": {
+      "tableau": [
+        [
+          "fruit_2",
+          "qa_electric"
+        ],
+        [
+          "qa_electric_2",
+          "fruit"
+        ],
+        [
+          "tools_1",
+          "qa_electric_1"
+        ],
+        [
+          "qa_electric_3",
+          "tools"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "fruit_1",
+        "tools_2",
+        "fruit_3",
+        "tools_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "qa_electric",
+        "fruit",
+        "qa_electric_1",
+        "tools"
+      ],
+      "collected": [],
+      "movesLeft": 26,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      }
+    ],
+    "editorialStatus": "QA-only. Semantic agent review; human clarity/enjoyment unverified."
+  },
+  {
+    "id": "qa-buffer",
+    "version": 1,
+    "title": "Сначала освободить место",
+    "family": "buffer",
+    "question": "Замечает ли игрок пользу подготовительного объединения?",
+    "cards": {
+      "fruit": {
+        "id": "fruit",
+        "category": "fruit",
+        "text": "Фрукты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "fruit_1": {
+        "id": "fruit_1",
+        "category": "fruit",
+        "text": "Яблоко",
+        "explanation": "Плод яблони с сочной мякотью и семенами.",
+        "image": "art/campaign/apple.svg"
+      },
+      "fruit_2": {
+        "id": "fruit_2",
+        "category": "fruit",
+        "text": "Груша",
+        "explanation": "Сладкий плод, обычно расширенный у основания."
+      },
+      "fruit_3": {
+        "id": "fruit_3",
+        "category": "fruit",
+        "text": "Слива",
+        "explanation": "Сочный плод с гладкой кожицей и одной косточкой."
+      },
+      "birds": {
+        "id": "birds",
+        "category": "birds",
+        "text": "Птицы",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "birds_1": {
+        "id": "birds_1",
+        "category": "birds",
+        "text": "Синица",
+        "explanation": "Небольшая певчая птица; у большой синицы жёлтая грудка."
+      },
+      "birds_2": {
+        "id": "birds_2",
+        "category": "birds",
+        "text": "Дятел",
+        "explanation": "Птица, которая долбит древесину крепким клювом."
+      },
+      "birds_3": {
+        "id": "birds_3",
+        "category": "birds",
+        "text": "Скворец",
+        "explanation": "Певчая птица, часто селится в скворечниках."
+      },
+      "tools": {
+        "id": "tools",
+        "category": "tools",
+        "text": "Инструменты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "tools_1": {
+        "id": "tools_1",
+        "category": "tools",
+        "text": "Молоток",
+        "explanation": "Ручной ударный инструмент для забивания гвоздей.",
+        "image": "art/campaign/hammer.svg"
+      },
+      "tools_2": {
+        "id": "tools_2",
+        "category": "tools",
+        "text": "Отвёртка",
+        "explanation": "Инструмент для закручивания винтов и шурупов."
+      },
+      "tools_3": {
+        "id": "tools_3",
+        "category": "tools",
+        "text": "Пила",
+        "explanation": "Инструмент с зубчатым полотном для распиливания."
+      }
+    },
+    "initial": {
+      "tableau": [
+        [
+          "birds_1",
+          "fruit"
+        ],
+        [
+          "tools_1",
+          "birds"
+        ],
+        [
+          "tools",
+          "fruit_1"
+        ],
+        [
+          "fruit_2",
+          "birds_2",
+          "tools_2"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "fruit_3",
+        "birds_3",
+        "tools_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "fruit",
+        "birds",
+        "fruit_1",
+        "tools_2"
+      ],
+      "collected": [],
+      "movesLeft": 25,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "editorialStatus": "QA-only. Semantic agent review; human clarity/enjoyment unverified."
+  },
+  {
+    "id": "qa-interval",
+    "version": 1,
+    "title": "Собрать часть порядка",
+    "family": "interval",
+    "question": "Использует ли игрок интервал до появления начала ряда?",
+    "cards": {
+      "fruit": {
+        "id": "fruit",
+        "category": "fruit",
+        "text": "Фрукты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "fruit_1": {
+        "id": "fruit_1",
+        "category": "fruit",
+        "text": "Яблоко",
+        "explanation": "Плод яблони с сочной мякотью и семенами.",
+        "image": "art/campaign/apple.svg"
+      },
+      "fruit_2": {
+        "id": "fruit_2",
+        "category": "fruit",
+        "text": "Груша",
+        "explanation": "Сладкий плод, обычно расширенный у основания."
+      },
+      "fruit_3": {
+        "id": "fruit_3",
+        "category": "fruit",
+        "text": "Слива",
+        "explanation": "Сочный плод с гладкой кожицей и одной косточкой."
+      },
+      "birds": {
+        "id": "birds",
+        "category": "birds",
+        "text": "Птицы",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "birds_1": {
+        "id": "birds_1",
+        "category": "birds",
+        "text": "Синица",
+        "explanation": "Небольшая певчая птица; у большой синицы жёлтая грудка."
+      },
+      "birds_2": {
+        "id": "birds_2",
+        "category": "birds",
+        "text": "Дятел",
+        "explanation": "Птица, которая долбит древесину крепким клювом."
+      },
+      "birds_3": {
+        "id": "birds_3",
+        "category": "birds",
+        "text": "Скворец",
+        "explanation": "Певчая птица, часто селится в скворечниках."
+      },
+      "seasons": {
+        "id": "seasons",
+        "category": "seasons",
+        "text": "Времена года",
+        "leader": true,
+        "ordered": true,
+        "explanation": "Соберите элементы по номерам от 1 до 4. Год начинаем с зимы: январь — зимний месяц."
+      },
+      "seasons_1": {
+        "id": "seasons_1",
+        "category": "seasons",
+        "text": "Зима",
+        "rank": 1,
+        "explanation": "Зима — №1 в порядке категории «Времена года»."
+      },
+      "seasons_2": {
+        "id": "seasons_2",
+        "category": "seasons",
+        "text": "Весна",
+        "rank": 2,
+        "explanation": "Весна — №2 в порядке категории «Времена года»."
+      },
+      "seasons_3": {
+        "id": "seasons_3",
+        "category": "seasons",
+        "text": "Лето",
+        "rank": 3,
+        "explanation": "Лето — №3 в порядке категории «Времена года»."
+      },
+      "seasons_4": {
+        "id": "seasons_4",
+        "category": "seasons",
+        "text": "Осень",
+        "rank": 4,
+        "explanation": "Осень — №4 в порядке категории «Времена года»."
+      }
+    },
+    "initial": {
+      "tableau": [
+        [
+          "seasons_1",
+          "fruit_2",
+          "seasons"
+        ],
+        [
+          "fruit",
+          "seasons_2"
+        ],
+        [
+          "birds",
+          "seasons_3"
+        ],
+        [
+          "birds_2",
+          "fruit_1"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "seasons_4",
+        "fruit_3",
+        "birds_1",
+        "birds_3"
+      ],
+      "waste": [],
+      "faceUp": [
+        "seasons",
+        "seasons_2",
+        "seasons_3",
+        "fruit_1"
+      ],
+      "collected": [],
+      "movesLeft": 27,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      }
+    ],
+    "editorialStatus": "QA-only. Semantic agent review; human clarity/enjoyment unverified."
+  },
+  {
+    "id": "qa-keys",
+    "version": 1,
+    "title": "Путь к закрытым картам",
+    "family": "keys",
+    "question": "Меняется ли приоритет раскрытия из-за ключей?",
+    "cards": {
+      "clothes": {
+        "id": "clothes",
+        "category": "clothes",
+        "text": "Одежда",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "clothes_1": {
+        "id": "clothes_1",
+        "category": "clothes",
+        "text": "Свитер",
+        "explanation": "Вязаная одежда для верхней части тела."
+      },
+      "clothes_2": {
+        "id": "clothes_2",
+        "category": "clothes",
+        "text": "Рубашка",
+        "explanation": "Одежда с воротником и застёжкой спереди.",
+        "image": "art/campaign/shirt.svg"
+      },
+      "clothes_3": {
+        "id": "clothes_3",
+        "category": "clothes",
+        "text": "Плащ",
+        "explanation": "Длинная верхняя одежда для прохладной или дождливой погоды."
+      },
+      "dishes": {
+        "id": "dishes",
+        "category": "dishes",
+        "text": "Посуда",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "dishes_1": {
+        "id": "dishes_1",
+        "category": "dishes",
+        "text": "Чашка",
+        "explanation": "Небольшой сосуд с ручкой для горячего напитка.",
+        "image": "art/campaign/cup.svg"
+      },
+      "dishes_2": {
+        "id": "dishes_2",
+        "category": "dishes",
+        "text": "Тарелка",
+        "explanation": "Неглубокая посуда для подачи еды."
+      },
+      "dishes_3": {
+        "id": "dishes_3",
+        "category": "dishes",
+        "text": "Блюдце",
+        "explanation": "Небольшая тарелочка под чашку."
+      },
+      "flowers": {
+        "id": "flowers",
+        "category": "flowers",
+        "text": "Цветы",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "flowers_1": {
+        "id": "flowers_1",
+        "category": "flowers",
+        "text": "Роза",
+        "explanation": "Садовый цветок с многослойными лепестками.",
+        "keyId": "key-3"
+      },
+      "flowers_2": {
+        "id": "flowers_2",
+        "category": "flowers",
+        "text": "Тюльпан",
+        "explanation": "Весенний цветок с крупным чашевидным бутоном.",
+        "image": "art/campaign/tulip.svg",
+        "keyId": "key-1"
+      },
+      "flowers_3": {
+        "id": "flowers_3",
+        "category": "flowers",
+        "text": "Ромашка",
+        "explanation": "Цветок с жёлтой серединой и белыми лепестками."
+      },
+      "tools": {
+        "id": "tools",
+        "category": "tools",
+        "text": "Инструменты",
+        "leader": true,
+        "explanation": "Карта категории. Подберите к ней все подходящие карточки."
+      },
+      "tools_1": {
+        "id": "tools_1",
+        "category": "tools",
+        "text": "Молоток",
+        "explanation": "Ручной ударный инструмент для забивания гвоздей.",
+        "image": "art/campaign/hammer.svg"
+      },
+      "tools_2": {
+        "id": "tools_2",
+        "category": "tools",
+        "text": "Отвёртка",
+        "explanation": "Инструмент для закручивания винтов и шурупов."
+      },
+      "tools_3": {
+        "id": "tools_3",
+        "category": "tools",
+        "text": "Пила",
+        "explanation": "Инструмент с зубчатым полотном для распиливания.",
+        "keyId": "key-2"
+      }
+    },
+    "initial": {
+      "tableau": [
+        [
+          "flowers_2",
+          "dishes",
+          "clothes_2"
+        ],
+        [
+          "tools_3",
+          "clothes",
+          "flowers"
+        ],
+        [
+          "flowers_1",
+          "tools",
+          "clothes_3"
+        ],
+        [
+          "dishes_3",
+          "dishes_1",
+          "tools_2"
+        ]
+      ],
+      "foundations": [
+        [],
+        []
+      ],
+      "stock": [
+        "flowers_3",
+        "dishes_2",
+        "tools_1",
+        "clothes_1"
+      ],
+      "waste": [],
+      "faceUp": [
+        "clothes_2",
+        "flowers",
+        "clothes_3"
+      ],
+      "collected": [],
+      "movesLeft": 31,
+      "phase": "playing"
+    },
+    "winningPath": [
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "draw"
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      {
+        "type": "transfer",
+        "from": {
+          "kind": "waste",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      }
+    ],
+    "editorialStatus": "QA-only. Semantic agent review; human clarity/enjoyment unverified.",
+    "lock": {
+      "column": 3,
+      "requiredKeys": [
+        "key-1",
+        "key-2",
+        "key-3"
+      ]
+    }
+  }
+]

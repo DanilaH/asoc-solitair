@@ -1,0 +1,82 @@
+{
+  "tableau": [
+    [],
+    [
+      "baking_1",
+      "baking_3",
+      "baking_2",
+      "baking_4",
+      "baking_5",
+      "baking"
+    ],
+    [],
+    []
+  ],
+  "foundations": [
+    [
+      "dishes_2",
+      "dishes_5",
+      "dishes_4",
+      "dishes_1",
+      "dishes"
+    ],
+    [
+      "sweets_2",
+      "sweets_4",
+      "sweets_5",
+      "sweets_1",
+      "sweets"
+    ],
+    [
+      "drinks_1",
+      "drinks_2",
+      "drinks_5",
+      "drinks"
+    ]
+  ],
+  "stock": [
+    "drinks_3",
+    "dishes_3",
+    "drinks_4",
+    "sweets_3"
+  ],
+  "waste": [],
+  "faceUp": [
+    "soups_1",
+    "baking_3",
+    "drinks_1",
+    "baking_1",
+    "soups_4",
+    "dishes_2",
+    "dishes_5",
+    "baking_2",
+    "soups_5",
+    "sweets_1",
+    "soups_2",
+    "soups_3",
+    "sweets_4",
+    "soups",
+    "baking_4",
+    "dishes",
+    "drinks",
+    "drinks_2",
+    "sweets_2",
+    "sweets_5",
+    "dishes_4",
+    "dishes_1",
+    "sweets",
+    "baking_5",
+    "drinks_5",
+    "baking"
+  ],
+  "collected": [
+    "soups_4",
+    "soups_1",
+    "soups_5",
+    "soups_2",
+    "soups_3",
+    "soups"
+  ],
+  "movesLeft": 8,
+  "phase": "playing"
+}

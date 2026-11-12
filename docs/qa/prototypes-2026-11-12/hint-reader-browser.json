@@ -1,0 +1,21 @@
+{
+  "results": [
+    {
+      "width": 360,
+      "hintsBefore": 3,
+      "hintsAfter": 3,
+      "undoRestoredMoves": 9,
+      "readerTitle": "Кухонная утварь",
+      "readerFits": true
+    },
+    {
+      "width": 320,
+      "hintsBefore": 3,
+      "hintsAfter": 3,
+      "undoRestoredMoves": 9,
+      "readerTitle": "Кухонная утварь",
+      "readerFits": true
+    }
+  ],
+  "errors": []
+}

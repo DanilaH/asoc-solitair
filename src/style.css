@@ -353,9 +353,16 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 /* One viewport surface: board geometry stays compact, a held card can cross it. */
 #game-surface{position:fixed;inset:0;z-index:5;pointer-events:none;overflow:visible}
 #game-root{touch-action:none}
-#inspect{position:absolute;z-index:2;transform-origin:top left;width:90px;height:120px;padding:0;display:grid;place-items:center;border:2px dashed #b8d2ce55;border-radius:18px;background:#18546135;color:#c4dcd4;flex-shrink:0}
-#inspect .inspect-icon{background:none;border:0;width:auto;height:auto;font-size:35px;font-weight:800;color:inherit}
-#inspect[aria-pressed=true],#inspect[data-peeking=true]{background:#f5e6bd;color:#386772;border-color:#fff2cf}
+.deck-tools .moves{position:relative}
+#app .deck-tools .moves{height:132px;min-height:132px;padding:8px 10px 41px}
+#app .deck-tools .moves>span{font-size:14px;line-height:16px}
+#app .deck-tools .moves strong{font-size:38px;line-height:40px}
+#app .deck-tools .move-track{height:4px;margin-top:5px}
+.deck-tools #inspect{position:absolute;inset:0;z-index:2;width:100%;height:100%;padding:0;border:0;border-radius:17px;background:transparent;color:#466e77}
+.deck-tools #inspect:before{content:'';position:absolute;left:10px;right:10px;bottom:48px;height:1px;background:#b69b6c55}
+#inspect .inspect-icon{position:absolute;left:0;right:0;bottom:10px;display:grid;place-items:center;background:none;border:0;width:auto;height:32px;font-size:28px;line-height:1;font-weight:800;color:inherit}
+.deck-tools .moves:has(#inspect[aria-pressed=true],#inspect[data-peeking=true]){outline:3px solid #ffe8a9;outline-offset:1px}
+#dock{justify-content:center}
 #inspect-peek{position:fixed;z-index:10;width:min(280px,calc(100vw - 20px));padding:16px 18px;border:2px solid #fffaee;border-radius:17px;background:#fff9ed;color:#345d6b;box-shadow:0 5px 0 #a3adb9,0 10px 30px #062d4366;pointer-events:none}
 #peek-title{display:block;font-size:20px;line-height:1.15;overflow-wrap:anywhere}
 #peek-description{font-size:13px;line-height:1.4;margin:9px 0 0}

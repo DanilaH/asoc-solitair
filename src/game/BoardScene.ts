@@ -171,6 +171,7 @@ export class BoardScene extends Phaser.Scene {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
     const save = this.options.getSave(), board = save.attempt.board;
     const previous = this.metrics;
+    const drawUnder = command?.type === 'draw' && !save.settings.reducedMotion ? board.waste.at(-2) : undefined;
     const bounds = this.options.boardBounds?.() ?? { x: 0, y: 0, width: this.scale.width, height: this.scale.height };
     this.frameKey = this.frameIdentity();
     const frame = boardFrame(bounds.width, bounds.height, save.settings.deckPosition, this.options.deal);
@@ -187,10 +188,14 @@ export class BoardScene extends Phaser.Scene {
     this.slots.clear();
     for (const target of this.metrics.targets) {
       const { x, y } = target;
-      if (target.location.kind === 'foundation' && !board.foundations[target.location.index].length) {
-        this.slots.fillStyle(0xd3eee0, .045).fillCircle(x, y, 25);
-        this.slots.lineStyle(2, 0xb6d7c8, .3).lineBetween(x - 8, y, x + 8, y).lineBetween(x, y - 8, x, y + 8);
-      }
+      const empty = target.location.kind === 'foundation' ? !board.foundations[target.location.index].length : !board.tableau[target.location.index].length;
+      if (!empty) continue;
+      const w = this.cardW - 4, h = this.cardH - 4, left = x - w / 2, top = y - h / 2;
+      // A recessed card silhouette; only genuine empty destinations retain it.
+      this.slots.fillStyle(0x083c48, .5).fillRoundedRect(left, top + 3, w, h, 17);
+      this.slots.fillStyle(0x2d7a80, .7).fillRoundedRect(left, top, w, h - 3, 17);
+      this.slots.lineStyle(2, 0xa6d4ca, .58).strokeRoundedRect(left + 1, top + 1, w - 2, h - 4, 16);
+      this.slots.lineStyle(1, 0x124c59, .65).strokeRoundedRect(left + 6, top + 6, w - 12, h - 14, 12);
     }
     this.jokerArt.setVisible(Boolean(this.metrics.joker));
     this.jokerBadge.setVisible(Boolean(this.metrics.joker));
@@ -305,8 +310,9 @@ export class BoardScene extends Phaser.Scene {
           view.strip.setAngle(save.settings.deckSide === 'left' ? -90 : 90).setPosition((save.settings.deckSide === 'left' ? -1 : 1) * (this.cardW / 2 - 11), 0);
         } else view.strip.setAngle(0).setPosition(0, -this.cardH / 2 + 7).setScale(view.stripScale ?? 1);
       } else if (view.strip) view.strip.setPosition(rearWaste ? (save.settings.deckSide === 'left' ? -1 : 1) * (this.cardW / 2 - 11) : 0, rearWaste ? 0 : -this.cardH / 2 + 11);
-      view.content.setVisible(!coveredCaption); view.caption?.setVisible(!coveredCaption);
-      view.strip?.setVisible(coveredCaption && pose.faceUp && band >= view.strip.height * view.strip.scaleY + (rearWaste ? 3 : 10));
+      const waitingForCover = pose.id === drawUnder;
+      view.content.setVisible(!coveredCaption || waitingForCover); view.caption?.setVisible(!coveredCaption || waitingForCover);
+      view.strip?.setVisible(coveredCaption && !waitingForCover && pose.faceUp && band >= view.strip.height * view.strip.scaleY + (rearWaste ? 3 : 10));
       const fresh = entering && this.initial;
       if (fresh) view.node.setPosition(stock.x, stock.y).setAlpha(0).setAngle(-9).setScale(.82);
       view.node.setVisible(true).setDepth(pose.depth);
@@ -317,7 +323,13 @@ export class BoardScene extends Phaser.Scene {
         view.face.setVisible(false); view.back.setVisible(true);
         this.tweens.add({ targets: view.node, x: pose.x, y: pose.y, duration: 270, ease: 'Sine.easeInOut',
           onUpdate: tween => { const t = tween.progress; view.node.setScale(Math.max(.045, Math.abs(1 - t * 2)), 1); view.face.setVisible(t >= .5); view.back.setVisible(t < .5); },
-          onComplete: () => { view.node.setScale(1).setDepth(pose.depth); this.world.sort('depth'); } });
+          onComplete: () => {
+            view.node.setScale(1).setDepth(pose.depth); this.world.sort('depth');
+            // The card beneath keeps its face until the arriving card covers it.
+            if(drawUnder && this.options.getSave().attempt.board.waste.at(-1)===pose.id && !this.press?.poses.some(p=>p.id===drawUnder)) {
+              const under=this.views.get(drawUnder);under?.content.setVisible(false);under?.caption?.setVisible(false);under?.strip?.setVisible(true);
+            }
+          } });
         continue;
       }
       if (!entering && pose.faceUp && !wasFace) {

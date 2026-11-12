@@ -1,6 +1,6 @@
 # Roadmap
 
-**0.9.4/code17 refinement:** [five user-feedback details](docs/qa/BOARD_REFINEMENT_0_9_4.md). Empty card-shaped slots, fan opening from stock, centered helper group and reading area integrated with moves. Word/picture policy and bank preserved; verification in progress.
+**0.9.4/code17 delivered:** [five user-feedback details](docs/qa/BOARD_REFINEMENT_0_9_4.md). Empty card-shaped slots, fan opening from stock, centered helper group and reading area integrated with moves. Word/picture policy and bank preserved. PR #19 merged; full exact-source CI passes 75 unit/platform and 124 browser checks, all 80 touch wins and Android compilation/signature. Matched APK/media delivered; phone comfort remains acceptance.
 
 **0.9.3/code 16 delivered:** [board interaction scope and acceptance](docs/qa/BOARD_INTERACTION_2026-11-12.md). PR #17 merged; full runtime CI passes 74 unit/platform checks, 122 browser scenarios and Android compilation/signature. APK and touch recordings are updated; physical-device comfort remains acceptance. No bank, save, economy or SDK configuration change.
 

@@ -1,0 +1,15 @@
+{
+  "source": "efb3f16244f13ae0fb04d3e4e80de6512ae0aa9a",
+  "campaignDeals": 80,
+  "dailyDeals": 28,
+  "categoryOccurrences": 340,
+  "pictureCategoryOccurrences": 166,
+  "wordCategoryOccurrences": 174,
+  "policyChanged": false,
+  "bankChanged": false,
+  "example": {
+    "campaignLevel": 2,
+    "dishes": "words",
+    "clothes": "pictures"
+  }
+}

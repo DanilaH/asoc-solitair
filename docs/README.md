@@ -1,6 +1,6 @@
 # Product sources
 
-Latest board follow-up: [0.9.4 slots, stock fan, centered helpers and integrated reader](qa/BOARD_REFINEMENT_0_9_4.md). See its explicit acceptance/delivery status.
+Latest board delivery: [0.9.4 slots, stock fan, centered helpers and integrated reader](qa/BOARD_REFINEMENT_0_9_4.md). See its explicit acceptance/delivery status.
 
 Current phone-feedback delivery: [0.9.3 board interaction](qa/BOARD_INTERACTION_2026-11-12.md). See its explicit verification/delivery status.
 

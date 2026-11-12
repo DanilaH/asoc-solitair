@@ -1,0 +1,54 @@
+{
+  "source": "efb3f16244f13ae0fb04d3e4e80de6512ae0aa9a",
+  "tree": "975ac4407a7897cd495afd07e3b5779208e7bf30",
+  "base": "440427dd1749735af4fac41a7d6c9c7f7095246a",
+  "version": "0.9.4",
+  "code": 17,
+  "run": 43215510745,
+  "webJob": 131173610808,
+  "androidJob": 131173611356,
+  "sourceArtifact": 13943891411,
+  "ciPassed": true,
+  "browserPassed": 124,
+  "pr": 19,
+  "merge": "c7a66e32898d26cf8d0f5b42afe451ca3288a239",
+  "mainRun": 43219698557,
+  "mainAndroidJob": 131187767797,
+  "mainArtifact": 13944986797,
+  "mainByteIdentical": true,
+  "unitPlatform": 75,
+  "deliberateCompactSkips": 4,
+  "fieldRasterCases": 119,
+  "domIssues": 0,
+  "rasterIssues": 0,
+  "library": [
+    {
+      "file_name": "asoc-solitair-0.9.4-debug.apk",
+      "library_file_id": "libfile_c2fe897685148191986616276ec645a4",
+      "current_version_number": 0,
+      "status": "succeeded",
+      "local_metadata_applied": true
+    },
+    {
+      "file_name": "asoc-0.9.4-board.gif",
+      "library_file_id": "libfile_52154902fa148191a1b5ff412ab24966",
+      "current_version_number": 0,
+      "status": "succeeded",
+      "local_metadata_applied": true
+    },
+    {
+      "file_name": "asoc-0.9.4-compact.gif",
+      "library_file_id": "libfile_a9e9a52b5de88191bd76b93e435e138e",
+      "current_version_number": 0,
+      "status": "succeeded",
+      "local_metadata_applied": true
+    },
+    {
+      "file_name": "asoc-0.9.4-words-and-pictures.png",
+      "library_file_id": "libfile_22bc0febaf948191beee15923c650c09",
+      "current_version_number": 0,
+      "status": "succeeded",
+      "local_metadata_applied": true
+    }
+  ]
+}

@@ -1,5 +1,13 @@
 # Verification — 2026-11-12
 
+## Latest board refinement — 0.9.4 / code17
+
+[Complete evidence/downloads](docs/qa/BOARD_REFINEMENT_0_9_4.md). Source `efb3f16244f13ae0fb04d3e4e80de6512ae0aa9a`, merge `c7a66e32898d26cf8d0f5b42afe451ca3288a239`, identical trees. Full source CI `43215510745` PASS: 75 unit/platform, frozen witnesses/four-layout bounds/build, 119 rendered field cases with zero DOM/raster issues plus home/dialog coverage, **124 browser scenarios + four deliberate compact catalog skips**, all 80 touch wins, debug/signature and unsigned R8 compilation. Local initial browser 36 and final input 16 PASS. Word/picture policy and bank/rules/save/economy/SDK/kit pin unchanged.
+
+Main run `43219698557`, Android job `131187767797`, artifact `13944986797` PASS; actual manifest/package/version, all 186 web files, no-lab and signer verified. APK main/source/saved byte-identical: 0.9.4/code17, 11,450,281 bytes, SHA256 `df5199840dca1d1a044d1b5e8d53e8903c63bad2d65d4a2443a09900cccba1b3`. All four new file writes succeed with local identity applied. Duplicate main web CI remains in progress at delivery; physical-phone comfort/fast stock-tap/sound/haptics and live services remain acceptance.
+
+
+
 ## Latest board delivery — 0.9.3 / code 16
 
 [Complete scope, download links and machine proof](docs/qa/BOARD_INTERACTION_2026-11-12.md). PR #17 merged at `b8b9ebd823a0f353929b02a8107f87347f5987f5`. Full exact-head CI `43207567197` PASS (prior runtime-source CI 43206024546 also PASS): 74 unit/platform checks, all frozen witnesses/four-layout bounds/build, 119 raster field cases with zero DOM/raster issues plus home/dialog coverage, 122 browser scenarios with four deliberate compact catalog skips, all 80 touch wins and Android debug/signature/unsigned R8 compilation. Local final input/tutorial/UX matrix 34 PASS; both rear-waste peek cases preserve state. Limited agent-only first-two-level playthrough uses visible cards without a prepared path; human phone feel is not established.

@@ -1,0 +1,15 @@
+{
+  "apk": "094-source-debug.apk",
+  "bytes": 11450281,
+  "sha256": "df5199840dca1d1a044d1b5e8d53e8903c63bad2d65d4a2443a09900cccba1b3",
+  "manifest": {
+    "package": "com.danilah.asocsolitair.debug",
+    "versionCode": 17,
+    "versionName": "0.9.4"
+  },
+  "matchedProductionFiles": 186,
+  "prototypeEntryAbsent": true,
+  "signer": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "commit": "efb3f16244f13ae0fb04d3e4e80de6512ae0aa9a",
+  "artifact": 13943891411
+}

@@ -1,0 +1,43 @@
+{
+  "results": [
+    {
+      "width": 360,
+      "height": 780,
+      "ordinaryDeal": "campaign-006",
+      "firstThreeKeepEarlierPositions": true,
+      "readingFree": true,
+      "bottomLeft": true,
+      "mixedDeal": "campaign-002",
+      "modes": [
+        {
+          "category": "dishes",
+          "picture": false
+        },
+        {
+          "category": "clothes",
+          "picture": true
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "ordinaryDeal": "campaign-006",
+      "firstThreeKeepEarlierPositions": true,
+      "readingFree": true,
+      "bottomLeft": true,
+      "mixedDeal": "campaign-002",
+      "modes": [
+        {
+          "category": "dishes",
+          "picture": false
+        },
+        {
+          "category": "clothes",
+          "picture": true
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

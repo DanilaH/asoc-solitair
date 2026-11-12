@@ -7,7 +7,8 @@ import type { Command } from '../../src/domain/types';
 import type { Prototype } from './build';
 import data from './deals.json' with { type: 'json' };
 import './style.css';
-const deals=data as unknown as Prototype[], $=<T extends HTMLElement=HTMLElement>(s:string)=>document.querySelector<T>(s)!;
+// Existing pilot isolates semantic content; preserve its pre-v3 rules instead of mixing experiments.
+const deals:Prototype[]=(data as unknown as Prototype[]).map(d=>({...d,initial:{...d.initial,rulesVersion:2 as const}})), $=<T extends HTMLElement=HTMLElement>(s:string)=>document.querySelector<T>(s)!;
 let index=0,deal=deals[0],save=freshSave(deal,crypto.randomUUID()),scene:BoardScene,ready=false;
 const choices=$<HTMLSelectElement>('#choose');deals.forEach((d,i)=>choices.add(new Option(`Раздача ${i+1}`,String(i))));
 function hud(){ $('#lab').dataset.revision=String(save.revision);$('#undo').textContent='Отмена · '+save.profile.undos; $('#moves').textContent=`Ходы: ${save.attempt.board.movesLeft}`;$('#status').textContent=save.attempt.board.phase==='won'?'Всё сошлось!':save.attempt.board.phase==='exhausted'?'Ходы закончились':'';$('#lab').dataset.phase=save.attempt.board.phase;$<HTMLButtonElement>('#undo').disabled=!save.attempt.undo.length||save.attempt.board.phase==='won'; }

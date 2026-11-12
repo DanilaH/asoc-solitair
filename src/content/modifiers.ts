@@ -1,4 +1,5 @@
 import { cardsFor } from './topics';
+import { withCurrentRules } from './current-rules';
 import type { BoardCommand, Card, Command, Deal } from '../domain/types';
 
 const move = (from: number, to: number, foundation = true): BoardCommand => ({ type: 'transfer', from: { kind: 'tableau', index: from }, to: { kind: foundation ? 'foundation' : 'tableau', index: to } });
@@ -41,4 +42,4 @@ for (const [deal, ids] of [[lockLesson, ['dishes_1', 'clothes_1', 'dishes_2']], 
   ids.forEach((id, i) => { deal.cards[id].keyId = deal.lock!.requiredKeys[i]; });
   deal.initial.faceUp = deal.initial.faceUp.filter(id => !deal.initial.tableau[deal.lock!.column].includes(id));
 }
-export const modifierDeals: readonly Deal[] = [jokerLesson, jokerApply, days, months, lockLesson, lockApply];
+export const modifierDeals: readonly Deal[] = [jokerLesson, jokerApply, days, months, lockLesson, lockApply].map(withCurrentRules);

@@ -10,7 +10,7 @@ import { switchMode } from './domain/sessions';
 import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } from './domain/meta';
 import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
 import { lesson, recordLearning, ruleIntroduction, type RuleIntro } from './app/tutorial';
-import { boardKey, dispatch, freshSave, STREAK } from './domain/engine';
+import { boardKey, boardRules, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import type { BoardCommand, Command } from './domain/types';
 import { WIDTH, boardFrame } from './game/layout';
@@ -639,7 +639,7 @@ try {
   $('#undo').addEventListener('click', () => { if (!save.profile.undos) openHelpers('undo'); else void execute({ type: 'undo' }); }, domOptions);
   $('#inspect').addEventListener('click', () => { setInspect(!inspectMode); if (!inspectMode) showGuidance(); }, domOptions);
   $('#restart').addEventListener('click', () => {
-    if (save.attempt.board.phase !== 'won' && save.attempt.telemetry?.started) { $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}`; openDialog('#restart-confirm'); }
+    if (save.attempt.board.phase !== 'won' && save.attempt.telemetry?.started) { $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`; openDialog('#restart-confirm'); }
     else void replay();
   }, domOptions);
   $('#restart-confirm-yes').addEventListener('click', () => { void replay(); }, domOptions);

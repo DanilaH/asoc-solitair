@@ -1,10 +1,12 @@
-export const RULES_VERSION = 2;
+export const RULES_VERSION = 3;
 export const CONTENT_VERSION = 5;
 export const BALANCE_VERSION = 3;
 export interface Card {
   id: string; category: string; text: string; leader?: boolean; image?: string; rank?: number; ordered?: boolean; keyId?: string; explanation: string;
 }
 export interface Board {
+  /** Persisted per board/Undo snapshot so active and parked attempts can differ. */
+  rulesVersion?: 2 | 3;
   tableau: string[][]; foundations: string[][]; stock: string[]; waste: string[];
   faceUp: string[]; collected: string[]; movesLeft: number | null;
   phase: 'playing' | 'exhausted' | 'won';
@@ -19,10 +21,13 @@ export type Command = BoardCommand | { type: 'place-joker'; column: number } | {
 export interface Deal {
   id: string; version: number; title: string; cards: Record<string, Card>; initial: Board;
   winningPath: BoardCommand[]; editorialStatus: string;
+  /** Frozen pre-v3 witness, only used when continuing an existing v2 attempt. */
+  legacyWinningPath?: BoardCommand[];
   campaignLevel?: number;
   tags?: string[];
   lock?: { column: number; requiredKeys: string[] };
   tutorialPath?: Command[];
+  legacyTutorialPath?: Command[];
   daily?: { dayId: string; contentVersion: number; poolId: string };
 }
 export interface Attempt {

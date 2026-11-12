@@ -1,4 +1,4 @@
-import { applyBoard, boardKey, legalCommands } from './engine';
+import { applyBoard, boardKey, boardRules, legalCommands } from './engine';
 import type { Board, BoardCommand, Deal } from './types';
 export type SearchResult = { status: 'SOLVED'; path: BoardCommand[]; visited: number }
   | { status: 'UNKNOWN' | 'UNSOLVABLE'; visited: number };
@@ -25,8 +25,9 @@ export function solve(start: Board, deal: Deal, limit = 8000): SearchResult {
 }
 
 export function knownContinuation(board: Board, deal: Deal): BoardCommand[] | null {
-  let current = structuredClone(deal.initial);
-  for (let index = 0; index < deal.winningPath.length; index++) {
+  let current: Board = { ...structuredClone(deal.initial), rulesVersion: boardRules(board) };
+  const witness = boardRules(board) === 2 ? deal.legacyWinningPath ?? deal.winningPath : deal.winningPath;
+  for (let index = 0; index < witness.length; index++) {
     // Foundation slots have identical rules. Match their contents, then map the
     // stored route back to the player's actual slots; tableau/locks stay exact.
     const used = new Set<number>();
@@ -37,14 +38,14 @@ export function knownContinuation(board: Board, deal: Deal): BoardCommand[] | nu
       if (slots[i] >= 0) used.add(slots[i]);
     }
     if (slots.every(i => i >= 0) && boardKey(current) === boardKey({ ...board, foundations: slots.map(i => board.foundations[i]) })) {
-      const path = deal.winningPath.slice(index).map(action => action.type === 'transfer' ? {
+      const path = witness.slice(index).map(action => action.type === 'transfer' ? {
         ...action,
         from: action.from.kind === 'foundation' ? { ...action.from, index: slots[action.from.index] } : action.from,
         to: action.to.kind === 'foundation' ? { ...action.to, index: slots[action.to.index] } : action.to,
       } : action);
       if (board.movesLeft === null || path.length <= board.movesLeft) return path;
     }
-    const result = applyBoard(current, deal.winningPath[index], deal);
+    const result = applyBoard(current, witness[index], deal);
     if (typeof result === 'string') return null;
     current = result.board;
   }

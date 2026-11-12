@@ -1,5 +1,6 @@
 import type { GameplayActivityCoordinator, AnalyticsParams } from '@danilah/mini-games-kit/platform';
-import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION, type Save } from '../domain/types';
+import { BALANCE_VERSION, CONTENT_VERSION, type Save } from '../domain/types';
+import { boardRules } from '../domain/engine';
 import { createAnalytics, type AnalyticsEvent } from './analytics';
 
 /** Monotonic active play excludes dialogs, ads, visibility and Android background time. */
@@ -23,7 +24,7 @@ export function createTelemetry(getSave: () => Save, activity: GameplayActivityC
     track(event: AnalyticsEvent, params: AnalyticsParams = {}) {
       const save = getSave();
       analytics.track(event, { schema: 1, mode: save.attempt.daily ? 'daily' : 'campaign', attemptId: save.attempt.id, dealId: save.attempt.dealId,
-        rulesVersion: RULES_VERSION, contentVersion: CONTENT_VERSION, balanceVersion: BALANCE_VERSION,
+        rulesVersion: boardRules(save.attempt.board), contentVersion: CONTENT_VERSION, balanceVersion: BALANCE_VERSION,
         movesLeft: save.attempt.board.movesLeft ?? -1, activeMs: elapsed(), ...params });
     },
     destroy() { remove(); analytics.destroy(); },

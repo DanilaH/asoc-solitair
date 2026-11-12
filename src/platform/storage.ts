@@ -2,7 +2,8 @@ import { Capacitor, registerPlugin } from '@capacitor/core';
 import { JsonStorageRepository, type StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { dayNumber, metaState, milestoneRewards } from '../domain/meta';
 import { BALANCE } from '../domain/balance';
-import { assertBoard } from '../domain/engine';
+import { assertBoard, boardRules } from '../domain/engine';
+import { MAX_UNDO_HISTORY } from '../domain/history';
 import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION, type Deal, type Save } from '../domain/types';
 
 export const SAVE_KEY = 'asoc-solitaire.save.v1';
@@ -27,15 +28,29 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (!deal) throw Error('Неизвестная раздача. Сохранение оставлено без изменений.');
   const legacy = save.rulesVersion === 1 && save.balanceVersion === 1 && ((save.contentVersion === 1 && deal.id === 'intro-001') || (save.contentVersion === 2 && (deal.campaignLevel ?? 0) <= 20));
   const previous = save.rulesVersion === 2 && ((save.contentVersion === 3 && save.balanceVersion === 2) || (save.contentVersion === 4 && save.balanceVersion === 3));
-  if (save.schema !== 1 || (!(legacy || previous) && (save.rulesVersion !== RULES_VERSION || save.contentVersion !== CONTENT_VERSION || save.balanceVersion !== BALANCE_VERSION)) || save.attempt.dealId !== deal.id) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
-  if (legacy || previous) { save.profile.jokers ??= BALANCE.initialJokers; save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
+  const v2 = save.rulesVersion === 2 && save.contentVersion === CONTENT_VERSION && save.balanceVersion === BALANCE_VERSION;
+  if (save.schema !== 1 || (!(legacy || previous || v2) && (save.rulesVersion !== RULES_VERSION || save.contentVersion !== CONTENT_VERSION || save.balanceVersion !== BALANCE_VERSION)) || save.attempt.dealId !== deal.id) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
+  // Tag every active/parked board before advancing the envelope. Undo may never change rules.
+  const previousRules = save.rulesVersion < 3;
+  for (const attempt of [save.attempt, ...Object.values(save.parked ?? {})]) {
+    if (!attempt || !Array.isArray(attempt.undo)) throw Error('Повреждена история');
+    const rules = attempt.board.rulesVersion ?? (previousRules ? 2 : RULES_VERSION);
+    if (previousRules && rules !== 2) throw Error('Правила попытки не согласованы с сохранением');
+    for (const board of [attempt.board, ...attempt.undo]) {
+      board.rulesVersion ??= rules;
+      if (boardRules(board) !== rules) throw Error('Отмена меняет правила попытки');
+    }
+  }
+  if (legacy || previous) save.profile.jokers ??= BALANCE.initialJokers;
+  if (legacy || previous || v2) { save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
   assertBoard(save.attempt.board, deal);
   if (!natural(save.revision) || typeof save.attempt.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(save.attempt.id)) throw Error('Повреждён номер сохранения');
   for (const value of [save.profile.coins, save.profile.hints, save.profile.undos, save.profile.jokers, save.profile.wins, save.attempt.streak.coins]) if (!natural(value)) throw Error('Повреждён профиль');
   const streak = save.attempt.streak;
   if (!natural(streak.tier) || streak.tier > 3 || !natural(streak.progress) || streak.progress >= 4 + streak.tier || !strings(streak.counted)) throw Error('Повреждена серия');
-  if (!strings(save.profile.rewards) || !Array.isArray(save.attempt.undo) || save.attempt.undo.length > 300) throw Error('Повреждена история');
+  if (!strings(save.profile.rewards) || !Array.isArray(save.attempt.undo)) throw Error('Повреждена история');
   save.attempt.undo.forEach(board => assertBoard(board, deal));
+  // Validate the full old history before discarding only its oldest entries.
   if (['sfx', 'haptics', 'reducedMotion'].some(key => typeof save.settings[key as keyof Save['settings']] !== 'boolean')) throw Error('Повреждены настройки');
   if (save.platform) {
     const p = save.platform;
@@ -47,6 +62,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.campaign && (save.campaign.version !== 1 || !strings(save.campaign.tutorials))) throw Error('Повреждено обучение');
   if (save.attempt.jokerUsed !== undefined && typeof save.attempt.jokerUsed !== 'boolean') throw Error('Повреждён Джокер');
   if ((save.attempt.board.joker || save.attempt.undo.some(board => board.joker)) && !save.attempt.jokerUsed) throw Error('Джокер без расхода');
+  save.attempt.undo = save.attempt.undo.slice(-MAX_UNDO_HISTORY);
   if (save.attempt.daily && (save.attempt.daily.dayId !== deal.daily?.dayId || save.attempt.daily.contentVersion !== deal.daily?.contentVersion)) throw Error('Повреждена дата попытки');
   if (Boolean(save.attempt.daily) !== Boolean(deal.daily)) throw Error('Повреждён режим');
   if (save.parked) {
@@ -54,7 +70,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
     if (save.parked[active]) throw Error('Два активных состояния режима');
     for (const [mode, attempt] of Object.entries(save.parked)) {
       if (!['daily', 'campaign'].includes(mode) || !attempt || Boolean(attempt.daily) !== (mode === 'daily') || attempt.id === save.attempt.id) throw Error('Повреждён резерв попытки');
-      decodeSave(JSON.stringify({ ...save, attempt, parked: undefined }), source);
+      save.parked[mode as 'campaign'|'daily'] = decodeSave(JSON.stringify({ ...save, attempt, parked: undefined }), source).attempt;
     }
   }
   if (save.meta) {

@@ -16,6 +16,7 @@ it('has 54 distinct appended puzzles spanning the new topics and existing modifi
 it('migrates content-v4 active campaign and parked daily without altering reward identities, spending, appearance or attempt state', () => {
   const save = freshSave(campaignDeals[25], 'old-campaign'); save.contentVersion = 4; save.profile.rewards = ['milestone:10','milestone:20','cycle:1']; save.profile.coins = 319; save.profile.jokers = 0;
   save.parked = { daily: freshSave(dailyForDay('2026-11-09'),'old-daily').attempt }; save.settings.palette = 'ink'; save.settings.deckSide = 'left';
+  save.rulesVersion = 2; save.attempt.board.rulesVersion = 2; save.parked.daily!.board.rulesVersion = 2;
   const migrated = decodeSave(JSON.stringify(save), findDeal);
   expect(migrated.attempt).toEqual(save.attempt); expect(migrated.parked).toEqual(save.parked); expect(migrated.profile).toEqual(save.profile); expect(migrated.settings).toEqual(save.settings); expect(migrated.meta).toEqual(save.meta);
   expect(migrated.contentVersion).toBe(5);

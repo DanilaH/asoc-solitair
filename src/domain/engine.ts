@@ -5,8 +5,10 @@ import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, 
 
 import { abandonCampaign, dailyRewardEligible, finishDaily } from './meta';
 import { markCampaignWin } from './services';
+import { recordUndo } from './history';
 
 export const STREAK = BALANCE.streak;
+export const boardRules = (board: Board): 2 | 3 => board.rulesVersion ?? RULES_VERSION;
 export function freshAttempt(deal: Deal, id: string): Attempt {
   return { id, dealId: deal.id, ...(deal.daily ? { daily: { dayId: deal.daily.dayId, contentVersion: deal.daily.contentVersion } } : {}), board: structuredClone(deal.initial), undo: [], streak: { tier: 0, progress: 0, coins: 0, counted: [] } };
 }
@@ -90,6 +92,7 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
       const support = board.joker?.column === cmd.to.index;
       if (support && target.length > board.joker!.boundary) return 'Джокер держит только одну группу';
       if (!support && target.length && (!available.length || deal.cards[available[0]].category !== category)) return 'Это другая категория';
+      if (boardRules(board) >= 3 && available.some(id => deal.cards[id].leader)) return 'Сначала перенесите тему в верхний слот';
       const error = orderError([...available, ...moving], deal); if (error) return error;
       board.tableau[cmd.to.index] = [...target.slice(0, target.length - available.length), ...normalize([...available, ...moving], deal)];
     } else return 'В сброс переносить нельзя';
@@ -144,7 +147,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || next.profile.jokers <= 0) return refuse('В этой попытке Джокер недоступен');
     const placed = placeJoker(attempt.board, cmd.column, deal);
     if (typeof placed === 'string') return refuse(placed);
-    attempt.undo.push(attempt.board); attempt.board = placed; attempt.jokerUsed = true; next.profile.jokers--;
+    recordUndo(attempt); attempt.board = placed; attempt.jokerUsed = true; next.profile.jokers--;
     markTutorial(next, 'joker-used'); events = [{ type: 'joker' }];
   } else if (cmd.type === 'hint') {
     const demo = freeHintDemo(input, deal);
@@ -153,7 +156,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
   } else {
     const result = applyBoard(attempt.board, cmd, deal);
     if (typeof result === 'string') return refuse(result, cmd.type === 'transfer' && attempt.board.phase === 'playing');
-    attempt.undo.push(attempt.board); attempt.board = result.board; events = result.events;
+    recordUndo(attempt); attempt.board = result.board; events = result.events;
     if (cmd.type === 'transfer') {
       // Route identity excludes the budget/economy and survives Undo. Reversing the same group is the same edge.
       const endpoints = [cmd.from.kind + cmd.from.index, cmd.to.kind + cmd.to.index].sort().join(':');
@@ -207,9 +210,10 @@ export function legalCommands(board: Board, deal: Deal): BoardCommand[] {
 }
 
 export function boardKey(board: Board): string {
-  return JSON.stringify([board.tableau, board.foundations, board.stock, board.waste, [...board.faceUp].sort(), [...board.collected].sort(), board.joker ?? null, [...(board.keys ?? [])].sort()]);
+  return JSON.stringify([boardRules(board), board.tableau, board.foundations, board.stock, board.waste, [...board.faceUp].sort(), [...board.collected].sort(), board.joker ?? null, [...(board.keys ?? [])].sort()]);
 }
 export function assertBoard(board: Board, deal: Deal): void {
+  if (board.rulesVersion !== undefined && board.rulesVersion !== 2 && board.rulesVersion !== 3) throw Error('Неизвестные правила попытки');
   if (board.tableau.length !== deal.initial.tableau.length || board.foundations.length !== deal.initial.foundations.length) throw Error('Неверное число столбцов');
   if (board.joker) {
     const j = board.joker;
@@ -240,4 +244,23 @@ export function assertBoard(board: Board, deal: Deal): void {
   if ((board.phase === 'playing' && board.movesLeft === 0) || (board.phase === 'exhausted' && board.movesLeft !== 0)) throw Error('Несогласованный бюджет');
   if (!['playing', 'exhausted', 'won'].includes(board.phase)) throw Error('Некорректная фаза');
   if ((board.collected.length === expected.length) !== (board.phase === 'won')) throw Error('Некорректная победа');
+  for (const target of board.foundations) {
+    if (!target.length) continue;
+    const category = deal.cards[target[0]].category;
+    if (target.some(id => deal.cards[id].category !== category) || target.filter(id => deal.cards[id].leader).length !== 1 || !deal.cards[target.at(-1)!].leader || orderError(target, deal)) throw Error('Некорректная верхняя категория');
+    if (target.length === Object.values(deal.cards).filter(c => c.category === category).length) throw Error('Полная категория не завершена');
+  }
+  for (const id of board.collected) {
+    if (!Object.values(deal.cards).filter(c => c.category === deal.cards[id].category).every(c => board.collected.includes(c.id))) throw Error('Категория завершена частично');
+  }
+  if ([...board.waste, ...board.foundations.flat(), ...board.collected].some(id => !board.faceUp.includes(id))) throw Error('Закрытая карта в открытой зоне');
+  for (const [index, col] of board.tableau.entries()) {
+    if (!col.length || isLocked(board, index, deal)) continue;
+    if (!board.faceUp.includes(col.at(-1)!)) throw Error('Доступная карта не открыта');
+    let opened = false;
+    for (const id of col) {
+      if (board.faceUp.includes(id)) opened = true;
+      else if (opened) throw Error('Закрытая карта поверх открытой');
+    }
+  }
 }

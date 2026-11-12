@@ -41,7 +41,8 @@ export function decodeSave(raw: string, source: DealSource): Save {
       if (boardRules(board) !== rules) throw Error('Отмена меняет правила попытки');
     }
   }
-  if (legacy || previous || v2) { save.profile.jokers ??= BALANCE.initialJokers; save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
+  if (legacy || previous) save.profile.jokers ??= BALANCE.initialJokers;
+  if (legacy || previous || v2) { save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
   assertBoard(save.attempt.board, deal);
   if (!natural(save.revision) || typeof save.attempt.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(save.attempt.id)) throw Error('Повреждён номер сохранения');
   for (const value of [save.profile.coins, save.profile.hints, save.profile.undos, save.profile.jokers, save.profile.wins, save.attempt.streak.coins]) if (!natural(value)) throw Error('Повреждён профиль');

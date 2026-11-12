@@ -6,7 +6,7 @@ Owner approved implementing the audit findings. [Implementation and validation s
 
 Bound history at 300 in both command paths; validate complete old histories before trimming, including parked and ownership checks. Strong semantic zone/faceUp/rules invariants refuse corrupt saves without overwrite. Legacy intro and separate content pilot remain v2. No art/layout/economy/SDK/kit changes.
 
-Local 90 unit/platform + typecheck/build/content PASS; independent 216 paths / 4503 states / 253244 accepted+rejected comparisons PASS; prototypes build+96 agents PASS; 119 layout cases with 0 DOM/0 raster. Full browser and focused new-rule runs are ongoing; Android/CI/APK/media acceptance remains pending. Do not claim delivered APK or production readiness from this checkpoint. Exact status will be updated after verification/integration.
+Local 92 unit/platform + typecheck PASS (90 also passed full build/content before two extra compatibility cases); independent 216 paths / 4503 states / 253244 accepted+rejected comparisons PASS; prototypes build+96 agents PASS; 119 layout cases with 0 DOM/0 raster. Three focused new-rule UI tests PASS. Full browser/CI/APK acceptance remains pending. Source 43372f5a44ba35cebfc7a7d6de9dfa2b6b02b1fd started CI 43250271693; follow-up narrows missing-Joker initialization to older supported schemas and adds both mixed-mode directions. Actual touch media tool is tools/record-rules-v3.ts. Do not claim delivered APK or production readiness from this checkpoint. Exact status will be updated after verification/integration.
 
 ## Latest work — independent rules audit, corrections pending
 

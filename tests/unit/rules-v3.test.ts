@@ -62,6 +62,18 @@ describe('rules v3 destinations and compatibility',()=>{
     const s=step(unlock(freshSave(d,'bad-history')),transfer(1,1,'foundation'),d);s.attempt.undo[0].rulesVersion=2;
     expect(()=>decodeSave(JSON.stringify(s),findDeal)).toThrow('Отмена меняет правила');
   });
+  it('does not replenish a missing current-v2 resource during envelope migration',()=>{
+    const s=legacy(freshSave(d,'missing-resource'));delete (s.profile as Partial<Save['profile']>).jokers;
+    expect(()=>decodeSave(JSON.stringify(s),findDeal)).toThrow('Повреждён профиль');
+  });
+  it('retains an old campaign while the newly opened daily uses v3',()=>{
+    let s=decodeSave(JSON.stringify(legacy(unlock(freshSave(d,'old-campaign')))),findDeal);
+    s=step(s,bad,d);const old=structuredClone(s.attempt),day=dailyForDay('2026-11-12');
+    switchMode(s,'daily',day,'new-daily');expect(s.attempt.board.rulesVersion).toBe(3);
+    s=decodeSave(JSON.stringify(s),findDeal);expect(s.parked?.campaign).toEqual(old);
+    switchMode(s,'campaign',d,'resume-old');expect(s.attempt).toEqual(old);expect(s.parked?.daily?.board.rulesVersion).toBe(3);
+    expect(knownContinuation(s.attempt.board,d)).toEqual(d.legacyWinningPath!.slice(1));
+  });
   it('keeps every frozen legacy witness and its fast Hint continuation playable',()=>{
     for(const deal of [...campaignDeals,...dailyPool]) {
       let b:Board={...structuredClone(deal.initial),rulesVersion:2};const path=deal.legacyWinningPath!;

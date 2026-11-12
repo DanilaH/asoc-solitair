@@ -9,7 +9,7 @@ import type { BoardCommand, Deal, Save } from '../src/domain/types';
 const key='asoc-solitaire.save.v1';
 const read=(page:Page)=>page.evaluate(key=>JSON.parse(localStorage.getItem(key)!) as Save,key);
 async function move(page:Page,deal:Deal,cmd:BoardCommand){
-  const save=await read(page),rect=(await page.locator('canvas').boundingBox())!,frame=boardFrame(rect.width,rect.height),geometry=layout(save.attempt.board,deal,frame.height);
+  const save=await read(page),rect=(await page.locator('#game-root').boundingBox())!,frame=boardFrame(rect.width,rect.height),geometry=layout(save.attempt.board,deal,frame.height);
   const tap=(p:{x:number;y:number})=>page.touchscreen.tap(rect.x+frame.offsetX+p.x*frame.unit,rect.y+p.y*frame.unit);
   if(cmd.type==='transfer'){
     const id=cmd.from.kind==='waste'?save.attempt.board.waste.at(-1):packet(save.attempt.board,cmd.from.index,deal).at(-1);
@@ -36,7 +36,7 @@ try{
       await page.evaluate(({key,fixture})=>localStorage.setItem(key,JSON.stringify(fixture)),{key,fixture});await page.reload();await page.waitForSelector('#app[data-ready="true"]');await page.locator('#home-play').tap();await page.waitForTimeout(1000);
       await page.screenshot({path:'docs/qa/campaign-dense.png',scale:'css'});
       await page.locator('#inspect').tap();
-      const save=await read(page),rect=(await page.locator('canvas').boundingBox())!,frame=boardFrame(rect.width,rect.height),geo=layout(save.attempt.board,deal,frame.height);
+      const save=await read(page),rect=(await page.locator('#game-root').boundingBox())!,frame=boardFrame(rect.width,rect.height),geo=layout(save.attempt.board,deal,frame.height);
       const pose=geo.poses.find(p=>p.id==='office_5')!;
       await page.touchscreen.tap(rect.x+frame.offsetX+pose.x*frame.unit,rect.y+pose.y*frame.unit);await page.waitForSelector('#inspect-dialog[open]');await page.waitForTimeout(1100);await page.locator('#inspect-dialog [data-close]').last().tap();
       await page.locator('#hint').tap();await page.waitForTimeout(1600);await move(page,deal,deal.winningPath[0]);await page.waitForTimeout(500);

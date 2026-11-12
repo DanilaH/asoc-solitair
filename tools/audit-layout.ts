@@ -46,15 +46,15 @@ async function audit(page: Page, state: string, home = false) {
   }
   if(home&&innerHeight>=568){const r=rect('#home-play');if(r.bottom>rect('#app').bottom+1)result.push('Primary home action below viewport');}
   if(!home&&document.querySelector('dialog[open]'))result.push('Playing field is covered by an unexpected dialog');
-  if(!home){const canvas=rect('canvas'),dock=rect('#dock'),msg=rect('#message');if(canvas.bottom>msg.top+1||msg.bottom>dock.top+1||dock.bottom>innerHeight+1)result.push('Field/guidance/helper boundary overlap');}
+  if(!home){const canvas=rect('#game-root'),dock=rect('#dock'),msg=rect('#message');if(canvas.bottom>msg.top+1||msg.bottom>dock.top+1||dock.bottom>innerHeight+1)result.push('Field/guidance/helper boundary overlap');}
   return result;
  },{home});
  found.forEach(reason=>issues.push({state,reason}));
  await page.screenshot({path:`${output}/${state}.png`,scale:'css'});
  if(!home){
-  const raster = await page.evaluate(()=>{const canvas=document.querySelector('canvas')!.getBoundingClientRect();return {width:canvas.width,height:canvas.height,controls:[...document.querySelectorAll('.deck-tools .moves,#inspect')].map(e=>{const r=e.getBoundingClientRect();return {name:e.id||e.className,x:r.x-canvas.x,y:r.y-canvas.y,width:r.width,height:r.height}})};});
-  await page.locator('.deck-tools').evaluate(e=>(e as HTMLElement).style.visibility='hidden');
-  const pixels = await page.locator('canvas').screenshot({path:`${output}/${state}-raster.png`,scale:'css'});
+  const raster = await page.evaluate(()=>{const canvas=document.querySelector('#game-root')!.getBoundingClientRect();return {width:canvas.width,height:canvas.height,controls:[...document.querySelectorAll('.deck-tools .moves,#inspect')].map(e=>{const r=e.getBoundingClientRect();return {name:e.id||e.className,x:r.x-canvas.x,y:r.y-canvas.y,width:r.width,height:r.height}})};});
+  await page.locator('.deck-tools, #inspect').evaluateAll(es=>es.forEach(e=>(e as HTMLElement).style.visibility='hidden'));
+  const pixels = await page.locator('#game-root').screenshot({path:`${output}/${state}-raster.png`,scale:'css'});
   // Transfer the PNG as ordinary local HTTP bytes; decode pixels with the browser.
   await page.route('http://127.0.0.1:4195/qa-raster.png', route=>route.fulfill({body:pixels,contentType:'image/png',headers:{'Cache-Control':'no-store'}}), {times:1});
   const collisions = await page.evaluate(async controls=>{
@@ -77,7 +77,7 @@ async function audit(page: Page, state: string, home = false) {
     return found;
   },raster.controls);
   rasterIssues.push(...collisions.map(c=>({state,...c})));
-  await page.locator('.deck-tools').evaluate(e=>(e as HTMLElement).style.removeProperty('visibility'));
+  await page.locator('.deck-tools, #inspect').evaluateAll(es=>es.forEach(e=>(e as HTMLElement).style.removeProperty('visibility')));
   captures.push({state,...raster});
  }
 }
@@ -106,7 +106,7 @@ try {
   // Every dialog is checked at both the shortest and a normal viewport.
   if(width===320||width===360&&height===780){
    await load(page,seed(25));await page.locator('#home-play').tap();
-   for(const id of ['settings','settings-expanded','appearance','helpers','level-picker','calendar','cycle-info','restart-confirm','replace-daily','switch-level','inspect-dialog','result','result-details','result-exhausted','learn-joker','learn-ordered','learn-keys']){
+   for(const id of ['settings','settings-expanded','appearance','helpers','level-picker','calendar','cycle-info','restart-confirm','replace-daily','switch-level','inspect-dialog','result','result-exhausted','learn-joker','learn-ordered','learn-keys']){
     const dialogId=id.startsWith('result')?'result':id.startsWith('learn-')?'learn-rule':id.startsWith('settings')?'settings':id;
     if (id.startsWith('learn-')) { const index = ({'learn-joker':20,'learn-ordered':22,'learn-keys':25} as Record<string,number>)[id]; await load(page,seed(index)); await page.locator('#home-play').tap(); await page.locator('#learn-rule[open]').waitFor(); }
     if(dialogId==='result'){
@@ -121,7 +121,7 @@ try {
     }
     await page.evaluate(id=>{document.querySelectorAll('dialog').forEach(d=>d.close());document.querySelector<HTMLDialogElement>('#'+id)!.showModal();},dialogId);
     if(id==='settings-expanded')await page.locator('#pause-options > summary').tap();
-    if(id==='result-details')await page.locator('#reward-details > summary').tap();
+
     const buttons=page.locator(`#${dialogId} button:visible,#${dialogId} input:visible,#${dialogId} summary:visible`);
     for(let i=0;i<await buttons.count();i++){
      const e=buttons.nth(i);await e.scrollIntoViewIfNeeded();

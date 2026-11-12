@@ -19,7 +19,20 @@ export function dropTarget(targets: Target[], x: number, y: number, tolerance: n
   const near = targets.filter(t => distance(t) <= tolerance);
   return near.length === 1 ? near[0] : null;
 }
-export function layout(board: Board, deal: Deal, height: number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
+/** Card and finger are both intentional drop anchors. Never choose an unrelated legal slot. */
+export function dragTarget(targets: Target[], finger: { x: number; y: number }, card: { x: number; y: number; width: number; height: number }, tolerance: number, valid: (target: Target) => boolean): Target | null {
+  const directCard = dropTarget(targets, card.x, card.y, 0);
+  const directFinger = dropTarget(targets, finger.x, finger.y, 0);
+  for (const candidate of [directCard, directFinger]) if (candidate && valid(candidate)) return candidate;
+  const overlaps = targets.map(target => ({ target, area:
+    Math.max(0, Math.min(card.x + card.width / 2, target.x + target.width / 2) - Math.max(card.x - card.width / 2, target.x - target.width / 2)) *
+    Math.max(0, Math.min(card.y + card.height / 2, target.y + target.height / 2) - Math.max(card.y - card.height / 2, target.y - target.height / 2)) / (card.width * card.height),
+  })).filter(item => item.area >= .3 && valid(item.target)).sort((a, b) => b.area - a.area);
+  if (overlaps[0] && (!overlaps[1] || overlaps[0].area - overlaps[1].area > .15)) return overlaps[0].target;
+  const near = dropTarget(targets, finger.x, finger.y, tolerance);
+  return near && valid(near) ? near : directCard ?? directFinger ?? near;
+}
+export function layout(board: Board, deal: Deal, height: number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number; thickness: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
   const poses: Pose[] = [], targets: Target[] = [];
   let joker: { x: number; y: number; depth: number } | undefined;
   const { width: cardW, height: cardH } = cardMetrics(deal);
@@ -32,8 +45,12 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
   const left = deckSide === 'left' && hasDeck;
   // Foundation slots keep the left edge, independently of the deck's side.
   const foundationCenters = centers;
-  const stock = { x: left ? cardW / 2 : WIDTH - cardW / 2, y: bottom ? height - cardH / 2 - 12 : cardH / 2 + 20 };
-  const waste = { x: stock.x + (left ? 1 : -1) * (cardW + gap), y: stock.y };
+  const deckY = bottom ? height - cardH / 2 - 12 : cardH / 2 + 20;
+  const originalStock = deal.initial.stock.length + deal.initial.waste.length;
+  const thickness = board.stock.length > 1 ? 3 + 15 * Math.min(1, (board.stock.length - 1) / Math.max(1, originalStock - 1)) : 0;
+  const stock = { x: left ? cardW / 2 : WIDTH - cardW / 2, y: deckY - thickness, thickness };
+  const fanStep = 22;
+  const waste = { x: stock.x + (left ? 1 : -1) * (cardW + gap + fanStep * 2), y: deckY };
   const top = cardH / 2 + (bottom ? 30 : hasDeck ? cardH + 54 : 185);
   board.foundations.forEach((ids, index) => {
     const x = foundationCenters[index];
@@ -60,6 +77,6 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
     targets.push({ location: { kind: 'tableau', index }, x: centers[index], y, width: cardW + 12, height: cardH + 8 });
   });
   // Fan away from the stock: even the rear waste cards keep a visible gap.
-  board.waste.slice(-3).forEach((id, i, shown) => poses.push({ id, x: waste.x + (i - shown.length + 1) * (left ? -3 : 3), y: waste.y, depth: 35 + i, faceUp: true }));
+  board.waste.slice(-3).forEach((id, i, shown) => poses.push({ id, x: waste.x + (shown.length - i - 1) * (left ? -fanStep : fanStep), y: waste.y, depth: 35 + i, faceUp: true }));
   return { poses, targets, stock, waste, joker };
 }

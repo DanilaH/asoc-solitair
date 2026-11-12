@@ -1,5 +1,7 @@
 # Roadmap
 
+**0.9.3/code 16 phone-feedback package:** [board interaction scope and acceptance](docs/qa/BOARD_INTERACTION_2026-11-12.md). Implementation is under final verification; check that report for integration/APK status. No bank, save, economy or SDK configuration change.
+
 **0.9.2/code 14 delivered:** reliable Hint outcomes and category-reader clarity are implemented; six isolated prototypes and the human-pilot protocol are prepared. [Current checks and delivery status](docs/qa/GAMEPLAY_IMPLEMENTATION_2026-11-12.md). Production bank/order/budgets remain unchanged; prototype promotion/pacing edits are HOLD pending the pilot.
 
 **Historical gameplay audit:** [findings and priority plan](docs/qa/GAMEPLAY_PRODUCT_AUDIT_2026-11-11.md). Hint/reader fixes and isolated prototypes are now delivered in 0.9.2 above. The human pilot remains open; runtime Directors, bank replacement and new meta are not selected.

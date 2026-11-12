@@ -16,7 +16,7 @@ async function load(p: Page, index: number, board?: Board) {
   await p.reload(); await p.locator('#app[data-ready=true]').waitFor(); await p.locator('#home-play').tap();
 }
 async function move(p: Page, index: number, a: BoardCommand) {
-  const s = await read(p), d = campaignDeals[index], r = (await p.locator('canvas').boundingBox())!, f = boardFrame(r.width, r.height, s.settings.deckPosition, d), g = layout(s.attempt.board, d, f.height, s.settings.deckSide, s.settings.deckPosition);
+  const s = await read(p), d = campaignDeals[index], r = (await p.locator('#game-root').boundingBox())!, f = boardFrame(r.width, r.height, s.settings.deckPosition, d), g = layout(s.attempt.board, d, f.height, s.settings.deckSide, s.settings.deckPosition);
   const tap = (q: { x: number; y: number }) => p.touchscreen.tap(r.x + f.offsetX + q.x * f.unit, r.y + q.y * f.unit);
   if (a.type !== 'transfer') await tap(g.stock);
   else {
@@ -109,7 +109,7 @@ test('category reader shows its full meaning without altering the compact label 
     const next = applyBoard(board, action, d); if (typeof next === 'string') throw Error(next); board = next.board;
   }
   await load(page, 5, board); const before = await read(page);
-  const r = (await page.locator('canvas').boundingBox())!, f = boardFrame(r.width, r.height, undefined, d), g = layout(before.attempt.board, d, f.height), pose = g.poses.find(q => q.id === 'kitchen')!;
+  const r = (await page.locator('#game-root').boundingBox())!, f = boardFrame(r.width, r.height, undefined, d), g = layout(before.attempt.board, d, f.height), pose = g.poses.find(q => q.id === 'kitchen')!;
   await page.locator('#inspect').tap(); await page.touchscreen.tap(r.x + f.offsetX + pose.x * f.unit, r.y + pose.y * f.unit);
   await expect(page.locator('#word-title')).toHaveText('Кухонная утварь');
   await expect(page.locator('#word-description')).toContainText('готовят еду');

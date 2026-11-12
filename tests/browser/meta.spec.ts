@@ -18,7 +18,7 @@ function profile(level: number) {
 async function move(page: Page, deal: Deal, cmd: BoardCommand) {
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
-  const before = await read(page), rect = (await page.locator('canvas').boundingBox())!, frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal), geo = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
+  const before = await read(page), rect = (await page.locator('#game-root').boundingBox())!, frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal), geo = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
   const tap = (p: {x: number; y: number}) => page.touchscreen.tap(rect.x + frame.offsetX + p.x * frame.unit, rect.y + p.y * frame.unit);
   if (cmd.type === 'transfer') {
     const id = cmd.from.kind === 'waste' ? before.attempt.board.waste.at(-1) : packet(before.attempt.board, cmd.from.index, deal).at(-1);
@@ -33,7 +33,7 @@ test('tenth milestone and fifth win share one durable result; unlocked palette i
   test.setTimeout(60000); // Full level + result + reload + cosmetic selection.
   const save = profile(10); save.meta!.winCycle = 4; await seed(page, save); await page.locator('#home-play').tap();
   for (const cmd of campaignDeals[9].winningPath) await move(page, campaignDeals[9], cmd);
-  await expect(page.locator('#result')).toBeVisible(); await expect(page.locator('#result-rewards')).toContainText('Веха · 10'); await expect(page.locator('#result-rewards')).toContainText('Пять новых побед');
+  await expect(page.locator('#result')).toBeVisible(); await expect(page.locator('#unlock-title')).toContainText('Чернила'); await expect(page.locator('#result-meta')).toContainText('Новый цикл');
   const won = await read(page); expect(won.meta!.winCycle).toBe(0); expect(won.profile.hints).toBe(4);
   await page.screenshot({path:`test-results/${test.info().project.name}-meta-result.png`});
   await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true'); expect((await read(page)).profile).toEqual(won.profile);
@@ -50,7 +50,7 @@ test('campaign and daily keep exact separate attempts; daily reward and third-da
   await home(page); await page.locator('#home-play').tap(); await expect.poll(async () => (await read(page)).attempt.id).toBe(campaign.id); expect((await read(page)).attempt).toEqual(campaign);
   await home(page); await page.locator('#daily-play').tap(); await expect.poll(async () => (await read(page)).attempt.id).toBe(attempt.id);
   for (const cmd of daily.winningPath.slice(1)) await move(page, daily, cmd);
-  await expect(page.locator('#result')).toBeVisible(); await expect(page.locator('#result-rewards')).toContainText('3 дня подряд');
+  await expect(page.locator('#result')).toBeVisible(); await expect(page.locator('#result-meta')).toContainText('3'); expect((await read(page)).attempt.payout!.some(r=>r.reason==='daily_streak_milestone')).toBe(true);
   const won = await read(page); expect(won.meta!.dailyStreak).toBe(3); expect(won.meta!.winCycle).toBe(3); expect(won.parked!.campaign).toEqual(campaign);
   await expect(page.locator('#replay')).toHaveText('Сыграть как тренировку'); await page.locator('#replay').tap(); await expect(page.locator('#result')).toBeHidden(); await expect(page.locator('#level-number')).toContainText('ТРЕНИРОВКА'); await expect(page.locator('#message')).toBeEmpty();
   const wallet = (await read(page)).profile.coins;

@@ -16,7 +16,7 @@ function fixture(level: number) {
 }
 async function move(page: Page, deal: Deal, cmd: BoardCommand) {
   await page.waitForSelector(`#app[data-ready="true"][data-presented-deal="${deal.id}"]`);
-  const s = await read(page), r = (await page.locator('canvas').boundingBox())!, f = boardFrame(r.width, r.height), g = layout(s.attempt.board, deal, f.height, s.settings.deckSide);
+  const s = await read(page), r = (await page.locator('#game-root').boundingBox())!, f = boardFrame(r.width, r.height), g = layout(s.attempt.board, deal, f.height, s.settings.deckSide);
   const tap = (p: {x: number; y: number}) => page.touchscreen.tap(r.x + f.offsetX + p.x * f.unit, r.y + p.y * f.unit);
   if (cmd.type === 'transfer') { const id = cmd.from.kind === 'waste' ? s.attempt.board.waste.at(-1) : packet(s.attempt.board, cmd.from.index, deal).at(-1); await tap(g.poses.find(p => p.id === id)!); await tap(g.targets.find(t => t.location.kind === cmd.to.kind && t.location.index === cmd.to.index)!); } else await tap(g.stock);
   await wait(page, 360); if ((await read(page)).attempt.board.movesLeft !== s.attempt.board.movesLeft! - 1) throw Error('Recording refused move');

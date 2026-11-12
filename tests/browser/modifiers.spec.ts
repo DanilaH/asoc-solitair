@@ -19,7 +19,7 @@ async function resume(page: Page) {
   await page.evaluate(() => new Promise<void>(r => requestAnimationFrame(() => r())));
 }
 async function geometry(page: Page, deal: Deal) {
-  const save = await read(page), rect = (await page.locator('canvas').boundingBox())!, frame = boardFrame(rect.width, rect.height);
+  const save = await read(page), rect = (await page.locator('#game-root').boundingBox())!, frame = boardFrame(rect.width, rect.height);
   const geo = layout(save.attempt.board, deal, frame.height);
   const tap = (p: { x: number; y: number }) => page.touchscreen.tap(rect.x + frame.offsetX + p.x * frame.unit, rect.y + p.y * frame.unit);
   return { save, geo, tap };

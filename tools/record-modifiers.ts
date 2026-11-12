@@ -9,7 +9,7 @@ import { boardFrame, layout } from '../src/game/layout';
 import type { BoardCommand, Deal, Save } from '../src/domain/types';
 const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
 async function geometry(page: Page, deal: Deal) {
-  const save = await read(page), rect = (await page.locator('canvas').boundingBox())!, frame = boardFrame(rect.width, rect.height);
+  const save = await read(page), rect = (await page.locator('#game-root').boundingBox())!, frame = boardFrame(rect.width, rect.height);
   return { save, geo: layout(save.attempt.board, deal, frame.height), tap: (p: {x: number; y: number}) => page.touchscreen.tap(rect.x + frame.offsetX + p.x * frame.unit, rect.y + p.y * frame.unit) };
 }
 async function move(page: Page, deal: Deal, cmd: BoardCommand, valid = true) {

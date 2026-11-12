@@ -1,4 +1,5 @@
 import type { Card, Deal } from '../domain/types';
+import { cardArtwork } from './art';
 
 const categoryNotes: Record<string, string> = {
   music: 'Предметы, на которых играют музыку.',
@@ -9,7 +10,7 @@ const categoryNotes: Record<string, string> = {
 };
 /** Presentation only: full names and boundaries never change published memberships. */
 export function cardReader(card: Card, deal: Deal): { title: string; description?: string } {
-  if (card.image) return { title: card.text };
+  if (cardArtwork(card, deal)) return { title: card.text };
   let description = card.explanation;
   if (card.leader && !card.ordered) {
     const categories = new Set(Object.values(deal.cards).map(c => c.category));

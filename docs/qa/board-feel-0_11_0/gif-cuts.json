@@ -1,0 +1,30 @@
+[
+  {
+    "profile": "360-motion",
+    "file": "asoc-0.11.0-board.gif",
+    "anchors": {
+      "ordinary-before": 4.0,
+      "03-last-card-held": 10.8,
+      "10-outside-release": 16.0
+    },
+    "trimStart": 3.8,
+    "duration": 13.0,
+    "speed": 1,
+    "fps": 15,
+    "source": "854e3e3a87688d386694a88171c4f5ed14d70e59"
+  },
+  {
+    "profile": "320-motion",
+    "file": "asoc-0.11.0-compact.gif",
+    "anchors": {
+      "ordinary-before": 4.2,
+      "03-last-card-held": 11.0,
+      "10-outside-release": 15.8
+    },
+    "trimStart": 4.0,
+    "duration": 12.600000000000001,
+    "speed": 1,
+    "fps": 15,
+    "source": "854e3e3a87688d386694a88171c4f5ed14d70e59"
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "beforeRuntime": "6bf423f",
+  "before": {
+    "startTime": "2026-11-13T07:09:58.498Z",
+    "duration": 3872.352,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  },
+  "observedWrongRegionPaperPixels": 1687,
+  "regionCSS": {
+    "left": 80,
+    "top": 100,
+    "width": 150,
+    "height": 65
+  },
+  "after": {
+    "startTime": "2026-11-13T07:11:03.377Z",
+    "duration": 30520.58,
+    "expected": 16,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "fix": "Scene-only collected origins, restored upper category or nearest upper location; no save fields",
+  "bothPixelProfiles": true
+}

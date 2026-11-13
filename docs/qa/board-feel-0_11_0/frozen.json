@@ -1,0 +1,21 @@
+{
+  "baseline": "605645bcf166125e81c19622ce67c548e2d1ecf0",
+  "unchangedScopes": [
+    "src/domain",
+    "src/content",
+    "src/platform",
+    "public",
+    "src/game/layout.ts",
+    "src/game/art.ts"
+  ],
+  "versions": {
+    "RULES_VERSION": "3",
+    "CONTENT_VERSION": "5",
+    "BALANCE_VERSION": "3"
+  },
+  "dependencyLockIdenticalApartFromOwnVersion": true,
+  "kit": "git+https://github.com/DanilaH/mini-games-kit.git#a9325265e87583a4872cf6a158e1e881a0d7508e",
+  "nativeChanges": "versionName 0.11.0, versionCode19 only",
+  "contentTree": "736c9fc096e28eb8e272833aba51c894bb81490f",
+  "artTree": "88d67e24fe014e61161aa4a2cbd1e6aff1596e99"
+}

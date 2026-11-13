@@ -1,0 +1,18 @@
+{
+  "runtimeSource": "854e3e3a87688d386694a88171c4f5ed14d70e59",
+  "run": 43384574106,
+  "job": 131749928106,
+  "artifact": 14017638728,
+  "archiveSha256": "484f54a0d68a665f54803522ec36f4b4c15d298d6383be0c03bc948adfa49d60",
+  "package": "package: name='com.danilah.asocsolitair.debug' versionCode='19' versionName='0.11.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+  "bytes": 11461133,
+  "sha256": "9ea07e0e32006a4518da1f20110a8b3fe9db541a20b085da36e828887470cda6",
+  "certificateSha256": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "apksignerVerify": "PASS (official build-tools36.0.0)",
+  "productionFilesMatched": 186,
+  "extraEmptyNativeShims": [
+    "cordova.js",
+    "cordova_plugins.js"
+  ],
+  "laboratoryAbsent": true
+}

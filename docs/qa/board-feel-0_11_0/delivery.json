@@ -1,0 +1,26 @@
+{
+  "state": "awaiting final browser CI and merge",
+  "runtimeSource": "854e3e3a87688d386694a88171c4f5ed14d70e59",
+  "pr": 23,
+  "version": "0.11.0",
+  "code": 19,
+  "sourceRun": 43384574106,
+  "sourceWebJob": 131749927291,
+  "sourceAndroidJob": 131749928106,
+  "sourceArtifact": 14017638728,
+  "prRun": 43384579641,
+  "prWebJob": 131749945924,
+  "localContinuityPassed": 16,
+  "localCampaignCasesPassed": 7,
+  "actualTouchCampaignLevelsPassed": 80,
+  "productionRecordingsPassed": 3,
+  "sourceApkVerified": true,
+  "savedArtifacts": "APK/GIF360/GIF320 version1; comparison PNG version0; all4 successful, identity applied",
+  "sourceApkSha256": "9ea07e0e32006a4518da1f20110a8b3fe9db541a20b085da36e828887470cda6",
+  "next": [
+    "Finish full latest-source browser CI",
+    "Merge PR after checking unchanged runtime inputs",
+    "Deliver existing saved files without duplicate writes"
+  ],
+  "physicalDeviceAcceptance": "OPEN"
+}

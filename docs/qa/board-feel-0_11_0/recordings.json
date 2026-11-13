@@ -1,0 +1,1297 @@
+{
+  "source": "854e3e3a87688d386694a88171c4f5ed14d70e59",
+  "productionBundleNotInstrumented": true,
+  "dist": "dist",
+  "records": [
+    {
+      "width": 360,
+      "height": 780,
+      "reduced": false,
+      "deal": "campaign-006",
+      "rulesVersion": 3,
+      "profile": "isolated ordinary campaign replay; tutorial and helper unlock flags prepared before entry",
+      "actualInput": true,
+      "domainCompared": true,
+      "finalCardHeldWithoutCommit": true,
+      "outsideReleasePreservesBoardAndStreak": true,
+      "completionAndUndo": true,
+      "stockAndRecycle": true,
+      "completionStart": 9.999,
+      "events": [
+        {
+          "name": "enter",
+          "hostSeconds": 1.002,
+          "pageMs": 438.59999999962747,
+          "epochMs": 1794554643787
+        },
+        {
+          "name": "01-idle",
+          "hostSeconds": 2.036,
+          "pageMs": 1474.3999999994412,
+          "epochMs": 1794554644823
+        },
+        {
+          "name": "release-lights",
+          "hostSeconds": 2.982,
+          "pageMs": 2419.7000000001863,
+          "epochMs": 1794554645768,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "ordinary-before",
+          "hostSeconds": 3.448,
+          "pageMs": 2886.2000000001863,
+          "epochMs": 1794554646235
+        },
+        {
+          "name": "tap-target-lights_3",
+          "hostSeconds": 3.611,
+          "pageMs": 3049.2999999998137,
+          "epochMs": 1794554646398,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "ordinary-early",
+          "hostSeconds": 3.917,
+          "pageMs": 3348.5,
+          "epochMs": 1794554646697
+        },
+        {
+          "name": "ordinary-settled",
+          "hostSeconds": 4.55,
+          "pageMs": 3987.7000000001863,
+          "epochMs": 1794554647336
+        },
+        {
+          "name": "release-dishes",
+          "hostSeconds": 5.482,
+          "pageMs": 4917,
+          "epochMs": 1794554648265,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        },
+        {
+          "name": "release-lights_4",
+          "hostSeconds": 6.843,
+          "pageMs": 6278.899999999441,
+          "epochMs": 1794554649627,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "release-lights_2",
+          "hostSeconds": 8.259,
+          "pageMs": 7696.5,
+          "epochMs": 1794554651045,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "02-before-last-lift",
+          "hostSeconds": 8.696,
+          "pageMs": 8132.899999999441,
+          "epochMs": 1794554651481
+        },
+        {
+          "name": "03-last-card-held",
+          "hostSeconds": 9.557,
+          "pageMs": 8995.099999999627,
+          "epochMs": 1794554652343
+        },
+        {
+          "name": "release-lights_1",
+          "hostSeconds": 10.943,
+          "pageMs": 10381,
+          "epochMs": 1794554653729,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "04-completion-early",
+          "hostSeconds": 11.045,
+          "pageMs": 10483.099999999627,
+          "epochMs": 1794554653831
+        },
+        {
+          "name": "05-completion-middle",
+          "hostSeconds": 11.251,
+          "pageMs": 10689.099999999627,
+          "epochMs": 1794554654037
+        },
+        {
+          "name": "06-completion-late",
+          "hostSeconds": 11.537,
+          "pageMs": 10975.299999999814,
+          "epochMs": 1794554654324
+        },
+        {
+          "name": "07-completion-settled",
+          "hostSeconds": 12.317,
+          "pageMs": 11752.599999999627,
+          "epochMs": 1794554655101
+        },
+        {
+          "name": "undo",
+          "hostSeconds": 12.388,
+          "pageMs": 11825.299999999814,
+          "epochMs": 1794554655174
+        },
+        {
+          "name": "08-undo-early",
+          "hostSeconds": 12.578,
+          "pageMs": 12015.700000000186,
+          "epochMs": 1794554655364
+        },
+        {
+          "name": "09-undo-settled",
+          "hostSeconds": 13.13,
+          "pageMs": 12560.799999999814,
+          "epochMs": 1794554655909
+        },
+        {
+          "name": "outside-release",
+          "hostSeconds": 13.932,
+          "pageMs": 13369.899999999441,
+          "epochMs": 1794554656718
+        },
+        {
+          "name": "10-outside-release",
+          "hostSeconds": 13.962,
+          "pageMs": 13400,
+          "epochMs": 1794554656748
+        },
+        {
+          "name": "release-lights_1",
+          "hostSeconds": 15.296,
+          "pageMs": 14733,
+          "epochMs": 1794554658081,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "error-feedback-during-completion",
+          "hostSeconds": 15.495,
+          "pageMs": 14932.899999999441,
+          "epochMs": 1794554658281,
+          "message": "Сначала нужна карта категории",
+          "visibility": "hidden",
+          "praiseHidden": false
+        },
+        {
+          "name": "15-error-during-completion",
+          "hostSeconds": 15.496,
+          "pageMs": 14934.200000000186,
+          "epochMs": 1794554658283
+        },
+        {
+          "name": "stock-start",
+          "hostSeconds": 16.58,
+          "pageMs": 16018,
+          "epochMs": 1794554659366
+        },
+        {
+          "name": "11-waste-three",
+          "hostSeconds": 18.138,
+          "pageMs": 17576.299999999814,
+          "epochMs": 1794554660925
+        },
+        {
+          "name": "12-stock-empty",
+          "hostSeconds": 19.81,
+          "pageMs": 19248.799999999814,
+          "epochMs": 1794554662597
+        },
+        {
+          "name": "recycle",
+          "hostSeconds": 19.874,
+          "pageMs": 19311.89999999944,
+          "epochMs": 1794554662660
+        },
+        {
+          "name": "13-recycle-settled",
+          "hostSeconds": 20.476,
+          "pageMs": 19913.799999999814,
+          "epochMs": 1794554663262
+        },
+        {
+          "name": "14-hint",
+          "hostSeconds": 21.351,
+          "pageMs": 20789.599999999627,
+          "epochMs": 1794554664138
+        },
+        {
+          "name": "end",
+          "hostSeconds": 22.078,
+          "pageMs": 21516.599999999627,
+          "epochMs": 1794554664865
+        }
+      ],
+      "frames": [
+        {
+          "file": "ordinary-frame-000.png",
+          "epochMs": 1794554646359.135
+        },
+        {
+          "file": "ordinary-frame-001.png",
+          "epochMs": 1794554646495.022
+        },
+        {
+          "file": "ordinary-frame-002.png",
+          "epochMs": 1794554646592.051
+        },
+        {
+          "file": "ordinary-frame-003.png",
+          "epochMs": 1794554646610.7532
+        },
+        {
+          "file": "ordinary-frame-004.png",
+          "epochMs": 1794554646626.823
+        },
+        {
+          "file": "ordinary-frame-005.png",
+          "epochMs": 1794554646644.272
+        },
+        {
+          "file": "ordinary-frame-006.png",
+          "epochMs": 1794554646660.9648
+        },
+        {
+          "file": "ordinary-frame-007.png",
+          "epochMs": 1794554646676.382
+        },
+        {
+          "file": "ordinary-frame-008.png",
+          "epochMs": 1794554646694.4922
+        },
+        {
+          "file": "ordinary-frame-009.png",
+          "epochMs": 1794554646713.323
+        },
+        {
+          "file": "ordinary-frame-010.png",
+          "epochMs": 1794554646728.148
+        },
+        {
+          "file": "ordinary-frame-011.png",
+          "epochMs": 1794554646742.575
+        },
+        {
+          "file": "ordinary-frame-012.png",
+          "epochMs": 1794554646758.775
+        },
+        {
+          "file": "ordinary-frame-013.png",
+          "epochMs": 1794554646776.4968
+        },
+        {
+          "file": "ordinary-frame-014.png",
+          "epochMs": 1794554646870.956
+        },
+        {
+          "file": "ordinary-frame-015.png",
+          "epochMs": 1794554646872.653
+        },
+        {
+          "file": "ordinary-frame-016.png",
+          "epochMs": 1794554646874.2112
+        },
+        {
+          "file": "ordinary-frame-017.png",
+          "epochMs": 1794554646905.438
+        },
+        {
+          "file": "ordinary-frame-018.png",
+          "epochMs": 1794554646925.911
+        },
+        {
+          "file": "ordinary-frame-019.png",
+          "epochMs": 1794554646953.013
+        },
+        {
+          "file": "ordinary-frame-020.png",
+          "epochMs": 1794554646970.612
+        },
+        {
+          "file": "ordinary-frame-021.png",
+          "epochMs": 1794554646981.18
+        },
+        {
+          "file": "ordinary-frame-022.png",
+          "epochMs": 1794554646993.382
+        },
+        {
+          "file": "ordinary-frame-023.png",
+          "epochMs": 1794554647347.048
+        },
+        {
+          "file": "completion-frame-024.png",
+          "epochMs": 1794554652791.0918
+        },
+        {
+          "file": "completion-frame-025.png",
+          "epochMs": 1794554652846.7842
+        },
+        {
+          "file": "completion-frame-026.png",
+          "epochMs": 1794554652880.747
+        },
+        {
+          "file": "completion-frame-027.png",
+          "epochMs": 1794554652929.375
+        },
+        {
+          "file": "completion-frame-028.png",
+          "epochMs": 1794554652945.632
+        },
+        {
+          "file": "completion-frame-029.png",
+          "epochMs": 1794554652958.6511
+        },
+        {
+          "file": "completion-frame-030.png",
+          "epochMs": 1794554652981.312
+        },
+        {
+          "file": "completion-frame-031.png",
+          "epochMs": 1794554652992.742
+        },
+        {
+          "file": "completion-frame-032.png",
+          "epochMs": 1794554653008.919
+        },
+        {
+          "file": "completion-frame-033.png",
+          "epochMs": 1794554653024.642
+        },
+        {
+          "file": "completion-frame-034.png",
+          "epochMs": 1794554653048.891
+        },
+        {
+          "file": "completion-frame-035.png",
+          "epochMs": 1794554653064.42
+        },
+        {
+          "file": "completion-frame-036.png",
+          "epochMs": 1794554653078.1619
+        },
+        {
+          "file": "completion-frame-037.png",
+          "epochMs": 1794554653097.61
+        },
+        {
+          "file": "completion-frame-038.png",
+          "epochMs": 1794554653138.555
+        },
+        {
+          "file": "completion-frame-039.png",
+          "epochMs": 1794554653167.825
+        },
+        {
+          "file": "completion-frame-040.png",
+          "epochMs": 1794554653190.203
+        },
+        {
+          "file": "completion-frame-041.png",
+          "epochMs": 1794554653209.296
+        },
+        {
+          "file": "completion-frame-042.png",
+          "epochMs": 1794554653239.2832
+        },
+        {
+          "file": "completion-frame-043.png",
+          "epochMs": 1794554653277.51
+        },
+        {
+          "file": "completion-frame-044.png",
+          "epochMs": 1794554653332.9502
+        },
+        {
+          "file": "completion-frame-045.png",
+          "epochMs": 1794554653377.6382
+        },
+        {
+          "file": "completion-frame-046.png",
+          "epochMs": 1794554653387.394
+        },
+        {
+          "file": "completion-frame-047.png",
+          "epochMs": 1794554653399.585
+        },
+        {
+          "file": "completion-frame-048.png",
+          "epochMs": 1794554653418.53
+        },
+        {
+          "file": "completion-frame-049.png",
+          "epochMs": 1794554653427.217
+        },
+        {
+          "file": "completion-frame-050.png",
+          "epochMs": 1794554653442.7449
+        },
+        {
+          "file": "completion-frame-051.png",
+          "epochMs": 1794554653459.9358
+        },
+        {
+          "file": "completion-frame-052.png",
+          "epochMs": 1794554653476.185
+        },
+        {
+          "file": "completion-frame-053.png",
+          "epochMs": 1794554653493.271
+        },
+        {
+          "file": "completion-frame-054.png",
+          "epochMs": 1794554653509.2239
+        },
+        {
+          "file": "completion-frame-055.png",
+          "epochMs": 1794554653529.1072
+        },
+        {
+          "file": "completion-frame-056.png",
+          "epochMs": 1794554653547.062
+        },
+        {
+          "file": "completion-frame-057.png",
+          "epochMs": 1794554653558.438
+        },
+        {
+          "file": "completion-frame-058.png",
+          "epochMs": 1794554653576.803
+        },
+        {
+          "file": "completion-frame-059.png",
+          "epochMs": 1794554653592.043
+        },
+        {
+          "file": "completion-frame-060.png",
+          "epochMs": 1794554653610.757
+        },
+        {
+          "file": "completion-frame-061.png",
+          "epochMs": 1794554653625.778
+        },
+        {
+          "file": "completion-frame-062.png",
+          "epochMs": 1794554653647.768
+        },
+        {
+          "file": "completion-frame-063.png",
+          "epochMs": 1794554653658.1262
+        },
+        {
+          "file": "completion-frame-064.png",
+          "epochMs": 1794554653676.011
+        },
+        {
+          "file": "completion-frame-065.png",
+          "epochMs": 1794554653691.72
+        },
+        {
+          "file": "completion-frame-066.png",
+          "epochMs": 1794554653709.699
+        },
+        {
+          "file": "completion-frame-067.png",
+          "epochMs": 1794554653726.155
+        },
+        {
+          "file": "completion-frame-068.png",
+          "epochMs": 1794554653744.4739
+        },
+        {
+          "file": "completion-frame-069.png",
+          "epochMs": 1794554653758.547
+        },
+        {
+          "file": "completion-frame-070.png",
+          "epochMs": 1794554653774.75
+        },
+        {
+          "file": "completion-frame-071.png",
+          "epochMs": 1794554653799.358
+        },
+        {
+          "file": "completion-frame-072.png",
+          "epochMs": 1794554653810.5
+        },
+        {
+          "file": "completion-frame-073.png",
+          "epochMs": 1794554653828.4358
+        },
+        {
+          "file": "completion-frame-074.png",
+          "epochMs": 1794554653847.334
+        },
+        {
+          "file": "completion-frame-075.png",
+          "epochMs": 1794554653914.64
+        },
+        {
+          "file": "completion-frame-076.png",
+          "epochMs": 1794554653915.9292
+        },
+        {
+          "file": "completion-frame-077.png",
+          "epochMs": 1794554653916.467
+        },
+        {
+          "file": "completion-frame-078.png",
+          "epochMs": 1794554653931.535
+        },
+        {
+          "file": "completion-frame-079.png",
+          "epochMs": 1794554653944.0342
+        },
+        {
+          "file": "completion-frame-080.png",
+          "epochMs": 1794554653958.652
+        },
+        {
+          "file": "completion-frame-081.png",
+          "epochMs": 1794554653976.284
+        },
+        {
+          "file": "completion-frame-082.png",
+          "epochMs": 1794554653993.6409
+        },
+        {
+          "file": "completion-frame-083.png",
+          "epochMs": 1794554654011.16
+        },
+        {
+          "file": "completion-frame-084.png",
+          "epochMs": 1794554654026.21
+        },
+        {
+          "file": "completion-frame-085.png",
+          "epochMs": 1794554654042.676
+        },
+        {
+          "file": "completion-frame-086.png",
+          "epochMs": 1794554654070.1711
+        },
+        {
+          "file": "completion-frame-087.png",
+          "epochMs": 1794554654137.116
+        },
+        {
+          "file": "completion-frame-088.png",
+          "epochMs": 1794554654140.823
+        },
+        {
+          "file": "completion-frame-089.png",
+          "epochMs": 1794554654139.239
+        },
+        {
+          "file": "completion-frame-090.png",
+          "epochMs": 1794554654158.695
+        },
+        {
+          "file": "completion-frame-091.png",
+          "epochMs": 1794554654174.724
+        },
+        {
+          "file": "completion-frame-092.png",
+          "epochMs": 1794554654191.928
+        },
+        {
+          "file": "completion-frame-093.png",
+          "epochMs": 1794554654207.783
+        },
+        {
+          "file": "completion-frame-094.png",
+          "epochMs": 1794554654224.975
+        },
+        {
+          "file": "completion-frame-095.png",
+          "epochMs": 1794554654241.1
+        },
+        {
+          "file": "completion-frame-096.png",
+          "epochMs": 1794554654342.955
+        },
+        {
+          "file": "completion-frame-097.png",
+          "epochMs": 1794554654608.928
+        },
+        {
+          "file": "completion-frame-098.png",
+          "epochMs": 1794554654625.4001
+        },
+        {
+          "file": "completion-frame-099.png",
+          "epochMs": 1794554654641.564
+        },
+        {
+          "file": "completion-frame-100.png",
+          "epochMs": 1794554654660.106
+        },
+        {
+          "file": "completion-frame-101.png",
+          "epochMs": 1794554654676.357
+        },
+        {
+          "file": "completion-frame-102.png",
+          "epochMs": 1794554654693.5552
+        },
+        {
+          "file": "completion-frame-103.png",
+          "epochMs": 1794554654708.861
+        },
+        {
+          "file": "completion-frame-104.png",
+          "epochMs": 1794554654732.861
+        },
+        {
+          "file": "completion-frame-105.png",
+          "epochMs": 1794554654745.141
+        },
+        {
+          "file": "completion-frame-106.png",
+          "epochMs": 1794554654758.2021
+        },
+        {
+          "file": "completion-frame-107.png",
+          "epochMs": 1794554654777.231
+        },
+        {
+          "file": "completion-frame-108.png",
+          "epochMs": 1794554654792.277
+        },
+        {
+          "file": "completion-frame-109.png",
+          "epochMs": 1794554654811.6619
+        },
+        {
+          "file": "completion-frame-110.png",
+          "epochMs": 1794554654826.221
+        },
+        {
+          "file": "completion-frame-111.png",
+          "epochMs": 1794554654845.4758
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "reduced": false,
+      "deal": "campaign-006",
+      "rulesVersion": 3,
+      "profile": "isolated ordinary campaign replay; tutorial and helper unlock flags prepared before entry",
+      "actualInput": true,
+      "domainCompared": true,
+      "finalCardHeldWithoutCommit": true,
+      "outsideReleasePreservesBoardAndStreak": true,
+      "completionAndUndo": true,
+      "stockAndRecycle": true,
+      "completionStart": 9.87,
+      "events": [
+        {
+          "name": "enter",
+          "hostSeconds": 1.067,
+          "pageMs": 531.7999999998137,
+          "epochMs": 1794554665967
+        },
+        {
+          "name": "01-idle",
+          "hostSeconds": 2.095,
+          "pageMs": 1559.3999999994412,
+          "epochMs": 1794554666995
+        },
+        {
+          "name": "release-lights",
+          "hostSeconds": 3.096,
+          "pageMs": 2561.5999999996275,
+          "epochMs": 1794554667997,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "ordinary-before",
+          "hostSeconds": 3.55,
+          "pageMs": 3014.7000000001863,
+          "epochMs": 1794554668450
+        },
+        {
+          "name": "tap-target-lights_3",
+          "hostSeconds": 3.743,
+          "pageMs": 3208,
+          "epochMs": 1794554668643,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "ordinary-early",
+          "hostSeconds": 3.902,
+          "pageMs": 3367.5,
+          "epochMs": 1794554668803
+        },
+        {
+          "name": "ordinary-settled",
+          "hostSeconds": 4.407,
+          "pageMs": 3872.2000000001863,
+          "epochMs": 1794554669308
+        },
+        {
+          "name": "release-dishes",
+          "hostSeconds": 5.246,
+          "pageMs": 4710.799999999814,
+          "epochMs": 1794554670146,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        },
+        {
+          "name": "release-lights_4",
+          "hostSeconds": 6.561,
+          "pageMs": 6026.399999999441,
+          "epochMs": 1794554671462,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "release-lights_2",
+          "hostSeconds": 7.853,
+          "pageMs": 7316.5999999996275,
+          "epochMs": 1794554672752,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "02-before-last-lift",
+          "hostSeconds": 8.413,
+          "pageMs": 7878.299999999814,
+          "epochMs": 1794554673314
+        },
+        {
+          "name": "03-last-card-held",
+          "hostSeconds": 9.411,
+          "pageMs": 8876,
+          "epochMs": 1794554674311
+        },
+        {
+          "name": "release-lights_1",
+          "hostSeconds": 10.677,
+          "pageMs": 10142.799999999814,
+          "epochMs": 1794554675578,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "04-completion-early",
+          "hostSeconds": 10.734,
+          "pageMs": 10198.399999999441,
+          "epochMs": 1794554675634
+        },
+        {
+          "name": "05-completion-middle",
+          "hostSeconds": 10.93,
+          "pageMs": 10394.899999999441,
+          "epochMs": 1794554675830
+        },
+        {
+          "name": "06-completion-late",
+          "hostSeconds": 11.163,
+          "pageMs": 10628.299999999814,
+          "epochMs": 1794554676064
+        },
+        {
+          "name": "07-completion-settled",
+          "hostSeconds": 11.93,
+          "pageMs": 11395.299999999814,
+          "epochMs": 1794554676831
+        },
+        {
+          "name": "undo",
+          "hostSeconds": 11.987,
+          "pageMs": 11452,
+          "epochMs": 1794554676887
+        },
+        {
+          "name": "08-undo-early",
+          "hostSeconds": 12.116,
+          "pageMs": 11581.299999999814,
+          "epochMs": 1794554677017
+        },
+        {
+          "name": "09-undo-settled",
+          "hostSeconds": 12.644,
+          "pageMs": 12108.200000000186,
+          "epochMs": 1794554677544
+        },
+        {
+          "name": "outside-release",
+          "hostSeconds": 13.628,
+          "pageMs": 13093.5,
+          "epochMs": 1794554678529
+        },
+        {
+          "name": "10-outside-release",
+          "hostSeconds": 13.663,
+          "pageMs": 13127.799999999814,
+          "epochMs": 1794554678563
+        },
+        {
+          "name": "release-lights_1",
+          "hostSeconds": 14.905,
+          "pageMs": 14369.399999999441,
+          "epochMs": 1794554679805,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "stock-start",
+          "hostSeconds": 16.029,
+          "pageMs": 15491.399999999441,
+          "epochMs": 1794554680927
+        },
+        {
+          "name": "11-waste-three",
+          "hostSeconds": 17.685,
+          "pageMs": 17150.299999999814,
+          "epochMs": 1794554682586
+        },
+        {
+          "name": "12-stock-empty",
+          "hostSeconds": 19.203,
+          "pageMs": 18668,
+          "epochMs": 1794554684103
+        },
+        {
+          "name": "recycle",
+          "hostSeconds": 19.248,
+          "pageMs": 18713.700000000186,
+          "epochMs": 1794554684149
+        },
+        {
+          "name": "13-recycle-settled",
+          "hostSeconds": 19.929,
+          "pageMs": 19394.599999999627,
+          "epochMs": 1794554684830
+        },
+        {
+          "name": "14-hint",
+          "hostSeconds": 20.732,
+          "pageMs": 20197.200000000186,
+          "epochMs": 1794554685633
+        },
+        {
+          "name": "end",
+          "hostSeconds": 21.43,
+          "pageMs": 20895.39999999944,
+          "epochMs": 1794554686331
+        }
+      ],
+      "frames": []
+    },
+    {
+      "width": 360,
+      "height": 780,
+      "reduced": true,
+      "deal": "campaign-006",
+      "rulesVersion": 3,
+      "profile": "isolated ordinary campaign replay; tutorial and helper unlock flags prepared before entry",
+      "actualInput": true,
+      "domainCompared": true,
+      "finalCardHeldWithoutCommit": true,
+      "outsideReleasePreservesBoardAndStreak": true,
+      "completionAndUndo": true,
+      "stockAndRecycle": true,
+      "completionStart": 9.219,
+      "events": [
+        {
+          "name": "enter",
+          "hostSeconds": 0.918,
+          "pageMs": 274.90000000037253,
+          "epochMs": 1794554687270
+        },
+        {
+          "name": "01-idle",
+          "hostSeconds": 1.949,
+          "pageMs": 1305.800000000745,
+          "epochMs": 1794554688301
+        },
+        {
+          "name": "release-lights",
+          "hostSeconds": 2.919,
+          "pageMs": 2273.100000000559,
+          "epochMs": 1794554689268,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "ordinary-before",
+          "hostSeconds": 3.389,
+          "pageMs": 2745.300000000745,
+          "epochMs": 1794554689740
+        },
+        {
+          "name": "tap-target-lights_3",
+          "hostSeconds": 3.536,
+          "pageMs": 2891.9000000003725,
+          "epochMs": 1794554689887,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "ordinary-early",
+          "hostSeconds": 3.678,
+          "pageMs": 3034.4000000003725,
+          "epochMs": 1794554690029
+        },
+        {
+          "name": "ordinary-settled",
+          "hostSeconds": 4.167,
+          "pageMs": 3523.5,
+          "epochMs": 1794554690518
+        },
+        {
+          "name": "release-dishes",
+          "hostSeconds": 5.05,
+          "pageMs": 4405.300000000745,
+          "epochMs": 1794554691400,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        },
+        {
+          "name": "release-lights_4",
+          "hostSeconds": 6.109,
+          "pageMs": 5464.100000000559,
+          "epochMs": 1794554692459,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "release-lights_2",
+          "hostSeconds": 7.31,
+          "pageMs": 6666.9000000003725,
+          "epochMs": 1794554693662,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "02-before-last-lift",
+          "hostSeconds": 7.739,
+          "pageMs": 7096.200000000186,
+          "epochMs": 1794554694091
+        },
+        {
+          "name": "03-last-card-held",
+          "hostSeconds": 8.714,
+          "pageMs": 8070.800000000745,
+          "epochMs": 1794554695066
+        },
+        {
+          "name": "release-lights_1",
+          "hostSeconds": 10.032,
+          "pageMs": 9388.5,
+          "epochMs": 1794554696383,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "04-completion-early",
+          "hostSeconds": 10.101,
+          "pageMs": 9457.600000000559,
+          "epochMs": 1794554696452
+        },
+        {
+          "name": "05-completion-middle",
+          "hostSeconds": 10.328,
+          "pageMs": 9684.5,
+          "epochMs": 1794554696679
+        },
+        {
+          "name": "06-completion-late",
+          "hostSeconds": 10.562,
+          "pageMs": 9918.400000000373,
+          "epochMs": 1794554696913
+        },
+        {
+          "name": "07-completion-settled",
+          "hostSeconds": 11.325,
+          "pageMs": 10681.5,
+          "epochMs": 1794554697676
+        },
+        {
+          "name": "undo",
+          "hostSeconds": 11.408,
+          "pageMs": 10763.600000000559,
+          "epochMs": 1794554697758
+        },
+        {
+          "name": "08-undo-early",
+          "hostSeconds": 11.533,
+          "pageMs": 10890,
+          "epochMs": 1794554697885
+        },
+        {
+          "name": "09-undo-settled",
+          "hostSeconds": 12.075,
+          "pageMs": 11431.400000000373,
+          "epochMs": 1794554698426
+        },
+        {
+          "name": "outside-release",
+          "hostSeconds": 13.029,
+          "pageMs": 12385.800000000745,
+          "epochMs": 1794554699381
+        },
+        {
+          "name": "10-outside-release",
+          "hostSeconds": 13.068,
+          "pageMs": 12424.400000000373,
+          "epochMs": 1794554699419
+        },
+        {
+          "name": "release-lights_1",
+          "hostSeconds": 14.425,
+          "pageMs": 13781.400000000373,
+          "epochMs": 1794554700776,
+          "cmd": {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        },
+        {
+          "name": "stock-start",
+          "hostSeconds": 15.485,
+          "pageMs": 14838.400000000373,
+          "epochMs": 1794554701833
+        },
+        {
+          "name": "11-waste-three",
+          "hostSeconds": 16.873,
+          "pageMs": 16230.100000000559,
+          "epochMs": 1794554703225
+        },
+        {
+          "name": "12-stock-empty",
+          "hostSeconds": 18.583,
+          "pageMs": 17940,
+          "epochMs": 1794554704935
+        },
+        {
+          "name": "recycle",
+          "hostSeconds": 18.666,
+          "pageMs": 18022.200000000186,
+          "epochMs": 1794554705017
+        },
+        {
+          "name": "13-recycle-settled",
+          "hostSeconds": 19.16,
+          "pageMs": 18514.10000000056,
+          "epochMs": 1794554705509
+        },
+        {
+          "name": "14-hint",
+          "hostSeconds": 19.996,
+          "pageMs": 19352.60000000056,
+          "epochMs": 1794554706347
+        },
+        {
+          "name": "end",
+          "hostSeconds": 20.715,
+          "pageMs": 20071.400000000373,
+          "epochMs": 1794554707066
+        }
+      ],
+      "frames": []
+    }
+  ],
+  "errors": []
+}

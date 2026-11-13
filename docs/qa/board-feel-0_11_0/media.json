@@ -1,0 +1,49 @@
+[
+  {
+    "file": "asoc-solitair-0.11.0-debug.apk",
+    "library_file_id": "libfile_c9b1a82b9a248191b70ec373a6376447",
+    "file_id": "file_0000000049a082108583aae9713b2bd0",
+    "version": 1,
+    "status": "succeeded",
+    "local_metadata_applied": true,
+    "bytes": 11461133,
+    "sha256": "9ea07e0e32006a4518da1f20110a8b3fe9db541a20b085da36e828887470cda6",
+    "url": "https://chatgpt.com/library?file_id=libfile_c9b1a82b9a248191b70ec373a6376447&account_id=personal",
+    "runtimeSource": "854e3e3a87688d386694a88171c4f5ed14d70e59"
+  },
+  {
+    "file": "asoc-0.11.0-board.gif",
+    "library_file_id": "libfile_8b828cedd6448191ad5f0521680180bf",
+    "file_id": "file_00000000abac8210a54a7c71c4e323ff",
+    "version": 1,
+    "status": "succeeded",
+    "local_metadata_applied": true,
+    "bytes": 2115616,
+    "sha256": "f2972adfe80b113f1b616a916b50feb37ee68f8b8ee50efae32d2f6c94a892d1",
+    "url": "https://chatgpt.com/library?file_id=libfile_8b828cedd6448191ad5f0521680180bf&account_id=personal",
+    "runtimeSource": "854e3e3a87688d386694a88171c4f5ed14d70e59"
+  },
+  {
+    "file": "asoc-0.11.0-compact.gif",
+    "library_file_id": "libfile_7588ecea7ca08191918979de59749177",
+    "file_id": "file_0000000058248210a4941c7dcf75b668",
+    "version": 1,
+    "status": "succeeded",
+    "local_metadata_applied": true,
+    "bytes": 1686994,
+    "sha256": "a36de55fe8f640addc0cc2b4b56f0ecf845a25c61770b167860b985878980328",
+    "url": "https://chatgpt.com/library?file_id=libfile_7588ecea7ca08191918979de59749177&account_id=personal",
+    "runtimeSource": "854e3e3a87688d386694a88171c4f5ed14d70e59"
+  },
+  {
+    "file": "asoc-0.11.0-comparison.png",
+    "library_file_id": "libfile_ccf83444e86c8191a06a1166c8798850",
+    "file_id": "file_000000009120820a8405ad089a0333a0",
+    "version": 0,
+    "status": "succeeded",
+    "local_metadata_applied": true,
+    "bytes": 350030,
+    "sha256": "0dab8c39d0b958b8a09e1ab5bde2923c8e376c91ca5f27ebc86941947462262d",
+    "url": "https://chatgpt.com/library?file_id=libfile_ccf83444e86c8191a06a1166c8798850&account_id=personal"
+  }
+]

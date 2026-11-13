@@ -1,5 +1,7 @@
 # Roadmap
 
+**0.11.0/code19 implementation, acceptance running:** [board continuity and coherent collection](docs/qa/BOARD_FEEL_0_11_0.md). Approved audit packages implemented. Local model/content/layout/input checks pass; final focus/full CI/Android/APK/media are being completed. Physical-device feel is a separate gate. Current compact geometry, art, bank/rules/saves/economy and SDK policy are preserved.
+
 **Next proposed board package — audit only:** [2026-11-13 microinteraction audit](docs/qa/BOARD_FEEL_AUDIT_2026-11-13.md). Work order: underlying surfaces and slot roles → ordinary landing/feedback → separately confirmed reveal/entry gaps → coherent category completion → device acceptance. Missing lift surface, free-floating cancel frame, intermediate empty foundation and completion layer/ribbon conflicts are reproduced. Keep compact geometry, casual art and all rules/content/save/economy contracts. Implementation is not part of this audit delivery.
 
 **0.10.0/code18 delivered:** [rules v3 and compatible save recovery](docs/qa/RULES_V3_IMPLEMENTATION_2026-11-12.md). PR #21 merged; full exact-source CI passes 92 unit/platform, 130 browser + four deliberate skips, both Android builds/signature. All 108 new and 108 legacy paths validate without changing orders/budgets. Main/source/saved APKs are independently verified and byte-identical; APK and two touch GIFs delivered. Duplicate main web run remains in progress; physical-device acceptance stays open.

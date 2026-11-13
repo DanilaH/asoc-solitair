@@ -1,0 +1,28 @@
+{
+  "baselineRuntime": "0.10.0 from605645b",
+  "baselinePurpose": "Deliberate negative control: the three new regression checks must detect the audited defects",
+  "baseline": {
+    "startTime": "2026-11-13T06:48:29.135Z",
+    "duration": 8457.010999999999,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  },
+  "currentRuntime": "0.11.0 from6bf423f",
+  "current": {
+    "startTime": "2026-11-13T06:49:00.683Z",
+    "duration": 27632.658,
+    "expected": 14,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "difference": "Original game fails all three targeted pixel checks; changed game passes all14 continuity cases",
+  "baselineCases": [
+    "lifted final card well",
+    "paper surface during accepted flight",
+    "off-target rejection frame"
+  ],
+  "sameFrozenRulesAndDeal": true
+}

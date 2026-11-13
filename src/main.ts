@@ -114,6 +114,7 @@ try {
   });
   await document.fonts.load('800 20px Nunito').catch(() => []);
   let save = await store.open();
+  let dealEntryPending = firstLaunch;
   deal = findDeal(save.attempt.dealId)!;
   let requestedLevel: number | undefined;
   let activeRule: RuleIntro | undefined;
@@ -454,6 +455,7 @@ try {
     if (!ready || saving || serviceBusy) return;
     const target = mode === 'daily' ? oldDaily && dailyAttempt(save) ? findDeal(dailyAttempt(save)!.dealId)! : dailyForDay(localDay()) : campaignAttempt(save) ? findDeal(campaignAttempt(save)!.dealId)! : campaignDeals[0];
     const previousDaily = dailyAttempt(save);
+    const previousTarget = mode === 'daily' ? previousDaily : campaignAttempt(save);
     if (mode === 'daily' && !oldDaily && !replaceConfirmed && previousDaily?.daily?.dayId !== target.daily?.dayId && previousDaily?.board.phase === 'playing' && previousDaily.telemetry?.started) { openDialog('#replace-daily'); return; }
     if (save.attempt.dealId === target.id) { closeDialogs(); showGame(); return; }
     closeDialogs(); serviceBusy = true; runtime.activity.setBlocked('level-transition', true);
@@ -461,6 +463,7 @@ try {
       clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined; activeHint = undefined;
       clearTimeout(outcomeTimer); clearTimeout(guideTimer); setInspect(false);
       await write(next => switchMode(next, mode, target, crypto.randomUUID()));
+      dealEntryPending = !previousTarget || previousTarget.id !== save.attempt.id;
       outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false'; screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
       scene?.setDeal(deal); game?.loop.wake();
     } catch { message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
@@ -486,6 +489,7 @@ try {
         clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined;
         clearTimeout(outcomeTimer); clearTimeout(guideTimer); activeHint = undefined; setInspect(false);
         await write(next => { if (next.attempt.daily) switchMode(next, 'campaign', campaign ? findDeal(campaign.dealId)! : target, crypto.randomUUID()); beginDeal(next, target, crypto.randomUUID()); });
+        dealEntryPending = true;
         outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false';
         screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
         scene?.setDeal(target); game?.loop.wake();
@@ -526,6 +530,7 @@ try {
         ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true'; $('#app').dataset.presentedDeal = deal.id;
         if (firstLaunch) { firstLaunch = false; showGame(); }
         else if (screen === 'game') showGuidance();
+        if (screen === 'game' && dealEntryPending) { dealEntryPending = false; active.presentDeal(); }
         if (screen === 'game' && save.attempt.board.phase !== 'playing') outcome();
       });
     },

@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test';
 import { openIntro, resume } from './fixtures';
 import type { Page } from '@playwright/test';
 import { introDeal as deal } from '../../src/content/intro';
-import { packet } from '../../src/domain/engine';
+import { dispatch, packet } from '../../src/domain/engine';
+import { recordLearning } from '../../src/app/tutorial';
 import { boardFrame, layout } from '../../src/game/layout';
 import type { BoardCommand, Save } from '../../src/domain/types';
 
@@ -78,8 +79,19 @@ test('pointer cancellation restores the card without a command or charge', async
 });
 
 test('dragging a whole packet performs one move and Undo restores its members', async ({ page }) => {
-  for (const cmd of deal.winningPath.slice(0, 14)) await action(page, cmd);
+  // Set up the legal mid-deal position without spending this focused test's
+  // deadline replaying fourteen unrelated UI commands. The full touch journey
+  // above separately covers that prefix; the packet drag and Undo remain real.
+  let prepared = await readSave(page);
+  for (const cmd of deal.winningPath.slice(0, 14)) {
+    const result = dispatch(prepared, cmd, deal); expect(result.accepted).toBe(true);
+    recordLearning(result.next, prepared.attempt.board, cmd, deal); prepared = result.next;
+  }
+  await page.evaluate(save => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(save)), prepared);
+  await resume(page); await page.waitForTimeout(300);
   const before = await readSave(page), rect = await page.locator('#game-root').boundingBox(); if (!rect) throw Error('No canvas');
+  expect(before.attempt.board).toEqual(prepared.attempt.board);
+  expect(packet(before.attempt.board, 2, deal)).toEqual(['tool2', 'tool1', 'tool']);
   const metrics = layout(before.attempt.board, deal, rect.height * 540 / rect.width);
   const from = metrics.poses.find(p => p.id === packet(before.attempt.board, 2, deal).at(-1))!;
   const to = metrics.targets.find(t => t.location.kind === 'foundation' && t.location.index === 0)!;

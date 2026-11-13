@@ -1,6 +1,8 @@
 # Product sources
 
-Latest board review: [microinteraction audit and bounded implementation plan — 2026-11-13](qa/BOARD_FEEL_AUDIT_2026-11-13.md). Current main 0.10.0 reviewed with production touch at two sizes and reduced motion. Confirmed missing lift surface, indistinguishable slot roles, off-target rejection frame, a foundation surface gap and incoherent completion layers. Audit only; no renderer/rule/bank/save/economy change. Proposed packages are not implemented.
+Current board implementation: [0.11.0 continuity, slot hierarchy and coherent collection](qa/BOARD_FEEL_0_11_0.md). Approved audit plan implemented; full CI/APK/media delivery still running. Local model/content/layout/input checks pass. Physical-device feel remains open. Rules/bank/saves/economy/art/SDK/kit preserved.
+
+Board review: [microinteraction audit and bounded implementation plan — 2026-11-13](qa/BOARD_FEEL_AUDIT_2026-11-13.md). Historical0.10.0 baseline with production-input evidence; its confirmed findings are implemented in0.11.0 above. Preserve the baseline evidence; fresh-entry/flip behavior is covered in the implementation, physical audio feel remains open.
 
 Current delivery: [0.10.0 rule/save correction and verified APK/media](qa/RULES_V3_IMPLEMENTATION_2026-11-12.md). [Rules v3](product/RULES_V3.md) supersedes the lower-leader permission for new normal attempts; existing attempts keep v2 independently. Bank orders/budgets and economy are frozen. PR #21 merged; full exact-source CI passes; main/source/saved APKs are verified byte-identical.
 

@@ -1,0 +1,38 @@
+{
+  "runtimeSource": "854e3e3a87688d386694a88171c4f5ed14d70e59",
+  "runs": [
+    43384574106,
+    43384579641
+  ],
+  "each": {
+    "browserPassed": 145,
+    "intentionalSkipped": 4,
+    "failed": 1
+  },
+  "failure": "30s aggregate whole-packet deadline",
+  "trace": {
+    "artifact": 14020405350,
+    "setupFinishedMs": 27260,
+    "dragStartedMs": 27420,
+    "dragCompletedMs": 31620,
+    "domainAssertionsPassed": true,
+    "undoRequestedMs": 31890
+  },
+  "change": "Only setup: legal dispatch/recordLearning replay, then persisted isolated profile. Actual browser drag/Undo, exact model assertions and global 30s timeout retained. Full real-touch intro path remains separate.",
+  "repeatFocused": {
+    "passed": 8,
+    "failed": 0,
+    "profiles": [
+      "phone",
+      "compact"
+    ],
+    "repeatsEach": 4,
+    "durationSeconds": 20.8,
+    "individualSeconds": [
+      4.1,
+      4.3
+    ],
+    "typecheck": "PASS"
+  },
+  "repeatFullCI": "pending"
+}

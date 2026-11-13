@@ -1,0 +1,681 @@
+{
+  "status": "local-only; binary upload/authentication and full CI/APK pending",
+  "appVersion": "0.12.0",
+  "sourceCommit": "e2c5b49586ec4f3a2db24ac76ad07b95a4f397c3",
+  "worktreeAtRecording": "M tools/audit-board-opportunities.ts\n?? public/art/generated/card-back-classic-012.webp\n?? public/art/generated/card-back-diamonds-012.webp\n?? public/art/generated/card-slot-foundation-012.webp\n?? public/art/generated/card-slot-tableau-012.webp\n?? public/art/generated/lock-open-012.webp",
+  "productionAssets": {
+    "art/bird.svg": "2ee235f49e5234295dd2aa421f9400cd97303da8f379858edc1da071ffada9e6",
+    "art/campaign/apple.svg": "11c5c382c07486667177ed2e1232e540455e204cc000922c8b341e378004b886",
+    "art/campaign/bagel.svg": "e85629f5b6671189f3f8d6aff67e67dfb9fdfb5ff1ccc73c930e2ceca71c5a97",
+    "art/campaign/book.svg": "46a7c5e7e44048a1342cc2adc75f87d90dd43c83b9a172adf0f02c2e3e0597a7",
+    "art/campaign/boot.svg": "f66eb1e0319d5754df77cab6067babbda71b9880ded98091187e0cd4f865e2c3",
+    "art/campaign/brick.svg": "6e95cb7f2f5fe544630a8ea2911a0ed5ed73f3cd3286bfb26e3c48eab00a2eb8",
+    "art/campaign/bus.svg": "0c8bdbb2d8b06a2bedc5a6be5b44b719ae16da4c7ae0aabb8f8258a38422cc95",
+    "art/campaign/candle.svg": "83fb0a58b5c972c91ce0a88b76c1f8900a00e34311b9c9b360110060b142458a",
+    "art/campaign/cap.svg": "0f20522489aed5dafc23c00351e526d3526a1b683455b001de066843fd4c6cf5",
+    "art/campaign/carrot.svg": "c8292b4481e0909aa4eb39d8962e58d7159e688de00c79ee6c99dcbfaf01f868",
+    "art/campaign/cat.svg": "ffb6f73195c95bc4888a4be27ddc0652266ebea74f3276b088685e0e5f28070b",
+    "art/campaign/cup.svg": "16ca3693c524877118f79edb7a86908fc577115a7ba088a3bf45b3858b1213ca",
+    "art/campaign/drum.svg": "acf048c0810a7afce5f6b7e918b5bab2f72162fbeae19ae26eb36a1480db2f14",
+    "art/campaign/eraser.svg": "27845cbec25b37ab42a8162caefc17e547be594a14d16b4e3df43dd315e9d675",
+    "art/campaign/hammer.svg": "414a954aa5b8a49b5607cda530e78f8917aeefd6183d6facf84823aef38d76b8",
+    "art/campaign/helicopter.svg": "9f3e180f2384da2e4110fcf3e1b46110fdd41ad472324e19248e14190aaacd46",
+    "art/campaign/keyboard.svg": "48b0d38310e03e3a820ead3ce915972889c96988fe98827b066c9210a839b62c",
+    "art/campaign/lollipop.svg": "7f65443c5bbd46adf887e8984d35e67b34a6da8f4859762fd4a9b4860e929e64",
+    "art/campaign/octopus.svg": "ac5b4f6821703f5a2c13007214c6914eea9187ae91f1d1356d7d040f616fe027",
+    "art/campaign/owl.svg": "621cf86e475ee89881c0c6fb0cdfdfa67da2269c9e3935f67bd7d8fecd78ab0c",
+    "art/campaign/pike.svg": "7a8e50abedb3143e694c247b4bfe4a839f587a65321f767986c2b6b00230a099",
+    "art/campaign/rope.svg": "74fad3da516a0cde6be56a771f4039c9818d5753987e193534934c26188b9fb7",
+    "art/campaign/sailboat.svg": "505405e108a472e7f217ddf5e683e330150c61a9e51c56feeefedcadcb542bfc",
+    "art/campaign/shirt.svg": "c1d5e6d79b8ca359eae0395b2ddee599d3f9043b56c2dbce7d01d3d8e43c7f88",
+    "art/campaign/soap.svg": "5e7252d7f789ec58c836a8cd4c61e4b07b6a38332f3fc75e03204d239dfb73bf",
+    "art/campaign/spruce.svg": "48759ed35f26fc7d23880b0ebc66c72bc6837adbed7eb04cec4c1d64a7f52a12",
+    "art/campaign/storm.svg": "3925e6be21d8c0ea2136636e24abebf514185061ee0879d6034ee558bea5c594",
+    "art/campaign/tea.svg": "979cee9a8641c2b07238abed4bac24d2cabd3636ce9bdfb0dcb50478850405dc",
+    "art/campaign/triangle.svg": "b1a19e3b1243b33fbbb711448effc43609c785af0cca13955a16b0ea6ed1238e",
+    "art/campaign/tulip.svg": "bfc03ef45f7ee35433a59279a99ec7e89e2a457321494f7ab6d59adaf86f3322",
+    "art/campaign/turtle.svg": "09c1e7d1116b41bf8c8368c19f3c1cb2628adb95cf58343e8f8043d3ab8af48e",
+    "art/campaign/vacuum.svg": "ebe1b6ba88dac848ab3a34e7188ca7b2d5d0c1f7989b04ef3c0b8b47e47f6925",
+    "art/campaign/wardrobe.svg": "f9e7eef0eab27be8b1672f2fdfeb7029e26b5de8d7f4ba542a7640b42ec538b8",
+    "art/fruit.svg": "90cf7094828a78664dbcae5e6c28332a2ea4b254325b18f7926b0374a3bd765d",
+    "art/generated/apple.webp": "fb245e29d32f8d126d46e66698636385340b68ccb9a4ae5e9cbc9e24d02ef398",
+    "art/generated/bagel.webp": "3c266bd185327d4ce91a3508ddec48b458f87520bad0d83a9c48199c919b0035",
+    "art/generated/book.webp": "0bedf31a11a511a4eb82432dec3518920f7fe45153e7ed0b872de12f98dd35b5",
+    "art/generated/boot.webp": "b1fd8d2b3f93fd9c898f5fe2594a7b57cc5750e0276126675117d775443dd298",
+    "art/generated/brick.webp": "a86807fb95bf11abb571fbb80ef676d1f7f33efa5ec0f3bc88d9c3cbbdaeded7",
+    "art/generated/bus.webp": "38271ff6417fa41e021de8dff8f2cab21a9fdbb0471ddf45c7eeeb9b4e9b8568",
+    "art/generated/candle.webp": "010f0bd6099afbcd69e42e2f6e63e16c681d9b74567641bd73b6452928da955d",
+    "art/generated/cap.webp": "76e876ec8f432012da2bd1314403f4b4ac41fcfb2d97e161ba9870824222e38b",
+    "art/generated/card-back-classic-012.webp": "3e172ee1d7134e6a8fb332a81c9e351b9c4940f3ebf53eff8b250cd3c104f1f3",
+    "art/generated/card-back-classic.webp": "140c17d04ceeb7f8769a730b3c41ff195595f25d68eff90ed8e84ce2d6ab5c81",
+    "art/generated/card-back-diamonds-012.webp": "f33bfa35163eda2f5821a6444520385377b39fc0196c840ee8f97bbd5f3bff7c",
+    "art/generated/card-back-diamonds.webp": "28a336697236d0f8c86dfbe4f93e5a194758892fd2e4960166a0350f7a4d3f9f",
+    "art/generated/card-category.webp": "20ef18a27bba0760e8ac436427e0a2d4dfd51cbfd3998002789423eb28d0eb0a",
+    "art/generated/card-face.webp": "c1ddaffd5ed670fbfa851e1569ebabe9a96c96f64198507dc46de3b9d09f6b92",
+    "art/generated/card-slot-foundation-012.webp": "cc9a532eb3eb61ee2408c101774d0bed937c2110b1eb4c56ccb3d882957c6bd6",
+    "art/generated/card-slot-tableau-012.webp": "5f8c964853fb9f029fa0fc13e1063470066dc2431072f253ee23e617d0eb9fee",
+    "art/generated/carrot.webp": "5db0dafe37fb325884dbb4ada04d7078e2f819a62fe19b054511059a5045fdb7",
+    "art/generated/cat.webp": "cd3aa957c994bfc9ca8841cbc5411131decc8b4da901b5a555b3116dbb9867b3",
+    "art/generated/coin.webp": "77f7c847ef2d6a8e565430a8a85a7db6e8a069a1646cf6e0f8fab8584b7488ab",
+    "art/generated/cup.webp": "2738b6497a3a99b3fb7ce4b9a8e34ea032a3d72570f3ab7bcaf34e7e99eebd5c",
+    "art/generated/cycle.webp": "f29df3d72b5db4b6f7809fa99c5923ba2ae605e10d5fc43080b7d0f278c8512a",
+    "art/generated/daily.webp": "e592f6e1f10749e16c78ec498099dfd63e31480c666579be4ddfd42a74b14eb4",
+    "art/generated/drum.webp": "186c6b4b01646c90f6cebef48128caa319e1a69e5c54a06f5bf8a6d58d218d23",
+    "art/generated/eraser.webp": "fb9cdf602e1450e925807e237ebabaadf4f4f3aa54fe916d6c036e92a09fdf2a",
+    "art/generated/hammer.webp": "23d6d10b22e511e68212863cce0164ce4d0076de524c7930e02d1e3f15dd71f0",
+    "art/generated/helicopter.webp": "ebddb445cd0e2f7d4a24f705bc29d94d07bfe4d2d281a003a4b817fdf15ed168",
+    "art/generated/hint.webp": "7bd1347a8ceeca049ba47c74afe6c627904d89d18af4e6ecd91a4685cda05d09",
+    "art/generated/joker.webp": "b65fa0db969f9bc970aabb66aa98e8c1a8cf036f6fa04cf7d183f4c20d111d0a",
+    "art/generated/key.webp": "ddb5f7b526ac1c8decc089be81b5f5275dc53f410351e2a0bb692a697a96e8e3",
+    "art/generated/keyboard.webp": "7341031ebadec5df3c85b5073bd7c2ae30ad696e023df83667b6d595a22ca8f7",
+    "art/generated/lock-open-012.webp": "64159c04c109790ec2bc237a3ededa76ace24d2f16284573446d75f251bd609c",
+    "art/generated/lock.webp": "0a305a54a82ee6b1361c8f9a5ecf8a48517c1844059d70f8ce6aabc3148139da",
+    "art/generated/lollipop.webp": "a096af06460569527d7ec87e3ec9ed139dbdd790baf7331a670a8754ec2d4a02",
+    "art/generated/looks.webp": "e33fd3f3e72c065c2f34776a17319cb814a80f6fdf304e58eb738831a0b7d1b9",
+    "art/generated/milestone.webp": "f9dd11ff4a655b6d6d49ce4ecc16f0d4439397ff864f095b94a37f27b777749b",
+    "art/generated/octopus.webp": "eb5676dfde95129273962f1d275f62b5658c5d6070c2d2048a16ae069f770b96",
+    "art/generated/owl.webp": "619f61b5e0ea94e6cf8204797628af764d799278239815a8fdcd253326e86bcb",
+    "art/generated/pear.webp": "f4e46edcf57529f1c23411577d441bb5e69789be75eadeb2628de15997032af5",
+    "art/generated/pike.webp": "749474459e168b18e9bde8ded87bbf7a076fe6f305121968c7d3fe40718c96b4",
+    "art/generated/ribbon.webp": "ff8e3740ad5175111be2dab8854141898199c6493b2e833a83fa3fc24eb0efc6",
+    "art/generated/rope.webp": "9de929063c90c51e1d6d5e87464a9a5338eb0dc0ac3f703c39e07ddcb98d0438",
+    "art/generated/sailboat.webp": "8c34ab3b65828d8b19dec66a7eda7d1e25606052afbfadcc63bc3bcc7c8a1c98",
+    "art/generated/shirt.webp": "27f4a2c8314794720af2d3dac33ee5fbdd38199d9201df09e8a9d297681c4c3a",
+    "art/generated/soap.webp": "66e725ad09128e0f69d3e141a786fc0c6235c0b7790320d77c925c9a591ee9bc",
+    "art/generated/spark.webp": "f5ecb1eed1b443a8f99ddc11747e6f73f335a82047a89ce4818e967ed761df7b",
+    "art/generated/spruce.webp": "0e39e2521b3bd0d26a3f3a0bf3ece945007ffdce6fdb33ab823fbc0ae886359b",
+    "art/generated/storm.webp": "b72b9137b7fe1a9342bddeec805e4c527f535c06d7d1620780d85a631d4731b2",
+    "art/generated/subject-air_2.webp": "854efd62d2b50be54ab241f14ee2d6020426457b40c5ff4befd1819620ac8c04",
+    "art/generated/subject-air_3.webp": "f9e0af05bd5497aaeb0902d5939fa526cae913773b4edda0caf073efa2fe4484",
+    "art/generated/subject-air_4.webp": "1cb261211311dc5ca91573e83799482995b1a87983c2f913f574e619cffc972b",
+    "art/generated/subject-appliances_1.webp": "aa58ff41bf61d76412d2e9eacfdd58576c340321acb606bd6de26b39bd97a210",
+    "art/generated/subject-appliances_3.webp": "81f018f7e789568a5e7884c5b0e93da397e275645f371ec6fbda916f4d4ec1d3",
+    "art/generated/subject-baking_2.webp": "f85d08d961bca7fd181a0812f8cd232c2173f79bbc2ad2d29a9a246f6ee361cf",
+    "art/generated/subject-baking_3.webp": "ac778d26f7139c879872719d6faac81f68aca39aadb6754e4a6e4580335bfa00",
+    "art/generated/subject-baking_4.webp": "b7657afea8235fb3596cc1cf985000b2c55e052f1c6092b07bcbb2b1f146eb23",
+    "art/generated/subject-baking_5.webp": "c9533e6abda95cb26e42ebd106961288454187bc023bf4b71c7ee8a3308f15e2",
+    "art/generated/subject-bath_2.webp": "ff5d64a3a6fb541d900bba41a4bf046a9ad8e9bcf0a6b092c107d7cbf7c5ed62",
+    "art/generated/subject-bath_3.webp": "b642fb008d1f53640edc675b93ca5dffe197de65e835b9d7a13464e28e942b37",
+    "art/generated/subject-birds_1.webp": "d1c1f6a6ed4b489581f96e0ab945a4b9374c9b62239dcb1edffbfd9f5db70974",
+    "art/generated/subject-birds_2.webp": "875047a0ba737d433229abda07d51875dc01974ad20867eb2d768c81d7a6b48f",
+    "art/generated/subject-birds_3.webp": "0d5fbd0829362edf39ae36fa587c7558e0b9118d3d94e967c0cd66050acd2e06",
+    "art/generated/subject-clothes_1.webp": "5c862b91021ca5456aed2a88381d122403533177a5082008304dc157a42d3cff",
+    "art/generated/subject-clothes_3.webp": "7000aff0b85cf35b3bd4d038e8c27808b7fe746c644c3cb85c8746616e603035",
+    "art/generated/subject-clothes_4.webp": "99e0ce61565a9a581dd47aa8e6ad2c1ee2a67b494c60d9795c22b208311255e1",
+    "art/generated/subject-clothes_5.webp": "9aef637fa5c5682ac48cde600eb4691e368808a0486b1d0387946bdd05ec1c0e",
+    "art/generated/subject-computer_1.webp": "449c07d8c7d337b4940c483a056b82012b0edc582b1f1e84740879f5bc2460d2",
+    "art/generated/subject-computer_3.webp": "9f9b6da871edd168af4a03fb0c4c1a5ae877668dffaa6662ceadaf07fc130708",
+    "art/generated/subject-computer_4.webp": "e52bfcfbd49e85fd496f212afa3685ea79e4f32e04c321dbbc32d7dde54aeaae",
+    "art/generated/subject-dishes_2.webp": "3f3950403de313b8f0ab0f9cba0eff4223e90913d671059d0ce2bfef63baa71d",
+    "art/generated/subject-dishes_3.webp": "8da53c0f353026826f53c7ee40302c6127d252649d1d9dad649a395dcda8d5e7",
+    "art/generated/subject-dishes_4.webp": "c919590ed6f426ab1274f638ee261a69963301fecd65144246a9a339d807875d",
+    "art/generated/subject-dishes_5.webp": "9d7e12580112044bc4cf5e5b55c113a0c26b891d5891c19bedbcd4790f602e1b",
+    "art/generated/subject-fish_1.webp": "2a7b060c965836a24859154e1f2a034b4e3c570cde557d89dde0f8a739b49b50",
+    "art/generated/subject-fish_3.webp": "94c0865aad5a0f8ef7ee65bfc3cb1fbca01dd7ad17c0152acd9b7664615518a7",
+    "art/generated/subject-fish_4.webp": "97698b3a47401e4772867a0d9cf17aec042ef4cde9eb50d8d2ca171f5a8dc3d8",
+    "art/generated/subject-flowers_1.webp": "9bff06481b423324c6da3b4be164e0d5544e9de7b759acf06b7a101ee17b6e54",
+    "art/generated/subject-flowers_3.webp": "5757d07724856416afda4cbcddc564763e0951b5ea4109f977b313c3746b3218",
+    "art/generated/subject-flowers_4.webp": "bd2e62cabc5d6593cb3fd790cce3d70337f792416d75fb10f2c6250d06816c76",
+    "art/generated/subject-fruit_3.webp": "366dee6139981630314d58cd6f2877d0e869e3fd78e7f5081f674ad3d81ebf9c",
+    "art/generated/subject-fruit_4.webp": "049299f32790d4ee490bf39a9f86f3526a2c599d41d8bc50daa3d954109e305d",
+    "art/generated/subject-furniture_2.webp": "86d8ae4e6230d2882e591d09df1b28500f6cb51e5d9ae3f09ecd6026b57319fb",
+    "art/generated/subject-furniture_3.webp": "8a67559191ae4ace5431b7e64778bbd6cb3fe23eb831ec7e942da72144a83868",
+    "art/generated/subject-furniture_4.webp": "65a99f66da2efa8973aa41a74601e35a08ee264330a5fb1bb822145f069856b4",
+    "art/generated/subject-furniture_5.webp": "5b96143f45317290d2fed4bed22ef4b0426961b494a7bd7e95b96ff418b5f45d",
+    "art/generated/subject-hats_1.webp": "4c79e00e7868f980850cf9bb6715c4dfd93e50e81d3874fcd11c6dc4d5a22ae5",
+    "art/generated/subject-hats_2.webp": "b3b3969c517713f5a16356018ae1d3ec040edb634ed6db267ccc52196ca0374d",
+    "art/generated/subject-hats_3.webp": "8f8ddb4f690e6d7f40211c3345a0a18b175e3a0ae9f5f4f81892d5476123bb01",
+    "art/generated/subject-hats_5.webp": "7b20796a2dc5d6a0591a73e3fbd45e660487ee1affb367f390b37dcbcc52be66",
+    "art/generated/subject-lights_1.webp": "e65e7c0051c58a8602c62212678897e61949c617504e2d53ad93d5e83a713a09",
+    "art/generated/subject-lights_2.webp": "5bd4ca518ccf08d2ad92a6b633422a2594706272c0f5d005bb91bc80344b9c59",
+    "art/generated/subject-lights_3.webp": "4b6966451cc38404716f1827b1354ff0f97b92e397d80b391f53279c0fd18f7e",
+    "art/generated/subject-lights_5.webp": "3f0553da7fa4482b5e2d32288094cee1d8bcf5e8db0ba2bdfd106963864e5f21",
+    "art/generated/subject-music_1.webp": "0bdea7e928b357d66b3a645aa162b97528f25bbcf419270a199e94fb2c84948e",
+    "art/generated/subject-music_3.webp": "21b799aea67424007db9c29e33b9a6d0c708d3ae930953bfcbc95235255e081d",
+    "art/generated/subject-music_4.webp": "dfcd3774b09d13d3433c8fe5dbcfdbe8371759ed6f73bf886b02585b0ec89a75",
+    "art/generated/subject-music_5.webp": "efaa5ddedc585ccb93158f9ceeac5a731051fb2e491323c57447044ef166b9b0",
+    "art/generated/subject-office_2.webp": "d0ba592d337d5a6fec8d66b104eddd08cee8da3c9d719b588bdcb81dde55c603",
+    "art/generated/subject-office_3.webp": "8a3126cc9e97387c6cef4e09012b7552fbfcfafe32579a3874f36a4a3c124746",
+    "art/generated/subject-office_4.webp": "216a63301c47353d5ae901d1241a8cd30fe5073fd438f554f43419a82d59fea6",
+    "art/generated/subject-office_5.webp": "63025afef1b9c8f2e31d879daa2f8500e1bff9a721dd6e94d634875f59678044",
+    "art/generated/subject-pets_2.webp": "c65b453ae615edc82efa8fc69ccb2b76d264879e3083c5f190a08811b3c904d7",
+    "art/generated/subject-pets_3.webp": "4b10686a00e946559ee809d51ec3b69ea827cefdba79fb4bdb3286da5bb1e7a8",
+    "art/generated/subject-pets_4.webp": "73ea256436f0bcdab50aa4fd3f2449e8885d80e6b3cef509d0f8cd325004bf70",
+    "art/generated/subject-reptiles_1.webp": "e4fc389d1d0e58f66cf82c09a18bf32291b2495730b33df26193b43352d2ae5f",
+    "art/generated/subject-reptiles_3.webp": "8ee279e0caecf1ce0d904a23471dd091e62555533aefc3a9432ae2f0f26df16b",
+    "art/generated/subject-reptiles_4.webp": "53a6ed0ba3cf34ac75099e9143d88ae127688945bfd48e7c512bcd1ed493c5db",
+    "art/generated/subject-road_2.webp": "fe4a0ebb806f876976ba421dfa7f8f4c035dd75d9f2391698b61bd2097ad0832",
+    "art/generated/subject-road_3.webp": "e3908129375528f3a693b8193acc79b44265cca3b87df0cd196721ba13e250be",
+    "art/generated/subject-road_4.webp": "293eb9d3372c0f7aebb3b6acc4e9d6dbafeb6b10a5a6eab523e594454d887758",
+    "art/generated/subject-sea_1.webp": "eda57888cd5f23a71f5c512b4caccf3c4fb61a790265eda0134395b2fc8a2c60",
+    "art/generated/subject-sea_2.webp": "d8b44dd93dd8257f5f0f0ddd08c0f34dd672a7965006069e36d62a46f0be9a08",
+    "art/generated/subject-shapes_2.webp": "9287a1abaee3b5bbc2ddbe1fcc1f82d519b6c716fa4163443ee184c7b62ae6d5",
+    "art/generated/subject-shapes_3.webp": "c18f7b57a9ffd658f2c8ab20b49577128947db681b9a6c8e4dc33d632a773b44",
+    "art/generated/subject-shapes_4.webp": "92ed54bf6c2cd90572b39e2fda80f3b77e0a62b7e779bc0e4316c1bebcc052d0",
+    "art/generated/subject-shapes_5.webp": "fdc5032a5693cf781a006986ee6726b2dd86b4486e43f2cc6f9a57ce3efa1d77",
+    "art/generated/subject-shoes_1.webp": "507fd0a445f41570e4866d0f86ad2ebd2eb786f7543d13b62256c87b02369a45",
+    "art/generated/subject-shoes_3.webp": "803001238c24ee92d657905179bcf3ae89c3c2f67979b04a32e957a14baa66c8",
+    "art/generated/subject-shoes_4.webp": "b82508ed1ae6a0b08d654c49d90cfabbc4580eb693fd5aa1ec59d55a0ede50a5",
+    "art/generated/subject-sports_1.webp": "8c46d0e73b7758c87c70f04285ad43d452c327b54ae3b2cad58871f10b8465bf",
+    "art/generated/subject-sports_2.webp": "2e7081b823849655143b57138ef86c46b9fd77e4b1e092550ef4220ae3d41294",
+    "art/generated/subject-sports_4.webp": "93dc9bd033713d3d8164bc93fbeb5d5fa4cac31314f4882dfd8272b934c0de49",
+    "art/generated/subject-sports_5.webp": "d232ed650d5559fa44bb7b2654ac467e1da5671549fc77faba9cd992625a6d26",
+    "art/generated/subject-sweets_1.webp": "676fd4cda394f2235675d1ee8c616f330d361fc5aa05de6c525f90334488fe8a",
+    "art/generated/subject-sweets_2.webp": "9460b86648b96e4fda90f9e914b90e3278f55723dccd31e5d0c7f392171196ec",
+    "art/generated/subject-sweets_4.webp": "c1bba6e2d405543bb0af6366856eceeb9c4326f9bfcef0002cb00fd397165877",
+    "art/generated/subject-sweets_5.webp": "a2d312db2bd435002852c467543cfa291a809533c8b3272d8094fd30fc809e31",
+    "art/generated/subject-tools_2.webp": "60ba545c13080c6493a47c6eaeca8ee3de6aa5e39055d1cf8b0f5b7835d5bfac",
+    "art/generated/subject-tools_3.webp": "1996461974eb48b1366cb678611e1bb6101e4a00176ba53a2c650a95e4bfc0d3",
+    "art/generated/subject-tools_4.webp": "26f324c257c0f1418fa2f7d971144c31f9ed7230fa30bbace1406a5f02846233",
+    "art/generated/subject-tools_5.webp": "966193ff1e05648738cc04527b1fecea4fda6ecc00fbcd4b4a49001378acac0f",
+    "art/generated/subject-trees_1.webp": "a91630a663e9caa06fd1779f1775d5a69c14cee6a4b48e9280fbdf67de2fda66",
+    "art/generated/subject-trees_2.webp": "86c945fdf1332c1741bf701b935f1cc4cceebeb6b748efad7a2f23b6d80e88c0",
+    "art/generated/subject-trees_3.webp": "96ccc51a82f5bbd831b519196af10e48dc7c26728ff748f36877ba1449f6e7fa",
+    "art/generated/subject-vegetables_2.webp": "6329afd0fc7b55c1522e1312d90e3b9f3585cc835ef797d6c72246b1d65982c9",
+    "art/generated/subject-vegetables_3.webp": "04335c13ccfee3eafa3e026e2239d43ed1918aaedb093652fe0e8faa727a712f",
+    "art/generated/subject-vegetables_4.webp": "7c071e4933890f2869fc6400ee54d8a11dc1e85247bcf05bdbb763b5be34612f",
+    "art/generated/subject-water_1.webp": "84fa11253d9341b5fb6bf6c185bee8ae22193806ebcf4dec3f3650c60026037d",
+    "art/generated/subject-water_2.webp": "2e421f328554cdba22432a6fa324c23a2875ab6ec0d4d1e553b96f260df8028c",
+    "art/generated/subject-water_4.webp": "91430d648603bb76dc977362dd3a66d1c7d8b841ec8552968a2513555040bc2a",
+    "art/generated/tea.webp": "06aa3d8e77a83d4c35a9145ec2cfa2b67fdb707697957d1b35184eb85d299ca8",
+    "art/generated/triangle.webp": "5b52fa44df3644d075088c3020a7512b01c1773bf5dc3934a537ea53c6e13d3c",
+    "art/generated/tulip.webp": "c48beb5bab1e195ac9c342e08c8432b67646e6c2e46eb84fcaee0b3a54187a4c",
+    "art/generated/turtle.webp": "987044b4c63bf097f20186a3ff33446feeda72909373d4e39cc1384c043fbf71",
+    "art/generated/undo.webp": "2f970a52931002fdb9a5163d40ac8794436a27115659732223153a10dd49e3b9",
+    "art/generated/vacuum.webp": "41ab4615819c0717304a3672b9b6a1ab5a51c7160e29aa679fd9ce91472b9709",
+    "art/generated/wardrobe.webp": "1b90d6ff88b8c86adc46de01d00645888d7d51bdb16cb32a349f337b9d5005f8",
+    "art/tool.svg": "6b988b64fdb880f864d0290b908a00dbb8cb84489b98e3e0a208affaf66b14ce",
+    "art/ui/linked-cards.webp": "b6a4fe5b88d1cf97123bcf68a0268f301e46619460de97812ec1308d7a3ed2ce",
+    "art/ui/reward-emblem.webp": "d25743248a4d81bca14e7514112df8908b63026e9782dd88ec23cc6bd79d0896",
+    "art/ui/tutorial-hand.webp": "7c1afd33f81d3d9f3d0686d1d27e3fbdd19752bf6a1da552284adfd6e5ecd215",
+    "assets/hint.worker-uhBS9La3.js": "cb6f750af6ebd129a4cedef96ebdf84caa95f951f1a546852fb6a4ca5358083f",
+    "assets/index-DmKbgQku.js": "088d74f961dc5be9f31bd64cb3a3c41f7d366a79613e300c34c046e1368720af",
+    "assets/index-Dna6zhuz.css": "78c4982dad7992e3edfb818ccabc155f69c3de47bb296d573af43931edd446a4",
+    "assets/web-hcUPrc8m.js": "bfecd961729770c2c9cd227719cffc79dab8e7568020b7ce29fac2e8dd43637d",
+    "fonts/nunito.ttf": "bb55a5ca5c2042335b3991af27c4d0705d0ef41cac6164ac737fd8f2a1e85207",
+    "fonts/OFL-Nunito.txt": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
+    "index.html": "f646a0ee660b57e8c129fa067ad2655ecc9f7a65273bff7df5eeee86aa19d6d1"
+  },
+  "passiveTimingWrappers": [
+    "Storage.setItem",
+    "AudioBufferSourceNode.start"
+  ],
+  "recordCases": [
+    {
+      "label": "360-motion-packet-merge",
+      "deal": "campaign-005",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "fruit_2",
+            "fruit_4"
+          ],
+          "category": "fruit"
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-foundation",
+      "deal": "campaign-006",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-completion",
+      "deal": "campaign-006",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_1"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "complete",
+          "cards": [
+            "lights_3",
+            "lights_4",
+            "lights_2",
+            "lights_1",
+            "lights"
+          ],
+          "category": "lights"
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-unlock",
+      "deal": "campaign-025",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "clothes_2"
+          ],
+          "category": "clothes"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_2"
+          ]
+        },
+        {
+          "type": "key",
+          "cards": [
+            "dishes_2"
+          ],
+          "amount": 3
+        },
+        {
+          "type": "unlock",
+          "amount": 3
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_3"
+          ]
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-packet-merge",
+      "deal": "campaign-005",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "fruit_2",
+            "fruit_4"
+          ],
+          "category": "fruit"
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-foundation",
+      "deal": "campaign-006",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-completion",
+      "deal": "campaign-006",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_1"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "complete",
+          "cards": [
+            "lights_3",
+            "lights_4",
+            "lights_2",
+            "lights_1",
+            "lights"
+          ],
+          "category": "lights"
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-unlock",
+      "deal": "campaign-025",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "clothes_2"
+          ],
+          "category": "clothes"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_2"
+          ]
+        },
+        {
+          "type": "key",
+          "cards": [
+            "dishes_2"
+          ],
+          "amount": 3
+        },
+        {
+          "type": "unlock",
+          "amount": 3
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_3"
+          ]
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-packet-merge",
+      "deal": "campaign-005",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "fruit_2",
+            "fruit_4"
+          ],
+          "category": "fruit"
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-foundation",
+      "deal": "campaign-006",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-completion",
+      "deal": "campaign-006",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_1"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "complete",
+          "cards": [
+            "lights_3",
+            "lights_4",
+            "lights_2",
+            "lights_1",
+            "lights"
+          ],
+          "category": "lights"
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-unlock",
+      "deal": "campaign-025",
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "clothes_2"
+          ],
+          "category": "clothes"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_2"
+          ]
+        },
+        {
+          "type": "key",
+          "cards": [
+            "dishes_2"
+          ],
+          "amount": 3
+        },
+        {
+          "type": "unlock",
+          "amount": 3
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_3"
+          ]
+        }
+      ],
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    }
+  ],
+  "recordErrors": [],
+  "frozenComparedTo": "be666898e302ac5ac5090f08723f96e745964f57",
+  "frozenPaths": [
+    "src/domain",
+    "src/content",
+    "src/platform",
+    "src/game/layout.ts",
+    "src/game/inputBridge.ts",
+    "capacitor.config.ts",
+    ".github/workflows"
+  ],
+  "localChecks": {
+    "unitPlatform": 92,
+    "layoutCases": 119,
+    "layoutDOMIssues": 0,
+    "layoutRasterIssues": 0,
+    "browserFocus": 40,
+    "newContactRegressions": 8,
+    "oldBaselineNegativeControl": "all eight fail four original visual/contact defects as intended",
+    "fullBrowser": "running; .recording/board012-full-browser.log"
+  },
+  "media": [
+    {
+      "file_name": "asoc-0.12-local-board-360.gif",
+      "library_file_id": "libfile_fde995a0ec6c81918807afbfd49457f2",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "status": "succeeded",
+      "sha256": "09c049fcd478755465c1c75cf0358a55b1bd87cb9fd6bb1b8ad584e74ec5e6ff",
+      "description": "Four separate legal QA states, actual touch, trimmed setup, four cuts at normal speed; local web build, not phone capture"
+    },
+    {
+      "file_name": "asoc-0.12-local-board-320.gif",
+      "library_file_id": "libfile_3e75b41b5d10819198f83fd595365aca",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "status": "succeeded",
+      "sha256": "1e6b0831cdbd58eb1b340722a1da896aef7f6fbb800acef3fcfe1f23d32feabf",
+      "description": "Four separate legal QA states, actual touch, trimmed setup, four cuts at normal speed; local web build, not phone capture"
+    }
+  ]
+}

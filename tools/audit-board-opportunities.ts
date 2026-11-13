@@ -1,6 +1,7 @@
-/** Read-only 0.11 board audit. Legal isolated saves; real touch; no scene/card mutation. */
+/** Board presentation audit. Legal isolated saves; real touch; no scene/card mutation. */
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { chromium } from '@playwright/test';
 import { preview } from 'vite';
@@ -11,7 +12,17 @@ import { boardFrame, cardMetrics, layout } from '../src/game/layout';
 import { cueDurations, cueSamples } from '../src/platform/sounds';
 import type { BoardCommand, Command, Deal, Save } from '../src/domain/types';
 
-const out = process.env.ASOC_QA_OUT ?? '.recording/board-opportunities-011';
+const appVersion = JSON.parse(await readFile('package.json', 'utf8')).version as string;
+const out = process.env.ASOC_QA_OUT ?? `.recording/board-opportunities-${appVersion}`;
+async function fingerprint(dir: string, prefix = ''): Promise<Record<string, string>> {
+  const files: Record<string, string> = {};
+  for (const item of (await readdir(dir, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
+    const key = prefix + item.name, path = dir + '/' + item.name;
+    if (item.isDirectory()) Object.assign(files, await fingerprint(path, key + '/'));
+    else files[key] = createHash('sha256').update(await readFile(path)).digest('hex');
+  }
+  return files;
+}
 await mkdir(out, { recursive: true });
 type Candidate = { deal: Deal; save: Save; cmd: Command };
 type Probe = { type: string; at: number; [key: string]: unknown };
@@ -156,5 +167,5 @@ try {
     }
   }
   assert.deepEqual(errors, []);
-  await writeFile(out + '/checks.json', JSON.stringify({ source: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), appVersion: '0.11.0', productionBundleUnmodified: true, passiveTimingWrappers: ['Storage.setItem', 'AudioBufferSourceNode.start'], cases: report, errors }, null, 2) + '\n');
+  await writeFile(out + '/checks.json', JSON.stringify({ source: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), appVersion, worktree: execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim(), productionAssets: await fingerprint('dist'), productionBundleUnmodified: true, passiveTimingWrappers: ['Storage.setItem', 'AudioBufferSourceNode.start'], cases: report, errors }, null, 2) + '\n');
 } finally { await browser.close(); await new Promise<void>(r => server.httpServer.close(() => r())); }

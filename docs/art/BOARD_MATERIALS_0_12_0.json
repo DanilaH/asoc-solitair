@@ -1,5 +1,5 @@
 {
-  "status": "local runtime integrated; pending ordinary binary upload to repository",
+  "status": "five prepared runtime WebP assets uploaded through authenticated GitHub Git Data API; hashes verified; CI/APK pending",
   "method": "built-in imagegen; existing export-art.mjs crop/resize/WebP with original alpha; no repaint/background removal",
   "assets": [
     {

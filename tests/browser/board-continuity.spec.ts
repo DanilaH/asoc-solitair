@@ -167,3 +167,22 @@ test('pause interrupts collection without leaving a ghost above the empty slot',
   expect(color[0], 'The completed cream card is gone').toBeLessThan(160);
   await expect(page.locator('#praise')).toBeHidden();
 });
+
+test('Undo after reload restores a collected group from the upper area, without flashing at the viewport origin', async ({ page, context }) => {
+  const d = campaignDeals[5]; await seed(page, d, lightsState(6));
+  const before = await read(page); expect(before.attempt.board.collected.length).toBe(5);
+  const c = await context.newCDPSession(page), frames: Buffer[] = [];
+  c.on('Page.screencastFrame', frame => { frames.push(Buffer.from(frame.data, 'base64')); void c.send('Page.screencastFrameAck', { sessionId: frame.sessionId }).catch(() => {}); });
+  await c.send('Page.startScreencast', { format: 'png', everyNthFrame: 1 });
+  await page.locator('#undo').tap(); await expect.poll(async () => (await read(page)).attempt.board.collected.length).toBe(0);
+  await page.waitForTimeout(350); await c.send('Page.stopScreencast'); await c.detach();
+  let mostPaper = 0, worst = frames[0];
+  for (const frame of frames) {
+    const { data, info } = await sharp(frame).extract({ left: 80, top: 100, width: 150, height: 65 }).removeAlpha().raw().toBuffer({ resolveWithObject: true }); let paper = 0;
+    for (let i = 0; i < data.length; i += info.channels) if (data[i] > 210 && data[i + 1] > 190 && data[i + 2] > 140) paper++;
+    if (paper > mostPaper) { mostPaper = paper; worst = frame; }
+  }
+  await test.info().attach('undo-upper-background', { body: worst, contentType: 'image/png' });
+  expect(mostPaper, 'Restored cards never fly out of the HUD/background').toBeLessThan(8);
+  expect((await read(page)).profile.coins).toBe(before.profile.coins);
+});

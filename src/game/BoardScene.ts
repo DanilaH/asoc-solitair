@@ -31,6 +31,8 @@ export class BoardScene extends Phaser.Scene {
   private foundationFaces = new Map<number, string>();
   private foundationSurfaces = new Map<number, FoundationSurface>();
   private returningWells = new Map<number, { ids: string[]; y: number }>();
+  private collectedIds = new Set<string>();
+  private collectionOrigins = new Map<string, number>();
   private focus!: Phaser.GameObjects.Graphics;
   private stockArt!: Phaser.GameObjects.Image;
   private stockLayers: Phaser.GameObjects.Image[] = [];
@@ -80,6 +82,7 @@ export class BoardScene extends Phaser.Scene {
   public create(): void {
     this.foundationFaces.clear(); this.foundationSurfaces.clear();
     this.returningWells.clear();
+    this.collectedIds.clear(); this.collectionOrigins.clear();
     this.pendingReturn = null;
     this.collections.clear();
     this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.dragPointer = undefined; this.initial = false; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = []; this.stockBusyUntil = 0;
@@ -236,6 +239,7 @@ export class BoardScene extends Phaser.Scene {
     }
     this.returningWells.clear();
     const save = this.options.getSave(), board = save.attempt.board;
+    const previousCollected = this.collectedIds; this.collectedIds = new Set(board.collected);
     const previous = this.metrics;
     const drawUnder = command?.type === 'draw' && !save.settings.reducedMotion ? board.waste.at(-2) : undefined;
     const bounds = this.options.boardBounds?.() ?? { x: 0, y: 0, width: this.scale.width, height: this.scale.height };
@@ -338,6 +342,15 @@ export class BoardScene extends Phaser.Scene {
       this.tweens.killTweensOf([view.face, view.back]); view.face.setScale(1); view.back.setScale(1);
       view.face.setVisible(pose.faceUp); view.back.setVisible(!pose.faceUp);
       const def = this.options.deal.cards[pose.id];
+      if (previousCollected.has(pose.id) && events.some(e => e.type === 'undo')) {
+        // A reloaded save has no old sprite positions. Restore from an actual
+        // upper area, never the factory's (0,0); no presentation data is saved.
+        const restoredSlot = board.foundations.findIndex(ids => ids.some(id => this.options.deal.cards[id].category === def.category));
+        const index = this.collectionOrigins.get(def.category) ?? restoredSlot;
+        const upper = this.metrics.targets.filter(t => t.location.kind === 'foundation');
+        const origin = upper.find(t => t.location.index === index) ?? upper.reduce<Target | undefined>((best, t) => !best || Math.abs(t.x - pose.x) < Math.abs(best.x - pose.x) ? t : best, undefined);
+        if (origin) view.node.setPosition(origin.x, origin.y).setScale(1).setAlpha(1).setAngle(0);
+      }
       const group = board.tableau.findIndex(col => col.includes(pose.id));
       const groupIds = group >= 0 ? packet(board, group, this.options.deal) : board.foundations.find(col => col.includes(pose.id)) ?? [];
       const total = Object.values(this.options.deal.cards).filter(c => c.category === def.category && !c.leader).length;
@@ -431,6 +444,7 @@ export class BoardScene extends Phaser.Scene {
   private collect(event: GameEvent, moved: string[], index: number) {
     const target = this.metrics.targets.find(t => t.location.kind === 'foundation' && t.location.index === index)!;
     const leaderId = event.cards?.find(id => this.options.deal.cards[id].leader); if (!leaderId) return;
+    this.collectionOrigins.set(this.options.deal.cards[leaderId].category, index);
     const reduced = this.options.getSave().settings.reducedMotion || new URLSearchParams(location.search).get('fxCards') === '0';
     const node = this.add.container(target.x, target.y).setDepth(610); this.world.add(node);
     const collection: CollectionView = { node, targets: [], timers: [], sparks: [] }; this.collections.set(index, collection);

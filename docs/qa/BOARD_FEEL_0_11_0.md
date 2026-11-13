@@ -36,4 +36,13 @@
 
 Source Android run43380743348/job131737674767/artifact14016094265 PASS: debug и unsigned SDK-disabled R8 compilation. [Независимая проверка APK](board-feel-0_11_0/source-apk.json) использует официальные build-tools36: apksigner PASS, package `com.danilah.asocsolitair.debug`, version0.11.0/code19; прежний preview signer `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e`. Все186 файлов production bundle совпали, дополнительные2 native-shim пустые, лаборатории нет. APK11,460,865 bytes, SHA256 `a8aeefa49f838b1408c877f66e4c1d7365f8e1b605f08937808d6001ce319985`. Main/artifact delivery и полная browser-проверка ещё выполняются.
 
+Сохранённые материалы этого runtime, все4 записи выполнены успешно с identity/version0:
+
+- [APK0.11.0/code19](https://chatgpt.com/library?file_id=libfile_c9b1a82b9a248191b70ec373a6376447&account_id=personal).
+- [GIF360×780, скорость1×](https://chatgpt.com/library?file_id=libfile_8b828cedd6448191ad5f0521680180bf&account_id=personal).
+- [GIF320×568, скорость1×](https://chatgpt.com/library?file_id=libfile_7588ecea7ca08191918979de59749177&account_id=personal).
+- [Три сравнения до/после](https://chatgpt.com/library?file_id=libfile_ccf83444e86c8191a06a1166c8798850&account_id=personal). Одинаковая раздача/ввод. Для укладки выбран кадр с наименьшей видимой бумажной поверхностью в каждом screencast, а не заявлен один и тот же миллисекундный момент.
+
+Точные размеры/хеши: [media.json](board-feel-0_11_0/media.json). Сохранение материалов не означает завершение ещё выполняющегося полного CI или телефонную приёмку.
+
 Численные длительности — стартовая настройка реализации. Сила звука/вибрации, плавность и предпочтение игрока на физическом устройстве остаются предметом проверки. Браузерная запись и автоматические прохождения их не доказывают.

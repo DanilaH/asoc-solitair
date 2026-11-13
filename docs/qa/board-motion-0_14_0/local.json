@@ -1,0 +1,30 @@
+{
+  "base": "13fb489c12dcf34e7f38dd441311d98b67285e45",
+  "check": {
+    "unitPlatform": 92,
+    "frozenDeals": 108,
+    "build": "PASS"
+  },
+  "focusedBrowser": {
+    "passed": 54,
+    "newCases": 6
+  },
+  "layout": {
+    "cases": 119,
+    "DOMIssues": 0,
+    "rasterIssues": 0
+  },
+  "recordings": {
+    "cases": 9,
+    "errors": []
+  },
+  "negativeControls": {
+    "baseline": "0.13.0/code21 extracted verified APK",
+    "expectedFailures": 2,
+    "detected": [
+      "hint target appears before demonstration",
+      "near and far transfer contact have equal duration"
+    ],
+    "initialInfrastructureFailure": "Relative server directory failed; absolute-path retry used; not a runtime failure"
+  }
+}

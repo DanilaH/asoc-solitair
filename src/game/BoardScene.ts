@@ -15,7 +15,7 @@ interface Options {
   readerZone?(): DOMRect; peek?(id: string | null): void;
 }
 interface BoardPointer { id: number; x: number; y: number; primaryDown: boolean; isDown: boolean }
-interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; liftedAt?: number; jokerColumn?: number }
+interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; liftedAt?: number; motion?: { x: number; at: number; tilt: number }; jokerColumn?: number }
 interface FoundationSurface { view: CardView; frontId: string }
 interface CoveredFace { frontId: string; strip: boolean }
 interface CollectionView { node: Phaser.GameObjects.Container; targets: Phaser.GameObjects.GameObject[]; timers: Phaser.Time.TimerEvent[]; sparks: Phaser.GameObjects.Image[] }
@@ -251,7 +251,7 @@ export class BoardScene extends Phaser.Scene {
     }
     if (!board.stock.length && board.waste.length) this.slots.fillStyle(0xd2e8db, .08).fillCircle(this.metrics.stock.x, this.metrics.stock.y, 35);
   }
-  public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand, feedback?: ContactFeedback): void {
+  public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand, feedback?: ContactFeedback, returningIds: readonly string[] = []): void {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
     this.clearKeys();
     const generation = ++this.presentationGeneration;
@@ -277,6 +277,15 @@ export class BoardScene extends Phaser.Scene {
     if (this.backStyle !== (save.settings.cardBack ?? 'classic')) { this.backStyle = save.settings.cardBack ?? 'classic'; for (const view of this.views.values()) this.paintBack(view.backArt); }
     const duration = save.settings.reducedMotion ? 0 : 215;
     const movedIds = events.find(e => e.type === 'transfer')?.cards ?? [];
+    // One packet owns one arrival time. Distances are CSS pixels, so phones
+    // share the same feel; neither input nor the committed model waits for it.
+    const undoing = events.some(e => e.type === 'undo');
+    const settlingIds = movedIds.length ? movedIds : undoing ? this.metrics.poses.map(p => p.id) : returningIds;
+    const distance = Math.max(0, ...this.metrics.poses.filter(p => settlingIds.includes(p.id)).map(p => {
+      const view = this.views.get(p.id)!;
+      return Math.hypot(p.x - view.node.x, p.y - view.node.y) * this.cssUnit;
+    }));
+    const settlingDuration = duration ? Phaser.Math.Clamp(75 + distance * .5, 80, undoing ? 210 : 180) : 0;
     const receivingColumn = command?.type === 'transfer' && command.to.kind === 'tableau' ? board.tableau[command.to.index] : undefined;
     const firstArrival = receivingColumn?.indexOf(movedIds[0]) ?? -1;
     const tableauUnder = duration && new URLSearchParams(location.search).get('fxCards') !== '0' && firstArrival > 0 ? receivingColumn![firstArrival - 1] : undefined;
@@ -463,7 +472,7 @@ export class BoardScene extends Phaser.Scene {
       const moving = events.some(e => e.type === 'transfer' && e.cards?.includes(pose.id)) || events.some(e => e.type === 'draw' && e.cards?.includes(pose.id));
       const animationOn = new URLSearchParams(location.search).get(moving ? 'fxCards' : 'fxLayout') !== '0';
       const covered = board.joker?.column === group && board.tableau[group].indexOf(pose.id) < board.joker.boundary;
-      const moveDuration = entering && !fresh || !animationOn ? 0 : moving && command?.type === 'transfer' && duration ? 170 : duration;
+      const moveDuration = entering && !fresh || !animationOn ? 0 : settlingIds.includes(pose.id) ? settlingDuration : duration;
       // A flight belongs above the board until contact, independently of the
       // destination's resting depth. Keep packet members in their source order.
       const flying = Boolean(moveDuration && moving && command?.type === 'transfer');
@@ -541,7 +550,13 @@ export class BoardScene extends Phaser.Scene {
       if (!from || !key) { arrive(); return; }
       key.setPosition(from.x + this.cardW / 2 - 23, from.y - this.cardH / 2 + 23).setVisible(true).setAlpha(1).setScale(1);
       key.setDisplaySize(30, 30);
-      this.tweens.add({ targets: key, x: target.x, y: target.y - 8, duration: 240, ease: 'Sine.easeInOut', onComplete: () => { key.setVisible(false); arrive(); } });
+      const start = { x: key.x, y: key.y }, end = { x: target.x, y: target.y - 8 };
+      const arc = Math.min(28, Math.hypot(end.x - start.x, end.y - start.y) * .1);
+      this.tweens.add({ targets: key, x: end.x, y: end.y, duration: 240, ease: 'Sine.easeInOut',
+        onUpdate: tween => {
+          const t = Phaser.Math.Easing.Sine.InOut(tween.progress);
+          key.y = Phaser.Math.Linear(start.y, end.y, t) - Math.sin(Math.PI * t) * arc;
+        }, onComplete: () => { key.setVisible(false); arrive(); } });
     }));
   }
   private clearCollection(index: number) {
@@ -730,7 +745,13 @@ export class BoardScene extends Phaser.Scene {
     if (!press.moved) return;
     this.dragPointer = pointer;
     if (press.liftedAt === undefined) { press.liftedAt = performance.now(); if (press.from && press.poses.length > 1) this.options.sound('gather'); }
-    const progress = this.options.getSave().settings.reducedMotion ? 1 : 1 - (1 - Math.min(1, (performance.now() - press.liftedAt) / 80)) ** 3;
+    const reduced = this.options.getSave().settings.reducedMotion, now = performance.now();
+    const progress = reduced ? 1 : 1 - (1 - Math.min(1, (now - press.liftedAt) / 80)) ** 3;
+    const motion = press.motion ??= { x, at: now, tilt: 0 }, dt = Math.max(1, now - motion.at);
+    const wantedTilt = reduced ? 0 : Phaser.Math.Clamp((x - motion.x) * this.cssUnit / dt * 1.2, -1.4, 1.4);
+    motion.tilt += (wantedTilt - motion.tilt) * (1 - Math.exp(-dt / 55));
+    motion.x = x; motion.at = now;
+    const tilt = reduced ? 0 : motion.tilt * progress;
     const lift = 68 / this.cssUnit * progress;
     const gathering = Boolean(press.from && press.poses.length > 1), gap = Math.min(10, 28 / Math.max(1, press.poses.length - 1));
     const heldY = press.poses.map((pose, i) => gathering ? Phaser.Math.Linear(pose.y, press.y - (press.poses.length - i - 1) * gap, progress) : pose.y);
@@ -745,8 +766,8 @@ export class BoardScene extends Phaser.Scene {
       view.content.setVisible(front); view.caption?.setVisible(front); view.strip?.setVisible(false);
       if (gathering && front && !this.options.deal.cards[pose.id].rank && !this.options.deal.cards[pose.id].leader) view.badge.setVisible(false);
       view.shade.setAlpha(front ? 0 : .16 * progress);
-      view.shadow.setPosition(0, 4 * progress).setScale(1 + .03 * progress).setAlpha(front ? 1 : .45);
-      view.node.setPosition(pose.x + dx, heldY[i] + dy).setScale(1 + .035 * progress).setDepth(800 + i);
+      view.shadow.setPosition(-tilt * .6, 4 * progress).setScale(1 + .03 * progress).setAlpha(front ? 1 : .45);
+      view.node.setPosition(pose.x + dx, heldY[i] + dy).setScale(1 + .035 * progress).setAngle(tilt).setDepth(800 + i);
     });
     const front = press.poses.at(-1);
     this.dragCount.setVisible(press.poses.length > 1);
@@ -825,54 +846,58 @@ export class BoardScene extends Phaser.Scene {
     const returning = index >= 0 && board.tableau[index]?.length && board.tableau[index].every(id => press!.poses.some(p => p.id === id)) && !this.options.getSave().settings.reducedMotion
       ? { ids: press!.poses.map(p => p.id), y: this.metrics.poses.find(p => p.id === board.tableau[index][0])!.y } : undefined;
     this.jokerSelecting = false; this.options.jokerMode?.(false); this.options.peek?.(null); this.press = null; this.dragPointer = undefined; this.selected = null; this.dragCount?.setVisible(false);
-    if (this.world) { this.sync([], false); if (returning) { this.returningWells.set(index, returning); this.drawSlots(); } }
+    if (this.world) { this.sync([], false, undefined, undefined, press?.poses.map(p => p.id)); if (returning) { this.returningWells.set(index, returning); this.drawSlots(); } }
   }
   public back(): boolean { if (!this.jokerSelecting && !this.press && !this.selected && !this.hintObjects.length) return false; this.clearHint(); this.cancel(); return true; }
   public setEnabled(value: boolean): void { this.enabled = value; if (!value) { this.clearHint(); this.options.peek?.(null); if (this.press || this.selected || this.jokerSelecting) this.cancel(); } }
   public setInspect(value: boolean): void { this.inspectMode = value; this.clearHint(); this.cancel(); }
   public clearHint(): void { this.hintTweens.forEach(t => t.stop()); this.hintTweens = []; this.hintObjects.forEach(o => o.destroy()); this.hintObjects = []; }
-  public hint(action: BoardCommand): void {
-    this.clearHint();
-    const source = action.type === 'transfer' ? sourceCards(this.options.getSave().attempt.board, action.from, this.options.deal) : [];
-    const from = action.type === 'transfer' ? this.metrics.poses.find(p => p.id === source.at(-1)) : this.metrics.stock;
-    const target = action.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, action.to)) : this.metrics.stock;
-    if (!from || !target) return;
-    const rings = this.add.graphics().lineStyle(4, 0xffe39c, .95).setDepth(699);
-    for (const p of [from, target]) rings.strokeRoundedRect(p.x - this.cardW / 2 + 2, p.y - this.cardH / 2 + 2, this.cardW - 4, this.cardH - 4, 13);
-    let ghost: Phaser.GameObjects.Container | Phaser.GameObjects.Image;
-    if (action.type === 'transfer') {
-      const copy = this.makeCard(source.at(-1)!);
-      copy.face.setVisible(true); copy.back.setVisible(false);
-      copy.badge.setText(source.length > 1 ? `×${source.length}` : this.views.get(source.at(-1)!)!.badge.text);
-      ghost = copy.node;
-    } else {
-      ghost = this.add.image(0, 0, this.options.getSave().settings.cardBack === 'diamonds' ? 'art-card-back-diamonds' : 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
-      this.world.add(ghost);
-    }
-    ghost.setPosition(from.x, from.y).setVisible(true).setAlpha(.62).setDepth(700);
-    this.world.add(rings); this.world.sort('depth'); this.hintObjects.push(rings, ghost);
-    if (!this.options.getSave().settings.reducedMotion) this.hintTweens.push(this.tweens.add({ targets: ghost, x: target.x, y: target.y + (action.type === 'transfer' ? 0 : 10), alpha: .35, duration: 850, hold: 200, repeat: 1,
-      onRepeat: () => ghost.setPosition(from.x, from.y).setAlpha(.62), onComplete: () => this.clearHint() }));
-    this.game.loop.wake();
-  }
+  public hint(action: BoardCommand): void { this.cancel(); this.demonstrate(action, false); }
   /** One action at a time, following the real board; cosmetic and non-blocking. */
-  public teach(action: BoardCommand): void {
+  public teach(action: BoardCommand): void { this.demonstrate(action, true); }
+  private demonstrate(action: BoardCommand, teaching: boolean): void {
     this.clearHint();
     if (!this.enabled || this.press || this.selected || this.inspectMode) return;
     const source = action.type === 'transfer' ? sourceCards(this.options.getSave().attempt.board, action.from, this.options.deal) : [];
     const from = action.type === 'transfer' ? this.metrics.poses.find(p => p.id === source.at(-1)) : this.metrics.stock;
     const target = action.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, action.to)) : this.metrics.stock;
     if (!from || !target) return;
-    const focus = this.add.graphics().lineStyle(4, 0xffe39c, .95).setDepth(698);
-    for (const p of [from, target]) focus.strokeRoundedRect(p.x - this.cardW / 2 + 3, p.y - this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
-    const handH = Math.max(70, 32 / this.unit);
-    const hand = this.add.image(from.x, from.y, 'tutorial-hand').setOrigin(.43, .06).setDisplaySize(handH * .66, handH).setDepth(701);
-    this.world.add([focus, hand]); this.world.sort('depth'); this.hintObjects.push(focus, hand);
-    if (this.options.getSave().settings.reducedMotion) { this.game.loop.wake(); return; }
-    const tap = action.type !== 'transfer';
-    this.hintTweens.push(this.tweens.add({ targets: hand, x: target.x, y: target.y + (tap ? 12 : 0),
-      duration: tap ? 450 : 1000, delay: 280, hold: 300, repeatDelay: 450, repeat: -1, ease: 'Sine.easeInOut',
-      onRepeat: () => hand.setPosition(from.x, from.y) }));
+    const light = (p: { x: number; y: number }) => {
+      const g = this.add.graphics().setDepth(698).setAlpha(0);
+      g.fillStyle(0xffe1a0, .16).fillRoundedRect(p.x - this.cardW / 2 + 3, p.y - this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
+      g.fillStyle(0xffe1a0, .95).fillRoundedRect(p.x - this.cardW * .27, p.y + this.cardH / 2 - 7, this.cardW * .54, 4, 2);
+      this.world.add(g); return g;
+    };
+    const origin = light(from), destination = light(target);
+    let ghost: Phaser.GameObjects.Container | Phaser.GameObjects.Image;
+    if (teaching) {
+      const h = Math.max(70, 32 / this.unit);
+      ghost = this.add.image(from.x, from.y, 'tutorial-hand').setOrigin(.43, .06).setDisplaySize(h * .66, h);
+    } else if (action.type === 'transfer') {
+      const copy = this.makeCard(source.at(-1)!);
+      copy.face.setVisible(true); copy.back.setVisible(false);
+      copy.badge.setText(source.length > 1 ? `×${source.length}` : this.views.get(source.at(-1)!)!.badge.text);
+      ghost = copy.node;
+    } else ghost = this.add.image(0, 0, this.options.getSave().settings.cardBack === 'diamonds' ? 'art-card-back-diamonds' : 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
+    ghost.setPosition(from.x, from.y).setVisible(true).setAlpha(0).setDepth(700);
+    this.world.add(ghost); this.world.sort('depth'); this.hintObjects.push(origin, destination, ghost);
+    if (this.options.getSave().settings.reducedMotion) {
+      origin.setAlpha(1); destination.setAlpha(1); ghost.setAlpha(teaching ? 1 : .5);
+      this.game.loop.wake(); return;
+    }
+    const prepare = 220, travel = teaching ? 680 : 500, arrive = 240;
+    const cycle = prepare + travel + arrive + (teaching ? 650 : 160);
+    // The eye gets the source, the gesture, then its destination. Only this
+    // disposable demonstration repeats; it never executes/charges an action.
+    this.hintTweens.push(this.tweens.addCounter({ from: 0, to: cycle, duration: cycle, repeat: teaching ? -1 : 1,
+      onUpdate: tween => {
+        const time = tween.getValue() ?? 0, raw = Phaser.Math.Clamp((time - prepare) / travel, 0, 1);
+        const t = Phaser.Math.Easing.Sine.InOut(raw), ending = Phaser.Math.Clamp((time - prepare - travel) / arrive, 0, 1);
+        origin.setAlpha(time < prepare ? Math.min(1, time / 80) : Math.max(0, 1 - raw * 5));
+        destination.setAlpha(raw < .8 ? 0 : Math.min(1, (raw - .8) * 5) * (1 - ending));
+        ghost.setAlpha((teaching ? 1 : .6) * Math.min(1, time / 100) * (1 - ending));
+        ghost.setPosition(Phaser.Math.Linear(from.x, target.x, t), Phaser.Math.Linear(from.y, target.y, t) + (action.type === 'transfer' ? 0 : Math.sin(Math.PI * raw) * 10));
+      }, onComplete: () => this.clearHint() }));
     this.game.loop.wake();
   }
   public hasMotion(): boolean { return this.tweens.getTweens().length > 0 || this.collections.size > 0 || Boolean(this.keyPresentation) || Boolean(this.press?.moved); }

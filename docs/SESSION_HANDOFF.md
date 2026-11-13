@@ -1,5 +1,9 @@
 # Continuation checkpoint — 2026-11-13
 
+## Active implementation —0.14.0/code22
+
+Owner approved the fitting practices from their UX/motion clip as one package. [Scope/acceptance](qa/BOARD_MOTION_0_14_0.md). Branch feat/board-motion-0.14.0 from main13fb489. Staged Hint/teaching, distance-based settle/return/Undo, restrained held tilt/shadow and a small key arc. Rules/bank/economy/saves/compact geometry/art/kit/SDK stay frozen. Local check92 unit/platform,54 focused browser,119 layout states0DOM/0raster and9 actual-touch recordings pass. Two negative controls on frozen0.13 detect the old source/target cue and equal transfer timing. CI/APK/merge acceptance in progress. Do not re-deliver0.13 as the new build.
+
 
 ## Current delivery —0.13.0/code21
 

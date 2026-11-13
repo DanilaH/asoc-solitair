@@ -1,8 +1,8 @@
-# Verification — 2026-11-12
+# Verification — 2026-11-13
 
-## 0.11.0 board continuity — verification in progress
+## 0.11.0 board continuity — delivered, physical-device acceptance open
 
-[Implementation and evidence](docs/qa/BOARD_FEEL_0_11_0.md). Version19 changes rendering, explicit new-deal entry and browser measurement. Local typecheck/build,92 unit/platform, all supplied current+legacy routes, independent rules verification,96 prototype-agent attempts,119 layout cases with0 DOM/0 raster and pre-final48 focused browser cases pass. Final-source focus, full hosted CI and Android artifact acceptance remain running. [Frozen boundaries](docs/qa/board-feel-0_11_0/frozen.json) independently compare domain/content/platform/art/layout/pinned dependencies against605645b. Physical phone/audio/haptics/human preference are not established by this run.
+[Implementation and evidence](docs/qa/BOARD_FEEL_0_11_0.md). Version19 changes rendering, explicit new-deal entry and browser measurement. Local typecheck/build,92 unit/platform, all supplied current+legacy routes, independent rules verification,96 prototype-agent attempts,119 layout cases with0 DOM/0 raster and pre-final48 focused browser cases pass. Final-runtime continuity16/16, touch campaign7/7 including all80 levels, three production recordings, signed preview APK and Android debug/unsigned R8 builds pass. The first final-runtime CI pair each has145 browser passes,4 deliberate skips and one aggregate30s packet-setup timeout. The trace-confirmed test-only fixture fix passes8/8 local repeats with unchanged real drag/Undo assertions and deadline; full exact-input PR CI43390098010 on71eec798 passes146 browser cases +4 deliberate compact skips, all92 unit/platform, content/rules,96 prototypes,119 layout states and both Android builds. PR#23 merged at7528d8c, identical tree755e525e. The signed APK reproduced on71eec798 is byte-identical to delivered854e3e3 runtime. Final checkpoint changes documentation/evidence only, so a duplicate main build is not claimed. [Frozen boundaries](docs/qa/board-feel-0_11_0/frozen.json) independently compare domain/content/platform/art/layout/pinned dependencies against605645b. Physical phone/audio/haptics/human preference are not established by this run.
 
 ## 2026-11-13 — Board feel audit, unchanged production
 

@@ -34,5 +34,10 @@
     ],
     "typecheck": "PASS"
   },
-  "repeatFullCI": "pending"
+  "repeatFullCI": {
+    "run": 43390098010,
+    "status": "PASS",
+    "browserPassed": 146,
+    "intentionalSkipped": 4
+  }
 }

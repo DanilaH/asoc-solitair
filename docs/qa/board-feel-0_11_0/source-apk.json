@@ -14,5 +14,15 @@
     "cordova.js",
     "cordova_plugins.js"
   ],
-  "laboratoryAbsent": true
+  "laboratoryAbsent": true,
+  "testHeadConfirmation": {
+    "source": "71eec798f110783c7866f2c2db24ac6e4fa3b5d5",
+    "run": 43390091183,
+    "androidJob": 131767650680,
+    "artifact": 14019828793,
+    "debugAndUnsignedR8": "PASS",
+    "deliveredApkByteIdentical": true,
+    "sha256": "9ea07e0e32006a4518da1f20110a8b3fe9db541a20b085da36e828887470cda6",
+    "bytes": 11461133
+  }
 }

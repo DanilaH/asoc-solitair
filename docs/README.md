@@ -1,14 +1,14 @@
 # Product sources
 
-Current board implementation: [0.11.0 continuity, slot hierarchy and coherent collection](qa/BOARD_FEEL_0_11_0.md). Approved audit plan implemented; full CI/APK/media delivery still running. Local model/content/layout/input checks pass. Physical-device feel remains open. Rules/bank/saves/economy/art/SDK/kit preserved.
+Current board implementation: [0.11.0 continuity, slot hierarchy and coherent collection](qa/BOARD_FEEL_0_11_0.md). Approved audit plan implemented; signed APK and actual-touch GIFs delivered. Final-runtime continuity16/16, all80 touch levels, model/content/layout and Android debug/unsigned R8 checks pass. Final exact-input PR CI43390098010 passes146 browser cases +4 deliberate skips and both Android builds. PR#23 merged at7528d8c with identical verified tree; final checkpoint changes documentation/evidence only. Physical-device feel remains open. Rules/bank/saves/economy/art/SDK/kit preserved.
 
 Board review: [microinteraction audit and bounded implementation plan — 2026-11-13](qa/BOARD_FEEL_AUDIT_2026-11-13.md). Historical0.10.0 baseline with production-input evidence; its confirmed findings are implemented in0.11.0 above. Preserve the baseline evidence; fresh-entry/flip behavior is covered in the implementation, physical audio feel remains open.
 
-Current delivery: [0.10.0 rule/save correction and verified APK/media](qa/RULES_V3_IMPLEMENTATION_2026-11-12.md). [Rules v3](product/RULES_V3.md) supersedes the lower-leader permission for new normal attempts; existing attempts keep v2 independently. Bank orders/budgets and economy are frozen. PR #21 merged; full exact-source CI passes; main/source/saved APKs are verified byte-identical.
+Historical delivery: [0.10.0 rule/save correction and verified APK/media](qa/RULES_V3_IMPLEMENTATION_2026-11-12.md). [Rules v3](product/RULES_V3.md) supersedes the lower-leader permission for new normal attempts; existing attempts keep v2 independently. Bank orders/budgets and economy are frozen. PR #21 merged; full exact-source CI passes; main/source/saved APKs are verified byte-identical.
 
 Historical rules review: [independent 0.9.4 audit](qa/RULES_AUDIT_2026-11-12.md). Its rule mismatch, reachable 301-command reload error and identified semantic validation gaps are addressed in 0.10.0 above. Preserve the old evidence; use the current v3 verification for present behavior.
 
-Latest board delivery: [0.9.4 slots, stock fan, centered helpers and integrated reader](qa/BOARD_REFINEMENT_0_9_4.md). See its explicit acceptance/delivery status.
+Historical board delivery: [0.9.4 slots, stock fan, centered helpers and integrated reader](qa/BOARD_REFINEMENT_0_9_4.md). See its explicit acceptance/delivery status.
 
 Current phone-feedback delivery: [0.9.3 board interaction](qa/BOARD_INTERACTION_2026-11-12.md). See its explicit verification/delivery status.
 

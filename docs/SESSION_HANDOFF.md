@@ -1,5 +1,13 @@
 # Continuation checkpoint — 2026-11-13
 
+## Latest independent board review — 2026-11-13, 0.11.0
+
+Owner requests a fresh search for board/feel/effect/generation upgrades. Read-only runtime audit of fetched main1e6ea8c. [Findings and concrete plan](qa/BOARD_OPPORTUNITIES_0_11_0_2026-11-13.md):33 actual-touch scenarios across360/320/reduced,0 page errors, exact model comparisons. All186 freshly built web assets match the delivered0.11.0 APK manifest. Four new visible defects: ordinary transfer takes destination depth too early and goes under the source; tableau receiving image disappears before coverage; ordered leader label collides with0/7; final-key lock vanishes before key arrival. Audio start calls are immediate after commit; contact-timed accent is an A/B hypothesis, not a measured phone audio defect.
+
+Recorder tools/audit-board-opportunities.ts supports all33 cases or ASOC_QA_CASES/ASOC_QA_OUT. Evidence under qa/board-opportunities-0_11_0/. One real1x six-second GIF is saved as libfile_dc73bc0dac6881918ee1263ec36b3c33 version0, identity applied, local /workspace/scratch/50187ffca82b/asoc-media/asoc-0.11-independent-board-audit.gif. Do not duplicate that write. A preview-only imagegen material study was shown in chat; it is not implemented/approved runtime art.
+
+Proposed order: fix flight/receiving contents/ordered overlap4–7h; causal final-key plus contact/audio comparison5–9h; small same-scene material test4–7h (two existing backs/two wells); only then choose one ordinary/one rare effect. No runtime fixes, version/APK, rules/bank/saves/economy/art/SDK/kit changes in this audit. Do not repeat the old0.11 repairs as new work. Existing tests establish correctness, not enjoyment or physical-phone smoothness. Runtime implementation awaits the owner's follow-up scope; the audit itself is complete.
+
 ## Current delivery — 0.11.0/code19, board continuity
 
 Owner approved the detailed plan. [Implementation and live acceptance status](qa/BOARD_FEEL_0_11_0.md). Final runtime source `854e3e3a87688d386694a88171c4f5ed14d70e59`; verified test-source71eec798. PR#23 merged at7528d8c4da2a0e91591bfb1fe1e7527bb0128c48; merge tree755e525e equals the full verified tree. Final checkpoint changes only documentation/evidence. Distinct wells beneath lifted/returning cards and packets, preserved foundation surfaces, local feedback/neutral cancel, full reveal, visible new-deal entry, slot-owned collection snapshots without ring/ribbon. Additional real reload→Undo flash at factory(0,0) reproduced and fixed using scene-only upper origins; no save fields. Domain/content/platform/art/layout/kit frozen; native only version0.11.0/code19. Rules/content/balance3/5/3; old attempts retain2.

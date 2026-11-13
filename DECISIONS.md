@@ -1,5 +1,9 @@
 # Decisions
 
+## 2026-11-13 — Fresh board review before more effects
+
+[Independent0.11 review](docs/qa/BOARD_OPPORTUNITIES_0_11_0_2026-11-13.md) confirms flight-layer/content-timing/ordered-overlap/key-sequence defects with new touch recordings. Select a bounded physical/causal feedback package and a small material study; production artwork remains pending comparison. Preserve approved compact geometry,33 subjects, stock/input/Undo contracts and all durable rules/economy/SDK ownership. No runtime Director, full redesign, mass asset batch or new meta follows from this audit. This entry records a recommendation, not implemented fixes.
+
 ## 2026-11-13 — Approved board continuity implementation
 
 Implement the owner's five-stage plan as0.11.0/code19. Distinguish slot roles and preserve their surfaces during lift/return, preserve paper during foundation arrival, replace repeated frames with material feedback, use a complete reveal and an explicitly visible new-deal entry, and replace ring/ribbon completion with a bounded slot-owned visual snapshot. The snapshot never owns cards, saves or rewards and yields on reuse/Undo/pause/shutdown. Keep compact geometry/casual art and frozen rules/content/balance3/5/3, old v2 attempts, all bank/economy/SDK/kit contracts. [Scope/verification](docs/qa/BOARD_FEEL_0_11_0.md); verified signed APK and actual-input GIFs are delivered; full exact-input PR CI43390098010 passes146 browser cases and both Android builds. PR#23 merged at7528d8c with identical verified tree; device acceptance remains open.

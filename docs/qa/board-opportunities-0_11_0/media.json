@@ -1,0 +1,37 @@
+{
+  "source": "1e6ea8c2d66472b03bd0d0463f311ae72fad14e3",
+  "output": "/workspace/scratch/50187ffca82b/asoc-media/asoc-0.11-independent-board-audit.gif",
+  "noAudio": true,
+  "actualInput": true,
+  "cuts": [
+    {
+      "case": "foundation",
+      "source": ".recording/board-opportunities-011/360-motion-foundation/actual-touch.webm",
+      "trimStartSeconds": 1.2799999999999998,
+      "durationSeconds": 2,
+      "playbackRate": 1,
+      "added": "28px title strip outside the unchanged game image"
+    },
+    {
+      "case": "packet-merge",
+      "source": ".recording/board-opportunities-011/360-motion-packet-merge/actual-touch.webm",
+      "trimStartSeconds": 1.7599999999999998,
+      "durationSeconds": 2,
+      "playbackRate": 1,
+      "added": "28px title strip outside the unchanged game image"
+    },
+    {
+      "case": "unlock",
+      "source": ".recording/board-opportunities-011/360-motion-unlock/actual-touch.webm",
+      "trimStartSeconds": 1.2400000000000002,
+      "durationSeconds": 2,
+      "playbackRate": 1,
+      "added": "28px title strip outside the unchanged game image"
+    }
+  ],
+  "library_file_id": "libfile_dc73bc0dac6881918ee1263ec36b3c33",
+  "libraryVersion": 0,
+  "identityApplied": true,
+  "bytes": 2901284,
+  "sha256": "898097cf5b8caac3ec48d16d7508af29604269c19bfed3547e5d5b450c7d17ea"
+}

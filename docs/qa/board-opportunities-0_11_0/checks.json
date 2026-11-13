@@ -1,0 +1,3304 @@
+{
+  "auditedSource": "1e6ea8c2d66472b03bd0d0463f311ae72fad14e3",
+  "runtimeSource": "854e3e3a87688d386694a88171c4f5ed14d70e59",
+  "version": "0.11.0",
+  "code": 19,
+  "rulesContentBalance": [
+    3,
+    5,
+    3
+  ],
+  "casesPassed": 33,
+  "profiles": [
+    "360x780 motion",
+    "320x568 motion",
+    "360x780 reduced motion"
+  ],
+  "pageErrors": [],
+  "all186WebFilesEqualSignedDeliveredApkManifest": true,
+  "method": "Legal isolated saves; actual touch input; exact domain comparison; unmodified production bundle. Passive Storage.setItem/AudioBufferSourceNode.start wrappers measure command timing only, not hardware audio onset or subjective enjoyment.",
+  "coverage": [
+    "packet merge",
+    "foundation transfer",
+    "completion",
+    "final key/unlock",
+    "ordered leader",
+    "ordered member",
+    "dense four columns",
+    "daily 2026-11-13",
+    "ink palette/bottom-left stock",
+    "Joker placement",
+    "touch drag"
+  ],
+  "cases": [
+    {
+      "label": "360-motion-packet-merge",
+      "deal": "campaign-005",
+      "level": 5,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "fruit_2",
+            "fruit_4"
+          ],
+          "category": "fruit"
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 244.0888888888889,
+          "y": 422.5777777777778
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 406.4
+        },
+        "sourceIds": [
+          "fruit_2",
+          "fruit_4"
+        ],
+        "destinationIds": [
+          "tools",
+          "fruit_1"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1140.300000000745,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1324.8999999985099,
+          "revision": 13,
+          "moves": 19,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1334.1000000014901,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566213459.7,
+        "now": 2707.800000000745
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-foundation",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 54.93333333333334,
+          "y": 417.6
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "lights_3"
+        ],
+        "destinationIds": [
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 973.5999999977648,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1185.199999999255,
+          "revision": 2,
+          "moves": 30,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1201.800000000745,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1207.300000000745,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566216518,
+        "now": 2685.89999999851
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-completion",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_1"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "complete",
+          "cards": [
+            "lights_3",
+            "lights_4",
+            "lights_2",
+            "lights_1",
+            "lights"
+          ],
+          "category": "lights"
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 149.51111111111112,
+          "y": 395.2
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "lights_1"
+        ],
+        "destinationIds": [
+          "lights_3",
+          "lights_4",
+          "lights_2",
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1028.5,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1251.800000000745,
+          "revision": 6,
+          "moves": 26,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1277.800000000745,
+          "duration": 0.27,
+          "sampleRate": 44100,
+          "fingerprint": 458070487,
+          "matches": [
+            "complete:0",
+            "complete:1",
+            "complete:2"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566219651.5,
+        "now": 2613.39999999851
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-unlock",
+      "deal": "campaign-025",
+      "level": 25,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "clothes_2"
+          ],
+          "category": "clothes"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_2"
+          ]
+        },
+        {
+          "type": "key",
+          "cards": [
+            "dishes_2"
+          ],
+          "amount": 3
+        },
+        {
+          "type": "unlock",
+          "amount": 3
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_3"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 124,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 223.14074074074074,
+          "y": 384.6222222222222
+        },
+        "target": {
+          "x": 136.85925925925926,
+          "y": 242.75555555555556
+        },
+        "sourceIds": [
+          "clothes_2"
+        ],
+        "destinationIds": [
+          "clothes"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 962.7999999970198,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1134.199999999255,
+          "revision": 3,
+          "moves": 11,
+          "keys": [
+            "key-a",
+            "key-b",
+            "key-c"
+          ],
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1142.7999999970198,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1149.7999999970198,
+          "duration": 0.29,
+          "sampleRate": 44100,
+          "fingerprint": 665634499,
+          "matches": [
+            "unlock:0",
+            "unlock:1",
+            "unlock:2"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566222653.9,
+        "now": 2427.39999999851
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-ordered",
+      "deal": "campaign-023",
+      "level": 23,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "days"
+          ],
+          "category": "days"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "days_7"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 54.93333333333334,
+          "y": 384.6222222222222
+        },
+        "target": {
+          "x": 54.93333333333334,
+          "y": 242.75555555555556
+        },
+        "sourceIds": [
+          "days"
+        ],
+        "destinationIds": []
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 916.4000000022352,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1110.9000000022352,
+          "revision": 1,
+          "moves": 13,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1120,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1124.300000000745,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566225421.1,
+        "now": 2395.900000002235
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-dense",
+      "deal": "campaign-050",
+      "level": 50,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "dances"
+          ],
+          "category": "dances"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "hats"
+          ]
+        },
+        {
+          "type": "key",
+          "cards": [
+            "hats"
+          ],
+          "amount": 1
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 124,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 136.85925925925926,
+          "y": 406.4
+        },
+        "target": {
+          "x": 50.577777777777776,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "dances"
+        ],
+        "destinationIds": []
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 996.7999999970198,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1205.7999999970198,
+          "revision": 1,
+          "moves": 34,
+          "keys": [
+            "key-2"
+          ],
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1217.0999999977648,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1221.8999999985099,
+          "duration": 0.16,
+          "sampleRate": 44100,
+          "fingerprint": 1812328854,
+          "matches": [
+            "key:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566228312.8,
+        "now": 2685.5
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-daily",
+      "deal": "daily-v1-2026-11-13",
+      "daily": {
+        "dayId": "2026-11-13",
+        "contentVersion": 1,
+        "poolId": "daily-pool-09"
+      },
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "music"
+          ],
+          "category": "music"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "music_2"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 124,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 50.577777777777776,
+          "y": 406.4
+        },
+        "target": {
+          "x": 50.577777777777776,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "music"
+        ],
+        "destinationIds": []
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 925,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1109.5999999977648,
+          "revision": 1,
+          "moves": 25,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1116.5999999977648,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1118.8999999985099,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566231455.7,
+        "now": 2484.599999997765
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-ink-bottom",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 54.93333333333334,
+          "y": 290.66666666666663
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 146.31111111111113
+        },
+        "sourceIds": [
+          "lights_3"
+        ],
+        "destinationIds": [
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 976.5,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1176.1000000014901,
+          "revision": 2,
+          "moves": 30,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1185.3999999985099,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1190.5,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566234391.7,
+        "now": 2593.89999999851
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-packet-merge",
+      "deal": "campaign-005",
+      "level": 5,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "fruit_2",
+            "fruit_4"
+          ],
+          "category": "fruit"
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 216.45925925925926,
+          "y": 369.31851851851854
+        },
+        "target": {
+          "x": 133.14074074074074,
+          "y": 355.06666666666666
+        },
+        "sourceIds": [
+          "fruit_2",
+          "fruit_4"
+        ],
+        "destinationIds": [
+          "tools",
+          "fruit_1"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 985.7999999970198,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1148.2999999970198,
+          "revision": 13,
+          "moves": 19,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1162.8999999985099,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566237418.8,
+        "now": 2389.2999999970198
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-foundation",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 49.82222222222222,
+          "y": 364.93333333333334
+        },
+        "target": {
+          "x": 133.14074074074074,
+          "y": 230.0888888888889
+        },
+        "sourceIds": [
+          "lights_3"
+        ],
+        "destinationIds": [
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 909.0999999977648,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1076.8999999985099,
+          "revision": 2,
+          "moves": 30,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1087.0999999977648,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1091.800000000745,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566240206.5,
+        "now": 2392.300000000745
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-completion",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_1"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "complete",
+          "cards": [
+            "lights_3",
+            "lights_4",
+            "lights_2",
+            "lights_1",
+            "lights"
+          ],
+          "category": "lights"
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 133.14074074074074,
+          "y": 345.2
+        },
+        "target": {
+          "x": 133.14074074074074,
+          "y": 230.0888888888889
+        },
+        "sourceIds": [
+          "lights_1"
+        ],
+        "destinationIds": [
+          "lights_3",
+          "lights_4",
+          "lights_2",
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1470.8999999985099,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1683.199999999255,
+          "revision": 6,
+          "moves": 26,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1714.6000000014901,
+          "duration": 0.27,
+          "sampleRate": 44100,
+          "fingerprint": 458070487,
+          "matches": [
+            "complete:0",
+            "complete:1",
+            "complete:2"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566243051.7,
+        "now": 2947.10000000149
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-unlock",
+      "deal": "campaign-025",
+      "level": 25,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "clothes_2"
+          ],
+          "category": "clothes"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_2"
+          ]
+        },
+        {
+          "type": "key",
+          "cards": [
+            "dishes_2"
+          ],
+          "amount": 3
+        },
+        {
+          "type": "unlock",
+          "amount": 3
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_3"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 124,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 198.00493827160494,
+          "y": 335.8814814814815
+        },
+        "target": {
+          "x": 121.99506172839506,
+          "y": 210.9037037037037
+        },
+        "sourceIds": [
+          "clothes_2"
+        ],
+        "destinationIds": [
+          "clothes"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1129.6000000014901,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1292.1000000014901,
+          "revision": 3,
+          "moves": 11,
+          "keys": [
+            "key-a",
+            "key-b",
+            "key-c"
+          ],
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1301.800000000745,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1317.7000000029802,
+          "duration": 0.29,
+          "sampleRate": 44100,
+          "fingerprint": 665634499,
+          "matches": [
+            "unlock:0",
+            "unlock:1",
+            "unlock:2"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566246519.6,
+        "now": 2557
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-ordered",
+      "deal": "campaign-023",
+      "level": 23,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "days"
+          ],
+          "category": "days"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "days_7"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 49.82222222222222,
+          "y": 335.8814814814815
+        },
+        "target": {
+          "x": 49.82222222222222,
+          "y": 210.9037037037037
+        },
+        "sourceIds": [
+          "days"
+        ],
+        "destinationIds": []
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1022.2000000029802,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1171.7000000029802,
+          "revision": 1,
+          "moves": 13,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1179.6000000014901,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1182.4000000022352,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566249475,
+        "now": 2362.7000000029802
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-dense",
+      "deal": "campaign-050",
+      "level": 50,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "dances"
+          ],
+          "category": "dances"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "hats"
+          ]
+        },
+        {
+          "type": "key",
+          "cards": [
+            "hats"
+          ],
+          "amount": 1
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 124,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 121.99506172839506,
+          "y": 355.06666666666666
+        },
+        "target": {
+          "x": 45.98518518518519,
+          "y": 230.0888888888889
+        },
+        "sourceIds": [
+          "dances"
+        ],
+        "destinationIds": []
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1056.199999999255,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1227.2999999970198,
+          "revision": 1,
+          "moves": 34,
+          "keys": [
+            "key-2"
+          ],
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1238.199999999255,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1243.2999999970198,
+          "duration": 0.16,
+          "sampleRate": 44100,
+          "fingerprint": 1812328854,
+          "matches": [
+            "key:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566252237.8,
+        "now": 2478.2999999970198
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-daily",
+      "deal": "daily-v1-2026-11-13",
+      "daily": {
+        "dayId": "2026-11-13",
+        "contentVersion": 1,
+        "poolId": "daily-pool-09"
+      },
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "music"
+          ],
+          "category": "music"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "music_2"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 124,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 45.98518518518519,
+          "y": 355.06666666666666
+        },
+        "target": {
+          "x": 45.98518518518519,
+          "y": 230.0888888888889
+        },
+        "sourceIds": [
+          "music"
+        ],
+        "destinationIds": []
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 984.6000000014901,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1148.199999999255,
+          "revision": 1,
+          "moves": 25,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1158.5,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1163.5,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566255201.4,
+        "now": 2447.699999999255
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-ink-bottom",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 49.82222222222222,
+          "y": 253.11111111111111
+        },
+        "target": {
+          "x": 133.14074074074074,
+          "y": 125.94074074074075
+        },
+        "sourceIds": [
+          "lights_3"
+        ],
+        "destinationIds": [
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 899.3000000007451,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1048.5,
+          "revision": 2,
+          "moves": 30,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1057.1000000014901,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1063.300000000745,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566257983.1,
+        "now": 2346.39999999851
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-packet-merge",
+      "deal": "campaign-005",
+      "level": 5,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "fruit_2",
+            "fruit_4"
+          ],
+          "category": "fruit"
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 244.0888888888889,
+          "y": 422.5777777777778
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 406.4
+        },
+        "sourceIds": [
+          "fruit_2",
+          "fruit_4"
+        ],
+        "destinationIds": [
+          "tools",
+          "fruit_1"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 933.6000000014901,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1204.6000000014901,
+          "revision": 13,
+          "moves": 19,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1214.1000000014901,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566260665.2,
+        "now": 2438.60000000149
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-foundation",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 54.93333333333334,
+          "y": 417.6
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "lights_3"
+        ],
+        "destinationIds": [
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1043.3999999985099,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1211.800000000745,
+          "revision": 2,
+          "moves": 30,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1225.3999999985099,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566263453.5,
+        "now": 2433.800000000745
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-completion",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_1"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "complete",
+          "cards": [
+            "lights_3",
+            "lights_4",
+            "lights_2",
+            "lights_1",
+            "lights"
+          ],
+          "category": "lights"
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 149.51111111111112,
+          "y": 395.2
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "lights_1"
+        ],
+        "destinationIds": [
+          "lights_3",
+          "lights_4",
+          "lights_2",
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 943,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1112.5,
+          "revision": 6,
+          "moves": 26,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1132,
+          "duration": 0.27,
+          "sampleRate": 44100,
+          "fingerprint": 458070487,
+          "matches": [
+            "complete:0",
+            "complete:1",
+            "complete:2"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566266338.3,
+        "now": 2347
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-unlock",
+      "deal": "campaign-025",
+      "level": 25,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "clothes_2"
+          ],
+          "category": "clothes"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_2"
+          ]
+        },
+        {
+          "type": "key",
+          "cards": [
+            "dishes_2"
+          ],
+          "amount": 3
+        },
+        {
+          "type": "unlock",
+          "amount": 3
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes_3"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 124,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 223.14074074074074,
+          "y": 384.6222222222222
+        },
+        "target": {
+          "x": 136.85925925925926,
+          "y": 242.75555555555556
+        },
+        "sourceIds": [
+          "clothes_2"
+        ],
+        "destinationIds": [
+          "clothes"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 947.4000000022352,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1138.300000000745,
+          "revision": 3,
+          "moves": 11,
+          "keys": [
+            "key-a",
+            "key-b",
+            "key-c"
+          ],
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1260.5,
+          "duration": 0.29,
+          "sampleRate": 44100,
+          "fingerprint": 665634499,
+          "matches": [
+            "unlock:0",
+            "unlock:1",
+            "unlock:2"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566269052.4,
+        "now": 2479.10000000149
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-ordered",
+      "deal": "campaign-023",
+      "level": 23,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "days"
+          ],
+          "category": "days"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "days_7"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 54.93333333333334,
+          "y": 384.6222222222222
+        },
+        "target": {
+          "x": 54.93333333333334,
+          "y": 242.75555555555556
+        },
+        "sourceIds": [
+          "days"
+        ],
+        "destinationIds": []
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 948.1999999992549,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1115.800000000745,
+          "revision": 1,
+          "moves": 13,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1126,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566271881.7,
+        "now": 2370.5
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-dense",
+      "deal": "campaign-050",
+      "level": 50,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "dances"
+          ],
+          "category": "dances"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "hats"
+          ]
+        },
+        {
+          "type": "key",
+          "cards": [
+            "hats"
+          ],
+          "amount": 1
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 124,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 136.85925925925926,
+          "y": 406.4
+        },
+        "target": {
+          "x": 50.577777777777776,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "dances"
+        ],
+        "destinationIds": []
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1113.5999999977648,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1295.8999999985099,
+          "revision": 1,
+          "moves": 34,
+          "keys": [
+            "key-2"
+          ],
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1325.5,
+          "duration": 0.16,
+          "sampleRate": 44100,
+          "fingerprint": 1812328854,
+          "matches": [
+            "key:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566275037.3,
+        "now": 2629
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-daily",
+      "deal": "daily-v1-2026-11-13",
+      "daily": {
+        "dayId": "2026-11-13",
+        "contentVersion": 1,
+        "poolId": "daily-pool-09"
+      },
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "music"
+          ],
+          "category": "music"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "music_2"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 124,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 50.577777777777776,
+          "y": 406.4
+        },
+        "target": {
+          "x": 50.577777777777776,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "music"
+        ],
+        "destinationIds": []
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 941.3000000007451,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1123.9000000022352,
+          "revision": 1,
+          "moves": 25,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1133.699999999255,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566278006.8,
+        "now": 2314.400000002235
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-ink-bottom",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 54.93333333333334,
+          "y": 290.66666666666663
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 146.31111111111113
+        },
+        "sourceIds": [
+          "lights_3"
+        ],
+        "destinationIds": [
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 977.6000000014901,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1189,
+          "revision": 2,
+          "moves": 30,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1197.3999999985099,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566280655.2,
+        "now": 2435.800000000745
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-ordered-next",
+      "deal": "campaign-023",
+      "level": 23,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "days_1"
+          ],
+          "category": "days"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "days_3"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 149.51111111111112,
+          "y": 395.82222222222225
+        },
+        "target": {
+          "x": 54.93333333333334,
+          "y": 242.75555555555556
+        },
+        "sourceIds": [
+          "days_1"
+        ],
+        "destinationIds": [
+          "days"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1153.8999999985099,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1378.8999999985099,
+          "revision": 2,
+          "moves": 12,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1391.699999999255,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1394.199999999255,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566501827.2,
+        "now": 2840.800000000745
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-joker",
+      "deal": "campaign-021",
+      "level": 21,
+      "cmd": {
+        "type": "place-joker",
+        "column": 0
+      },
+      "events": [
+        {
+          "type": "joker"
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "target": {
+          "x": 54.93333333333334,
+          "y": 384.6222222222222
+        }
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1091.800000000745,
+          "duration": 0.04501133786848072,
+          "sampleRate": 44100,
+          "fingerprint": 3874319514,
+          "matches": [
+            "ui:1"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1279.300000000745,
+          "revision": 1,
+          "moves": 12,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1286.8999999985099,
+          "duration": 0.18,
+          "sampleRate": 44100,
+          "fingerprint": 1091673308,
+          "matches": [
+            "joker:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566505216,
+        "now": 2550.800000000745
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-motion-drag-transfer",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 54.93333333333334,
+          "y": 417.6
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "lights_3"
+        ],
+        "destinationIds": [
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 957.9000000022352,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1743.6000000014901,
+          "revision": 2,
+          "moves": 30,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1754.2000000029802,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1755.5,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566508130.2,
+        "now": 3106.2000000029802
+      },
+      "actualInput": "CDP touch drag",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-ordered-next",
+      "deal": "campaign-023",
+      "level": 23,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "days_1"
+          ],
+          "category": "days"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "days_3"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 133.14074074074074,
+          "y": 345.7481481481482
+        },
+        "target": {
+          "x": 49.82222222222222,
+          "y": 210.9037037037037
+        },
+        "sourceIds": [
+          "days_1"
+        ],
+        "destinationIds": [
+          "days"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 1189.8999999985099,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1399.5,
+          "revision": 2,
+          "moves": 12,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1419.199999999255,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1422,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566512128.3,
+        "now": 2715.800000000745
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-joker",
+      "deal": "campaign-021",
+      "level": 21,
+      "cmd": {
+        "type": "place-joker",
+        "column": 0
+      },
+      "events": [
+        {
+          "type": "joker"
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "target": {
+          "x": 49.82222222222222,
+          "y": 335.8814814814815
+        }
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 996,
+          "duration": 0.04501133786848072,
+          "sampleRate": 44100,
+          "fingerprint": 3874319514,
+          "matches": [
+            "ui:1"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1114.800000000745,
+          "revision": 1,
+          "moves": 12,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1123,
+          "duration": 0.18,
+          "sampleRate": 44100,
+          "fingerprint": 1091673308,
+          "matches": [
+            "joker:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566515225.6,
+        "now": 2291.300000000745
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "320-motion-drag-transfer",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 64,
+        "width": 296,
+        "height": 383
+      },
+      "unit": 0.5481481481481482,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 49.82222222222222,
+          "y": 364.93333333333334
+        },
+        "target": {
+          "x": 133.14074074074074,
+          "y": 230.0888888888889
+        },
+        "sourceIds": [
+          "lights_3"
+        ],
+        "destinationIds": [
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 893.7999999970198,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1534.3999999985099,
+          "revision": 2,
+          "moves": 30,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1553.699999999255,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1836642191,
+          "matches": [
+            "flip:0"
+          ]
+        },
+        {
+          "type": "audio",
+          "at": 1554.7999999970198,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566517876.4,
+        "now": 2777.89999999851
+      },
+      "actualInput": "CDP touch drag",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-ordered-next",
+      "deal": "campaign-023",
+      "level": 23,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "days_1"
+          ],
+          "category": "days"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "days_3"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 149.51111111111112,
+          "y": 395.82222222222225
+        },
+        "target": {
+          "x": 54.93333333333334,
+          "y": 242.75555555555556
+        },
+        "sourceIds": [
+          "days_1"
+        ],
+        "destinationIds": [
+          "days"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 969,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1136.2000000029802,
+          "revision": 2,
+          "moves": 12,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1144.2000000029802,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566521118.6,
+        "now": 2446.800000000745
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-joker",
+      "deal": "campaign-021",
+      "level": 21,
+      "cmd": {
+        "type": "place-joker",
+        "column": 0
+      },
+      "events": [
+        {
+          "type": "joker"
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "target": {
+          "x": 54.93333333333334,
+          "y": 384.6222222222222
+        }
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 985.9000000022352,
+          "duration": 0.04501133786848072,
+          "sampleRate": 44100,
+          "fingerprint": 3874319514,
+          "matches": [
+            "ui:1"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1119.1000000014901,
+          "revision": 1,
+          "moves": 12,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1134.4000000022352,
+          "duration": 0.18,
+          "sampleRate": 44100,
+          "fingerprint": 1091673308,
+          "matches": [
+            "joker:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566523956.4,
+        "now": 2313.10000000149
+      },
+      "actualInput": "touchscreen taps",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    },
+    {
+      "label": "360-reduced-drag-transfer",
+      "deal": "campaign-006",
+      "level": 6,
+      "cmd": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "events": [
+        {
+          "type": "transfer",
+          "cards": [
+            "lights_3"
+          ],
+          "category": "lights"
+        },
+        {
+          "type": "flip",
+          "cards": [
+            "dishes"
+          ]
+        }
+      ],
+      "boardBounds": {
+        "x": 12,
+        "y": 76,
+        "width": 336,
+        "height": 566
+      },
+      "unit": 0.6222222222222222,
+      "card": {
+        "width": 138,
+        "height": 166
+      },
+      "anchors": {
+        "from": {
+          "x": 54.93333333333334,
+          "y": 417.6
+        },
+        "target": {
+          "x": 149.51111111111112,
+          "y": 264.5333333333333
+        },
+        "sourceIds": [
+          "lights_3"
+        ],
+        "destinationIds": [
+          "lights"
+        ]
+      },
+      "probes": [
+        {
+          "type": "audio",
+          "at": 931.3000000007451,
+          "duration": 0.06,
+          "sampleRate": 44100,
+          "fingerprint": 2032291236,
+          "matches": [
+            "lift:0"
+          ]
+        },
+        {
+          "type": "persist",
+          "at": 1616.8999999985099,
+          "revision": 2,
+          "moves": 30,
+          "phase": "playing"
+        },
+        {
+          "type": "audio",
+          "at": 1624.199999999255,
+          "duration": 0.1,
+          "sampleRate": 44100,
+          "fingerprint": 1240279173,
+          "matches": [
+            "transfer:0"
+          ]
+        }
+      ],
+      "timing": {
+        "timeOrigin": 1794566526974.2,
+        "now": 3002.89999999851
+      },
+      "actualInput": "CDP touch drag",
+      "prepared": "legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning"
+    }
+  ],
+  "researchKitHead": "f154e0b537e395309763e0dd6514725c7196f690",
+  "runtimeKitPinUnchanged": "a9325265e87583a4872cf6a158e1e881a0d7508e",
+  "newHumanOrPhysicalPhoneTest": false,
+  "newCompetitorApkOrFootage": false
+}

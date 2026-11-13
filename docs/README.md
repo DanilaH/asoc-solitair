@@ -1,5 +1,7 @@
 # Product sources
 
+Latest independent follow-up: [0.11.0 board/feel/generation opportunities](qa/BOARD_OPPORTUNITIES_0_11_0_2026-11-13.md).33 fresh touch scenarios; four new visual defects and bounded material/effect proposals. Read-only runtime audit; no new APK or production art is implemented.
+
 Current board implementation: [0.11.0 continuity, slot hierarchy and coherent collection](qa/BOARD_FEEL_0_11_0.md). Approved audit plan implemented; signed APK and actual-touch GIFs delivered. Final-runtime continuity16/16, all80 touch levels, model/content/layout and Android debug/unsigned R8 checks pass. Final exact-input PR CI43390098010 passes146 browser cases +4 deliberate skips and both Android builds. PR#23 merged at7528d8c with identical verified tree; final checkpoint changes documentation/evidence only. Physical-device feel remains open. Rules/bank/saves/economy/art/SDK/kit preserved.
 
 Board review: [microinteraction audit and bounded implementation plan — 2026-11-13](qa/BOARD_FEEL_AUDIT_2026-11-13.md). Historical0.10.0 baseline with production-input evidence; its confirmed findings are implemented in0.11.0 above. Preserve the baseline evidence; fresh-entry/flip behavior is covered in the implementation, physical audio feel remains open.

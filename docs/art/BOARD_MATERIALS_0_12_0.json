@@ -1,0 +1,147 @@
+{
+  "status": "local runtime integrated; pending ordinary binary upload to repository",
+  "method": "built-in imagegen; existing export-art.mjs crop/resize/WebP with original alpha; no repaint/background removal",
+  "assets": [
+    {
+      "name": "card-back-classic-012",
+      "path": "public/art/generated/card-back-classic-012.webp",
+      "bytes": 23796,
+      "sha256": "3e172ee1d7134e6a8fb332a81c9e351b9c4940f3ebf53eff8b250cd3c104f1f3",
+      "source": "exec-2416c6cf-b281-4986-b297-948c2a0b7f2d.png",
+      "sourceSha256": "420c078e4833c8c2e8bd9f6dce8b622d0bfc88dc279dc210ec7436190bb56930",
+      "promptBrief": "Simplify existing classic back: same ivory rim, gold linked-card emblem and coral ribbon, few broad low-contrast embossed arches, clear at60px, transparent outside.",
+      "export": {
+        "sourceSha256": "420c078e4833c8c2e8bd9f6dce8b622d0bfc88dc279dc210ec7436190bb56930",
+        "columns": 1,
+        "rows": 1,
+        "records": [
+          {
+            "name": "card-back-classic-012",
+            "source": "exec-2416c6cf-b281-4986-b297-948c2a0b7f2d.png",
+            "rect": {
+              "left": 68,
+              "top": 60,
+              "width": 947,
+              "height": 1328
+            },
+            "path": "public/art/generated/card-back-classic-012.webp"
+          }
+        ]
+      },
+      "purpose": "runtime material; geometry and hit areas remain code-owned"
+    },
+    {
+      "name": "card-back-diamonds-012",
+      "path": "public/art/generated/card-back-diamonds-012.webp",
+      "bytes": 22634,
+      "sha256": "f33bfa35163eda2f5821a6444520385377b39fc0196c840ee8f97bbd5f3bff7c",
+      "source": "exec-328e3f17-058d-4f36-ac88-819b792a2e43.png",
+      "sourceSha256": "f3e4d957827f21d411cddcc56ff23816b38350e2a9936e7a4258d986b307f16a",
+      "promptBrief": "Match new classic material; deeper indigo-violet, only2–3 large embossed diamonds; same emblem, ivory rim and coral accent; transparent outside.",
+      "export": {
+        "sourceSha256": "f3e4d957827f21d411cddcc56ff23816b38350e2a9936e7a4258d986b307f16a",
+        "columns": 1,
+        "rows": 1,
+        "records": [
+          {
+            "name": "card-back-diamonds-012",
+            "source": "exec-328e3f17-058d-4f36-ac88-819b792a2e43.png",
+            "rect": {
+              "left": 63,
+              "top": 59,
+              "width": 956,
+              "height": 1330
+            },
+            "path": "public/art/generated/card-back-diamonds-012.webp"
+          }
+        ]
+      },
+      "purpose": "runtime material; geometry and hit areas remain code-owned"
+    },
+    {
+      "name": "card-slot-tableau-012",
+      "path": "public/art/generated/card-slot-tableau-012.webp",
+      "bytes": 14438,
+      "sha256": "5f8c964853fb9f029fa0fc13e1063470066dc2431072f253ee23e617d0eb9fee",
+      "source": "exec-07a5736a-a062-4bac-b2d0-7e9750531de4.png",
+      "sourceSha256": "b64315fe06fb3a1b3cdafcf8a7d28a42141819254cec73093ed48436acbaf58e",
+      "promptBrief": "One empty lower shallow receptive well,3:4 front-on rounded rectangle; calm dark teal, upper-left reflected lip, soft inset shade, no symbol/text/double outline; alpha outside.",
+      "export": {
+        "sourceSha256": "b64315fe06fb3a1b3cdafcf8a7d28a42141819254cec73093ed48436acbaf58e",
+        "columns": 1,
+        "rows": 1,
+        "records": [
+          {
+            "name": "card-slot-tableau-012",
+            "source": "exec-07a5736a-a062-4bac-b2d0-7e9750531de4.png",
+            "rect": {
+              "left": 121,
+              "top": 190,
+              "width": 840,
+              "height": 1093
+            },
+            "path": "public/art/generated/card-slot-tableau-012.webp"
+          }
+        ]
+      },
+      "purpose": "runtime material; geometry and hit areas remain code-owned"
+    },
+    {
+      "name": "card-slot-foundation-012",
+      "path": "public/art/generated/card-slot-foundation-012.webp",
+      "bytes": 21224,
+      "sha256": "cc9a532eb3eb61ee2408c101774d0bed937c2110b1eb4c56ccb3d882957c6bd6",
+      "source": "exec-b9debd23-e9aa-4ad7-b33c-832ecaf0aac3.png",
+      "sourceSha256": "6534aa3fd626b23b34efbe791ca2ba94669cb6c5ed249597f79656b50a96d66a",
+      "promptBrief": "One empty upper category well in same family; restrained warm lip, dark teal paper/felt interior, single small simple honey crown; no text/plus/ornate frame; alpha outside.",
+      "export": {
+        "sourceSha256": "6534aa3fd626b23b34efbe791ca2ba94669cb6c5ed249597f79656b50a96d66a",
+        "columns": 1,
+        "rows": 1,
+        "records": [
+          {
+            "name": "card-slot-foundation-012",
+            "source": "exec-b9debd23-e9aa-4ad7-b33c-832ecaf0aac3.png",
+            "rect": {
+              "left": 60,
+              "top": 115,
+              "width": 960,
+              "height": 1239
+            },
+            "path": "public/art/generated/card-slot-foundation-012.webp"
+          }
+        ]
+      },
+      "purpose": "runtime material; geometry and hit areas remain code-owned"
+    },
+    {
+      "name": "lock-open-012",
+      "path": "public/art/generated/lock-open-012.webp",
+      "bytes": 9278,
+      "sha256": "64159c04c109790ec2bc237a3ededa76ace24d2f16284573446d75f251bd609c",
+      "source": "exec-a4f3fa74-f70c-43cb-907c-d279d07d5137.png",
+      "sourceSha256": "f74e4d1d32dccdb2067194d9e078bc2b479b461a4ed7e647a76620a97df33d0f",
+      "promptBrief": "Edit existing padlock: preserve purple body, gold keyhole and upper-left light; lift one gold shackle end visibly from right socket; upright, isolated transparent sprite, no extra symbols.",
+      "export": {
+        "sourceSha256": "f74e4d1d32dccdb2067194d9e078bc2b479b461a4ed7e647a76620a97df33d0f",
+        "columns": 1,
+        "rows": 1,
+        "records": [
+          {
+            "name": "lock-open-012",
+            "source": "exec-a4f3fa74-f70c-43cb-907c-d279d07d5137.png",
+            "rect": {
+              "left": 134,
+              "top": 7,
+              "width": 977,
+              "height": 1218
+            },
+            "path": "public/art/generated/lock-open-012.webp"
+          }
+        ]
+      },
+      "purpose": "runtime material; geometry and hit areas remain code-owned"
+    }
+  ],
+  "preserved": "33 approved subjects, category word/picture policy, faces, layout, durable cosmetic IDs and unlock rules"
+}

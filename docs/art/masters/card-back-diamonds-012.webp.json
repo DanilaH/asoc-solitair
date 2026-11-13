@@ -1,0 +1,18 @@
+{
+  "sourceSha256": "f3e4d957827f21d411cddcc56ff23816b38350e2a9936e7a4258d986b307f16a",
+  "columns": 1,
+  "rows": 1,
+  "records": [
+    {
+      "name": "card-back-diamonds-012",
+      "source": "exec-328e3f17-058d-4f36-ac88-819b792a2e43.png",
+      "rect": {
+        "left": 63,
+        "top": 59,
+        "width": 956,
+        "height": 1330
+      },
+      "path": "public/art/generated/card-back-diamonds-012.webp"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "sourceSha256": "f74e4d1d32dccdb2067194d9e078bc2b479b461a4ed7e647a76620a97df33d0f",
+  "columns": 1,
+  "rows": 1,
+  "records": [
+    {
+      "name": "lock-open-012",
+      "source": "exec-a4f3fa74-f70c-43cb-907c-d279d07d5137.png",
+      "rect": {
+        "left": 134,
+        "top": 7,
+        "width": 977,
+        "height": 1218
+      },
+      "path": "public/art/generated/lock-open-012.webp"
+    }
+  ]
+}

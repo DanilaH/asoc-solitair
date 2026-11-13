@@ -1,0 +1,18 @@
+{
+  "sourceSha256": "b64315fe06fb3a1b3cdafcf8a7d28a42141819254cec73093ed48436acbaf58e",
+  "columns": 1,
+  "rows": 1,
+  "records": [
+    {
+      "name": "card-slot-tableau-012",
+      "source": "exec-07a5736a-a062-4bac-b2d0-7e9750531de4.png",
+      "rect": {
+        "left": 121,
+        "top": 190,
+        "width": 840,
+        "height": 1093
+      },
+      "path": "public/art/generated/card-slot-tableau-012.webp"
+    }
+  ]
+}

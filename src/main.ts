@@ -336,14 +336,20 @@ try {
       if (cmd.type !== 'hint') activeHint = undefined;
       scene?.clearHint();
       const boardCommand = ['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined;
-      scene?.sync(result.events, cmd.type === 'restart', boardCommand);
       const major = result.events.find(e => e.type === 'win') ?? result.events.find(e => e.type === 'unlock') ?? result.events.find(e => e.type === 'complete') ?? result.events.find(e => e.type === 'key') ?? result.events.find(e => e.type === 'coins') ?? result.events[0];
-      if (major) {
-        runtime.play(major.type);
-        if (major.type === 'key' || major.type === 'unlock' || major.type === 'joker') runtime.pulse(major.type === 'key' ? 'coins' : major.type === 'unlock' ? 'complete' : 'hint');
-        if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type as 'transfer' | 'complete' | 'coins' | 'win' | 'undo' | 'hint');
-      }
-      if (result.events.some(e => e.type === 'coins') && !result.events.some(e => e.type === 'win')) coinBurst();
+      const hasCoinFlight = result.events.some(e => e.type === 'coins') && !result.events.some(e => e.type === 'win');
+      // The save/grant is already durable. Only optional sound/haptics/coins
+      // follow the visible contact and may be dropped when superseded.
+      const present = () => {
+        if (major) {
+          runtime.play(major.type);
+          if (major.type === 'key' || major.type === 'unlock' || major.type === 'joker') runtime.pulse(major.type === 'key' ? 'coins' : major.type === 'unlock' ? 'complete' : 'hint');
+          if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type as 'transfer' | 'complete' | 'coins' | 'win' | 'undo' | 'hint');
+        }
+        if (hasCoinFlight) coinBurst();
+      };
+      scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
+      if (cmd.type !== 'transfer') present();
       if (save.attempt.board.phase !== 'playing') {
         clearTimeout(outcomeTimer); outcomeTimer = setTimeout(outcome, save.attempt.board.phase === 'won' ? 880 : save.settings.reducedMotion ? 100 : 380);
       }

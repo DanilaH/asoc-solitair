@@ -1,0 +1,18 @@
+{
+  "sourceSha256": "6534aa3fd626b23b34efbe791ca2ba94669cb6c5ed249597f79656b50a96d66a",
+  "columns": 1,
+  "rows": 1,
+  "records": [
+    {
+      "name": "card-slot-foundation-012",
+      "source": "exec-b9debd23-e9aa-4ad7-b33c-832ecaf0aac3.png",
+      "rect": {
+        "left": 60,
+        "top": 115,
+        "width": 960,
+        "height": 1239
+      },
+      "path": "public/art/generated/card-slot-foundation-012.webp"
+    }
+  ]
+}

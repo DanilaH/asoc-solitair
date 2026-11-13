@@ -17,7 +17,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   const visibility = installDocumentVisibilityBlocker(activity);
   const audio = new OneShotPlayer({
     maxVoices: 4,
-    groups: { card: { minIntervalMs: 45 }, flip: { minIntervalMs: 70 }, reward: { minIntervalMs: 80 }, ui: { minIntervalMs: 40 } },
+    groups: { card: { minIntervalMs: 45 }, packet: { minIntervalMs: 120 }, flip: { minIntervalMs: 70 }, reward: { minIntervalMs: 80 }, ui: { minIntervalMs: 40 } },
   });
   const haptics = createHaptics();
   const nativeAudio = Capacitor.isNativePlatform() ? registerPlugin<AudioBridge>('SolitaireAudio') : undefined;
@@ -64,7 +64,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
     play(name: string) {
       const variant = (variants.get(name) ?? 0) % 3; variants.set(name, variant + 1);
       const key = `${name}:${variant}`;
-      const group = ['coins', 'win', 'complete'].includes(name) ? 'reward' : name === 'flip' ? 'flip' : name === 'ui' ? 'ui' : 'card';
+      const group = ['coins', 'win', 'complete'].includes(name) ? 'reward' : name === 'gather' ? 'packet' : name === 'flip' ? 'flip' : name === 'ui' ? 'ui' : 'card';
       audio.play({ group, channel: name === 'ui' ? 'ui' : 'gameplay', gain: .32, buffer(ctx) {
         let buffer = buffers.get(key);
         if (!buffer) {

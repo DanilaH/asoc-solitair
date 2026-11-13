@@ -1,6 +1,6 @@
 /** Small cached material cues: no network, media decoder or oscillator lifecycle. */
 export const cueDurations: Record<string, number> = {
-  ui:.045,lift:.06,transfer:.10,flip:.10,draw:.08,recycle:.13,undo:.13,
+  ui:.045,lift:.06,gather:.105,transfer:.10,flip:.10,draw:.08,recycle:.13,undo:.13,
   invalid:.09,hint:.16,joker:.18,key:.16,unlock:.29,coins:.17,complete:.27,win:.44,
 };
 export function cueSamples(name: string, sampleRate: number, variant = 0): Float32Array<ArrayBuffer> {
@@ -13,7 +13,10 @@ export function cueSamples(name: string, sampleRate: number, variant = 0): Float
   const shift=1+(variant-1)*.025;
   for(let i=0;i<data.length;i++){
     const t=i/sampleRate,n=noise();low+=.16*(n-low);let value=0;
-    if(paper){
+    if(name==='gather'){
+      const riffle=Math.exp(-Math.abs(t-.014)/.006)+.72*Math.exp(-Math.abs(t-.039)/.007)+.42*Math.exp(-Math.abs(t-.065)/.008);
+      value=.32*(n-low)*riffle+.11*Math.sin(2*Math.PI*shift*235*t)*Math.exp(-Math.abs(t-.068)/.012);
+    }else if(paper){
       const weight=name==='ui'?.2:name==='lift'?.28:.47;
       const swipe=name==='flip'||name==='recycle'?Math.exp(-Math.abs(t-.032)/.009):0;
       const root=name==='undo'?540:name==='transfer'?290:430;

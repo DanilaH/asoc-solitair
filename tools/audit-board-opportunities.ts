@@ -10,6 +10,7 @@ import { dailyForDay } from '../src/content/daily';
 import { dispatch, freshSave, legalCommands, sourceCards } from '../src/domain/engine';
 import { boardFrame, cardMetrics, layout } from '../src/game/layout';
 import { cueDurations, cueSamples } from '../src/platform/sounds';
+import { cardArtwork } from '../src/game/art';
 import type { BoardCommand, Command, Deal, Save } from '../src/domain/types';
 
 const appVersion = JSON.parse(await readFile('package.json', 'utf8')).version as string;
@@ -46,6 +47,8 @@ const merge = findCase(({ deal, save, cmd }) => cmd.type === 'transfer' && cmd.t
 const unlock = findCase(({ deal, save, cmd }) => Boolean(deal.lock) && dispatch(save, cmd, deal).events.some(e => e.type === 'unlock'));
 const ordered = findCase(({ deal, cmd }) => Boolean(deal.tags?.includes('ordered')) && cmd.type === 'transfer' && cmd.to.kind === 'foundation');
 const orderedNext = findCase(({ deal, save, cmd }) => Boolean(deal.tags?.includes('ordered')) && cmd.type === 'transfer' && cmd.to.kind === 'foundation' && sourceCards(save.attempt.board, cmd.from, deal).some(id => Boolean(deal.cards[id].rank)));
+const dragPacket = findCase(({ deal, save, cmd }) => cmd.type === 'transfer' && cmd.to.kind === 'tableau' && sourceCards(save.attempt.board, cmd.from, deal).length >= 3);
+const fan = findCase(({ deal, save, cmd }) => cmd.type === 'draw' && save.attempt.board.waste.length >= 3 && save.attempt.board.waste.slice(-3).some(id => !cardArtwork(deal.cards[id], deal)));
 const foundation = { deal: campaignDeals[5], save: prefix(campaignDeals[5], 1), cmd: campaignDeals[5].winningPath[1] };
 // Preserve the audited light-first opening, independently from the full witness.
 const lights: BoardCommand[] = [
@@ -60,7 +63,7 @@ const completion = { deal: campaignDeals[5], save: lights.slice(0, 5).reduce((s,
 const dense = campaignDeals.find(d => d.campaignLevel! >= 50 && d.initial.tableau.length === 4)!;
 const daily = dailyForDay('2026-11-13');
 const jokerDeal = campaignDeals[20];
-const cases: { name: string; candidate: Candidate; palette?: 'ink'; bottom?: boolean; drag?: boolean; }[] = [
+const cases: { name: string; candidate: Candidate; palette?: 'ink'; bottom?: boolean; left?: boolean; drag?: boolean; }[] = [
   { name: 'packet-merge', candidate: merge },
   { name: 'foundation', candidate: foundation },
   { name: 'completion', candidate: completion },
@@ -72,6 +75,9 @@ const cases: { name: string; candidate: Candidate; palette?: 'ink'; bottom?: boo
   { name: 'ordered-next', candidate: orderedNext },
   { name: 'joker', candidate: { deal: jokerDeal, save: freshSave(jokerDeal, 'independent-board-audit'), cmd: { type: 'place-joker', column: 0 } } },
   { name: 'drag-transfer', candidate: foundation, drag: true },
+  { name: 'drag-packet', candidate: dragPacket, drag: true },
+  { name: 'fan-right', candidate: fan },
+  { name: 'fan-left', candidate: fan, left: true },
 ];
 const selectedCases = process.env.ASOC_QA_CASES?.split(',');
 const server = await preview({ preview: { host: '127.0.0.1', port: 4199, strictPort: true } });
@@ -107,6 +113,7 @@ try {
       const seed = structuredClone(original); seed.settings.sfx = true; seed.settings.reducedMotion = reduced;
       if (entry.palette) seed.settings.palette = entry.palette;
       if (entry.bottom) { seed.settings.deckPosition = 'bottom'; seed.settings.deckSide = 'left'; }
+      if (entry.left) seed.settings.deckSide = 'left';
       seed.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 79).map(d => d.id) };
       seed.campaign = { version: 1, tutorials: ['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock','hint-demo','undo-used'] };
       await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), seed);
@@ -136,6 +143,7 @@ try {
         if (entry.drag) {
           await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [a] });
           for (let i = 1; i <= 10; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: a.x + (b.x - a.x) * i / 10, y: a.y + (b.y - a.y) * i / 10 }] }); await page.waitForTimeout(15); }
+          await page.waitForTimeout(250);
           await page.screenshot({ path: dir + '/selected.png', scale: 'css' });
           await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
         } else {

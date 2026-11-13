@@ -17,7 +17,10 @@ interface Options {
 interface BoardPointer { id: number; x: number; y: number; primaryDown: boolean; isDown: boolean }
 interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; liftedAt?: number; jokerColumn?: number }
 interface FoundationSurface { view: CardView; frontId: string }
+interface CoveredFace { frontId: string; strip: boolean }
 interface CollectionView { node: Phaser.GameObjects.Container; targets: Phaser.GameObjects.GameObject[]; timers: Phaser.Time.TimerEvent[]; sparks: Phaser.GameObjects.Image[] }
+interface ContactFeedback { kind: GameEvent['type']; play(): void }
+interface KeyPresentation { timers: Phaser.Time.TimerEvent[]; revealed: string[]; revealDelay: number }
 const inside = (x: number, y: number, target: { x: number; y: number; width: number; height: number }) =>
   Math.abs(x - target.x) <= target.width / 2 && Math.abs(y - target.y) <= target.height / 2;
 const same = (a: Location, b: Location) => a.kind === b.kind && a.index === b.index;
@@ -26,10 +29,12 @@ const same = (a: Location, b: Location) => a.kind === b.kind && a.index === b.in
 export class BoardScene extends Phaser.Scene {
   private world!: Phaser.GameObjects.Container;
   private slots!: Phaser.GameObjects.Graphics;
+  private slotViews = new Map<string, Phaser.GameObjects.Image>();
   private foundationArt!: Phaser.GameObjects.Graphics;
   private foundationTitles: Phaser.GameObjects.Text[] = [];
   private foundationFaces = new Map<number, string>();
   private foundationSurfaces = new Map<number, FoundationSurface>();
+  private coveredFaces = new Map<string, CoveredFace>();
   private returningWells = new Map<number, { ids: string[]; y: number }>();
   private collectedIds = new Set<string>();
   private collectionOrigins = new Map<string, number>();
@@ -47,8 +52,11 @@ export class BoardScene extends Phaser.Scene {
   private jokerArt!: Phaser.GameObjects.Container;
   private jokerBadge!: Phaser.GameObjects.Container;
   private lockArt!: Phaser.GameObjects.Container;
+  private lockIcon!: Phaser.GameObjects.Image;
   private lockCount!: Phaser.GameObjects.Text;
   private keyFlights: Phaser.GameObjects.Image[] = [];
+  private keyPresentation: KeyPresentation | undefined;
+  private presentationGeneration = 0;
   private selected: Location | null = null;
   private press: CardPress | null = null;
   private pendingReturn: CardPress | null = null;
@@ -63,7 +71,7 @@ export class BoardScene extends Phaser.Scene {
   private inspectMode = false;
   private backStyle = '';
   private particles: Phaser.GameObjects.Image[] = [];
-  private cues: Phaser.GameObjects.Graphics[] = [];
+  private cues: Phaser.GameObjects.Container[] = [];
   private hoverKey = '';
   private hoverSince = 0;
   private dragCount!: Phaser.GameObjects.Text;
@@ -80,10 +88,12 @@ export class BoardScene extends Phaser.Scene {
     for (const card of Object.values(this.options.deal.cards)) { const image = cardArtwork(card, this.options.deal); if (image && !this.textures.exists(image)) this.load.image(image, image); }
   }
   public create(): void {
-    this.foundationFaces.clear(); this.foundationSurfaces.clear();
+    this.foundationFaces.clear(); this.foundationSurfaces.clear(); this.coveredFaces.clear();
     this.returningWells.clear();
     this.collectedIds.clear(); this.collectionOrigins.clear();
     this.pendingReturn = null;
+    this.keyPresentation = undefined; this.presentationGeneration++;
+    this.slotViews.clear();
     this.collections.clear();
     this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.dragPointer = undefined; this.initial = false; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = []; this.stockBusyUntil = 0;
     installSceneTextSharpness(this);
@@ -96,6 +106,12 @@ export class BoardScene extends Phaser.Scene {
     this.stockCount = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(.5).setDepth(38);
     this.stockLabel = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '17px', color: '#b0d7bf' }).setOrigin(.5).setDepth(38);
     this.world.add([this.slots, ...this.stockLayers, this.stockArt, this.focus, this.stockCount, this.stockLabel]);
+    for (const [kind, ids] of [['foundation', this.options.getSave().attempt.board.foundations], ['tableau', this.options.getSave().attempt.board.tableau]] as const) {
+      ids.forEach((_, index) => {
+        const view = this.add.image(0, 0, `art-slot-${kind}`).setVisible(false).setDepth(0);
+        this.world.add(view); this.slotViews.set(`${kind}:${index}`, view);
+      });
+    }
     this.foundationArt = this.add.graphics().setDepth(200);
     this.foundationTitles = this.options.getSave().attempt.board.foundations.map(() => this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold', color: '#886347' }).setOrigin(.5).setDepth(201));
     this.world.add([this.foundationArt, ...this.foundationTitles]);
@@ -104,7 +120,8 @@ export class BoardScene extends Phaser.Scene {
     this.jokerBadge = this.add.container(0, 0, [this.add.circle(0, 0, 11, 0xf1cc73).setStrokeStyle(1, 0xffecc0), this.add.text(0, 0, '✦', { fontFamily: 'Nunito, Arial', fontSize: '15px', color: '#715321' }).setOrigin(.5)]).setDepth(425).setVisible(false);
     const lock = this.add.image(0, 0, 'art-card-back-diamonds').setDisplaySize(this.cardW, this.cardH).setTint(0x9198b9);
     this.lockCount = this.label(0, 36, '0 / 3', 21, '#ffe6a1');
-    this.lockArt = this.add.container(0, 0, [lock, this.add.image(0, -8, 'art-lock').setDisplaySize(66, 66), this.label(0, -this.cardH / 2 + 12, 'ТРИ КЛЮЧА', 11, '#fff0cf'), this.lockCount]).setVisible(false).setDepth(420);
+    this.lockIcon = this.add.image(0, -8, 'art-lock').setDisplaySize(66, 66);
+    this.lockArt = this.add.container(0, 0, [lock, this.lockIcon, this.label(0, -this.cardH / 2 + 12, 'ТРИ КЛЮЧА', 11, '#fff0cf'), this.lockCount]).setVisible(false).setDepth(420);
     this.world.add([this.jokerArt, this.jokerBadge, this.lockArt]);
     this.keyFlights = Array.from({ length: 3 }, () => { const key = this.add.image(0, 0, 'art-key').setDisplaySize(40, 40).setDepth(590).setVisible(false); this.world.add(key); return key; });
     for (const card of Object.values(this.options.deal.cards)) this.views.set(card.id, this.makeCard(card.id));
@@ -187,7 +204,7 @@ export class BoardScene extends Phaser.Scene {
     copy.node.setPosition(source.node.x, source.node.y).setScale(source.node.scaleX, source.node.scaleY).setAlpha(source.node.alpha).setAngle(source.node.angle).setVisible(true);
     copy.face.setVisible(source.face.visible); copy.back.setVisible(source.back.visible);
     copy.content.setVisible(source.content.visible); copy.caption?.setVisible(source.caption?.visible ?? true);
-    copy.badge.setText(source.badge.text).setY(source.badge.y);
+    copy.badge.setText(source.badge.text).setY(source.badge.y).setVisible(source.badge.visible);
     copy.strip?.setVisible(source.strip?.visible ?? false);
     if (copy.strip && source.strip) copy.strip.setPosition(source.strip.x, source.strip.y).setScale(source.strip.scaleX, source.strip.scaleY).setAngle(source.strip.angle);
     if (copy.strip instanceof Phaser.GameObjects.Text && source.strip instanceof Phaser.GameObjects.Text) copy.strip.setText(source.strip.text);
@@ -205,9 +222,19 @@ export class BoardScene extends Phaser.Scene {
       this.finishSurface(index);
     }
   }
+  private finishCovers(frontId: string) {
+    for (const [id, pending] of this.coveredFaces) {
+      if (pending.frontId !== frontId) continue;
+      this.coveredFaces.delete(id);
+      if (this.press?.poses.some(p => p.id === id)) continue;
+      const view = this.views.get(id); if (!view) continue;
+      view.content.setVisible(false); view.caption?.setVisible(false); view.strip?.setVisible(pending.strip);
+    }
+  }
   private drawSlots() {
     const board = this.options.getSave().attempt.board;
     this.slots.clear();
+    this.slotViews.forEach(view => view.setVisible(false));
     for (const target of this.metrics.targets) {
       const upper = target.location.kind === 'foundation', index = target.location.index;
       const ids = upper ? board.foundations[index] : board.tableau[index];
@@ -215,24 +242,22 @@ export class BoardScene extends Phaser.Scene {
       const returning = !upper && this.returningWells.get(index);
       if (ids.length && !lifted && !returning) continue;
       const x = target.x, y = lifted ? this.metrics.poses.find(p => p.id === ids[0])!.y : returning ? returning.y : target.y;
-      const w = this.cardW - 4, h = this.cardH - 4, left = x - w / 2, top = y - h / 2;
-      // One recessed surface, with a warm upper lip and an engraved category mark.
-      this.slots.fillStyle(0x072f3b, upper ? .65 : .4).fillRoundedRect(left, top, w, h, 16);
-      this.slots.fillStyle(upper ? 0x285f64 : 0x185963, upper ? .95 : .65).fillRoundedRect(left + 2, top + 3, w - 4, h - 5, 15);
-      this.slots.lineStyle(upper ? 2 : 1, upper ? 0xcbb88e : 0x74b1b3, upper ? .65 : .28).strokeRoundedRect(left + 1, top + 1, w - 2, h - 2, 15);
-      this.slots.fillStyle(upper ? 0xe6c99a : 0x88c0bd, upper ? .35 : .12).fillRoundedRect(x - w * .28, top + h - 5, w * .56, 2, 1);
-      if (upper) {
-        const cx = x - 14, cy = y - 7;
-        this.slots.fillStyle(0x0e424d, .8).fillRoundedRect(cx - 2, cy + 4, 32, 20, 5);
-        this.slots.fillStyle(0xd3bc8d, .7).beginPath().moveTo(cx, cy).lineTo(cx + 7, cy + 9).lineTo(cx + 14, cy - 3).lineTo(cx + 21, cy + 9).lineTo(cx + 28, cy).lineTo(cx + 25, cy + 19).lineTo(cx + 3, cy + 19).closePath().fillPath();
-      }
+      const ink = this.options.getSave().settings.palette === 'ink';
+      this.slotViews.get(`${target.location.kind}:${index}`)!.setVisible(true).setPosition(x, y)
+        .setDisplaySize(this.cardW - 4, this.cardH - 4).setTint(ink ? 0xd8ceff : 0xffffff)
+        .setAlpha(ink ? upper ? .8 : .62 : upper ? 1 : .85);
     }
     if (!board.stock.length && board.waste.length) this.slots.fillStyle(0xd2e8db, .08).fillCircle(this.metrics.stock.x, this.metrics.stock.y, 35);
   }
-  public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand): void {
+  public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand, feedback?: ContactFeedback): void {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
+    this.clearKeys();
+    const generation = ++this.presentationGeneration;
+    let sounded = false;
+    const contact = () => { if (!sounded && generation === this.presentationGeneration) { sounded = true; feedback?.play(); } };
     this.pendingReturn = null;
     this.settleSurfaces();
+    this.coveredFaces.clear();
     for (const returning of this.returningWells.values()) for (const id of returning.ids) {
       const view = this.views.get(id), pose = this.metrics?.poses.find(p => p.id === id);
       if (view && pose) { this.tweens.killTweensOf(view.node); view.node.setPosition(pose.x, pose.y).setScale(1); }
@@ -249,6 +274,10 @@ export class BoardScene extends Phaser.Scene {
     this.metrics = layout(board, this.options.deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
     if (this.backStyle !== (save.settings.cardBack ?? 'classic')) { this.backStyle = save.settings.cardBack ?? 'classic'; for (const view of this.views.values()) this.paintBack(view.backArt); }
     const duration = save.settings.reducedMotion ? 0 : 215;
+    const movedIds = events.find(e => e.type === 'transfer')?.cards ?? [];
+    const receivingColumn = command?.type === 'transfer' && command.to.kind === 'tableau' ? board.tableau[command.to.index] : undefined;
+    const firstArrival = receivingColumn?.indexOf(movedIds[0]) ?? -1;
+    const tableauUnder = duration && new URLSearchParams(location.search).get('fxCards') !== '0' && firstArrival > 0 ? receivingColumn![firstArrival - 1] : undefined;
     if (events.some(e => e.type === 'undo' || e.type === 'restart')) {
       for (const key of this.keyFlights) { this.tweens.killTweensOf(key); key.setVisible(false); }
       this.options.praise('');
@@ -263,16 +292,10 @@ export class BoardScene extends Phaser.Scene {
     const lockTarget = this.options.deal.lock && this.metrics.targets.find(t => t.location.kind === 'tableau' && t.location.index === this.options.deal.lock!.column);
     this.lockArt.setVisible(Boolean(lockTarget && isLocked(board, this.options.deal.lock!.column, this.options.deal)));
     if (lockTarget) { this.lockArt.setPosition(lockTarget.x, lockTarget.y); this.lockCount.setText(`${board.keys?.length ?? 0} / 3`); }
-    for (const event of events.filter(e => e.type === 'key')) {
-      const from = this.metrics.poses.find(p => event.cards?.includes(p.id)), flight = this.keyFlights.find(k => !k.visible);
-      if (from && flight && lockTarget && !save.settings.reducedMotion) {
-        flight.setPosition(from.x, from.y).setVisible(true).setAlpha(1);
-        this.tweens.add({ targets: flight, x: lockTarget.x, y: lockTarget.y, alpha: .2, duration: 650, ease: 'Sine.easeInOut', onComplete: () => flight.setVisible(false) });
-      }
-    }
-    if (events.some(e => e.type === 'unlock')) {
-      this.showPraise('Замок открыт!');
-    }
+    const keyEvents = events.filter(e => e.type === 'key');
+    const contactAtKey = keyEvents.length > 0 && (feedback?.kind === 'key' || feedback?.kind === 'unlock');
+    if (keyEvents.length && lockTarget) this.presentKeys(keyEvents, events.some(e => e.type === 'unlock'), lockTarget, contactAtKey ? contact : undefined);
+    else if (contactAtKey) contact();
     const { stock } = this.metrics;
     const deckActive = Boolean(board.stock.length || board.waste.length);
     this.stockArt.setVisible(deckActive); this.stockCount.setVisible(deckActive); this.stockLabel.setVisible(deckActive);
@@ -303,9 +326,23 @@ export class BoardScene extends Phaser.Scene {
     const foundationTops = board.foundations.filter(ids => ids.length).map(ids => ids.filter(id => !this.options.deal.cards[id].leader).at(-1) ?? ids.at(-1)!);
     const visible = new Set(this.metrics.poses.filter(p => !board.foundations.some(ids => ids.includes(p.id)) || foundationTops.includes(p.id)).map(p => p.id));
     const completed = events.find(e => e.type === 'complete');
+    const contactAtCollection = Boolean(completed && !contactAtKey);
+    const arrivalId = movedIds.filter(id => visible.has(id)).at(-1);
+    let landed = false;
+    const landTransfer = () => {
+      if (landed || generation !== this.presentationGeneration) return;
+      landed = true;
+      if (!contactAtKey && !contactAtCollection) contact();
+      const target = command?.type === 'transfer' && this.metrics.targets.find(t => same(t.location, command.to));
+      if (target && !completed) this.cue(target.x, target.y, 0xffd990);
+      const front = arrivalId && this.views.get(arrivalId);
+      if (front && !this.press && !save.settings.reducedMotion && !completed) {
+        this.tweens.add({ targets: front.node, y: front.node.y + 1.5, scaleY: .992, duration: 45, yoyo: true, ease: 'Sine.easeOut' });
+      }
+    };
     if (command?.type === 'transfer' && command.to.kind === 'foundation') {
       this.clearCollection(command.to.index);
-      if (completed) this.collect(completed, events.find(e => e.type === 'transfer')?.cards ?? [], command.to.index);
+      if (completed) this.collect(completed, movedIds, command.to.index, contactAtCollection ? contact : undefined);
     }
     if (!completed && command?.type === 'transfer' && command.to.kind === 'foundation' && !save.settings.reducedMotion) {
       const index = command.to.index, oldId = this.foundationFaces.get(index), frontId = foundationTops.find(id => board.foundations[index].includes(id));
@@ -356,6 +393,9 @@ export class BoardScene extends Phaser.Scene {
       const total = Object.values(this.options.deal.cards).filter(c => c.category === def.category && !c.leader).length;
       view.badge.setText(def.leader ? `${groupIds.filter(id => !this.options.deal.cards[id].leader).length} / ${total}` : def.rank ? `${def.rank} / ${total}` : groupIds.length > 1 ? `×${groupIds.length}` : '');
       const foundation = board.foundations.some(ids => ids.includes(pose.id));
+      // Ordered leaders already have a rule label above and progress dots below.
+      // A second fraction at the rule-label baseline obscures both.
+      view.badge.setVisible(!(foundation && def.ordered));
       if (foundation) {
         view.badge.setText(def.ordered || def.rank ? view.badge.text : '');
         view.badge.setY(-this.cardH / 2 + 13);
@@ -374,9 +414,11 @@ export class BoardScene extends Phaser.Scene {
           view.strip.setAngle(save.settings.deckSide === 'left' ? -90 : 90).setPosition((save.settings.deckSide === 'left' ? -1 : 1) * (this.cardW / 2 - 11), 0);
         } else view.strip.setAngle(0).setPosition(0, -this.cardH / 2 + 7).setScale(view.stripScale ?? 1);
       } else if (view.strip) view.strip.setPosition(rearWaste ? (save.settings.deckSide === 'left' ? -1 : 1) * (this.cardW / 2 - 11) : 0, rearWaste ? 0 : -this.cardH / 2 + 11);
-      const waitingForCover = pose.id === drawUnder;
+      const waitingForCover = pose.id === drawUnder || pose.id === tableauUnder;
+      const stripVisible = Boolean(coveredCaption && pose.faceUp && view.strip && band >= view.strip.height * view.strip.scaleY + (rearWaste ? 3 : 10));
+      if (waitingForCover) this.coveredFaces.set(pose.id, { frontId: pose.id === drawUnder ? board.waste.at(-1)! : movedIds.at(-1)!, strip: stripVisible });
       view.content.setVisible(!coveredCaption || waitingForCover); view.caption?.setVisible(!coveredCaption || waitingForCover);
-      view.strip?.setVisible(coveredCaption && !waitingForCover && pose.faceUp && band >= view.strip.height * view.strip.scaleY + (rearWaste ? 3 : 10));
+      view.strip?.setVisible(!waitingForCover && stripVisible);
       const fresh = entering && this.initial;
       if (fresh) {
         const fromStock = Boolean(this.options.deal.initial.stock.length || this.options.deal.initial.waste.length);
@@ -393,44 +435,102 @@ export class BoardScene extends Phaser.Scene {
           onComplete: () => {
             view.node.setScale(1).setDepth(pose.depth); this.world.sort('depth');
             // The card beneath keeps its face until the arriving card covers it.
-            if(drawUnder && this.options.getSave().attempt.board.waste.at(-1)===pose.id && !this.press?.poses.some(p=>p.id===drawUnder)) {
-              const under=this.views.get(drawUnder);under?.content.setVisible(false);under?.caption?.setVisible(false);under?.strip?.setVisible(true);
-            }
+            this.finishCovers(pose.id);
           } });
         continue;
       }
       if (!entering && pose.faceUp && previous?.poses.some(old => old.id === pose.id && !old.faceUp) && !save.settings.reducedMotion) {
         view.face.setVisible(false); view.back.setVisible(true);
-        this.tweens.add({ targets: view.back, scaleX: .045, delay: 25, duration: 75, ease: 'Sine.easeIn', onComplete: () => {
+        const revealDelay = this.keyPresentation?.revealed.includes(pose.id) ? this.keyPresentation.revealDelay : 0;
+        this.tweens.add({ targets: view.back, scaleX: .045, delay: 25 + revealDelay, duration: 75, ease: 'Sine.easeIn', onComplete: () => {
           view.back.setVisible(false).setScale(1); view.face.setVisible(true).setScale(.045, 1);
+          if (generation === this.presentationGeneration) this.options.sound('flip');
           this.tweens.add({ targets: view.face, scaleX: 1, duration: 90, ease: 'Sine.easeOut' });
         } });
-        this.options.sound('flip');
       }
       const moving = events.some(e => e.type === 'transfer' && e.cards?.includes(pose.id)) || events.some(e => e.type === 'draw' && e.cards?.includes(pose.id));
       const animationOn = new URLSearchParams(location.search).get(moving ? 'fxCards' : 'fxLayout') !== '0';
       const covered = board.joker?.column === group && board.tableau[group].indexOf(pose.id) < board.joker.boundary;
       const moveDuration = entering && !fresh || !animationOn ? 0 : moving && command?.type === 'transfer' && duration ? 170 : duration;
+      // A flight belongs above the board until contact, independently of the
+      // destination's resting depth. Keep packet members in their source order.
+      const flying = Boolean(moveDuration && moving && command?.type === 'transfer');
+      if (flying) view.node.setDepth(720 + movedIds.indexOf(pose.id));
       // Zero-duration layout is synchronous: the first ready frame must already own its hit positions.
-      if (!moveDuration) view.node.setPosition(pose.x, pose.y).setScale(1).setAlpha(covered ? .5 : 1).setAngle(0);
+      if (!moveDuration) {
+        view.node.setPosition(pose.x, pose.y).setScale(1).setAlpha(covered ? .5 : 1).setAngle(0);
+        if (pose.id === arrivalId) landTransfer();
+      }
       else this.tweens.add({ targets: view.node, x: pose.x, y: pose.y, scaleX: 1, scaleY: 1, alpha: covered ? .5 : 1, angle: 0,
         duration: moveDuration, delay: fresh ? Math.min(140, Math.max(0, pose.depth - 20) * 2.5) : 0, ease: 'Cubic.easeOut', onComplete: () => {
+          if (flying) { view.node.setDepth(pose.depth); this.world.sort('depth'); }
+          this.finishCovers(pose.id);
           for (const [index, surface] of this.foundationSurfaces) if (surface.frontId === pose.id) this.finishSurface(index);
           for (const [index, returning] of this.returningWells) if (returning.ids.at(-1) === pose.id) { this.returningWells.delete(index); this.drawSlots(); }
-          if (moving && !this.press && view.node.visible && !save.settings.reducedMotion) this.tweens.add({ targets: view.node, scaleX: 1.02, scaleY: 1.02, duration: 65, yoyo: true });
+          if (pose.id === arrivalId) landTransfer();
         } });
     }
     this.initial = false;
     this.world.sort('depth');
     this.drawFocus();
-    if (!completed && command?.type === 'transfer' && events.some(e => e.type === 'transfer')) {
-      const target = this.metrics.targets.find(t => same(t.location, command.to));
-      if (target) this.cue(target.x, target.y, 0xffd990, false, save.settings.reducedMotion ? 0 : 145);
-    }
+    if (feedback && !arrivalId && !contactAtCollection && !contactAtKey) contact();
     if (previous && events.some(e => e.type === 'undo')) for (const pose of this.metrics.poses.filter(p => p.faceUp && visible.has(p.id) && !previous.poses.some(old => old.id === p.id && old.x === p.x && old.y === p.y && old.faceUp === p.faceUp)).slice(-3)) this.cue(pose.x, pose.y, 0xc3b3ec);
     // A completed touch may arrive after the pointerdown frame already slept.
     // Starting visual work must own its wake, independently of a future input.
     if (this.enabled && this.game.isRunning) this.game.loop.wake();
+  }
+  private clearKeys() {
+    const pending = this.keyPresentation; if (!pending) return;
+    this.keyPresentation = undefined;
+    pending.timers.forEach(timer => timer.remove(false));
+    for (const key of this.keyFlights) { this.tweens.killTweensOf(key); key.setVisible(false); }
+    this.tweens.killTweensOf([this.lockArt, this.lockIcon]);
+    this.lockArt.setScale(1).setAlpha(1); this.lockIcon.setTexture('art-lock').setAngle(0);
+    const board = this.options.getSave().attempt.board, lock = this.options.deal.lock;
+    this.lockArt.setVisible(Boolean(lock && isLocked(board, lock.column, this.options.deal)));
+    this.lockCount.setText(`${board.keys?.length ?? 0} / 3`);
+    for (const id of pending.revealed) {
+      const view = this.views.get(id); if (!view) continue;
+      this.tweens.killTweensOf([view.face, view.back]);
+      const faceUp = board.faceUp.includes(id);
+      view.face.setVisible(faceUp).setScale(1); view.back.setVisible(!faceUp).setScale(1);
+    }
+  }
+  /** Already-owned keys get a visible destination. This snapshot never locks input. */
+  private presentKeys(events: GameEvent[], unlock: boolean, target: Target, contact?: () => void) {
+    const board = this.options.getSave().attempt.board, count = board.keys?.length ?? 0;
+    const reduced = this.options.getSave().settings.reducedMotion || new URLSearchParams(location.search).get('fxCards') === '0';
+    if (reduced) { this.lockCount.setText(`${count} / 3`); if (unlock) this.showPraise('Замок открыт!'); contact?.(); return; }
+    const revealDelay = 190 + 240 + 60 + 130;
+    const revealed = unlock ? this.metrics.poses.filter(p => board.tableau[this.options.deal.lock!.column].includes(p.id) && p.faceUp && !this.views.get(p.id)!.face.visible).map(p => p.id) : [];
+    const pending: KeyPresentation = { timers: [], revealed, revealDelay };
+    this.keyPresentation = pending;
+    const alive = () => this.keyPresentation === pending;
+    this.lockArt.setVisible(true).setScale(1).setAlpha(1);
+    this.lockCount.setText(`${Math.max(0, count - events.length)} / 3`);
+    const arrive = () => {
+      if (!alive()) return;
+      this.lockCount.setText(`${count} / 3`); contact?.();
+      if (unlock) {
+        this.showPraise('Замок открыт!');
+        if (this.textures.exists('art-lock-open')) this.lockIcon.setTexture('art-lock-open');
+        else this.lockIcon.setAngle(-16);
+        this.tweens.add({ targets: this.lockArt, scaleX: 1.025, scaleY: 1.025, duration: 45, yoyo: true });
+        this.tweens.add({ targets: this.lockArt, alpha: 0, scaleX: .96, scaleY: .96, delay: 60, duration: 130, onComplete: () => {
+          if (alive()) { this.lockArt.setVisible(false).setAlpha(1).setScale(1); this.lockIcon.setTexture('art-lock').setAngle(0); }
+        } });
+      } else this.tweens.add({ targets: this.lockArt, scaleX: 1.015, scaleY: 1.015, duration: 45, yoyo: true });
+      pending.timers.push(this.time.delayedCall(unlock ? 400 : 110, () => { if (alive()) this.keyPresentation = undefined; }));
+    };
+    pending.timers.push(this.time.delayedCall(190, () => {
+      if (!alive()) return;
+      const from = events.flatMap(e => e.cards ?? []).map(id => this.views.get(id)?.node).find(node => node?.visible);
+      const key = this.keyFlights.find(k => !k.visible);
+      if (!from || !key) { arrive(); return; }
+      key.setPosition(from.x + this.cardW / 2 - 23, from.y - this.cardH / 2 + 23).setVisible(true).setAlpha(1).setScale(1);
+      key.setDisplaySize(30, 30);
+      this.tweens.add({ targets: key, x: target.x, y: target.y - 8, duration: 240, ease: 'Sine.easeInOut', onComplete: () => { key.setVisible(false); arrive(); } });
+    }));
   }
   private clearCollection(index: number) {
     const collection = this.collections.get(index); if (!collection) return;
@@ -441,7 +541,7 @@ export class BoardScene extends Phaser.Scene {
     collection.node.destroy(true);
   }
   /** A bounded visual snapshot of an already committed collection, owned by its slot. */
-  private collect(event: GameEvent, moved: string[], index: number) {
+  private collect(event: GameEvent, moved: string[], index: number, contact?: () => void) {
     const target = this.metrics.targets.find(t => t.location.kind === 'foundation' && t.location.index === index)!;
     const leaderId = event.cards?.find(id => this.options.deal.cards[id].leader); if (!leaderId) return;
     this.collectionOrigins.set(this.options.deal.cards[leaderId].category, index);
@@ -478,12 +578,15 @@ export class BoardScene extends Phaser.Scene {
     completed.node.setPosition(0, 0).setScale(1).setAlpha(1).setAngle(0).setVisible(false);
     completed.face.setVisible(true); completed.back.setVisible(false); completed.strip?.setVisible(false);
     completed.badge.setText(`${count} / ${count}`);
-    const halo = this.add.graphics().fillStyle(0xffd58b, .23).fillRoundedRect(-this.cardW / 2 - 5, -this.cardH / 2 - 4, this.cardW + 10, this.cardH + 8, 18).setAlpha(0);
+    const halo = this.add.graphics()
+      .fillStyle(0xfff1b9, .65).fillRoundedRect(-this.cardW / 2 + 9, -this.cardH / 2 + 5, this.cardW - 18, 6, 3)
+      .fillStyle(0xffe3a5, .28).fillRoundedRect(-this.cardW / 2 + 5, -this.cardH / 2 + 10, 5, this.cardH * .43, 2.5).setAlpha(0);
     node.add([halo, completed.node]); collection.targets.push(...arriving, completed.node, halo);
     const alive = () => this.collections.get(index) === collection;
     const land = () => {
       if (!alive()) return;
       arriving.forEach(card => card.setVisible(false)); header?.setVisible(false); completed.node.setVisible(true);
+      contact?.();
       this.showPraise(['Отлично!', 'Есть связь!', 'Так держать!', 'Блестяще!'][this.praiseIndex++ % 4]);
       if (!reduced) {
         halo.setAlpha(1); this.tweens.add({ targets: halo, alpha: 0, duration: 210, ease: 'Sine.easeOut' });
@@ -500,19 +603,24 @@ export class BoardScene extends Phaser.Scene {
   }
   private collectionSparks(x: number, y: number, collection: CollectionView) {
     if (new URLSearchParams(location.search).get('fxParticles') === '0') return;
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
       const dot = this.particles.find(p => !p.visible); if (!dot) break;
       const side = i % 2 ? 1 : -1, py = (Math.floor(i / 2) - 1) * this.cardH * .32;
-      dot.setPosition(x + side * this.cardW * .46, y + py).setDisplaySize(i % 3 ? 12 : 17, i % 3 ? 12 : 17).setAlpha(.95).setRotation(i * .8).setVisible(true);
+      const paper = i % 3 === 0;
+      dot.setTexture(paper ? 'art-card-face' : 'art-spark').setTint(paper ? 0xffefcf : 0xffe3a5)
+        .setPosition(x + side * this.cardW * .46, y + py).setDisplaySize(paper ? 7 : 12, paper ? 10 : 12).setAlpha(.95).setRotation(i * .8).setVisible(true);
       collection.sparks.push(dot);
       this.tweens.add({ targets: dot, x: dot.x + side * 13, y: dot.y - 12, scaleX: dot.scaleX * .3, scaleY: dot.scaleY * .3, alpha: 0, duration: 260, ease: 'Cubic.easeOut', onComplete: () => dot.setVisible(false) });
     }
   }
   /** Decorative work has no domain ownership and must not outlive its screen. */
   public clearFeedback(): void {
+    this.presentationGeneration++;
+    this.clearKeys();
+    for (const pending of this.coveredFaces.values()) this.finishCovers(pending.frontId);
     this.settleSurfaces();
     for (const index of this.collections.keys()) this.clearCollection(index);
-    this.cues.forEach(c => { this.tweens.killTweensOf(c); c.destroy(); }); this.cues = [];
+    this.cues.forEach(c => this.destroyCue(c)); this.cues = [];
     for (const object of [...this.particles, ...this.keyFlights]) {
       if (!object) continue;
       this.tweens.killTweensOf(object); object.setVisible(false);
@@ -521,14 +629,20 @@ export class BoardScene extends Phaser.Scene {
   private showPraise(text: string) { this.options.praise(text); }
   private point(pointer: BoardPointer) { return { x: (pointer.x - this.world.x) / this.unit, y: (pointer.y - this.world.y) / this.unit }; }
   private get cssUnit() { return this.unit * this.scale.zoom; }
+  private destroyCue(cue: Phaser.GameObjects.Container) { this.tweens.killTweensOf([cue, ...cue.list]); cue.destroy(true); }
   private cue(x: number, y: number, color: number, shake = false, delay = 0) {
-    while (this.cues.length >= 4) { const old = this.cues.shift()!; this.tweens.killTweensOf(old); old.destroy(); }
-    const cue = this.add.graphics().fillStyle(color, shake ? .2 : .13).fillRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13)
-      .fillStyle(color, .9).fillRoundedRect(-this.cardW * .3, this.cardH / 2 - 7, this.cardW * .6, 4, 2).setPosition(x, y).setDepth(690).setAlpha(delay ? 0 : 1);
+    while (this.cues.length >= 4) this.destroyCue(this.cues.shift()!);
+    const wash = this.add.graphics().fillStyle(color, shake ? .2 : .08).fillRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
+    const streak = this.add.graphics().fillStyle(color, .9).fillRoundedRect(-this.cardW * .17, this.cardH / 2 - 7, this.cardW * .34, 3, 1.5);
+    const cue = this.add.container(x, y, [wash, streak]).setDepth(690).setAlpha(delay ? 0 : 1);
     this.world.add(cue); this.world.sort('depth'); this.cues.push(cue);
+    if (!shake && !this.options.getSave().settings.reducedMotion) {
+      streak.x = -this.cardW * .27;
+      this.tweens.add({ targets: streak, x: this.cardW * .27, duration: 180, delay, ease: 'Sine.easeInOut' });
+    }
     if (shake && !this.options.getSave().settings.reducedMotion) this.tweens.add({ targets: cue, x: x + 5, duration: 45, yoyo: true, repeat: 2 });
     this.tweens.add({ targets: cue, alpha: 1, delay, duration: delay ? 45 : 0, onComplete: () => {
-      this.tweens.add({ targets: cue, alpha: 0, delay: shake ? 100 : 55, duration: 160, onComplete: () => { this.cues = this.cues.filter(c => c !== cue); cue.destroy(); } });
+      this.tweens.add({ targets: cue, alpha: 0, delay: shake ? 100 : 55, duration: 160, onComplete: () => { this.cues = this.cues.filter(c => c !== cue); this.destroyCue(cue); } });
     } });
     this.game.loop.wake();
   }
@@ -538,7 +652,7 @@ export class BoardScene extends Phaser.Scene {
   }
   private hitSource(x: number, y: number): Location | null {
     const board = this.options.getSave().attempt.board;
-    for (const pose of [...this.metrics.poses].sort((a, b) => b.depth - a.depth)) {
+    for (const pose of [...this.metrics.poses].sort((a, b) => this.views.get(b.id)!.node.depth - this.views.get(a.id)!.node.depth)) {
       const view = this.views.get(pose.id)!;
       if (!view.node.visible || !pose.faceUp || !inside(x, y, { x: view.node.x, y: view.node.y, width: this.cardW, height: this.cardH })) continue;
       if (board.waste.at(-1) === pose.id) return { kind: 'waste', index: 0 };
@@ -553,10 +667,13 @@ export class BoardScene extends Phaser.Scene {
   }
   private get stockTarget() { const stock = this.metrics.stock; return { x: stock.x, y: stock.y + stock.thickness / 2, width: this.cardW, height: this.cardH + stock.thickness }; }
   private hitCard(x: number, y: number): Pose | undefined {
-    return [...this.metrics.poses].sort((a, b) => b.depth - a.depth).find(p => this.views.get(p.id)!.node.visible && p.faceUp && inside(x, y, { x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y, width: this.cardW, height: this.cardH }));
+    return [...this.metrics.poses].sort((a, b) => this.views.get(b.id)!.node.depth - this.views.get(a.id)!.node.depth).find(p => this.views.get(p.id)!.node.visible && p.faceUp && inside(x, y, { x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y, width: this.cardW, height: this.cardH }));
   }
   private down(pointer: BoardPointer) {
     if (!this.enabled || !pointer.primaryDown || this.press) return;
+    // A new gesture may use an already-unlocked column immediately.
+    // Settle the cosmetic lock before deciding which visible card was touched.
+    this.clearKeys();
     const { x, y } = this.point(pointer), board = this.options.getSave().attempt.board;
     this.options.peek?.(null);
     const source = this.hitSource(x, y);
@@ -739,7 +856,7 @@ export class BoardScene extends Phaser.Scene {
       onRepeat: () => hand.setPosition(from.x, from.y) }));
     this.game.loop.wake();
   }
-  public hasMotion(): boolean { return this.tweens.getTweens().length > 0 || this.collections.size > 0 || Boolean(this.press?.moved); }
+  public hasMotion(): boolean { return this.tweens.getTweens().length > 0 || this.collections.size > 0 || Boolean(this.keyPresentation) || Boolean(this.press?.moved); }
   public update(): void { if (this.press?.moved && this.dragPointer) this.move(this.dragPointer); }
   public geometry() { return this.metrics; }
 }

@@ -1,0 +1,18 @@
+{
+  "sourceSha256": "420c078e4833c8c2e8bd9f6dce8b622d0bfc88dc279dc210ec7436190bb56930",
+  "columns": 1,
+  "rows": 1,
+  "records": [
+    {
+      "name": "card-back-classic-012",
+      "source": "exec-2416c6cf-b281-4986-b297-948c2a0b7f2d.png",
+      "rect": {
+        "left": 68,
+        "top": 60,
+        "width": 947,
+        "height": 1328
+      },
+      "path": "public/art/generated/card-back-classic-012.webp"
+    }
+  ]
+}

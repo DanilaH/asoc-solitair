@@ -1,5 +1,7 @@
 # Product sources
 
+Active follow-up: [0.14 staged guidance and board motion](qa/BOARD_MOTION_0_14_0.md); acceptance in progress.
+
 
 Current delivered source: [0.13 packet/preview feel](qa/PACKET_FEEL_0_13_0.md). PR#25 merged; full source CI passes162 browser cases and both Android builds. Earlier [0.12 contact/materials](qa/BOARD_MATERIALS_0_12_0.md) and the audit/delivery entries below are historical.
 

@@ -11,6 +11,7 @@ import { dispatch, freshSave, legalCommands, sourceCards } from '../src/domain/e
 import { boardFrame, cardMetrics, layout } from '../src/game/layout';
 import { cueDurations, cueSamples } from '../src/platform/sounds';
 import { cardArtwork } from '../src/game/art';
+import { resolveHint } from '../src/domain/hint';
 import type { BoardCommand, Command, Deal, Save } from '../src/domain/types';
 
 const appVersion = JSON.parse(await readFile('package.json', 'utf8')).version as string;
@@ -63,9 +64,10 @@ const completion = { deal: campaignDeals[5], save: lights.slice(0, 5).reduce((s,
 const dense = campaignDeals.find(d => d.campaignLevel! >= 50 && d.initial.tableau.length === 4)!;
 const daily = dailyForDay('2026-11-13');
 const jokerDeal = campaignDeals[20];
-const cases: { name: string; candidate: Candidate; palette?: 'ink'; bottom?: boolean; left?: boolean; drag?: boolean; }[] = [
+const cases: { name: string; candidate: Candidate; palette?: 'ink'; bottom?: boolean; left?: boolean; drag?: boolean; hint?: boolean; }[] = [
   { name: 'packet-merge', candidate: merge },
   { name: 'foundation', candidate: foundation },
+  { name: 'staged-hint', candidate: foundation, hint: true },
   { name: 'completion', candidate: completion },
   { name: 'unlock', candidate: unlock },
   { name: 'ordered', candidate: ordered },
@@ -133,11 +135,17 @@ try {
         writes.push(writeFile(`${dir}/${file}`, Buffer.from(frame.data, 'base64')));
         void cdp.send('Page.screencastFrameAck', { sessionId: frame.sessionId }).catch(() => undefined);
       });
-      const expected = dispatch(before, cmd, deal); assert.equal(expected.accepted, true);
+      const solved = entry.hint ? resolveHint(before.attempt.board, deal) : undefined;
+      if (entry.hint) assert.equal(solved?.status, 'SOLVED');
+      const actualCommand: Command = entry.hint && solved?.status === 'SOLVED' ? { type: 'hint', revision: before.revision, action: solved.action } : cmd;
+      const expected = dispatch(before, actualCommand, deal); assert.equal(expected.accepted, true);
       let anchors: object;
       await page.evaluate(() => { (window as typeof window & { __boardAudit: Probe[] }).__boardAudit = []; });
       await cdp.send('Page.startScreencast', { format: 'png', everyNthFrame: 1 });
-      if (cmd.type === 'transfer') {
+      if (entry.hint) {
+        assert.equal(solved?.status, 'SOLVED'); anchors = { action: solved?.status === 'SOLVED' ? solved.action : null };
+        await page.locator('#hint').tap();
+      } else if (cmd.type === 'transfer') {
         const ids = sourceCards(before.attempt.board, cmd.from, deal), a = point(g.poses.find(p => p.id === ids.at(-1))!), b = point(g.targets.find(t => t.location.kind === cmd.to.kind && t.location.index === cmd.to.index)!);
         anchors = { from: a, target: b, sourceIds: ids, destinationIds: cmd.to.kind === 'tableau' ? before.attempt.board.tableau[cmd.to.index] : before.attempt.board.foundations[cmd.to.index] };
         if (entry.drag) {
@@ -156,8 +164,9 @@ try {
       } else { anchors = { stock: point(g.stock) }; const p = point(g.stock); await page.touchscreen.tap(p.x, p.y); }
       await page.waitForFunction(rev => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!).revision > rev, before.revision);
       assert.deepEqual((await read()).attempt.board, expected.next.attempt.board);
+      assert.equal((await read()).profile.hints, expected.next.profile.hints);
       await page.waitForTimeout(85); await page.screenshot({ path: dir + '/during.png', scale: 'css' });
-      await page.waitForTimeout(800); await cdp.send('Page.stopScreencast');
+      await page.waitForTimeout(entry.hint ? 2300 : 800); await cdp.send('Page.stopScreencast');
       await page.screenshot({ path: dir + '/after.png', scale: 'css' });
       const probes = await page.evaluate(() => (window as typeof window & { __boardAudit: Probe[] }).__boardAudit);
       for (const probe of probes.filter(p => p.type === 'audio')) {
@@ -168,7 +177,7 @@ try {
           if ((hash >>> 0) === probe.fingerprint) (probe.matches as string[]).push(`${name}:${variant}`);
         }
       }
-      const value = { label, deal: deal.id, level: deal.campaignLevel, daily: deal.daily, cmd, events: expected.events, boardBounds: r, unit: f.unit, card: cardMetrics(deal), anchors, probes, frames, timing: await page.evaluate(() => ({ timeOrigin: performance.timeOrigin, now: performance.now() })), actualInput: entry.drag ? 'CDP touch drag' : 'touchscreen taps', prepared: 'legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning' };
+      const value = { label, deal: deal.id, level: deal.campaignLevel, daily: deal.daily, cmd: actualCommand, events: expected.events, boardBounds: r, unit: f.unit, card: cardMetrics(deal), anchors, probes, frames, timing: await page.evaluate(() => ({ timeOrigin: performance.timeOrigin, now: performance.now() })), actualInput: entry.drag ? 'CDP touch drag' : 'touchscreen taps', prepared: 'legal isolated save prefix; helper/tutorial unlock flags; no scene/card positioning' };
       report.push(value); await writeFile(dir + '/events.json', JSON.stringify(value, null, 2) + '\n');
       await cdp.detach(); const video = page.video()!; await context.close(); await video.saveAs(dir + '/actual-touch.webm'); await Promise.all(writes);
       console.info(`${label} ${expected.events.map(e => e.type).join(',')} frames=${frames.length}`);

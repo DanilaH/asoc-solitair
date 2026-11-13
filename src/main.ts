@@ -666,6 +666,7 @@ try {
   }
   $('#hint').addEventListener('click', () => {
     if (workerDeadline || saving || runtime.activity.isBlocked()) return;
+    if (inspectMode) setInspect(false);
     if (save.profile.hints === 0 && !freeHintDemo(save, deal) && activeHint?.key !== boardKey(save.attempt.board)) { openHelpers('hint'); return; }
     if (activeHint?.key === boardKey(save.attempt.board)) {
       renderer.loop.wake(); scene?.hint(activeHint.action);

@@ -1,5 +1,10 @@
 # Continuation checkpoint — 2026-11-13
 
+
+## Active implementation —0.13.0/code21
+
+Owner feedback approves0.12 but requests safe inset previews plus a compact/dimmed drag packet with one paper sound. Branch feat/card-packets-0.13.0 from b936aca. [Scope/current acceptance](qa/PACKET_FEEL_0_13_0.md). Local implementation/check/focused48 tests pass; full source CI, signed preview and merge remain pending. Two deliberate negative controls detect the old expanded packet on frozen0.12. Do not treat0.12 APK/GIFs as the new delivery. No rules/content/save/economy/subject-art/SDK/kit changes. Only the waste band grows22→32 logical for safe margins; board target geometry stays fixed. Existing authorized GitHub APIs support text/binary uploads; no browser login is required.
+
 ## Current delivery — 0.12.0/code20
 
 Owner approved the six-block follow-up plan. [Scope/evidence](qa/BOARD_MATERIALS_0_12_0.md). Runtime source `cc0e5d58dc49c8167aa961d4e93cecbd3e1410ec`. PR#24 merged at `ce957f392e60f234c6e79b33ee9340339e83b19f`; merge tree `29eabfd0b629c9785b9385e7837376a3a2910900` equals the verified source tree. This final acceptance checkpoint changes only documentation/evidence. Полный source CI43431409168: 154 browser PASS +4 deliberate compact skips,92 unit/platform,108 раздач/216 current+legacy путей,253244 независимых сравнений правил,96 prototype-agent попыток,119 layout cases с0 DOM/0 raster issues, Android debug/signature и unsigned SDK-disabled R8 — PASS. Duplicate PR-run43431420666 was still running at acceptance; current snapshot is in [ci.json](qa/board-materials-0_12_0/ci.json). An earlier local full run lacked a final summary and is not counted as a full pass.

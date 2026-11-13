@@ -49,7 +49,7 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
   const originalStock = deal.initial.stock.length + deal.initial.waste.length;
   const thickness = board.stock.length > 1 ? 3 + 15 * Math.min(1, (board.stock.length - 1) / Math.max(1, originalStock - 1)) : 0;
   const stock = { x: left ? cardW / 2 : WIDTH - cardW / 2, y: deckY - thickness, thickness };
-  const fanStep = 22;
+  const fanStep = 32;
   // The first card lands beside the stock; further draws open away from it.
   // Preserve earlier positions while the initial three-card fan is opening.
   const fanWidth = Math.max(0, Math.min(3, board.waste.length) - 1) * fanStep;

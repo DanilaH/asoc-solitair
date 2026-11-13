@@ -1,5 +1,8 @@
 # Product sources
 
+
+Active follow-up: [0.13 packet/preview feel](qa/PACKET_FEEL_0_13_0.md); full acceptance pending. Current delivered source remains [0.12 contact/materials](qa/BOARD_MATERIALS_0_12_0.md). The older audit/delivery entries below are historical.
+
 Latest independent follow-up: [0.11.0 board/feel/generation opportunities](qa/BOARD_OPPORTUNITIES_0_11_0_2026-11-13.md).33 fresh touch scenarios; four new visual defects and bounded material/effect proposals. Read-only runtime audit; no new APK or production art is implemented.
 
 Current board implementation: [0.11.0 continuity, slot hierarchy and coherent collection](qa/BOARD_FEEL_0_11_0.md). Approved audit plan implemented; signed APK and actual-touch GIFs delivered. Final-runtime continuity16/16, all80 touch levels, model/content/layout and Android debug/unsigned R8 checks pass. Final exact-input PR CI43390098010 passes146 browser cases +4 deliberate skips and both Android builds. PR#23 merged at7528d8c with identical verified tree; final checkpoint changes documentation/evidence only. Physical-device feel remains open. Rules/bank/saves/economy/art/SDK/kit preserved.

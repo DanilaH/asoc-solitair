@@ -7,7 +7,7 @@ import { boardFrame, cardMetrics, dragTarget, dropTarget, layout } from './layou
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; stripScale?: number; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Graphics }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Graphics; shade: Phaser.GameObjects.Graphics }
 interface Options {
   deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene): void;
@@ -174,14 +174,14 @@ export class BoardScene extends Phaser.Scene {
       }
       caption = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '24px', fontStyle: 'bold', color: '#294d5d', align: 'center' }).setOrigin(.5);
       caption.setScale(Math.max(.74, Math.min(1, (this.cardW - 18) / caption.width))); content.add(caption);
-      strip = this.add.text(0, -this.cardH / 2 + 9, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: '#8c7257', fontStyle: 'bold' }).setOrigin(.5, 0);
+      strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
     } else if (image) {
       content.add(this.add.image(0, 0, image).setDisplaySize(Math.min(104, this.cardW - 22), Math.min(104, this.cardW - 22)));
       strip = this.add.image(0, -this.cardH / 2 + 11, image).setDisplaySize(18, 18); face.add(strip); strip.setVisible(false);
     } else {
       caption = this.label(0, 0, card.text, card.text.length > 11 ? 23 : 26, '#294d5d', this.cardH - 72); caption.setOrigin(.5); content.add(caption);
-      strip = this.add.text(0, -this.cardH / 2 + 7, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: '#79909c' }).setOrigin(.5, 0);
+      strip = this.add.text(0, 0, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: '#79909c' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 14) / strip.width)); face.add(strip); strip.setVisible(false);
     }
     if (card.keyId) {
@@ -191,8 +191,9 @@ export class BoardScene extends Phaser.Scene {
     const badge = this.label(0, card.leader && !card.ordered ? -this.cardH / 2 + 13 : this.cardH / 2 - 30, '', 17, card.leader ? '#a17e5d' : '#a9815f'); content.add(badge);
     const b = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
     this.paintBack(b);
-    back.add(b); node.add([shadow, face, back]); this.world.add(node);
-    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, stripScale: strip?.scaleX, backArt: b, shadow };
+    const shade = this.add.graphics().fillStyle(0x172c39).fillRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13).setAlpha(0);
+    back.add(b); node.add([shadow, face, back, shade]); this.world.add(node);
+    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade };
   }
   private paintBack(b: Phaser.GameObjects.Image) {
     const diamonds = this.options.getSave().settings.cardBack === 'diamonds';
@@ -205,6 +206,7 @@ export class BoardScene extends Phaser.Scene {
     copy.face.setVisible(source.face.visible); copy.back.setVisible(source.back.visible);
     copy.content.setVisible(source.content.visible); copy.caption?.setVisible(source.caption?.visible ?? true);
     copy.badge.setText(source.badge.text).setY(source.badge.y).setVisible(source.badge.visible);
+    copy.shade.setAlpha(source.shade.alpha);
     copy.strip?.setVisible(source.strip?.visible ?? false);
     if (copy.strip && source.strip) copy.strip.setPosition(source.strip.x, source.strip.y).setScale(source.strip.scaleX, source.strip.scaleY).setAngle(source.strip.angle);
     if (copy.strip instanceof Phaser.GameObjects.Text && source.strip instanceof Phaser.GameObjects.Text) copy.strip.setText(source.strip.text);
@@ -360,6 +362,7 @@ export class BoardScene extends Phaser.Scene {
     for (const [id, view] of this.views) {
       if (visible.has(id)) continue;
       this.tweens.killTweensOf(view.node);
+      this.tweens.killTweensOf(view.shade); view.shade.setAlpha(0);
       this.tweens.killTweensOf([view.face, view.back]); view.face.setScale(1); view.back.setScale(1);
       if (recycled && board.stock.includes(id)) {
         const old = previous.poses.find(p => p.id === id) ?? previous.waste;
@@ -374,7 +377,10 @@ export class BoardScene extends Phaser.Scene {
     for (const pose of this.metrics.poses) {
       if (!visible.has(pose.id)) continue;
       const view = this.views.get(pose.id)!;
-      view.shadow.setPosition(0, 0).setScale(1);
+      view.shadow.setPosition(0, 0).setScale(1).setAlpha(1);
+      this.tweens.killTweensOf(view.shade);
+      if (view.shade.alpha && duration && this.enabled) this.tweens.add({ targets: view.shade, alpha: 0, duration: 120, ease: 'Sine.easeOut' });
+      else view.shade.setAlpha(0);
       this.tweens.killTweensOf(view.node);
       this.tweens.killTweensOf([view.face, view.back]); view.face.setScale(1); view.back.setScale(1);
       view.face.setVisible(pose.faceUp); view.back.setVisible(!pose.faceUp);
@@ -405,17 +411,23 @@ export class BoardScene extends Phaser.Scene {
       const support = this.metrics.joker;
       const supportBelow = support && support.x === pose.x && support.depth > pose.depth && (!next || support.depth < next.depth);
       const rearWaste = board.waste.includes(pose.id) && board.waste.at(-1) !== pose.id;
-      const band = rearWaste ? 22 : group < 0 ? this.cardH : Math.min(next ? next.y - pose.y : this.cardH, supportBelow ? support!.y - pose.y : this.cardH);
+      const wasteAbove = rearWaste ? this.metrics.poses.find(p => p.id === board.waste[board.waste.indexOf(pose.id) + 1]) : undefined;
+      const band = rearWaste ? Math.abs((wasteAbove?.x ?? pose.x) - pose.x) : group < 0 ? this.cardH : Math.min(next ? next.y - pose.y : this.cardH, supportBelow ? support!.y - pose.y : this.cardH);
       const coveredCaption = band < this.cardH - 1;
+      // Centre the preview in exposed paper, leaving both the rim and the
+      // incoming card clear. A squeezed band yields no misleading fragment.
+      const previewRoom = Math.max(0, band - (rearWaste ? 16 : 20));
       if (view.strip instanceof Phaser.GameObjects.Text) {
-        view.strip.setFontSize(16).setText(rearWaste ? def.leader ? categoryCaption(def.text) : def.text : view.stripText!).setOrigin(.5, rearWaste ? .5 : 0);
-        if (rearWaste) {
-          view.strip.setScale(Math.min(1, (this.cardH - 24) / Math.max(1, view.strip.width), 18 / Math.max(1, view.strip.height)));
-          view.strip.setAngle(save.settings.deckSide === 'left' ? -90 : 90).setPosition((save.settings.deckSide === 'left' ? -1 : 1) * (this.cardW / 2 - 11), 0);
-        } else view.strip.setAngle(0).setPosition(0, -this.cardH / 2 + 7).setScale(view.stripScale ?? 1);
-      } else if (view.strip) view.strip.setPosition(rearWaste ? (save.settings.deckSide === 'left' ? -1 : 1) * (this.cardW / 2 - 11) : 0, rearWaste ? 0 : -this.cardH / 2 + 11);
+        view.strip.setFontSize(16).setText(rearWaste ? def.leader ? categoryCaption(def.text) : def.text : view.stripText!).setOrigin(.5).setScale(1);
+        view.strip.setScale(Math.min(1, (rearWaste ? this.cardH - 28 : this.cardW - 28) / Math.max(1, view.strip.width), previewRoom / Math.max(1, view.strip.height)));
+      } else if (view.strip) { const size = Math.min(rearWaste ? 16 : 22, previewRoom); view.strip.setDisplaySize(Math.max(1, size), Math.max(1, size)); }
+      if (view.strip) {
+        const side = save.settings.deckSide === 'left' ? -1 : 1;
+        view.strip.setAngle(rearWaste && view.strip instanceof Phaser.GameObjects.Text ? side * 90 : 0)
+          .setPosition(rearWaste ? side * (this.cardW / 2 - band / 2) : 0, rearWaste ? 0 : -this.cardH / 2 + band / 2);
+      }
       const waitingForCover = pose.id === drawUnder || pose.id === tableauUnder;
-      const stripVisible = Boolean(coveredCaption && pose.faceUp && view.strip && band >= view.strip.height * view.strip.scaleY + (rearWaste ? 3 : 10));
+      const stripVisible = Boolean(coveredCaption && pose.faceUp && view.strip && previewRoom >= 12 && (!(view.strip instanceof Phaser.GameObjects.Text) || view.strip.scaleX >= .65));
       if (waitingForCover) this.coveredFaces.set(pose.id, { frontId: pose.id === drawUnder ? board.waste.at(-1)! : movedIds.at(-1)!, strip: stripVisible });
       view.content.setVisible(!coveredCaption || waitingForCover); view.caption?.setVisible(!coveredCaption || waitingForCover);
       view.strip?.setVisible(!waitingForCover && stripVisible);
@@ -716,22 +728,29 @@ export class BoardScene extends Phaser.Scene {
     const { x, y } = this.point(pointer), press = this.press;
     if (Math.hypot(x - press.x, y - press.y) > 11) press.moved = true;
     if (!press.moved) return;
-    this.dragPointer = pointer; press.liftedAt ??= performance.now();
+    this.dragPointer = pointer;
+    if (press.liftedAt === undefined) { press.liftedAt = performance.now(); if (press.from && press.poses.length > 1) this.options.sound('gather'); }
     const progress = this.options.getSave().settings.reducedMotion ? 1 : 1 - (1 - Math.min(1, (performance.now() - press.liftedAt) / 80)) ** 3;
     const lift = 68 / this.cssUnit * progress;
-    const minY = Math.min(...press.poses.map(p => p.y)), maxY = Math.max(...press.poses.map(p => p.y));
+    const gathering = Boolean(press.from && press.poses.length > 1), gap = Math.min(10, 28 / Math.max(1, press.poses.length - 1));
+    const heldY = press.poses.map((pose, i) => gathering ? Phaser.Math.Linear(pose.y, press.y - (press.poses.length - i - 1) * gap, progress) : pose.y);
+    const minY = Math.min(...heldY), maxY = Math.max(...heldY);
     const dx = Phaser.Math.Clamp(x - press.x, (6 / this.scale.zoom - this.world.x) / this.unit + this.cardW / 2 - press.poses[0].x, (this.scale.width - 6 / this.scale.zoom - this.world.x) / this.unit - this.cardW / 2 - press.poses[0].x);
     const dy = Phaser.Math.Clamp(y - press.y - lift, (6 / this.scale.zoom - this.world.y) / this.unit + this.cardH / 2 - minY, (this.scale.height - 6 / this.scale.zoom - this.world.y) / this.unit - this.cardH / 2 - maxY);
     press.poses.forEach((pose, i) => {
       const view = this.views.get(pose.id)!;
       this.tweens.killTweensOf(view.node);
-      if (!press.from) { view.content.setVisible(true); view.caption?.setVisible(true); view.strip?.setVisible(false); }
-      view.shadow.setPosition(0, 4 * progress).setScale(1 + .03 * progress);
-      view.node.setPosition(pose.x + dx, pose.y + dy).setScale(1 + .035 * progress).setDepth(800 + i);
+      this.tweens.killTweensOf(view.shade);
+      const front = i === press.poses.length - 1;
+      view.content.setVisible(front); view.caption?.setVisible(front); view.strip?.setVisible(false);
+      if (gathering && front && !this.options.deal.cards[pose.id].rank && !this.options.deal.cards[pose.id].leader) view.badge.setVisible(false);
+      view.shade.setAlpha(front ? 0 : .16 * progress);
+      view.shadow.setPosition(0, 4 * progress).setScale(1 + .03 * progress).setAlpha(front ? 1 : .45);
+      view.node.setPosition(pose.x + dx, heldY[i] + dy).setScale(1 + .035 * progress).setDepth(800 + i);
     });
     const front = press.poses.at(-1);
     this.dragCount.setVisible(press.poses.length > 1);
-    if (front) this.dragCount.setDepth(850).setText(`×${press.poses.length}`).setFontSize(Math.max(20, 12 / this.cssUnit)).setPosition(front.x + dx - this.cardW / 2 + 7, front.y + dy - this.cardH / 2 + 4);
+    if (front) { const node = this.views.get(front.id)!.node; this.dragCount.setDepth(850).setText(`×${press.poses.length}`).setFontSize(Math.max(20, 12 / this.cssUnit)).setPosition(node.x - this.cardW / 2 + 14, node.y - this.cardH / 2 + 12); }
     this.world.sort('depth');
     this.drawSlots();
     const hover = this.currentDrop(x, y), valid = hover && press.from && typeof applyBoard(this.options.getSave().attempt.board, { type: 'transfer', from: press.from, to: hover.location }, this.options.deal) !== 'string';

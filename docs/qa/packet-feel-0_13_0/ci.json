@@ -1,0 +1,62 @@
+{
+  "source": "a3a6d5ac574e041c235d311138b53292f60d4096",
+  "tree": "fa0dca1b6f719d3f3433cbcfba77802e12bfaa9b",
+  "fullSourceRun": 43459066571,
+  "event": "push",
+  "jobs": [
+    {
+      "id": 132000833916,
+      "name": "web",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 132000833161,
+      "name": "android",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "browser": {
+    "passed": 162,
+    "deliberateCompactCatalogSkips": 4
+  },
+  "unitPlatform": 92,
+  "contentDeals": 108,
+  "currentAndLegacyPaths": 216,
+  "independentComparisons": 253244,
+  "prototypeAgentAttempts": 96,
+  "layout": {
+    "cases": 119,
+    "domIssues": 0,
+    "rasterIssues": 0
+  },
+  "duplicatePrRun": {
+    "run": 43459103754,
+    "jobs": [
+      {
+        "id": 132000953079,
+        "name": "android",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 132000953612,
+        "name": "web",
+        "status": "in_progress",
+        "conclusion": null
+      }
+    ]
+  },
+  "merge": {
+    "sha": "fd3e4e556f6e0881d78915b847544ef8d61903c0",
+    "tree": "fa0dca1b6f719d3f3433cbcfba77802e12bfaa9b",
+    "equalsVerifiedSource": true
+  },
+  "limits": [
+    "Browser/automated checks do not establish human enjoyment or phone comfort",
+    "Audio fingerprints show actual source starts, not hardware latency",
+    "WAV is a source-sample audition",
+    "No production signing/store/live SDK settings changed"
+  ]
+}

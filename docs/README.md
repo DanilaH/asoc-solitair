@@ -1,7 +1,7 @@
 # Product sources
 
 
-Active follow-up: [0.13 packet/preview feel](qa/PACKET_FEEL_0_13_0.md); full acceptance pending. Current delivered source remains [0.12 contact/materials](qa/BOARD_MATERIALS_0_12_0.md). The older audit/delivery entries below are historical.
+Current delivered source: [0.13 packet/preview feel](qa/PACKET_FEEL_0_13_0.md). PR#25 merged; full source CI passes162 browser cases and both Android builds. Earlier [0.12 contact/materials](qa/BOARD_MATERIALS_0_12_0.md) and the audit/delivery entries below are historical.
 
 Latest independent follow-up: [0.11.0 board/feel/generation opportunities](qa/BOARD_OPPORTUNITIES_0_11_0_2026-11-13.md).33 fresh touch scenarios; four new visual defects and bounded material/effect proposals. Read-only runtime audit; no new APK or production art is implemented.
 

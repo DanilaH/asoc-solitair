@@ -1,0 +1,32 @@
+{
+  "base": "b936acafd2deb5ae750b49ca2709c4bdfd65f74c",
+  "unitPlatform": 92,
+  "focusedBrowser": 48,
+  "newPacketCasesIncluded": 8,
+  "layout": {
+    "cases": 119,
+    "domIssues": 0,
+    "rasterIssues": 0
+  },
+  "oldBaselineNegativeControl": {
+    "source": "0.12.0 signed APK",
+    "cases": 2,
+    "result": "Both fail the expanded-column image bound as intended",
+    "compactHeightPx": 154,
+    "compactMaximumPx": 141.42044444444446
+  },
+  "frozen": [
+    "rules/content/balance3/5/3 and bank",
+    "save/economy/receipts",
+    "all art and word/picture policy",
+    "SDK configs/workflows/kit pin"
+  ],
+  "preserved": [
+    "viewport pointer capture",
+    "68CSS lift",
+    "both drop anchors",
+    "exact packet order/cancel/Undo"
+  ],
+  "layoutChange": "Waste fan22 to32 logical; columns and target geometry unchanged",
+  "audio": "Bounded cached gather cue, one per gesture, existing max4 voices; separate120ms packet throttle to avoid lift suppression"
+}

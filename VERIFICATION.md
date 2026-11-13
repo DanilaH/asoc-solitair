@@ -1,6 +1,11 @@
 # Verification — 2026-11-13
 
 
+## 0.13.0 — Covered previews and packet drag
+
+[Evidence](docs/qa/PACKET_FEEL_0_13_0.md). Source a3a6d5ac574e041c235d311138b53292f60d4096. Local check92 unit/platform,48 focused browser (8 new packet cases),119 layouts with0 DOM/0 raster pass. Two deliberate controls detect the old expanded-column image on0.12. Twelve clean-source actual-touch records match the model with0 page errors; actual audio start calls identify exactly one gather per packet gesture in each recorded profile. Official build-tools verify the existing signer, code21/version0.13.0 and all191 packaged web files. PR#25 merged at fd3e4e55; Full source CI43459066571 passes162 browser cases +4 deliberate compact catalog skips,92 unit/platform,108 deals/216 current+legacy paths,253244 independent comparisons,96 prototype-agent attempts,119 layout cases with0 DOM/raster issues and both Android builds; signed code21 APK and actual-input media delivered. Phone feel, hardware audio onset and subjective sound preference remain unmeasured. WAV is a source-sample audition, not a phone recording. Subsequent checkpoint changes documentation/evidence only.
+
+
 ## 0.12.0 — Contact/material follow-up
 
 [Scope/evidence](docs/qa/BOARD_MATERIALS_0_12_0.md). Runtime source `cc0e5d58dc49c8167aa961d4e93cecbd3e1410ec`, five WebP blobs and all191 packaged web files independently matched. Signed debug code20 uses the existing preview certificate; SDK-disabled unsigned R8 compiles. PR#24 merged at ce957f39; source CI43431409168 passes154 browser cases +4 deliberate compact skips,92 unit/platform, content/rules/prototypes/layout and both Android builds; signed APK and GIFs delivered. Eight new visual/contact regressions pass locally and deliberately detect the four original defects in frozen0.11. Twelve clean-source real-touch recordings match the model without page errors; existing GIF runtime hashes are identical to the signed APK. Earlier full local browser execution has no final summary and is not counted as a full pass. Physical-phone feel/haptics/audio onset/live SDK remain outside this acceptance. Only documentation/evidence changes follow the verified runtime.

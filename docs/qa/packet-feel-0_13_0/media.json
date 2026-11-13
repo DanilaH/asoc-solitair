@@ -1,0 +1,55 @@
+{
+  "source": "a3a6d5ac574e041c235d311138b53292f60d4096",
+  "files": [
+    {
+      "file_name": "asoc-solitair-0.13.0-preview.apk",
+      "library_file_id": "libfile_e7d6a32772308191a9372fa89fddd36d",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "bytes": 11555141,
+      "sha256": "36065c390101efc59f7241670e857bf5d9ffbd7e15b65ed01d7961e6ee94b603"
+    },
+    {
+      "file_name": "asoc-0.13-packet-and-previews-360.gif",
+      "library_file_id": "libfile_6f2e4e0d890c8191b83ff935a3e93e93",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "bytes": 483136,
+      "sha256": "299fa74a950a1a44abc9b49ec801784d0a66ae363c4b9adc06168acaa207cd88"
+    },
+    {
+      "file_name": "asoc-0.13-packet-and-previews-320.gif",
+      "library_file_id": "libfile_6f2f8cd7631c8191a5b5e0c9b5df8e35",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "bytes": 375106,
+      "sha256": "b703cc167bb0309c868a0e46586cf48778dad65c79d9e815b345a755e17310d1"
+    },
+    {
+      "file_name": "asoc-0.13-preview-insets.png",
+      "library_file_id": "libfile_f54a44e405d08191969da1adac073053",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "bytes": 213985,
+      "sha256": "cc60f3e82ffa321ea62da9de78f69ef60d68adf6cc14ddf9ca05357cfd6747e3"
+    },
+    {
+      "file_name": "asoc-0.13-held-packet-320.png",
+      "library_file_id": "libfile_007969f9765481919954d11b2456f593",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "bytes": 139770,
+      "sha256": "ceb8135615150c02f5331f4afe95885a0aa99c90d087d4cf8c15fb65a3eae3f4"
+    },
+    {
+      "file_name": "asoc-0.13-packet-cue.wav",
+      "library_file_id": "libfile_5a9db2f04aa08191a39b7881af9822eb",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "bytes": 86444,
+      "sha256": "5cea87b2140e4cab96b2ff4b8a50730ddb5a9338f61580705f083ce6b06f69ab"
+    }
+  ],
+  "gif": "Four independent legal QA scenes; real CDP touch and screencast PNG frames at original timestamps,25fps output; no speedup or scene/card mutation. Browser, not a physical phone.",
+  "audio": "WAV is three generated gather sample variants at actual playback gain.32 with silence between, not a phone/audio-onset capture."
+}

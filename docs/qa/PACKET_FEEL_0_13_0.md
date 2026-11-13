@@ -1,6 +1,6 @@
 # 0.13.0/code21 — подписи на перекрытых картах и перенос стопки
 
-Статус: локально реализовано; полный CI, новый APK и слияние ожидаются. База b936acafd2deb5ae750b49ca2709c4bdfd65f74c /0.12.0. Ветка feat/card-packets-0.13.0.
+Статус: поставлено0.13.0/code21. [PR#25](https://github.com/DanilaH/asoc-solitair/pull/25) слит в main fd3e4e556f6e0881d78915b847544ef8d61903c0; дерево fa0dca1b6f719d3f3433cbcfba77802e12bfaa9b равно проверенному source a3a6d5ac574e041c235d311138b53292f60d4096. Только документация/свидетельства следуют после проверенного runtime. База0.12.0 — b936acafd2deb5ae750b49ca2709c4bdfd65f74c.
 
 Превью слова/картинки центрируется в реально открытой полосе бумаги. Верхние превью имеют отступ10 logical с обеих сторон полосы, боковые —8; слишком узкая полоса скрывает превью вместо обрезанного фрагмента. Боковой веер расширен22→32 logical, сохраняя сторону/порядок/позицию первой карты и направление открытия. Геометрия столбцов и верхних целей прежняя;33 предмета/рубашки/слоты и word/picture policy сохранены.
 
@@ -10,4 +10,8 @@
 
 Локально: npm run check PASS (92 unit/platform, все current+legacy пути);48 focused browser PASS, включая8 новых packet cases. Контроль на APK0.12.0 намеренно проваливает2 проверки компактности (рендер154px при допустимых141.4px на compact), подтверждая обнаружение прежней развёрнутой колонны. Новые проверки отдельно требуют один реальный gather, неизменность save при drag/cancel, восстановление яркости/подписей после cancel, захват за заднюю полосу, обе drop-опоры, точный Undo, mute+reduced motion.
 
-Первый визуальный прогон:9 actual-touch сцен360/320/reduced,0 page errors, точное сравнение с моделью. Preview кадров показывает текст по центру верхней полосы и обоих боков. Дальше — полный source CI, проверка code21/подписи/всех191 web-файлов APK, чистая source-запись и GIF. Звук на телефоне, реальный audio onset и субъективное предпочтение пока не проверены. Правила/банк/сохранения/экономика/kit/production SDK сохраняются.
+Первый визуальный прогон:9 actual-touch сцен360/320/reduced,0 page errors, точное сравнение с моделью. Preview кадров показывает текст по центру верхней полосы и обоих боков. Чистый source a3a6d5ac574e041c235d311138b53292f60d4096:12 actual-touch сцен,0 ошибок. Android debug и unsigned R8 собраны; code21/0.13.0/прежняя подпись и все191 web-файл APK независимо проверены. Full source CI43459066571 passes162 browser cases +4 deliberate compact catalog skips,92 unit/platform,108 deals/216 current+legacy paths,253244 independent comparisons,96 prototype-agent attempts,119 layout cases with0 DOM/raster issues and both Android builds. [CI и точный merge](packet-feel-0_13_0/ci.json). [Локальные проверки](packet-feel-0_13_0/local.json), [source-запись](packet-feel-0_13_0/recordings.json), [APK](packet-feel-0_13_0/source-apk.json), [сохранённые APK/GIF/скриншоты/звук](packet-feel-0_13_0/media.json). Звук на телефоне, реальный audio onset и субъективное предпочтение пока не проверены. Правила/банк/сохранения/экономика/kit/production SDK сохраняются.
+
+
+Тестовый APK: `libfile_e7d6a32772308191a9372fa89fddd36d`, version0. GIF360/320: `libfile_6f2e4e0d890c8191b83ff935a3e93e93` / `libfile_6f2f8cd7631c8191a5b5e0c9b5df8e35`, version0. Скриншоты и WAV — в media.json; все6 записей успешно сохранены с metadata. GIF сохраняет исходные timestamps четырёх отдельных QA-сцен,25fps и скорость1x; WAV — три варианта семпла на gain.32, не запись телефона. Повторять эти загрузки не нужно.
+Duplicate PR CI: ещё выполнялся на момент приёмки; snapshot записан в ci.json.

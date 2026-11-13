@@ -1,6 +1,11 @@
 # Decisions
 
 
+## 2026-11-13 — Safe exposed paper and one held packet
+
+The owner requested previews clear of card rims and a compact/dimmed drag stack with a characteristic sound. Centre previews within actual exposed paper; hide them if no safe room remains. Widen the existing waste fan22→32 logical while retaining its anchor/order/direction. Over80ms, gather behind one bright front with at most28 logical rear spread and16% rear shade; hide rear content and keep an inset count. Sound once at actual drag start with cached gather variants, bounded by existing4 voices and a120ms packet throttle. Release/cancel restores presentation independently of the domain; rear-strip pickup still uses68CSS lift and both drop anchors. No content/save/economy/art/SDK/kit changes. [Acceptance](docs/qa/PACKET_FEEL_0_13_0.md). PR#25 merged at fd3e4e55; Full source CI43459066571 passes162 browser cases +4 deliberate compact catalog skips,92 unit/platform,108 deals/216 current+legacy paths,253244 independent comparisons,96 prototype-agent attempts,119 layout cases with0 DOM/raster issues and both Android builds; signed code21 APK and actual-input media delivered.
+
+
 ## 2026-11-13 — Contact and material ownership in0.12.0
 
 Implement the owner's bounded follow-up: keep a flight above the board until contact, retain the receiving face until covered, remove overlapping ordered progress, and let the key visibly reach/open the lock before the freed card flips. Optional feedback follows contact; durable save/grant remains immediate. New input/Undo/pause/scene replacement cancel presentation only. Use two existing cosmetic IDs with new generated backs, two well materials and an open-lock image; text/counters/hitboxes stay code. Keep one ordinary edge glint and one bounded paper completion accent; hold Joker unfolding. Preserve compact geometry,33 subjects, frozen bank/rules/saves/economy/SDK ownership and kit pin. [Acceptance](docs/qa/BOARD_MATERIALS_0_12_0.md); PR#24 merged at ce957f39; source CI43431409168 passes154 browser cases +4 deliberate compact skips,92 unit/platform, content/rules/prototypes/layout and both Android builds; signed APK and GIFs delivered. Device/human preference remain unmeasured.

@@ -1,0 +1,21 @@
+{
+  "source": "47162f937bfbd4d20a999aa94f1a27ee55840156",
+  "localCommit": "47162f937bfbd4d20a999aa94f1a27ee55840156",
+  "tree": "cd101e321cc8c62b985d97bd7b0693b4f953a7e3",
+  "sameSourceTree": true,
+  "recordedAssetsMatchCurrentBuild": 191,
+  "protectedPathsUnchanged": [
+    "src/domain",
+    "src/content",
+    "src/platform",
+    "public",
+    "index.html",
+    "src/style.css",
+    "src/game/layout.ts",
+    "native/android/app/src",
+    "native/android/gradle.properties"
+  ],
+  "changes": [],
+  "recordings": "recordings.json",
+  "APK": "source-apk.json (final source, all191 web files verified)"
+}

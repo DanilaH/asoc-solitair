@@ -26,5 +26,17 @@
       "near and far transfer contact have equal duration"
     ],
     "initialInfrastructureFailure": "Relative server directory failed; absolute-path retry used; not a runtime failure"
-  }
+  },
+  "finalSource": "47162f937bfbd4d20a999aa94f1a27ee55840156",
+  "finalHintReaderBrowser": {
+    "passed": 20,
+    "newCases": 8,
+    "scope": "All staged Hint/reader tests plus trusted Hint outcomes on phone/compact"
+  },
+  "readerNegativeControl": {
+    "baseline": "8570f1fae7978762dffde19be79903716bbfdb3b pre-reader-fix",
+    "expectedFailures": 1,
+    "observed": "Aa stayed active after charge; shared demonstration guard suppressed the cue"
+  },
+  "fixtureCorrection": "Two post-fix Aa tests initially failed pixel timing when the virtual clock was installed after activating Aa. Installing before the gesture, without any runtime change, gives2/2 and final20/20. No production timing fix is claimed."
 }

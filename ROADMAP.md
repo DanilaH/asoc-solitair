@@ -1,6 +1,6 @@
 # Roadmap
 
-**0.14.0/code22 — staged guidance and board motion:** [scope/acceptance](docs/qa/BOARD_MOTION_0_14_0.md). Owner-approved bounded follow-up; local acceptance/CI and new preview delivery in progress.
+**0.14.0/code22 — staged guidance and board motion:** [scope/acceptance](docs/qa/BOARD_MOTION_0_14_0.md). Delivered test preview, PR#26 merged. Local92 unit/platform,54 board-focused + final20 Hint/reader and119 layouts pass; final-source Android debug/signature/R8 and191 packaged assets pass. Exhaustive browser/80-level catalog remains in progress at delivery; physical-phone feel remains open.
 
 
 **0.13.0/code21 — packet and covered-preview feel:** [scope/evidence](docs/qa/PACKET_FEEL_0_13_0.md). Inset and centre previews, widen only the waste band, gather/dim rear cards during drag and play one cached paper cue. Preserve the bright front,68CSS lift, viewport capture, both drop anchors, order/cancel/Undo and all durable rules/economy. PR#25 merged at fd3e4e55; Full source CI43459066571 passes162 browser cases +4 deliberate compact catalog skips,92 unit/platform,108 deals/216 current+legacy paths,253244 independent comparisons,96 prototype-agent attempts,119 layout cases with0 DOM/raster issues and both Android builds; signed code21 APK and actual-input media delivered. Next acceptance is the actual phone's feel and sound preference; no additional mechanics follow from this renderer-only change.

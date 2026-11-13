@@ -1,0 +1,40 @@
+[
+  {
+    "local_path": "/workspace/scratch/50187ffca82b/asoc-media/asoc-solitair-0.14.0-preview.apk",
+    "library_file_id": "libfile_b77e847686a48191b3f56da59f9a40cc",
+    "current_version_number": 1,
+    "local_metadata_applied": true,
+    "bytes": 11555613,
+    "sha256": "04ca3557411efa67ce3dbf7e213ae3368c1c09e9089d544470920f13ca1c136e"
+  },
+  {
+    "local_path": "/workspace/scratch/50187ffca82b/asoc-media/asoc-0.14-guidance-and-board-360.gif",
+    "library_file_id": "libfile_c03091d1613081919c1f60bbdf3ce7c7",
+    "current_version_number": 1,
+    "local_metadata_applied": true,
+    "bytes": 767128,
+    "sha256": "a39e8d3e5af9ac73c3d860cd693edfb47700842b11ff9fb7f757317f26221d1a",
+    "frames": 150,
+    "durationMs": 6000,
+    "size": [
+      360,
+      780
+    ],
+    "recording": "Three separate final-source actual-touch scenes, original timestamps/1x,25fps output; not a phone capture"
+  },
+  {
+    "local_path": "/workspace/scratch/50187ffca82b/asoc-media/asoc-0.14-guidance-and-board-320.gif",
+    "library_file_id": "libfile_de3f2f145cfc8191aed67968886fe9bf",
+    "current_version_number": 1,
+    "local_metadata_applied": true,
+    "bytes": 666577,
+    "sha256": "3dd37b08dce440cb1cdbaf573061d6b97c9bf08215dfae9bee404aadf4d52f2d",
+    "frames": 152,
+    "durationMs": 6080,
+    "size": [
+      320,
+      568
+    ],
+    "recording": "Three separate final-source actual-touch scenes, original timestamps/1x,25fps output; not a phone capture"
+  }
+]

@@ -1,7 +1,7 @@
 {
-  "source": "13fb489c12dcf34e7f38dd441311d98b67285e45",
+  "source": "47162f937bfbd4d20a999aa94f1a27ee55840156",
   "appVersion": "0.14.0",
-  "worktree": "M native/android/app/build.gradle\n M package-lock.json\n M package.json\n M src/game/BoardScene.ts\n M tools/audit-board-opportunities.ts\n?? docs/qa/BOARD_MOTION_0_14_0.md\n?? tests/browser/board-motion.spec.ts",
+  "worktree": "?? docs/qa/board-motion-0_14_0/media.json\n?? docs/qa/board-motion-0_14_0/source-apk.json\n?? docs/qa/board-motion-0_14_0/source.json",
   "productionAssets": {
     "art/bird.svg": "2ee235f49e5234295dd2aa421f9400cd97303da8f379858edc1da071ffada9e6",
     "art/campaign/apple.svg": "11c5c382c07486667177ed2e1232e540455e204cc000922c8b341e378004b886",
@@ -188,12 +188,12 @@
     "art/ui/reward-emblem.webp": "d25743248a4d81bca14e7514112df8908b63026e9782dd88ec23cc6bd79d0896",
     "art/ui/tutorial-hand.webp": "7c1afd33f81d3d9f3d0686d1d27e3fbdd19752bf6a1da552284adfd6e5ecd215",
     "assets/hint.worker-uhBS9La3.js": "cb6f750af6ebd129a4cedef96ebdf84caa95f951f1a546852fb6a4ca5358083f",
-    "assets/index-CVHirTGy.js": "e6c5637cd476152b6fa3dfa26178f25bb69da73e67a3d12537126de55e56bcff",
+    "assets/index-B_HY9yvT.js": "d2501aa12e67774bcf89791cdecf74338a093b8b3f0e71bfd570f0f2884d0ea1",
     "assets/index-Dna6zhuz.css": "78c4982dad7992e3edfb818ccabc155f69c3de47bb296d573af43931edd446a4",
-    "assets/web-gaYLV-rO.js": "e982eff507d55f55511db3e32781bd693b966fbd96b601b5a619ef2bb7c3b96d",
+    "assets/web-B0wUoZSN.js": "1d7605606839e0b89ec2c882de1a8b71ffb0cde790050fe929e917410b536b9a",
     "fonts/nunito.ttf": "bb55a5ca5c2042335b3991af27c4d0705d0ef41cac6164ac737fd8f2a1e85207",
     "fonts/OFL-Nunito.txt": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
-    "index.html": "aa1adb49755d56e61d87a7edcdb4915395ef5c2637c459e9deebe05a319ba551"
+    "index.html": "933060a1245752859c7bf323927ab4bfef58c8ae52d18b131df8459114eee75a"
   },
   "productionBundleUnmodified": true,
   "passiveTimingWrappers": [
@@ -521,5 +521,6 @@
     }
   ],
   "errors": [],
-  "sourceNote": "Recorded local final runtime; CI source/tree and APK equality to be added after build."
+  "sourceTree": "cd101e321cc8c62b985d97bd7b0693b4f953a7e3",
+  "sourceNote": "Final runtime, local recorder tree equals source tree; all191 recorded web assets match final build. Compare the final signed APK independently."
 }

@@ -1,9 +1,16 @@
 # Continuation checkpoint — 2026-11-13
 
-## Active implementation —0.14.0/code22
+## Current preview —0.14.0/code22
 
-Owner approved the fitting practices from their UX/motion clip as one package. [Scope/acceptance](qa/BOARD_MOTION_0_14_0.md). Branch feat/board-motion-0.14.0 from main13fb489. Staged Hint/teaching, distance-based settle/return/Undo, restrained held tilt/shadow and a small key arc. Rules/bank/economy/saves/compact geometry/art/kit/SDK stay frozen. Local check92 unit/platform,54 focused browser,119 layout states0DOM/0raster and9 actual-touch recordings pass. Two negative controls on frozen0.13 detect the old source/target cue and equal transfer timing. CI/APK/merge acceptance in progress. Do not re-deliver0.13 as the new build.
+Owner approved fitting practices from their UX/motion clip as one bounded package. [Scope/acceptance](qa/BOARD_MOTION_0_14_0.md). Final runtime source47162f937bfbd4d20a999aa94f1a27ee55840156; PR#26 merged at dac883ed7eb0f092f4d952a196db8a3c23668b05, identical tree cd101e321cc8c62b985d97bd7b0693b4f953a7e3. Sequential Hint/teaching, CSS-distance-based settle/return/Undo, restrained held tilt/shadow and a short key arc; explicit Hint exits Aa before showing its action. Rules/bank/economy/saves/compact geometry/art/kit/SDK stay frozen.
 
+Local92 unit/platform,54 board-focused browser,119 layout states0DOM/0raster PASS; after the Aa routing fix, final20 Hint/reader scenarios PASS (8 new cases total). Nine final-source actual-touch recordings match the model/191 runtime assets. Two negative controls on frozen0.13 detect simultaneous cues/fixed timing; pre-fix0.14 independently reproduces Aa staying active after Hint. A virtual-clock fixture was moved before activating Aa; final2/2 and20/20 pass without a further runtime change.
+
+CI43485346539: typecheck/model/content/rules/prototypes/layout and Android debug/signature+unsigned R8 PASS. **Exhaustive browser/80-level catalog is still in progress at preview delivery; no full-pass claim.** [Snapshot](qa/board-motion-0_14_0/ci.json). Do not re-run or re-deliver unchanged runtime merely to refresh this snapshot; check its actual conclusion on resume. Physical-phone comfort/audio/haptics and human preference remain unmeasured. This is a test preview, no production/store/SDK change.
+
+Final APK0.14.0/code22, com.danilah.asocsolitair.debug,11555613 bytes, SHA25604ca3557411efa67ce3dbf7e213ae3368c1c09e9089d544470920f13ca1c136e. Existing signer0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e; all191 packaged web files equal final recorded build. [Proof](qa/board-motion-0_14_0/source-apk.json).
+
+Three saved files were replaced after the Aa correction, all version1/metadata applied: APK libfile_b77e847686a48191b3f56da59f9a40cc; GIF360 libfile_c03091d1613081919c1f60bbdf3ce7c7; GIF320 libfile_de3f2f145cfc8191aed67968886fe9bf. [Names/paths/hashes/timing](qa/board-motion-0_14_0/media.json). Local /workspace/scratch/50187ffca82b/asoc-media/. GIFs show three separate real-touch scenes at original1x timestamps, not a phone/continuous playthrough. Earlier0.14 pre-reader APK/GIFs are superseded; do not duplicate these writes. Only documentation/evidence follow the source merge.
 
 ## Current delivery —0.13.0/code21
 

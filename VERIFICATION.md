@@ -1,5 +1,9 @@
 # Verification — 2026-11-13
 
+## 0.14.0 — Staged guidance and board motion
+
+[Scope/evidence](docs/qa/BOARD_MOTION_0_14_0.md). Final source47162f9, PR#26 merged dac883ed with identical treecd101e32. Local92 unit/platform,54 board-focused browser,119 layouts0DOM/0raster; final20 Hint/reader (8 new cases) and9 final-source actual-touch recordings PASS. Two0.13 negative controls and one pre-fix Aa control detect original behavior. CI43485346539 completes model/content/rules/prototypes/layout and both Android builds/signature; exhaustive browser catalog remains in progress, no full-pass claim. Final code22 APK signature and191 packaged files independently match. APK/GIFs replaced to version1 after Aa correction; all3 writes and local metadata succeeded. Physical-phone preference/audio/haptics remain unmeasured.
+
 
 ## 0.13.0 — Covered previews and packet drag
 

@@ -1,5 +1,10 @@
 # Decisions
 
+
+## 2026-11-13 — Contact and material ownership in0.12.0
+
+Implement the owner's bounded follow-up: keep a flight above the board until contact, retain the receiving face until covered, remove overlapping ordered progress, and let the key visibly reach/open the lock before the freed card flips. Optional feedback follows contact; durable save/grant remains immediate. New input/Undo/pause/scene replacement cancel presentation only. Use two existing cosmetic IDs with new generated backs, two well materials and an open-lock image; text/counters/hitboxes stay code. Keep one ordinary edge glint and one bounded paper completion accent; hold Joker unfolding. Preserve compact geometry,33 subjects, frozen bank/rules/saves/economy/SDK ownership and kit pin. [Acceptance](docs/qa/BOARD_MATERIALS_0_12_0.md); PR#24 merged at ce957f39; source CI43431409168 passes154 browser cases +4 deliberate compact skips,92 unit/platform, content/rules/prototypes/layout and both Android builds; signed APK and GIFs delivered. Device/human preference remain unmeasured.
+
 ## 2026-11-13 — Fresh board review before more effects
 
 [Independent0.11 review](docs/qa/BOARD_OPPORTUNITIES_0_11_0_2026-11-13.md) confirms flight-layer/content-timing/ordered-overlap/key-sequence defects with new touch recordings. Select a bounded physical/causal feedback package and a small material study; production artwork remains pending comparison. Preserve approved compact geometry,33 subjects, stock/input/Undo contracts and all durable rules/economy/SDK ownership. No runtime Director, full redesign, mass asset batch or new meta follows from this audit. This entry records a recommendation, not implemented fixes.

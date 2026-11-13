@@ -1,0 +1,19 @@
+{
+  "source": "cc0e5d58dc49c8167aa961d4e93cecbd3e1410ec",
+  "run": 43431409168,
+  "job": 131905543332,
+  "artifact": 14040267591,
+  "archiveSha256": "8f4c8d5c57439ffcd21d4f25279c44c5a2a07fd6fe52e75766c326df1af01622",
+  "package": "package: name='com.danilah.asocsolitair.debug' versionCode='20' versionName='0.12.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'",
+  "bytes": 11554765,
+  "sha256": "67ac9f9b35508617e3116d913e0ddd8318c79958a96a809b69ae65df107bfacd",
+  "certificateSha256": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "apksignerVerify": "PASS (official build-tools36.0.0)",
+  "productionFilesMatched": 191,
+  "extraEmptyNativeShims": [
+    "cordova.js",
+    "cordova_plugins.js"
+  ],
+  "laboratoryAbsent": true,
+  "localPath": "/workspace/scratch/50187ffca82b/asoc-media/asoc-solitair-0.12.0-preview.apk"
+}

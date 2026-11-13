@@ -1,5 +1,5 @@
 {
-  "status": "complete source/material upload; full CI/APK pending",
+  "status": "local checkpoint retained; complete-source CI/APK and merged delivery verified separately",
   "appVersion": "0.12.0",
   "sourceCommit": "e2c5b49586ec4f3a2db24ac76ad07b95a4f397c3",
   "worktreeAtRecording": "M tools/audit-board-opportunities.ts\n?? public/art/generated/card-back-classic-012.webp\n?? public/art/generated/card-back-diamonds-012.webp\n?? public/art/generated/card-slot-foundation-012.webp\n?? public/art/generated/card-slot-tableau-012.webp\n?? public/art/generated/lock-open-012.webp",
@@ -677,5 +677,11 @@
       "sha256": "1e6b0831cdbd58eb1b340722a1da896aef7f6fbb800acef3fcfe1f23d32feabf",
       "description": "Four separate legal QA states, actual touch, trimmed setup, four cuts at normal speed; local web build, not phone capture"
     }
+  ],
+  "completeSourceEvidence": [
+    "source-recordings.json",
+    "source-apk.json",
+    "ci.json",
+    "delivery.json"
   ]
 }

@@ -1,0 +1,270 @@
+{
+  "verifiedSource": "cc0e5d58dc49c8167aa961d4e93cecbd3e1410ec",
+  "sourceTree": "29eabfd0b629c9785b9385e7837376a3a2910900",
+  "fullSourceRun": 43431409168,
+  "event": "push",
+  "jobs": [
+    {
+      "id": 131905543683,
+      "name": "web",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 131905543332,
+      "name": "android",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "browser": {
+    "passed": 154,
+    "deliberateCompactCatalogSkips": 4
+  },
+  "unitPlatform": 92,
+  "contentDeals": 108,
+  "currentAndLegacyPaths": 216,
+  "independentComparisons": 253244,
+  "prototypeAgentAttempts": 96,
+  "layout": {
+    "cases": 119,
+    "domIssues": 0,
+    "rasterIssues": 0
+  },
+  "duplicatePrRun": {
+    "id": 43431420666,
+    "event": "pull_request",
+    "head_sha": "cc0e5d58dc49c8167aa961d4e93cecbd3e1410ec",
+    "html_url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43431420666",
+    "jobs": [
+      {
+        "id": 131905582112,
+        "name": "web",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_id": 43431420666,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run npm ci --no-audit --no-fund",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run npm run check",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run npm run qa:rules",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Run npm run qa:prototypes:build",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Run npm run qa:prototypes:validate",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run npx playwright install --with-deps chromium",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Run npm run qa:layout",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Run npm run test:browser",
+            "status": "in_progress",
+            "conclusion": null,
+            "number": 11
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "pending",
+            "conclusion": null,
+            "number": 12
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "pending",
+            "conclusion": null,
+            "number": 23
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "pending",
+            "conclusion": null,
+            "number": 24
+          }
+        ]
+      },
+      {
+        "id": 131905582555,
+        "name": "android",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 43431420666,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run android-actions/setup-android@v3",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run sdkmanager \"platforms;android-36\" \"build-tools;36.0.0\"",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Run npm ci --no-audit --no-fund",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Run npm run android:sync",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run actions/cache@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Ensure the explicit preview signing key exists",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Run ./gradlew --no-daemon assembleDebug",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Verify the preview APK signature",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Run ./gradlew --no-daemon assembleRelease",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Post Run actions/cache@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 26
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29
+          }
+        ]
+      }
+    ]
+  },
+  "merge": {
+    "sha": "ce957f392e60f234c6e79b33ee9340339e83b19f",
+    "tree": "29eabfd0b629c9785b9385e7837376a3a2910900",
+    "equalsVerifiedTree": true
+  },
+  "limits": [
+    "No physical-phone feel/haptics/audible-onset acceptance",
+    "No production signing/store/live SDK changes",
+    "Earlier incomplete local full browser run is not counted as full pass"
+  ]
+}

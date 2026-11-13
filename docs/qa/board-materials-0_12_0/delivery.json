@@ -1,0 +1,33 @@
+{
+  "status": "delivered; full source CI PASS; PR24 merged with identical tree",
+  "source": "cc0e5d58dc49c8167aa961d4e93cecbd3e1410ec",
+  "appVersion": "0.12.0",
+  "previewApk": {
+    "library_file_id": "libfile_b2a01f89ecc48191a3cc1254928f48c7",
+    "file_name": "asoc-solitair-0.12.0-preview.apk",
+    "current_version_number": 0,
+    "local_metadata_applied": true,
+    "verification": "source-apk.json"
+  },
+  "media": [
+    {
+      "library_file_id": "libfile_fde995a0ec6c81918807afbfd49457f2",
+      "file_name": "asoc-0.12-local-board-360.gif",
+      "current_version_number": 0,
+      "local_metadata_applied": true
+    },
+    {
+      "library_file_id": "libfile_3e75b41b5d10819198f83fd595365aca",
+      "file_name": "asoc-0.12-local-board-320.gif",
+      "current_version_number": 0,
+      "local_metadata_applied": true
+    }
+  ],
+  "mediaRuntimeProof": "All191 production file hashes from the D recording equal clean-source E recordings and the signed APK. Earlier local-stage GIFs are retained without duplicate upload. Four real-input excerpts at1x, not a single continuous run or a physical-phone recording.",
+  "merge": {
+    "sha": "ce957f392e60f234c6e79b33ee9340339e83b19f",
+    "tree": "29eabfd0b629c9785b9385e7837376a3a2910900",
+    "equalsVerifiedTree": true
+  },
+  "ci": "ci.json"
+}

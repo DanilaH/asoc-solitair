@@ -1,5 +1,5 @@
 {
-  "status": "five prepared runtime WebP assets uploaded through authenticated GitHub Git Data API; hashes verified; CI/APK pending",
+  "status": "five runtime WebP assets uploaded with exact hashes; integrated in verified 0.12.0 signed preview and merged PR24",
   "method": "built-in imagegen; existing export-art.mjs crop/resize/WebP with original alpha; no repaint/background removal",
   "assets": [
     {

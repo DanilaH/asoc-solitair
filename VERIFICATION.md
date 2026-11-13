@@ -1,5 +1,10 @@
 # Verification — 2026-11-13
 
+
+## 0.12.0 — Contact/material follow-up
+
+[Scope/evidence](docs/qa/BOARD_MATERIALS_0_12_0.md). Runtime source `cc0e5d58dc49c8167aa961d4e93cecbd3e1410ec`, five WebP blobs and all191 packaged web files independently matched. Signed debug code20 uses the existing preview certificate; SDK-disabled unsigned R8 compiles. PR#24 merged at ce957f39; source CI43431409168 passes154 browser cases +4 deliberate compact skips,92 unit/platform, content/rules/prototypes/layout and both Android builds; signed APK and GIFs delivered. Eight new visual/contact regressions pass locally and deliberately detect the four original defects in frozen0.11. Twelve clean-source real-touch recordings match the model without page errors; existing GIF runtime hashes are identical to the signed APK. Earlier full local browser execution has no final summary and is not counted as a full pass. Physical-phone feel/haptics/audio onset/live SDK remain outside this acceptance. Only documentation/evidence changes follow the verified runtime.
+
 ## 2026-11-13 — Independent0.11 board opportunities, runtime unchanged
 
 [Audit/evidence](docs/qa/BOARD_OPPORTUNITIES_0_11_0_2026-11-13.md):33 actual-touch cases (24 base +9 additional),0 page errors, exact board comparisons,360×780/320×568/reduced, daily/Joker/ordered/keys/dense/ink-bottom/drag. Build/typecheck/SSR recorder pass. All186 web files equal the signed delivered APK manifest. Passive storage/audio wrappers only log call timing; no scene mutation. Four intermediate-frame defects are documented, not fixed. Hardware audio onset, human preference and native-phone performance are unmeasured. New artwork is a preview-only imagegen concept. No new APK/version or repeat full game CI is claimed.

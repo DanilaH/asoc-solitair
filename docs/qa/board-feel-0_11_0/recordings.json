@@ -1,5 +1,5 @@
 {
-  "source": "6bf423f91cea99cad08501b3ac8db7ecfb0d0676",
+  "source": "854e3e3a87688d386694a88171c4f5ed14d70e59",
   "productionBundleNotInstrumented": true,
   "dist": "dist",
   "records": [
@@ -16,25 +16,25 @@
       "outsideReleasePreservesBoardAndStreak": true,
       "completionAndUndo": true,
       "stockAndRecycle": true,
-      "completionStart": 8.218,
+      "completionStart": 9.999,
       "events": [
         {
           "name": "enter",
-          "hostSeconds": 0.705,
-          "pageMs": 208.40000000037253,
-          "epochMs": 1794552277576
+          "hostSeconds": 1.002,
+          "pageMs": 438.59999999962747,
+          "epochMs": 1794554643787
         },
         {
           "name": "01-idle",
-          "hostSeconds": 1.733,
-          "pageMs": 1236.7000000001863,
-          "epochMs": 1794552278604
+          "hostSeconds": 2.036,
+          "pageMs": 1474.3999999994412,
+          "epochMs": 1794554644823
         },
         {
           "name": "release-lights",
-          "hostSeconds": 2.454,
-          "pageMs": 1957.2999999998137,
-          "epochMs": 1794552279325,
+          "hostSeconds": 2.982,
+          "pageMs": 2419.7000000001863,
+          "epochMs": 1794554645768,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -49,15 +49,15 @@
         },
         {
           "name": "ordinary-before",
-          "hostSeconds": 2.868,
-          "pageMs": 2371,
-          "epochMs": 1794552279738
+          "hostSeconds": 3.448,
+          "pageMs": 2886.2000000001863,
+          "epochMs": 1794554646235
         },
         {
           "name": "tap-target-lights_3",
-          "hostSeconds": 2.976,
-          "pageMs": 2473.7999999998137,
-          "epochMs": 1794552279841,
+          "hostSeconds": 3.611,
+          "pageMs": 3049.2999999998137,
+          "epochMs": 1794554646398,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -72,21 +72,21 @@
         },
         {
           "name": "ordinary-early",
-          "hostSeconds": 3.108,
-          "pageMs": 2611.0999999996275,
-          "epochMs": 1794552279978
+          "hostSeconds": 3.917,
+          "pageMs": 3348.5,
+          "epochMs": 1794554646697
         },
         {
           "name": "ordinary-settled",
-          "hostSeconds": 3.611,
-          "pageMs": 3113.7999999998137,
-          "epochMs": 1794552280481
+          "hostSeconds": 4.55,
+          "pageMs": 3987.7000000001863,
+          "epochMs": 1794554647336
         },
         {
           "name": "release-dishes",
-          "hostSeconds": 4.302,
-          "pageMs": 3804.9000000003725,
-          "epochMs": 1794552281172,
+          "hostSeconds": 5.482,
+          "pageMs": 4917,
+          "epochMs": 1794554648265,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -101,9 +101,9 @@
         },
         {
           "name": "release-lights_4",
-          "hostSeconds": 5.468,
-          "pageMs": 4971.4000000003725,
-          "epochMs": 1794552282339,
+          "hostSeconds": 6.843,
+          "pageMs": 6278.899999999441,
+          "epochMs": 1794554649627,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -118,9 +118,9 @@
         },
         {
           "name": "release-lights_2",
-          "hostSeconds": 6.554,
-          "pageMs": 6055,
-          "epochMs": 1794552283422,
+          "hostSeconds": 8.259,
+          "pageMs": 7696.5,
+          "epochMs": 1794554651045,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -135,21 +135,21 @@
         },
         {
           "name": "02-before-last-lift",
-          "hostSeconds": 6.937,
-          "pageMs": 6439.9000000003725,
-          "epochMs": 1794552283807
+          "hostSeconds": 8.696,
+          "pageMs": 8132.899999999441,
+          "epochMs": 1794554651481
         },
         {
           "name": "03-last-card-held",
-          "hostSeconds": 7.768,
-          "pageMs": 7271.4000000003725,
-          "epochMs": 1794552284639
+          "hostSeconds": 9.557,
+          "pageMs": 8995.099999999627,
+          "epochMs": 1794554652343
         },
         {
           "name": "release-lights_1",
-          "hostSeconds": 8.836,
-          "pageMs": 8339.400000000373,
-          "epochMs": 1794552285707,
+          "hostSeconds": 10.943,
+          "pageMs": 10381,
+          "epochMs": 1794554653729,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -164,63 +164,63 @@
         },
         {
           "name": "04-completion-early",
-          "hostSeconds": 8.877,
-          "pageMs": 8380.200000000186,
-          "epochMs": 1794552285747
+          "hostSeconds": 11.045,
+          "pageMs": 10483.099999999627,
+          "epochMs": 1794554653831
         },
         {
           "name": "05-completion-middle",
-          "hostSeconds": 9.09,
-          "pageMs": 8592.900000000373,
-          "epochMs": 1794552285960
+          "hostSeconds": 11.251,
+          "pageMs": 10689.099999999627,
+          "epochMs": 1794554654037
         },
         {
           "name": "06-completion-late",
-          "hostSeconds": 9.337,
-          "pageMs": 8839,
-          "epochMs": 1794552286206
+          "hostSeconds": 11.537,
+          "pageMs": 10975.299999999814,
+          "epochMs": 1794554654324
         },
         {
           "name": "07-completion-settled",
-          "hostSeconds": 10.099,
-          "pageMs": 9602.5,
-          "epochMs": 1794552286970
+          "hostSeconds": 12.317,
+          "pageMs": 11752.599999999627,
+          "epochMs": 1794554655101
         },
         {
           "name": "undo",
-          "hostSeconds": 10.172,
-          "pageMs": 9676,
-          "epochMs": 1794552287043
+          "hostSeconds": 12.388,
+          "pageMs": 11825.299999999814,
+          "epochMs": 1794554655174
         },
         {
           "name": "08-undo-early",
-          "hostSeconds": 10.285,
-          "pageMs": 9787.799999999814,
-          "epochMs": 1794552287155
+          "hostSeconds": 12.578,
+          "pageMs": 12015.700000000186,
+          "epochMs": 1794554655364
         },
         {
           "name": "09-undo-settled",
-          "hostSeconds": 10.758,
-          "pageMs": 10262,
-          "epochMs": 1794552287629
+          "hostSeconds": 13.13,
+          "pageMs": 12560.799999999814,
+          "epochMs": 1794554655909
         },
         {
           "name": "outside-release",
-          "hostSeconds": 11.701,
-          "pageMs": 11204.700000000186,
-          "epochMs": 1794552288572
+          "hostSeconds": 13.932,
+          "pageMs": 13369.899999999441,
+          "epochMs": 1794554656718
         },
         {
           "name": "10-outside-release",
-          "hostSeconds": 11.736,
-          "pageMs": 11239.799999999814,
-          "epochMs": 1794552288607
+          "hostSeconds": 13.962,
+          "pageMs": 13400,
+          "epochMs": 1794554656748
         },
         {
           "name": "release-lights_1",
-          "hostSeconds": 12.885,
-          "pageMs": 12388.400000000373,
-          "epochMs": 1794552289756,
+          "hostSeconds": 15.296,
+          "pageMs": 14733,
+          "epochMs": 1794554658081,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -235,502 +235,510 @@
         },
         {
           "name": "error-feedback-during-completion",
-          "hostSeconds": 13.023,
-          "pageMs": 12526.799999999814,
-          "epochMs": 1794552289894,
+          "hostSeconds": 15.495,
+          "pageMs": 14932.899999999441,
+          "epochMs": 1794554658281,
           "message": "Сначала нужна карта категории",
-          "visibility": "visible",
-          "praiseHidden": true
+          "visibility": "hidden",
+          "praiseHidden": false
         },
         {
           "name": "15-error-during-completion",
-          "hostSeconds": 13.024,
-          "pageMs": 12527.400000000373,
-          "epochMs": 1794552289895
+          "hostSeconds": 15.496,
+          "pageMs": 14934.200000000186,
+          "epochMs": 1794554658283
         },
         {
           "name": "stock-start",
-          "hostSeconds": 14.106,
-          "pageMs": 13609.799999999814,
-          "epochMs": 1794552290977
+          "hostSeconds": 16.58,
+          "pageMs": 16018,
+          "epochMs": 1794554659366
         },
         {
           "name": "11-waste-three",
-          "hostSeconds": 15.491,
-          "pageMs": 14994.599999999627,
-          "epochMs": 1794552292362
+          "hostSeconds": 18.138,
+          "pageMs": 17576.299999999814,
+          "epochMs": 1794554660925
         },
         {
           "name": "12-stock-empty",
-          "hostSeconds": 16.897,
-          "pageMs": 16400.099999999627,
-          "epochMs": 1794552293767
+          "hostSeconds": 19.81,
+          "pageMs": 19248.799999999814,
+          "epochMs": 1794554662597
         },
         {
           "name": "recycle",
-          "hostSeconds": 16.948,
-          "pageMs": 16451.900000000373,
-          "epochMs": 1794552293819
+          "hostSeconds": 19.874,
+          "pageMs": 19311.89999999944,
+          "epochMs": 1794554662660
         },
         {
           "name": "13-recycle-settled",
-          "hostSeconds": 17.378,
-          "pageMs": 16881.299999999814,
-          "epochMs": 1794552294248
+          "hostSeconds": 20.476,
+          "pageMs": 19913.799999999814,
+          "epochMs": 1794554663262
         },
         {
           "name": "14-hint",
-          "hostSeconds": 18.172,
-          "pageMs": 17675.200000000186,
-          "epochMs": 1794552295042
+          "hostSeconds": 21.351,
+          "pageMs": 20789.599999999627,
+          "epochMs": 1794554664138
         },
         {
           "name": "end",
-          "hostSeconds": 18.886,
-          "pageMs": 18389.799999999814,
-          "epochMs": 1794552295757
+          "hostSeconds": 22.078,
+          "pageMs": 21516.599999999627,
+          "epochMs": 1794554664865
         }
       ],
       "frames": [
         {
           "file": "ordinary-frame-000.png",
-          "epochMs": 1794552279835.419
+          "epochMs": 1794554646359.135
         },
         {
           "file": "ordinary-frame-001.png",
-          "epochMs": 1794552279871.738
+          "epochMs": 1794554646495.022
         },
         {
           "file": "ordinary-frame-002.png",
-          "epochMs": 1794552279933.9768
+          "epochMs": 1794554646592.051
         },
         {
           "file": "ordinary-frame-003.png",
-          "epochMs": 1794552279945.915
+          "epochMs": 1794554646610.7532
         },
         {
           "file": "ordinary-frame-004.png",
-          "epochMs": 1794552279956.066
+          "epochMs": 1794554646626.823
         },
         {
           "file": "ordinary-frame-005.png",
-          "epochMs": 1794552279977.439
+          "epochMs": 1794554646644.272
         },
         {
           "file": "ordinary-frame-006.png",
-          "epochMs": 1794552279988.932
+          "epochMs": 1794554646660.9648
         },
         {
           "file": "ordinary-frame-007.png",
-          "epochMs": 1794552280009.038
+          "epochMs": 1794554646676.382
         },
         {
           "file": "ordinary-frame-008.png",
-          "epochMs": 1794552280073.576
+          "epochMs": 1794554646694.4922
         },
         {
           "file": "ordinary-frame-009.png",
-          "epochMs": 1794552280074.962
+          "epochMs": 1794554646713.323
         },
         {
           "file": "ordinary-frame-010.png",
-          "epochMs": 1794552280079.611
+          "epochMs": 1794554646728.148
         },
         {
           "file": "ordinary-frame-011.png",
-          "epochMs": 1794552280090.2158
+          "epochMs": 1794554646742.575
         },
         {
           "file": "ordinary-frame-012.png",
-          "epochMs": 1794552280102.709
+          "epochMs": 1794554646758.775
         },
         {
           "file": "ordinary-frame-013.png",
-          "epochMs": 1794552280121.3328
+          "epochMs": 1794554646776.4968
         },
         {
           "file": "ordinary-frame-014.png",
-          "epochMs": 1794552280139.273
+          "epochMs": 1794554646870.956
         },
         {
           "file": "ordinary-frame-015.png",
-          "epochMs": 1794552280152.517
+          "epochMs": 1794554646872.653
         },
         {
           "file": "ordinary-frame-016.png",
-          "epochMs": 1794552280169.219
+          "epochMs": 1794554646874.2112
         },
         {
           "file": "ordinary-frame-017.png",
-          "epochMs": 1794552280186.1628
+          "epochMs": 1794554646905.438
         },
         {
           "file": "ordinary-frame-018.png",
-          "epochMs": 1794552280202.778
+          "epochMs": 1794554646925.911
         },
         {
           "file": "ordinary-frame-019.png",
-          "epochMs": 1794552280219.172
+          "epochMs": 1794554646953.013
         },
         {
           "file": "ordinary-frame-020.png",
-          "epochMs": 1794552280235.966
+          "epochMs": 1794554646970.612
         },
         {
           "file": "ordinary-frame-021.png",
-          "epochMs": 1794552280252.658
+          "epochMs": 1794554646981.18
         },
         {
           "file": "ordinary-frame-022.png",
-          "epochMs": 1794552280269.5989
+          "epochMs": 1794554646993.382
         },
         {
           "file": "ordinary-frame-023.png",
-          "epochMs": 1794552280286.5032
+          "epochMs": 1794554647347.048
         },
         {
-          "file": "ordinary-frame-024.png",
-          "epochMs": 1794552280305.375
+          "file": "completion-frame-024.png",
+          "epochMs": 1794554652791.0918
         },
         {
-          "file": "ordinary-frame-025.png",
-          "epochMs": 1794552280319.664
+          "file": "completion-frame-025.png",
+          "epochMs": 1794554652846.7842
         },
         {
-          "file": "ordinary-frame-026.png",
-          "epochMs": 1794552280335.832
+          "file": "completion-frame-026.png",
+          "epochMs": 1794554652880.747
         },
         {
-          "file": "ordinary-frame-027.png",
-          "epochMs": 1794552280534.1821
+          "file": "completion-frame-027.png",
+          "epochMs": 1794554652929.375
         },
         {
           "file": "completion-frame-028.png",
-          "epochMs": 1794552285094.1118
+          "epochMs": 1794554652945.632
         },
         {
           "file": "completion-frame-029.png",
-          "epochMs": 1794552285136.2021
+          "epochMs": 1794554652958.6511
         },
         {
           "file": "completion-frame-030.png",
-          "epochMs": 1794552285151.0562
+          "epochMs": 1794554652981.312
         },
         {
           "file": "completion-frame-031.png",
-          "epochMs": 1794552285197.726
+          "epochMs": 1794554652992.742
         },
         {
           "file": "completion-frame-032.png",
-          "epochMs": 1794552285209.5898
+          "epochMs": 1794554653008.919
         },
         {
           "file": "completion-frame-033.png",
-          "epochMs": 1794552285234.176
+          "epochMs": 1794554653024.642
         },
         {
           "file": "completion-frame-034.png",
-          "epochMs": 1794552285245.052
+          "epochMs": 1794554653048.891
         },
         {
           "file": "completion-frame-035.png",
-          "epochMs": 1794552285262.164
+          "epochMs": 1794554653064.42
         },
         {
           "file": "completion-frame-036.png",
-          "epochMs": 1794552285276.683
+          "epochMs": 1794554653078.1619
         },
         {
           "file": "completion-frame-037.png",
-          "epochMs": 1794552285292.368
+          "epochMs": 1794554653097.61
         },
         {
           "file": "completion-frame-038.png",
-          "epochMs": 1794552285308.8591
+          "epochMs": 1794554653138.555
         },
         {
           "file": "completion-frame-039.png",
-          "epochMs": 1794552285326.8088
+          "epochMs": 1794554653167.825
         },
         {
           "file": "completion-frame-040.png",
-          "epochMs": 1794552285350.497
+          "epochMs": 1794554653190.203
         },
         {
           "file": "completion-frame-041.png",
-          "epochMs": 1794552285361.2139
+          "epochMs": 1794554653209.296
         },
         {
           "file": "completion-frame-042.png",
-          "epochMs": 1794552285376.801
+          "epochMs": 1794554653239.2832
         },
         {
           "file": "completion-frame-043.png",
-          "epochMs": 1794552285393.543
+          "epochMs": 1794554653277.51
         },
         {
           "file": "completion-frame-044.png",
-          "epochMs": 1794552285409.018
+          "epochMs": 1794554653332.9502
         },
         {
           "file": "completion-frame-045.png",
-          "epochMs": 1794552285425.6511
+          "epochMs": 1794554653377.6382
         },
         {
           "file": "completion-frame-046.png",
-          "epochMs": 1794552285442.686
+          "epochMs": 1794554653387.394
         },
         {
           "file": "completion-frame-047.png",
-          "epochMs": 1794552285459.429
+          "epochMs": 1794554653399.585
         },
         {
           "file": "completion-frame-048.png",
-          "epochMs": 1794552285475.7358
+          "epochMs": 1794554653418.53
         },
         {
           "file": "completion-frame-049.png",
-          "epochMs": 1794552285492.027
+          "epochMs": 1794554653427.217
         },
         {
           "file": "completion-frame-050.png",
-          "epochMs": 1794552285511.72
+          "epochMs": 1794554653442.7449
         },
         {
           "file": "completion-frame-051.png",
-          "epochMs": 1794552285526.396
+          "epochMs": 1794554653459.9358
         },
         {
           "file": "completion-frame-052.png",
-          "epochMs": 1794552285541.531
+          "epochMs": 1794554653476.185
         },
         {
           "file": "completion-frame-053.png",
-          "epochMs": 1794552285558.219
+          "epochMs": 1794554653493.271
         },
         {
           "file": "completion-frame-054.png",
-          "epochMs": 1794552285575.4868
+          "epochMs": 1794554653509.2239
         },
         {
           "file": "completion-frame-055.png",
-          "epochMs": 1794552285592.536
+          "epochMs": 1794554653529.1072
         },
         {
           "file": "completion-frame-056.png",
-          "epochMs": 1794552285608.8381
+          "epochMs": 1794554653547.062
         },
         {
           "file": "completion-frame-057.png",
-          "epochMs": 1794552285625.4429
+          "epochMs": 1794554653558.438
         },
         {
           "file": "completion-frame-058.png",
-          "epochMs": 1794552285641.724
+          "epochMs": 1794554653576.803
         },
         {
           "file": "completion-frame-059.png",
-          "epochMs": 1794552285665.5222
+          "epochMs": 1794554653592.043
         },
         {
           "file": "completion-frame-060.png",
-          "epochMs": 1794552285677.211
+          "epochMs": 1794554653610.757
         },
         {
           "file": "completion-frame-061.png",
-          "epochMs": 1794552285692.768
+          "epochMs": 1794554653625.778
         },
         {
           "file": "completion-frame-062.png",
-          "epochMs": 1794552285709.675
+          "epochMs": 1794554653647.768
         },
         {
           "file": "completion-frame-063.png",
-          "epochMs": 1794552285730.235
+          "epochMs": 1794554653658.1262
         },
         {
           "file": "completion-frame-064.png",
-          "epochMs": 1794552285745.999
+          "epochMs": 1794554653676.011
         },
         {
           "file": "completion-frame-065.png",
-          "epochMs": 1794552285760.864
+          "epochMs": 1794554653691.72
         },
         {
           "file": "completion-frame-066.png",
-          "epochMs": 1794552285841.39
+          "epochMs": 1794554653709.699
         },
         {
           "file": "completion-frame-067.png",
-          "epochMs": 1794552285845.854
+          "epochMs": 1794554653726.155
         },
         {
           "file": "completion-frame-068.png",
-          "epochMs": 1794552285845.403
+          "epochMs": 1794554653744.4739
         },
         {
           "file": "completion-frame-069.png",
-          "epochMs": 1794552285872.79
+          "epochMs": 1794554653758.547
         },
         {
           "file": "completion-frame-070.png",
-          "epochMs": 1794552285886.4
+          "epochMs": 1794554653774.75
         },
         {
           "file": "completion-frame-071.png",
-          "epochMs": 1794552285902.4292
+          "epochMs": 1794554653799.358
         },
         {
           "file": "completion-frame-072.png",
-          "epochMs": 1794552285919.455
+          "epochMs": 1794554653810.5
         },
         {
           "file": "completion-frame-073.png",
-          "epochMs": 1794552285936.05
+          "epochMs": 1794554653828.4358
         },
         {
           "file": "completion-frame-074.png",
-          "epochMs": 1794552285952.879
+          "epochMs": 1794554653847.334
         },
         {
           "file": "completion-frame-075.png",
-          "epochMs": 1794552285969.4778
+          "epochMs": 1794554653914.64
         },
         {
           "file": "completion-frame-076.png",
-          "epochMs": 1794552286031.59
+          "epochMs": 1794554653915.9292
         },
         {
           "file": "completion-frame-077.png",
-          "epochMs": 1794552286033.4949
+          "epochMs": 1794554653916.467
         },
         {
           "file": "completion-frame-078.png",
-          "epochMs": 1794552286032.998
+          "epochMs": 1794554653931.535
         },
         {
           "file": "completion-frame-079.png",
-          "epochMs": 1794552286056.063
+          "epochMs": 1794554653944.0342
         },
         {
           "file": "completion-frame-080.png",
-          "epochMs": 1794552286069.735
+          "epochMs": 1794554653958.652
         },
         {
           "file": "completion-frame-081.png",
-          "epochMs": 1794552286086.458
+          "epochMs": 1794554653976.284
         },
         {
           "file": "completion-frame-082.png",
-          "epochMs": 1794552286103.178
+          "epochMs": 1794554653993.6409
         },
         {
           "file": "completion-frame-083.png",
-          "epochMs": 1794552286120.052
+          "epochMs": 1794554654011.16
         },
         {
           "file": "completion-frame-084.png",
-          "epochMs": 1794552286137.759
+          "epochMs": 1794554654026.21
         },
         {
           "file": "completion-frame-085.png",
-          "epochMs": 1794552286154.4248
+          "epochMs": 1794554654042.676
         },
         {
           "file": "completion-frame-086.png",
-          "epochMs": 1794552286169.727
+          "epochMs": 1794554654070.1711
         },
         {
           "file": "completion-frame-087.png",
-          "epochMs": 1794552286186.564
+          "epochMs": 1794554654137.116
         },
         {
           "file": "completion-frame-088.png",
-          "epochMs": 1794552286202.628
+          "epochMs": 1794554654140.823
         },
         {
           "file": "completion-frame-089.png",
-          "epochMs": 1794552286262.722
+          "epochMs": 1794554654139.239
         },
         {
           "file": "completion-frame-090.png",
-          "epochMs": 1794552286485.794
+          "epochMs": 1794554654158.695
         },
         {
           "file": "completion-frame-091.png",
-          "epochMs": 1794552286502.626
+          "epochMs": 1794554654174.724
         },
         {
           "file": "completion-frame-092.png",
-          "epochMs": 1794552286519.427
+          "epochMs": 1794554654191.928
         },
         {
           "file": "completion-frame-093.png",
-          "epochMs": 1794552286535.5989
+          "epochMs": 1794554654207.783
         },
         {
           "file": "completion-frame-094.png",
-          "epochMs": 1794552286552.247
+          "epochMs": 1794554654224.975
         },
         {
           "file": "completion-frame-095.png",
-          "epochMs": 1794552286568.5562
+          "epochMs": 1794554654241.1
         },
         {
           "file": "completion-frame-096.png",
-          "epochMs": 1794552286588.217
+          "epochMs": 1794554654342.955
         },
         {
           "file": "completion-frame-097.png",
-          "epochMs": 1794552286602.4402
+          "epochMs": 1794554654608.928
         },
         {
           "file": "completion-frame-098.png",
-          "epochMs": 1794552286619.769
+          "epochMs": 1794554654625.4001
         },
         {
           "file": "completion-frame-099.png",
-          "epochMs": 1794552286635.357
+          "epochMs": 1794554654641.564
         },
         {
           "file": "completion-frame-100.png",
-          "epochMs": 1794552286652.515
+          "epochMs": 1794554654660.106
         },
         {
           "file": "completion-frame-101.png",
-          "epochMs": 1794552286668.473
+          "epochMs": 1794554654676.357
         },
         {
           "file": "completion-frame-102.png",
-          "epochMs": 1794552286685.6611
+          "epochMs": 1794554654693.5552
         },
         {
           "file": "completion-frame-103.png",
-          "epochMs": 1794552286701.8271
+          "epochMs": 1794554654708.861
         },
         {
           "file": "completion-frame-104.png",
-          "epochMs": 1794552286719.115
+          "epochMs": 1794554654732.861
         },
         {
           "file": "completion-frame-105.png",
-          "epochMs": 1794552286735.2542
+          "epochMs": 1794554654745.141
         },
         {
           "file": "completion-frame-106.png",
-          "epochMs": 1794552286752.849
+          "epochMs": 1794554654758.2021
         },
         {
           "file": "completion-frame-107.png",
-          "epochMs": 1794552286768.6619
+          "epochMs": 1794554654777.231
         },
         {
           "file": "completion-frame-108.png",
-          "epochMs": 1794552286785.7202
+          "epochMs": 1794554654792.277
         },
         {
           "file": "completion-frame-109.png",
-          "epochMs": 1794552286804.135
+          "epochMs": 1794554654811.6619
+        },
+        {
+          "file": "completion-frame-110.png",
+          "epochMs": 1794554654826.221
+        },
+        {
+          "file": "completion-frame-111.png",
+          "epochMs": 1794554654845.4758
         }
       ]
     },
@@ -747,25 +755,25 @@
       "outsideReleasePreservesBoardAndStreak": true,
       "completionAndUndo": true,
       "stockAndRecycle": true,
-      "completionStart": 7.514,
+      "completionStart": 9.87,
       "events": [
         {
           "name": "enter",
-          "hostSeconds": 0.499,
-          "pageMs": 167.5,
-          "epochMs": 1794552296278
+          "hostSeconds": 1.067,
+          "pageMs": 531.7999999998137,
+          "epochMs": 1794554665967
         },
         {
           "name": "01-idle",
-          "hostSeconds": 1.484,
-          "pageMs": 1152,
-          "epochMs": 1794552297262
+          "hostSeconds": 2.095,
+          "pageMs": 1559.3999999994412,
+          "epochMs": 1794554666995
         },
         {
           "name": "release-lights",
-          "hostSeconds": 2.159,
-          "pageMs": 1827.3999999994412,
-          "epochMs": 1794552297938,
+          "hostSeconds": 3.096,
+          "pageMs": 2561.5999999996275,
+          "epochMs": 1794554667997,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -780,15 +788,15 @@
         },
         {
           "name": "ordinary-before",
-          "hostSeconds": 2.537,
-          "pageMs": 2204.899999999441,
-          "epochMs": 1794552298315
+          "hostSeconds": 3.55,
+          "pageMs": 3014.7000000001863,
+          "epochMs": 1794554668450
         },
         {
           "name": "tap-target-lights_3",
-          "hostSeconds": 2.641,
-          "pageMs": 2309.5999999996275,
-          "epochMs": 1794552298420,
+          "hostSeconds": 3.743,
+          "pageMs": 3208,
+          "epochMs": 1794554668643,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -803,21 +811,21 @@
         },
         {
           "name": "ordinary-early",
-          "hostSeconds": 2.732,
-          "pageMs": 2400.7000000001863,
-          "epochMs": 1794552298511
+          "hostSeconds": 3.902,
+          "pageMs": 3367.5,
+          "epochMs": 1794554668803
         },
         {
           "name": "ordinary-settled",
-          "hostSeconds": 3.199,
-          "pageMs": 2867,
-          "epochMs": 1794552298977
+          "hostSeconds": 4.407,
+          "pageMs": 3872.2000000001863,
+          "epochMs": 1794554669308
         },
         {
           "name": "release-dishes",
-          "hostSeconds": 3.86,
-          "pageMs": 3528.5999999996275,
-          "epochMs": 1794552299639,
+          "hostSeconds": 5.246,
+          "pageMs": 4710.799999999814,
+          "epochMs": 1794554670146,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -832,9 +840,9 @@
         },
         {
           "name": "release-lights_4",
-          "hostSeconds": 4.876,
-          "pageMs": 4543.799999999814,
-          "epochMs": 1794552300654,
+          "hostSeconds": 6.561,
+          "pageMs": 6026.399999999441,
+          "epochMs": 1794554671462,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -849,9 +857,9 @@
         },
         {
           "name": "release-lights_2",
-          "hostSeconds": 5.892,
-          "pageMs": 5560.200000000186,
-          "epochMs": 1794552301671,
+          "hostSeconds": 7.853,
+          "pageMs": 7316.5999999996275,
+          "epochMs": 1794554672752,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -866,21 +874,21 @@
         },
         {
           "name": "02-before-last-lift",
-          "hostSeconds": 6.275,
-          "pageMs": 5943.5,
-          "epochMs": 1794552302054
+          "hostSeconds": 8.413,
+          "pageMs": 7878.299999999814,
+          "epochMs": 1794554673314
         },
         {
           "name": "03-last-card-held",
-          "hostSeconds": 7.092,
-          "pageMs": 6760.700000000186,
-          "epochMs": 1794552302871
+          "hostSeconds": 9.411,
+          "pageMs": 8876,
+          "epochMs": 1794554674311
         },
         {
           "name": "release-lights_1",
-          "hostSeconds": 8.125,
-          "pageMs": 7793.5999999996275,
-          "epochMs": 1794552303904,
+          "hostSeconds": 10.677,
+          "pageMs": 10142.799999999814,
+          "epochMs": 1794554675578,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -895,63 +903,63 @@
         },
         {
           "name": "04-completion-early",
-          "hostSeconds": 8.16,
-          "pageMs": 7827.799999999814,
-          "epochMs": 1794552303938
+          "hostSeconds": 10.734,
+          "pageMs": 10198.399999999441,
+          "epochMs": 1794554675634
         },
         {
           "name": "05-completion-middle",
-          "hostSeconds": 8.347,
-          "pageMs": 8015.399999999441,
-          "epochMs": 1794552304126
+          "hostSeconds": 10.93,
+          "pageMs": 10394.899999999441,
+          "epochMs": 1794554675830
         },
         {
           "name": "06-completion-late",
-          "hostSeconds": 8.593,
-          "pageMs": 8261.200000000186,
-          "epochMs": 1794552304372
+          "hostSeconds": 11.163,
+          "pageMs": 10628.299999999814,
+          "epochMs": 1794554676064
         },
         {
           "name": "07-completion-settled",
-          "hostSeconds": 9.355,
-          "pageMs": 9022.799999999814,
-          "epochMs": 1794552305133
+          "hostSeconds": 11.93,
+          "pageMs": 11395.299999999814,
+          "epochMs": 1794554676831
         },
         {
           "name": "undo",
-          "hostSeconds": 9.395,
-          "pageMs": 9063.099999999627,
-          "epochMs": 1794552305173
+          "hostSeconds": 11.987,
+          "pageMs": 11452,
+          "epochMs": 1794554676887
         },
         {
           "name": "08-undo-early",
-          "hostSeconds": 9.508,
-          "pageMs": 9176.399999999441,
-          "epochMs": 1794552305287
+          "hostSeconds": 12.116,
+          "pageMs": 11581.299999999814,
+          "epochMs": 1794554677017
         },
         {
           "name": "09-undo-settled",
-          "hostSeconds": 9.965,
-          "pageMs": 9633.099999999627,
-          "epochMs": 1794552305744
+          "hostSeconds": 12.644,
+          "pageMs": 12108.200000000186,
+          "epochMs": 1794554677544
         },
         {
           "name": "outside-release",
-          "hostSeconds": 10.792,
-          "pageMs": 10460,
-          "epochMs": 1794552306570
+          "hostSeconds": 13.628,
+          "pageMs": 13093.5,
+          "epochMs": 1794554678529
         },
         {
           "name": "10-outside-release",
-          "hostSeconds": 10.827,
-          "pageMs": 10495.099999999627,
-          "epochMs": 1794552306606
+          "hostSeconds": 13.663,
+          "pageMs": 13127.799999999814,
+          "epochMs": 1794554678563
         },
         {
           "name": "release-lights_1",
-          "hostSeconds": 11.959,
-          "pageMs": 11627.599999999627,
-          "epochMs": 1794552307738,
+          "hostSeconds": 14.905,
+          "pageMs": 14369.399999999441,
+          "epochMs": 1794554679805,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -966,45 +974,45 @@
         },
         {
           "name": "stock-start",
-          "hostSeconds": 12.997,
-          "pageMs": 12665.599999999627,
-          "epochMs": 1794552308776
+          "hostSeconds": 16.029,
+          "pageMs": 15491.399999999441,
+          "epochMs": 1794554680927
         },
         {
           "name": "11-waste-three",
-          "hostSeconds": 14.317,
-          "pageMs": 13984.899999999441,
-          "epochMs": 1794552310095
+          "hostSeconds": 17.685,
+          "pageMs": 17150.299999999814,
+          "epochMs": 1794554682586
         },
         {
           "name": "12-stock-empty",
-          "hostSeconds": 15.71,
-          "pageMs": 15378.299999999814,
-          "epochMs": 1794552311489
+          "hostSeconds": 19.203,
+          "pageMs": 18668,
+          "epochMs": 1794554684103
         },
         {
           "name": "recycle",
-          "hostSeconds": 15.749,
-          "pageMs": 15417.399999999441,
-          "epochMs": 1794552311528
+          "hostSeconds": 19.248,
+          "pageMs": 18713.700000000186,
+          "epochMs": 1794554684149
         },
         {
           "name": "13-recycle-settled",
-          "hostSeconds": 16.217,
-          "pageMs": 15884.799999999814,
-          "epochMs": 1794552311995
+          "hostSeconds": 19.929,
+          "pageMs": 19394.599999999627,
+          "epochMs": 1794554684830
         },
         {
           "name": "14-hint",
-          "hostSeconds": 17.011,
-          "pageMs": 16679.299999999814,
-          "epochMs": 1794552312790
+          "hostSeconds": 20.732,
+          "pageMs": 20197.200000000186,
+          "epochMs": 1794554685633
         },
         {
           "name": "end",
-          "hostSeconds": 17.699,
-          "pageMs": 17367.599999999627,
-          "epochMs": 1794552313478
+          "hostSeconds": 21.43,
+          "pageMs": 20895.39999999944,
+          "epochMs": 1794554686331
         }
       ],
       "frames": []
@@ -1022,25 +1030,25 @@
       "outsideReleasePreservesBoardAndStreak": true,
       "completionAndUndo": true,
       "stockAndRecycle": true,
-      "completionStart": 7.863,
+      "completionStart": 9.219,
       "events": [
         {
           "name": "enter",
-          "hostSeconds": 0.502,
-          "pageMs": 179.6000000005588,
-          "epochMs": 1794552314004
+          "hostSeconds": 0.918,
+          "pageMs": 274.90000000037253,
+          "epochMs": 1794554687270
         },
         {
           "name": "01-idle",
-          "hostSeconds": 1.495,
-          "pageMs": 1172.4000000003725,
-          "epochMs": 1794552314997
+          "hostSeconds": 1.949,
+          "pageMs": 1305.800000000745,
+          "epochMs": 1794554688301
         },
         {
           "name": "release-lights",
-          "hostSeconds": 2.353,
-          "pageMs": 2029.7999999998137,
-          "epochMs": 1794552315854,
+          "hostSeconds": 2.919,
+          "pageMs": 2273.100000000559,
+          "epochMs": 1794554689268,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -1055,15 +1063,15 @@
         },
         {
           "name": "ordinary-before",
-          "hostSeconds": 2.761,
-          "pageMs": 2437.7999999998137,
-          "epochMs": 1794552316262
+          "hostSeconds": 3.389,
+          "pageMs": 2745.300000000745,
+          "epochMs": 1794554689740
         },
         {
           "name": "tap-target-lights_3",
-          "hostSeconds": 2.858,
-          "pageMs": 2533.100000000559,
-          "epochMs": 1794552316358,
+          "hostSeconds": 3.536,
+          "pageMs": 2891.9000000003725,
+          "epochMs": 1794554689887,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -1078,21 +1086,21 @@
         },
         {
           "name": "ordinary-early",
-          "hostSeconds": 2.877,
-          "pageMs": 2554.600000000559,
-          "epochMs": 1794552316379
+          "hostSeconds": 3.678,
+          "pageMs": 3034.4000000003725,
+          "epochMs": 1794554690029
         },
         {
           "name": "ordinary-settled",
-          "hostSeconds": 3.401,
-          "pageMs": 3078,
-          "epochMs": 1794552316902
+          "hostSeconds": 4.167,
+          "pageMs": 3523.5,
+          "epochMs": 1794554690518
         },
         {
           "name": "release-dishes",
-          "hostSeconds": 4.086,
-          "pageMs": 3762.600000000559,
-          "epochMs": 1794552317587,
+          "hostSeconds": 5.05,
+          "pageMs": 4405.300000000745,
+          "epochMs": 1794554691400,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -1107,9 +1115,9 @@
         },
         {
           "name": "release-lights_4",
-          "hostSeconds": 5.12,
-          "pageMs": 4796.700000000186,
-          "epochMs": 1794552318621,
+          "hostSeconds": 6.109,
+          "pageMs": 5464.100000000559,
+          "epochMs": 1794554692459,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -1124,9 +1132,9 @@
         },
         {
           "name": "release-lights_2",
-          "hostSeconds": 6.135,
-          "pageMs": 5811.9000000003725,
-          "epochMs": 1794552319636,
+          "hostSeconds": 7.31,
+          "pageMs": 6666.9000000003725,
+          "epochMs": 1794554693662,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -1141,21 +1149,21 @@
         },
         {
           "name": "02-before-last-lift",
-          "hostSeconds": 6.517,
-          "pageMs": 6194,
-          "epochMs": 1794552320019
+          "hostSeconds": 7.739,
+          "pageMs": 7096.200000000186,
+          "epochMs": 1794554694091
         },
         {
           "name": "03-last-card-held",
-          "hostSeconds": 7.402,
-          "pageMs": 7079.100000000559,
-          "epochMs": 1794552320904
+          "hostSeconds": 8.714,
+          "pageMs": 8070.800000000745,
+          "epochMs": 1794554695066
         },
         {
           "name": "release-lights_1",
-          "hostSeconds": 8.469,
-          "pageMs": 8145.700000000186,
-          "epochMs": 1794552321970,
+          "hostSeconds": 10.032,
+          "pageMs": 9388.5,
+          "epochMs": 1794554696383,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -1170,63 +1178,63 @@
         },
         {
           "name": "04-completion-early",
-          "hostSeconds": 8.506,
-          "pageMs": 8182.9000000003725,
-          "epochMs": 1794552322007
+          "hostSeconds": 10.101,
+          "pageMs": 9457.600000000559,
+          "epochMs": 1794554696452
         },
         {
           "name": "05-completion-middle",
-          "hostSeconds": 8.69,
-          "pageMs": 8366.900000000373,
-          "epochMs": 1794552322191
+          "hostSeconds": 10.328,
+          "pageMs": 9684.5,
+          "epochMs": 1794554696679
         },
         {
           "name": "06-completion-late",
-          "hostSeconds": 8.907,
-          "pageMs": 8584.299999999814,
-          "epochMs": 1794552322409
+          "hostSeconds": 10.562,
+          "pageMs": 9918.400000000373,
+          "epochMs": 1794554696913
         },
         {
           "name": "07-completion-settled",
-          "hostSeconds": 9.672,
-          "pageMs": 9348.200000000186,
-          "epochMs": 1794552323173
+          "hostSeconds": 11.325,
+          "pageMs": 10681.5,
+          "epochMs": 1794554697676
         },
         {
           "name": "undo",
-          "hostSeconds": 9.736,
-          "pageMs": 9411.799999999814,
-          "epochMs": 1794552323236
+          "hostSeconds": 11.408,
+          "pageMs": 10763.600000000559,
+          "epochMs": 1794554697758
         },
         {
           "name": "08-undo-early",
-          "hostSeconds": 9.852,
-          "pageMs": 9529.5,
-          "epochMs": 1794552323354
+          "hostSeconds": 11.533,
+          "pageMs": 10890,
+          "epochMs": 1794554697885
         },
         {
           "name": "09-undo-settled",
-          "hostSeconds": 10.332,
-          "pageMs": 10009.5,
-          "epochMs": 1794552323834
+          "hostSeconds": 12.075,
+          "pageMs": 11431.400000000373,
+          "epochMs": 1794554698426
         },
         {
           "name": "outside-release",
-          "hostSeconds": 11.106,
-          "pageMs": 10782.700000000186,
-          "epochMs": 1794552324607
+          "hostSeconds": 13.029,
+          "pageMs": 12385.800000000745,
+          "epochMs": 1794554699381
         },
         {
           "name": "10-outside-release",
-          "hostSeconds": 11.137,
-          "pageMs": 10814.5,
-          "epochMs": 1794552324639
+          "hostSeconds": 13.068,
+          "pageMs": 12424.400000000373,
+          "epochMs": 1794554699419
         },
         {
           "name": "release-lights_1",
-          "hostSeconds": 12.287,
-          "pageMs": 11962,
-          "epochMs": 1794552325787,
+          "hostSeconds": 14.425,
+          "pageMs": 13781.400000000373,
+          "epochMs": 1794554700776,
           "cmd": {
             "type": "transfer",
             "from": {
@@ -1241,45 +1249,45 @@
         },
         {
           "name": "stock-start",
-          "hostSeconds": 13.321,
-          "pageMs": 12998.200000000186,
-          "epochMs": 1794552326823
+          "hostSeconds": 15.485,
+          "pageMs": 14838.400000000373,
+          "epochMs": 1794554701833
         },
         {
           "name": "11-waste-three",
-          "hostSeconds": 14.613,
-          "pageMs": 14289.900000000373,
-          "epochMs": 1794552328114
+          "hostSeconds": 16.873,
+          "pageMs": 16230.100000000559,
+          "epochMs": 1794554703225
         },
         {
           "name": "12-stock-empty",
-          "hostSeconds": 15.991,
-          "pageMs": 15668.799999999814,
-          "epochMs": 1794552329493
+          "hostSeconds": 18.583,
+          "pageMs": 17940,
+          "epochMs": 1794554704935
         },
         {
           "name": "recycle",
-          "hostSeconds": 16.046,
-          "pageMs": 15723.600000000559,
-          "epochMs": 1794552329548
+          "hostSeconds": 18.666,
+          "pageMs": 18022.200000000186,
+          "epochMs": 1794554705017
         },
         {
           "name": "13-recycle-settled",
-          "hostSeconds": 16.48,
-          "pageMs": 16157.400000000373,
-          "epochMs": 1794552329982
+          "hostSeconds": 19.16,
+          "pageMs": 18514.10000000056,
+          "epochMs": 1794554705509
         },
         {
           "name": "14-hint",
-          "hostSeconds": 17.291,
-          "pageMs": 16968,
-          "epochMs": 1794552330793
+          "hostSeconds": 19.996,
+          "pageMs": 19352.60000000056,
+          "epochMs": 1794554706347
         },
         {
           "name": "end",
-          "hostSeconds": 17.986,
-          "pageMs": 17663.5,
-          "epochMs": 1794552331488
+          "hostSeconds": 20.715,
+          "pageMs": 20071.400000000373,
+          "epochMs": 1794554707066
         }
       ],
       "frames": []

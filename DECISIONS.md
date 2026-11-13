@@ -1,5 +1,9 @@
 # Decisions
 
+## 2026-11-13 — Approved board continuity implementation
+
+Implement the owner's five-stage plan as0.11.0/code19. Distinguish slot roles and preserve their surfaces during lift/return, preserve paper during foundation arrival, replace repeated frames with material feedback, use a complete reveal and an explicitly visible new-deal entry, and replace ring/ribbon completion with a bounded slot-owned visual snapshot. The snapshot never owns cards, saves or rewards and yields on reuse/Undo/pause/shutdown. Keep compact geometry/casual art and frozen rules/content/balance3/5/3, old v2 attempts, all bank/economy/SDK/kit contracts. [Scope/verification](docs/qa/BOARD_FEEL_0_11_0.md); CI and artifact delivery are still running, device acceptance remains open.
+
 ## 2026-11-13 — Board feel audit scope
 
 [Audit and proposed sequence](docs/qa/BOARD_FEEL_AUDIT_2026-11-13.md): address visual continuity and distinct slot roles before increasing effects. Read-only production-input evidence confirms a missing lift surface, identical slot treatments, an off-target rejection frame, premature foundation-face removal and competing completion layers. Keep the current compact geometry and casual art. The proposed renderer-only packages are not implemented or approved as a broad redesign. Existing error priority is correct; entry/flip/audio hypotheses need separate confirmation. No rule, content-bank, save/economy, SDK or kit change follows from this review.

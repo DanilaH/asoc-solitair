@@ -1,5 +1,9 @@
 # Verification — 2026-11-12
 
+## 0.11.0 board continuity — verification in progress
+
+[Implementation and evidence](docs/qa/BOARD_FEEL_0_11_0.md). Version19 changes rendering, explicit new-deal entry and browser measurement. Local typecheck/build,92 unit/platform, all supplied current+legacy routes, independent rules verification,96 prototype-agent attempts,119 layout cases with0 DOM/0 raster and pre-final48 focused browser cases pass. Final-source focus, full hosted CI and Android artifact acceptance remain running. [Frozen boundaries](docs/qa/board-feel-0_11_0/frozen.json) independently compare domain/content/platform/art/layout/pinned dependencies against605645b. Physical phone/audio/haptics/human preference are not established by this run.
+
 ## 2026-11-13 — Board feel audit, unchanged production
 
 [Findings and plan](docs/qa/BOARD_FEEL_AUDIT_2026-11-13.md). Fetched HEAD/origin main `848065babee8cd638fc3ba24ded008a46a636aed`. Current production build and audit-tool typecheck pass. Actual touch records cover level6 at360×780,320×568 and360 reduced-motion, with accepted board comparisons, neutral cancel/stock/recycle/completion/Undo and no page errors. Timed production screencast frames show the foundation surface gap and completion layering. A suspected error/praise priority issue is disproved by input and the existing message handler. Details and reproducible commands are in the linked audit/machine evidence. Production dist is byte-identical to the frozen delivered0.10.0 bundle; no game code or bank/version change. No new full suite/Android build is claimed for this audit-only tool/docs delivery. Phone/audio/haptics and human preference are untested here.

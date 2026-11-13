@@ -1,5 +1,9 @@
 # Continuation checkpoint — 2026-11-12
 
+## Current work — 0.11.0/code19, board continuity
+
+Owner approved the detailed plan. [Implementation scope and live verification status](qa/BOARD_FEEL_0_11_0.md): bases under final lifted/returning cards and packets; distinct upper/lower wells; preserved previous foundation face; local surface feedback and neutral off-target cancellation; two-sided reveal; explicit visible new-attempt entry; slot-owned collection snapshots with arrival → readable full topic → compact clear, no ring/ribbon. Snapshots/timers/particles cancel on reuse/Undo/pause/shutdown and never own durable state. Compact geometry, art, stock behavior, rules/content/balance3/5/3, old v2 attempts, bank/SaveStore/economy/SDK/kit preserved. Native only bumps version19. New regression file tests/browser/board-continuity.spec.ts; existing pixel-edge test normalizes CSS scale. Local92 tests/content/rules/96 prototypes/119 layout states and pre-final48 browser pass. Full exact-source CI, final focus, APK and media delivery are still in progress; do not claim release/device acceptance yet.
+
 ## Latest review — 2026-11-13, board microinteractions
 
 Owner reports fragmented board feel and asks for an audit/plan. [Independent findings and ordered packages](qa/BOARD_FEEL_AUDIT_2026-11-13.md) inspect fetched main `848065babee8cd638fc3ba24ded008a46a636aed`, unchanged 0.10.0/code18. Actual-touch level6 recordings at360×780,320×568 and360 reduced-motion confirm: missing underlying surface while lifting a final card; identical upper/lower silhouettes; free-floating reject frame after a neutral off-target release; old foundation face hidden before a new card arrives; premature completion leader/layer replacement and red ribbon over the title. New error versus prior praise is already handled correctly; do not propose fixing it. Fresh-entry/flip lifecycle and physical audio feel remain hypotheses needing targeted evidence.

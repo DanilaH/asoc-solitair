@@ -35,10 +35,10 @@ for (const anchor of ['finger', 'card'] as const) test(`a legal transfer accepts
 
 test('one captured touch crosses every former field edge, keeps the card visible and cancels without a turn', async ({ page, context }) => {
   const before = await seed(page), { g, point, r } = await geometry(page, campaignDeals[16]), a = point(g.poses.find(p => p.faceUp && p.depth >= 50)!);
-  const viewport = page.viewportSize()!, baseline = await page.screenshot(), c = await context.newCDPSession(page);
+  const viewport = page.viewportSize()!, baseline = await page.screenshot({ scale: 'css' }), c = await context.newCDPSession(page);
   await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [a] }); let previous = a;
   for (const [name, p] of [['left', { x: 2, y: r.y + r.height / 2 }], ['right', { x: viewport.width - 2, y: r.y + r.height / 2 }], ['top', { x: a.x, y: 4 }], ['bottom', { x: a.x, y: viewport.height - 4 }]] as const) {
-    await moveTouch(c, previous, p); previous = p; await page.waitForTimeout(30); const buffer = await page.screenshot({ path: test.info().outputPath(`held-${name}.png`) });
+    await moveTouch(c, previous, p); previous = p; await page.waitForTimeout(30); const buffer = await page.screenshot({ scale: 'css', path: test.info().outputPath(`held-${name}.png`) });
     const pixels = await sharp(buffer).raw().toBuffer({ resolveWithObject: true }), base = await sharp(baseline).raw().toBuffer(); let added = 0;
     for (let y = 0; y < pixels.info.height; y++) for (let x = 0; x < pixels.info.width; x++) {
       if (x >= r.x && x <= r.x + r.width && y >= r.y && y <= r.y + r.height) continue;

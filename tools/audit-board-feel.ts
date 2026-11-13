@@ -9,9 +9,9 @@ import { dispatch, freshSave, packet } from '../src/domain/engine';
 import { boardFrame, layout } from '../src/game/layout';
 import type { BoardCommand, Location, Save } from '../src/domain/types';
 
-const dir='.recording/board-feel-audit-2026-11-13';
+const dir=process.env.ASOC_QA_OUT??'.recording/board-feel-audit-2026-11-13';
 await mkdir(dir,{recursive:true});
-const server=await preview({preview:{host:'127.0.0.1',port:4197,strictPort:true}}),browser=await chromium.launch();
+const server=await preview({preview:{host:'127.0.0.1',port:4197,strictPort:true},build:{outDir:process.env.ASOC_QA_DIST??'dist'}}),browser=await chromium.launch();
 const records:object[]=[],errors:string[]=[];
 try {
  for(const [width,height,reduced]of [[360,780,false],[320,568,false],[360,780,true]] as const) {
@@ -64,5 +64,5 @@ try {
   await mark('end');const video=page.video()!;await cdp.detach();await ctx.close();await video.saveAs(`${out}/actual-touch.webm`);await Promise.all(writes);
   const result={width,height,reduced,deal:deal.id,rulesVersion:3,profile:'isolated ordinary campaign replay; tutorial and helper unlock flags prepared before entry',actualInput:true,domainCompared:true,finalCardHeldWithoutCommit:true,outsideReleasePreservesBoardAndStreak:true,completionAndUndo:true,stockAndRecycle:true,completionStart,events,frames};records.push(result);await writeFile(`${out}/events.json`,JSON.stringify(result,null,2)+'\n');
  }
- assert.deepEqual(errors,[]);await writeFile(`${dir}/checks.json`,JSON.stringify({source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),productionDistUnmodified:true,records,errors},null,2)+'\n');console.info(JSON.stringify({recordings:records.length,errors}));
+ assert.deepEqual(errors,[]);await writeFile(`${dir}/checks.json`,JSON.stringify({source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),productionBundleNotInstrumented:true,dist:process.env.ASOC_QA_DIST??'dist',records,errors},null,2)+'\n');console.info(JSON.stringify({recordings:records.length,errors}));
 }finally{await browser.close();await new Promise<void>(r=>server.httpServer.close(()=>r()));}

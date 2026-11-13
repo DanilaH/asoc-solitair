@@ -1,0 +1,41 @@
+{
+  "baseline": "605645bcf166125e81c19622ce67c548e2d1ecf0",
+  "typecheck": "PASS",
+  "unitPlatform": {
+    "files": 14,
+    "tests": 92,
+    "status": "PASS"
+  },
+  "contentAndRules": "PASS: current and legacy supplied paths; domain unchanged",
+  "prototypes": {
+    "wins": 96,
+    "attempts": 96
+  },
+  "layout": {
+    "cases": 119,
+    "issues": [],
+    "rasterIssues": [],
+    "domIssues": []
+  },
+  "preFinalBrowser": {
+    "passed": 48,
+    "status": "PASS"
+  },
+  "finalBrowserFocus": {
+    "passed": 14,
+    "status": "PASS",
+    "commands": "npx playwright test tests/browser/board-continuity.spec.ts --workers=2"
+  },
+  "harnessCorrections": [
+    "CSS pixel scale for the pre-existing field-edge check",
+    "Compute patch averages from the actual extracted raw pixels; Sharp stats does not apply the pending extract pipeline",
+    "Use the audited legal light-first opening; the supplied full witness draws before finishing this category"
+  ],
+  "notEstablished": [
+    "physical phone feel",
+    "audio/haptics quality",
+    "human preference",
+    "live SDK",
+    "production signing/store publication"
+  ]
+}

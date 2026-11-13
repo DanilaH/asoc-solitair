@@ -1,0 +1,28 @@
+[
+  {
+    "profile": "360-motion",
+    "file": "asoc-0.11.0-board.gif",
+    "anchors": {
+      "ordinary-before": 3.0,
+      "03-last-card-held": 8.8,
+      "10-outside-release": 13.6
+    },
+    "trimStart": 2.8,
+    "duration": 11.600000000000001,
+    "speed": 1,
+    "fps": 15
+  },
+  {
+    "profile": "320-motion",
+    "file": "asoc-0.11.0-compact.gif",
+    "anchors": {
+      "ordinary-before": 2.8,
+      "03-last-card-held": 8.0,
+      "10-outside-release": 12.4
+    },
+    "trimStart": 2.5999999999999996,
+    "duration": 10.600000000000001,
+    "speed": 1,
+    "fps": 15
+  }
+]

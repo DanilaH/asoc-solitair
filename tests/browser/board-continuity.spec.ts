@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import sharp from 'sharp';
 import { campaignDeals } from '../../src/content/campaign';
 import { dispatch, freshSave, packet } from '../../src/domain/engine';
-import { boardFrame, layout } from '../../src/game/layout';
+import { boardFrame, cardMetrics, layout } from '../../src/game/layout';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 
 const read = (p: Page) => p.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
@@ -94,7 +94,7 @@ test('lifting the final card exposes the same physical well as an empty column, 
   await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [a] });
   for (let i = 1; i <= 10; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: a.x + (destination.x - a.x) * i / 10, y: a.y + (destination.y - a.y) * i / 10 }] }); await page.waitForTimeout(12); }
   const image = await page.screenshot({ scale: 'css', path: test.info().outputPath('last-card-well.png') }), sourceColor = await patchMean(image, a), emptyColor = await patchMean(image, empty);
-  expect(Math.max(...sourceColor.map((v, i) => Math.abs(v - emptyColor[i])))).toBeLessThan(14);
+  expect(Math.max(...sourceColor.map((v, i) => Math.abs(v - emptyColor[i])))).toBeLessThan(4);
   expect((await read(page)).attempt).toEqual(state.attempt);
   await c.send('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] }); await c.detach();
   expect((await read(page)).attempt).toEqual(state.attempt);
@@ -121,13 +121,13 @@ test('a foundation keeps a paper surface throughout an ordinary accepted flight'
 
 test('an off-target release is neutral and draws no rejection below the finger', async ({ page, context }) => {
   const d = campaignDeals[5]; await seed(page, d, lightsState(5));
-  const { state, g, point } = await geometry(page, d), a = point(g.poses.find(p => p.id === 'lights_1')!), destination = { x: page.viewportSize()!.width - 45, y: page.viewportSize()!.height * .72 };
+  const { state, g, point, f } = await geometry(page, d), a = point(g.poses.find(p => p.id === 'lights_1')!), destination = { x: page.viewportSize()!.width - 45, y: page.viewportSize()!.height * .72 };
   const before = await page.screenshot({ scale: 'css' }), c = await context.newCDPSession(page);
   await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [a] });
   for (let i = 1; i <= 10; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: a.x + (destination.x - a.x) * i / 10, y: a.y + (destination.y - a.y) * i / 10 }] }); await page.waitForTimeout(12); }
   await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await c.detach();
   const after = await page.screenshot({ scale: 'css', path: test.info().outputPath('neutral-release.png') });
-  const bottom = { x: destination.x, y: destination.y + 44 };
+  const bottom = { x: destination.x, y: destination.y + (cardMetrics(d).height / 2 - 2) * f.unit };
   const oldColor = await patchMean(before, bottom), newColor = await patchMean(after, bottom);
   expect(Math.max(...oldColor.map((v, i) => Math.abs(v - newColor[i])))).toBeLessThan(8);
   expect((await read(page)).attempt).toEqual(state.attempt);

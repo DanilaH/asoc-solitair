@@ -103,3 +103,18 @@ test('a drop already over its slot contacts sooner than a long tap transfer, pre
   await test.info().attach('contact-timings', { body: JSON.stringify({ near, far }), contentType: 'application/json' });
   await page.locator('#undo').tap(); await expect.poll(async () => (await read(page)).attempt.board).toEqual(before.attempt.board);
 });
+
+test('requesting Hint from Aa exits reading, shows the cue and lets its move execute', async ({ page }) => {
+  const { before, a, b, f, action } = await seed(page);
+  await page.clock.install(); await page.clock.pauseAt(new Date());
+  const baseline = await page.screenshot({ scale: 'css' });
+  await page.locator('#inspect').tap(); await expect(page.locator('#inspect')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('#hint').tap();
+  await expect.poll(async () => (await read(page)).profile.hints).toBe(before.profile.hints - 1);
+  await expect(page.locator('#inspect')).toHaveAttribute('aria-pressed', 'false');
+  await page.clock.runFor(120);
+  expect(await changedStrip(await page.screenshot({ scale: 'css' }), baseline, a, f.unit)).toBeGreaterThan(12);
+  await page.touchscreen.tap(a.x, a.y); await page.touchscreen.tap(b.x, b.y);
+  await expect.poll(async () => (await read(page)).attempt.board).toEqual(dispatch(before, action, deal).next.attempt.board);
+  expect((await read(page)).profile.hints).toBe(before.profile.hints - 1);
+});

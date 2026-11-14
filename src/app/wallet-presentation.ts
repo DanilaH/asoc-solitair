@@ -22,9 +22,9 @@ export class WalletPresentation {
     const sx=source.x+source.width/2,sy=source.y+source.height/2,tx=dest.x+dest.width/2,ty=dest.y+dest.height/2;
     const badge=document.createElement('span');badge.className='coin-gain';badge.textContent=`+${amount}`;badge.setAttribute('role','status');badge.setAttribute('aria-label',`Получено ${amount} монет`);badge.style.left=`${Math.max(30,Math.min(innerWidth-55,sx))}px`;badge.style.top=`${Math.max(20,sy-22)}px`;this.layer.append(badge);
     const animation=badge.animate(this.reduced()?[{opacity:1},{opacity:0}]:[{opacity:0,transform:'translate(-50%,0) scale(.85)'},{opacity:1,transform:'translate(-50%,-10px) scale(1.1)',offset:.18},{opacity:1,offset:.7},{opacity:0,transform:'translate(-50%,-22px) scale(1)'}],{duration:this.reduced()?450:950});animation.onfinish=()=>badge.remove();animation.oncancel=()=>badge.remove();
-    if(this.reduced()){this.goal=this.target;this.sound();this.run();return;}
+    if(this.reduced()){this.goal=Math.min(this.target,this.goal+amount);this.sound();this.run();return;}
     const available=this.pool.filter(n=>!this.flights.some(f=>f.node===n));
-    if(!available.length){this.goal=this.target;this.run();return;}
+    if(!available.length){this.goal=Math.min(this.target,this.goal+amount);this.run();return;}
     const plan=createValueTransferPlan(amount,{minDurationMs:650,maxDurationMs:900,maxVisualTokens:Math.min(8,available.length),maxAudioEvents:4,flightBaseMs:480,maxFlightDurationMs:560,flightPerVisualTokenMs:5});
     const dialog=origin.closest('dialog'),r=dialog?.getBoundingClientRect();const side=r?Math.min(innerWidth-12,r.right+6):sx;
     let previous=0;const now=performance.now();

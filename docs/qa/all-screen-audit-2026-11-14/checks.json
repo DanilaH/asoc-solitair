@@ -1,0 +1,650 @@
+{
+  "gameSource": "47c57b6d8d8c81d01c9a945e28b42ba6a37491ca",
+  "gameVersion": "0.14.0/code22",
+  "runtimeKit": "a9325265e87583a4872cf6a158e1e881a0d7508e",
+  "guidance": "aab9dc8e06bf1b487da9b3a5e67444975e7c8ac0",
+  "productionUnchanged": [
+    "src",
+    "public",
+    "native",
+    "package.json",
+    "package-lock.json",
+    "index.html",
+    "vite.config.ts"
+  ],
+  "assetCount": 191,
+  "assetManifestSha256": "2e5c1a7fe5420788f680fb189c372c88747533c9a46537ffce26ecbef3fa2166",
+  "coverage": {
+    "canonicalStates": 120,
+    "baseVariants": 30,
+    "viewports": [
+      [
+        320,
+        480
+      ],
+      [
+        320,
+        568
+      ],
+      [
+        360,
+        780
+      ],
+      [
+        393,
+        851
+      ]
+    ],
+    "pageErrors": 0,
+    "initialActionFlags": [
+      {
+        "state": "320x480-appearance-locked",
+        "selector": "#appearance-done",
+        "rect": {
+          "x": 45,
+          "y": 567.890625,
+          "width": 230,
+          "height": 51
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      },
+      {
+        "state": "320x480-appearance-unlocked",
+        "selector": "#appearance-done",
+        "rect": {
+          "x": 45,
+          "y": 567.890625,
+          "width": 230,
+          "height": 51
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      },
+      {
+        "state": "320x480-calendar",
+        "selector": "#calendar .primary",
+        "rect": {
+          "x": 45,
+          "y": 475.390625,
+          "width": 230,
+          "height": 51
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      },
+      {
+        "state": "320x480-helpers-all",
+        "selector": "#helper-return",
+        "rect": {
+          "x": 45,
+          "y": 628.890625,
+          "width": 230,
+          "height": 46
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      },
+      {
+        "state": "320x480-home-resume",
+        "selector": "#level-picker-open",
+        "rect": {
+          "x": 35,
+          "y": 466.21875,
+          "width": 250,
+          "height": 44
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      },
+      {
+        "state": "320x480-level-picker-current",
+        "selector": "#level-picker .secondary[data-close]",
+        "rect": {
+          "x": 45,
+          "y": 425.890625,
+          "width": 230,
+          "height": 46
+        },
+        "passed": false,
+        "reason": "clipped-y"
+      },
+      {
+        "state": "320x480-level-picker-locked",
+        "selector": "#level-picker .close",
+        "rect": {
+          "x": 244,
+          "y": -9,
+          "width": 44,
+          "height": 44
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      },
+      {
+        "state": "320x480-result-unlock",
+        "selector": "#result-home",
+        "rect": {
+          "x": 45,
+          "y": 459.078125,
+          "width": 230,
+          "height": 44
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      },
+      {
+        "state": "320x480-settings-expanded",
+        "selector": "#helpers-open",
+        "rect": {
+          "x": 42,
+          "y": 378,
+          "width": 236,
+          "height": 44
+        },
+        "passed": false,
+        "reason": "clipped-y"
+      },
+      {
+        "state": "320x568-appearance-locked",
+        "selector": "#appearance-done",
+        "rect": {
+          "x": 45,
+          "y": 567.890625,
+          "width": 230,
+          "height": 51
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      },
+      {
+        "state": "320x568-appearance-unlocked",
+        "selector": "#appearance-done",
+        "rect": {
+          "x": 45,
+          "y": 567.890625,
+          "width": 230,
+          "height": 51
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      },
+      {
+        "state": "320x568-helpers-all",
+        "selector": "#helper-return",
+        "rect": {
+          "x": 45,
+          "y": 628.890625,
+          "width": 230,
+          "height": 46
+        },
+        "passed": false,
+        "reason": "outside-viewport"
+      }
+    ],
+    "fixtureNotes": [
+      "Twelve confirmation captures from an earlier fixture omitted attempt.telemetry.started. All twelve were replaced by the real started-attempt route; resume label also rechecked.",
+      "161 rounded-corner-only probes were excluded after center/interior/raw-touch verification.",
+      "320x480 is a short usable-viewport stress case; 320x568 and larger are reported separately.",
+      "Final/unlock result fixtures now include already-claimed past milestone keys; normal80 does not spuriously show an old card-back grant. The fifth-win probe uses level5 after four first clears. Three win variants/4 sizes were recaptured."
+    ]
+  },
+  "transitions": {
+    "source": "47c57b6d8d8c81d01c9a945e28b42ba6a37491ca",
+    "results": [
+      {
+        "name": "reward-title",
+        "frames": 98,
+        "overlapFrames": 15,
+        "maxOverlap": 4,
+        "visibleResult": "Всё сошлось!\nЗа партию\n+74\nУровень 6 →\nНовый цикл · 0 / 5\nЕщё раз\nГлавная",
+        "ownedHintStock": 4,
+        "meta": {
+          "version": 1,
+          "winCycle": 0,
+          "cycles": 1,
+          "dailyDates": [],
+          "dailyStreak": 0
+        },
+        "payout": [
+          {
+            "key": "win:ui-motion-audit",
+            "reason": "win",
+            "label": "За победу и оставшиеся ходы",
+            "coins": 45
+          },
+          {
+            "key": "cycle:1",
+            "reason": "campaign_win_cycle",
+            "label": "Пять новых побед",
+            "coins": 20,
+            "hints": 1
+          }
+        ]
+      },
+      {
+        "name": "nested-return",
+        "screen": "game",
+        "openDialog": 0,
+        "settingsVisible": false
+      },
+      {
+        "name": "hint-pending",
+        "pending": {
+          "disabled": true,
+          "text": "Подсказка\n3",
+          "ariaBusy": null,
+          "message": ""
+        },
+        "charges": [
+          3,
+          2
+        ],
+        "boardUnchanged": true,
+        "probe": "Real solver reply delayed1400ms; no fabricated result"
+      },
+      {
+        "name": "press-edge",
+        "restRect": {
+          "x": 22,
+          "y": 465.71875,
+          "width": 74,
+          "height": 44
+        },
+        "held": {
+          "rect": {
+            "x": 22,
+            "y": 465.71875,
+            "width": 74,
+            "height": 44
+          },
+          "hitSelf": true
+        },
+        "actualCalendarOpened": true
+      },
+      {
+        "name": "text-appearance",
+        "visible": [
+          {
+            "text": "×",
+            "top": 22,
+            "bottom": 66,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Сукно",
+            "top": 297.84375,
+            "bottom": 365.84375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Чернила\nУровень 10",
+            "top": 297.84375,
+            "bottom": 365.84375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Классика",
+            "top": 413.84375,
+            "bottom": 481.84375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Ромбы\nУровень 20",
+            "top": 413.84375,
+            "bottom": 481.84375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Сверху",
+            "top": 529.84375,
+            "bottom": 575.84375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Снизу",
+            "top": 529.84375,
+            "bottom": 575.84375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Слева",
+            "top": 583.84375,
+            "bottom": 629.84375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Справа",
+            "top": 583.84375,
+            "bottom": 629.84375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Готово",
+            "top": 641.84375,
+            "bottom": 704.84375,
+            "initiallyOnScreen": false
+          }
+        ],
+        "probe": "Simulated150% DOM text reflow, not Android WebView/native font evidence"
+      },
+      {
+        "name": "text-helpers",
+        "visible": [
+          {
+            "text": "×",
+            "top": 22,
+            "bottom": 66,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "+1 за 100 монет",
+            "top": 263.34375,
+            "bottom": 324.34375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "+1 за 60 монет",
+            "top": 456.34375,
+            "bottom": 517.34375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "+1 за 250 монет",
+            "top": 730.34375,
+            "bottom": 791.34375,
+            "initiallyOnScreen": false
+          },
+          {
+            "text": "Готово",
+            "top": 842.84375,
+            "bottom": 897.84375,
+            "initiallyOnScreen": false
+          }
+        ],
+        "probe": "Simulated150% DOM text reflow, not Android WebView/native font evidence"
+      },
+      {
+        "name": "text-result",
+        "visible": [
+          {
+            "text": "Уровень 6 →",
+            "top": 345.59375,
+            "bottom": 408.59375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Ещё раз",
+            "top": 443.59375,
+            "bottom": 498.59375,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Главная",
+            "top": 498.59375,
+            "bottom": 546.59375,
+            "initiallyOnScreen": true
+          }
+        ],
+        "probe": "Simulated150% DOM text reflow, not Android WebView/native font evidence"
+      },
+      {
+        "name": "text-home",
+        "visible": [
+          {
+            "text": "",
+            "top": 2.5,
+            "bottom": 46.5,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "✦\n100\n+",
+            "top": 2.5,
+            "bottom": 46.5,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "✦\nВеха 30\n40 монет\n5 / 10",
+            "top": 49,
+            "bottom": 105,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "▦\nЗадание дня\n14 ноября",
+            "top": 355.921875,
+            "bottom": 452.515625,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Календарь →",
+            "top": 452.515625,
+            "bottom": 506.515625,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Пять побед\n✦\n✦\n✦\n✦\n✦\n0 / 5 новых побед\n+20 монет и подсказка",
+            "top": 355.921875,
+            "bottom": 457.921875,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Ваш стол",
+            "top": 355.921875,
+            "bottom": 430.921875,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Продолжить\nуровень 6",
+            "top": 514.515625,
+            "bottom": 585.3125,
+            "initiallyOnScreen": true
+          },
+          {
+            "text": "Выбрать уровень",
+            "top": 593.3125,
+            "bottom": 637.3125,
+            "initiallyOnScreen": true
+          }
+        ],
+        "probe": "Simulated150% DOM text reflow, not Android WebView/native font evidence"
+      }
+    ],
+    "errors": []
+  },
+  "recovery": {
+    "source": "47c57b6d8d8c81d01c9a945e28b42ba6a37491ca",
+    "results": [
+      {
+        "name": "startup-read-error",
+        "text": "Не удалось открыть партию\n\nSimulated temporary storage read failure",
+        "buttons": 0,
+        "durableUnchanged": true
+      },
+      {
+        "name": "save-retry",
+        "message": "Проверяем сохранение. Нажмите «Повторить сохранение».",
+        "buttonRect": {
+          "x": 12,
+          "y": 522,
+          "width": 296,
+          "height": 46
+        },
+        "buttonVisible": true,
+        "durableUnchanged": true,
+        "retryHidden": true,
+        "afterBoardUnchanged": true
+      }
+    ]
+  },
+  "CI": {
+    "source": "47162f937bfbd4d20a999aa94f1a27ee55840156",
+    "PRRun": 43485346539,
+    "pushRun": 43485335335,
+    "browser": {
+      "passed": 169,
+      "failed": 1,
+      "skipped": 4,
+      "all80TouchWins": true,
+      "failure": "tutorial.spec.ts handPixels0 while failing CI video visibly contains the glove"
+    },
+    "android": "Both debug/signature and unsigned release PASS",
+    "localTutorialRepeats": {
+      "runs": 3,
+      "passed": 6
+    },
+    "artifact": 14069761652,
+    "archiveSha256": "5818b978fe51eb3421906d326eac9c7b20d56ca2bad9c3d86a75e9700c33b1c8",
+    "videoWindowsSeconds": [
+      4,
+      5,
+      7,
+      9
+    ],
+    "diagnosis": "Visual observation/test reliability issue; exact cause unconfirmed; no full green claim"
+  },
+  "guidanceDoctor": {
+    "destination": "/workspace/scratch/50187ffca82b/asoc-solitair",
+    "status": "READY_FOR_AGENT_DISCOVERY",
+    "guidanceRef": "aab9dc8e06bf1b487da9b3a5e67444975e7c8ac0",
+    "runtimeRef": "a9325265e87583a4872cf6a158e1e881a0d7508e",
+    "runtimeSpecifier": "git+https://github.com/DanilaH/mini-games-kit.git#a9325265e87583a4872cf6a158e1e881a0d7508e",
+    "expectedKitRef": "aab9dc8e06bf1b487da9b3a5e67444975e7c8ac0",
+    "uiRoutes": {
+      "linked": [
+        "docs/visual-preproduction/UX_AND_ART_SYSTEM.md",
+        "docs/layout/STABLE_PROGRESS_UI.md",
+        "docs/feel/UI_MOTION_RECIPES.md"
+      ],
+      "missing": []
+    },
+    "errors": [],
+    "warnings": [],
+    "notes": [
+      "Claude Code does not reliably auto-load root AGENTS.md; a minimal reviewed CLAUDE.md bridge is recommended if Claude Code is used.",
+      "Guidance and runtime pins intentionally differ; API imports must use runtime a9325265e87583a4872cf6a158e1e881a0d7508e, not guidance aab9dc8e06bf1b487da9b3a5e67444975e7c8ac0.",
+      "Runtime pin differs from supplied target kit ref; this is NOT an automatic dependency upgrade."
+    ]
+  },
+  "capturedScreens": [
+    "320x480-appearance-locked",
+    "320x480-appearance-unlocked",
+    "320x480-board-dense",
+    "320x480-board-normal",
+    "320x480-calendar",
+    "320x480-cycle",
+    "320x480-helpers-all",
+    "320x480-hint-empty",
+    "320x480-home-fresh",
+    "320x480-home-large-wallet",
+    "320x480-home-resume",
+    "320x480-home-rich",
+    "320x480-home-stale-daily",
+    "320x480-learn-21",
+    "320x480-learn-23",
+    "320x480-learn-26",
+    "320x480-level-picker-current",
+    "320x480-level-picker-locked",
+    "320x480-reader-word",
+    "320x480-replace-daily",
+    "320x480-restart-confirm",
+    "320x480-result-exhausted",
+    "320x480-result-final",
+    "320x480-result-unlock",
+    "320x480-result-win",
+    "320x480-settings-expanded",
+    "320x480-settings-home",
+    "320x480-settings-play",
+    "320x480-switch-level",
+    "320x480-undo-empty",
+    "320x568-appearance-locked",
+    "320x568-appearance-unlocked",
+    "320x568-board-dense",
+    "320x568-board-normal",
+    "320x568-calendar",
+    "320x568-cycle",
+    "320x568-helpers-all",
+    "320x568-hint-empty",
+    "320x568-home-fresh",
+    "320x568-home-large-wallet",
+    "320x568-home-resume",
+    "320x568-home-rich",
+    "320x568-home-stale-daily",
+    "320x568-learn-21",
+    "320x568-learn-23",
+    "320x568-learn-26",
+    "320x568-level-picker-current",
+    "320x568-level-picker-locked",
+    "320x568-reader-word",
+    "320x568-replace-daily",
+    "320x568-restart-confirm",
+    "320x568-result-exhausted",
+    "320x568-result-final",
+    "320x568-result-unlock",
+    "320x568-result-win",
+    "320x568-settings-expanded",
+    "320x568-settings-home",
+    "320x568-settings-play",
+    "320x568-switch-level",
+    "320x568-undo-empty",
+    "360x780-appearance-locked",
+    "360x780-appearance-unlocked",
+    "360x780-board-dense",
+    "360x780-board-normal",
+    "360x780-calendar",
+    "360x780-cycle",
+    "360x780-helpers-all",
+    "360x780-hint-empty",
+    "360x780-home-fresh",
+    "360x780-home-large-wallet",
+    "360x780-home-resume",
+    "360x780-home-rich",
+    "360x780-home-stale-daily",
+    "360x780-learn-21",
+    "360x780-learn-23",
+    "360x780-learn-26",
+    "360x780-level-picker-current",
+    "360x780-level-picker-locked",
+    "360x780-reader-word",
+    "360x780-replace-daily",
+    "360x780-restart-confirm",
+    "360x780-result-exhausted",
+    "360x780-result-final",
+    "360x780-result-unlock",
+    "360x780-result-win",
+    "360x780-settings-expanded",
+    "360x780-settings-home",
+    "360x780-settings-play",
+    "360x780-switch-level",
+    "360x780-undo-empty",
+    "393x851-appearance-locked",
+    "393x851-appearance-unlocked",
+    "393x851-board-dense",
+    "393x851-board-normal",
+    "393x851-calendar",
+    "393x851-cycle",
+    "393x851-helpers-all",
+    "393x851-hint-empty",
+    "393x851-home-fresh",
+    "393x851-home-large-wallet",
+    "393x851-home-resume",
+    "393x851-home-rich",
+    "393x851-home-stale-daily",
+    "393x851-learn-21",
+    "393x851-learn-23",
+    "393x851-learn-26",
+    "393x851-level-picker-current",
+    "393x851-level-picker-locked",
+    "393x851-reader-word",
+    "393x851-replace-daily",
+    "393x851-restart-confirm",
+    "393x851-result-exhausted",
+    "393x851-result-final",
+    "393x851-result-unlock",
+    "393x851-result-win",
+    "393x851-settings-expanded",
+    "393x851-settings-home",
+    "393x851-settings-play",
+    "393x851-switch-level",
+    "393x851-undo-empty"
+  ]
+}

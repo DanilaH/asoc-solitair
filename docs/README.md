@@ -1,5 +1,7 @@
 # Product sources
 
+Latest independent work: [all-screen UI/UX/feel audit and current kit guidance](qa/ALL_SCREENS_UI_UX_AUDIT_2026-11-14.md).120 canonical states; implementation recommendations, guidance-only adoption; runtime unchanged. Both0.14 exhaustive CI repetitions are now known to have169passes/1tutorial observation failure/4skips, all80 touch wins; see current handoff.
+
 Current preview: [0.14 staged guidance and board motion](qa/BOARD_MOTION_0_14_0.md). PR#26 merged; signed APK/actual-touch GIFs delivered; relevant checks pass. Exhaustive browser catalog remains in progress; see handoff/CI snapshot.
 
 

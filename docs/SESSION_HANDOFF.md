@@ -1,4 +1,16 @@
-# Continuation checkpoint — 2026-11-13
+# Continuation checkpoint — 2026-11-14
+
+## Latest work — all-screen audit and guidance adoption,2026-11-14
+
+Owner cannot phone-playtest yet and requested independent UI/UX/feel review of all screens plus newer kit additions. [Report/implementation plan](qa/ALL_SCREENS_UI_UX_AUDIT_2026-11-14.md), [checks](qa/all-screen-audit-2026-11-14/checks.json). Audited unchanged main47c57b6 /runtime0.14.0/code22:120 canonical states,8 transition/text stress cases,2 actual SaveStore failure-injection cases.0 normal pageerrors. Four QA tools/typecheck and strict guidance doctor pass. Prepared-prefix telemetry omissions and rounded-corner false flags were corrected/classified as audit-harness issues, not product defects.
+
+Confirmed priorities: scroll-body/fixed-actions for long appearance/helpers windows (already hidden on320×568); show owned fifth-win20coins+1Hint instead of only next0/5; route coins away from result title (15/98 sampled frames overlap, up to4coins); safe startup read-retry instead of raw fatal text with0 actions; clear local pending Hint; simplify duplicate/helper microcopy using existing art. Resume label is already correct with a real started attempt. Direct appearance→game return is explicitly labelled «К игре» and is only a product hypothesis, not a confirmed broken route. Preserve compact board/casual art, rules/content/economy/save/SDK.
+
+Guidance-only adoption:aab9dc8e06bf1b487da9b3a5e67444975e7c8ac0 via4 local docs, appended root AGENTS and docs/PROJECT_DECISIONS bridge. Runtime remains a9325265e87583a4872cf6a158e1e881a0d7508e; newer getTierProgress is absent and not imported. KIT IMPACT:REUSE; rounded-control QA probe improvement remains CANDIDATE, no kit mutation. UI fixes are proposals; no production runtime/version/APK changed in this audit.
+
+Both final0.14 source CI runs43485335335/43485346539 actually ended169PASS/1FAIL/4skips. All80 real-touch levels won; both Android builds pass. Same tutorial pixel-mask failure in both, while failing PR video shows the glove around4/5/7/9s. Local3 repeats6/6 pass. Exact observation-race cause remains unconfirmed. Old pending wording below is a historical delivery snapshot, not current CI status; next implementation should stabilize this focused visual test and never report all CI green yet.
+
+Audit tools:tools/audit-all-screens.ts,tools/audit-ui-transitions.ts,tools/audit-recovery-ui.ts with QA-only tools/qa/critical-actions-check.mjs (provenance pinned). Live CUA could not connect to the sandbox-local server; actual project-runner Chromium captures were used, not a phone or live SDK. Temporary failed handoff tab was completed/cleaned. Audit delivery is saved: ZIP libfile_fde3_f-78054961a4188191a8b60a46f4491707_2841ca9da26c8191b7a266fa9b41a810; examplePNG libfile_fde3_f-bd3fb38f6298819189407beee646a184_2841ca9da26c8191b7a266fa9b41a810; rewardGIF libfile_fde3_f-83b32d05ae4c8191bec0fd1f95ac25f7_2841ca9da26c8191b7a266fa9b41a810. All version0/metadata applied. Exact paths/hashes are in docs/qa/all-screen-audit-2026-11-14/media.json; do not duplicate writes.
 
 ## Current preview —0.14.0/code22
 

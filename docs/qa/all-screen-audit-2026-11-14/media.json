@@ -1,0 +1,29 @@
+[
+  {
+    "local_path": "/workspace/scratch/50187ffca82b/asoc-audit-media/asoc-0.14-all-screens-audit-2026-11-14.zip",
+    "library_file_id": "libfile_fde3_f-78054961a4188191a8b60a46f4491707_2841ca9da26c8191b7a266fa9b41a810",
+    "current_version_number": 0,
+    "local_metadata_applied": true,
+    "bytes": 22056094,
+    "sha256": "42316bb1ff373e6aee90ea5eaabff451f2df60093fbf481e0a2c47454ad81db4"
+  },
+  {
+    "local_path": "/workspace/scratch/50187ffca82b/asoc-audit-media/asoc-0.14-ui-audit-examples.png",
+    "library_file_id": "libfile_fde3_f-bd3fb38f6298819189407beee646a184_2841ca9da26c8191b7a266fa9b41a810",
+    "current_version_number": 0,
+    "local_metadata_applied": true,
+    "bytes": 288993,
+    "sha256": "222306b0fc83f15f989b46ef24653a76b1ca329652ee737e96ee345388801077"
+  },
+  {
+    "local_path": "/workspace/scratch/50187ffca82b/asoc-audit-media/asoc-0.14-reward-audit.gif",
+    "library_file_id": "libfile_fde3_f-83b32d05ae4c8191bec0fd1f95ac25f7_2841ca9da26c8191b7a266fa9b41a810",
+    "current_version_number": 0,
+    "local_metadata_applied": true,
+    "bytes": 2100016,
+    "sha256": "c17f3bd3190f002d40cf0fd87352fadab7dbdc71456e9be3782c3b241c8cbe61",
+    "frames": 71,
+    "durationMs": 2840,
+    "recording": "Actual result UI1x,25fps output; prepared legal fifth-win save; browser, not phone"
+  }
+]

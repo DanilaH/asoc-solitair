@@ -113,5 +113,5 @@ try {
   await context.close();console.info(`Captured ${width}x${height}`);
  }
 } finally { await browser.close();await new Promise<void>(r=>server.httpServer.close(()=>r())); }
-await writeFile(`${output}/screens.json`,JSON.stringify({gameSource:'47c57b6d8d8c81d01c9a945e28b42ba6a37491ca',kitGuidance:'aab9dc8e06bf1b487da9b3a5e67444975e7c8ac0',runtimeKit:'a9325265e87583a4872cf6a158e1e881a0d7508e',records,errors},null,2)+'\n');
+await writeFile(`${output}/screens.json`,JSON.stringify({gameSource:process.env.ASOC_QA_SOURCE??'47c57b6d8d8c81d01c9a945e28b42ba6a37491ca',kitGuidance:'aab9dc8e06bf1b487da9b3a5e67444975e7c8ac0',runtimeKit:'a9325265e87583a4872cf6a158e1e881a0d7508e',records,errors},null,2)+'\n');
 console.info(JSON.stringify({screens:records.length,errors,initialActions:records.flatMap((x:any)=>x.initial.filter((a:any)=>!a.passed).map((a:any)=>({screen:x.name,...a})))}));

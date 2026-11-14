@@ -1,3 +1,7 @@
+# Current iteration —0.15 UI coherence
+
+Approved all-screen audit fixes are implemented; final-source browser/layout/Android verification and preview delivery are in progress. See [acceptance and honest status](docs/qa/UI_COHERENCE_0_15_0.md). This supersedes the prior audit-only status; no rules/economy/art/SDK expansion.
+
 # Roadmap
 
 **Next UI package, proposed by2026-11-14 audit:** [all-screen findings and8–13h bounded plan](docs/qa/ALL_SCREENS_UI_UX_AUDIT_2026-11-14.md). Prioritize long-window actions, visible owned5/5 reward, title-safe coins and startup retry; then pending Hint/microcopy. Guidance adopted separately from runtime; actual game code remains0.14. Broad CI tutorial observation remains unresolved; all80 touch wins pass. No new core/meta/art system implied.

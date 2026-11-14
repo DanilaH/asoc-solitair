@@ -15,7 +15,7 @@ export function renderMeta(save: Save, busy: boolean) {
   $('#win-cycle-open').hidden = n === 0; $('#looks-open').hidden = n === 0; $('#appearance-open').hidden = n === 0;
   $('#win-cycle-pips').innerHTML = pips(meta.winCycle);
   $('#cycle-reward').textContent = `+${BALANCE.meta.cycleCoins} монет и подсказка`;
-  $('#calendar-reward-copy').textContent = `За день — ${BALANCE.meta.dailyCoins} монет. На 3-м дне серии — ещё ${BALANCE.meta.day3Coins}; на 7-м и каждых следующих семи — ${BALANCE.meta.day7Coins} и отмена. Пропуск сбрасывает текущую серию.`;
+  $('#calendar-reward-copy').textContent = `За день — ${BALANCE.meta.dailyCoins} монет. Серия из 3 дней: +${BALANCE.meta.day3Coins}. За 7 дней, затем каждые 7: +${BALANCE.meta.day7Coins} и отмена. Пропуск сбрасывает серию.`;
   $('#win-cycle-count').textContent = `${meta.winCycle} / 5 новых побед`;
   $('#milestone-title').textContent = n >= CAMPAIGN_LENGTH ? 'Кампания пройдена' : `Веха ${target}`;
   $('#milestone-copy').textContent = n >= CAMPAIGN_LENGTH ? 'Оформление и положение колоды' : target === 10 ? `Стол «Чернила» и ${BALANCE.meta.milestoneCoins} монет` : target === 20 ? `Рубашка «Ромбы» и ${BALANCE.meta.milestoneCoins} монет` : `${BALANCE.meta.milestoneCoins} монет`;

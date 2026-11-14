@@ -20,3 +20,12 @@ Read [the product index](docs/README.md), the handoff, requirements and feel spe
 - Show QA GIFs inline in chat with Markdown image syntax and an absolute sandbox path, so the user gets a preview. Use actual production input recordings.
 
 - Resume at [the continuation checkpoint](docs/SESSION_HANDOFF.md). Keep binary files out of tool/chat text: never print GIF/APK/archive bytes, base64, or encoded chunks. Transfer bytes directly between files using ordinary Git/download/upload paths; show only paths, sizes, hashes and concise status. Filter large API responses before returning them to the conversation. Earlier chats stopped during binary encoding; the exact cause is unconfirmed, so do not repeat that workflow.
+
+## Task routing and UI verification
+
+Guidance snapshot pin: aab9dc8e06bf1b487da9b3a5e67444975e7c8ac0. Runtime dependency stays a9325265e87583a4872cf6a158e1e881a0d7508e; newer guidance does not grant access to newer exports.
+
+- Before material work read [project context](docs/PROJECT_DECISIONS.md) and choose relevant routes in [TASK_ROUTER.md](docs/kit-guidance/TASK_ROUTER.md). For UI, use the routed UX/art, stable progress and motion recipes while retaining the approved compact board and casual art.
+- For a supplied reference follow [REFERENCE_PROTOCOL.md](docs/kit-guidance/REFERENCE_PROTOCOL.md); distinguish observed footage from inference and unavailable originals.
+- Check essential actions on the initial viewport before test auto-scroll, rapid input/cancel, pending/error and reduced motion as relevant. A rounded button's bounding-box corner is not necessarily part of its real hit shape; compare actual interior taps before calling it occluded.
+- Report KIT IMPACT using [KIT_FEEDBACK_LOOP.md](docs/kit-guidance/KIT_FEEDBACK_LOOP.md). Keep domain/economy/SDK authority outside optional presentation. Do not add kit features solely because the newer docs mention them.

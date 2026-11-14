@@ -1,5 +1,7 @@
 # Roadmap
 
+**Next UI package, proposed by2026-11-14 audit:** [all-screen findings and8–13h bounded plan](docs/qa/ALL_SCREENS_UI_UX_AUDIT_2026-11-14.md). Prioritize long-window actions, visible owned5/5 reward, title-safe coins and startup retry; then pending Hint/microcopy. Guidance adopted separately from runtime; actual game code remains0.14. Broad CI tutorial observation remains unresolved; all80 touch wins pass. No new core/meta/art system implied.
+
 **0.14.0/code22 — staged guidance and board motion:** [scope/acceptance](docs/qa/BOARD_MOTION_0_14_0.md). Delivered test preview, PR#26 merged. Local92 unit/platform,54 board-focused + final20 Hint/reader and119 layouts pass; final-source Android debug/signature/R8 and191 packaged assets pass. Exhaustive browser/80-level catalog remains in progress at delivery; physical-phone feel remains open.
 
 

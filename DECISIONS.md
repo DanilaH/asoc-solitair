@@ -1,5 +1,9 @@
 # Decisions
 
+## 2026-11-14 — New guidance, unchanged runtime; all-screen audit first
+
+Adopt reviewed agent guidance aab9dc8e separately from runtime a9325265: route UI to existing art/UX, initial-action geometry and motion contracts, preserve product decisions. Strict doctor passes; no SDK/API dependency upgrade. The independent120-state audit proposes long-modal fixed actions, visible owned fifth-win rewards, title-safe coin paths, truthful Hint pending and safe startup retry. It does not implement those changes or redesign the approved board. Correctly started attempts already say Continue; appearance explicitly returns «К игре», so neither is misreported as a new defect. Same0.14 tutorial mask fails in both broad CI runs while the saved video shows the glove; stabilize observation before claiming green CI. [Report](docs/qa/ALL_SCREENS_UI_UX_AUDIT_2026-11-14.md).
+
 ## 2026-11-13 — Sequential attention and restrained board motion
 
 Adopt the owner-approved fitting practices from the supplied motion clip as one bounded0.14 package: stage the Hint/teaching source, gesture and destination; use CSS-distance-based80–180ms packet settle/return and up to210ms Undo; give held cards at most1.4° horizontal-motion tilt and a small shadow offset; bend only the automatic key flight without changing its240ms contact or causal unlock. Keep existing coin/completion feedback, geometry, drop anchors/ambiguity policy and all durable rules/economy/saves unchanged. Reduced motion keeps static guidance/no tilt. Never turn motion into a gate or let a demonstration execute a command. [Scope/acceptance](docs/qa/BOARD_MOTION_0_14_0.md).

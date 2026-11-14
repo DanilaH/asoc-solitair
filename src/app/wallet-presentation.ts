@@ -16,8 +16,8 @@ export class WalletPresentation {
     if(total<this.target){this.cancel();this.target=total;this.goal=total;this.reserved=total;this.run();return;}
     this.target=total;if(!defer)this.collect(this.wallet);
   }
-  collect(origin:HTMLElement){
-    const amount=this.pending;if(!amount)return;this.reserved=this.target;
+  collect(origin:HTMLElement,limit=this.pending){
+    const amount=Math.min(this.pending,limit);if(!amount)return;this.reserved+=amount;
     const source=origin.getBoundingClientRect(),icon=this.wallet.querySelector('.coin-icon')??this.wallet,dest=icon.getBoundingClientRect();
     const sx=source.x+source.width/2,sy=source.y+source.height/2,tx=dest.x+dest.width/2,ty=dest.y+dest.height/2;
     const badge=document.createElement('span');badge.className='coin-gain';badge.textContent=`+${amount}`;badge.setAttribute('role','status');badge.setAttribute('aria-label',`Получено ${amount} монет`);badge.style.left=`${Math.max(30,Math.min(innerWidth-55,sx))}px`;badge.style.top=`${Math.max(20,sy-22)}px`;this.layer.append(badge);
@@ -40,7 +40,7 @@ export class WalletPresentation {
     for(const f of this.flights)f.node.style.display='none';this.flights=[];
     this.layer.querySelectorAll('.coin-gain').forEach(e=>e.remove());this.pulse?.cancel();
     if(this.receipt){this.receipt.node.textContent=`+${this.receipt.amount}`;this.receipt=undefined;}
-    if(settle)this.value=this.goal=this.reserved=this.target;else { this.value=Math.round(this.value);this.goal=this.reserved=this.value; }
+    if(settle)this.value=this.goal=this.reserved=this.target;else { this.value=this.goal=this.reserved; }
     this.paint();
   }
   dispose(){this.cancel();this.pool.forEach(n=>n.remove());}

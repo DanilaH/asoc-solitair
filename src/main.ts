@@ -191,7 +191,7 @@ try {
   let pendingHint: Pick<HintRequest, 'requestId' | 'revision' | 'attemptId'> & { dealId: string } | undefined;
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
-  function coinBurst(origin = $('#streak-reward')) { wallet?.collect(origin); }
+  function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   function renderHud() {
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
@@ -291,7 +291,7 @@ try {
     $('#result-meta').textContent = daily ? `Серия дней · ${currentDailyStreak(save, localDay())}` : `Новый цикл · ${save.meta!.winCycle} / 5`;
     $('#result-meta').hidden = !won || !daily && !payout?.some(r => r.reason === 'campaign_win_cycle');
     $('#replay').textContent = daily && won ? 'Сыграть как тренировку' : 'Ещё раз';
-    const earned = (payout ? payout.reduce((sum, r) => sum + r.coins, 0) : !daily ? BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0) + save.attempt.streak.coins;
+    const earned = (payout ? payout.reduce((sum, r) => sum + r.coins, 0) : !daily ? BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0);
     $('#result-total').textContent = `+${earned}`; $('#result-earnings').hidden = !won || earned === 0;
     unlockChoice = payout?.some(r => r.key === 'milestone:20') ? 'cardBack' : payout?.some(r => r.key === 'milestone:10') ? 'palette' : undefined;
     $('#unlock-reward').hidden = !won || !unlockChoice;
@@ -350,7 +350,8 @@ try {
       scene?.clearHint();
       const boardCommand = ['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined;
       const major = result.events.find(e => e.type === 'win') ?? result.events.find(e => e.type === 'unlock') ?? result.events.find(e => e.type === 'complete') ?? result.events.find(e => e.type === 'key') ?? result.events.find(e => e.type === 'coins') ?? result.events[0];
-      const hasCoinFlight = result.events.some(e => e.type === 'coins') && !result.events.some(e => e.type === 'win');
+      const coreCoins = result.events.filter(e => e.type === 'coins').reduce((n,e) => n + (e.amount ?? 0), 0);
+      const hasCoinFlight = coreCoins > 0;
       // The save/grant is already durable. Only optional sound/haptics/coins
       // follow the visible contact and may be dropped when superseded.
       const present = () => {
@@ -359,7 +360,7 @@ try {
           if (major.type === 'key' || major.type === 'unlock' || major.type === 'joker') runtime.pulse(major.type === 'key' ? 'coins' : major.type === 'unlock' ? 'complete' : 'hint');
           if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type as 'transfer' | 'complete' | 'coins' | 'win' | 'undo' | 'hint');
         }
-        if (hasCoinFlight) coinBurst();
+        if (hasCoinFlight) coinBurst($('#streak-reward'), coreCoins);
       };
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
       if (cmd.type !== 'transfer') present();

@@ -19,3 +19,7 @@ test('streak income shows its exact delta and lands in the same wallet without t
 test('skipping win or reduced motion settles counters without losing or minting coins',async({page})=>{
   for(const reduced of [false,true]){const s=fixture(4,true);s.settings.reducedMotion=reduced;await seed(page,s);await move(page,campaignDeals[4],campaignDeals[4].winningPath.at(-1)!);await page.locator('#result[open]').waitFor();const paid=await read(page);await page.locator('#next-level').tap();await expect(page.locator('#coins')).toHaveText(String(paid.profile.coins));await page.waitForTimeout(1000);expect(await page.locator('.flying-coin:visible').count()).toBe(0);expect((await read(page)).profile).toEqual(paid.profile);}
 });
+test('a final streak and victory show their own amounts without paying the streak twice in the popup',async({page})=>{
+  let index=-1;for(let i=4;i<26;i++){const d=campaignDeals[i],s=fixture(i,true),r=dispatch(s,d.winningPath.at(-1)!,d);if(r.events.some(e=>e.type==='coins')){index=i;break;}}expect(index).toBeGreaterThanOrEqual(0);
+  const d=campaignDeals[index],s=fixture(index,true),expected=dispatch(s,d.winningPath.at(-1)!,d).next;await seed(page,s);await move(page,d,d.winningPath.at(-1)!);await page.locator('#result[open]').waitFor();const award=expected.attempt.payout!.reduce((n,r)=>n+r.coins,0);await expect(page.locator('#result-total')).toHaveText('+'+award);await expect(page.locator('#coins')).toHaveText(String(expected.profile.coins));expect((await read(page)).profile).toEqual(expected.profile);
+});

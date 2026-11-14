@@ -6,7 +6,7 @@
   <header><button id="menu" class="round" aria-label="Настройки"><span class="hamburger"></span></button><span id="wallet-anchor"><button id="wallet-open" class="wallet" aria-label="Монеты и помощники"><span class="coin-icon">✦</span><span id="coins">100</span><span class="wallet-plus">+</span></button></span><section class="streak-row" aria-label="Серия переносов"><div id="streak" class="streak"></div><span id="streak-reward" class="streak-reward">+2 <span>✦</span></span></section></header>
   <section id="home" aria-label="Кампания">
     <div class="brand-scene"><img class="linked-emblem" src="art/ui/linked-cards.webp" alt="Две связанные по смыслу карточки"><h1><small>СОЛИТЁР</small>Ассоциаций</h1></div>
-    <button id="appearance-open" class="milestone-card"><span class="milestone-gem" aria-hidden="true">✦</span><span class="milestone-details"><strong id="milestone-title">Веха 10</strong><span class="milestone-track"><i id="milestone-fill"></i></span><small id="milestone-copy">Стол «Чернила»</small></span><small id="milestone-progress">0 / 10</small></button>
+
     <div class="home-scroll"><div class="home-stage">
 
     <div class="home-shortcuts">
@@ -16,6 +16,7 @@
     </div>
     </div>
     <button id="daily-resume-old" class="calendar-link" hidden></button>
+    <button id="appearance-open" class="milestone-card"><span class="milestone-gem" aria-hidden="true">✦</span><span class="milestone-details"><strong id="milestone-title">Веха 10</strong><span class="milestone-track"><i id="milestone-fill"></i></span><small id="milestone-copy">Стол «Чернила»</small></span><small id="milestone-progress">0 / 10</small></button>
     </div><div class="home-actions"><div class="campaign-context"><strong>Кампания</strong><span id="home-progress"></span></div><button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
     <button id="level-picker-open" class="levels-link">Выбрать уровень</button></div>
   </section>
@@ -45,7 +46,7 @@
 <dialog id="level-picker" class="sheet"><div class="sheet-heading"><button class="close" data-close aria-label="Закрыть">×</button><div class="campaign-heading"><h2>Кампания</h2><span id="campaign-progress">0 / 80</span></div></div><div class="sheet-body"><nav id="chapter-nav" aria-label="Страницы уровней"><button id="chapter-prev" aria-label="Предыдущие уровни">←</button><span><strong id="chapter-label">Уровни 1–20</strong><small id="chapter-name">Первые связи</small></span><button id="chapter-next" aria-label="Следующие уровни">→</button></nav><div id="level-grid" aria-label="Уровни кампании"></div><p id="campaign-done" class="small" hidden>Все 80 уровней пройдены. Любую раздачу можно сыграть ещё раз.</p></div><div class="sheet-actions"><button class="secondary" data-close>Назад</button></div></dialog>
 <dialog id="inspect-dialog"><button class="close" data-close aria-label="Закрыть">×</button><span class="eyebrow">КАРТОЧКА</span><h2 id="word-title"></h2><img id="word-image" alt="" hidden><p id="word-description"></p><button class="primary" data-close>Понятно</button></dialog>
 <dialog id="result" class="sheet"><div class="sheet-heading"><span class="result-star" aria-hidden="true"><img src="art/generated/cycle.webp" alt=""></span><h2 id="result-title">Всё сошлось!</h2></div><div class="sheet-body"><p id="result-copy"></p>
-<div id="result-earnings"><span>Всего за партию</span><strong id="result-total"></strong></div>
+<div id="result-earnings"><span>Награда</span><strong id="result-total"></strong></div>
 <section id="result-bonus" hidden><strong>Пять побед · 5 / 5</strong><span id="result-bonus-copy"></span></section>
 <div id="result-meta" class="result-meta"></div>
 <section id="unlock-reward" hidden><div id="unlock-preview" class="appearance-preview unlock-preview" aria-hidden="true"><span class="preview-back"></span><span class="preview-face"><b>✦</b></span></div><div><strong id="unlock-title"></strong><button id="apply-unlock" class="secondary">Примерить</button></div></section>

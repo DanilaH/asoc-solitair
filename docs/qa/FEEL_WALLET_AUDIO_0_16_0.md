@@ -21,3 +21,9 @@ No physical-phone sound/latency/thermal/comfort claim. No production/store chang
 ## Reuse
 
 KIT IMPACT:REUSE — pinned createValueTransferPlan/valueAfterVisualArrival/emission/audio stride, OneShotPlayer, activity/focus and UI motion/stable-progress contracts. Recorded asset choice, menu policy and wallet DOM remain game-owned; no new kit runtime/version/export.
+
+## Final-source corrections
+
+The first CI run found four real DOM overlaps on short home screens (no raster issues). The milestone now follows the other secondary actions in the scroll region. Calendar positioning is scoped to the daily card, so a saved older daily stays in normal flow. The fresh-profile centred layout also checks that daily is hidden. Actual interior hit tests cover all five navigation actions at320×480. The complete119-state local layout audit passes with0DOM/0raster issues.
+
+The result now labels and counts only the newly granted victory payout; streak coins already shown during play are excluded from that receipt. If the winning move also grants a streak, its exact amount flies first, then the popup presents the separate victory payout. No grant, balance or dedup key changes. Thirty focused browser cases pass, including this final-move combination on both phone and compact projects. Full exact-source CI remains pending.

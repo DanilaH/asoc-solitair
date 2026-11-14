@@ -1,5 +1,9 @@
 # Decisions
 
+## 2026-11-14 — Clear home, recorded foley, one wallet and lower render cost
+
+Owner explicitly rejects unclear home, harsh synthetic card/coin noise, directionless reward coins and lag. In0.16/code24 make campaign/action/progress primary and secondary activities readable rows; move the actual shared wallet into the result top layer at its header anchor, drive its visual counter from already durable gains/coin arrivals, skip/reload without duplicate income. Reuse pinned value-transfer planning. Bundle trimmed/normalized CC0 Kenney/Vinrax PCM, preloaded without gesture-time decoding; four voices/quiet gain/faded replacement and modal coin audio. Cache gesture drop legality per unchanged board, stop rebuilding hidden meta, cache shadow/shade textures, cap backing DPR1.5 and disable redundant context MSAA. CSS geometry/rules/bank/economy/save/SDK authority stay unchanged. Controlled profiling is evidence of reduced work, not a physical-phone FPS claim. See [acceptance](docs/qa/FEEL_WALLET_AUDIO_0_16_0.md).
+
 ## 2026-11-14 — Approved all-screen coherence fixes
 
 Implement the owner-approved audit package as0.15/code23: long dialogs keep header and actions while details scroll; short home keeps Play/level choice and reduces emblem first. Show the owned campaign-cycle receipt (5/5,20coins+1Hint) separately from the following0/5. Result coins follow an outer gutter after the actual dialog entrance and are invalidated on close/scroll/resize/background. Hint pending stays in its existing button; startup retry reloads the authoritative store without reset. Keep prices, grants, save codec, bank, board geometry/art and runtime kit pin unchanged. Tutorial observation uses one clock installed before application initialization and checks real raster output, including a missing-image negative control. [Acceptance](docs/qa/UI_COHERENCE_0_15_0.md).

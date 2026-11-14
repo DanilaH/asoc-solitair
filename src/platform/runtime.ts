@@ -4,6 +4,7 @@ import { GameplayActivityCoordinator, installDocumentVisibilityBlocker } from '@
 import { OneShotPlayer } from '@danilah/mini-games-kit/audio';
 import { registerPlugin, type PluginListenerHandle } from '@capacitor/core';
 import { cueSamples } from './sounds';
+import { preloadRecordedSounds, recordedCues } from './recorded-sounds';
 import { createHaptics, type HapticCue } from './haptics';
 export { decodeSave } from './storage';
 interface AudioBridge {
@@ -17,7 +18,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   const visibility = installDocumentVisibilityBlocker(activity);
   const audio = new OneShotPlayer({
     maxVoices: 4,
-    groups: { card: { minIntervalMs: 45 }, packet: { minIntervalMs: 120 }, flip: { minIntervalMs: 70 }, reward: { minIntervalMs: 80 }, ui: { minIntervalMs: 40 } },
+    groups: { card: { minIntervalMs: 45, replacementFadeMs: 12 }, packet: { minIntervalMs: 120, replacementFadeMs: 18 }, flip: { minIntervalMs: 70, replacementFadeMs: 12 }, reward: { minIntervalMs: 80, replacementFadeMs: 18 }, coin: { minIntervalMs: 65, replacementFadeMs: 14 }, ui: { minIntervalMs: 40, replacementFadeMs: 8 } },
   });
   const haptics = createHaptics();
   const nativeAudio = Capacitor.isNativePlatform() ? registerPlugin<AudioBridge>('SolitaireAudio') : undefined;
@@ -25,6 +26,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   let disposed = false;
   let mute = false;
   const handles: { remove: () => Promise<void> }[] = [];
+  const recordings = preloadRecordedSounds();
   const buffers = new Map<string, AudioBuffer>();
   const variants = new Map<string, number>();
   const eligibility = () => {
@@ -61,21 +63,23 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
     setMute(value: boolean) { mute = value; eligibility(); },
     setHaptics(value: boolean) { haptics.setEnabled(value); },
     pulse(cue: HapticCue) { haptics.pulse(cue); },
-    play(name: string) {
+    play(name: string, channel: 'gameplay' | 'ui' = 'gameplay') {
       const variant = (variants.get(name) ?? 0) % 3; variants.set(name, variant + 1);
       const key = `${name}:${variant}`;
-      const group = ['coins', 'win', 'complete'].includes(name) ? 'reward' : name === 'gather' ? 'packet' : name === 'flip' ? 'flip' : name === 'ui' ? 'ui' : 'card';
-      audio.play({ group, channel: name === 'ui' ? 'ui' : 'gameplay', gain: .32, buffer(ctx) {
+      const group = name === 'coins' ? 'coin' : ['win', 'complete'].includes(name) ? 'reward' : name === 'gather' ? 'packet' : name === 'flip' ? 'flip' : name === 'ui' ? 'ui' : 'card';
+      audio.play({ group, channel: name === 'ui' ? 'ui' : channel, gain: recordedCues[name] ? name === 'ui' ? .35 : name === 'lift' ? .4 : .5 : .18, buffer(ctx) {
         let buffer = buffers.get(key);
         if (!buffer) {
-          const samples = cueSamples(name, ctx.sampleRate, variant);
-          buffer = ctx.createBuffer(1, samples.length, ctx.sampleRate);
+          const files = recordedCues[name], pcm = files && recordings.data.get(files[variant % files.length]);
+          if (files && !pcm) return null;
+          const samples = pcm?.samples ?? cueSamples(name, ctx.sampleRate, variant);
+          buffer = ctx.createBuffer(1, samples.length, pcm?.rate ?? ctx.sampleRate);
           buffer.copyToChannel(samples, 0);
           buffers.set(key, buffer);
         }
         return buffer;
       } });
     },
-    destroy() { disposed = true; visibility(); removeBlocker(); handles.forEach(h => { void h.remove().catch(console.warn); }); audio.dispose(); haptics.destroy(); void nativeAudio?.configure({ enabled: false }).catch(() => undefined); activity.setGameplayDesired(false); },
+    destroy() { recordings.dispose(); disposed = true; visibility(); removeBlocker(); handles.forEach(h => { void h.remove().catch(console.warn); }); audio.dispose(); haptics.destroy(); void nativeAudio?.configure({ enabled: false }).catch(() => undefined); activity.setGameplayDesired(false); },
   };
 }

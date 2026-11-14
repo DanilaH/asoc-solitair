@@ -443,3 +443,70 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
   .linked-emblem{width:84px;height:66px}
   .home-scroll:has(#daily-resume-old:not([hidden])) .linked-emblem{display:none}
 }
+
+/* One visible wallet, including the modal top layer. */
+#wallet-anchor{display:flex;align-items:center;width:82px;height:35px;flex-shrink:0}
+#result[open]{overflow:visible;animation:pause-in .18s ease-out}
+#result>#wallet-open{box-shadow:0 0 0 5px #164e58,0 3px 7px #082d4566}
+#result-total{font-variant-numeric:tabular-nums;min-width:4ch}
+#result-earnings span{max-width:95px;line-height:1.3}
+.coin-gain{position:fixed;z-index:103;font-size:23px;line-height:1.15;font-weight:1000;color:#ffe09b;text-shadow:0 2px 0 #674a27,0 0 8px #523c2344;white-space:nowrap;pointer-events:none}
+#coin-layer{overflow:visible}
+.flying-coin{filter:drop-shadow(0 2px 1px #422e2944)}
+
+/* Home: campaign is primary, daily and the five-win reward are named shortcuts. */
+#home .milestone-card{order:2;padding:5px 7px;min-height:61px;text-align:left;margin-bottom:8px}
+#home .home-scroll{order:1}
+#home .home-actions{order:0;margin:12px 0 18px}
+#home .home-stage{flex:0 0 auto;gap:15px;padding:0 0 14px}
+#home .brand-scene{order:2;flex-direction:row;justify-content:center;gap:9px;margin-top:4px}
+#home .brand-scene .linked-emblem{width:56px;height:57px}
+#home .brand-scene h1{font-size:23px;letter-spacing:-.8px;text-shadow:0 2px 0 #fff}
+#home .brand-scene h1 small{font-size:10px;letter-spacing:2px}
+.campaign-context{display:flex;align-items:center;justify-content:space-between;width:calc(100% - 20px);margin:3px 0 12px;font-size:16px}
+.campaign-context span{font-size:12px;color:#67817d}
+#home .home-primary{width:calc(100% - 20px);min-height:76px;margin:0 0 8px}
+#home .levels-link{width:calc(100% - 20px);border:1px solid #d4ddd0;border-radius:12px;background:#edf0e5;font-size:14px}
+#home .home-shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#home .daily-card,#home .cycle-card,#home .looks-card{width:100%;padding:10px 4px;border-radius:15px;background:#f4eddd;border:1px solid #e3dbcc}
+#home .daily-card>button:first-child{width:100%}
+#home .daily-card strong,#home .cycle-card strong,#home .looks-card strong{font-size:13px;background:none;color:#416b73;box-shadow:none;margin-top:7px;white-space:normal}
+#home .daily-card small{font-size:11px}
+#home .cycle-card .cycle-status{position:static;width:auto;height:auto;clip-path:none;font-size:12px;margin-top:5px;color:#6b8075}
+#home .cycle-card .cycle-pips{margin-top:3px}
+#home .looks-card{grid-column:1/-1;flex-direction:row;justify-content:center;gap:10px;padding:7px}
+#home .looks-card .event-medal{width:36px;height:39px}
+#home .looks-card strong{margin:0}
+#home .calendar-link{font-size:12px}
+#home .milestone-details strong{font-size:12px}
+#home .milestone-details small{font-size:11px}
+@media(max-height:600px){#home .home-actions{margin:4px 0 10px}#home .home-primary{min-height:62px}#home .home-shortcuts{gap:8px}#home .daily-card,#home .cycle-card{padding:7px 3px}#home .brand-scene{display:none}.campaign-context{margin:0 0 7px}#home .milestone-card{min-height:54px;margin-bottom:0}}
+#home>.brand-scene{order:-1;display:flex;flex-direction:row;justify-content:center;gap:9px;flex-shrink:0;padding:7px 0 8px}
+@media(max-height:600px){#home>.brand-scene{padding:3px 0 5px}#home>.brand-scene .linked-emblem{height:35px;width:35px}#home>.brand-scene h1{font-size:21px}#home>.brand-scene h1 small{font-size:9px}#home .event-medal{width:36px;height:37px}#home .daily-card strong,#home .cycle-card strong{margin-top:4px}}
+#wallet-anchor{width:auto;min-width:68px}
+#coins{min-width:3ch;text-align:right;font-variant-numeric:tabular-nums}
+@media(max-width:360px){.wallet{font-size:17px}.streak-row{gap:4px}.streak i{width:12px}header{gap:6px}}
+/* Secondary activities read as navigation rows, with their purpose and progress. */
+#home .home-shortcuts{display:flex;flex-direction:column;gap:8px}
+#home .daily-card{padding:7px 82px 7px 8px;position:relative;min-height:56px}
+#home .daily-card>button:first-child{display:grid;grid-template-columns:36px 1fr;column-gap:8px;text-align:left}
+#home .daily-card .event-medal{grid-row:1/4;width:36px;height:39px}
+#home .daily-card strong,#home .daily-card small{margin:0;grid-column:2;text-align:left}
+#home .daily-card small:empty{display:none}
+#home .daily-card .calendar-link{position:absolute;right:5px;top:6px;min-height:44px;width:74px;border-radius:10px;background:#e9eddf;font-size:11px}
+#home .cycle-card{display:grid;grid-template-columns:36px 1fr 96px;column-gap:8px;min-height:56px;padding:7px 8px;text-align:left}
+#home .cycle-card .event-medal{grid-row:1/3;width:36px;height:39px}
+#home .cycle-card strong,#home .cycle-card .cycle-status{grid-column:2;text-align:left;margin:0}
+#home .cycle-card .cycle-pips{display:none}
+#home #cycle-reward{grid-column:3;grid-row:1/3;position:static;clip-path:none;overflow:visible;width:auto;height:auto;font-size:11px;line-height:1.3;color:#957344;text-align:right;white-space:normal}
+#home .looks-card{min-height:44px;padding:3px 8px;justify-content:flex-start}
+#home .looks-card .event-medal{width:36px;height:36px}
+#home .home-stage{padding-bottom:3px}
+#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden]){justify-content:center;padding-bottom:12vh}
+#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden]) .home-scroll{display:none}
+#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden])>.brand-scene{flex-direction:column;padding-bottom:25px}
+#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden])>.brand-scene .linked-emblem{width:130px;height:112px}
+#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden])>.brand-scene h1{font-size:34px}
+@media(max-height:540px){#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden])>.brand-scene .linked-emblem{width:90px;height:78px}#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden]){padding-bottom:4vh}}
+.wallet:disabled{opacity:1;filter:none}
+@media(max-height:540px){#home>.brand-scene{padding:1px 0 2px}#home .home-actions{margin-bottom:6px}#home .home-primary{min-height:58px}}

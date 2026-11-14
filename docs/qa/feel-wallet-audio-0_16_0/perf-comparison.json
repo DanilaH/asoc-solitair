@@ -1,0 +1,249 @@
+{
+  "baseline": "9845e5738b828caf49e93bf361cf1e52b5f0a3c5",
+  "final": "39e1e8cc909f385e7a375dc18eb2b40728305fb8",
+  "method": "Alternating isolated fresh browser contexts;3pairs, same360x780/DPR2 and7real commands;1x/4xCPU; no concurrent local browser/media jobs; model asserted",
+  "runs": {
+    "baseline": [
+      [
+        {
+          "rate": 1,
+          "dragClones": 546,
+          "homeMutations": 168,
+          "frames": 271,
+          "p95": 33.400000000000546,
+          "dragP95": 33.40000000000009,
+          "modelMatches": true,
+          "over50ms": 5,
+          "metrics": {
+            "LayoutCount": 94,
+            "RecalcStyleCount": 117,
+            "ScriptDuration": 0.499242,
+            "TaskDuration": 7.420604
+          }
+        },
+        {
+          "rate": 4,
+          "dragClones": 474,
+          "homeMutations": 168,
+          "frames": 217,
+          "p95": 83.29999999999927,
+          "dragP95": 66.59999999999945,
+          "modelMatches": true,
+          "over50ms": 32,
+          "metrics": {
+            "LayoutCount": 76,
+            "RecalcStyleCount": 88,
+            "ScriptDuration": 2.0560669999999996,
+            "TaskDuration": 9.4412
+          }
+        }
+      ],
+      [
+        {
+          "rate": 1,
+          "dragClones": 546,
+          "homeMutations": 168,
+          "frames": 270,
+          "p95": 33.400000000001455,
+          "dragP95": 33.400000000000546,
+          "modelMatches": true,
+          "over50ms": 7,
+          "metrics": {
+            "LayoutCount": 91,
+            "RecalcStyleCount": 112,
+            "ScriptDuration": 0.503145,
+            "TaskDuration": 7.746193
+          }
+        },
+        {
+          "rate": 4,
+          "dragClones": 468,
+          "homeMutations": 168,
+          "frames": 214,
+          "p95": 83.39999999999964,
+          "dragP95": 66.59999999999991,
+          "modelMatches": true,
+          "over50ms": 35,
+          "metrics": {
+            "LayoutCount": 77,
+            "RecalcStyleCount": 88,
+            "ScriptDuration": 1.897307,
+            "TaskDuration": 9.587461
+          }
+        }
+      ],
+      [
+        {
+          "rate": 1,
+          "dragClones": 546,
+          "homeMutations": 168,
+          "frames": 272,
+          "p95": 33.400000000000546,
+          "dragP95": 33.400000000000546,
+          "modelMatches": true,
+          "over50ms": 3,
+          "metrics": {
+            "LayoutCount": 92,
+            "RecalcStyleCount": 115,
+            "ScriptDuration": 0.515314,
+            "TaskDuration": 7.208754
+          }
+        },
+        {
+          "rate": 4,
+          "dragClones": 456,
+          "homeMutations": 168,
+          "frames": 208,
+          "p95": 83.39999999999964,
+          "dragP95": 66.60000000000014,
+          "modelMatches": true,
+          "over50ms": 37,
+          "metrics": {
+            "LayoutCount": 78,
+            "RecalcStyleCount": 89,
+            "ScriptDuration": 1.973738,
+            "TaskDuration": 9.316307
+          }
+        }
+      ]
+    ],
+    "final": [
+      [
+        {
+          "rate": 1,
+          "dragClones": 1,
+          "homeMutations": 0,
+          "frames": 285,
+          "p95": 33.30000000000018,
+          "dragP95": 16.800000000000182,
+          "modelMatches": true,
+          "over50ms": 3,
+          "metrics": {
+            "LayoutCount": 109,
+            "RecalcStyleCount": 115,
+            "ScriptDuration": 0.33038,
+            "TaskDuration": 4.128713
+          }
+        },
+        {
+          "rate": 4,
+          "dragClones": 1,
+          "homeMutations": 0,
+          "frames": 223,
+          "p95": 50.000000000000455,
+          "dragP95": 33.399999999999636,
+          "modelMatches": true,
+          "over50ms": 12,
+          "metrics": {
+            "LayoutCount": 89,
+            "RecalcStyleCount": 91,
+            "ScriptDuration": 1.0793279999999998,
+            "TaskDuration": 5.3292399999999995
+          }
+        }
+      ],
+      [
+        {
+          "rate": 1,
+          "dragClones": 1,
+          "homeMutations": 0,
+          "frames": 289,
+          "p95": 33.19999999999982,
+          "dragP95": 16.799999999999727,
+          "modelMatches": true,
+          "over50ms": 2,
+          "metrics": {
+            "LayoutCount": 110,
+            "RecalcStyleCount": 116,
+            "ScriptDuration": 0.322851,
+            "TaskDuration": 3.9884619999999997
+          }
+        },
+        {
+          "rate": 4,
+          "dragClones": 1,
+          "homeMutations": 0,
+          "frames": 225,
+          "p95": 50.09999999999991,
+          "dragP95": 33.30000000000018,
+          "modelMatches": true,
+          "over50ms": 12,
+          "metrics": {
+            "LayoutCount": 89,
+            "RecalcStyleCount": 93,
+            "ScriptDuration": 1.044215,
+            "TaskDuration": 5.30974
+          }
+        }
+      ],
+      [
+        {
+          "rate": 1,
+          "dragClones": 1,
+          "homeMutations": 0,
+          "frames": 285,
+          "p95": 16.800000000000182,
+          "dragP95": 16.799999999999955,
+          "modelMatches": true,
+          "over50ms": 2,
+          "metrics": {
+            "LayoutCount": 109,
+            "RecalcStyleCount": 115,
+            "ScriptDuration": 0.308004,
+            "TaskDuration": 3.865437
+          }
+        },
+        {
+          "rate": 4,
+          "dragClones": 1,
+          "homeMutations": 0,
+          "frames": 231,
+          "p95": 50,
+          "dragP95": 33.299999999999955,
+          "modelMatches": true,
+          "over50ms": 7,
+          "metrics": {
+            "LayoutCount": 92,
+            "RecalcStyleCount": 94,
+            "ScriptDuration": 1.0191860000000001,
+            "TaskDuration": 5.25659
+          }
+        }
+      ]
+    ]
+  },
+  "medians": {
+    "baseline": {
+      "1": {
+        "dragClones": 546,
+        "homeMutations": 168,
+        "p95": 33.400000000000546,
+        "dragP95": 33.400000000000546,
+        "over50ms": 5
+      },
+      "4": {
+        "dragClones": 468,
+        "homeMutations": 168,
+        "p95": 83.39999999999964,
+        "dragP95": 66.59999999999991,
+        "over50ms": 35
+      }
+    },
+    "final": {
+      "1": {
+        "dragClones": 1,
+        "homeMutations": 0,
+        "p95": 33.19999999999982,
+        "dragP95": 16.799999999999955,
+        "over50ms": 2
+      },
+      "4": {
+        "dragClones": 1,
+        "homeMutations": 0,
+        "p95": 50.000000000000455,
+        "dragP95": 33.30000000000018,
+        "over50ms": 12
+      }
+    }
+  }
+}

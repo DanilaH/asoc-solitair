@@ -1,0 +1,141 @@
+{
+  "sources": [
+    {
+      "author": "Kenney Vleugels",
+      "page": "https://kenney.nl/assets/casino-audio",
+      "download": "https://opengameart.org/sites/default/files/kenney_casino-audio.zip",
+      "license": "CC0",
+      "archiveSHA256": "f36250766ac5bc378c13708ddf12a23a8e54a3251f8d482c7536e51b5dbafa18"
+    },
+    {
+      "author": "Vinrax",
+      "page": "https://opengameart.org/content/coin-drop",
+      "download": "https://opengameart.org/sites/default/files/coin_drop.wav",
+      "license": "CC0",
+      "sourceSHA256": "2965ecdd82bfefca244eab761597d9409b8ec8dcac18345c125e98b4abf5e21f"
+    }
+  ],
+  "processing": "Mono22050PCM16,110Hz highpass/5800Hz lowpass, bounded RMS/peak,4ms attack/30ms release; no runtime synthesis for card/coin cues",
+  "files": [
+    {
+      "file": "public/audio/card-lift-1.wav",
+      "source": "casino/Audio/card-slide-1.ogg",
+      "sha256": "79c2934df9bc465a6a0f9adfd24d9ed98586c6b6c9df07e1c80b3be5c586cb35",
+      "duration": 0.18,
+      "peak": 0.47999998927116394,
+      "rms": 0.04439513012766838
+    },
+    {
+      "file": "public/audio/card-lift-2.wav",
+      "source": "casino/Audio/card-slide-2.ogg",
+      "sha256": "d83c834258f593939f286c3b1cecf85426242b1b17eb56dd0625325a648a64cd",
+      "duration": 0.18,
+      "peak": 0.4497957229614258,
+      "rms": 0.05499596148729324
+    },
+    {
+      "file": "public/audio/card-lift-3.wav",
+      "source": "casino/Audio/card-slide-3.ogg",
+      "sha256": "7f2c3a7cfe247224f783b44153f6d17acd9f7315ca81a9f2747eff641ce0d3c7",
+      "duration": 0.18,
+      "peak": 0.48000001907348633,
+      "rms": 0.041579101234674454
+    },
+    {
+      "file": "public/audio/card-place-1.wav",
+      "source": "casino/Audio/card-place-1.ogg",
+      "sha256": "897db1890ad3a4d168baccd0104545e5fab17b2a9d0dd1b4de42c4a0bd3f620d",
+      "duration": 0.22,
+      "peak": 0.47999998927116394,
+      "rms": 0.031458158046007156
+    },
+    {
+      "file": "public/audio/card-place-2.wav",
+      "source": "casino/Audio/card-place-2.ogg",
+      "sha256": "e0d9b9459f52e7058c4fc449584a492e08c93974707a20ce2591336050ae72ba",
+      "duration": 0.22,
+      "peak": 0.48000001907348633,
+      "rms": 0.0339406356215477
+    },
+    {
+      "file": "public/audio/card-place-3.wav",
+      "source": "casino/Audio/card-place-3.ogg",
+      "sha256": "9482d5208984128e02f1b9d35fe1d8777b69782df89e04568657dd2dfb8ca00c",
+      "duration": 0.22,
+      "peak": 0.47999998927116394,
+      "rms": 0.031141461804509163
+    },
+    {
+      "file": "public/audio/card-flip-1.wav",
+      "source": "casino/Audio/card-fan-1.ogg",
+      "sha256": "f3051bb06205665ff1248d90695f49d5cde432408ed5745a48e1a82e46a2e513",
+      "duration": 0.26,
+      "peak": 0.46315228939056396,
+      "rms": 0.05038986727595329
+    },
+    {
+      "file": "public/audio/card-flip-2.wav",
+      "source": "casino/Audio/card-fan-2.ogg",
+      "sha256": "389f410fb550f098f0e8fccd1877c5623e5eee68e93399ac9c4c30105960a930",
+      "duration": 0.26,
+      "peak": 0.47999998927116394,
+      "rms": 0.0227900929749012
+    },
+    {
+      "file": "public/audio/card-draw-1.wav",
+      "source": "casino/Audio/card-slide-4.ogg",
+      "sha256": "2233a7852675a8a87a017fe85847eea03343c5dfda635301dfdbf4f5a50b442d",
+      "duration": 0.22,
+      "peak": 0.47999998927116394,
+      "rms": 0.038752481341362
+    },
+    {
+      "file": "public/audio/card-draw-2.wav",
+      "source": "casino/Audio/card-slide-5.ogg",
+      "sha256": "c62d22b92dde4869fbd955031c32b17b2f76c979f813e2e8f13d3884612ba394",
+      "duration": 0.22,
+      "peak": 0.48000001907348633,
+      "rms": 0.034378718584775925
+    },
+    {
+      "file": "public/audio/card-draw-3.wav",
+      "source": "casino/Audio/card-slide-6.ogg",
+      "sha256": "9c211df619a07ab1b670c39d9414bb2282db0671daa62c7b6b28be83f0c82307",
+      "duration": 0.22,
+      "peak": 0.48000001907348633,
+      "rms": 0.03073575720191002
+    },
+    {
+      "file": "public/audio/card-shuffle.wav",
+      "source": "casino/Audio/card-shuffle.ogg",
+      "sha256": "0768605d99959b0bc1fb7db717edd825ffa51020ffae43f0389c371608c8f9bf",
+      "duration": 0.6499773242630386,
+      "peak": 0.47999998927116394,
+      "rms": 0.01728251576423645
+    },
+    {
+      "file": "public/audio/card-undo.wav",
+      "source": "casino/Audio/card-slide-7.ogg",
+      "sha256": "5f2c2286bd18cabfdc87c8f5021f5a617bf43590f8df577f73d5db12fa858e0e",
+      "duration": 0.24997732426303854,
+      "peak": 0.47999998927116394,
+      "rms": 0.023645395413041115
+    },
+    {
+      "file": "public/audio/ui-tap.wav",
+      "source": "casino/Audio/chip-lay-1.ogg",
+      "sha256": "9b0d621ef2a022dc84aa2dd52b33c84b6165a753f19c0d8c08beac653a912bfe",
+      "duration": 0.1,
+      "peak": 0.48000001907348633,
+      "rms": 0.0444960780441761
+    },
+    {
+      "file": "public/audio/coin-arrive.wav",
+      "source": "coin.wav",
+      "sha256": "8fbd776b5f129fab1b61ea19f79aec9986cdd7d208532ebbee4ad99225e95b1d",
+      "duration": 0.32997732426303855,
+      "peak": 0.47999998927116394,
+      "rms": 0.053694676607847214
+    }
+  ]
+}

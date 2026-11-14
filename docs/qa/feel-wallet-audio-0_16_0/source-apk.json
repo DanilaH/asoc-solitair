@@ -1,0 +1,24 @@
+{
+  "source": "da7584ca4e9ef5bb7b0e375ec64b4690b08ee01b",
+  "sourceTree": "6dc4c744a9485328174224137c3c1660bc96d8d0",
+  "workflow": 43624822072,
+  "artifact": 14125892619,
+  "artifactSHA256": "806e79a7837c979a0d0666df2fba7e502cbb962be77a5f196631072aaac92c1b",
+  "apk": "asoc-solitair-0.16.0-preview.apk",
+  "bytes": 11729429,
+  "sha256": "47f246fbfffbc025881270b63645b5f71a9d6daa31a86a7ccdac7143159ec30d",
+  "runtimeFiles": 208,
+  "allRuntimeFilesMatch": true,
+  "extraEmptyCapacitorFiles": [
+    "cordova.js",
+    "cordova_plugins.js"
+  ],
+  "package": "com.danilah.asocsolitair.debug",
+  "version": "0.16.0",
+  "code": 24,
+  "certificateSHA256": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "signatureEvidence": "Hosted official apksigner verify --verbose --print-certs",
+  "ads": "test",
+  "analyticsKeyEmptyInDex": true,
+  "adModeTestInDex": true
+}

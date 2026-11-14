@@ -68,7 +68,7 @@ test('first modifier lessons can be dismissed without spending and stay dismisse
 test('a milestone previews its real cosmetic and applying it grants no extra reward',async({page})=>{
   await load(page,9,s=>{s.meta!.winCycle=4;for(const cmd of campaignDeals[9].winningPath)Object.assign(s,dispatch(s,cmd,campaignDeals[9]).next)});
   await expect(page.locator('#unlock-reward')).toBeVisible();await expect(page.locator('#unlock-title')).toContainText('Чернила');const before=await read(page);
-  await expect(page.locator('#result-total')).toHaveText('+'+(before.attempt.payout!.reduce((n,r)=>n+r.coins,0)+before.attempt.streak.coins));
+  await expect(page.locator('#result-total')).toHaveText('+'+(before.attempt.payout!.reduce((n,r)=>n+r.coins,0)));
   await expect(page.getByText('Подробнее о награде')).toHaveCount(0);await page.locator('#apply-unlock').tap();await expect(page.locator('#apply-unlock')).toBeDisabled();expect((await read(page)).settings.palette).toBe('ink');expect((await read(page)).profile).toEqual(before.profile);expect((await read(page)).attempt.board).toEqual(before.attempt.board);
   await page.reload();await page.locator('#app[data-ready=true]').waitFor();await page.locator('#home-play').tap();await expect(page.locator('#apply-unlock')).toHaveText('Применено');expect((await read(page)).profile).toEqual(before.profile);
 });

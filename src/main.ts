@@ -8,6 +8,7 @@ import { beginDeal } from './domain/campaign';
 import { dailyForDay } from './content/daily';
 import { switchMode } from './domain/sessions';
 import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } from './domain/meta';
+import { WalletPresentation } from './app/wallet-presentation';
 import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
 import { lesson, recordLearning, ruleIntroduction, type RuleIntro } from './app/tutorial';
 import { boardKey, boardRules, dispatch, freshSave, STREAK } from './domain/engine';
@@ -57,17 +58,21 @@ const runtime = createRuntime(() => { scene?.cancel(); }, () => {
 });
 
 let coinPresentation = 0;
-function cancelCoins() {
+let wallet: WalletPresentation | undefined;
+function restoreWallet() { const button = $('#wallet-open'); button.style.position = ''; button.style.left = ''; button.style.top = ''; button.style.zIndex = ''; $('#wallet-anchor').append(button); $('#wallet-anchor').style.width = ''; }
+function pinWallet() { const anchor = $('#wallet-anchor'), r = anchor.getBoundingClientRect(), button = $('#wallet-open'); anchor.style.width = `${r.width}px`; $('#result').append(button); Object.assign(button.style, { position: 'fixed', left: `${r.x}px`, top: `${r.y}px`, zIndex: '102' }); }
+function cancelCoins(settle = true) {
+  wallet?.cancel(settle);
   coinPresentation++;
   $('#coin-layer').getAnimations({ subtree: true }).forEach(a => a.cancel());
   $('#coin-layer').querySelectorAll<HTMLElement>('.flying-coin').forEach(n => { n.style.display = 'none'; });
 }
-function closeDialogs() {
+function closeDialogs(preserveCoins = false) {
   // Discard presentation before its top-layer owner closes. Never carry coins to another screen.
-  cancelCoins();
+  cancelCoins(!preserveCoins); restoreWallet();
   document.body.append($('#coin-layer')); dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false);
 }
-function openDialog(selector: string) { peekCard(null); clearPraise(); scene?.clearFeedback(); closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
+function openDialog(selector: string, preserveCoins = false) { peekCard(null); clearPraise(); scene?.clearFeedback(); closeDialogs(preserveCoins); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
 let peeked: string | null = null;
 function peekCard(id: string | null) {
   if (peeked === id) return;
@@ -124,6 +129,8 @@ try {
   });
   await document.fonts.load('800 20px Nunito').catch(() => []);
   let save = await store.open();
+  let presentingCommand = false;
+  wallet = new WalletPresentation(save.profile.coins, $('#coin-layer'), $('#coins'), $('#helper-wallet'), $('#wallet-open'), () => runtime.play('coins', 'ui'), () => save.settings.reducedMotion);
   let dealEntryPending = firstLaunch;
   deal = findDeal(save.attempt.dealId)!;
   let requestedLevel: number | undefined;
@@ -144,7 +151,7 @@ try {
   const telemetry = createTelemetry(() => save, runtime.activity);
   const setInput = () => scene?.setEnabled(screen === 'game' && ready && !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
   const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
-  store.onChange = value => { save = value; deal = findDeal(value.attempt.dealId)!; telemetry.sync(); renderHud(); renderHome(); updateBanner(); };
+  store.onChange = value => { save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); };
   async function write<T>(change: (next: Save) => T): Promise<T> {
     pendingWrites++; saving = true; setInput();
     try { return await store.mutate(change); }
@@ -184,35 +191,7 @@ try {
   let pendingHint: Pick<HintRequest, 'requestId' | 'revision' | 'attemptId'> & { dealId: string } | undefined;
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
-  const coins = Array.from({ length: 24 }, () => { const node = document.createElement('span'); node.className = 'flying-coin'; $('#coin-layer').append(node); return { node, busy: false, animation: null as Animation | null }; });
-  function coinBurst(origin = $('#streak-reward'), destination = $('.coin-icon'), resultRoute = false) {
-    if (save.settings.reducedMotion || new URLSearchParams(location.search).get('fxCoins') === '0') return;
-    const source = origin.getBoundingClientRect(), target = destination.getBoundingClientRect();
-    const lane = $('#result').getBoundingClientRect().right - 14;
-    for (let i = 0; i < 8; i++) {
-      const coin = coins.find(c => !c.busy); if (!coin) break;
-      coin.busy = true; coin.node.style.display = 'block';
-      // A short unlock result omits its decorative emblem. Start beside its
-      // heading instead of using the hidden element's (0,0) rectangle.
-      const sx = resultRoute && !source.width ? lane - 10 : source.x + source.width / 2 - 10;
-      const sy = resultRoute && !source.width ? $('#result-title').getBoundingClientRect().bottom + 5 : source.y + source.height / 2 - 10;
-      const tx = target.x + target.width / 2 - 10, ty = target.y + target.height / 2 - 10;
-      // On the result, travel in the paper's right gutter, never through the title,
-      // amount or CTA. The landing is beside the already-owned total, not on its digits.
-      const frames = resultRoute ? [
-        { transform: `translate(${sx}px,${sy}px) scale(.5)`, opacity: 0 },
-        { transform: `translate(${lane - 10}px,${sy}px) scale(.8)`, opacity: 1, offset: .3 },
-        { transform: `translate(${lane - 10}px,${ty}px) scale(.8)`, opacity: 1, offset: .85 },
-        { transform: `translate(${lane - 10}px,${ty}px) scale(.35)`, opacity: 0 },
-      ] : [{ transform: `translate(${sx}px,${sy}px) scale(.5)`, opacity: 0 },
-        { transform: `translate(${sx + (i - 3.5) * 10}px,${sy - 35 - i % 3 * 8}px) scale(1)`, opacity: 1, offset: .27 },
-        { transform: `translate(${tx}px,${ty}px) scale(.8)`, opacity: 1 }];
-      const animation = coin.node.animate(frames, { duration: 550, delay: i * 23, easing: 'ease-in-out' });
-      coin.animation = animation;
-      animation.oncancel = () => { if (coin.animation !== animation) return; coin.busy = false; coin.node.style.display = 'none'; };
-      animation.onfinish = () => { if (coin.animation !== animation) return; coin.busy = false; coin.node.style.display = 'none'; const receiver = destination.closest('.wallet') ?? destination; receiver.classList.remove('bump'); void (receiver as HTMLElement).offsetWidth; receiver.classList.add('bump'); };
-    }
-  }
+  function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   function renderHud() {
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
@@ -235,7 +214,7 @@ try {
     $('#helpers-open').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
     $('#helper-locked').hidden = hintUnlocked || undoUnlocked || jokerUnlocked;
     $('#restart').hidden = screen === 'home'; $('#levels-open').hidden = screen === 'home';
-    $('#settings-done').textContent = screen === 'home' ? 'Готово' : 'Продолжить';
+    $('#settings-done').textContent = screen === 'home' ? 'Готово' : 'Продолжить игру';
     $('#pause-title').textContent = screen === 'home' || $<HTMLDetailsElement>('#pause-options').open ? 'Настройки' : 'Пауза';
     $('#pause-level').textContent = screen === 'home' ? 'СОЛИТЁР АССОЦИАЦИЙ' : $('#level-number').textContent;
     const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
@@ -245,7 +224,7 @@ try {
     const instruction = lesson(save, deal);
     $('#hint').classList.toggle('attention', instruction?.attention === 'hint');
     $('#undo').classList.toggle('attention', instruction?.attention === 'undo');
-    $('#coins').textContent = save.profile.coins < 100000 ? String(save.profile.coins) : new Intl.NumberFormat('ru-RU', { notation: 'compact', maximumFractionDigits: 1 }).format(save.profile.coins);
+
     $('#wallet-open').setAttribute('aria-label', `${save.profile.coins} монет. Монеты и помощники`);
     $('#moves').textContent = board.movesLeft === null ? '∞' : String(board.movesLeft);
     $('#move-fill').style.width = `${100 * (board.movesLeft ?? 1) / (deal.initial.movesLeft ?? 1)}%`;
@@ -277,7 +256,7 @@ try {
     $('#helper-return').textContent = screen === 'home' ? 'Готово' : 'К игре';
     $('#appearance-done').textContent = screen === 'home' ? 'Готово' : 'К игре';
     $('#joker-next-attempt').hidden = !save.attempt.jokerUsed || !jokerUnlocked || Boolean(helperFocus && helperFocus !== 'joker');
-    $('#helper-wallet').textContent = `${save.profile.coins} монет`;
+
     $('#hint-stock').textContent = String(save.profile.hints); $('#undo-stock').textContent = String(save.profile.undos);
     for (const helper of ['hint', 'undo'] as const) {
       $<HTMLButtonElement>(`#buy-${helper}`).disabled = serviceBusy || saving || save.profile.coins < BALANCE.helperPrices[helper];
@@ -312,7 +291,7 @@ try {
     $('#result-meta').textContent = daily ? `Серия дней · ${currentDailyStreak(save, localDay())}` : `Новый цикл · ${save.meta!.winCycle} / 5`;
     $('#result-meta').hidden = !won || !daily && !payout?.some(r => r.reason === 'campaign_win_cycle');
     $('#replay').textContent = daily && won ? 'Сыграть как тренировку' : 'Ещё раз';
-    const earned = (payout ? payout.reduce((sum, r) => sum + r.coins, 0) : !daily ? BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0) + save.attempt.streak.coins;
+    const earned = (payout ? payout.reduce((sum, r) => sum + r.coins, 0) : !daily ? BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0);
     $('#result-total').textContent = `+${earned}`; $('#result-earnings').hidden = !won || earned === 0;
     unlockChoice = payout?.some(r => r.key === 'milestone:20') ? 'cardBack' : payout?.some(r => r.key === 'milestone:10') ? 'palette' : undefined;
     $('#unlock-reward').hidden = !won || !unlockChoice;
@@ -325,14 +304,15 @@ try {
     $('#next-level').hidden = !won;
     $('#next-level').textContent = daily ? 'К заданиям и уровням' : deal.campaignLevel === CAMPAIGN_LENGTH ? 'К уровням' : `Уровень ${(deal.campaignLevel ?? 0) + 1} →`;
     $('#result-home').hidden = daily || deal.campaignLevel === CAMPAIGN_LENGTH;
-    openDialog('#result');
-    if (won && payout?.some(r => r.coins > 0)) {
+    openDialog('#result', true); pinWallet();
+    if (won) wallet?.reveal($('#result-total'), earned);
+    if (won && wallet?.pending) {
       $('#result').append($('#coin-layer'));
       const attemptId = save.attempt.id, presentation = coinPresentation;
       // Wait for the actual panel entrance, not a wall-clock guess: a transformed
       // dialog temporarily changes the fixed layer's coordinate system.
       void Promise.allSettled($('#result').getAnimations().map(a => a.finished)).then(() => {
-        if (alive && presentation === coinPresentation && save.attempt.id === attemptId && $<HTMLDialogElement>('#result').open && !runtime.activity.getBlockReasons().some(r => r !== 'modal')) coinBurst($('.result-star'), $('#result-total'), true);
+        if (alive && presentation === coinPresentation && save.attempt.id === attemptId && $<HTMLDialogElement>('#result').open && !runtime.activity.getBlockReasons().some(r => r !== 'modal')) coinBurst($('#result-total'));
       });
     }
   }
@@ -341,6 +321,7 @@ try {
     let result: Result | undefined;
     let started = false, finished = false;
     try {
+      presentingCommand = true;
       await write(next => {
         const beforeBoard = next.attempt.board;
         result = dispatch(next, cmd, deal, localDay());
@@ -356,7 +337,7 @@ try {
     } catch {
       message(store.needsRecovery ? 'Проверяем сохранение. Нажмите «Повторить сохранение».' : 'Не удалось сохранить ход. Попробуйте ещё раз.', true);
       scene?.cancel(); renderHud(); return false;
-    }
+    } finally { presentingCommand = false; }
     if (!result) return false;
     if (result.accepted) {
       if (started) { telemetry.track('level_start'); if (save.attempt.daily) telemetry.track('daily_start'); }
@@ -369,16 +350,17 @@ try {
       scene?.clearHint();
       const boardCommand = ['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined;
       const major = result.events.find(e => e.type === 'win') ?? result.events.find(e => e.type === 'unlock') ?? result.events.find(e => e.type === 'complete') ?? result.events.find(e => e.type === 'key') ?? result.events.find(e => e.type === 'coins') ?? result.events[0];
-      const hasCoinFlight = result.events.some(e => e.type === 'coins') && !result.events.some(e => e.type === 'win');
+      const coreCoins = result.events.filter(e => e.type === 'coins').reduce((n,e) => n + (e.amount ?? 0), 0);
+      const hasCoinFlight = coreCoins > 0;
       // The save/grant is already durable. Only optional sound/haptics/coins
       // follow the visible contact and may be dropped when superseded.
       const present = () => {
         if (major) {
-          runtime.play(major.type);
+          if (major.type !== 'coins') runtime.play(major.type);
           if (major.type === 'key' || major.type === 'unlock' || major.type === 'joker') runtime.pulse(major.type === 'key' ? 'coins' : major.type === 'unlock' ? 'complete' : 'hint');
           if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type as 'transfer' | 'complete' | 'coins' | 'win' | 'undo' | 'hint');
         }
-        if (hasCoinFlight) coinBurst();
+        if (hasCoinFlight) coinBurst($('#streak-reward'), coreCoins);
       };
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
@@ -416,9 +398,13 @@ try {
     } else await execute({ type: 'restart', attemptId: crypto.randomUUID() });
   }
   function renderHome() {
+    $('#app').dataset.palette = cosmeticUnlocked(save, 'palette') ? save.settings.palette ?? 'green' : 'green';
+    $('#app').dataset.back = cosmeticUnlocked(save, 'cardBack') ? save.settings.cardBack ?? 'classic' : 'classic';
+    if (screen !== 'home' && !['#appearance','#calendar','#level-picker'].some(id => $<HTMLDialogElement>(id).open)) return;
     renderMeta(save, !ready || saving || serviceBusy);
     const completed = completedLevels(save), unlocked = unlockedLevel(save), campaign = campaignAttempt(save), campaignDeal = campaign && findDeal(campaign.dealId), current = campaign?.board.phase === 'playing';
     $('#campaign-progress').textContent = `${completed} / ${CAMPAIGN_LENGTH}`;
+    $('#home-progress').textContent = `Пройдено ${completed} из ${CAMPAIGN_LENGTH}`;
     $('#campaign-done').hidden = completed < CAMPAIGN_LENGTH;
     const label = current ? (campaignDeal?.campaignLevel ? `${campaign?.telemetry?.started ? 'Продолжить' : 'Играть'} · уровень ${campaignDeal.campaignLevel}` : 'Продолжить пробную раздачу')
       : campaign && (!outcomeViewed || save.attempt.daily) ? (campaignDeal?.campaignLevel ? `Результат · уровень ${campaignDeal.campaignLevel}` : 'Результат пробной раздачи') : completed === CAMPAIGN_LENGTH ? 'Выбрать уровень' : `Играть · уровень ${unlocked}`;
@@ -542,7 +528,7 @@ try {
   }
   const root = $('#game-root');
   function size() {
-    const rect = { width: innerWidth, height: innerHeight }, ratio = getRenderPixelRatio(2);
+    const rect = { width: innerWidth, height: innerHeight }, ratio = getRenderPixelRatio(1.5);
     return { rect, backing: getBackingStoreSize(Math.max(1, rect.width), Math.max(1, rect.height), ratio) };
   }
   const initial = size();
@@ -574,7 +560,7 @@ try {
     },
   });
   game = new Phaser.Game({ type: Phaser.AUTO, parent: $('#game-surface'), width: initial.backing.width, height: initial.backing.height,
-    transparent: true, banner: false, audio: { noAudio: true }, scene: [scene],
+    transparent: true, antialiasGL: false, banner: false, audio: { noAudio: true }, scene: [scene],
     scale: { mode: Phaser.Scale.NONE, zoom: initial.rect.width / initial.backing.width },
   });
   const renderer = game;
@@ -599,12 +585,12 @@ try {
   // Text reflow can move the result inside the same viewport. Optional coins
   // must not keep travelling through the old title/amount coordinates.
   const resultResize = new ResizeObserver(() => {
-    if ($('#result').contains($('#coin-layer')) && coins.some(c => c.busy)) cancelCoins();
+    if ($('#result').contains($('#coin-layer')) && wallet?.active) cancelCoins();
   });
   for (const selector of ['#result', '#result-title', '#result-total']) resultResize.observe($(selector));
   window.addEventListener('resize', resizeToRoot, domOptions);
-  window.addEventListener('resize', cancelCoins, domOptions);
-  document.querySelectorAll('.sheet-body').forEach(body => body.addEventListener('scroll', cancelCoins, domOptions));
+  window.addEventListener('resize', () => { cancelCoins(); if ($<HTMLDialogElement>('#result').open) pinWallet(); }, domOptions);
+  document.querySelectorAll('.sheet-body').forEach(body => body.addEventListener('scroll', () => cancelCoins(), domOptions));
   const unblock = runtime.activity.onBlockReasonsChange(() => {
     const blocked = runtime.activity.isBlocked();
     setInput(); updateBanner();
@@ -614,7 +600,7 @@ try {
       if (!blocked) { void ads.refresh(); void ads.recover(); showGuidance(); }
     }
     if (!renderer.isBooted) return;
-    if (blocked && ready) { scene?.clearFeedback(); renderer.loop.sleep(); cancelCoins(); coins.forEach(c => { c.animation?.cancel(); c.busy = false; c.node.style.display = 'none'; }); }
+    if (blocked && ready) { scene?.clearFeedback(); renderer.loop.sleep(); if (runtime.activity.getBlockReasons().some(r => r !== 'modal' && r !== 'screen')) cancelCoins(); }
     else renderer.loop.wake();
   });
   renderer.events.on(Phaser.Core.Events.POST_RENDER, () => {
@@ -632,7 +618,7 @@ try {
   window.addEventListener('blur', () => scene?.cancel(), domOptions);
   document.addEventListener('keydown', event => { if (event.key === 'Escape') { scene?.cancel(); setInspect(false); } }, domOptions);
   dialogs.forEach(dialog => dialog.addEventListener('cancel', event => { event.preventDefault(); if (dialog.id === 'learn-rule') dismissRule?.(); else closeDialogs(); }, domOptions));
-  document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach(button => button.addEventListener('click', closeDialogs, domOptions));
+  document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach(button => button.addEventListener('click', () => closeDialogs(), domOptions));
   $('#home-play').addEventListener('click', () => {
     if (save.attempt.daily) { void activateMode('campaign'); return; }
     if (save.attempt.board.phase === 'playing' || !outcomeViewed) showGame();
@@ -776,7 +762,7 @@ try {
   const cleanup = () => {
     if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
-    abort.abort(); removeTouch(); coins.forEach(c => { c.animation?.cancel(); c.node.remove(); });
+    abort.abort(); removeTouch(); wallet?.dispose();
     worker?.terminate(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };
   window.addEventListener('pagehide', event => { if (!event.persisted) cleanup(); }, domOptions);

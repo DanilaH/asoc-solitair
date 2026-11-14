@@ -1,0 +1,56 @@
+{
+  "runtimeSource": "da7584ca4e9ef5bb7b0e375ec64b4690b08ee01b",
+  "runtimeTree": "6dc4c744a9485328174224137c3c1660bc96d8d0",
+  "base": "9845e5738b828caf49e93bf361cf1e52b5f0a3c5",
+  "pr": 29,
+  "acceptedPush": {
+    "id": 43624813722,
+    "url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43624813722",
+    "status": "completed",
+    "conclusion": "success",
+    "webJob": 132538178518,
+    "androidJob": 132538178860
+  },
+  "pullRequestRun": {
+    "id": 43624822072,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 132538203226,
+        "name": "android",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 132538203414,
+        "name": "web",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "checks": {
+    "unitPlatform": 94,
+    "browserPassed": 204,
+    "browserDeliberateCompactCatalogSkipped": 4,
+    "touchCampaignWins": 80,
+    "deals": 108,
+    "currentLegacyWitnesses": 216,
+    "independentRuleComparisons": 253244,
+    "prototypeAttempts": 96,
+    "layoutStates": 119,
+    "domIssues": 0,
+    "rasterIssues": 0,
+    "androidDebugSignature": "pass",
+    "androidUnsignedSdkDisabledR8": "pass"
+  },
+  "initialFailure": {
+    "source": "39e1e8cc909f385e7a375dc18eb2b40728305fb8",
+    "run": 43623453393,
+    "domIssues": 4,
+    "rasterIssues": 0,
+    "correction": "Milestone in secondary scroll flow; scope calendar positioning to daily card; fresh layout also tests daily visibility."
+  },
+  "limits": "Automated/browser evidence, not human preference or physical-phone performance/audio/latency. No production or store changes."
+}

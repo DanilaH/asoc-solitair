@@ -4,7 +4,7 @@ import { campaignDeals } from '../../src/content/campaign';
 import { dispatch, freshSave, sourceCards } from '../../src/domain/engine';
 import { resolveHint } from '../../src/domain/hint';
 import { boardFrame, cardMetrics, layout } from '../../src/game/layout';
-import { cueSamples } from '../../src/platform/sounds';
+import { recordedSamples } from './audio-fixture';
 import type { Save } from '../../src/domain/types';
 
 const deal = campaignDeals[5], first = deal.winningPath[0], cmd = deal.winningPath[1];
@@ -80,7 +80,7 @@ test('reduced-motion hint stays still and pause removes its presentation without
 });
 
 function isTransfer(call: Audio) {
-  return [0, 1, 2].some(v => { const data = cueSamples('transfer', call.rate, v); let hash = 2166136261; for (let i = 0; i < Math.min(2048, data.length); i++) hash = Math.imul(hash ^ Math.round(data[i] * 1e6), 16777619); return (hash >>> 0) === call.hash; });
+  return [0, 1, 2].some(v => { const data = recordedSamples('transfer', v); let hash = 2166136261; for (let i = 0; i < Math.min(2048, data.length); i++) hash = Math.imul(hash ^ Math.round(data[i] * 1e6), 16777619); return (hash >>> 0) === call.hash; });
 }
 test('a drop already over its slot contacts sooner than a long tap transfer, preserving exact Undo', async ({ page, context }) => {
   const { before, a, b, action } = await seed(page);

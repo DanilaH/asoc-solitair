@@ -1,3 +1,7 @@
+# Current iteration —0.16 menu/audio/wallet/performance
+
+Owner-requested five-point correction implemented.94unit/platform and focused wallet/menu/audio cases pass;120screens captured. Signed0.16/code24 APK matches all208runtime files, native builds pass, APK/actual-audio MP4/GIF/PNG saved. Full final-source CI passes204browser cases, all80touch wins,119layout states0DOM/0raster and both Android builds. Physical-phone acceptance remains open. [Scope/status](docs/qa/FEEL_WALLET_AUDIO_0_16_0.md). No rules/content/economy expansion.
+
 # Current iteration —0.15 UI coherence
 
 Approved all-screen audit fixes are implemented and verified: full final-source PR CI passes192browser cases and both Android builds; signed test-ad/analytics-disabled APK and actual-touch media are saved. See [acceptance and honest status](docs/qa/UI_COHERENCE_0_15_0.md). This supersedes the prior audit-only status; no rules/economy/art/SDK expansion.

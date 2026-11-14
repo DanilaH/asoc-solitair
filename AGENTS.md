@@ -20,3 +20,11 @@ Read [the product index](docs/README.md), the handoff, requirements and feel spe
 - Show QA GIFs inline in chat with Markdown image syntax and an absolute sandbox path, so the user gets a preview. Use actual production input recordings.
 
 - Resume at [the continuation checkpoint](docs/SESSION_HANDOFF.md). Keep binary files out of tool/chat text: never print GIF/APK/archive bytes, base64, or encoded chunks. Transfer bytes directly between files using ordinary Git/download/upload paths; show only paths, sizes, hashes and concise status. Filter large API responses before returning them to the conversation. Earlier chats stopped during binary encoding; the exact cause is unconfirmed, so do not repeat that workflow.
+
+## mini-games-kit: task-routed research and kit feedback
+
+Keep ALL existing game-specific rules above authoritative. For a substantial task read docs/kit-guidance/TASK_ROUTER.md and select only the 1–2 applicable studies. If given an original game, video, GIF, screenshot or a reference-feel complaint, follow docs/kit-guidance/REFERENCE_PROTOCOL.md, clearly separating observed behavior from assumptions.
+
+Research guidance snapshot: e2382670fbd5c2aa76462fea688c60de2b067392. Actual runtime mini-games-kit source/vendor/dependency may be pinned to an OLDER commit; never silently upgrade runtime or assume the guidance SHA's exports are installed. Inspect the actual consumer API pin before reusable code.
+
+After a material fix report KIT IMPACT: NONE / REUSE / IMPROVE / CANDIDATE / EXTRACTED (docs/kit-guidance/KIT_FEEDBACK_LOOP.md), with exact reproducible evidence for upstream proposals. No automatic gameplay, product economics, saved-state or store changes.

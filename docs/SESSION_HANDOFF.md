@@ -1,5 +1,15 @@
 # Continuation checkpoint — 2026-11-14
 
+## Current work —0.16.0/code24, menu/audio/wallet/performance
+
+Owner requests all5problems fixed, especially lag. Base main9845e5738b828caf49e93bf361cf1e52b5f0a3c5. Working branchfeat/menu-audio-wallet-perf-20261114. [Acceptance/status](qa/FEEL_WALLET_AUDIO_0_16_0.md). New campaign hierarchy/activity rows; actual wallet moves into modal top layer; durable positive gains deferred only for presentation, token arrivals drive smooth shared counters and recorded coin audio. Skip/background/reflow settles actual totals; reload never replays paid income. Native settings/rules/bank/save/economy unchanged.
+
+Recorded CC0 assets15PCM files164268bytes: Kenney Casino Audio1.1(author mirror ZIPSHAf36250766ac5bc378c13708ddf12a23a8e54a3251f8d482c7536e51b5dbafa18) and Vinrax Coin Drop. See docs/art/AUDIO_0_16.json and bundled credits/license. Four voices, bounded gain, PCM prefetch; no recorded cue falls back to synthetic paper/noise when not ready.
+
+Performance: target-legality cache removes hundreds of applyBoard clones per gesture; hidden home rebuilds stopped; shadow/shade use cached images; DPR cap2→1.5/GL MSAA off retains CSS hit geometry. Initial controlled browser route360×780/DPR2:543clones→1, hidden-home mutations168→0;4×CPU script1.97s→1.04s, total task9.19s→5.31s, mixed-framep9583.3ms→50ms. Headless/automation measurements, not phone FPS. Independent repeated final/baseline comparison and fresh media are pending.
+
+Local94unit and62targeted browser pass before final home-row copy; fresh wallet/menu/audio/resize checks in progress. Full CI/Android/APK/source-proof and saved recordings not yet delivered; do not reuse0.15APK as0.16.
+
 ## Current implementation —0.15.0/code23 UI coherence
 
 Owner approved the complete bounded all-screen audit package. Final sourcefe3dd9093e25d492ef21b8fadb2b24a74f30a7ca, treebc70d9ae4b4fb5d5c60199aa5253468f72d6d9b9, PR#28. Fixed modal actions/scroll bodies, short-home actions, visible owned5/5 reward, text-safe coin gutter/cancellation, truthful pending Hint and startup reload/retry without reset. Catalog hierarchy/copy uses existing art; short result reduces decorations first. Text-reflow stress caught stale coins; actual result/title/amount ResizeObserver now cancels them synchronously, stale animation callbacks cannot hide a reused token. No rules/bank/economy/save codec/board/art/SDK/kit runtime changes. [Acceptance/status](qa/UI_COHERENCE_0_15_0.md).

@@ -3,7 +3,7 @@ import sharp from 'sharp';
 import { campaignDeals } from '../../src/content/campaign';
 import { dispatch, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { boardFrame, cardMetrics, layout } from '../../src/game/layout';
-import { cueSamples } from '../../src/platform/sounds';
+import { recordedSamples } from './audio-fixture';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 
 type Trace = { writes: { at: number; revision: number }[]; audio: { at: number; rate: number; hash: number }[] };
@@ -100,7 +100,7 @@ test('an ordinary flight stays visible above the opening source and sounds on co
   const trace = await page.evaluate(() => (window as typeof window & { __contactTrace: Trace }).__contactTrace);
   const written = trace.writes.find(w => w.revision > save.revision)!;
   const transfer = trace.audio.find(a => {
-    const data = cueSamples('transfer', a.rate, 0); let hash = 2166136261;
+    const data = recordedSamples('transfer', 0); let hash = 2166136261;
     for (let i = 0; i < Math.min(2048, data.length); i++) hash = Math.imul(hash ^ Math.round(data[i] * 1e6), 16777619);
     return (hash >>> 0) === a.hash;
   });

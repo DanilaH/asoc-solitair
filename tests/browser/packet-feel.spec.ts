@@ -3,7 +3,7 @@ import sharp from 'sharp';
 import { campaignDeals } from '../../src/content/campaign';
 import { dispatch, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { boardFrame, cardMetrics, layout } from '../../src/game/layout';
-import { cueSamples } from '../../src/platform/sounds';
+import { recordedSamples } from './audio-fixture';
 import type { Deal, Save } from '../../src/domain/types';
 
 function fixture() {
@@ -51,7 +51,7 @@ async function move(c: CDPSession, a: { x: number; y: number }, b: { x: number; 
 async function gathers(page: Page) {
   const calls = await page.evaluate(() => (window as typeof window & { __packetAudio: Trace }).__packetAudio);
   return calls.filter(call => [0, 1, 2].some(variant => {
-    let hash = 2166136261; const data = cueSamples('gather', call.rate, variant);
+    let hash = 2166136261; const data = recordedSamples('gather', variant);
     for (let i = 0; i < Math.min(2048, data.length); i++) hash = Math.imul(hash ^ Math.round(data[i] * 1e6), 16777619);
     return (hash >>> 0) === call.hash;
   })).length;

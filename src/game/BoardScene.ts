@@ -7,7 +7,7 @@ import { boardFrame, cardMetrics, dragTarget, dropTarget, layout } from './layou
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Graphics; shade: Phaser.GameObjects.Graphics }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image }
 interface Options {
   deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene): void;
@@ -73,6 +73,15 @@ export class BoardScene extends Phaser.Scene {
   private particles: Phaser.GameObjects.Image[] = [];
   private cues: Phaser.GameObjects.Container[] = [];
   private hoverKey = '';
+  private dropBoard: Save['attempt']['board'] | undefined;
+  private dropValidity = new Map<string, boolean>();
+  private canDrop(from: Location, to: Location): boolean {
+    const board = this.options.getSave().attempt.board;
+    if (this.dropBoard !== board) { this.dropBoard = board; this.dropValidity.clear(); }
+    const key = `${from.kind}:${from.index}:${to.kind}:${to.index}`;
+    if (!this.dropValidity.has(key)) this.dropValidity.set(key, typeof applyBoard(board, { type: 'transfer', from, to }, this.options.deal) !== 'string');
+    return this.dropValidity.get(key)!;
+  }
   private hoverSince = 0;
   private dragCount!: Phaser.GameObjects.Text;
   private presentedDealId: string | undefined;
@@ -160,7 +169,13 @@ export class BoardScene extends Phaser.Scene {
     const card = this.options.deal.cards[id];
     const node = this.add.container(0, 0).setVisible(false);
     const face = this.add.container(0, 0), back = this.add.container(0, 0);
-    const shadow = this.add.graphics().fillStyle(0x082c3c, .22).fillRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 5, this.cardW - 6, this.cardH - 1, 14);
+    const shadowKey = `card-shadow-${this.cardW}-${this.cardH}`, shadeKey = `card-shade-${this.cardW}-${this.cardH}`;
+    if (!this.textures.exists(shadowKey)) {
+      const g = this.make.graphics({ x: 0, y: 0 });
+      g.fillStyle(0x082c3c, .22).fillRoundedRect(3, 5, this.cardW - 6, this.cardH - 1, 14).generateTexture(shadowKey, this.cardW, this.cardH + 8);
+      g.clear().fillStyle(0x172c39).fillRoundedRect(3, 3, this.cardW - 6, this.cardH - 6, 13).generateTexture(shadeKey, this.cardW, this.cardH); g.destroy();
+    }
+    const shadow = this.add.image(0, 0, shadowKey).setOrigin(.5, this.cardH / 2 / (this.cardH + 8));
     const g = this.add.image(0, 0, card.leader ? 'art-card-category' : 'art-card-face').setDisplaySize(this.cardW, this.cardH);
     const content = this.add.container(0, 0); face.add([g, content]);
     let caption: Phaser.GameObjects.Text | undefined, strip: Phaser.GameObjects.Text | Phaser.GameObjects.Image | undefined;
@@ -191,7 +206,7 @@ export class BoardScene extends Phaser.Scene {
     const badge = this.label(0, card.leader && !card.ordered ? -this.cardH / 2 + 13 : this.cardH / 2 - 30, '', 17, card.leader ? '#a17e5d' : '#a9815f'); content.add(badge);
     const b = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
     this.paintBack(b);
-    const shade = this.add.graphics().fillStyle(0x172c39).fillRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13).setAlpha(0);
+    const shade = this.add.image(0, 0, shadeKey).setAlpha(0);
     back.add(b); node.add([shadow, face, back, shade]); this.world.add(node);
     return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade };
   }
@@ -370,8 +385,7 @@ export class BoardScene extends Phaser.Scene {
     if (command?.type === 'draw' || command?.type === 'recycle') this.stockBusyUntil = performance.now() + (save.settings.reducedMotion ? 0 : command.type === 'draw' ? 280 : 370);
     for (const [id, view] of this.views) {
       if (visible.has(id)) continue;
-      this.tweens.killTweensOf(view.node);
-      this.tweens.killTweensOf(view.shade); view.shade.setAlpha(0);
+      this.tweens.killTweensOf(view.node); this.tweens.killTweensOf(view.shade); view.shade.setAlpha(0);
       this.tweens.killTweensOf([view.face, view.back]); view.face.setScale(1); view.back.setScale(1);
       if (recycled && board.stock.includes(id)) {
         const old = previous.poses.find(p => p.id === id) ?? previous.waste;
@@ -714,7 +728,7 @@ export class BoardScene extends Phaser.Scene {
       return;
     }
     if (board.phase !== 'playing') return;
-    this.clearHint();
+    this.clearHint(); this.dropValidity.clear();
     const target = this.hitTarget(x, y);
     const chosenTarget = this.selected && target && !same(this.selected, target.location) ? target : null;
     const from = chosenTarget ? this.selected : source;
@@ -730,7 +744,7 @@ export class BoardScene extends Phaser.Scene {
     const from = this.press?.from, front = this.press?.poses.at(-1), node = front && this.views.get(front.id)!.node;
     if (!from || !node) return null;
     return dragTarget(this.metrics.targets.filter(t => !same(from, t.location)), { x, y }, { x: node.x, y: node.y, width: this.cardW, height: this.cardH }, 12 / this.cssUnit,
-      target => typeof applyBoard(this.options.getSave().attempt.board, { type: 'transfer', from, to: target.location }, this.options.deal) !== 'string');
+      target => this.canDrop(from, target.location));
   }
   private overReader(x: number, y: number, fingerOnly = false): boolean {
     const rect = this.options.readerZone?.(); if (!rect || !this.press?.inspectId) return false;
@@ -740,7 +754,7 @@ export class BoardScene extends Phaser.Scene {
   }
   private move(pointer: BoardPointer) {
     if (!this.enabled || !this.press?.poses.length || this.press.pointerId !== pointer.id || this.press.target || !pointer.isDown) return;
-    const { x, y } = this.point(pointer), press = this.press;
+    const { x, y } = this.point(pointer), press = this.press, firstMove = !press.moved;
     if (Math.hypot(x - press.x, y - press.y) > 11) press.moved = true;
     if (!press.moved) return;
     this.dragPointer = pointer;
@@ -760,8 +774,7 @@ export class BoardScene extends Phaser.Scene {
     const dy = Phaser.Math.Clamp(y - press.y - lift, (6 / this.scale.zoom - this.world.y) / this.unit + this.cardH / 2 - minY, (this.scale.height - 6 / this.scale.zoom - this.world.y) / this.unit - this.cardH / 2 - maxY);
     press.poses.forEach((pose, i) => {
       const view = this.views.get(pose.id)!;
-      this.tweens.killTweensOf(view.node);
-      this.tweens.killTweensOf(view.shade);
+      if (firstMove) { this.tweens.killTweensOf(view.node); this.tweens.killTweensOf(view.shade); }
       const front = i === press.poses.length - 1;
       view.content.setVisible(front); view.caption?.setVisible(front); view.strip?.setVisible(false);
       if (gathering && front && !this.options.deal.cards[pose.id].rank && !this.options.deal.cards[pose.id].leader) view.badge.setVisible(false);
@@ -772,9 +785,8 @@ export class BoardScene extends Phaser.Scene {
     const front = press.poses.at(-1);
     this.dragCount.setVisible(press.poses.length > 1);
     if (front) { const node = this.views.get(front.id)!.node; this.dragCount.setDepth(850).setText(`×${press.poses.length}`).setFontSize(Math.max(20, 12 / this.cssUnit)).setPosition(node.x - this.cardW / 2 + 14, node.y - this.cardH / 2 + 12); }
-    this.world.sort('depth');
-    this.drawSlots();
-    const hover = this.currentDrop(x, y), valid = hover && press.from && typeof applyBoard(this.options.getSave().attempt.board, { type: 'transfer', from: press.from, to: hover.location }, this.options.deal) !== 'string';
+    if (firstMove) { this.world.sort('depth'); this.drawSlots(); }
+    const hover = this.currentDrop(x, y), valid = hover && press.from && this.canDrop(press.from, hover.location);
     this.options.peek?.(this.overReader(x, y, true) || this.overReader(x, y) && !valid ? press.inspectId! : null);
     this.drawFocus(hover);
   }
@@ -783,7 +795,7 @@ export class BoardScene extends Phaser.Scene {
     const press = this.press;
     const point = this.point(pointer);
     const drop = press?.moved ? this.currentDrop(point.x, point.y) : null;
-    const valid = drop && press?.from && typeof applyBoard(this.options.getSave().attempt.board, { type: 'transfer', from: press.from, to: drop.location }, this.options.deal) !== 'string';
+    const valid = drop && press?.from && this.canDrop(press.from, drop.location);
     const reader = Boolean(press?.moved && (this.overReader(point.x, point.y, true) || this.overReader(point.x, point.y) && !valid));
     this.press = null;
     this.dragPointer = undefined;
@@ -833,7 +845,7 @@ export class BoardScene extends Phaser.Scene {
       }
     }
     if (hover && this.selected) {
-      const valid = typeof applyBoard(this.options.getSave().attempt.board, { type: 'transfer', from: this.selected, to: hover.location }, this.options.deal) !== 'string';
+      const valid = this.canDrop(this.selected, hover.location);
       const key = `${hover.location.kind}:${hover.location.index}:${valid}`;
       if (this.hoverKey !== key) { this.hoverKey = key; this.hoverSince = performance.now(); }
       this.targetLight(hover, valid, this.options.getSave().settings.reducedMotion ? 1 : Math.min(1, (performance.now() - this.hoverSince) / 75));

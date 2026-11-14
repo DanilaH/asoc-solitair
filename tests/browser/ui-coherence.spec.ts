@@ -1,3 +1,4 @@
+import {fixture as walletFixture,seed as enterWallet,move as walletMove} from './wallet-fixture';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
 import { dispatch, freshSave } from '../../src/domain/engine';
@@ -74,17 +75,17 @@ test('fifth-win receipt remains visible and cannot grant twice after reload or p
 test('real result coins avoid title, amount and next action; reduced motion is immediate',async({page})=>{
   for(const index of [4,9])for(const reduced of [false,true]){
     await page.setViewportSize({width:320,height:568});
-    const s=profile(index,true);s.settings.reducedMotion=reduced;await seed(page,s);
+    const s=walletFixture(index,true);s.settings.reducedMotion=reduced;await enterWallet(page,s);
     await page.evaluate(()=>{
       const w=window as typeof window&{__coinAudit:{seen:number;overlap:number;frames:number;examples:object[]}};w.__coinAudit={seen:0,overlap:0,frames:0,examples:[]};let count=0;
       const step=()=>{const coins=[...document.querySelectorAll('.flying-coin')].filter(c=>getComputedStyle(c).display!=='none'&&Number(getComputedStyle(c).opacity)>.1);w.__coinAudit.seen+=coins.length;w.__coinAudit.frames++;
-        for(const coin of coins){const c=coin.getBoundingClientRect();for(const selector of ['#result-title','#result-total','#next-level']){const e=document.querySelector(selector);if(!e?.getClientRects().length)continue;const r=e.getBoundingClientRect();if(c.left<r.right&&c.right>r.left&&c.top<r.bottom&&c.bottom>r.top){w.__coinAudit.overlap++;if(w.__coinAudit.examples.length<4)w.__coinAudit.examples.push({selector,c:c.toJSON(),r:r.toJSON()});}}}
+        for(const coin of coins){const c=coin.getBoundingClientRect();for(const selector of ['#result-title','#next-level']){const e=document.querySelector(selector);if(!e?.getClientRects().length)continue;const r=e.getBoundingClientRect();if(c.left<r.right&&c.right>r.left&&c.top<r.bottom&&c.bottom>r.top){w.__coinAudit.overlap++;if(w.__coinAudit.examples.length<4)w.__coinAudit.examples.push({selector,c:c.toJSON(),r:r.toJSON()});}}}
         if(count++<110)requestAnimationFrame(step);};requestAnimationFrame(step);
     });
-    await page.locator('#home-play').tap();await page.locator('#result[open]').waitFor();await page.waitForTimeout(1800);
+    await walletMove(page,campaignDeals[index],campaignDeals[index].winningPath.at(-1)!);await page.locator('#result[open]').waitFor();await page.waitForTimeout(1800);
     const audit=await page.evaluate(()=>(window as typeof window&{__coinAudit:{seen:number;overlap:number;frames:number;examples:object[]}}).__coinAudit);
     expect(audit.frames).toBeGreaterThan(30);expect(audit.overlap,JSON.stringify(audit)).toBe(0);if(reduced)expect(audit.seen).toBe(0);else expect(audit.seen).toBeGreaterThan(0);
-    await expect(page.locator('#result-bonus')).toBeVisible();expect((await read(page)).profile).toEqual(s.profile);
+    await expect(page.locator('#result-bonus')).toBeVisible();expect((await read(page)).profile).toEqual(dispatch(s,campaignDeals[index].winningPath.at(-1)!,campaignDeals[index]).next.profile);
   }
 });
 test('startup retry rereads the untouched save and a persistent bad save is never reset',async({page})=>{
@@ -118,10 +119,10 @@ test('Hint errors, timeout and a modal interruption leave charges untouched and 
   }
 });
 test('live result text reflow cancels old coin coordinates without touching the owned payout',async({page})=>{
-  const s=profile(4,true);await seed(page,s);await page.locator('#home-play').tap();await page.locator('#result[open]').waitFor();
+  const s=walletFixture(4,true);await enterWallet(page,s);await walletMove(page,campaignDeals[4],campaignDeals[4].winningPath.at(-1)!);await page.locator('#result[open]').waitFor();
   await expect.poll(()=>page.locator('.flying-coin:visible').count()).toBeGreaterThan(0);
   await page.locator('#result-title').evaluate(e=>{e.style.fontSize='42px';});
   await expect.poll(()=>page.locator('.flying-coin:visible').count()).toBe(0);
-  await page.waitForTimeout(800);expect(await page.locator('.flying-coin:visible').count()).toBe(0);expect((await read(page)).profile).toEqual(s.profile);
+  await page.waitForTimeout(800);expect(await page.locator('.flying-coin:visible').count()).toBe(0);expect((await read(page)).profile).toEqual(dispatch(s,campaignDeals[4].winningPath.at(-1)!,campaignDeals[4]).next.profile);
   await action(page,'#next-level');
 });

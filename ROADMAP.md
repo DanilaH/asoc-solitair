@@ -1,3 +1,7 @@
+# Current iteration —0.16 menu/audio/wallet/performance
+
+Owner-requested five-point correction implemented. Local94unit,62focused,24smoke and final6wallet cases pass. Full CI/native/source matching and recorded delivery are in progress. [Scope/status](docs/qa/FEEL_WALLET_AUDIO_0_16_0.md). No rules/content/economy expansion.
+
 # Current iteration —0.15 UI coherence
 
 Approved all-screen audit fixes are implemented and verified: full final-source PR CI passes192browser cases and both Android builds; signed test-ad/analytics-disabled APK and actual-touch media are saved. See [acceptance and honest status](docs/qa/UI_COHERENCE_0_15_0.md). This supersedes the prior audit-only status; no rules/economy/art/SDK expansion.

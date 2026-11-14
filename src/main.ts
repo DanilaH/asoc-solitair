@@ -60,6 +60,7 @@ let coinPresentation = 0;
 function cancelCoins() {
   coinPresentation++;
   $('#coin-layer').getAnimations({ subtree: true }).forEach(a => a.cancel());
+  $('#coin-layer').querySelectorAll<HTMLElement>('.flying-coin').forEach(n => { n.style.display = 'none'; });
 }
 function closeDialogs() {
   // Discard presentation before its top-layer owner closes. Never carry coins to another screen.
@@ -206,9 +207,10 @@ try {
       ] : [{ transform: `translate(${sx}px,${sy}px) scale(.5)`, opacity: 0 },
         { transform: `translate(${sx + (i - 3.5) * 10}px,${sy - 35 - i % 3 * 8}px) scale(1)`, opacity: 1, offset: .27 },
         { transform: `translate(${tx}px,${ty}px) scale(.8)`, opacity: 1 }];
-      coin.animation = coin.node.animate(frames, { duration: 550, delay: i * 23, easing: 'ease-in-out' });
-      coin.animation.oncancel = () => { coin.busy = false; coin.node.style.display = 'none'; };
-      coin.animation.onfinish = () => { coin.busy = false; coin.node.style.display = 'none'; const receiver = destination.closest('.wallet') ?? destination; receiver.classList.remove('bump'); void (receiver as HTMLElement).offsetWidth; receiver.classList.add('bump'); };
+      const animation = coin.node.animate(frames, { duration: 550, delay: i * 23, easing: 'ease-in-out' });
+      coin.animation = animation;
+      animation.oncancel = () => { if (coin.animation !== animation) return; coin.busy = false; coin.node.style.display = 'none'; };
+      animation.onfinish = () => { if (coin.animation !== animation) return; coin.busy = false; coin.node.style.display = 'none'; const receiver = destination.closest('.wallet') ?? destination; receiver.classList.remove('bump'); void (receiver as HTMLElement).offsetWidth; receiver.classList.add('bump'); };
     }
   }
   function renderHud() {
@@ -594,6 +596,12 @@ try {
   }
   const resize = new ResizeObserver(resizeToRoot);
   resize.observe(root);
+  // Text reflow can move the result inside the same viewport. Optional coins
+  // must not keep travelling through the old title/amount coordinates.
+  const resultResize = new ResizeObserver(() => {
+    if ($('#result').contains($('#coin-layer')) && coins.some(c => c.busy)) cancelCoins();
+  });
+  for (const selector of ['#result', '#result-title', '#result-total']) resultResize.observe($(selector));
   window.addEventListener('resize', resizeToRoot, domOptions);
   window.addEventListener('resize', cancelCoins, domOptions);
   document.querySelectorAll('.sheet-body').forEach(body => body.addEventListener('scroll', cancelCoins, domOptions));
@@ -769,7 +777,7 @@ try {
     if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); coins.forEach(c => { c.animation?.cancel(); c.node.remove(); });
-    worker?.terminate(); resize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
+    worker?.terminate(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };
   window.addEventListener('pagehide', event => { if (!event.persisted) cleanup(); }, domOptions);
   window.addEventListener('pageshow', () => { if (alive) renderer.loop.wake(); }, domOptions);

@@ -117,3 +117,11 @@ test('Hint errors, timeout and a modal interruption leave charges untouched and 
     await context.close();
   }
 });
+test('live result text reflow cancels old coin coordinates without touching the owned payout',async({page})=>{
+  const s=profile(4,true);await seed(page,s);await page.locator('#home-play').tap();await page.locator('#result[open]').waitFor();
+  await expect.poll(()=>page.locator('.flying-coin:visible').count()).toBeGreaterThan(0);
+  await page.locator('#result-title').evaluate(e=>{e.style.fontSize='42px';});
+  await expect.poll(()=>page.locator('.flying-coin:visible').count()).toBe(0);
+  await page.waitForTimeout(800);expect(await page.locator('.flying-coin:visible').count()).toBe(0);expect((await read(page)).profile).toEqual(s.profile);
+  await action(page,'#next-level');
+});

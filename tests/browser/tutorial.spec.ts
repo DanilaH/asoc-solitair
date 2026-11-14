@@ -22,13 +22,21 @@ async function handPixels(page: Page, reference: Awaited<ReturnType<typeof paint
     if (controls.some(c => x >= c.x - 2 && x <= c.x + c.width + 2 && y >= c.y - 2 && y <= c.y + c.height + 2)) continue;
     if (data[i] > 185 && data[i + 1] > 170 && data[i + 2] > 170 && Math.abs(data[i] - reference.data[i]) + Math.abs(data[i + 1] - reference.data[i + 1]) + Math.abs(data[i + 2] - reference.data[i + 2]) > 50) count++;
   }
+  if (!count) {
+    await sharp(data, { raw: info }).png().toFile(test.info().outputPath('mask-current.png'));
+    await sharp(reference.data, { raw: reference.info }).png().toFile(test.info().outputPath('mask-reference.png'));
+  }
   return count;
 }
 async function handReference(page: Page) {
-  await page.locator('#inspect').tap(); await page.waitForTimeout(300);
+  await page.locator('#inspect').tap(); await page.clock.runFor(300);
   const reference = await paint(page); await page.locator('#inspect').tap(); return reference;
 }
 async function open(page: Page, reduced = false) {
+  await page.clock.install();
+  // Optional negative control removes the real image at the network boundary,
+  // so the visual assertions must fail without any scene/debug signal.
+  if (process.env.ASOC_QA_HIDE_HAND === '1') await page.route('**/art/ui/tutorial-hand.webp', route => route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="48"/>' }));
   await page.goto('/'); await page.locator('#app[data-ready=true]').waitFor();
   if (reduced) {
     const save = freshSave(campaignDeals[0], 'static-teaching'); save.settings.reducedMotion = true;
@@ -36,16 +44,24 @@ async function open(page: Page, reduced = false) {
     await page.reload(); await page.locator('#app[data-ready=true]').waitFor();
   }
   if (await page.locator('#home-play').isVisible()) await page.locator('#home-play').tap();
+  await page.waitForTimeout(350);
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 100));
+}
+async function visibleHand(page: Page, reference: Awaited<ReturnType<typeof paint>>) {
+  // Advance the real Phaser/timer lifecycle into its visible gesture phase.
+  // Wall-clock screenshot polling can repeatedly sample its fully faded rest.
+  await page.clock.runFor(950);
+  expect(await handPixels(page, reference)).toBeGreaterThan(12);
 }
 test('painted tutorial follows accepted moves, yields to reading and returns after pause without spending resources', async ({ page }) => {
   await open(page); const before = await read(page), deal = campaignDeals[0], reference = await handReference(page);
   await expect(page.locator('#message')).toBeEmpty(); await expect(page.locator('#home-status')).toHaveCount(0);
-  await expect.poll(() => handPixels(page, reference), { timeout: 7000 }).toBeGreaterThan(12);
+  await visibleHand(page, reference);
   expect((await read(page)).attempt.board).toEqual(before.attempt.board); expect((await read(page)).profile).toEqual(before.profile);
-  await page.locator('#inspect').tap(); await expect.poll(() => handPixels(page, reference)).toBeLessThanOrEqual(12);
-  await page.locator('#inspect').tap(); await expect.poll(() => handPixels(page, reference)).toBeGreaterThan(12);
+  await page.locator('#inspect').tap(); await page.clock.runFor(200); expect(await handPixels(page, reference)).toBeLessThanOrEqual(12);
+  await page.locator('#inspect').tap(); await visibleHand(page, reference);
   await page.locator('#menu').tap(); await page.locator('#settings-done').tap();
-  await expect.poll(() => handPixels(page, reference)).toBeGreaterThan(12);
+  await visibleHand(page, reference);
   const rect = (await page.locator('#game-root').boundingBox())!, f = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
   const g = layout(before.attempt.board, deal, f.height, before.settings.deckSide, before.settings.deckPosition);
   const cmd = deal.winningPath[0]; if (cmd.type !== 'transfer') throw Error('First teaching action changed');
@@ -60,9 +76,9 @@ test('painted tutorial follows accepted moves, yields to reading and returns aft
 test('reduced motion keeps a painted static teaching cue', async ({ page }) => {
   await open(page, true);
   const reference = await handReference(page);
-  await expect.poll(() => handPixels(page, reference), { timeout: 7000 }).toBeGreaterThan(12);
+  await visibleHand(page, reference);
   const first = await page.locator('#game-root').screenshot({ scale: 'css' });
-  await page.waitForTimeout(400);
+  await page.clock.runFor(400);
   expect((await page.locator('#game-root').screenshot({ scale: 'css' })).equals(first)).toBe(true);
   await expect(page.locator('#message')).toBeEmpty();
 });

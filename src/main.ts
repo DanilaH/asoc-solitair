@@ -56,7 +56,17 @@ const runtime = createRuntime(() => { scene?.cancel(); }, () => {
   else openDialog('#settings');
 });
 
-function closeDialogs() { document.body.append($('#coin-layer')); dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false); }
+let coinPresentation = 0;
+function cancelCoins() {
+  coinPresentation++;
+  $('#coin-layer').getAnimations({ subtree: true }).forEach(a => a.cancel());
+  $('#coin-layer').querySelectorAll<HTMLElement>('.flying-coin').forEach(n => { n.style.display = 'none'; });
+}
+function closeDialogs() {
+  // Discard presentation before its top-layer owner closes. Never carry coins to another screen.
+  cancelCoins();
+  document.body.append($('#coin-layer')); dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false);
+}
 function openDialog(selector: string) { peekCard(null); clearPraise(); scene?.clearFeedback(); closeDialogs(); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
 let peeked: string | null = null;
 function peekCard(id: string | null) {
@@ -175,18 +185,32 @@ try {
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
   const coins = Array.from({ length: 24 }, () => { const node = document.createElement('span'); node.className = 'flying-coin'; $('#coin-layer').append(node); return { node, busy: false, animation: null as Animation | null }; });
-  function coinBurst(origin = $('#streak-reward'), destination = $('.coin-icon')) {
+  function coinBurst(origin = $('#streak-reward'), destination = $('.coin-icon'), resultRoute = false) {
     if (save.settings.reducedMotion || new URLSearchParams(location.search).get('fxCoins') === '0') return;
     const source = origin.getBoundingClientRect(), target = destination.getBoundingClientRect();
+    const lane = $('#result').getBoundingClientRect().right - 14;
     for (let i = 0; i < 8; i++) {
       const coin = coins.find(c => !c.busy); if (!coin) break;
       coin.busy = true; coin.node.style.display = 'block';
-      const sx = source.x + source.width / 2 - 10, sy = source.y + source.height / 2 - 10;
+      // A short unlock result omits its decorative emblem. Start beside its
+      // heading instead of using the hidden element's (0,0) rectangle.
+      const sx = resultRoute && !source.width ? lane - 10 : source.x + source.width / 2 - 10;
+      const sy = resultRoute && !source.width ? $('#result-title').getBoundingClientRect().bottom + 5 : source.y + source.height / 2 - 10;
       const tx = target.x + target.width / 2 - 10, ty = target.y + target.height / 2 - 10;
-      coin.animation = coin.node.animate([{ transform: `translate(${sx}px,${sy}px) scale(.5)`, opacity: 0 },
+      // On the result, travel in the paper's right gutter, never through the title,
+      // amount or CTA. The landing is beside the already-owned total, not on its digits.
+      const frames = resultRoute ? [
+        { transform: `translate(${sx}px,${sy}px) scale(.5)`, opacity: 0 },
+        { transform: `translate(${lane - 10}px,${sy}px) scale(.8)`, opacity: 1, offset: .3 },
+        { transform: `translate(${lane - 10}px,${ty}px) scale(.8)`, opacity: 1, offset: .85 },
+        { transform: `translate(${lane - 10}px,${ty}px) scale(.35)`, opacity: 0 },
+      ] : [{ transform: `translate(${sx}px,${sy}px) scale(.5)`, opacity: 0 },
         { transform: `translate(${sx + (i - 3.5) * 10}px,${sy - 35 - i % 3 * 8}px) scale(1)`, opacity: 1, offset: .27 },
-        { transform: `translate(${tx}px,${ty}px) scale(.8)`, opacity: 1 }], { duration: 550, delay: i * 23, easing: 'ease-in-out' });
-      coin.animation.onfinish = () => { coin.busy = false; coin.node.style.display = 'none'; const receiver = destination.closest('.wallet') ?? destination; receiver.classList.remove('bump'); void (receiver as HTMLElement).offsetWidth; receiver.classList.add('bump'); };
+        { transform: `translate(${tx}px,${ty}px) scale(.8)`, opacity: 1 }];
+      const animation = coin.node.animate(frames, { duration: 550, delay: i * 23, easing: 'ease-in-out' });
+      coin.animation = animation;
+      animation.oncancel = () => { if (coin.animation !== animation) return; coin.busy = false; coin.node.style.display = 'none'; };
+      animation.onfinish = () => { if (coin.animation !== animation) return; coin.busy = false; coin.node.style.display = 'none'; const receiver = destination.closest('.wallet') ?? destination; receiver.classList.remove('bump'); void (receiver as HTMLElement).offsetWidth; receiver.classList.add('bump'); };
     }
   }
   function renderHud() {
@@ -226,9 +250,11 @@ try {
     $('#moves').textContent = board.movesLeft === null ? '∞' : String(board.movesLeft);
     $('#move-fill').style.width = `${100 * (board.movesLeft ?? 1) / (deal.initial.movesLeft ?? 1)}%`;
     const replayHint = activeHint?.key === boardKey(board);
-    $('#hint-label').textContent = replayHint ? 'Повторить' : 'Подсказка';
+    const searching = Boolean(pendingHint);
+    $('#hint-label').textContent = searching ? 'Ищу…' : replayHint ? 'Повторить' : 'Подсказка';
     $('#hint-count').hidden = replayHint;
-    $('#hint').setAttribute('aria-label', replayHint ? 'Повторить подсказку бесплатно' : 'Подсказка');
+    $('#hint').setAttribute('aria-busy', String(searching));
+    $('#hint').setAttribute('aria-label', searching ? 'Ищу подсказку' : replayHint ? 'Повторить подсказку бесплатно' : 'Подсказка');
     $('#hint-count').textContent = String(save.profile.hints); $('#undo-count').textContent = String(save.profile.undos);
     $<HTMLButtonElement>('#hint').disabled = board.phase !== 'playing' || Boolean(workerDeadline) || saving;
     $<HTMLButtonElement>('#undo').disabled = board.phase === 'won' || !save.attempt.undo.length || saving;
@@ -246,6 +272,8 @@ try {
     $<HTMLInputElement>('#reduced').checked = save.settings.reducedMotion;
     $<HTMLInputElement>('#haptics').checked = save.settings.haptics;
     $('#helper-title').textContent = helperFocus ? { hint: 'Подсказка', undo: 'Отмена', joker: 'Джокер' }[helperFocus] : 'Помощники';
+    $('#helpers').dataset.focus = helperFocus ?? 'all';
+    for (const helper of ['hint', 'undo', 'joker']) $(`#buy-${helper}`).className = helperFocus === helper ? 'primary' : 'secondary';
     $('#helper-return').textContent = screen === 'home' ? 'Готово' : 'К игре';
     $('#appearance-done').textContent = screen === 'home' ? 'Готово' : 'К игре';
     $('#joker-next-attempt').hidden = !save.attempt.jokerUsed || !jokerUnlocked || Boolean(helperFocus && helperFocus !== 'joker');
@@ -256,7 +284,6 @@ try {
       $<HTMLButtonElement>(`#video-${helper}`).disabled = serviceBusy || !ads.status.rewarded;
       $(`#video-${helper}`).hidden = !ads.status.rewarded;
     }
-    $('#video-unavailable').hidden = Boolean(ads.status.rewarded);
     const canContinue = board.phase === 'exhausted' && !save.attempt.continued && (platformState(structuredClone(save)).continueCredits > 0 || ads.status.rewarded);
     $('#result-continue').hidden = !canContinue;
     const undoRecovery = board.phase === 'exhausted' && save.attempt.undo.length > 0 && (save.profile.undos > 0 || save.profile.coins >= BALANCE.helperPrices.undo || ads.status.rewarded);
@@ -279,7 +306,10 @@ try {
     $('#result-title').textContent = won ? 'Всё сошлось!' : 'Ходы закончились';
     const daily = Boolean(save.attempt.daily), payout = save.attempt.payout;
     $('#result-copy').textContent = won ? daily ? payout?.length ? 'Задание дня выполнено. Награда уже на вашем счёте.' : 'Тренировка завершена. Награда за эту дату уже получена или её день закончился.' : (deal.campaignLevel === CAMPAIGN_LENGTH ? `Все ${CAMPAIGN_LENGTH} уровней пройдены. Любую раздачу можно сыграть ещё раз.` : '') : '';
-    $('#result-meta').textContent = daily ? `Серия дней · ${currentDailyStreak(save, localDay())}` : `${save.meta!.winCycle === 0 ? 'Новый цикл' : 'Пять побед'} · ${save.meta!.winCycle} / 5`;
+    const cycleReward = payout?.find(r => r.reason === 'campaign_win_cycle');
+    $('#result-bonus').hidden = !won || !cycleReward;
+    $('#result-bonus-copy').textContent = cycleReward ? `Получено: +${cycleReward.coins} монет${cycleReward.hints ? ` и +${cycleReward.hints} подсказка` : ''}` : '';
+    $('#result-meta').textContent = daily ? `Серия дней · ${currentDailyStreak(save, localDay())}` : `Новый цикл · ${save.meta!.winCycle} / 5`;
     $('#result-meta').hidden = !won || !daily && !payout?.some(r => r.reason === 'campaign_win_cycle');
     $('#replay').textContent = daily && won ? 'Сыграть как тренировку' : 'Ещё раз';
     const earned = (payout ? payout.reduce((sum, r) => sum + r.coins, 0) : !daily ? BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0) + save.attempt.streak.coins;
@@ -298,10 +328,12 @@ try {
     openDialog('#result');
     if (won && payout?.some(r => r.coins > 0)) {
       $('#result').append($('#coin-layer'));
-      const attemptId = save.attempt.id;
-      setTimeout(() => {
-        if (alive && save.attempt.id === attemptId && $<HTMLDialogElement>('#result').open && !runtime.activity.getBlockReasons().some(r => r !== 'modal')) coinBurst($('.result-star'), $('#result-total'));
-      }, 240);
+      const attemptId = save.attempt.id, presentation = coinPresentation;
+      // Wait for the actual panel entrance, not a wall-clock guess: a transformed
+      // dialog temporarily changes the fixed layer's coordinate system.
+      void Promise.allSettled($('#result').getAnimations().map(a => a.finished)).then(() => {
+        if (alive && presentation === coinPresentation && save.attempt.id === attemptId && $<HTMLDialogElement>('#result').open && !runtime.activity.getBlockReasons().some(r => r !== 'modal')) coinBurst($('.result-star'), $('#result-total'), true);
+      });
     }
   }
   async function execute(cmd: Command) {
@@ -564,7 +596,15 @@ try {
   }
   const resize = new ResizeObserver(resizeToRoot);
   resize.observe(root);
+  // Text reflow can move the result inside the same viewport. Optional coins
+  // must not keep travelling through the old title/amount coordinates.
+  const resultResize = new ResizeObserver(() => {
+    if ($('#result').contains($('#coin-layer')) && coins.some(c => c.busy)) cancelCoins();
+  });
+  for (const selector of ['#result', '#result-title', '#result-total']) resultResize.observe($(selector));
   window.addEventListener('resize', resizeToRoot, domOptions);
+  window.addEventListener('resize', cancelCoins, domOptions);
+  document.querySelectorAll('.sheet-body').forEach(body => body.addEventListener('scroll', cancelCoins, domOptions));
   const unblock = runtime.activity.onBlockReasonsChange(() => {
     const blocked = runtime.activity.isBlocked();
     setInput(); updateBanner();
@@ -574,7 +614,7 @@ try {
       if (!blocked) { void ads.refresh(); void ads.recover(); showGuidance(); }
     }
     if (!renderer.isBooted) return;
-    if (blocked && ready) { scene?.clearFeedback(); renderer.loop.sleep(); coins.forEach(c => { c.animation?.cancel(); c.busy = false; c.node.style.display = 'none'; }); }
+    if (blocked && ready) { scene?.clearFeedback(); renderer.loop.sleep(); cancelCoins(); coins.forEach(c => { c.animation?.cancel(); c.busy = false; c.node.style.display = 'none'; }); }
     else renderer.loop.wake();
   });
   renderer.events.on(Phaser.Core.Events.POST_RENDER, () => {
@@ -737,17 +777,22 @@ try {
     if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); coins.forEach(c => { c.animation?.cancel(); c.node.remove(); });
-    worker?.terminate(); resize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
+    worker?.terminate(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };
   window.addEventListener('pagehide', event => { if (!event.persisted) cleanup(); }, domOptions);
   window.addEventListener('pageshow', () => { if (alive) renderer.loop.wake(); }, domOptions);
   import.meta.hot?.dispose(cleanup);
 } catch (error) {
   runtime.destroy(); game && destroyRenderer(game);
+  $('#app').hidden = true; $('#app').inert = true; $('#game-surface').hidden = true;
   const alert = document.createElement('div'); alert.className = 'fatal'; alert.setAttribute('role', 'alert');
   const title = document.createElement('h2'); title.textContent = 'Не удалось открыть партию';
-  const detail = document.createElement('p'); detail.textContent = error instanceof Error ? error.message : String(error);
-  alert.append(title, detail); document.body.append(alert); console.error(error);
+  const copy = document.createElement('p'); copy.textContent = 'Попробуйте загрузить игру ещё раз. Сохранение остаётся на устройстве.';
+  const retry = document.createElement('button'); retry.id = 'startup-retry'; retry.className = 'primary'; retry.textContent = 'Повторить загрузку';
+  retry.addEventListener('click', () => { retry.disabled = true; retry.textContent = 'Загружаем…'; alert.setAttribute('aria-busy', 'true'); location.reload(); }, { once: true });
+  const details = document.createElement('details'), summary = document.createElement('summary'), detail = document.createElement('p');
+  summary.textContent = 'Технические сведения'; detail.textContent = error instanceof Error ? error.message : String(error);
+  details.append(summary, detail); alert.append(title, copy, retry, details); document.body.append(alert); retry.focus(); console.error(error);
 }
 
 }

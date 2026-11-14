@@ -1,0 +1,56 @@
+{
+  "results": [
+    {
+      "local_path": "/workspace/scratch/50187ffca82b/asoc-016-media/asoc-solitair-0.16.0-preview.apk",
+      "purpose": "create_library_file",
+      "status": "succeeded",
+      "file_id": "file_0000000002ac81f5b182f3ddec4258c4",
+      "library_file_id": "libfile_fde3_f-3a890b76067881918937e1d16bdbc93b_2841ca9da26c8191b7a266fa9b41a810",
+      "file_name": "asoc-solitair-0.16.0-preview.apk",
+      "local_metadata_applied": true,
+      "path": "/asoc-solitair-0.16.0-preview.apk",
+      "current_version_number": 0,
+      "bytes": 11729429,
+      "sha256": "47f246fbfffbc025881270b63645b5f71a9d6daa31a86a7ccdac7143159ec30d"
+    },
+    {
+      "local_path": "/workspace/scratch/50187ffca82b/asoc-016-media/asoc-0.16-gameplay-with-sound.mp4",
+      "purpose": "create_library_file",
+      "status": "succeeded",
+      "file_id": "file_00000000ca2481f5ba9eb99fe7a79dd8",
+      "library_file_id": "libfile_fde3_f-46c142f7810481918139ac0ddefb93e4_2841ca9da26c8191b7a266fa9b41a810",
+      "file_name": "asoc-0.16-gameplay-with-sound.mp4",
+      "local_metadata_applied": true,
+      "path": "/asoc-0.16-gameplay-with-sound.mp4",
+      "current_version_number": 0,
+      "bytes": 460933,
+      "sha256": "ea15e5c3d91c1a8857d20b7e663fed5cba8b7d833d372826e022da4df9aed084"
+    },
+    {
+      "local_path": "/workspace/scratch/50187ffca82b/asoc-016-media/asoc-0.16-menu.gif",
+      "purpose": "create_library_file",
+      "status": "succeeded",
+      "file_id": "file_0000000088dc81f58eb1ccb2f5d9eddb",
+      "library_file_id": "libfile_fde3_f-349e443486c88191b123cf807a82185e_2841ca9da26c8191b7a266fa9b41a810",
+      "file_name": "asoc-0.16-menu.gif",
+      "local_metadata_applied": true,
+      "path": "/asoc-0.16-menu.gif",
+      "current_version_number": 0,
+      "bytes": 1358049,
+      "sha256": "264a3bf85b87c8c69e62fa0b195719c3364f0527117431ac2ef93a238f77b7fc"
+    },
+    {
+      "local_path": "/workspace/scratch/50187ffca82b/asoc-016-media/asoc-0.16-overview.png",
+      "purpose": "create_library_file",
+      "status": "succeeded",
+      "file_id": "file_00000000ee8c81f5959886cbf1d83041",
+      "library_file_id": "libfile_fde3_f-f89b42cbe4e481918deeadf4501c12d9_2841ca9da26c8191b7a266fa9b41a810",
+      "file_name": "asoc-0.16-overview.png",
+      "local_metadata_applied": true,
+      "path": "/asoc-0.16-overview.png",
+      "current_version_number": 0,
+      "bytes": 480204,
+      "sha256": "2a67c443109095affa20dc8a9695c4676edb157e1b55d5e98858701406041a59"
+    }
+  ]
+}

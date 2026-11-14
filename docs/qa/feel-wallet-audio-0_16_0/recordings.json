@@ -1,0 +1,59 @@
+{
+  "source": "da7584ca4e9ef5bb7b0e375ec64b4690b08ee01b",
+  "scenes": [
+    {
+      "name": "menu-320",
+      "markerFrame": 32,
+      "markerSeconds": 1.28,
+      "trimStartSeconds": 1.52,
+      "originalDurationSeconds": 5.0,
+      "exportDurationSeconds": 3.48
+    },
+    {
+      "name": "win-360",
+      "markerFrame": 29,
+      "markerSeconds": 1.16,
+      "trimStartSeconds": 1.4,
+      "originalDurationSeconds": 6.04,
+      "exportDurationSeconds": 4.640000000000001
+    },
+    {
+      "name": "streak-360",
+      "markerFrame": 29,
+      "markerSeconds": 1.16,
+      "trimStartSeconds": 1.4,
+      "originalDurationSeconds": 4.96,
+      "exportDurationSeconds": 3.56
+    },
+    {
+      "name": "deck-360",
+      "markerFrame": 23,
+      "markerSeconds": 0.92,
+      "trimStartSeconds": 1.1600000000000001,
+      "originalDurationSeconds": 5.16,
+      "exportDurationSeconds": 4.0
+    }
+  ],
+  "files": [
+    {
+      "name": "asoc-0.16-gameplay-with-sound.mp4",
+      "path": "/workspace/scratch/50187ffca82b/asoc-016-media/asoc-0.16-gameplay-with-sound.mp4",
+      "bytes": 460933,
+      "sha256": "ea15e5c3d91c1a8857d20b7e663fed5cba8b7d833d372826e022da4df9aed084"
+    },
+    {
+      "name": "asoc-0.16-menu.gif",
+      "path": "/workspace/scratch/50187ffca82b/asoc-016-media/asoc-0.16-menu.gif",
+      "bytes": 1358049,
+      "sha256": "264a3bf85b87c8c69e62fa0b195719c3364f0527117431ac2ef93a238f77b7fc"
+    },
+    {
+      "name": "asoc-0.16-overview.png",
+      "path": "/workspace/scratch/50187ffca82b/asoc-016-media/asoc-0.16-overview.png",
+      "bytes": 480204,
+      "sha256": "2a67c443109095affa20dc8a9695c4676edb157e1b55d5e98858701406041a59"
+    }
+  ],
+  "notes": "Separate prepared legal states, actual production input and WebAudio capture. Original 1x timestamps; temporary marker/setup trimmed. Browser25fps capture, AV aligned within one video frame, not hardware latency. No recorded cue synthesis in QA.",
+  "audioClock": "MediaRecorder packet timestamp gaps are filled with silence before AV alignment; continuous decoded MP4 audio checked against video duration (within0.1s), no cue speed change."
+}

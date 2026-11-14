@@ -1,8 +1,8 @@
 # Product sources
 
-Current work: [0.16 menu, recorded audio, shared wallet and rendering cost](qa/FEEL_WALLET_AUDIO_0_16_0.md). Owner-approved five-point correction; current verification/delivery status is in the handoff.
+Current implementation: [0.16 menu, recorded audio, shared wallet and rendering cost](qa/FEEL_WALLET_AUDIO_0_16_0.md). Owner-approved five-point correction; both full source CI runs pass204browser cases and both Android builds. Signed APK/actual-audio MP4/GIF/PNG saved; exact source and identities are in the handoff.
 
-Current implementation: [0.15 all-screen UI coherence](qa/UI_COHERENCE_0_15_0.md). Approved audit changes implemented; final-source full CI passes192browser cases and both Android builds. Signed APK/actual-touch GIFs are saved; exact identities/status are in the handoff.
+Previous delivery: [0.15 all-screen UI coherence](qa/UI_COHERENCE_0_15_0.md). Approved audit changes implemented; final-source full CI passes192browser cases and both Android builds. Signed APK/actual-touch GIFs are saved; exact identities/status are in the handoff.
 
 Latest independent work: [all-screen UI/UX/feel audit and current kit guidance](qa/ALL_SCREENS_UI_UX_AUDIT_2026-11-14.md).120 canonical states; implementation recommendations, guidance-only adoption; runtime unchanged. Both0.14 exhaustive CI repetitions are now known to have169passes/1tutorial observation failure/4skips, all80 touch wins; see current handoff.
 

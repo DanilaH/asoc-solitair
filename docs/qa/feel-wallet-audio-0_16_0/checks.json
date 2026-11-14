@@ -1,0 +1,121 @@
+{
+  "source": "da7584ca4e9ef5bb7b0e375ec64b4690b08ee01b",
+  "notes": "Four independent legal prepared states, real production input/audio buffers; original1x. Capture keeps AudioContext recording clock alive, eligibility still cancels voices.8px temporary sync marker removed before exports. Not a phone.",
+  "results": [
+    {
+      "name": "menu-320",
+      "screen": "game"
+    },
+    {
+      "name": "win-360",
+      "balance": 174,
+      "display": "174",
+      "profileMatches": true
+    },
+    {
+      "name": "streak-360",
+      "balance": 102,
+      "display": "102",
+      "boardMatches": true
+    },
+    {
+      "name": "deck-360",
+      "commands": 7,
+      "boardMatches": true
+    }
+  ],
+  "errors": [],
+  "screens": {
+    "source": "da7584ca4e9ef5bb7b0e375ec64b4690b08ee01b",
+    "total": 120,
+    "pageErrors": [],
+    "nonRoundedFlags": [
+      {
+        "screen": "320x480-settings-expanded",
+        "selector": "#helpers-open",
+        "reason": "clipped-y"
+      },
+      {
+        "screen": "320x480-board-normal",
+        "selector": "#undo",
+        "reason": "disabled"
+      },
+      {
+        "screen": "320x480-board-dense",
+        "selector": "#undo",
+        "reason": "disabled"
+      },
+      {
+        "screen": "320x568-board-normal",
+        "selector": "#undo",
+        "reason": "disabled"
+      },
+      {
+        "screen": "320x568-board-dense",
+        "selector": "#undo",
+        "reason": "disabled"
+      },
+      {
+        "screen": "360x780-board-normal",
+        "selector": "#undo",
+        "reason": "disabled"
+      },
+      {
+        "screen": "360x780-board-dense",
+        "selector": "#undo",
+        "reason": "disabled"
+      },
+      {
+        "screen": "393x851-board-normal",
+        "selector": "#undo",
+        "reason": "disabled"
+      },
+      {
+        "screen": "393x851-board-dense",
+        "selector": "#undo",
+        "reason": "disabled"
+      }
+    ],
+    "interpretation": "Eight expected disabled Undo checks; one optional Helpers entry scrolls in expanded settings at320x480 (existing0.15 behavior). Home actionable controls pass actual center/interior checks."
+  },
+  "finalSourceProfile": [
+    {
+      "rate": 1,
+      "dragClones": 1,
+      "homeMutations": 0,
+      "frames": 278,
+      "p95": 50,
+      "dragP95": 33.399999999999636,
+      "modelMatches": true,
+      "over50ms": 9,
+      "metrics": {
+        "LayoutCount": 98,
+        "RecalcStyleCount": 102,
+        "ScriptDuration": 0.44041199999999997,
+        "TaskDuration": 5.868595999999999
+      }
+    },
+    {
+      "rate": 4,
+      "dragClones": 1,
+      "homeMutations": 0,
+      "frames": 235,
+      "p95": 66.60000000000036,
+      "dragP95": 33.400000000000546,
+      "modelMatches": true,
+      "over50ms": 17,
+      "metrics": {
+        "LayoutCount": 80,
+        "RecalcStyleCount": 83,
+        "ScriptDuration": 1.179654,
+        "TaskDuration": 6.689645
+      }
+    }
+  ],
+  "localLayoutBeforeFinalPayoutOnlyFix": {
+    "issues": [],
+    "raster_issues": [],
+    "total_issues": 0,
+    "cases": 119
+  }
+}

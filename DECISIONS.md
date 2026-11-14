@@ -1,5 +1,9 @@
 # Decisions
 
+## 2026-11-14 — Approved all-screen coherence fixes
+
+Implement the owner-approved audit package as0.15/code23: long dialogs keep header and actions while details scroll; short home keeps Play/level choice and reduces emblem first. Show the owned campaign-cycle receipt (5/5,20coins+1Hint) separately from the following0/5. Result coins follow an outer gutter after the actual dialog entrance and are invalidated on close/scroll/resize/background. Hint pending stays in its existing button; startup retry reloads the authoritative store without reset. Keep prices, grants, save codec, bank, board geometry/art and runtime kit pin unchanged. Tutorial observation uses one clock installed before application initialization and checks real raster output, including a missing-image negative control. [Acceptance](docs/qa/UI_COHERENCE_0_15_0.md).
+
 ## 2026-11-14 — New guidance, unchanged runtime; all-screen audit first
 
 Adopt reviewed agent guidance aab9dc8e separately from runtime a9325265: route UI to existing art/UX, initial-action geometry and motion contracts, preserve product decisions. Strict doctor passes; no SDK/API dependency upgrade. The independent120-state audit proposes long-modal fixed actions, visible owned fifth-win rewards, title-safe coin paths, truthful Hint pending and safe startup retry. It does not implement those changes or redesign the approved board. Correctly started attempts already say Continue; appearance explicitly returns «К игре», so neither is misreported as a new defect. Same0.14 tutorial mask fails in both broad CI runs while the saved video shows the glove; stabilize observation before claiming green CI. [Report](docs/qa/ALL_SCREENS_UI_UX_AUDIT_2026-11-14.md).

@@ -1,5 +1,11 @@
 # Continuation checkpoint — 2026-11-14
 
+## Current implementation —0.15.0/code23 UI coherence
+
+Owner approved the complete bounded all-screen audit package. Implemented fixed modal actions/scroll bodies, short-home action area, owned5/5 reward, title-safe coin gutter with presentation cancellation, truthful pending Hint and startup reload/retry without reset. Helper offers use existing art with quieter catalog purchases and shorter copy; short result reduces decorations first. No rules/bank/economy/save codec/board/art/SDK/kit runtime changes. [Acceptance/status](qa/UI_COHERENCE_0_15_0.md).
+
+Local initial9 UI cases/92 units pass. Old tutorial wall-clock mask failure was reproduced; coherent-clock verification passes12 repeats, and both missing-image negative controls fail as expected. Final-source matrix/browser/layout/Android and media are still in progress at this checkpoint; do not claim green CI or deliver an older APK as0.15.
+
 ## Latest work — all-screen audit and guidance adoption,2026-11-14
 
 Owner cannot phone-playtest yet and requested independent UI/UX/feel review of all screens plus newer kit additions. [Report/implementation plan](qa/ALL_SCREENS_UI_UX_AUDIT_2026-11-14.md), [checks](qa/all-screen-audit-2026-11-14/checks.json). Audited unchanged main47c57b6 /runtime0.14.0/code22:120 canonical states,8 transition/text stress cases,2 actual SaveStore failure-injection cases.0 normal pageerrors. Four QA tools/typecheck and strict guidance doctor pass. Prepared-prefix telemetry omissions and rounded-corner false flags were corrected/classified as audit-harness issues, not product defects.

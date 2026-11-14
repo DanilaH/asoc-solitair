@@ -1,0 +1,48 @@
+{
+  "finalSource": "fe3dd9093e25d492ef21b8fadb2b24a74f30a7ca",
+  "runs": [
+    {
+      "id": 43611405455,
+      "source": "0d29019cb086190c6937c632f498169e6d41c71e",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43611405455"
+    },
+    {
+      "id": 43611400979,
+      "source": "0d29019cb086190c6937c632f498169e6d41c71e",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43611400979"
+    },
+    {
+      "id": 43612510838,
+      "source": "fe3dd9093e25d492ef21b8fadb2b24a74f30a7ca",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43612510838"
+    },
+    {
+      "id": 43612507087,
+      "source": "fe3dd9093e25d492ef21b8fadb2b24a74f30a7ca",
+      "event": "push",
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43612507087"
+    }
+  ],
+  "finalPR": {
+    "units": 92,
+    "browserPassed": 192,
+    "browserSkipped": 4,
+    "layoutCases": 119,
+    "domIssues": 0,
+    "rasterIssues": 0,
+    "androidDebug": "success",
+    "androidUnsignedR8": "success",
+    "signature": "same preview certificate"
+  }
+}

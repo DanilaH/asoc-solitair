@@ -5,7 +5,7 @@ import { preview } from 'vite';
 import { campaignDeals } from '../src/content/campaign';
 import { freshSave } from '../src/domain/engine';
 import { boardFrame, layout } from '../src/game/layout';
-const output='.recording/all-screen-audit-2026-11-14/recovery';await mkdir(output,{recursive:true});
+const output=process.env.ASOC_UI_AUDIT_OUT??'.recording/all-screen-audit-2026-11-14/recovery';await mkdir(output,{recursive:true});
 const browser=await chromium.launch(),server=await preview({preview:{host:'127.0.0.1',port:4198,strictPort:true}});const results:object[]=[];
 try{
  const s=freshSave(campaignDeals[0],'recovery-audit');s.settings.sfx=false;s.campaign={version:1,tutorials:['learn:category','learn:match','learn:stock']};
@@ -22,4 +22,4 @@ try{
  const during={name:'save-retry',message:await q.locator('#message').innerText(),buttonRect:button,buttonVisible:button.y>=0&&button.y+button.height<=568,durableUnchanged:await q.evaluate(raw=>(window as typeof window&{__readOriginal:(k:string)=>string|null}).__readOriginal('asoc-solitaire.save.v1')===raw,before)};
  await q.evaluate(()=>(window as typeof window&{__restoreStorage:()=>void}).__restoreStorage());await q.locator('#save-retry').tap();await q.waitForTimeout(350);results.push({...during,retryHidden:!await q.locator('#save-retry').isVisible(),afterBoardUnchanged:await q.evaluate(raw=>JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!).attempt.board.movesLeft===JSON.parse(raw).attempt.board.movesLeft,before)});await q.screenshot({path:output+'/save-restored.png',scale:'css'});await ctx2.close();
 }finally{await browser.close();await new Promise<void>(r=>server.httpServer.close(()=>r()));}
-await writeFile(output+'/checks.json',JSON.stringify({source:'47c57b6d8d8c81d01c9a945e28b42ba6a37491ca',results},null,2)+'\n');console.info(JSON.stringify(results));
+await writeFile(output+'/checks.json',JSON.stringify({source:process.env.ASOC_QA_SOURCE??'47c57b6d8d8c81d01c9a945e28b42ba6a37491ca',results},null,2)+'\n');console.info(JSON.stringify(results));

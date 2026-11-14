@@ -1,6 +1,6 @@
 # Current iteration —0.15 UI coherence
 
-Approved all-screen audit fixes are implemented; final-source browser/layout/Android verification and preview delivery are in progress. See [acceptance and honest status](docs/qa/UI_COHERENCE_0_15_0.md). This supersedes the prior audit-only status; no rules/economy/art/SDK expansion.
+Approved all-screen audit fixes are implemented and verified: full final-source PR CI passes192browser cases and both Android builds; signed test-ad/analytics-disabled APK and actual-touch media are saved. See [acceptance and honest status](docs/qa/UI_COHERENCE_0_15_0.md). This supersedes the prior audit-only status; no rules/economy/art/SDK expansion.
 
 # Roadmap
 

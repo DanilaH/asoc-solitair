@@ -1,0 +1,49 @@
+{
+  "source": "fe3dd9093e25d492ef21b8fadb2b24a74f30a7ca",
+  "items": [
+    {
+      "filename": "asoc-solitair-0.15.0-preview.apk",
+      "localPath": "/workspace/scratch/50187ffca82b/asoc-ui-15-media/asoc-solitair-0.15.0-preview.apk",
+      "bytes": 11557289,
+      "sha256": "0f2ef1442ee524e0110d8e7545cafa808b9b1e220f435a17ee0f28a6fcbac6e8",
+      "libraryFileId": "libfile_fde3_f-c02036cc9d1c819183ff6d543bff141f_2841ca9da26c8191b7a266fa9b41a810",
+      "fileId": "file_00000000ab6c81f5a008dcd5001ba240",
+      "localMetadataApplied": true,
+      "timing": null,
+      "version": 0
+    },
+    {
+      "filename": "asoc-0.15-windows.gif",
+      "localPath": "/workspace/scratch/50187ffca82b/asoc-ui-15-media/asoc-0.15-windows.gif",
+      "bytes": 4075394,
+      "sha256": "066dae472bf2fcc90f755a5867167237ef5f1c2f4239ae62d0e6fb1f323494fb",
+      "libraryFileId": "libfile_fde3_f-404cf9261bc4819195b061fa807d106f_2841ca9da26c8191b7a266fa9b41a810",
+      "fileId": "file_00000000395081f5a12f6c74d1a26305",
+      "localMetadataApplied": true,
+      "timing": "original1x25fps; independent production touch scenes",
+      "version": 0
+    },
+    {
+      "filename": "asoc-0.15-reward.gif",
+      "localPath": "/workspace/scratch/50187ffca82b/asoc-ui-15-media/asoc-0.15-reward.gif",
+      "bytes": 4423295,
+      "sha256": "191e9c2bfb543fcdd62970c4515460b4127b9a40c5994988d52f93ab8661c628",
+      "libraryFileId": "libfile_fde3_f-1f695b1fff5881919e23b995c492840b_2841ca9da26c8191b7a266fa9b41a810",
+      "fileId": "file_00000000f65881f59a941533893a7195",
+      "localMetadataApplied": true,
+      "timing": "original1x25fps; independent production touch scenes",
+      "version": 0
+    },
+    {
+      "filename": "asoc-0.15-screens.png",
+      "localPath": "/workspace/scratch/50187ffca82b/asoc-ui-15-media/asoc-0.15-screens.png",
+      "bytes": 204503,
+      "sha256": "62abe53d757d294123ca47088b69be88a8853f6ec4ec3a1ecd32dc8706e779d0",
+      "libraryFileId": "libfile_fde3_f-aa21d74c6d288191a0fbb004a4d4d467_2841ca9da26c8191b7a266fa9b41a810",
+      "fileId": "file_00000000c71081f5942581a87900d7d1",
+      "localMetadataApplied": true,
+      "timing": null,
+      "version": 0
+    }
+  ]
+}

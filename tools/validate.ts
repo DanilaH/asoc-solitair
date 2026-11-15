@@ -1,10 +1,12 @@
+import {campaignId} from '../src/domain/progression';
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile, access } from 'node:fs/promises';
 import { dailyPool } from '../src/content/daily';
 import { expansionRecords } from '../src/content/expansion';
 import { introDeal } from '../src/content/intro';
-import { campaignDeals, campaignRecords } from '../src/content/campaign';
+import { campaignDeals, legacyCampaignDeals, campaignRecords } from '../src/content/campaign';
 import { applyBoard, assertBoard, boardRules, dispatch, freshSave } from '../src/domain/engine';
+import { openingDeals } from '../src/content/opening';
 import { RULES_VERSION, CONTENT_VERSION } from '../src/domain/types';
 import { boardFrame, layout, cardMetrics } from '../src/game/layout';
 
@@ -13,7 +15,7 @@ await mkdir(validationDir, { recursive: true });
 const verified: unknown[] = [];
 const summary = [];
 const dailySummary = [];
-for (const deal of [introDeal, ...campaignDeals, ...dailyPool]) {
+for (const deal of [introDeal, ...legacyCampaignDeals, ...openingDeals, ...dailyPool]) {
   let board = structuredClone(deal.initial);
   const expected = Object.keys(deal.cards).sort();
   let largestPacket = 0, flips = 0, completions = 0;
@@ -44,7 +46,7 @@ for (const deal of [introDeal, ...campaignDeals, ...dailyPool]) {
   const finalBoard = board;
   if (deal.tutorialPath) {
     let save = freshSave(deal, 'validation-joker');
-    save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0, completedCampaign: campaignDeals.filter(d => d.campaignLevel! < deal.campaignLevel!).map(d => d.id) };
+    save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0, completedCampaign: campaignDeals.filter(d => d.campaignLevel! < deal.campaignLevel!).map(d => campaignId(d.campaignLevel!)) };
     for (const cmd of deal.tutorialPath) {
       const result = dispatch(save, cmd, deal);
       if (!result.accepted) throw Error(`${deal.id}: alternate witness refused: ${result.reason}`);
@@ -71,7 +73,7 @@ for (const deal of [introDeal, ...campaignDeals, ...dailyPool]) {
   await writeFile(`${validationDir}/${deal.id}.json`, JSON.stringify(record, null, 2) + '\n');
   verified.push({ ...record, exactInitialState: undefined, winningPath: undefined });
   if (deal.tags?.includes('daily')) dailySummary.push({ ...record, exactInitialState: undefined, winningPath: undefined });
-  if (deal.campaignLevel) summary.push({ level: deal.campaignLevel, title: deal.title, ...record, exactInitialState: undefined, winningPath: undefined });
+  if (deal.campaignLevel && campaignDeals.some(d => d.id === deal.id)) summary.push({ level: deal.campaignLevel, title: deal.title, ...record, exactInitialState: undefined, winningPath: undefined });
   console.info(`${deal.id}: PASS, ${record.moveCount} moves, ${record.coverage.recycleCount} recycle, slack ${record.slack ?? '∞'}`);
 }
 if (campaignDeals.length !== 80 || campaignDeals[0].initial.movesLeft !== null || campaignDeals[1].initial.movesLeft !== null) throw Error('Campaign/tutor bank contract failed');
@@ -83,6 +85,6 @@ await writeFile(`${validationDir}/daily-index.json`, JSON.stringify({ dailyConte
 
 const selected = new Set(campaignDeals.flatMap(d => Object.values(d.cards).filter(c => !c.leader).map(c => c.text)));
 const modes = Object.fromEntries(['ordinary','ordered','keys'].map(tag => [tag, campaignDeals.filter(d => d.campaignLevel! > 26 && d.tags?.includes(tag)).length]));
-await writeFile(`${validationDir}/release-bank.json`, JSON.stringify({ contentVersion: CONTENT_VERSION, campaignDeals: campaignDeals.length, frozenPrefix: 26, appended: expansionRecords.length, uniqueMemberCaptions: selected.size, appendedModes: modes, maxWitnessMoves: Math.max(...summary.map(r => r.moveCount)), minFiniteSlack: Math.min(...summary.filter(r => r.slack !== null).map(r => r.slack!)), distinctNewOrders: new Set(expansionRecords.map(r => JSON.stringify([r.initial.tableau, r.initial.stock, r.initial.faceUp]))).size, independentHumanDifficultyReview: 'PENDING' }, null, 2) + '\n');
+await writeFile(`${validationDir}/release-bank.json`, JSON.stringify({ contentVersion: CONTENT_VERSION, campaignDeals: campaignDeals.length, legacyDefinitions: legacyCampaignDeals.length, revisedOpening: openingDeals.length, unchangedCurrentSuffix: 65, appended: expansionRecords.length, uniqueMemberCaptions: selected.size, appendedModes: modes, maxWitnessMoves: Math.max(...summary.map(r => r.moveCount)), minFiniteSlack: Math.min(...summary.filter(r => r.slack !== null).map(r => r.slack!)), distinctNewOrders: new Set(expansionRecords.map(r => JSON.stringify([r.initial.tableau, r.initial.stock, r.initial.faceUp]))).size, independentHumanDifficultyReview: 'PENDING' }, null, 2) + '\n');
 // Preserve the original per-deal v2 records. Publish a separate, compact v3 verification.
-await writeFile('docs/validation/rules-v3.json', '{\n"rulesVersion":'+RULES_VERSION+',\n"records":[\n'+verified.map(r=>JSON.stringify(r)).join(',\n')+'\n]}\n');
+await writeFile('docs/validation/content-v6.json', '{\n"rulesVersion":'+RULES_VERSION+',\n"records":[\n'+verified.map(r=>JSON.stringify(r)).join(',\n')+'\n]}\n');

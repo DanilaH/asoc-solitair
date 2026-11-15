@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
 import { campaignDeals, findDeal } from '../../src/content/campaign';
+import { CONTENT_VERSION } from '../../src/domain/types';
 import { introDeal } from '../../src/content/intro';
 import { expansionDeals } from '../../src/content/expansion';
 import { dispatch, freshSave } from '../../src/domain/engine';
@@ -19,7 +20,7 @@ it('migrates content-v4 active campaign and parked daily without altering reward
   save.rulesVersion = 2; save.attempt.board.rulesVersion = 2; save.parked.daily!.board.rulesVersion = 2;
   const migrated = decodeSave(JSON.stringify(save), findDeal);
   expect(migrated.attempt).toEqual(save.attempt); expect(migrated.parked).toEqual(save.parked); expect(migrated.profile).toEqual(save.profile); expect(migrated.settings).toEqual(save.settings); expect(migrated.meta).toEqual(save.meta);
-  expect(migrated.contentVersion).toBe(5);
+  expect(migrated.contentVersion).toBe(CONTENT_VERSION);
 });
 it('Undo from temporary exhaustion reopens the telemetry outcome marker for a later win', () => {
   const save = freshSave(introDeal, 'exhausted-undo'); save.attempt.board.movesLeft = 1; save.attempt.telemetry = { started: true, finished: false, activeMs: 10 };

@@ -1,5 +1,6 @@
+import {campaignId} from '../../src/domain/progression';
 import { expect, test } from '@playwright/test';
-import { campaignDeals } from '../../src/content/campaign';
+import { campaignDeals, legacyCampaignDeals } from '../../src/content/campaign';
 import { introDeal } from '../../src/content/intro';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { UI_ART, artUrl, cardArtwork, illustrationUrl } from '../../src/game/art';
@@ -10,11 +11,11 @@ test('the complete art pack decodes with transparent gutters and published image
   const origin = new URL(baseURL!).origin;
   page.on('request', request => { if (!request.url().startsWith(origin + '/') && /^https?:/.test(request.url())) external.push(request.url()); });
   await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
-  const originals = [...new Set([introDeal, ...campaignDeals].flatMap(deal => Object.values(deal.cards).flatMap(card => card.image ? [card.image] : [])))];
+  const originals = [...new Set([introDeal, ...legacyCampaignDeals, ...campaignDeals].flatMap(deal => Object.values(deal.cards).flatMap(card => card.image ? [card.image] : [])))];
   expect(originals.length).toBe(35);
   const illustrations = originals.map(illustrationUrl);
   expect(illustrations.every(url => url.startsWith('art/generated/'))).toBe(true);
-  const rendered = [introDeal, ...campaignDeals, ...dailyPool].flatMap(deal => Object.values(deal.cards).flatMap(card => cardArtwork(card, deal) ?? []));
+  const rendered = [introDeal, ...legacyCampaignDeals, ...campaignDeals, ...dailyPool].flatMap(deal => Object.values(deal.cards).flatMap(card => cardArtwork(card, deal) ?? []));
   const urls = [...new Set([...UI_ART.map(artUrl), ...illustrations, ...rendered, 'art/ui/tutorial-hand.webp'])];
   const defects = await page.evaluate(async urls => {
     const defects: string[] = [];
@@ -39,7 +40,7 @@ test('static reduced-motion cards remain painted after viewport and banner backi
   test.setTimeout(60000);
   await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   const deal = campaignDeals[20]; let save = freshSave(deal, 'art-static-repaint'); save.settings.reducedMotion = true;
-  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 20).map(d => d.id) };
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 20).map(d => campaignId(d.campaignLevel!)) };
   for (const command of deal.winningPath) {
     const result = dispatch(save, command, deal);
     if (result.events.some(event => event.type === 'complete')) break;

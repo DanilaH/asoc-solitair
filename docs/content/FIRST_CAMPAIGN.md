@@ -1,3 +1,5 @@
+> The original twenty below remain frozen and addressable for old attempts. Content6 selects new revision-specific definitions for levels1–15; current pacing and compatibility are in [OPENING_V6.md](OPENING_V6.md). This historical table is not the active opening curve.
+
 # Первая кампания — 20 раздач
 
 Версия приложения 0.3.0 / code 3, contentVersion 2, правила карт 1. Это проверочный банк обычного ядра; он не объявлен окончательным размером релизной кампании.

@@ -1,5 +1,6 @@
 import { campaignRewards } from './meta';
 import { BALANCE } from './balance';
+import { campaignId } from './progression';
 import type { PlatformState, Save } from './types';
 
 export type RewardPlacement = 'hint' | 'undo' | 'continue';
@@ -54,8 +55,11 @@ export function interstitialEligible(save: Save, level: number, mode: 'campaign'
 export function markCampaignWin(save: Save, dealId: string, level?: number): import('./types').RewardGrant[] {
   // Control deal/replays are not new campaign progress.
   const state = platformState(save);
-  if (level === undefined || state.completedCampaign.includes(dealId)) return [];
-  state.completedCampaign.push(dealId);
+  if (level === undefined) return [];
+  // Content revisions own different deal IDs; first-clear rewards belong to a level.
+  const progressId = campaignId(level);
+  if (state.completedCampaign.includes(progressId)) return [];
+  state.completedCampaign.push(progressId);
   if (level > BALANCE.ads.interstitialAfterLevel) state.winsSinceInterstitial++;
   return campaignRewards(save);
 }

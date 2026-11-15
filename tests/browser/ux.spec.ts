@@ -1,3 +1,4 @@
+import {campaignId} from '../../src/domain/progression';
 import { pauseOptions } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
@@ -12,7 +13,7 @@ const attemptWithoutClock = (attempt: Save['attempt']) => ({ ...attempt, telemet
 async function seed(page: Page, index: number) {
   await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
   const save = freshSave(campaignDeals[index], `ux-${index}`); save.settings.reducedMotion=true;save.campaign={version:1,tutorials:['intro:joker','intro:ordered','intro:keys']}; save.meta!.winCycle=3;
-  save.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d=>d.id)};
+  save.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d => campaignId(d.campaignLevel!))};
   await page.evaluate(s=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(s)),save); await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
 }
 async function move(page: Page, deal: Deal, cmd: BoardCommand) {

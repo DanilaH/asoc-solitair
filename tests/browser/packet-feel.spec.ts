@@ -1,6 +1,7 @@
+import {campaignId} from '../../src/domain/progression';
 import { expect, test, type Page, type CDPSession } from '@playwright/test';
 import sharp from 'sharp';
-import { campaignDeals } from '../../src/content/campaign';
+import { legacyCampaignDeals as campaignDeals } from '../../src/content/campaign';
 import { dispatch, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { boardFrame, cardMetrics, layout } from '../../src/game/layout';
 import { recordedSamples } from './audio-fixture';
@@ -33,7 +34,7 @@ async function seed(page: Page, muted = false, reduced = false) {
   });
   await page.goto('/'); await page.locator('#app[data-ready=true]').waitFor();
   const save = structuredClone(chosen.save); save.settings.sfx = !muted; save.settings.reducedMotion = reduced;
-  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 79).map(d => d.id) };
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 79).map(d => campaignId(d.campaignLevel!)) };
   save.campaign = { version: 1, tutorials: ['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock','hint-demo','undo-used'] };
   await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), save);
   await page.reload(); await page.locator('#app[data-ready=true]').waitFor(); await page.locator('#home-play').tap(); await page.waitForTimeout(300);

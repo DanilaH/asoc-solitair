@@ -1,3 +1,4 @@
+import {campaignId} from '../../src/domain/progression';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
 import { dailyForDay } from '../../src/content/daily';
@@ -13,7 +14,8 @@ async function seed(page: Page, save: Save) {
 }
 function profile(level: number) {
   const save = freshSave(campaignDeals[level - 1], `meta-level-${level}`); save.settings.reducedMotion = true;
-  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, level - 1).map(d => d.id) }; return save;
+  save.campaign={version:1,tutorials:['intro:joker','intro:ordered','intro:keys','hint-demo','undo-used']};
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, level - 1).map(d => campaignId(d.campaignLevel!)) }; return save;
 }
 async function move(page: Page, deal: Deal, cmd: BoardCommand) {
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);

@@ -1,3 +1,4 @@
+import {campaignId} from '../../src/domain/progression';
 import {fixture as walletFixture,seed as enterWallet,move as walletMove} from './wallet-fixture';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
@@ -10,7 +11,7 @@ const read = (p: Page) => p.evaluate(k => JSON.parse(localStorage.getItem(k)!) a
 function profile(index = 16, won = false) {
   const deal = campaignDeals[index]; let s = freshSave(deal, 'ui-coherence');
   s.settings.sfx = false;
-  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0,index).map(d=>d.id) };
+  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0,index).map(d => campaignId(d.campaignLevel!)) };
   s.campaign = { version:1, tutorials:[...learned] };
   for (let level=10;level<=index;level+=10) s.profile.rewards.push('milestone:'+level);
   if (won) { s.meta!.winCycle=4; for(const cmd of deal.winningPath) s=dispatch(s,cmd,deal).next; s.attempt.telemetry={started:true,finished:true,activeMs:1000}; }

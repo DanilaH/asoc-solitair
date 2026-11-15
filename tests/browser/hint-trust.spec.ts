@@ -1,5 +1,6 @@
+import {campaignId} from '../../src/domain/progression';
 import { expect, test, type Page } from '@playwright/test';
-import { campaignDeals } from '../../src/content/campaign';
+import { legacyCampaignDeals as campaignDeals } from '../../src/content/campaign';
 import { applyBoard, freshSave, packet } from '../../src/domain/engine';
 import { boardFrame, layout } from '../../src/game/layout';
 import blocked from '../fixtures/hint-blocked.json' with { type: 'json' };
@@ -10,7 +11,7 @@ async function load(p: Page, index: number, board?: Board) {
   const s = freshSave(campaignDeals[index], 'hint-trust');
   if (board) s.attempt.board = structuredClone(board);
   s.settings.reducedMotion = true;
-  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, index).map(d => d.id) };
+  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, index).map(d => campaignId(d.campaignLevel!)) };
   s.campaign = { version: 1, tutorials: ['hint-demo','undo-used','intro:joker','intro:ordered','intro:keys'] };
   await p.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), s);
   await p.reload(); await p.locator('#app[data-ready=true]').waitFor(); await p.locator('#home-play').tap();

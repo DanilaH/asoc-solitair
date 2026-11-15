@@ -1,3 +1,4 @@
+import {campaignId} from '../../src/domain/progression';
 import { dismissTeaching } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
@@ -27,7 +28,7 @@ export async function move(page: Page, deal: Deal, cmd: BoardCommand) {
 async function fixture(page:Page,index:number){
   await page.emulateMedia({reducedMotion:'reduce'});await page.goto('/');await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
   const save=freshSave(campaignDeals[index],`fixture-${index}`);save.settings.reducedMotion=true;
-  save.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d=>d.id)};
+  save.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d => campaignId(d.campaignLevel!))};
   await page.evaluate(value=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(value)),save);
   await page.reload();await expect(page.locator('#app')).toHaveAttribute('data-ready','true');await page.locator('#home-play').tap();await ready(page,campaignDeals[index]);
 }

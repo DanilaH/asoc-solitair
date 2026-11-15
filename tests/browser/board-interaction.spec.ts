@@ -1,6 +1,7 @@
+import {campaignId} from '../../src/domain/progression';
 import { expect, test, type Page, type BrowserContext, type CDPSession } from '@playwright/test';
 import sharp from 'sharp';
-import { campaignDeals } from '../../src/content/campaign';
+import { legacyCampaignDeals as campaignDeals } from '../../src/content/campaign';
 import { introDeal } from '../../src/content/intro';
 import { dispatch, freshSave, packet } from '../../src/domain/engine';
 import { boardFrame, layout } from '../../src/game/layout';
@@ -9,7 +10,7 @@ const read = (p: Page) => p.evaluate(() => JSON.parse(localStorage.getItem('asoc
 async function seed(p: Page, d = campaignDeals[16], change?: (s: Save) => void) {
   await p.goto('/'); await p.locator('#app[data-ready=true]').waitFor();
   const s = freshSave(d, 'board-pointer-acceptance'); s.settings.reducedMotion = false; s.settings.sfx = false;
-  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, Math.max(20, (d.campaignLevel ?? 1) - 1)).map(d => d.id) };
+  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, Math.max(20, (d.campaignLevel ?? 1) - 1)).map(d => campaignId(d.campaignLevel!)) };
   s.campaign = { version: 1, tutorials: ['intro:joker', 'intro:ordered', 'intro:keys', 'learn:category', 'learn:match', 'learn:stock'] }; change?.(s);
   await p.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), s);
   await p.reload(); await p.locator('#app[data-ready=true]').waitFor(); await p.locator('#home-play').tap(); await p.waitForTimeout(400); return read(p);
@@ -101,7 +102,7 @@ test('inspection stays separate from foundations for every deck side and row, an
 
 test('reader is part of the moves tile and visible helpers stay centered as they unlock', async ({ page }) => {
   for(const level of [2,6,26]) {
-    await seed(page,campaignDeals[level],s=>{s.platform!.completedCampaign=campaignDeals.slice(0,level).map(d=>d.id);});
+    await seed(page,campaignDeals[level],s=>{s.platform!.completedCampaign=campaignDeals.slice(0,level).map(d => campaignId(d.campaignLevel!));});
     const tile=(await page.locator('.deck-tools .moves').boundingBox())!,reader=(await page.locator('#inspect').boundingBox())!;
     expect(Math.abs(tile.x+tile.width/2-reader.x-reader.width/2)).toBeLessThan(.75);
     expect(reader.x).toBeGreaterThanOrEqual(tile.x);expect(reader.y).toBeGreaterThanOrEqual(tile.y);

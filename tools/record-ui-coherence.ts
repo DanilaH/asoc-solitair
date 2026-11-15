@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 /** Actual production touch inputs. Prepared legal saves, no UI/solver simulation. */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { preview } from 'vite';
@@ -10,7 +11,7 @@ const output=process.env.ASOC_UI_RECORD_OUT??'.recording/ui-coherence-0_15_0/rec
 const server=await preview({preview:{host:'127.0.0.1',port:4199,strictPort:true}}),browser=await chromium.launch();
 const results:object[]=[],errors:string[]=[];
 const read=(p:Page)=>p.evaluate(()=>JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!)as Save);
-function fixture(index=25){const s=freshSave(campaignDeals[index],'ui-recording');s.settings.sfx=false;s.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d=>d.id)};s.campaign={version:1,tutorials:['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock','hint-demo','undo-used']};for(let n=10;n<=index;n+=10)s.profile.rewards.push('milestone:'+n);return s;}
+function fixture(index=25){const s=freshSave(campaignDeals[index],'ui-recording');s.settings.sfx=false;s.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d => campaignId(d.campaignLevel!))};s.campaign={version:1,tutorials:['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock','hint-demo','undo-used']};for(let n=10;n<=index;n+=10)s.profile.rewards.push('milestone:'+n);return s;}
 async function load(p:Page,s:Save){await p.goto('http://127.0.0.1:4199');await p.locator('#app[data-ready=true]').waitFor();await p.evaluate(s=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(s)),s);await p.reload();await p.locator('#app[data-ready=true]').waitFor();await p.evaluate(()=>document.fonts.ready);}
 async function shot(p:Page,name:string){await p.screenshot({path:`${output}/${name}.png`,scale:'css'});}
 async function swipe(p:Page,selector:string){const r=(await p.locator(selector).boundingBox())!,x=r.x+r.width/2,y=r.y+r.height-15;const c=await p.context().newCDPSession(p);await c.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});for(let i=1;i<=10;i++){await c.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:y-(r.height-30)*i/10}]});await p.waitForTimeout(35);}await c.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await c.detach();await p.waitForTimeout(250);}

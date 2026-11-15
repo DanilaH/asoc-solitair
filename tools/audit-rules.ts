@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 /** Audit only. Does not author deals, change runtime rules or write player saves. */
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -110,7 +111,7 @@ function auditState(b:Board,d:Deal) {
     else rejected++;
     if(states%31===0) {
       const save=freshSave(d,'audit-resources');save.attempt.board=structuredClone(b);
-      save.campaign={version:1,tutorials:['hint-demo']};save.platform={receipts:[],continuedAttempts:[],continueCredits:0,winsSinceInterstitial:0,lastFullscreenAt:0,completedCampaign:campaignDeals.slice(0,26).map(d=>d.id)};
+      save.campaign={version:1,tutorials:['hint-demo']};save.platform={receipts:[],continuedAttempts:[],continueCredits:0,winsSinceInterstitial:0,lastFullscreenAt:0,completedCampaign:campaignDeals.slice(0,26).map(d => campaignId(d.campaignLevel!))};
       save.attempt.streak.progress=2;
       const original=JSON.stringify(save),r=dispatch(save,a,d);assert.equal(JSON.stringify(save),original);economyChecks++;
       if(!q) {

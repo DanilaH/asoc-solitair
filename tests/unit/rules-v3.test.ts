@@ -1,5 +1,6 @@
+import {campaignId} from '../../src/domain/progression';
 import { describe, expect, it } from 'vitest';
-import { campaignDeals, findDeal } from '../../src/content/campaign';
+import { legacyCampaignDeals as campaignDeals, findDeal } from '../../src/content/campaign';
 import { dailyForDay, dailyPool } from '../../src/content/daily';
 import { beginDeal } from '../../src/domain/campaign';
 import { switchMode } from '../../src/domain/sessions';
@@ -11,10 +12,10 @@ import { decodeSave, SaveStore } from '../../src/platform/storage';
 import type { Board, BoardCommand, Deal, Save } from '../../src/domain/types';
 
 const transfer=(from:number,to:number,kind:'tableau'|'foundation'='tableau'):BoardCommand=>({type:'transfer',from:{kind:'tableau',index:from},to:{kind,index:to}});
-const unlock=(s:Save)=>{s.platform={receipts:['earned'],continuedAttempts:[],continueCredits:0,winsSinceInterstitial:0,lastFullscreenAt:0,completedCampaign:campaignDeals.slice(0,26).map(d=>d.id)};return s;};
+const unlock=(s:Save)=>{s.platform={receipts:['earned'],continuedAttempts:[],continueCredits:0,winsSinceInterstitial:0,lastFullscreenAt:0,completedCampaign:campaignDeals.slice(0,26).map(d => campaignId(d.campaignLevel!))};return s;};
 function step(s:Save,a:BoardCommand,d:Deal) {const r=dispatch(s,a,d);expect(r.accepted,r.reason).toBe(true);return r.next;}
 function legacy(s:Save):Save {
-  s=structuredClone(s);s.rulesVersion=2;
+  s=structuredClone(s);s.rulesVersion=2;s.contentVersion=5;
   for(const a of [s.attempt,...Object.values(s.parked??{})])for(const b of [a.board,...a.undo])delete b.rulesVersion;
   return s;
 }

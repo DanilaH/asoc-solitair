@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 /** Read-only product audit: isolated QA profile, production touch events and unmodified production bundle. */
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -28,7 +29,7 @@ try {
   const shot=async(name:string)=>{await mark(name);await page.screenshot({path:`${out}/${name}.png`,scale:'css'});};
   await page.goto('http://127.0.0.1:4197');await page.locator('#app[data-ready=true]').waitFor();
   const seed=freshSave(deal,'board-feel-audit');seed.settings.sfx=false;seed.settings.reducedMotion=reduced;
-  seed.platform={receipts:[],continuedAttempts:[],continueCredits:0,winsSinceInterstitial:0,lastFullscreenAt:0,completedCampaign:campaignDeals.slice(0,26).map(d=>d.id)};
+  seed.platform={receipts:[],continuedAttempts:[],continueCredits:0,winsSinceInterstitial:0,lastFullscreenAt:0,completedCampaign:campaignDeals.slice(0,26).map(d => campaignId(d.campaignLevel!))};
   seed.campaign={version:1,tutorials:['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock','hint-demo','undo-used']};
   await page.evaluate(s=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(s)),seed);await page.reload();await page.locator('#app[data-ready=true]').waitFor();
   await mark('enter');await page.locator('#home-play').tap();await page.waitForTimeout(850);await shot('01-idle');

@@ -1,5 +1,10 @@
 # Decisions
 
+## 2026-11-15 — Versioned opening curriculum instead of a live director
+
+Owner authorizes replacement/editing of the first15levels after reporting little development in10+plays. Content6 uses new campaign-c6-NNN identities and keeps all old definitions for active/parked attempts; progress/meta rewards are canonical per level. New attempts/Next use the revised prefix, old restarts retain their own deal. Introduce useful lower grouping, required empty-column use, category priority and targeted uncovering before optional Joker8, ordered9 and keys12; keep breathers and a combined15. Budget follows routes/recovery, not a bot-loss target. Independent oracle + supplied17-tie policy and real UI runs are separate from human enjoyment. Preserve0.16visual direction/audio/performance and rules3/balance3; no shuffle, director, SDK/production change. [Batch scope/evidence](docs/content/OPENING_V6.md).
+
+
 ## 2026-11-14 — Clear home, recorded foley, one wallet and lower render cost
 
 Owner explicitly rejects unclear home, harsh synthetic card/coin noise, directionless reward coins and lag. In0.16/code24 make campaign/action/progress primary and secondary activities readable rows; move the actual shared wallet into the result top layer at its header anchor, drive its visual counter from already durable gains/coin arrivals, skip/reload without duplicate income. Reuse pinned value-transfer planning. Bundle trimmed/normalized CC0 Kenney/Vinrax PCM, preloaded without gesture-time decoding; four voices/quiet gain/faded replacement and modal coin audio. Cache gesture drop legality per unchanged board, stop rebuilding hidden meta, cache shadow/shade textures, cap backing DPR1.5 and disable redundant context MSAA. CSS geometry/rules/bank/economy/save/SDK authority stay unchanged. Controlled profiling is evidence of reduced work, not a physical-phone FPS claim. See [acceptance](docs/qa/FEEL_WALLET_AUDIO_0_16_0.md).

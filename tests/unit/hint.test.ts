@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { resolveHint } from '../../src/domain/hint';
 import { cardReader } from '../../src/game/card-reader';
-import { campaignDeals } from '../../src/content/campaign';
+import { campaignDeals, legacyCampaignDeals } from '../../src/content/campaign';
 import { dailyPool } from '../../src/content/daily';
 import { applyBoard, freshSave } from '../../src/domain/engine';
 import { knownContinuation, solve } from '../../src/domain/solver';
@@ -46,7 +46,7 @@ it('keeps the fast known path, respects budget and gives no hint after a win', (
   expect(resolveHint({ ...d.initial, phase: 'won' }, d)).toEqual({ status: 'UNAVAILABLE' });
 });
 it('the reader restores full category names and explains the actual utensil/dishes boundary', () => {
-  const d = campaignDeals[5], before = JSON.stringify(d), s = freshSave(d, 'reader');
+  const d = legacyCampaignDeals[5], before = JSON.stringify(d), s = freshSave(d, 'reader');
   expect(cardReader(d.cards.kitchen, d)).toEqual({ title: 'Кухонная утварь', description: expect.stringContaining('готовят еду') });
   expect(cardReader(d.cards.dishes, d)).toEqual({ title: 'Посуда', description: expect.stringContaining('кухонной утвари') });
   expect(cardReader(d.cards.kitchen_2, d).description).toBe(d.cards.kitchen_2.explanation);

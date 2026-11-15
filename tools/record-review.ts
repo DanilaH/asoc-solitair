@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 import { pauseOptions } from './qa/navigation';
 import { mkdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
@@ -16,7 +17,7 @@ try {
   const page = await context.newPage(), errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('http://127.0.0.1:4189'); await page.waitForSelector('#app[data-ready="true"]');
   const deal = campaignDeals[16]; let index = 10, save = freshSave(deal, 'qa-layout-review');
-  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 16).map(d => d.id) };
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 16).map(d => campaignId(d.campaignLevel!)) };
   while (deal.winningPath[index].type !== 'transfer') index++;
   for (const cmd of deal.winningPath.slice(0, index)) save = dispatch(save, cmd, deal).next;
   save.attempt.telemetry = { started: true, finished: false, activeMs: 0 };
@@ -54,7 +55,7 @@ try {
   const proof = await browser.newPage({ viewport: { width: 320, height: 568 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   await proof.goto('http://127.0.0.1:4189'); await proof.waitForSelector('#app[data-ready="true"]');
   const ordered = freshSave(campaignDeals[29], 'qa-guidance-review'); ordered.settings.reducedMotion = true;
-  ordered.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 29).map(d => d.id) };
+  ordered.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 29).map(d => campaignId(d.campaignLevel!)) };
   await proof.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), ordered); await proof.reload(); await proof.waitForSelector('#app[data-ready="true"]'); await proof.locator('#home-play').tap(); await wait(proof, 300);
   const size = await proof.locator('#message').evaluate(el => ({ height: el.clientHeight, content: el.scrollHeight }));
   if (size.content > size.height) throw Error('Guidance is clipped');

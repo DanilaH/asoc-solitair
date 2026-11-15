@@ -1,6 +1,6 @@
 {
   "name": "asoc-solitair",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -29,7 +29,8 @@
     "qa:layout": "npm run build && vite build --ssr tools/audit-layout.ts --outDir .recording/audit-source && node .recording/audit-source/audit-layout.js",
     "qa:rules": "vite build --ssr tools/verify-rules-v3.ts --outDir .recording/rules-verify-source && node .recording/rules-verify-source/verify-rules-v3.js",
     "qa:prototypes:build": "vite build --config vite.prototypes.config.ts",
-    "qa:prototypes:validate": "vite build --ssr tools/prototypes/validate.ts --outDir .recording/prototypes-validator && node .recording/prototypes-validator/validate.js"
+    "qa:prototypes:validate": "vite build --ssr tools/prototypes/validate.ts --outDir .recording/prototypes-validator && node .recording/prototypes-validator/validate.js",
+    "qa:opening": "vite build --ssr tools/audit-opening.ts --outDir .recording/opening-audit-source && node .recording/opening-audit-source/audit-opening.js"
   },
   "dependencies": {
     "@capacitor/android": "8.6.0",

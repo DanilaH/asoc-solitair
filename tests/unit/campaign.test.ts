@@ -57,7 +57,7 @@ describe('linear campaign ownership', () => {
     let raw=JSON.stringify(old);const store=new SaveStore({getItem:async()=>raw,setItem:async(_k,v)=>{raw=v},removeItem:async()=>undefined},findDeal,()=>freshSave(campaignDeals[0],'new'));
     await store.open();expect(store.state.attempt.id).toBe('legacy');
     await store.mutate(next=>beginDeal(next,campaignDeals[0],'campaign-start'));
-    expect(store.state.profile.coins).toBe(378);expect(store.state.profile.hints).toBe(0);expect(JSON.parse(raw).attempt.dealId).toBe('campaign-001');
+    expect(store.state.profile.coins).toBe(378);expect(store.state.profile.hints).toBe(0);expect(JSON.parse(raw).attempt.dealId).toBe(campaignDeals[0].id);
     const invalid=structuredClone(old);invalid.attempt.dealId='deleted-level';expect(()=>decodeSave(JSON.stringify(invalid),findDeal)).toThrow();
   });
 });

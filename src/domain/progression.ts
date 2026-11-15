@@ -1,6 +1,6 @@
 import type { Deal, Save } from './types';
 export const CAMPAIGN_LENGTH = 80;
-export const HELPER_UNLOCK = { hint: 3, undo: 4, joker: 21 } as const;
+export const HELPER_UNLOCK = { hint: 3, undo: 4, joker: 8 } as const;
 export const campaignId = (level: number) => `campaign-${String(level).padStart(3, '0')}`;
 export function completedLevels(save: Save): number {
   const ids = save.platform?.completedCampaign ?? [];

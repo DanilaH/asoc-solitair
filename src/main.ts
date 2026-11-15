@@ -3,7 +3,7 @@ import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-ki
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
 import { campaignDeals, findDeal } from './content/campaign';
-import { CAMPAIGN_LENGTH, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, markTutorial } from './domain/progression';
+import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, markTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { dailyForDay } from './content/daily';
 import { switchMode } from './domain/sessions';
@@ -422,7 +422,7 @@ try {
       const button = document.createElement('button'); button.className = 'level-button'; button.dataset.level = String(level.campaignLevel); button.id = `level-${level.campaignLevel}`; grid.append(button);
     }
     for (const button of grid.querySelectorAll<HTMLButtonElement>('button')) {
-      const level = Number(button.dataset.level), item = campaignDeals[level - 1], done = save.platform?.completedCampaign.includes(item.id) ?? false;
+      const level = Number(button.dataset.level), item = campaignDeals[level - 1], done = save.platform?.completedCampaign.includes(campaignId(level)) ?? false;
       button.hidden = Math.floor((level - 1) / 20) !== chapterPage;
       button.textContent = String(level); button.disabled = level > unlocked || !ready || saving || serviceBusy;
       button.dataset.active = String(current && campaign?.dealId === item.id);
@@ -499,7 +499,7 @@ try {
     const campaign = campaignAttempt(save);
     if (save.attempt.daily && campaign?.dealId === target.id && campaign.board.phase === 'playing') { await activateMode('campaign'); return; }
     if (target.id === deal.id && save.attempt.board.phase === 'playing') { closeDialogs(); showGame(); return; }
-    if (!confirmed && campaign?.board.phase === 'playing' && campaign.telemetry?.started) {
+    if (!confirmed && campaign?.board.phase === 'playing' && (campaign.telemetry?.started || campaign.undo.length > 0)) {
       requestedLevel = level; $('#switch-title').textContent = `Начать уровень ${level}?`; openDialog('#switch-level'); return;
     }
     closeDialogs(); serviceBusy = true; renderHome();

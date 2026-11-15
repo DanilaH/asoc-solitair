@@ -1,3 +1,7 @@
+# Current iteration —0.17/content6 opening curve
+
+Owner-approved revision of levels1–15 implemented under new immutable IDs.105unit/platform,123deals/231current+legacy paths/258914independent comparisons,340exact baseline-policy reproductions and255new diagnostic runs pass. Independent restricted search proves8helperless preparation episodes;46targeted browser cases pass including every new level on two profiles, reload, optional Joker and historical-attempt switching. Full source CI/layout/media/signed test APK pending. [Scope and owner playtest](docs/content/OPENING_V6.md). Original definitions/daily and0.16UI/audio/wallet/performance remain unchanged.
+
 # Current iteration —0.16 menu/audio/wallet/performance
 
 Owner-requested five-point correction implemented.94unit/platform and focused wallet/menu/audio cases pass;120screens captured. Signed0.16/code24 APK matches all208runtime files, native builds pass, APK/actual-audio MP4/GIF/PNG saved. Full final-source CI passes204browser cases, all80touch wins,119layout states0DOM/0raster and both Android builds. Physical-phone acceptance remains open. [Scope/status](docs/qa/FEEL_WALLET_AUDIO_0_16_0.md). No rules/content/economy expansion.

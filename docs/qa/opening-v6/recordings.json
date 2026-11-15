@@ -1,0 +1,369 @@
+{
+  "source": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
+  "rows": [
+    {
+      "name": "level03-group",
+      "level": 3,
+      "commands": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "phase": "won",
+      "modelMatches": true,
+      "initialSha256": "5525ba001aff57d0f8859cc747aadf066cbc08b2251a7a5a855c470d212b1add",
+      "helperCharges": 1
+    },
+    {
+      "name": "level04-space",
+      "level": 4,
+      "commands": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "phase": "won",
+      "modelMatches": true,
+      "initialSha256": "4fa3c4f1a74db7cdffc961229b0dc6d23f1e623037ede98147b9430cb790d586",
+      "helperCharges": 1
+    },
+    {
+      "name": "level08-joker",
+      "level": 8,
+      "commands": [
+        {
+          "type": "place-joker",
+          "column": 0
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        }
+      ],
+      "phase": "playing",
+      "modelMatches": true,
+      "initialSha256": "e97ec5b700da530967fda82ec0db9d5d508b7370bcadd24e611f6b387cd8352d",
+      "helperCharges": 0
+    },
+    {
+      "name": "level10-interval",
+      "level": 10,
+      "commands": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        }
+      ],
+      "phase": "playing",
+      "modelMatches": true,
+      "initialSha256": "548bc5493190b763b4657019ad08d14f6fa9e6888969c2635e42b4f78f15d60f",
+      "helperCharges": 1
+    },
+    {
+      "name": "level15-keys",
+      "level": 15,
+      "commands": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        }
+      ],
+      "phase": "playing",
+      "modelMatches": true,
+      "initialSha256": "8afd8ad6f4ae146a8b504d9d1f2d118d43944b89225251e4d1e1110cc77c39f2",
+      "helperCharges": 1
+    }
+  ],
+  "errors": [],
+  "notes": "Separate legal prepared states, actual production drag/tap. Winning/prefix witnesses are scripted; no human/blind/enjoyment claim. Original1x; temporary8px marker/setup removed only from exports. No runtime test bridge or clock changes."
+}

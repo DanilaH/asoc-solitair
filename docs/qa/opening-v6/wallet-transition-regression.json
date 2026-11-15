@@ -1,0 +1,50 @@
+{
+  "initialRuntimeSource": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
+  "initialPush": {
+    "run": 43702392116,
+    "browserPassed": 240,
+    "skipped": 4
+  },
+  "duplicatePR": {
+    "run": 43702611492,
+    "webJob": 132776803147,
+    "browserPassed": 239,
+    "failed": 1,
+    "skipped": 4,
+    "failure": "fresh win coin first-count/first-sound gap 749.1ms"
+  },
+  "trace": {
+    "profileBefore": 102,
+    "resultOpenedAtMs": 2433.9,
+    "firstCountAtMs": 2443.4,
+    "firstCount": 105,
+    "firstCoinSoundAtMs": 3192.5,
+    "remainingSoundsAtMs": [
+      3342.4,
+      3509.3
+    ],
+    "largestObservedFrameGapMs": 119.2
+  },
+  "cause": "Opening the result calls wallet.cancel(false). If a core streak flight is still active, reserved income is painted immediately and its flight/sound cancelled. Fixed 880ms outcome deadline could race delayed card contact plus flight.",
+  "fix": "Wait for actual pending flights and displayed goal to settle before result transition. No domain, save, economy, card geometry or audio sample/budget change.",
+  "negativeControl": {
+    "runtimeBuild": "77081a5",
+    "realBrowserProfiles": [
+      "phone",
+      "compact"
+    ],
+    "failures": 2,
+    "assertion": "result prematurely visible during injected 1000ms wallet RAF hold",
+    "log": "/tmp/asoc-017-wallet-negative.log"
+  },
+  "finalFocusedStatus": "PASS on phone and compact after the actual-settlement gate; both old negative controls FAIL as expected.",
+  "finalSource": "PENDING",
+  "localChecks": {
+    "unitPlatform": 105,
+    "localExhaustiveTestTimeoutMs": 15000,
+    "unitAssertionsChanged": false,
+    "contentValidation": "PASS",
+    "typecheckBuild": "PASS",
+    "delayedWalletBrowserPassed": 2
+  }
+}

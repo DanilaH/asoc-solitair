@@ -10,6 +10,8 @@ export class WalletPresentation {
     this.pool=Array.from({length:12},()=>{const node=document.createElement('span');node.className='flying-coin';node.setAttribute('aria-hidden','true');layer.append(node);return node;});this.paint();
   }
   get active(){return this.flights.length>0;}
+  /** A following panel must not cancel an income batch before its last arrival/count. */
+  get settling(){return this.flights.length>0||this.value!==this.goal;}
   get pending(){return Math.max(0,this.target-this.reserved);}
   sync(total:number,defer=false){
     if(total===this.target)return;

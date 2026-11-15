@@ -1,0 +1,102 @@
+{
+  "source": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
+  "speed": 1,
+  "viewport": [
+    360,
+    780
+  ],
+  "sourceFps": 25,
+  "gifFps": 15,
+  "notes": "Five separate actual production-input browser scenes, scripted legal moves; setup trimmed by observed marker. No speed-up, no captured audio, no physical phone or blind human playtest.",
+  "scenes": [
+    {
+      "scene": "level03-group",
+      "sourceSeconds": 14.6,
+      "markerFrame": 61,
+      "trimSeconds": 2.6799999999999997,
+      "exportedSeconds": 11.92
+    },
+    {
+      "scene": "level04-space",
+      "sourceSeconds": 19.64,
+      "markerFrame": 89,
+      "trimSeconds": 3.8,
+      "exportedSeconds": 15.84
+    },
+    {
+      "scene": "level08-joker",
+      "sourceSeconds": 10.72,
+      "markerFrame": 65,
+      "trimSeconds": 2.84,
+      "exportedSeconds": 7.88
+    },
+    {
+      "scene": "level10-interval",
+      "sourceSeconds": 10.4,
+      "markerFrame": 72,
+      "trimSeconds": 3.12,
+      "exportedSeconds": 7.28
+    },
+    {
+      "scene": "level15-keys",
+      "sourceSeconds": 12.8,
+      "markerFrame": 70,
+      "trimSeconds": 3.04,
+      "exportedSeconds": 9.76
+    }
+  ],
+  "files": [
+    {
+      "name": "asoc-solitair-0.17.0-preview.apk",
+      "path": "/workspace/scratch/50187ffca82b/asoc-017-media/asoc-solitair-0.17.0-preview.apk",
+      "bytes": 11736981,
+      "sha256": "160ec40fdcd8970755b10c695b8e01f9c06cbbde5b423e37b235ec934b657b15",
+      "library_file_id": "libfile_fde3_f-0539fd5f24548191991b5044a4dfb1ef_2841ca9da26c8191b7a266fa9b41a810",
+      "library_file_name": "asoc-solitair-0.17.0-preview.apk",
+      "status": "succeeded",
+      "file_id": "file_000000000ef481f4b6ca610f7e39e877",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "library_path": "/asoc-solitair-0.17.0-preview.apk"
+    },
+    {
+      "name": "asoc-0.17-preparation.gif",
+      "path": "/workspace/scratch/50187ffca82b/asoc-017-media/asoc-0.17-preparation.gif",
+      "bytes": 4932169,
+      "sha256": "84778535b76dbc4a2cbb5e87f26753af3b1116c75a88db506127a86b951bc852",
+      "library_file_id": "libfile_fde3_f-b58aaa2fe6b881919657811079c5914c_2841ca9da26c8191b7a266fa9b41a810",
+      "library_file_name": "asoc-0.17-preparation.gif",
+      "status": "succeeded",
+      "file_id": "file_00000000e72881f6bb41479e7d0ff507",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "library_path": "/asoc-0.17-preparation.gif"
+    },
+    {
+      "name": "asoc-0.17-modifiers.gif",
+      "path": "/workspace/scratch/50187ffca82b/asoc-017-media/asoc-0.17-modifiers.gif",
+      "bytes": 4493470,
+      "sha256": "670a7697659b47b52293688a47a637df29bf3cbd3c3c751d2b8506a6ac4f0d89",
+      "library_file_id": "libfile_fde3_f-64788e09a3d88191a15d9d43ff83ff2a_2841ca9da26c8191b7a266fa9b41a810",
+      "library_file_name": "asoc-0.17-modifiers.gif",
+      "status": "succeeded",
+      "file_id": "file_0000000016d881f4986d2e51eaf70220",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "library_path": "/asoc-0.17-modifiers.gif"
+    },
+    {
+      "name": "asoc-0.17-examples.png",
+      "path": "/workspace/scratch/50187ffca82b/asoc-017-media/asoc-0.17-examples.png",
+      "bytes": 368691,
+      "sha256": "d0a87a452f02f319b4f1a866be1cad78e95b4c03aafa61eea7832889f8c93a41",
+      "library_file_id": "libfile_fde3_f-c1c5f692b39c81918d8dd393c47ab5ff_2841ca9da26c8191b7a266fa9b41a810",
+      "library_file_name": "asoc-0.17-examples.png",
+      "status": "succeeded",
+      "file_id": "file_0000000042f881f4a37275947f2ea488",
+      "current_version_number": 0,
+      "local_metadata_applied": true,
+      "library_path": "/asoc-0.17-examples.png"
+    }
+  ]
+}

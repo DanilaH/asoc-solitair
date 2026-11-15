@@ -278,6 +278,11 @@ try {
   }
   function outcome() {
     if (save.attempt.board.phase === 'playing') return;
+    // Core streak income can start after card contact. Wait for its actual
+    // arrival/count rather than cancelling it at the fixed result deadline.
+    if (save.attempt.board.phase === 'won' && wallet?.settling) {
+      outcomeTimer = setTimeout(outcome, 32); return;
+    }
     // A local result coin layer must join the dialog's top layer to stay visible.
     $('#result').dataset.won = String(save.attempt.board.phase === 'won');
     const won = save.attempt.board.phase === 'won';

@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 import { chromium } from '@playwright/test';
 import { preview } from 'vite';
 import { mkdir, writeFile, access } from 'node:fs/promises';
@@ -45,7 +46,7 @@ try{
   await page.goto('http://127.0.0.1:4193');await page.locator('#app[data-ready=true]').waitFor();
   for(const c of cases.values()){
    const seed=structuredClone(c.save);seed.settings.reducedMotion=true;
-   seed.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,(c.deal.campaignLevel??1)-1).map(d=>d.id)};
+   seed.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,(c.deal.campaignLevel??1)-1).map(d => campaignId(d.campaignLevel!))};
    seed.campaign={version:1,tutorials:['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock']};
    await page.evaluate(s=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(s)),seed);
    await page.reload();await page.locator('#app[data-ready=true]').waitFor();await page.locator('#home-play').tap();

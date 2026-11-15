@@ -1,0 +1,341 @@
+{
+  "contentVersion": 6,
+  "baseline": "a9e9b43d629d24ae2ae92d39a5b315c9f332ec4e",
+  "notes": [
+    {
+      "level": 1,
+      "id": "campaign-c6-001",
+      "role": "Короткое обучение",
+      "decision": "Открыть тему и завершить две группы.",
+      "difference": "Первое знакомство, без лимита.",
+      "budget": null,
+      "witness": 6,
+      "slack": null,
+      "structural": {
+        "withoutLower": {
+          "status": "FOUND",
+          "shortest": 6,
+          "visited": 12
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 6,
+          "visited": 26
+        }
+      }
+    },
+    {
+      "level": 2,
+      "id": "campaign-c6-002",
+      "role": "Короткое обучение",
+      "decision": "Добыть недостающие карты из колоды; видеть прошлые открытия.",
+      "difference": "После переноса появляется добор, без штрафа за исследование.",
+      "budget": null,
+      "witness": 12,
+      "slack": null,
+      "structural": {
+        "withoutLower": {
+          "status": "FOUND",
+          "shortest": 12,
+          "visited": 396
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 12,
+          "visited": 769
+        }
+      }
+    },
+    {
+      "level": 3,
+      "id": "campaign-c6-003",
+      "role": "Изолированный приём",
+      "decision": "Объединить две нижние карты, чтобы открыть тему.",
+      "difference": "Впервые верхние слоты не помогают без нижней подготовки.",
+      "budget": 12,
+      "witness": 6,
+      "slack": 6,
+      "structural": {
+        "withoutLower": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 1
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 6,
+          "visited": 17
+        }
+      }
+    },
+    {
+      "level": 4,
+      "id": "campaign-c6-004",
+      "role": "Изолированный приём",
+      "decision": "Освободить столбец и использовать его для временной группы.",
+      "difference": "Совпадений недостаточно: требуется пустое место, а не ещё одна тема наверху.",
+      "budget": 15,
+      "witness": 9,
+      "slack": 6,
+      "structural": {
+        "withoutLower": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 3
+        },
+        "withoutEmpty": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 7
+        }
+      }
+    },
+    {
+      "level": 5,
+      "id": "campaign-c6-005",
+      "role": "Передышка",
+      "decision": "Узнать знакомые группы и спокойно завершить их через добор.",
+      "difference": "После тесного поля снова доступно прямое решение.",
+      "budget": 19,
+      "witness": 12,
+      "slack": 7,
+      "structural": {
+        "withoutLower": {
+          "status": "FOUND",
+          "shortest": 12,
+          "visited": 266
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 12,
+          "visited": 377
+        }
+      }
+    },
+    {
+      "level": 6,
+      "id": "campaign-c6-006",
+      "role": "Выбор приоритета",
+      "decision": "Выбрать тему для единственного верхнего слота и заранее подготовить доступ к её картам.",
+      "difference": "После передышки нужно выбрать порядок трёх тем; другой выбор поправим.",
+      "budget": 14,
+      "witness": 9,
+      "slack": 5,
+      "structural": {
+        "withoutLower": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 4
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 9,
+          "visited": 29
+        }
+      }
+    },
+    {
+      "level": 7,
+      "id": "campaign-c6-007",
+      "role": "Комбинация",
+      "decision": "Сдвинуть подходящую группу ради конкретной видимой темы под ней.",
+      "difference": "Два слота возвращаются, но цепочка открытия важнее заполнения первого доступного.",
+      "budget": 15,
+      "witness": 9,
+      "slack": 6,
+      "structural": {
+        "withoutLower": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 1
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 9,
+          "visited": 48
+        }
+      }
+    },
+    {
+      "level": 8,
+      "id": "campaign-c6-008",
+      "role": "Необязательный помощник",
+      "decision": "Джокер держит чужую группу, пока открывается нужная карта.",
+      "difference": "После задач на порядок и доступ появляется временная опора; без её расхода есть полноценная победа.",
+      "budget": 18,
+      "witness": 12,
+      "slack": 6,
+      "structural": {
+        "withoutLower": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 2
+        },
+        "withoutEmpty": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 4
+        }
+      },
+      "joker": {
+        "column": 0,
+        "chargedMoves": 11,
+        "plainShortest": 12
+      }
+    },
+    {
+      "level": 9,
+      "id": "campaign-c6-009",
+      "role": "Знакомство с правилом",
+      "decision": "Собрать знакомые дни недели по явным номерам.",
+      "difference": "Новая связь между карточками вместо более тесной обычной сортировки.",
+      "budget": 14,
+      "witness": 8,
+      "slack": 6,
+      "structural": {
+        "withoutLower": {
+          "status": "FOUND",
+          "shortest": 8,
+          "visited": 9
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 8,
+          "visited": 69
+        }
+      }
+    },
+    {
+      "level": 10,
+      "id": "campaign-c6-010",
+      "role": "Применение правила",
+      "decision": "Соединить соседние №2 и №3, освободить №1, затем перенести готовый интервал.",
+      "difference": "По сравнению с9 требуется подготовка последовательности внизу.",
+      "budget": 14,
+      "witness": 8,
+      "slack": 6,
+      "structural": {
+        "withoutLower": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 2
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 8,
+          "visited": 198
+        }
+      }
+    },
+    {
+      "level": 11,
+      "id": "campaign-c6-011",
+      "role": "Передышка",
+      "decision": "Завершить две обычные группы с коротким добором.",
+      "difference": "Нет нового ограничения и не нужна последовательность.",
+      "budget": 17,
+      "witness": 10,
+      "slack": 7,
+      "structural": {
+        "withoutLower": {
+          "status": "FOUND",
+          "shortest": 10,
+          "visited": 214
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 10,
+          "visited": 932
+        }
+      }
+    },
+    {
+      "level": 12,
+      "id": "campaign-c6-012",
+      "role": "Знакомство с правилом",
+      "decision": "Открыть три ключевые карты и увидеть, как освобождается последний столбец.",
+      "difference": "Короткое введение замка после спокойной обычной раздачи.",
+      "budget": 14,
+      "witness": 8,
+      "slack": 6,
+      "structural": {
+        "withoutLower": {
+          "status": "FOUND",
+          "shortest": 8,
+          "visited": 149
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 8,
+          "visited": 896
+        }
+      }
+    },
+    {
+      "level": 13,
+      "id": "campaign-c6-013",
+      "role": "Применение правила",
+      "decision": "Подготовить нижнюю группу, чтобы добраться до ключа при двух занятых темах.",
+      "difference": "Ключи уже известны; теперь их доступ зависит от нижней перестановки.",
+      "budget": 17,
+      "witness": 11,
+      "slack": 6,
+      "structural": {
+        "withoutLower": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 27
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 11,
+          "visited": 261
+        }
+      }
+    },
+    {
+      "level": 14,
+      "id": "campaign-c6-014",
+      "role": "Закрепление / передышка",
+      "decision": "Вспомнить порядок дней и одним переносом завершить уже готовую группу.",
+      "difference": "После ключевой задачи нет нового правила; короткая выплата за освоенные группы.",
+      "budget": 14,
+      "witness": 7,
+      "slack": 7,
+      "structural": {
+        "withoutLower": {
+          "status": "FOUND",
+          "shortest": 9,
+          "visited": 18
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 7,
+          "visited": 125
+        }
+      }
+    },
+    {
+      "level": 15,
+      "id": "campaign-c6-015",
+      "role": "Комбинация",
+      "decision": "Подготовить интервал, открыть ключи и освободить место под нужную тему.",
+      "difference": "Впервые объединяются освоенные порядок, доступ к ключам и выбор слота.",
+      "budget": 21,
+      "witness": 14,
+      "slack": 7,
+      "structural": {
+        "withoutLower": {
+          "status": "UNSOLVABLE",
+          "shortest": null,
+          "visited": 2
+        },
+        "withoutEmpty": {
+          "status": "FOUND",
+          "shortest": 14,
+          "visited": 886
+        }
+      }
+    }
+  ]
+}

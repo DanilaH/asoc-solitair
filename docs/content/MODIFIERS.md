@@ -1,3 +1,5 @@
+> Current content6 pacing: Joker8, ordered9, keys12, combined15. This chapter below is the frozen historical definition, still used by old attempts and as later practice. See [current opening](OPENING_V6.md); no old initial state or price was rewritten.
+
 # Rule extensions — development chapter
 
 Version 0.4.0, rules/content/balance 2/3/2. The first twenty ordinary deals in campaign.json remain byte-for-byte unchanged. Six deals are appended from src/content/modifiers.ts; this is a development chapter, not a final release-size bank or approved introduction pacing. Preliminary unlock placements 6/9/13 are superseded for this build by 21/23/25 to protect existing attempts.

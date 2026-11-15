@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 import { pauseOptions } from './qa/navigation';
 import { mkdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
@@ -58,7 +59,7 @@ try {
   const p = await dense.newPage(); p.on('pageerror', e => errors.push(e.message));
   await p.goto('http://127.0.0.1:4186'); await p.waitForSelector('#app[data-ready=true]');
   const deal = campaignDeals[16]; let index = 0, seed = freshSave(deal, 'qa-feel-dense');
-  seed.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 16).map(d => d.id) };
+  seed.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 16).map(d => campaignId(d.campaignLevel!)) };
   while (index < deal.winningPath.length - 1 && !dispatch(seed, deal.winningPath[index], deal).events.some(e => e.type === 'complete')) seed = dispatch(seed, deal.winningPath[index++], deal).next;
   seed.attempt.telemetry = { started: true, finished: false, activeMs: 0 };
   await p.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), seed); await p.reload(); await p.waitForSelector('#app[data-ready=true]'); await p.locator('#home-play').tap(); await wait(p, 800);

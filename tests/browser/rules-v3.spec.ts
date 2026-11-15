@@ -1,12 +1,13 @@
+import {campaignId} from '../../src/domain/progression';
 import { expect, test, type Page, type BrowserContext } from '@playwright/test';
-import { campaignDeals } from '../../src/content/campaign';
+import { legacyCampaignDeals as campaignDeals } from '../../src/content/campaign';
 import { freshSave, dispatch, packet } from '../../src/domain/engine';
 import { boardFrame, layout } from '../../src/game/layout';
 import type { Board, BoardCommand, Deal, Save } from '../../src/domain/types';
 const read=(p:Page)=>p.evaluate(()=>JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
 function saveFor(d:Deal) {
   const s=freshSave(d,'rules-browser');s.settings.reducedMotion=true;
-  s.platform={receipts:['earned'],continuedAttempts:[],continueCredits:0,winsSinceInterstitial:0,lastFullscreenAt:0,completedCampaign:campaignDeals.slice(0,26).map(d=>d.id)};
+  s.platform={receipts:['earned'],continuedAttempts:[],continueCredits:0,winsSinceInterstitial:0,lastFullscreenAt:0,completedCampaign:campaignDeals.slice(0,26).map(d => campaignId(d.campaignLevel!))};
   s.campaign={version:1,tutorials:['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock','hint-demo','undo-used']};return s;
 }
 async function open(p:Page,s:Save) {
@@ -38,7 +39,7 @@ test('new flashlight drop refuses by drag and tap; upper collection and Undo sti
   await expect.poll(async()=>(await read(page)).attempt.board.foundations[1]).toEqual(['lights']);expect((await read(page)).attempt.board.rulesVersion).toBe(3);
 });
 test('old saved attempt keeps its legal move and Undo; confirmed restart changes to new rules',async({page,context})=>{
-  const d=campaignDeals[5],s=saveFor(d);s.rulesVersion=2;delete s.attempt.board.rulesVersion;
+  const d=campaignDeals[5],s=saveFor(d);s.rulesVersion=2;s.contentVersion=5;delete s.attempt.board.rulesVersion;
   await open(page,s);const old=await read(page);expect(old.attempt.board.rulesVersion).toBe(2);
   await move(page,context,d,transfer(0,1),true);await expect.poll(async()=>(await read(page)).attempt.board.movesLeft).toBe(31);
   const moved=await read(page);await resume(page);expect((await read(page)).attempt.board).toEqual(moved.attempt.board);
@@ -54,7 +55,7 @@ test('a valid old 301-command save recovers; one more real move and reload keep 
   const d=campaignDeals[0];let s=saveFor(d);const all:Board[]=[];
   const step=(a:BoardCommand)=>{all.push(structuredClone(s.attempt.board));const r=dispatch(s,a,d);if(!r.accepted)throw Error(r.reason);s=r.next;};
   d.winningPath.slice(0,5).forEach(step);for(let i=0;i<296;i++)step(transfer(i%2===0?1:0,i%2===0?0:1));
-  s.rulesVersion=2;s.attempt.undo=all;for(const b of [s.attempt.board,...s.attempt.undo])delete b.rulesVersion;
+  s.rulesVersion=2;s.contentVersion=5;s.attempt.undo=all;for(const b of [s.attempt.board,...s.attempt.undo])delete b.rulesVersion;
   const board=structuredClone(s.attempt.board),profile=structuredClone(s.profile);await open(page,s);
   expect((await read(page)).attempt.undo).toHaveLength(300);expect((await read(page)).attempt.board.tableau).toEqual(board.tableau);expect((await read(page)).profile).toEqual(profile);
   const from=board.tableau.findIndex(c=>c.length>0),to=1-from;await move(page,context,d,transfer(from,to));

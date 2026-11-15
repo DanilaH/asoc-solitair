@@ -1,3 +1,4 @@
+import {campaignId} from '../../src/domain/progression';
 import { pauseOptions } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
@@ -10,7 +11,7 @@ const read=(p:Page)=>p.evaluate(()=>JSON.parse(localStorage.getItem('asoc-solita
 async function load(p:Page,index:number,change?:(s:Save)=>void) {
   await p.goto('/');await p.locator('#app[data-ready=true]').waitFor();
   let s=freshSave(campaignDeals[index],'experience-test');s.settings.reducedMotion=true;
-  s.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d=>d.id)};
+  s.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d => campaignId(d.campaignLevel!))};
   change?.(s);await p.evaluate(s=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(s)),s);
   await p.reload();await p.locator('#app[data-ready=true]').waitFor();await p.locator('#home-play').tap();
 }
@@ -73,7 +74,7 @@ test('a milestone previews its real cosmetic and applying it grants no extra rew
   await page.reload();await page.locator('#app[data-ready=true]').waitFor();await page.locator('#home-play').tap();await expect(page.locator('#apply-unlock')).toHaveText('Применено');expect((await read(page)).profile).toEqual(before.profile);
 });
 test('pause exposes three game actions, preferences expand, and the saved replay is marked separately',async({page})=>{
-  await load(page,16,s=>{s.platform!.completedCampaign=campaignDeals.slice(0,25).map(d=>d.id)});
+  await load(page,16,s=>{s.platform!.completedCampaign=campaignDeals.slice(0,25).map(d => campaignId(d.campaignLevel!))});
   const wallet=(await page.locator('#wallet-open').boundingBox())!;expect(wallet.height).toBeGreaterThanOrEqual(44);
   await page.locator('#menu').tap();await expect(page.locator('#appearance-settings')).toBeHidden();await expect(page.locator('#settings-done')).toBeVisible();await expect(page.locator('#restart')).toBeVisible();await expect(page.locator('#levels-open')).toBeVisible();
   await pauseOptions(page);await expect(page.locator('#appearance-settings')).toBeVisible();await expect(page.locator('#haptics')).toBeVisible();await page.locator('#pause-options summary').tap();await page.locator('#levels-open').tap();await page.locator('#level-picker-open').tap();await expect(page.locator('#level-17')).toHaveAttribute('data-active','true');await page.locator('#chapter-next').tap();await expect(page.locator('#level-26')).toHaveAttribute('data-next','true');

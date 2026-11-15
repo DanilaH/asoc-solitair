@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 import { mkdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { chromium, type Page } from '@playwright/test';
@@ -29,7 +30,7 @@ try {
     const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
     await page.goto('http://127.0.0.1:4183'); await page.waitForSelector('#app[data-ready="true"]');
     const save = freshSave(deal, `qa-${name}`);
-    save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0, completedCampaign: campaignDeals.slice(0, deal.campaignLevel! - 1).map(d => d.id) };
+    save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0, completedCampaign: campaignDeals.slice(0, deal.campaignLevel! - 1).map(d => campaignId(d.campaignLevel!)) };
     await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), save);
     await page.reload(); await page.waitForSelector('#app[data-ready="true"]'); await page.locator('#home-play').tap(); await page.waitForTimeout(1100);
     await page.screenshot({ path: `docs/qa/modifier-${name}.png`, scale: 'css' });

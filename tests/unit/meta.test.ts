@@ -1,3 +1,4 @@
+import {campaignId} from '../../src/domain/progression';
 import { describe, expect, it } from 'vitest';
 import { campaignDeals, findDeal } from '../../src/content/campaign';
 import { dailyForDay, dailyPool } from '../../src/content/daily';
@@ -13,7 +14,7 @@ function play(save: Save, deal: Deal, today = '') {
   return save;
 }
 function completed(save: Save, n: number) {
-  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, n).map(d => d.id) };
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, n).map(d => campaignId(d.campaignLevel!)) };
 }
 describe('compact campaign goals', () => {
   it('pays the fifth win and tenth milestone in one durable result, with no duplicate on replay/reload', () => {

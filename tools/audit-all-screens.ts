@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 /** Independent rendered-state audit. Only legal model fixtures + real UI actions. */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -20,7 +21,7 @@ function seed(index = 16, kind = 'normal') {
   const deal = kind === 'stale-daily' ? dailyForDay('2026-11-13') : campaignDeals[index];
   let s = freshSave(deal, 'all-screens-audit');
   s.settings.sfx = false; s.settings.reducedMotion = false;
-  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0,index).map(d=>d.id) };
+  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0,index).map(d => campaignId(d.campaignLevel!)) };
   s.campaign = { version:1, tutorials:[...learned] };
   for(let level=10;level<=index;level+=10)s.profile.rewards.push('milestone:'+level);
   s.meta!.cycles=Math.floor(index/5);

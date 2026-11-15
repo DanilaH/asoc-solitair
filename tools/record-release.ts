@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 import { mkdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { chromium, type Page } from '@playwright/test';
@@ -11,7 +12,7 @@ const read = (p: Page) => p.evaluate(() => JSON.parse(localStorage.getItem('asoc
 const wait = (p: Page, n = 650) => p.waitForTimeout(n);
 function fixture(level: number) {
   const s = freshSave(campaignDeals[level - 1], `qa-release-${level}`); s.meta!.winCycle = 3;
-  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, level - 1).map(d => d.id) };
+  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, level - 1).map(d => campaignId(d.campaignLevel!)) };
   for (let n = 10; n < level; n += 10) s.profile.rewards.push(`milestone:${n}`); return s;
 }
 async function move(page: Page, deal: Deal, cmd: BoardCommand) {

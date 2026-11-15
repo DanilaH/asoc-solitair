@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 import { mkdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { chromium, type Page } from '@playwright/test';
@@ -32,7 +33,7 @@ try{
     }else{
       // A valid restored profile reaches the same production route; there is no runtime test bridge.
       const deal=campaignDeals[16],fixture=freshSave(deal,'qa-dense');
-      fixture.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,16).map(d=>d.id)};
+      fixture.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,16).map(d => campaignId(d.campaignLevel!))};
       await page.evaluate(({key,fixture})=>localStorage.setItem(key,JSON.stringify(fixture)),{key,fixture});await page.reload();await page.waitForSelector('#app[data-ready="true"]');await page.locator('#home-play').tap();await page.waitForTimeout(1000);
       await page.screenshot({path:'docs/qa/campaign-dense.png',scale:'css'});
       await page.locator('#inspect').tap();

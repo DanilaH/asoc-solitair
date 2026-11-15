@@ -1,6 +1,7 @@
+import {campaignId} from '../../src/domain/progression';
 import { expect, test, type Page } from '@playwright/test';
 import sharp from 'sharp';
-import { campaignDeals } from '../../src/content/campaign';
+import { legacyCampaignDeals as campaignDeals, campaignDeals as currentCampaignDeals } from '../../src/content/campaign';
 import { dispatch, freshSave, packet } from '../../src/domain/engine';
 import { boardFrame, cardMetrics, layout } from '../../src/game/layout';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
@@ -9,7 +10,7 @@ const read = (p: Page) => p.evaluate(() => JSON.parse(localStorage.getItem('asoc
 async function seed(page: Page, deal: Deal, state: Save) {
   await page.goto('/'); await page.locator('#app[data-ready=true]').waitFor();
   state.settings.sfx = false; state.settings.reducedMotion = false;
-  state.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, Math.max(26, (deal.campaignLevel ?? 1) - 1)).map(d => d.id) };
+  state.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, Math.max(26, (deal.campaignLevel ?? 1) - 1)).map(d => campaignId(d.campaignLevel!)) };
   state.campaign = { version: 1, tutorials: ['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock','hint-demo','undo-used'] };
   await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), state);
   await page.reload(); await page.locator('#app[data-ready=true]').waitFor(); await page.locator('#home-play').tap(); await page.waitForTimeout(300);
@@ -53,12 +54,12 @@ async function patchMean(buffer: Buffer, point: { x: number; y: number }) {
 test('a new first game and Next finish their entry with usable card positions', async ({ page }) => {
   await page.goto('/'); await page.locator('#app[data-ready=true]').waitFor();
   await expect(page.locator('#app')).toHaveAttribute('data-screen', 'game');
-  const first = campaignDeals[0]; expect((await read(page)).attempt.dealId).toBe(first.id);
+  const first = currentCampaignDeals[0]; expect((await read(page)).attempt.dealId).toBe(first.id);
   await page.waitForTimeout(380);
   for (const cmd of first.winningPath) { await move(page, first, cmd); await page.waitForTimeout(220); }
   await page.locator('#result').waitFor({ state: 'visible' }); await page.locator('#next-level').tap();
-  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', campaignDeals[1].id);
-  await page.waitForTimeout(380); await move(page, campaignDeals[1], campaignDeals[1].winningPath[0]);
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', currentCampaignDeals[1].id);
+  await page.waitForTimeout(380); await move(page, currentCampaignDeals[1], currentCampaignDeals[1].winningPath[0]);
 });
 
 test('lifting an entire last packet exposes the column base and preserves the attempt', async ({ page, context }) => {

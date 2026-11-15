@@ -1,3 +1,4 @@
+import {campaignId} from '../../src/domain/progression';
 import { describe, expect, it } from 'vitest';
 import { modifierDeals } from '../../src/content/modifiers';
 import { campaignDeals, findDeal } from '../../src/content/campaign';
@@ -12,7 +13,7 @@ const [joker, , days, months, lock, lockApply] = modifierDeals;
 const move = (from: number, to: number, foundation = true): BoardCommand => ({ type: 'transfer', from: { kind: 'tableau', index: from }, to: { kind: foundation ? 'foundation' : 'tableau', index: to } });
 function fresh(deal: Deal) {
   const save = freshSave(deal, 'modifiers');
-  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0, completedCampaign: campaignDeals.slice(0, deal.campaignLevel! - 1).map(d => d.id) };
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0, completedCampaign: campaignDeals.slice(0, deal.campaignLevel! - 1).map(d => campaignId(d.campaignLevel!)) };
   return save;
 }
 function step(save: Save, command: Parameters<typeof dispatch>[1], deal: Deal) {

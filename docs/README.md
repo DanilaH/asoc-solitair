@@ -1,3 +1,5 @@
+Current work: [0.17/content6 opening fifteen](content/OPENING_V6.md). Versioned content, existing-rule pacing, structural/oracle checks and owner playtest; old attempts and0.16UI/audio/performance preserved. Full CI/APK acceptance is still pending.
+
 # Product sources
 
 Current implementation: [0.16 menu, recorded audio, shared wallet and rendering cost](qa/FEEL_WALLET_AUDIO_0_16_0.md). Owner-approved five-point correction; both full source CI runs pass204browser cases and both Android builds. Signed APK/actual-audio MP4/GIF/PNG saved; exact source and identities are in the handoff.

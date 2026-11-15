@@ -1,0 +1,15 @@
+# First fifteen: content6 editorial batch
+
+Baseline: main a9e9b43d629d24ae2ae92d39a5b315c9f332ec4e, app0.16/code24, rules3/content5/balance3. Owner personally reports little development after10+levels. Supplied archive `solitaire-balance-audit-2026-11-15.zip` confirms at least7/10 wins with an upper-only policy; this is an existence proof, not human win probability. README.txt, curve/notes.txt, randomness/notes.txt and the executable policy were read and checked against the matching HEAD.
+
+SELECT: content-quality fixed-bank decision signatures and mastery/sequence editing. Sources read at mini-games-kit e04a3fe87ca93d506e01df4acc5afe690408cefa: docs/content-quality/README.md (gates3–6, fixed campaigns and semantics), independent audit (novelty distinctions, proxy/identity risks), batch brief; Project Selection and Mastery/Boredom/Fatigue sections1/4. Runtime pin a9325265 is unchanged. KIT IMPACT: REUSE of research/production contracts, no new export or upstream change. HOLD: human enjoyment/difficulty calibration. REJECT for this batch: live shuffle, adaptive director, new modes/rewards/art.
+
+Scope: fifteen explicit revision-specific deal IDs, new-game selection only; old campaign definitions and daily orders remain registered and unmodified. Canonical campaign progress and reward deduplication belong to level numbers, not a content revision. Old active/parked attempt IDs, exact boards/budgets/Undo, resources and receipts must survive; restarting an old attempt keeps that old deal. Next/new level selects the current revision. No old save is reset to demonstrate the new levels.
+
+Editorial intent: short category/stock onboarding; then required grouping and use of empty space; a calm reprise; upper-slot priority and targeted uncovering; useful optional Joker; familiar ordered introduction, interval preparation; ordinary breather; short keys introduction, applied key access; reprise; combined finale. Number of cards, bot failures and search runtime are not quality scores. New content is accepted for owner playtest, not declared human-validated fun.
+
+Budgets follow legal routes and recoverable alternatives, with several spare actions. Structural preparation is tested with a complete restricted state search where feasible, independently from the supplied seventeen-tie direct policy. UNKNOWN is retained as UNKNOWN. Do not make every bot lose: tutorial, introductions and breathers intentionally admit direct wins. No success-rate target is inferred from these algorithms.
+
+For every level the implementation report must retain: role/prerequisites, the concrete choice, difference from neighbours, structural proof or explicit limitation, first-choice consequences and recovery where meaningful, fixed winning route, budget and player test prompt. Tests cover content lookup, old5→6 envelope migration, both parked modes, pending receipts, Undo, no duplicate milestone/cycle, and actual UI input. Existing0.16 menu/audio/wallet/performance files stay protected.
+
+Status: candidate authoring and compatibility work in progress. Exact accepted table, independent results, recordings and test APK will be linked after verification.

@@ -16,6 +16,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run check
       - run: npm run qa:rules
+      - run: npm run qa:opening
       - run: npm run qa:prototypes:build
       - run: npm run qa:prototypes:validate
       - run: npx playwright install --with-deps chromium

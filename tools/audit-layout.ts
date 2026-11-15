@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 import { dismissTeaching } from './qa/navigation';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium, type Page } from '@playwright/test';
@@ -18,7 +19,7 @@ const dialogsOnly = process.argv.includes('--dialogs');
 const sizes = dialogsOnly ? allSizes.filter(([w,h])=>w===320||w===360&&h===780) : allSizes;
 function seed(index: number, filled = false) {
  const deal = campaignDeals[index]; let save = freshSave(deal, 'audit-layout'); save.settings.reducedMotion = true;
- save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0,index).map(d=>d.id) };
+ save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0,index).map(d => campaignId(d.campaignLevel!)) };
  if (filled) {
   for (const cmd of deal.winningPath) {
    const next = dispatch(save, cmd, deal); if (!next.accepted) throw Error('Invalid audit witness'); if (next.events.some(e=>e.type==='complete')) break; save = next.next;

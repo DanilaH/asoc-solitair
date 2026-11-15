@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 /** Board presentation audit. Legal isolated saves; real touch; no scene/card mutation. */
 import assert from 'node:assert/strict';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
@@ -116,7 +117,7 @@ try {
       if (entry.palette) seed.settings.palette = entry.palette;
       if (entry.bottom) { seed.settings.deckPosition = 'bottom'; seed.settings.deckSide = 'left'; }
       if (entry.left) seed.settings.deckSide = 'left';
-      seed.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 79).map(d => d.id) };
+      seed.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, 79).map(d => campaignId(d.campaignLevel!)) };
       seed.campaign = { version: 1, tutorials: ['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock','hint-demo','undo-used'] };
       await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), seed);
       await page.reload(); await page.locator('#app[data-ready=true]').waitFor();

@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 import { chromium } from '@playwright/test';
 import { preview } from 'vite';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -20,7 +21,7 @@ try {
     async function load(d:Deal,side:'left'|'right'='right',row:'top'|'bottom'='top') {
       await p.goto('http://127.0.0.1:4198');await p.locator('#app[data-ready=true]').waitFor();
       const s=freshSave(d,'board-refinement-recording');s.settings.sfx=false;s.settings.deckSide=side;s.settings.deckPosition=row;
-      s.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,26).map(d=>d.id)};
+      s.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,26).map(d => campaignId(d.campaignLevel!))};
       s.campaign={version:1,tutorials:['intro:joker','intro:ordered','intro:keys','learn:category','learn:match','learn:stock','hint-demo','undo-used']};
       await p.evaluate(s=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(s)),s);await p.reload();await p.locator('#app[data-ready=true]').waitFor();await p.locator('#home-play').tap();await p.waitForTimeout(350);
     }

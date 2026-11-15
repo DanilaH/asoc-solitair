@@ -1,0 +1,7066 @@
+{
+  "summary": {
+    "baseline": "a9e9b43d629d24ae2ae92d39a5b315c9f332ec4e",
+    "contentVersion": 6,
+    "archiveSHA256": "025e8a2ab729bc572401b76f8a7eb04020f89d6af84aae9a93d068ff8bb39372",
+    "referenceRunsMatched": 340,
+    "currentRuns": 255,
+    "oracleReplayedTransitions": 9822,
+    "firstTen": {
+      "baselineAnyRecordedDirectWin": 7,
+      "revisedAnyRecordedDirectWin": 4
+    },
+    "firstFifteen": {
+      "baselineAnyRecordedDirectWin": 8,
+      "revisedAnyRecordedDirectWin": 7
+    },
+    "requiredPreparationLevels": [
+      3,
+      4,
+      6,
+      7,
+      8,
+      10,
+      13,
+      15
+    ],
+    "humanEnjoyment": "NOT MEASURED",
+    "limits": "Perfect semantic recognition;17tie orders are not exhaustive and seeds1..16 are correlated. Negative policy runs are not proofs. Restricted independent oracle BFS reports UNKNOWN on cap; only exhausted graphs establish the stated structural necessities. No human success probability or native performance claim."
+  },
+  "levels": [
+    {
+      "level": 1,
+      "id": "campaign-c6-001",
+      "cards": 6,
+      "columns": 2,
+      "slots": 2,
+      "moves": 6,
+      "budget": null,
+      "withoutLowerOracle": {
+        "status": "FOUND",
+        "visited": 22,
+        "winningMoves": 6
+      },
+      "directPolicy": {
+        "wins": 17,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 1,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 2,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 3,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 4,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 5,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 6,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 7,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 8,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 9,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 10,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 11,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 12,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 13,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 14,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 15,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 16,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 6,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": null
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 2,
+      "id": "campaign-c6-002",
+      "cards": 8,
+      "columns": 2,
+      "slots": 2,
+      "moves": 12,
+      "budget": null,
+      "withoutLowerOracle": {
+        "status": "FOUND",
+        "visited": 783,
+        "winningMoves": 12
+      },
+      "directPolicy": {
+        "wins": 17,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 1,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 2,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 3,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 4,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 5,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 6,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 7,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 8,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 9,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 10,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 11,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 12,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 13,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 14,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 15,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          },
+          {
+            "seed": 16,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 4,
+            "recycles": 0,
+            "movesLeft": null
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "draw"
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "waste",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "draw"
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "waste",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "draw"
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "waste",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "draw"
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "waste",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 3,
+      "id": "campaign-c6-003",
+      "cards": 6,
+      "columns": 3,
+      "slots": 2,
+      "moves": 6,
+      "budget": 12,
+      "withoutLowerOracle": {
+        "status": "UNSOLVABLE",
+        "visited": 1,
+        "winningMoves": null
+      },
+      "directPolicy": {
+        "wins": 0,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 1,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 2,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 3,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 4,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 5,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 6,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 7,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 8,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 9,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 10,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 11,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 12,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 13,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 14,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 15,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 16,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          }
+        ],
+        "leftToRightPath": []
+      }
+    },
+    {
+      "level": 4,
+      "id": "campaign-c6-004",
+      "cards": 9,
+      "columns": 4,
+      "slots": 1,
+      "moves": 9,
+      "budget": 15,
+      "withoutLowerOracle": {
+        "status": "UNSOLVABLE",
+        "visited": 3,
+        "winningMoves": null
+      },
+      "directPolicy": {
+        "wins": 0,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 1,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 2,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 3,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 4,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 5,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 6,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 7,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 8,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 9,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 10,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 11,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 12,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 13,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 14,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 15,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 16,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 2,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 3
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        ]
+      },
+      "withoutEmptyOracle": {
+        "status": "UNSOLVABLE",
+        "visited": 7
+      }
+    },
+    {
+      "level": 5,
+      "id": "campaign-c6-005",
+      "cards": 9,
+      "columns": 3,
+      "slots": 2,
+      "moves": 12,
+      "budget": 19,
+      "withoutLowerOracle": {
+        "status": "FOUND",
+        "visited": 514,
+        "winningMoves": 12
+      },
+      "directPolicy": {
+        "wins": 17,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 1,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 2,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 3,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 4,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 5,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 6,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 7,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 8,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 9,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 10,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 11,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 12,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 13,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 14,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 15,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 16,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 12,
+            "draws": 3,
+            "recycles": 0,
+            "movesLeft": 7
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "draw"
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "waste",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "draw"
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "waste",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "draw"
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "waste",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 6,
+      "id": "campaign-c6-006",
+      "cards": 9,
+      "columns": 3,
+      "slots": 1,
+      "moves": 9,
+      "budget": 14,
+      "withoutLowerOracle": {
+        "status": "UNSOLVABLE",
+        "visited": 4,
+        "winningMoves": null
+      },
+      "directPolicy": {
+        "wins": 0,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 1,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 2,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 3,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 4,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 5,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 6,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 7,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 8,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 9,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 10,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 11,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 12,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 13,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 14,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 15,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 16,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 7,
+      "id": "campaign-c6-007",
+      "cards": 12,
+      "columns": 4,
+      "slots": 2,
+      "moves": 9,
+      "budget": 15,
+      "withoutLowerOracle": {
+        "status": "UNSOLVABLE",
+        "visited": 1,
+        "winningMoves": null
+      },
+      "directPolicy": {
+        "wins": 0,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 1,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 2,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 3,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 4,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 5,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 6,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 7,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 8,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 9,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 10,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 11,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 12,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 13,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 14,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 15,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          },
+          {
+            "seed": 16,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 0,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 15
+          }
+        ],
+        "leftToRightPath": []
+      }
+    },
+    {
+      "level": 8,
+      "id": "campaign-c6-008",
+      "cards": 9,
+      "columns": 3,
+      "slots": 1,
+      "moves": 12,
+      "budget": 18,
+      "withoutLowerOracle": {
+        "status": "UNSOLVABLE",
+        "visited": 2,
+        "winningMoves": null
+      },
+      "directPolicy": {
+        "wins": 0,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 1,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 2,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 3,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 4,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 5,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 6,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 7,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 8,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 9,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 10,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 11,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 12,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 13,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 14,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 15,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          },
+          {
+            "seed": 16,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 17
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        ]
+      },
+      "joker": {
+        "optional": true,
+        "column": 0,
+        "helperlessShortest": 12,
+        "supportedShortest": 11,
+        "placementCostsMoves": 0,
+        "placementCostsCharges": 1,
+        "oracleStates": 153
+      }
+    },
+    {
+      "level": 9,
+      "id": "campaign-c6-009",
+      "cards": 8,
+      "columns": 3,
+      "slots": 2,
+      "moves": 8,
+      "budget": 14,
+      "withoutLowerOracle": {
+        "status": "FOUND",
+        "visited": 16,
+        "winningMoves": 8
+      },
+      "directPolicy": {
+        "wins": 17,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 1,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 2,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 3,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 4,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 5,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 6,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 7,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 8,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 9,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 10,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 11,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 12,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 13,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 14,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 15,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 16,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 10,
+      "id": "campaign-c6-010",
+      "cards": 12,
+      "columns": 4,
+      "slots": 2,
+      "moves": 8,
+      "budget": 14,
+      "withoutLowerOracle": {
+        "status": "UNSOLVABLE",
+        "visited": 3,
+        "winningMoves": null
+      },
+      "directPolicy": {
+        "wins": 0,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 1,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 2,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 3,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 4,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 5,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 6,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 7,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 8,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 9,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 10,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 11,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 12,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 13,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 14,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 15,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 16,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 11,
+      "id": "campaign-c6-011",
+      "cards": 8,
+      "columns": 3,
+      "slots": 2,
+      "moves": 10,
+      "budget": 17,
+      "withoutLowerOracle": {
+        "status": "FOUND",
+        "visited": 423,
+        "winningMoves": 10
+      },
+      "directPolicy": {
+        "wins": 17,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 1,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 2,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 3,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 4,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 5,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 6,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 7,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 8,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 9,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 10,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 11,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 12,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 13,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 14,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 15,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          },
+          {
+            "seed": 16,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 10,
+            "draws": 2,
+            "recycles": 0,
+            "movesLeft": 7
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "draw"
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "waste",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "draw"
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "waste",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 12,
+      "id": "campaign-c6-012",
+      "cards": 8,
+      "columns": 4,
+      "slots": 2,
+      "moves": 8,
+      "budget": 14,
+      "withoutLowerOracle": {
+        "status": "FOUND",
+        "visited": 296,
+        "winningMoves": 8
+      },
+      "directPolicy": {
+        "wins": 17,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 1,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 2,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 3,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 4,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 5,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 6,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 7,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 8,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 9,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 10,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 11,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 12,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 13,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 14,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 15,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          },
+          {
+            "seed": 16,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 8,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 6
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 3
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 3
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 13,
+      "id": "campaign-c6-013",
+      "cards": 11,
+      "columns": 4,
+      "slots": 2,
+      "moves": 11,
+      "budget": 17,
+      "withoutLowerOracle": {
+        "status": "UNSOLVABLE",
+        "visited": 53,
+        "winningMoves": null
+      },
+      "directPolicy": {
+        "wins": 0,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 1,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 2,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 3,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 4,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 5,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 4,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 6,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 4,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 7,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 4,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 8,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 9,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 4,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 10,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 4,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          },
+          {
+            "seed": 11,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 12,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 13,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 14,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 15,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 5,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 12
+          },
+          {
+            "seed": 16,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 4,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 13
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 1
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 14,
+      "id": "campaign-c6-014",
+      "cards": 11,
+      "columns": 4,
+      "slots": 2,
+      "moves": 7,
+      "budget": 14,
+      "withoutLowerOracle": {
+        "status": "FOUND",
+        "visited": 32,
+        "winningMoves": 9
+      },
+      "directPolicy": {
+        "wins": 17,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 1,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 2,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 3,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 4,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 5,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 6,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 7,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 8,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 9,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 10,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 11,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 12,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 13,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 14,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 15,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          },
+          {
+            "seed": 16,
+            "outcome": "won",
+            "reason": "terminal",
+            "steps": 9,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 5
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 1
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 2
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          },
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 3
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "level": 15,
+      "id": "campaign-c6-015",
+      "cards": 14,
+      "columns": 4,
+      "slots": 2,
+      "moves": 14,
+      "budget": 21,
+      "withoutLowerOracle": {
+        "status": "UNSOLVABLE",
+        "visited": 3,
+        "winningMoves": null
+      },
+      "directPolicy": {
+        "wins": 0,
+        "ties": 17,
+        "runSummaries": [
+          {
+            "seed": 0,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 1,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 2,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 3,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 4,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 5,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 6,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 7,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 8,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 9,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 10,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 11,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 12,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 13,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 14,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 15,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          },
+          {
+            "seed": 16,
+            "outcome": "playing",
+            "reason": "no-direct-action",
+            "steps": 1,
+            "draws": 0,
+            "recycles": 0,
+            "movesLeft": 20
+          }
+        ],
+        "leftToRightPath": [
+          {
+            "type": "transfer",
+            "from": {
+              "kind": "tableau",
+              "index": 0
+            },
+            "to": {
+              "kind": "foundation",
+              "index": 0
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "baseline": [
+    {
+      "level": 1,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 6,
+          "draws": 0,
+          "recycles": 0,
+          "movesLeft": null
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 12,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": null
+        }
+      ]
+    },
+    {
+      "level": 3,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 18,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 12
+        }
+      ]
+    },
+    {
+      "level": 4,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 1,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 2,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 3,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 4,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 5,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 6,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 7,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 8,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 9,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 10,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 11,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 12,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 13,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 14,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 15,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 16,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 10,
+          "draws": 3,
+          "recycles": 1,
+          "movesLeft": 17
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 1,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 2,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 3,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 4,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 5,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 6,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 7,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 8,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 9,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 10,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 11,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 12,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 13,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 14,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 15,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 16,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 16,
+          "draws": 8,
+          "recycles": 1,
+          "movesLeft": 16
+        }
+      ]
+    },
+    {
+      "level": 6,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 21,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 11
+        }
+      ]
+    },
+    {
+      "level": 7,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 1,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 2,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 3,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 4,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 5,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 6,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 7,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 8,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 9,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 10,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 11,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 12,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 13,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 14,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 15,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        },
+        {
+          "seed": 16,
+          "outcome": "playing",
+          "reason": "no-direct-action",
+          "steps": 13,
+          "draws": 6,
+          "recycles": 0,
+          "movesLeft": 17
+        }
+      ]
+    },
+    {
+      "level": 8,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 20,
+          "draws": 4,
+          "recycles": 0,
+          "movesLeft": 13
+        }
+      ]
+    },
+    {
+      "level": 9,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 13
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 28,
+          "draws": 8,
+          "recycles": 0,
+          "movesLeft": 11
+        }
+      ]
+    },
+    {
+      "level": 11,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 1,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 2,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 3,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 4,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 5,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 6,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 7,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 8,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 9,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 10,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 11,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 12,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 13,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 14,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 15,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        },
+        {
+          "seed": 16,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 26,
+          "draws": 15,
+          "recycles": 2,
+          "movesLeft": 12
+        }
+      ]
+    },
+    {
+      "level": 12,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 1,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 2,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 3,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 4,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 5,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 6,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 7,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 8,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 9,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 10,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 11,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 12,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 13,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 14,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 15,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        },
+        {
+          "seed": 16,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 24,
+          "draws": 10,
+          "recycles": 2,
+          "movesLeft": 23
+        }
+      ]
+    },
+    {
+      "level": 13,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 1,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 2,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 3,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 4,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 5,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 6,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 7,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 8,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 9,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 10,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 11,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 12,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 13,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 14,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 15,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 16,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 27,
+          "draws": 14,
+          "recycles": 1,
+          "movesLeft": 24
+        }
+      ]
+    },
+    {
+      "level": 14,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 1,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 2,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 3,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 4,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 5,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 6,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 7,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 8,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 9,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 10,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 11,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 12,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 13,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 14,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 15,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        },
+        {
+          "seed": 16,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 22,
+          "draws": 12,
+          "recycles": 1,
+          "movesLeft": 24
+        }
+      ]
+    },
+    {
+      "level": 15,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 35,
+          "draws": 10,
+          "recycles": 1,
+          "movesLeft": 8
+        }
+      ]
+    },
+    {
+      "level": 16,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 18,
+          "recycles": 1,
+          "movesLeft": 7
+        }
+      ]
+    },
+    {
+      "level": 17,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 1,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 2,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 3,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 4,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 5,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 6,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 7,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 8,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 9,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 10,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 11,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 12,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 13,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 14,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 15,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 16,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 21,
+          "draws": 11,
+          "recycles": 1,
+          "movesLeft": 26
+        }
+      ]
+    },
+    {
+      "level": 18,
+      "wins": 17,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 47,
+          "draws": 26,
+          "recycles": 1,
+          "movesLeft": 14
+        },
+        {
+          "seed": 1,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 2,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 3,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 4,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 5,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 6,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 7,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 8,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 46,
+          "draws": 25,
+          "recycles": 1,
+          "movesLeft": 15
+        },
+        {
+          "seed": 9,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 46,
+          "draws": 25,
+          "recycles": 1,
+          "movesLeft": 15
+        },
+        {
+          "seed": 10,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 46,
+          "draws": 25,
+          "recycles": 1,
+          "movesLeft": 15
+        },
+        {
+          "seed": 11,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 46,
+          "draws": 25,
+          "recycles": 1,
+          "movesLeft": 15
+        },
+        {
+          "seed": 12,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 16
+        },
+        {
+          "seed": 13,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 44,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 17
+        },
+        {
+          "seed": 14,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 46,
+          "draws": 25,
+          "recycles": 1,
+          "movesLeft": 15
+        },
+        {
+          "seed": 15,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 46,
+          "draws": 25,
+          "recycles": 1,
+          "movesLeft": 15
+        },
+        {
+          "seed": 16,
+          "outcome": "won",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 16
+        }
+      ]
+    },
+    {
+      "level": 19,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 1,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 20,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 2,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 3,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 4,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 5,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 6,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 20,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 7,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 20,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 8,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 20,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 9,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 10,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 11,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 12,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 20,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 13,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 20,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 14,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 20,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 15,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        },
+        {
+          "seed": 16,
+          "outcome": "exhausted",
+          "reason": "terminal",
+          "steps": 45,
+          "draws": 23,
+          "recycles": 1,
+          "movesLeft": 0
+        }
+      ]
+    },
+    {
+      "level": 20,
+      "wins": 0,
+      "runs": [
+        {
+          "seed": 0,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 1,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 2,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 3,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 4,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 5,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 6,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 7,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 8,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 9,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 10,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 11,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 12,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 13,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 14,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 15,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        },
+        {
+          "seed": 16,
+          "outcome": "playing",
+          "reason": "repeated-board-no-progress",
+          "steps": 30,
+          "draws": 24,
+          "recycles": 1,
+          "movesLeft": 26
+        }
+      ]
+    }
+  ],
+  "counterfactuals": [
+    {
+      "level": 6,
+      "prefix": [],
+      "choice": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "type": "upper-category-priority",
+      "extraMoves": 1,
+      "totalMoves": 10,
+      "budget": 14,
+      "remaining": 4,
+      "correction": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "needsUndo": false,
+      "needsPaidHelper": false,
+      "note": "A legal less efficient plan with a verified recovery, not a predicted human mistake rate."
+    },
+    {
+      "level": 13,
+      "prefix": [],
+      "choice": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "type": "upper-category-priority",
+      "extraMoves": 1,
+      "totalMoves": 12,
+      "budget": 17,
+      "remaining": 5,
+      "correction": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "needsUndo": false,
+      "needsPaidHelper": false,
+      "note": "A legal less efficient plan with a verified recovery, not a predicted human mistake rate."
+    },
+    {
+      "level": 15,
+      "prefix": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        }
+      ],
+      "choice": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      "type": "unnecessary-parking",
+      "extraMoves": 1,
+      "totalMoves": 15,
+      "budget": 21,
+      "remaining": 6,
+      "correction": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        }
+      ],
+      "needsUndo": false,
+      "needsPaidHelper": false,
+      "note": "A legal less efficient plan with a verified recovery, not a predicted human mistake rate."
+    }
+  ]
+}

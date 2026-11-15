@@ -1,3 +1,4 @@
+import {campaignId} from '../src/domain/progression';
 import { mkdir } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { chromium, type Page } from '@playwright/test';
@@ -11,7 +12,7 @@ const day = '2026-11-09', read = (p: Page) => p.evaluate(() => JSON.parse(localS
 const pause = (p: Page, ms = 700) => p.waitForTimeout(ms);
 function profile(level: number) {
   const s = freshSave(campaignDeals[level - 1], `qa-meta-${level}`);
-  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, level - 1).map(d => d.id) }; return s;
+  s.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: campaignDeals.slice(0, level - 1).map(d => campaignId(d.campaignLevel!)) }; return s;
 }
 async function move(page: Page, deal: Deal, cmd: BoardCommand) {
   await page.waitForSelector(`#app[data-ready="true"][data-presented-deal="${deal.id}"]`);

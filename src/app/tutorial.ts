@@ -14,19 +14,23 @@ export function recordLearning(save: Save, before: Board, action: BoardCommand, 
   if (deal.campaignLevel && deal.campaignLevel <= 2) markTutorial(save, marker(skillFor(before, action, deal)));
 }
 export type RuleIntro = 'joker' | 'ordered' | 'keys';
+const isJokerLesson = (deal: Deal) => deal.tags?.includes('joker') && deal.tags.includes('teaching');
 export function ruleIntroduction(save: Save, deal: Deal): RuleIntro | undefined {
   if (deal.daily || save.attempt.board.phase !== 'playing') return;
-  const rule = deal.campaignLevel === 21 ? 'joker' : deal.tags?.includes('ordered') ? 'ordered' : deal.lock ? 'keys' : undefined;
-  if (!rule || seenTutorial(save, `intro:${rule}`) || completedLevels(save) >= { joker: 21, ordered: 23, keys: 26 }[rule]) return;
-  return rule;
+  const rules: RuleIntro[] = [];
+  if (isJokerLesson(deal)) rules.push('joker');
+  if (deal.tags?.includes('ordered')) rules.push('ordered');
+  if (deal.lock) rules.push('keys');
+  return rules.find(rule => !seenTutorial(save, `intro:${rule}`) &&
+    (deal.id.startsWith('campaign-c6-') || completedLevels(save) < { joker: 21, ordered: 23, keys: 26 }[rule]));
 }
 /** Observe accepted state: teaching never moves cards or spends resources. */
 export function lesson(save: Save, deal: Deal): { action?: BoardCommand; delay?: number; attention?: 'hint' | 'undo' | 'joker' } | undefined {
   if (save.attempt.board.phase !== 'playing') return;
-  if (deal.campaignLevel === 21 && !save.attempt.jokerUsed && save.profile.jokers > 0) return { attention: 'joker' };
+  if (isJokerLesson(deal) && !save.attempt.jokerUsed && save.profile.jokers > 0) return { attention: 'joker' };
   if (deal.campaignLevel === 3 && freeHintDemo(save, deal)) return { attention: 'hint' };
   if (deal.campaignLevel === 4 && !seenTutorial(save, 'undo-used') && save.attempt.undo.length) return { attention: 'undo' };
-  if (!deal.campaignLevel || deal.campaignLevel > 2 || save.platform?.completedCampaign.includes(deal.id)) return;
+  if (!deal.campaignLevel || deal.campaignLevel > 2 || completedLevels(save) >= deal.campaignLevel) return;
   if ((['category', 'match', 'stock'] as const).every(skill => seenTutorial(save, marker(skill)))) return;
   const action = knownContinuation(save.attempt.board, deal)?.[0] ?? legalCommands(save.attempt.board, deal)[0];
   return action ? { action, delay: seenTutorial(save, marker(skillFor(save.attempt.board, action, deal))) ? 6000 : 650 } : undefined;

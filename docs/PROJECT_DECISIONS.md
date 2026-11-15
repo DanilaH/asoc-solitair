@@ -12,3 +12,5 @@ The authoritative decision log is [DECISIONS.md](../DECISIONS.md); current deliv
 For UI use the local [Task Router](kit-guidance/TASK_ROUTER.md) and its exact guidance-revision links. Do not import absent exports such as newer getTierProgress from the current installed runtime; the existing cyclical reward policy remains game-owned.
 
 Current content batch: [opening fifteen / content6](content/OPENING_V6.md). Preserve0.16 compact UI, recorded sounds, wallet and performance fixes.
+
+Content6 and final wallet-settlement follow-up are merged:0.17.1/code26, rules/content/balance3/6/3. Both full source CI pass242browser cases and80touch wins. Human challenge/enjoyment and physical-device testing remain separate from structural/model verification; see the current handoff.

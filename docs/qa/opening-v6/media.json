@@ -1,5 +1,5 @@
 {
-  "source": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
+  "source": "3f62193c4722e5f77a5e80f883b55e421500b6fb",
   "speed": 1,
   "viewport": [
     360,
@@ -11,79 +11,80 @@
   "scenes": [
     {
       "scene": "level03-group",
-      "sourceSeconds": 14.6,
-      "markerFrame": 61,
-      "trimSeconds": 2.6799999999999997,
-      "exportedSeconds": 11.92
+      "sourceSeconds": 13.12,
+      "markerFrame": 53,
+      "trimSeconds": 2.3600000000000003,
+      "exportedSeconds": 10.76
     },
     {
       "scene": "level04-space",
-      "sourceSeconds": 19.64,
-      "markerFrame": 89,
-      "trimSeconds": 3.8,
-      "exportedSeconds": 15.84
+      "sourceSeconds": 16.28,
+      "markerFrame": 59,
+      "trimSeconds": 2.5999999999999996,
+      "exportedSeconds": 13.68
     },
     {
       "scene": "level08-joker",
-      "sourceSeconds": 10.72,
-      "markerFrame": 65,
-      "trimSeconds": 2.84,
-      "exportedSeconds": 7.88
+      "sourceSeconds": 9.08,
+      "markerFrame": 48,
+      "trimSeconds": 2.16,
+      "exportedSeconds": 6.92
     },
     {
       "scene": "level10-interval",
-      "sourceSeconds": 10.4,
-      "markerFrame": 72,
-      "trimSeconds": 3.12,
-      "exportedSeconds": 7.28
+      "sourceSeconds": 8.6,
+      "markerFrame": 54,
+      "trimSeconds": 2.4000000000000004,
+      "exportedSeconds": 6.2
     },
     {
       "scene": "level15-keys",
-      "sourceSeconds": 12.8,
-      "markerFrame": 70,
-      "trimSeconds": 3.04,
-      "exportedSeconds": 9.76
+      "sourceSeconds": 9.8,
+      "markerFrame": 47,
+      "trimSeconds": 2.12,
+      "exportedSeconds": 7.68
     }
   ],
   "files": [
     {
-      "name": "asoc-solitair-0.17.0-preview.apk",
-      "path": "/workspace/scratch/50187ffca82b/asoc-017-media/asoc-solitair-0.17.0-preview.apk",
-      "bytes": 11736981,
-      "sha256": "160ec40fdcd8970755b10c695b8e01f9c06cbbde5b423e37b235ec934b657b15",
+      "name": "asoc-solitair-0.17.1-preview.apk",
+      "path": "/workspace/scratch/50187ffca82b/asoc-017-media/asoc-solitair-0.17.1-preview.apk",
+      "bytes": 11737005,
+      "sha256": "19f10e842a385a735414e59102fdbf0daa5f9942a45a131c647a4e9676690885",
       "library_file_id": "libfile_fde3_f-0539fd5f24548191991b5044a4dfb1ef_2841ca9da26c8191b7a266fa9b41a810",
-      "library_file_name": "asoc-solitair-0.17.0-preview.apk",
-      "status": "succeeded",
-      "file_id": "file_000000000ef481f4b6ca610f7e39e877",
-      "current_version_number": 0,
+      "file_id": "file_00000000645881f4a438bfab106520e4",
+      "current_version_number": 1,
       "local_metadata_applied": true,
-      "library_path": "/asoc-solitair-0.17.0-preview.apk"
+      "library_file_name": "asoc-solitair-0.17.1-preview.apk",
+      "status": "succeeded",
+      "library_path": "/asoc-solitair-0.17.1-preview.apk"
     },
     {
-      "name": "asoc-0.17-preparation.gif",
-      "path": "/workspace/scratch/50187ffca82b/asoc-017-media/asoc-0.17-preparation.gif",
-      "bytes": 4932169,
-      "sha256": "84778535b76dbc4a2cbb5e87f26753af3b1116c75a88db506127a86b951bc852",
+      "name": "asoc-0.17.1-preparation.gif",
+      "path": "/workspace/scratch/50187ffca82b/asoc-017-media/asoc-0.17.1-preparation.gif",
+      "bytes": 4492340,
+      "sha256": "9c75687e45d6bd98a8b96dec12280d39085460d58a06eb5aedf1caa62763d4ee",
       "library_file_id": "libfile_fde3_f-b58aaa2fe6b881919657811079c5914c_2841ca9da26c8191b7a266fa9b41a810",
-      "library_file_name": "asoc-0.17-preparation.gif",
-      "status": "succeeded",
-      "file_id": "file_00000000e72881f6bb41479e7d0ff507",
-      "current_version_number": 0,
+      "file_id": "file_000000008a148210bc0e7400a4ac56d2",
+      "current_version_number": 1,
       "local_metadata_applied": true,
-      "library_path": "/asoc-0.17-preparation.gif"
+      "library_file_name": "asoc-0.17.1-preparation.gif",
+      "status": "succeeded",
+      "library_path": "/asoc-0.17.1-preparation.gif"
     },
     {
       "name": "asoc-0.17-modifiers.gif",
       "path": "/workspace/scratch/50187ffca82b/asoc-017-media/asoc-0.17-modifiers.gif",
-      "bytes": 4493470,
-      "sha256": "670a7697659b47b52293688a47a637df29bf3cbd3c3c751d2b8506a6ac4f0d89",
+      "bytes": 3739531,
+      "sha256": "7080f10973f5012442213af6a2585ff64f8fc49fc2a3e1b08ed150f184a7249c",
       "library_file_id": "libfile_fde3_f-64788e09a3d88191a15d9d43ff83ff2a_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_00000000d0a48210be901a75a80d1b69",
+      "current_version_number": 1,
+      "local_metadata_applied": true,
       "library_file_name": "asoc-0.17-modifiers.gif",
       "status": "succeeded",
-      "file_id": "file_0000000016d881f4986d2e51eaf70220",
-      "current_version_number": 0,
-      "local_metadata_applied": true,
-      "library_path": "/asoc-0.17-modifiers.gif"
+      "library_path": "/asoc-0.17-modifiers.gif",
+      "savedWorkingPath": "/workspace/scratch/50187ffca82b/asoc-017-conflict/asoc-0.17-modifiers.gif"
     },
     {
       "name": "asoc-0.17-examples.png",
@@ -91,12 +92,13 @@
       "bytes": 368691,
       "sha256": "d0a87a452f02f319b4f1a866be1cad78e95b4c03aafa61eea7832889f8c93a41",
       "library_file_id": "libfile_fde3_f-c1c5f692b39c81918d8dd393c47ab5ff_2841ca9da26c8191b7a266fa9b41a810",
-      "library_file_name": "asoc-0.17-examples.png",
-      "status": "succeeded",
       "file_id": "file_0000000042f881f4a37275947f2ea488",
       "current_version_number": 0,
       "local_metadata_applied": true,
-      "library_path": "/asoc-0.17-examples.png"
+      "library_file_name": "asoc-0.17-examples.png",
+      "status": "succeeded",
+      "library_path": "/asoc-0.17-examples.png",
+      "unchangedBytes": true
     }
   ]
 }

@@ -1,37 +1,48 @@
 {
-  "runtimeSource": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
-  "runtimeTree": "535c8005eb4875c2c3d216c81f89486102977b6f",
-  "base": "a9e9b43d629d24ae2ae92d39a5b315c9f332ec4e",
-  "pr": 30,
+  "runtimeSource": "3f62193c4722e5f77a5e80f883b55e421500b6fb",
+  "runtimeTree": "73f92bb85020a35cde83fe113cb4703fa1215bec",
+  "base": "42428380fe4a3aed305a8ed95e4603b74886ff5a",
+  "version": "0.17.1",
+  "versionCode": 26,
+  "rulesContentBalance": [
+    3,
+    6,
+    3
+  ],
+  "pr": 31,
+  "contentBatch": {
+    "pr": 30,
+    "initialSource": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
+    "merge": "42428380fe4a3aed305a8ed95e4603b74886ff5a",
+    "initialEvidence": "initial-ci.json",
+    "duplicateFailureResolved": "wallet-transition-regression.json"
+  },
   "acceptedPush": {
-    "id": 43702392116,
-    "url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43702392116",
+    "id": 43705624898,
+    "url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43705624898",
     "status": "completed",
     "conclusion": "success",
-    "webJob": 132776136948,
-    "androidJob": 132776137196
+    "webJob": 132785944630,
+    "androidJob": 132785944770,
+    "browserPassed": 242
   },
   "pullRequestRun": {
-    "id": 43702611492,
-    "jobs": [
-      {
-        "id": 132776802986,
-        "name": "android",
-        "status": "completed",
-        "conclusion": "success"
-      },
-      {
-        "id": 132776803147,
-        "name": "web",
-        "status": "completed",
-        "conclusion": "failure"
-      }
-    ],
-    "failure": "239 passed/1 failed: real final-streak cancellation race, tracked in wallet-transition-regression.json; initial push was fully green."
+    "id": 43705697767,
+    "url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43705697767",
+    "status": "completed",
+    "conclusion": "success",
+    "webJob": 132786168394,
+    "androidJob": 132786168121,
+    "browserPassed": 242
+  },
+  "merge": {
+    "sha": "cf5fa5c564ae429b493c2929b8c333e5fe0e1ffc",
+    "tree": "73f92bb85020a35cde83fe113cb4703fa1215bec",
+    "runtimeTreeMatches": true
   },
   "checks": {
     "unitPlatform": 105,
-    "browserPassed": 240,
+    "browserPassed": 242,
     "browserDeliberateCompactCatalogSkipped": 4,
     "touchCampaignWins": 80,
     "deals": 123,
@@ -45,8 +56,27 @@
     "baselinePolicyExactCommandPaths": 340,
     "revisedPolicyRuns": 255,
     "openingReplayedTransitions": 9822,
+    "requiredLowerPreparation": [
+      3,
+      4,
+      6,
+      7,
+      8,
+      10,
+      13,
+      15
+    ],
+    "emptyLowerTargetNecessaryOn": 4,
+    "delayedWalletNegativeControlsFailedOnOld": 2,
+    "delayedWalletPassedOnFinal": 2,
+    "otherFinalFocusedBrowserPassed": 44,
+    "actualInputRecordings": 5,
+    "agentVisiblePlays": [
+      7,
+      13
+    ],
     "androidDebugSignature": "pass",
     "androidUnsignedSdkDisabledR8": "pass"
   },
-  "limits": "Automated source CI, independent rule oracle and agent-visible UI play; no human enjoyment/difficulty calibration or physical Android performance/SDK playback claim."
+  "limits": "Automated correctness/compatibility, independent rule oracle and agent-visible UI play; human enjoyment/difficulty and physical Android performance/ad playback not measured. Subsequent documentation-only acceptance does not rebuild or change runtime."
 }

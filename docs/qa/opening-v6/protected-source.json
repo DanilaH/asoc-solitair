@@ -1,0 +1,141 @@
+{
+  "baseline": "a9e9b43d629d24ae2ae92d39a5b315c9f332ec4e",
+  "openingSource": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
+  "currentSource": "3f62193c4722e5f77a5e80f883b55e421500b6fb",
+  "protectedObjects": [
+    {
+      "path": "public",
+      "oldGitObject": "9e6a40c43e9361f43f5dd2f14517f30eb5ef5a8e",
+      "currentGitObject": "9e6a40c43e9361f43f5dd2f14517f30eb5ef5a8e",
+      "unchanged": true
+    },
+    {
+      "path": "src/game",
+      "oldGitObject": "23117f92b6264258403f9a20593f1dbd6519b506",
+      "currentGitObject": "23117f92b6264258403f9a20593f1dbd6519b506",
+      "unchanged": true
+    },
+    {
+      "path": "src/domain/engine.ts",
+      "oldGitObject": "9755120187e6a1b64dae667221a67c7bb2600f24",
+      "currentGitObject": "9755120187e6a1b64dae667221a67c7bb2600f24",
+      "unchanged": true
+    },
+    {
+      "path": "src/domain/balance.ts",
+      "oldGitObject": "bbb0349e81a31f07b91b14cf02174547ad7a226e",
+      "currentGitObject": "bbb0349e81a31f07b91b14cf02174547ad7a226e",
+      "unchanged": true
+    },
+    {
+      "path": "src/domain/solver.ts",
+      "oldGitObject": "51896d80b621cb83e32176fa911f4729eda9c877",
+      "currentGitObject": "51896d80b621cb83e32176fa911f4729eda9c877",
+      "unchanged": true
+    },
+    {
+      "path": "src/domain/hint.ts",
+      "oldGitObject": "ed90a4ffe9f42390f6bdb0cc5f91bd11469ff9ad",
+      "currentGitObject": "ed90a4ffe9f42390f6bdb0cc5f91bd11469ff9ad",
+      "unchanged": true
+    },
+    {
+      "path": "src/platform/runtime.ts",
+      "oldGitObject": "d4341260e803736047b33ccd425e52faaa79c270",
+      "currentGitObject": "d4341260e803736047b33ccd425e52faaa79c270",
+      "unchanged": true
+    },
+    {
+      "path": "src/platform/recorded-sounds.ts",
+      "oldGitObject": "01fc2f69bd6f16e2abddac3736923499f0105e6b",
+      "currentGitObject": "01fc2f69bd6f16e2abddac3736923499f0105e6b",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/campaign.json",
+      "oldGitObject": "8b4de1968f1ed844fe9bf27e7d99b9e53701941b",
+      "currentGitObject": "8b4de1968f1ed844fe9bf27e7d99b9e53701941b",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/daily.ts",
+      "oldGitObject": "e0e39a9b9267968fd99c2253c028d68388f1c7b1",
+      "currentGitObject": "e0e39a9b9267968fd99c2253c028d68388f1c7b1",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/modifiers.ts",
+      "oldGitObject": "83c68eebddc3afdd009cebf562d82bce10a88fe1",
+      "currentGitObject": "83c68eebddc3afdd009cebf562d82bce10a88fe1",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/expansion.ts",
+      "oldGitObject": "1ceb0c8360b7d8ff3fc603dea91fdd9a1bb3446b",
+      "currentGitObject": "1ceb0c8360b7d8ff3fc603dea91fdd9a1bb3446b",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/daily-pool.json",
+      "oldGitObject": "072b8e032de4e4b70b27d7074eaed786c71cdb54",
+      "currentGitObject": "072b8e032de4e4b70b27d7074eaed786c71cdb54",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/expansion.json",
+      "oldGitObject": "a4010cdd084c5804f618a67a58939243a82ad4d0",
+      "currentGitObject": "a4010cdd084c5804f618a67a58939243a82ad4d0",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/rules-v3-paths.json",
+      "oldGitObject": "44534b726f603ad13477b96a2556735d7ea055b0",
+      "currentGitObject": "44534b726f603ad13477b96a2556735d7ea055b0",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/topics.ts",
+      "oldGitObject": "c8ff2c862932bb34e21bc1660a6be4d1d5936a29",
+      "currentGitObject": "c8ff2c862932bb34e21bc1660a6be4d1d5936a29",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/expansion-cards.ts",
+      "oldGitObject": "9de9cf53527c539356d5c18dfbed7e89d21f88c1",
+      "currentGitObject": "9de9cf53527c539356d5c18dfbed7e89d21f88c1",
+      "unchanged": true
+    },
+    {
+      "path": "src/content/current-rules.ts",
+      "oldGitObject": "2aee7f7928d585908b2f2d86da4323b8aba4c809",
+      "currentGitObject": "2aee7f7928d585908b2f2d86da4323b8aba4c809",
+      "unchanged": true
+    },
+    {
+      "path": "native/android/app/src",
+      "oldGitObject": "9532bc062aad8111a30dfa0a03fc73f419139a37",
+      "currentGitObject": "9532bc062aad8111a30dfa0a03fc73f419139a37",
+      "unchanged": true
+    },
+    {
+      "path": "src/art.css",
+      "oldGitObject": "52df3d109bb3e18112ec87f3eb2522646865e867",
+      "currentGitObject": "52df3d109bb3e18112ec87f3eb2522646865e867",
+      "unchanged": true
+    },
+    {
+      "path": "src/style.css",
+      "oldGitObject": "9e7038039da104ba79257a7f6c109b482d46fb35",
+      "currentGitObject": "9e7038039da104ba79257a7f6c109b482d46fb35",
+      "unchanged": true
+    }
+  ],
+  "afterInitialContent6": "Bank, rules/domain, save migration and tutorial definitions unchanged by the0.17.1wallet fix.",
+  "intentionalPresentationDelta": [
+    "WalletPresentation.settling getter",
+    "Victory waits for actual current income settlement"
+  ],
+  "nativeDelta": "Only versionName/versionCode; SDK production configuration and kit dependency pin unchanged.",
+  "runtimeDependenciesUnchanged": true,
+  "kitRuntimePin": "git+https://github.com/DanilaH/mini-games-kit.git#a9325265e87583a4872cf6a158e1e881a0d7508e"
+}

@@ -1,6 +1,6 @@
 {
-  "source": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
-  "tree": "535c8005eb4875c2c3d216c81f89486102977b6f",
+  "source": "3f62193c4722e5f77a5e80f883b55e421500b6fb",
+  "tree": "73f92bb85020a35cde83fe113cb4703fa1215bec",
   "files": {
     "art/bird.svg": "2ee235f49e5234295dd2aa421f9400cd97303da8f379858edc1da071ffada9e6",
     "art/campaign/apple.svg": "11c5c382c07486667177ed2e1232e540455e204cc000922c8b341e378004b886",
@@ -187,9 +187,9 @@
     "art/ui/reward-emblem.webp": "d25743248a4d81bca14e7514112df8908b63026e9782dd88ec23cc6bd79d0896",
     "art/ui/tutorial-hand.webp": "7c1afd33f81d3d9f3d0686d1d27e3fbdd19752bf6a1da552284adfd6e5ecd215",
     "assets/hint.worker-uhBS9La3.js": "cb6f750af6ebd129a4cedef96ebdf84caa95f951f1a546852fb6a4ca5358083f",
-    "assets/index-CG_En_Nc.js": "7a962d2df8225f81635e57ffa87e4bc719e0e249a91fdff3382d3bbaac5f0dce",
+    "assets/index-C9MOXhoy.js": "702af486d3cbe6f55eb4cee853c5e1ebdc743c031ba82bf08dffb101e1b10c8b",
     "assets/index-pJ2OW3Vc.css": "15ad8316b675976d620b680d86b0a8be25d556b4b4ddc35b28acb0736862cefe",
-    "assets/web-DsuYCPhC.js": "b7d7a227f5109a33698d73b0ade5d65c5b050cc17e219c9d3547dc288ddf8d76",
+    "assets/web-jbzUiCxE.js": "edde54aecf0dfff6a525481302bea93ee18dd736a6c2bf99efa37894d8eadf29",
     "audio/CREDITS.md": "3f010cac51a2b16750d6cfd808048240a35fe2f40fcf449ff0e3cff0cf3d7a8b",
     "audio/LICENSE-Kenney.txt": "3d9c53acb6e236d760da14030f54bc53e1d8c2599f78470c36b96fddcde09221",
     "audio/card-draw-1.wav": "2233a7852675a8a87a017fe85847eea03343c5dfda635301dfdbf4f5a50b442d",
@@ -209,6 +209,6 @@
     "audio/ui-tap.wav": "9b0d621ef2a022dc84aa2dd52b33c84b6165a753f19c0d8c08beac653a912bfe",
     "fonts/OFL-Nunito.txt": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65",
     "fonts/nunito.ttf": "bb55a5ca5c2042335b3991af27c4d0705d0ef41cac6164ac737fd8f2a1e85207",
-    "index.html": "5c41920836d4fb8ec7af557e99803a5be046caa06df6c03b0c9d9dff9f803fe4"
+    "index.html": "c71a1e6447dbdc8892200683a987c527375568991c613477af30c0bd6d823e67"
   }
 }

@@ -37,8 +37,8 @@
     "assertion": "result prematurely visible during injected 1000ms wallet RAF hold",
     "log": "/tmp/asoc-017-wallet-negative.log"
   },
-  "finalFocusedStatus": "PASS on phone and compact after the actual-settlement gate; both old negative controls FAIL as expected.",
-  "finalSource": "PENDING",
+  "finalFocusedStatus": "46 PASS: delayed-RAF negative controls corrected on phone+compact (2), then all new levels/save compatibility and remaining wallet scenarios (44).",
+  "finalSource": "3f62193c4722e5f77a5e80f883b55e421500b6fb",
   "localChecks": {
     "unitPlatform": 105,
     "localExhaustiveTestTimeoutMs": 15000,
@@ -46,5 +46,14 @@
     "contentValidation": "PASS",
     "typecheckBuild": "PASS",
     "delayedWalletBrowserPassed": 2
-  }
+  },
+  "finalFullCI": {
+    "push": 43705624898,
+    "pr": 43705697767,
+    "bothConclusion": "success",
+    "browserPassedPerRun": 242,
+    "skippedPerRun": 4,
+    "touchCampaignWinsPerRun": 80
+  },
+  "finalMerge": "cf5fa5c564ae429b493c2929b8c333e5fe0e1ffc"
 }

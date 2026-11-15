@@ -1,0 +1,204 @@
+{
+  "source": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
+  "level": 7,
+  "method": "Agent chose actions from visible screenshots without consulting winningPath, legal-command list, hidden cards or Hint; real taps checked against engine and independent oracle afterward. Not a human enjoyment or difficulty measurement.",
+  "rows": [
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 3
+        }
+      },
+      "accepted": true,
+      "phase": "playing",
+      "movesLeft": 14,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      "accepted": false,
+      "phase": "playing",
+      "movesLeft": 14,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "accepted": true,
+      "phase": "playing",
+      "movesLeft": 13,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "accepted": true,
+      "phase": "playing",
+      "movesLeft": 12,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "accepted": true,
+      "phase": "playing",
+      "movesLeft": 11,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "accepted": true,
+      "phase": "playing",
+      "movesLeft": 10,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      "accepted": true,
+      "phase": "playing",
+      "movesLeft": 9,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "accepted": true,
+      "phase": "playing",
+      "movesLeft": 8,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "accepted": true,
+      "phase": "playing",
+      "movesLeft": 7,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "accepted": true,
+      "phase": "playing",
+      "movesLeft": 6,
+      "modelMatches": true
+    },
+    {
+      "command": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 3
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "accepted": true,
+      "phase": "won",
+      "movesLeft": 5,
+      "modelMatches": true
+    }
+  ],
+  "summary": {
+    "attemptedTransfers": 11,
+    "acceptedTransfers": 10,
+    "rejectedTransfers": 1,
+    "finalPhase": "won",
+    "movesLeft": 5,
+    "helpersUsed": false,
+    "knownWinningRouteConsulted": false,
+    "observation": "One refused member-to-unmoved-category packet transfer left budget unchanged and displayed the reason. Filling Light and Furniture slots first required temporary lower parking of repair tools; player-visible route recovered and won."
+  }
+}

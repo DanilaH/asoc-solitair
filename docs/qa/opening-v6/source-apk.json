@@ -1,0 +1,25 @@
+{
+  "source": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
+  "tree": "535c8005eb4875c2c3d216c81f89486102977b6f",
+  "run": 43702392116,
+  "artifact": 14156279303,
+  "artifactZipSha256": "6cc68937b2107670b854a14b6782202f2c80cfd27d9d984d40afcdd8a21f663a",
+  "apk": "asoc-solitair-0.17.0-preview.apk",
+  "bytes": 11736981,
+  "sha256": "160ec40fdcd8970755b10c695b8e01f9c06cbbde5b423e37b235ec934b657b15",
+  "versionName": "0.17.0",
+  "versionCode": 25,
+  "package": "com.danilah.asocsolitair.debug",
+  "signerSha256": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "signatureEvidence": "Android CI apksigner and aapt output",
+  "webFilesMatched": 208,
+  "emptyCordovaShims": [
+    "cordova.js",
+    "cordova_plugins.js"
+  ],
+  "dexBuildConfig": {
+    "AD_MODE": "test",
+    "ANALYTICS_API_KEY": ""
+  },
+  "limits": "Signed preview compilation and packaged configuration verified; physical Android device/ad playback not exercised."
+}

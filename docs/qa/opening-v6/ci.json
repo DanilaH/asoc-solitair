@@ -1,0 +1,52 @@
+{
+  "runtimeSource": "77081a557c88f0127c544bcf9d7f0b44a2daf4f8",
+  "runtimeTree": "535c8005eb4875c2c3d216c81f89486102977b6f",
+  "base": "a9e9b43d629d24ae2ae92d39a5b315c9f332ec4e",
+  "pr": 30,
+  "acceptedPush": {
+    "id": 43702392116,
+    "url": "https://github.com/DanilaH/asoc-solitair/actions/runs/43702392116",
+    "status": "completed",
+    "conclusion": "success",
+    "webJob": 132776136948,
+    "androidJob": 132776137196
+  },
+  "pullRequestRun": {
+    "id": 43702611492,
+    "jobs": [
+      {
+        "id": 132776802986,
+        "name": "android",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 132776803147,
+        "name": "web",
+        "status": "completed",
+        "conclusion": "failure"
+      }
+    ],
+    "failure": "239 passed/1 failed: real final-streak cancellation race, tracked in wallet-transition-regression.json; initial push was fully green."
+  },
+  "checks": {
+    "unitPlatform": 105,
+    "browserPassed": 240,
+    "browserDeliberateCompactCatalogSkipped": 4,
+    "touchCampaignWins": 80,
+    "deals": 123,
+    "currentLegacyWitnesses": 231,
+    "independentRuleComparisons": 258914,
+    "prototypeAttempts": 96,
+    "layoutStates": 119,
+    "domIssues": 0,
+    "rasterIssues": 0,
+    "baselinePolicyExactOutcomes": 340,
+    "baselinePolicyExactCommandPaths": 340,
+    "revisedPolicyRuns": 255,
+    "openingReplayedTransitions": 9822,
+    "androidDebugSignature": "pass",
+    "androidUnsignedSdkDisabledR8": "pass"
+  },
+  "limits": "Automated source CI, independent rule oracle and agent-visible UI play; no human enjoyment/difficulty calibration or physical Android performance/SDK playback claim."
+}

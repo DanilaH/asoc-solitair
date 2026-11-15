@@ -16,6 +16,44 @@ test('streak income shows its exact delta and lands in the same wallet without t
   const d=campaignDeals[16];let s=fixture(16),next:BoardCommand|undefined;
   for(const cmd of d.winningPath){const r=dispatch(s,cmd,d);if(r.events.some(e=>e.type==='coins')&&!r.events.some(e=>e.type==='win')){next=cmd;break;}s=r.next;}if(!next)throw Error('No streak fixture');await seed(page,s);const expected=dispatch(s,next,d).next;await move(page,d,next);await expect(page.locator('.coin-gain')).toHaveText('+'+(expected.profile.coins-s.profile.coins));await expect(page.locator('#coins')).toHaveText(String(expected.profile.coins));expect((await read(page)).attempt.board).toEqual(expected.attempt.board);await page.locator('#menu').tap();await page.locator('#levels-open').tap();await expect(page.locator('#home-progress')).toContainText('из 80');expect((await read(page)).profile).toEqual(expected.profile);
 });
+test('a delayed streak flight finishes with its sound before the win panel can cancel it', async ({ page }) => {
+  await page.addInitScript(() => {
+    const w = window as any, raf = requestAnimationFrame.bind(window);
+    w.__slowCoinUntil = 0; w.__coinAudio = [];
+    window.requestAnimationFrame = callback => raf(time => {
+      const delay = w.__slowCoinUntil - performance.now();
+      if (delay > 0) setTimeout(() => callback(performance.now()), delay);
+      else callback(time);
+    });
+    const start = AudioBufferSourceNode.prototype.start;
+    AudioBufferSourceNode.prototype.start = function (...args) {
+      const data = this.buffer?.getChannelData(0); let h = 2166136261;
+      if (data) for (let i = 0; i < Math.min(2048, data.length); i++) h = Math.imul(h ^ Math.round(data[i] * 1e6), 16777619);
+      w.__coinAudio.push({ at: performance.now(), hash: h >>> 0 });
+      return start.apply(this, args);
+    };
+  });
+  const s = fixture(4, true), d = campaignDeals[4], last = d.winningPath.at(-1)!;
+  const expected = dispatch(s, last, d); expect(expected.events.some(e => e.type === 'coins')).toBe(true);
+  await seed(page, s);
+  await page.evaluate(() => {
+    const w = window as any;
+    const observer = new MutationObserver(() => {
+      if (!document.querySelector('.coin-gain')) return;
+      w.__slowCoinUntil = performance.now() + 1000; observer.disconnect();
+    });
+    observer.observe(document.querySelector('#coin-layer')!, { childList: true });
+  });
+  await move(page, d, last);
+  await page.waitForFunction(() => (window as any).__slowCoinUntil > 0);
+  await page.waitForFunction(() => performance.now() >= (window as any).__slowCoinUntil - 80);
+  await expect(page.locator('#result')).toBeHidden();
+  await page.locator('#result[open]').waitFor();
+  const coinHash = hash(recordedSamples('coins'));
+  expect(await page.evaluate(h => (window as any).__coinAudio.some((a: any) => a.hash === h && a.at < (window as any).__slowCoinUntil + 250), coinHash)).toBe(true);
+  await expect(page.locator('#coins')).toHaveText(String(expected.next.profile.coins));
+  expect((await read(page)).profile).toEqual(expected.next.profile);
+});
 test('skipping win or reduced motion settles counters without losing or minting coins',async({page})=>{
   for(const reduced of [false,true]){const s=fixture(4,true);s.settings.reducedMotion=reduced;await seed(page,s);await move(page,campaignDeals[4],campaignDeals[4].winningPath.at(-1)!);await page.locator('#result[open]').waitFor();const paid=await read(page);await page.locator('#next-level').tap();await expect(page.locator('#coins')).toHaveText(String(paid.profile.coins));await page.waitForTimeout(1000);expect(await page.locator('.flying-coin:visible').count()).toBe(0);expect((await read(page)).profile).toEqual(paid.profile);}
 });

@@ -18,9 +18,10 @@ interface BoardPointer { id: number; x: number; y: number; primaryDown: boolean;
 interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; inspectOnly?: boolean; liftedAt?: number; motion?: { x: number; at: number; tilt: number }; jokerColumn?: number }
 interface FoundationSurface { view: CardView; frontId: string }
 interface CoveredFace { frontId: string; strip: boolean }
-interface CollectionView { node: Phaser.GameObjects.Container; targets: Phaser.GameObjects.GameObject[]; timers: Phaser.Time.TimerEvent[]; sparks: Phaser.GameObjects.Image[] }
+interface CollectionView { node: Phaser.GameObjects.Container; targets: Phaser.GameObjects.GameObject[]; timers: Phaser.Time.TimerEvent[]; sparks: Phaser.GameObjects.Image[]; readableUntil?: number }
 interface ContactFeedback { kind: GameEvent['type']; play(): void }
 interface KeyPresentation { timers: Phaser.Time.TimerEvent[]; revealed: string[]; revealDelay: number }
+type RevealSource = (cards: readonly Phaser.GameObjects.Container[], offsetX?: number, offsetY?: number, landed?: boolean) => void;
 const inside = (x: number, y: number, target: { x: number; y: number; width: number; height: number }) =>
   Math.abs(x - target.x) <= target.width / 2 && Math.abs(y - target.y) <= target.height / 2;
 const same = (a: Location, b: Location) => a.kind === b.kind && a.index === b.index;
@@ -66,6 +67,13 @@ export class BoardScene extends Phaser.Scene {
   private frameIdentity() { const b = this.options.boardBounds?.() ?? { x: 0, y: 0, width: this.scale.width, height: this.scale.height }; return [this.scale.width, this.scale.height, this.scale.zoom, b.x, b.y, b.width, b.height].join(':'); }
   private enabled = true;
   private initial = true;
+  private animateEntryOnCreate = false;
+  private enteringCards = new Set<string>();
+  private publishDealProgress(): void {
+    const root = this.options.inputRoot?.();
+    const count = String(this.enteringCards.size);
+    if (root && root.dataset.dealing !== count) root.dataset.dealing = count;
+  }
   private hintObjects: Phaser.GameObjects.GameObject[] = [];
   private hintTweens: Phaser.Tweens.Tween[] = [];
   private inspectMode = false;
@@ -89,7 +97,10 @@ export class BoardScene extends Phaser.Scene {
   public constructor(private readonly options: Options) { super('board'); }
   private get cardW() { return cardMetrics(this.options.deal).width; }
   private get cardH() { return cardMetrics(this.options.deal).height; }
-  public setDeal(deal: Deal) { this.enabled = false; this.presentedDealId = undefined; this.options.deal = deal; this.scene.restart(); this.game.loop.wake(); }
+  public setDeal(deal: Deal, animateEntry = false) {
+    this.enabled = false; this.presentedDealId = undefined; this.options.deal = deal;
+    this.animateEntryOnCreate = animateEntry; this.scene.restart(); this.game.loop.wake();
+  }
   /** Called only after the visible board has its final bounds, for a new attempt. */
   public presentDeal(): void { this.initial = true; this.sync([], true); }
   public preload(): void {
@@ -105,7 +116,10 @@ export class BoardScene extends Phaser.Scene {
     this.keyPresentation = undefined; this.presentationGeneration++;
     this.slotViews.clear();
     this.collections.clear();
-    this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.dragPointer = undefined; this.initial = false; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = []; this.stockBusyUntil = 0;
+    this.enteringCards.clear();
+    this.initial = this.animateEntryOnCreate;
+    this.animateEntryOnCreate = false;
+    this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.dragPointer = undefined; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = []; this.stockBusyUntil = 0;
     installSceneTextSharpness(this);
     this.world = this.add.container(0, 0);
     this.cues = [];
@@ -292,13 +306,28 @@ export class BoardScene extends Phaser.Scene {
     const previous = this.metrics;
     const drawUnder = command?.type === 'draw' && !save.settings.reducedMotion ? board.waste.at(-2) : undefined;
     const bounds = this.options.boardBounds?.() ?? { x: 0, y: 0, width: this.scale.width, height: this.scale.height };
-    this.frameKey = this.frameIdentity();
+    const frameKey = this.frameIdentity(), sameFrame = frameKey === this.frameKey;
+    this.frameKey = frameKey;
     const frame = boardFrame(bounds.width, bounds.height, save.settings.deckPosition, this.options.deal);
     this.unit = frame.unit; this.world.setScale(this.unit).setPosition(bounds.x + frame.offsetX, bounds.y);
     this.metrics = layout(board, this.options.deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
     if (this.backStyle !== (save.settings.cardBack ?? 'classic')) { this.backStyle = save.settings.cardBack ?? 'classic'; for (const view of this.views.values()) this.paintBack(view.backArt); }
     const duration = save.settings.reducedMotion ? 0 : 215;
+    const effects = new URLSearchParams(location.search);
+    const cardsAnimate = effects.get('fxCards') !== '0';
     const movedIds = events.find(e => e.type === 'transfer')?.cards ?? [];
+    const exposedId = duration && cardsAnimate && command?.type === 'transfer' && command.from.kind === 'tableau'
+      ? board.tableau[command.from.index].at(-1) : undefined;
+    const exposed = exposedId && events.some(e => e.type === 'flip' && e.cards?.includes(exposedId)) ? this.views.get(exposedId) : undefined;
+    let flipExposed: (() => void) | undefined;
+    const revealSource: RevealSource | undefined = exposed && ((cards, offsetX = 0, offsetY = 0, landed = false) => {
+      if (!flipExposed || generation !== this.presentationGeneration) return;
+      const { x, y } = exposed.node;
+      if (!landed && cards.some(card =>
+        Math.abs(card.x + offsetX - x) < this.cardW * (1 + card.scaleX) / 2 &&
+        Math.abs(card.y + offsetY - y) < this.cardH * (1 + card.scaleY) / 2)) return;
+      const flip = flipExposed; flipExposed = undefined; flip();
+    });
     // One packet owns one arrival time. Distances are CSS pixels, so phones
     // share the same feel; neither input nor the committed model waits for it.
     const undoing = events.some(e => e.type === 'undo');
@@ -310,7 +339,7 @@ export class BoardScene extends Phaser.Scene {
     const settlingDuration = duration ? Phaser.Math.Clamp(75 + distance * .5, 80, undoing ? 210 : 180) : 0;
     const receivingColumn = command?.type === 'transfer' && command.to.kind === 'tableau' ? board.tableau[command.to.index] : undefined;
     const firstArrival = receivingColumn?.indexOf(movedIds[0]) ?? -1;
-    const tableauUnder = duration && new URLSearchParams(location.search).get('fxCards') !== '0' && firstArrival > 0 ? receivingColumn![firstArrival - 1] : undefined;
+    const tableauUnder = duration && cardsAnimate && firstArrival > 0 ? receivingColumn![firstArrival - 1] : undefined;
     if (events.some(e => e.type === 'undo' || e.type === 'restart')) {
       for (const key of this.keyFlights) { this.tweens.killTweensOf(key); key.setVisible(false); }
       this.options.praise('');
@@ -361,6 +390,7 @@ export class BoardScene extends Phaser.Scene {
     const completed = events.find(e => e.type === 'complete');
     const contactAtCollection = Boolean(completed && !contactAtKey);
     const arrivalId = movedIds.filter(id => visible.has(id)).at(-1);
+    const movingNodes = exposed ? movedIds.filter(id => visible.has(id)).map(id => this.views.get(id)!.node) : [];
     let landed = false;
     const landTransfer = () => {
       if (landed || generation !== this.presentationGeneration) return;
@@ -370,12 +400,19 @@ export class BoardScene extends Phaser.Scene {
       if (target && !completed) this.cue(target.x, target.y, 0xffd990);
       const front = arrivalId && this.views.get(arrivalId);
       if (front && !this.press && !save.settings.reducedMotion && !completed) {
-        this.tweens.add({ targets: front.node, y: front.node.y + 1.5, scaleY: .992, duration: 45, yoyo: true, ease: 'Sine.easeOut' });
+        const large = movedIds.length >= 3;
+        this.tweens.add({ targets: front.node, y: front.node.y + (large ? 2.8 : 1.5),
+          scaleY: large ? .976 : .992, duration: large ? 54 : 45, yoyo: true, ease: 'Sine.easeOut' });
+        if (large) for (const id of movedIds.slice(0, -1)) {
+          const rear = this.views.get(id)!.node;
+          if (rear.visible) this.tweens.add({ targets: rear, y: rear.y + Math.min(5, Math.max(0, front.node.y - rear.y) * .12),
+            duration: 54, yoyo: true, ease: 'Sine.easeOut' });
+        }
       }
     };
     if (command?.type === 'transfer' && command.to.kind === 'foundation') {
       this.clearCollection(command.to.index);
-      if (completed) this.collect(completed, movedIds, command.to.index, contactAtCollection ? contact : undefined);
+      if (completed) this.collect(completed, movedIds, command.to.index, contactAtCollection ? contact : undefined, revealSource);
     }
     if (!completed && command?.type === 'transfer' && command.to.kind === 'foundation' && !save.settings.reducedMotion) {
       const index = command.to.index, oldId = this.foundationFaces.get(index), frontId = foundationTops.find(id => board.foundations[index].includes(id));
@@ -392,6 +429,7 @@ export class BoardScene extends Phaser.Scene {
     if (command?.type === 'draw' || command?.type === 'recycle') this.stockBusyUntil = performance.now() + (save.settings.reducedMotion ? 0 : command.type === 'draw' ? 280 : 370);
     for (const [id, view] of this.views) {
       if (visible.has(id)) continue;
+      this.enteringCards.delete(id);
       this.tweens.killTweensOf(view.node); this.tweens.killTweensOf(view.shade); view.shade.setAlpha(0);
       this.tweens.killTweensOf([view.face, view.back]); view.face.setScale(1); view.back.setScale(1);
       if (recycled && board.stock.includes(id)) {
@@ -407,11 +445,17 @@ export class BoardScene extends Phaser.Scene {
     for (const pose of this.metrics.poses) {
       if (!visible.has(pose.id)) continue;
       const view = this.views.get(pose.id)!;
+      const enteringCard = this.enteringCards.has(pose.id);
+      const old = enteringCard ? previous?.poses.find(p => p.id === pose.id) : undefined;
+      // A move on an already dealt column must leave the other incoming cards in flight.
+      const keepEntry = Boolean(old && sameFrame && duration && !entering && !movedIds.includes(pose.id) &&
+        old.x === pose.x && old.y === pose.y && old.depth === pose.depth && old.faceUp === pose.faceUp);
+      if (!keepEntry) this.enteringCards.delete(pose.id);
       view.shadow.setPosition(0, 0).setScale(1).setAlpha(1);
       this.tweens.killTweensOf(view.shade);
       if (view.shade.alpha && duration && this.enabled) this.tweens.add({ targets: view.shade, alpha: 0, duration: 120, ease: 'Sine.easeOut' });
       else view.shade.setAlpha(0);
-      this.tweens.killTweensOf(view.node);
+      if (!keepEntry) this.tweens.killTweensOf(view.node);
       this.tweens.killTweensOf([view.face, view.back]); view.face.setScale(1); view.back.setScale(1);
       view.face.setVisible(pose.faceUp); view.back.setVisible(!pose.faceUp);
       const def = this.options.deal.cards[pose.id];
@@ -461,7 +505,8 @@ export class BoardScene extends Phaser.Scene {
       if (waitingForCover) this.coveredFaces.set(pose.id, { frontId: pose.id === drawUnder ? board.waste.at(-1)! : movedIds.at(-1)!, strip: stripVisible });
       view.content.setVisible(!coveredCaption || waitingForCover); view.caption?.setVisible(!coveredCaption || waitingForCover);
       view.strip?.setVisible(!waitingForCover && stripVisible);
-      const fresh = entering && this.initial;
+      if (keepEntry) continue;
+      const fresh = entering && this.initial && Boolean(duration) && cardsAnimate;
       if (fresh) {
         const fromStock = Boolean(this.options.deal.initial.stock.length || this.options.deal.initial.waste.length);
         view.node.setPosition(fromStock ? stock.x : pose.x, fromStock ? stock.y : pose.y + 14).setAlpha(0).setAngle(fromStock ? -5 : 0).setScale(fromStock ? .88 : .96);
@@ -483,17 +528,21 @@ export class BoardScene extends Phaser.Scene {
       }
       if (!entering && pose.faceUp && previous?.poses.some(old => old.id === pose.id && !old.faceUp) && !save.settings.reducedMotion) {
         view.face.setVisible(false); view.back.setVisible(true);
-        const revealDelay = this.keyPresentation?.revealed.includes(pose.id) ? this.keyPresentation.revealDelay : 0;
-        this.tweens.add({ targets: view.back, scaleX: .045, delay: 25 + revealDelay, duration: 75, ease: 'Sine.easeIn', onComplete: () => {
+        const flip = (delay: number) => this.tweens.add({ targets: view.back, scaleX: .045, delay, duration: 75, ease: 'Sine.easeIn', onComplete: () => {
           view.back.setVisible(false).setScale(1); view.face.setVisible(true).setScale(.045, 1);
           if (generation === this.presentationGeneration) this.options.sound('flip');
           this.tweens.add({ targets: view.face, scaleX: 1, duration: 90, ease: 'Sine.easeOut' });
         } });
+        const afterKey = this.keyPresentation?.revealed.includes(pose.id) ? this.keyPresentation.revealDelay : 0;
+        if (afterKey) flip(25 + afterKey);
+        else if (view === exposed) flipExposed = () => { flip(0); };
+        else flip(25);
       }
       const moving = events.some(e => e.type === 'transfer' && e.cards?.includes(pose.id)) || events.some(e => e.type === 'draw' && e.cards?.includes(pose.id));
-      const animationOn = new URLSearchParams(location.search).get(moving ? 'fxCards' : 'fxLayout') !== '0';
+      const animationOn = moving ? cardsAnimate : effects.get('fxLayout') !== '0';
       const covered = board.joker?.column === group && board.tableau[group].indexOf(pose.id) < board.joker.boundary;
-      const moveDuration = entering && !fresh || !animationOn ? 0 : settlingIds.includes(pose.id) ? settlingDuration : duration;
+      const snap = entering || !animationOn || enteringCard && !moving;
+      const moveDuration = fresh ? 165 : snap ? 0 : settlingIds.includes(pose.id) ? settlingDuration : duration;
       // A flight belongs above the board until contact, independently of the
       // destination's resting depth. Keep packet members in their source order.
       const flying = Boolean(moveDuration && moving && command?.type === 'transfer');
@@ -503,15 +552,24 @@ export class BoardScene extends Phaser.Scene {
         view.node.setPosition(pose.x, pose.y).setScale(1).setAlpha(covered ? .5 : 1).setAngle(0);
         if (pose.id === arrivalId) landTransfer();
       }
-      else this.tweens.add({ targets: view.node, x: pose.x, y: pose.y, scaleX: 1, scaleY: 1, alpha: covered ? .5 : 1, angle: 0,
-        duration: moveDuration, delay: fresh ? Math.min(140, Math.max(0, pose.depth - 20) * 2.5) : 0, ease: 'Cubic.easeOut', onComplete: () => {
-          if (flying) { view.node.setDepth(pose.depth); this.world.sort('depth'); }
-          this.finishCovers(pose.id);
-          for (const [index, surface] of this.foundationSurfaces) if (surface.frontId === pose.id) this.finishSurface(index);
-          for (const [index, returning] of this.returningWells) if (returning.ids.at(-1) === pose.id) { this.returningWells.delete(index); this.drawSlots(); }
-          if (pose.id === arrivalId) landTransfer();
-        } });
+      else {
+        if (fresh) this.enteringCards.add(pose.id);
+        const delay = fresh ? Math.max(0, group) * 80 + Math.min(60, Math.max(0, pose.depth - 50) * 12) : 0;
+        this.tweens.add({ targets: view.node, x: pose.x, y: pose.y, scaleX: 1, scaleY: 1, alpha: covered ? .5 : 1, angle: 0,
+          duration: moveDuration, delay, ease: 'Cubic.easeOut',
+          onUpdate: pose.id === arrivalId && revealSource ? () => revealSource(movingNodes) : undefined,
+          onComplete: () => {
+            if (fresh) { this.enteringCards.delete(pose.id); this.publishDealProgress(); }
+            if (flying) { view.node.setDepth(pose.depth); this.world.sort('depth'); }
+            this.finishCovers(pose.id);
+            for (const [index, surface] of this.foundationSurfaces) if (surface.frontId === pose.id) this.finishSurface(index);
+            for (const [index, returning] of this.returningWells) if (returning.ids.at(-1) === pose.id) { this.returningWells.delete(index); this.drawSlots(); }
+            if (pose.id === arrivalId) { revealSource?.(movingNodes, 0, 0, true); landTransfer(); }
+          } });
+      }
     }
+    if (!completed && landed) revealSource?.(movingNodes, 0, 0, true);
+    this.publishDealProgress();
     this.initial = false;
     this.world.sort('depth');
     this.drawFocus();
@@ -589,7 +647,7 @@ export class BoardScene extends Phaser.Scene {
     collection.node.destroy(true);
   }
   /** A bounded visual snapshot of an already committed collection, owned by its slot. */
-  private collect(event: GameEvent, moved: string[], index: number, contact?: () => void) {
+  private collect(event: GameEvent, moved: string[], index: number, contact?: () => void, revealSource?: RevealSource) {
     const target = this.metrics.targets.find(t => t.location.kind === 'foundation' && t.location.index === index)!;
     const leaderId = event.cards?.find(id => this.options.deal.cards[id].leader); if (!leaderId) return;
     this.collectionOrigins.set(this.options.deal.cards[leaderId].category, index);
@@ -597,6 +655,8 @@ export class BoardScene extends Phaser.Scene {
     const node = this.add.container(target.x, target.y).setDepth(610); this.world.add(node);
     const collection: CollectionView = { node, targets: [], timers: [], sparks: [] }; this.collections.set(index, collection);
     const arriving: Phaser.GameObjects.Container[] = [];
+    const copies: Phaser.GameObjects.Container[] = [];
+    const large = moved.length >= 3;
     const previousId = this.foundationFaces.get(index);
     if (previousId && !moved.includes(previousId)) {
       const old = this.copyCard(previousId); old.node.setPosition(0, 0).setScale(1).setAlpha(1).setAngle(0);
@@ -611,8 +671,8 @@ export class BoardScene extends Phaser.Scene {
     for (const id of moved) {
       const copy = this.copyCard(id); copy.node.setPosition(copy.node.x - target.x, copy.node.y - target.y);
       node.add(copy.node); arriving.push(copy.node);
-      if (!reduced) this.tweens.add({ targets: copy.node, x: 0, y: 0, scaleX: 1, scaleY: 1, angle: 0, duration: 145, ease: 'Cubic.easeOut' });
-      else copy.node.setPosition(0, 0).setScale(1);
+      copies.push(copy.node);
+      if (reduced) copy.node.setPosition(0, 0).setScale(1);
     }
     let header: Phaser.GameObjects.Container | undefined;
     if (previousId) {
@@ -634,20 +694,32 @@ export class BoardScene extends Phaser.Scene {
     const land = () => {
       if (!alive()) return;
       arriving.forEach(card => card.setVisible(false)); header?.setVisible(false); completed.node.setVisible(true);
+      const hold = reduced ? 130 : 120;
+      collection.readableUntil = performance.now() + hold;
       contact?.();
       this.showPraise(['Отлично!', 'Есть связь!', 'Так держать!', 'Блестяще!'][this.praiseIndex++ % 4]);
       if (!reduced) {
         halo.setAlpha(1); this.tweens.add({ targets: halo, alpha: 0, duration: 210, ease: 'Sine.easeOut' });
-        this.tweens.add({ targets: completed.node, scaleX: 1.035, scaleY: 1.035, duration: 65, yoyo: true, ease: 'Sine.easeOut' });
+        if (large) {
+          completed.node.setScale(1.025, .976);
+          this.tweens.add({ targets: completed.node, scaleX: 1, scaleY: 1, duration: 105, ease: 'Cubic.easeOut' });
+        } else this.tweens.add({ targets: completed.node, scaleX: 1.035, scaleY: 1.035, duration: 65, yoyo: true, ease: 'Sine.easeOut' });
         this.collectionSparks(target.x, target.y, collection);
       }
-      collection.timers.push(this.time.delayedCall(reduced ? 130 : 120, () => {
+      collection.timers.push(this.time.delayedCall(hold, () => {
         if (!alive()) return;
         if (reduced) this.clearCollection(index);
         else this.tweens.add({ targets: node, y: target.y - 7, scaleX: .86, scaleY: .86, alpha: 0, duration: 155, ease: 'Cubic.easeIn', onComplete: () => { if (alive()) this.clearCollection(index); } });
       }));
     };
-    if (reduced) land(); else collection.timers.push(this.time.delayedCall(145, land));
+    if (reduced || !copies.length) land();
+    else copies.forEach((card, i) => {
+      const front = i === copies.length - 1;
+      this.tweens.add({ targets: card, x: 0, y: 0, scaleX: 1, scaleY: large ? .976 : 1, angle: 0,
+        duration: 145, ease: 'Cubic.easeOut',
+        onUpdate: front && revealSource ? () => revealSource(copies, target.x, target.y) : undefined,
+        onComplete: front ? () => { revealSource?.(copies, target.x, target.y, true); land(); } : undefined });
+    });
   }
   private collectionSparks(x: number, y: number, collection: CollectionView) {
     if (new URLSearchParams(location.search).get('fxParticles') === '0') return;
@@ -702,10 +774,10 @@ export class BoardScene extends Phaser.Scene {
     const board = this.options.getSave().attempt.board;
     for (const pose of [...this.metrics.poses].sort((a, b) => this.views.get(b.id)!.node.depth - this.views.get(a.id)!.node.depth)) {
       const view = this.views.get(pose.id)!;
-      if (!view.node.visible || !pose.faceUp || !inside(x, y, { x: view.node.x, y: view.node.y, width: this.cardW, height: this.cardH })) continue;
+      if (!view.node.visible || this.enteringCards.has(pose.id) || !pose.faceUp || !inside(x, y, { x: view.node.x, y: view.node.y, width: this.cardW, height: this.cardH })) continue;
       if (board.waste.at(-1) === pose.id) return { kind: 'waste', index: 0 };
       const index = board.tableau.findIndex(col => packet(board, board.tableau.indexOf(col), this.options.deal).includes(pose.id));
-      if (index >= 0) return { kind: 'tableau', index };
+      if (index >= 0 && !packet(board, index, this.options.deal).some(id => this.enteringCards.has(id))) return { kind: 'tableau', index };
       return null;
     }
     return null;
@@ -715,7 +787,7 @@ export class BoardScene extends Phaser.Scene {
   }
   private get stockTarget() { const stock = this.metrics.stock; return { x: stock.x, y: stock.y + stock.thickness / 2, width: this.cardW, height: this.cardH + stock.thickness }; }
   private hitCard(x: number, y: number): Pose | undefined {
-    return [...this.metrics.poses].sort((a, b) => this.views.get(b.id)!.node.depth - this.views.get(a.id)!.node.depth).find(p => this.views.get(p.id)!.node.visible && p.faceUp && inside(x, y, { x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y, width: this.cardW, height: this.cardH }));
+    return [...this.metrics.poses].sort((a, b) => this.views.get(b.id)!.node.depth - this.views.get(a.id)!.node.depth).find(p => !this.enteringCards.has(p.id) && this.views.get(p.id)!.node.visible && p.faceUp && inside(x, y, { x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y, width: this.cardW, height: this.cardH }));
   }
   private down(pointer: BoardPointer) {
     if (!this.enabled || !pointer.primaryDown || this.press) return;
@@ -939,6 +1011,13 @@ export class BoardScene extends Phaser.Scene {
     this.game.loop.wake();
   }
   public hasMotion(): boolean { return this.tweens.getTweens().length > 0 || this.collections.size > 0 || Boolean(this.keyPresentation) || Boolean(this.press?.moved); }
+  public get holdingCollection(): boolean {
+    const now = performance.now();
+    for (const collection of this.collections.values()) {
+      if (collection.readableUntil === undefined || now < collection.readableUntil) return true;
+    }
+    return false;
+  }
   public update(): void { if (this.press?.moved && this.dragPointer) this.move(this.dragPointer); }
   public geometry() { return this.metrics; }
 }

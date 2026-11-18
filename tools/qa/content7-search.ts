@@ -10,7 +10,6 @@ export function independentRoute(d:Deal,input=d.initial,restriction:'none'|'no-l
  push({b:structuredClone(input),path:[],score:score(input,0)});let visited=0;
  while(heap.length&&visited<limit){const n=pop(),k=identity(n.b,d),cost=n.path.length;if((seen.get(k)??Infinity)<cost)continue;visited++;
   if(n.b.phase==='won')return{status:'FOUND' as const,path:n.path,visited};
-  if(cost>=110)continue;
   const emptyF=n.b.foundations.findIndex(c=>!c.length),emptyT=n.b.tableau.findIndex(c=>!c.length);
   for(const x of options(n.b,d,true)){
    const a=x.action;if(a.type==='transfer'){

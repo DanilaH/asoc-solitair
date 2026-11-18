@@ -18,7 +18,9 @@ The initial solvable drafts were not accepted merely for having a route.20 and29
 
 The former39 layout admitted an immediate irreversible interval choice even without a budget. It was replaced before freeze with a visible buffer. The current sampled alternatives recover within budget.74 now requires ordinary lower preparation before revealing keys, rather than duplicating64's sequential-key pattern.42 was shortened after its reference route exceeded the REST ratio.
 
-Many categories are intentionally familiar. Content7 principally varies access, preparation, space, upper priorities and stock timing; it does not establish that obvious semantic recognition has become a new association riddle. Human intellectual interest remains an acceptance question.
+Many categories are intentionally familiar. The bank uses52 existing semantic topics plus4 existing sequences.49 ordinary topics appear by20 and all52 by30; later novelty is primarily access/space/stock timing and ordered/keys, not a stream of new association riddles. All80 topic combinations and normalized layouts differ, but this is not evidence that all80 feel distinct. Human intellectual interest remains an acceptance question.
+
+The supplied simple policy still wins32/80 levels in at least one of17 tie orders, including all intentional RESTs and ordinary PEAK31/66. In the first15 it wins1/2/5/7/10/12;9 other levels independently require lower preparation within the supplied budget. This is not a bot-loss objective.31/66 intentionally allow several efficient orders; they are high-priority human checks for an overly procedural peak. Among other levels,42 budgeted graphs prove the selected no-lower restriction insufficient,6 remain UNKNOWN under the node limit, and32 have a route without lower moves. UNKNOWN is not a no-lower necessity claim.
 
 ## Machine gates
 
@@ -31,24 +33,30 @@ Many categories are intentionally familiar. Content7 principally varies access, 
 | Archived qa:opening | PASS340 exact baseline outcomes/paths,255 C6 diagnostic runs,9822 replayed oracle transitions |
 | Prototype compatibility | PASS96/96 attempts across6 existing prototypes |
 | Rendered layout audit | PASS147 field states,0DOM/0raster issues,7 sizes320×480..520×700,4 deck configurations, modeled banner/safe-height reservations |
-| Full browser sweep / final80 UI records | IN PROGRESS; exact per-level SHA evidence and final counts will replace this row |
+| Final campaign UI records | PASS 80/80 exact-source victories via touchscreen and visible Next; each transition compared with the expected state |
+| Full browser sweep | Local PASS on phone and compact profiles. 252 cases passed with four intentional compact campaign skips. Hosted status in [run 44315807948](https://github.com/DanilaH/asoc-solitair/actions/runs/44315807948). |
 | Native sync | PASS, exact existing SDK/plugin configuration retained |
-| Android debug/release compilation | PASS local debug and SDK-disabled unsigned release; physical device remains untested |
-| Same-signer test APK | PENDING: restore-only accepted dependency/signing cache bridge; cold private-kit credential still absent |
+| Android debug/release compilation | PASS local and hosted44315807948 debug/signature and SDK-disabled unsigned release; physical device remains untested |
+| Same-signer test APK | PASS hosted code27, original0335 signer;208 packaged web files identical, DEX test ads/empty analytics verified; available for playtest |
 | Human balance, interest and physical-phone feel | UNKNOWN; see separate acceptance checklist |
 
-[Full80 curve](CURVE.md), [passports](passports.json), [independent analysis](independent-analysis.json), [all-rule comparisons](full-rules.json), [authoring provenance](design.json), [dependency access](INFRASTRUCTURE.md), [recordings](media.json). UI evidence requires both initial-board and witness SHA to match exactly; earlier draft wins do not satisfy this gate. Successful scripted input is not blind human play.
+[Exact UI records](ui-evidence.json), [Full80 curve](CURVE.md), [passports](passports.json), [independent analysis](independent-analysis.json), [all-rule comparisons](full-rules.json), [authoring provenance](design.json), [dependency access](INFRASTRUCTURE.md), [recordings](media.json). UI evidence requires both initial-board and witness SHA to match exactly; earlier draft wins do not satisfy this gate. Successful scripted input is not blind human play.
 
 The known routes contain1795 accepted actions across80 levels. An additional independent survey replays296 distinct alternatives at78 sampled decision states; all sampled routes recover within budget. The verifier replays15069 route transitions including these examples. This is sampled coverage, not an exhaustive no-deadlock proof. See [branch survey](branch-survey.json). Structural choice/routine counts in the passports follow an explicit action-availability classifier; neither class is human ground truth. Restricted searches are finite/bounded diagnostics. Sampled recoverability does not prove every possible move is safe or all states recover. Equal-cost winning alternatives are retained as valid plans, not mislabeled mistakes. No shortest-route, human success, D1 or retention claim.
 
 ## Reproduce
 
-Install through `node tools/install-dependencies.mjs`; the exact private kit pin is asserted. Hosted CI needs the read-only MINI_GAMES_KIT_READ_TOKEN secret; see infrastructure evidence. Never publish private kit source or export the preview signing key.
+Install through `node tools/install-dependencies.mjs`; the exact private kit pin is asserted. Hosted CI successfully restores the accepted exact-pin default-main cache in offline mode. A cold/expired cache needs the read-only MINI_GAMES_KIT_READ_TOKEN secret; see infrastructure evidence. Never publish private kit source or export the preview signing key.
 
 `npm run content:author7` reconstructs offline drafts under .authoring. `C7_FREEZE=1 npm run content:author7` writes the complete bank/design only; it must never be used to overwrite an already released revision. `npm run qa:content7:research` recomputes bounded independent diagnostics. Promote those reviewed diagnostics into independent-analysis.json, then run `npm run qa:content7` to replay/fingerprint all routes and generate the curve/passports. The gate verifies the actual source/dictionary archives and provenance, not its own previous PASS labels.
 
 Run check, qa:rules, archived qa:opening, prototype gates, layout, browser suite and native builds. Build the web output before browser checks; do not clean/rebuild the same dist while live tests/recordings serve it. The first browser sweep exposed a root404 from such a concurrent build, separately from three outdated content assumptions; retry them against one stable output.
 
-## Remaining delivery condition
+## Installation and remaining conditions
 
-Actions secret MINI_GAMES_KIT_READ_TOKEN must grant Contents:read only for the selected mini-games-kit repository. Its value belongs in GitHub settings, not chat. The existing cached preview signing identity0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e must sign code27. Verify packaged runtime bytes, test ad mode and empty production/debug analytics key before providing an update APK. An unrelated local debug key is not an acceptable replacement: uninstalling the old app would violate attempt/save preservation. Production ad settings and store moderation remain untouched.
+For cold/expired-cache installation, Actions secret MINI_GAMES_KIT_READ_TOKEN must grant Contents:read only for the selected mini-games-kit repository. Its value belongs in GitHub settings, not chat. The delivered preview is code27, signed with the same preview certificate as 0.17.1. Install it over 0.17.1 to exercise save migration. The device installation and balance session remain pending.
+
+
+## APK source proof
+
+[Packaged binary verification](source-apk.json) records the downloaded CI artifact, exact source81bf223, APK checksum, original signer and decoded DEX configuration. All208 runtime files match the final browser build; the only extra public files are2 empty Cordova shims. Test APK11759357bytes versus11737005 for0.17.1 (+22352bytes); this is a package-size observation, not an Android memory/FPS claim. `tools/qa/verify-content7-apk.py` reproduces signature/package/DEX and byte comparisons against dist. Local compile-only details are separate in [native-build.json](native-build.json).

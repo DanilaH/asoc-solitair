@@ -1,0 +1,1322 @@
+{
+  "schema": "asoc-content7-level-plan-v1",
+  "status": "DRAFT_FOR_OWNER_APPROVAL",
+  "baseline": {
+    "repository": "DanilaH/asoc-solitair",
+    "main": "b612420fda4d8677073034a91c944c46573cbf08",
+    "runtimeVersion": "0.17.1",
+    "rulesVersion": 3,
+    "contentVersion": 6,
+    "balanceVersion": 3
+  },
+  "policy": "Authoring targets, not finished deals or a claim about Hitapps exact difficulty. Keep official game-specific rules and card meanings; validate and revise bands after human playtest.",
+  "roleCycle": {
+    "startsAt": 6,
+    "repeats": [
+      "PEAK",
+      "REST",
+      "BASE",
+      "BASE",
+      "BASE"
+    ],
+    "exceptionLevels": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "featurePolicy": {
+    "orderedFirst": 30,
+    "keysFirst": 49,
+    "helperUnlocks": {
+      "hint": 3,
+      "undo": 4,
+      "joker": 8
+    },
+    "otherSpecials": "excluded"
+  },
+  "levels": [
+    {
+      "level": 1,
+      "paceRole": "TUTORIAL",
+      "focus": "Научиться перенести лидера и завершить простую категорию",
+      "contrast": "Без колоды и лимита; только базовое действие",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        2,
+        2
+      ],
+      "cardBand": [
+        6,
+        8
+      ]
+    },
+    {
+      "level": 2,
+      "paceRole": "TUTORIAL",
+      "focus": "Освоить добор из stock, waste и завершение темы",
+      "contrast": "Первое появление колоды, лимит ещё отсутствует",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        2,
+        2
+      ],
+      "cardBand": [
+        8,
+        10
+      ]
+    },
+    {
+      "level": 3,
+      "paceRole": "BASE",
+      "focus": "Подготовить нижнюю группу перед перемещением темы",
+      "contrast": "Первые осмысленные 2 шага и конечный бюджет",
+      "mechanic": "none",
+      "unlock": "hint",
+      "categoryBand": [
+        2,
+        3
+      ],
+      "cardBand": [
+        8,
+        12
+      ]
+    },
+    {
+      "level": 4,
+      "paceRole": "BASE",
+      "focus": "Освободить нижний столбец для временного пакета",
+      "contrast": "Учебный ход не про новую фичу; Undo доступна",
+      "mechanic": "none",
+      "unlock": "undo",
+      "categoryBand": [
+        3,
+        3
+      ],
+      "cardBand": [
+        10,
+        14
+      ]
+    },
+    {
+      "level": 5,
+      "paceRole": "BASE",
+      "focus": "Пройти короткую знакомую сортировку со stock",
+      "contrast": "Спокойная ступень перед первым пиком",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        3
+      ],
+      "cardBand": [
+        11,
+        15
+      ]
+    },
+    {
+      "level": 6,
+      "paceRole": "PEAK",
+      "focus": "Выбрать очередность четырёх категорий при ограниченных верхних слотах",
+      "contrast": "Первый длинный пик, но несколько исправимых решений",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        4
+      ],
+      "cardBand": [
+        18,
+        24
+      ]
+    },
+    {
+      "level": 7,
+      "paceRole": "REST",
+      "focus": "Закрыть две знакомые категории коротким набором",
+      "contrast": "Контрастный отдых после пика 6",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        2,
+        3
+      ],
+      "cardBand": [
+        9,
+        14
+      ]
+    },
+    {
+      "level": 8,
+      "paceRole": "BASE",
+      "focus": "Подготовить пакет снизу до переноса лидера",
+      "contrast": "Глубже предыдущего отдыха, без обучения Joker",
+      "mechanic": "none",
+      "unlock": "joker",
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        13,
+        20
+      ]
+    },
+    {
+      "level": 9,
+      "paceRole": "BASE",
+      "focus": "Адресно открыть видимого лидера под группой",
+      "contrast": "Цель открытия отличается от простой группировки",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        13,
+        20
+      ]
+    },
+    {
+      "level": 10,
+      "paceRole": "BASE",
+      "focus": "Выбрать момент добора и recycle, видя доступные карты",
+      "contrast": "Работа с колодой, а не ещё одна задача на открытие",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        13,
+        20
+      ]
+    },
+    {
+      "level": 11,
+      "paceRole": "PEAK",
+      "focus": "Выстроить очередь нескольких лидеров на двух слотах",
+      "contrast": "Пик планирования, не просто увеличение числа карт",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        4
+      ],
+      "cardBand": [
+        18,
+        24
+      ]
+    },
+    {
+      "level": 12,
+      "paceRole": "REST",
+      "focus": "Быстро очистить два очевидных набора",
+      "contrast": "Выплата после очередности 11",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        2,
+        3
+      ],
+      "cardBand": [
+        9,
+        14
+      ]
+    },
+    {
+      "level": 13,
+      "paceRole": "BASE",
+      "focus": "Скомбинировать верхний слот и нижний буфер",
+      "contrast": "Не повторяет прямую раздачу 12",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        13,
+        20
+      ]
+    },
+    {
+      "level": 14,
+      "paceRole": "BASE",
+      "focus": "Выбрать между двумя открытыми целями и исправить промах",
+      "contrast": "Проверяемое восстановление выбора",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        13,
+        20
+      ]
+    },
+    {
+      "level": 15,
+      "paceRole": "BASE",
+      "focus": "Разрешить две короткие цепочки доступа к скрытым картам",
+      "contrast": "Комбинация освоенных обычных приёмов",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        13,
+        20
+      ]
+    },
+    {
+      "level": 16,
+      "paceRole": "PEAK",
+      "focus": "Распределить четыре–пять тем по трём слотам",
+      "contrast": "Новый масштаб, без скачка до 40+ обязательных ходов",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        24,
+        32
+      ]
+    },
+    {
+      "level": 17,
+      "paceRole": "REST",
+      "focus": "Победить на короткой колоде без новой ловушки",
+      "contrast": "Сокращение действий после 16",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        2,
+        3
+      ],
+      "cardBand": [
+        12,
+        18
+      ]
+    },
+    {
+      "level": 18,
+      "paceRole": "BASE",
+      "focus": "Использовать одну дополнительную прокрутку колоды осмысленно",
+      "contrast": "Фокус на доступности stock, не на размерах",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        17,
+        27
+      ]
+    },
+    {
+      "level": 19,
+      "paceRole": "BASE",
+      "focus": "Исправить преждевременное занятие слота без помощника",
+      "contrast": "Исключить старый нулевой запас 19",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        17,
+        27
+      ]
+    },
+    {
+      "level": 20,
+      "paceRole": "BASE",
+      "focus": "Спланировать порядок освобождения двух столбцов",
+      "contrast": "Подготовка поля вместо дополнительного recycle",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        17,
+        27
+      ]
+    },
+    {
+      "level": 21,
+      "paceRole": "PEAK",
+      "focus": "Разрешить длинную последовательность из двух зависимых открытий",
+      "contrast": "Пик без повторного обучения Joker/ordered/keys",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        24,
+        32
+      ]
+    },
+    {
+      "level": 22,
+      "paceRole": "REST",
+      "focus": "Собрать две–три темы прямым путём",
+      "contrast": "Контраст после пика 21; убрать старую мини-главу",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        2,
+        3
+      ],
+      "cardBand": [
+        12,
+        18
+      ]
+    },
+    {
+      "level": 23,
+      "paceRole": "BASE",
+      "focus": "Временно припарковать пакет на пустом столбце",
+      "contrast": "Действие с нижним буфером, не обучение новой кнопке",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        17,
+        27
+      ]
+    },
+    {
+      "level": 24,
+      "paceRole": "BASE",
+      "focus": "Соединить доступ из колоды с раскрытием нижней карты",
+      "contrast": "Меняется источник нужного элемента",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        17,
+        27
+      ]
+    },
+    {
+      "level": 25,
+      "paceRole": "BASE",
+      "focus": "Определить приоритет заполнения двух верхних слотов",
+      "contrast": "Уровень про план, а не долгий добор",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        17,
+        27
+      ]
+    },
+    {
+      "level": 26,
+      "paceRole": "PEAK",
+      "focus": "Провести несколько уже известных операций на большом поле",
+      "contrast": "Пик обычного ядра, без новых модификаторов",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        24,
+        32
+      ]
+    },
+    {
+      "level": 27,
+      "paceRole": "REST",
+      "focus": "Быстро собрать знакомые темы без ловушек",
+      "contrast": "Отдых и устранение старого урока ключей",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        2,
+        3
+      ],
+      "cardBand": [
+        12,
+        18
+      ]
+    },
+    {
+      "level": 28,
+      "paceRole": "BASE",
+      "focus": "Открыть нужную карту заранее подготовленным пакетом",
+      "contrast": "Возвращение к видимому целевому раскрытию",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        17,
+        27
+      ]
+    },
+    {
+      "level": 29,
+      "paceRole": "BASE",
+      "focus": "Отложить завершение одной категории ради свободы столбца",
+      "contrast": "Цена порядка действий, но без угадывания",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        17,
+        27
+      ]
+    },
+    {
+      "level": 30,
+      "paceRole": "BASE",
+      "focus": "Первый ordered: собрать наглядную последовательность по номерам",
+      "contrast": "Ровно одно новое правило в конце волны",
+      "mechanic": "ordered:intro",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        18,
+        26
+      ]
+    },
+    {
+      "level": 31,
+      "paceRole": "PEAK",
+      "focus": "Победить большим обычным раскладом после ordered",
+      "contrast": "Пик без новой механики сразу после её введения",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        5
+      ],
+      "cardBand": [
+        28,
+        36
+      ]
+    },
+    {
+      "level": 32,
+      "paceRole": "REST",
+      "focus": "Короткая обычная игра, без ordered",
+      "contrast": "Закрепить отдых сразу после пика 31",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        3
+      ],
+      "cardBand": [
+        14,
+        21
+      ]
+    },
+    {
+      "level": 33,
+      "paceRole": "BASE",
+      "focus": "Собрать частичные пакеты в двух столбцах",
+      "contrast": "Отличается от прямого отдыха",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        21,
+        32
+      ]
+    },
+    {
+      "level": 34,
+      "paceRole": "BASE",
+      "focus": "Ordered: сначала подготовить соседние номера снизу",
+      "contrast": "Первое самостоятельное применение после 30",
+      "mechanic": "ordered:apply",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        20,
+        30
+      ]
+    },
+    {
+      "level": 35,
+      "paceRole": "BASE",
+      "focus": "Открыть две категории, не используя ordered",
+      "contrast": "Чередование задач, а не серия учебных уровней",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        21,
+        32
+      ]
+    },
+    {
+      "level": 36,
+      "paceRole": "PEAK",
+      "focus": "Спланировать очередь из пяти обычных категорий",
+      "contrast": "Объёмный пик без специальных правил",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        5
+      ],
+      "cardBand": [
+        28,
+        36
+      ]
+    },
+    {
+      "level": 37,
+      "paceRole": "REST",
+      "focus": "Простое быстрое завершение двух–трёх тем",
+      "contrast": "Восстановление темпа после 36",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        3
+      ],
+      "cardBand": [
+        14,
+        21
+      ]
+    },
+    {
+      "level": 38,
+      "paceRole": "BASE",
+      "focus": "Оперировать пустым столбцом при длинном стоке",
+      "contrast": "Буферное решение, не очередность верхнего слота",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        21,
+        32
+      ]
+    },
+    {
+      "level": 39,
+      "paceRole": "BASE",
+      "focus": "Ordered: выбрать момент высвобождения №1",
+      "contrast": "Другой паттерн, чем соседнее применение 34",
+      "mechanic": "ordered:apply",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        20,
+        30
+      ]
+    },
+    {
+      "level": 40,
+      "paceRole": "BASE",
+      "focus": "Избежать лишнего recycle видимым планированием",
+      "contrast": "Тест порядка добора, без специальной карты",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        21,
+        32
+      ]
+    },
+    {
+      "level": 41,
+      "paceRole": "PEAK",
+      "focus": "Пройти длинную зависимость верхних категорий и нижних пакетов",
+      "contrast": "Пик планирования в знакомых правилах",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        5
+      ],
+      "cardBand": [
+        28,
+        36
+      ]
+    },
+    {
+      "level": 42,
+      "paceRole": "REST",
+      "focus": "Короткая раздача с приятным завершением",
+      "contrast": "Сильный контраст с уровнем 41",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        3
+      ],
+      "cardBand": [
+        14,
+        21
+      ]
+    },
+    {
+      "level": 43,
+      "paceRole": "BASE",
+      "focus": "Сохранить свободный столбец под нужную группу",
+      "contrast": "Меняется использование буфера",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        21,
+        32
+      ]
+    },
+    {
+      "level": 44,
+      "paceRole": "BASE",
+      "focus": "Ordered: сформировать правильный интервал на отдельной теме",
+      "contrast": "Смена тематического контекста и схемы",
+      "mechanic": "ordered:apply",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        20,
+        30
+      ]
+    },
+    {
+      "level": 45,
+      "paceRole": "BASE",
+      "focus": "Перестроить темп завершений через колоду",
+      "contrast": "Обычный урок после ordered, без повторного туториала",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        21,
+        32
+      ]
+    },
+    {
+      "level": 46,
+      "paceRole": "PEAK",
+      "focus": "Пять категорий с двумя альтернативными порядками победы",
+      "contrast": "Пик с восстановимыми ошибками",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        5
+      ],
+      "cardBand": [
+        28,
+        36
+      ]
+    },
+    {
+      "level": 47,
+      "paceRole": "REST",
+      "focus": "Короткий прямой проход без замков",
+      "contrast": "Отдых перед первой механикой ключей",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        3
+      ],
+      "cardBand": [
+        14,
+        21
+      ]
+    },
+    {
+      "level": 48,
+      "paceRole": "BASE",
+      "focus": "Открыть ключевую для плана карту без самих ключей",
+      "contrast": "Подготовка навыка целевого раскрытия",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        21,
+        32
+      ]
+    },
+    {
+      "level": 49,
+      "paceRole": "BASE",
+      "focus": "Первые keys: открыть понятный замок доступными ключами",
+      "contrast": "Впервые новый модификатор, одна короткая задача",
+      "mechanic": "keys:intro",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        18,
+        26
+      ]
+    },
+    {
+      "level": 50,
+      "paceRole": "BASE",
+      "focus": "Обычная игра на знакомом поле после ключей",
+      "contrast": "Не превращать 49–50 в два последовательных урока",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        5
+      ],
+      "cardBand": [
+        21,
+        32
+      ]
+    },
+    {
+      "level": 51,
+      "paceRole": "PEAK",
+      "focus": "Крупная обычная раздача: распределить лидеров по слотам",
+      "contrast": "Пик после введения keys без специальной перегрузки",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        6
+      ],
+      "cardBand": [
+        30,
+        36
+      ]
+    },
+    {
+      "level": 52,
+      "paceRole": "REST",
+      "focus": "Собрать быстрые группы на чистом поле",
+      "contrast": "Восстановительный отдых после 51",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        16,
+        22
+      ]
+    },
+    {
+      "level": 53,
+      "paceRole": "BASE",
+      "focus": "Подготовить нижний пакет ради открытия доступа к нужной теме",
+      "contrast": "Планирование без фичи",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 54,
+      "paceRole": "BASE",
+      "focus": "Keys: найти заранее видимый маршрут к ключам",
+      "contrast": "Второе самостоятельное применение после 49",
+      "mechanic": "keys:apply",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        20,
+        30
+      ]
+    },
+    {
+      "level": 55,
+      "paceRole": "BASE",
+      "focus": "Сэкономить один цикл колоды при обычной сортировке",
+      "contrast": "Проверить навык stock отдельно от замков",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 56,
+      "paceRole": "PEAK",
+      "focus": "Распорядиться пятью–шестью категориями без новых правил",
+      "contrast": "Пиковый объём, доступная геометрия на телефоне",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        6
+      ],
+      "cardBand": [
+        30,
+        36
+      ]
+    },
+    {
+      "level": 57,
+      "paceRole": "REST",
+      "focus": "Короткая партия с ясными совпадениями",
+      "contrast": "Действий ощутимо меньше после пика",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        16,
+        22
+      ]
+    },
+    {
+      "level": 58,
+      "paceRole": "BASE",
+      "focus": "Освободить занятый столбец и восстановить свободу выбора",
+      "contrast": "Решение на буфер, а не на колоду",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 59,
+      "paceRole": "BASE",
+      "focus": "Ordered: выбрать между двумя доступными интервалами",
+      "contrast": "Возвращение прежней фичи после нескольких обычных уровней",
+      "mechanic": "ordered:apply",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        20,
+        30
+      ]
+    },
+    {
+      "level": 60,
+      "paceRole": "BASE",
+      "focus": "Очередность открытия категорий без специальных карт",
+      "contrast": "Закрепление обычного ядра перед следующим пиком",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 61,
+      "paceRole": "PEAK",
+      "focus": "Многоступенчатая обычная партия с видимым планом",
+      "contrast": "Пик на зрелом наборе тем",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        6
+      ],
+      "cardBand": [
+        30,
+        36
+      ]
+    },
+    {
+      "level": 62,
+      "paceRole": "REST",
+      "focus": "Сделать короткую победу после длительной партии",
+      "contrast": "Отдых от длинного маршрута",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        16,
+        22
+      ]
+    },
+    {
+      "level": 63,
+      "paceRole": "BASE",
+      "focus": "Пройти через stock ради освобождения верхнего слота",
+      "contrast": "Смешанная задача с прозрачной причиной",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 64,
+      "paceRole": "BASE",
+      "focus": "Keys: планировать доступ к двум последовательным ключам",
+      "contrast": "Более глубокое применение без новой фичи",
+      "mechanic": "keys:apply",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        20,
+        30
+      ]
+    },
+    {
+      "level": 65,
+      "paceRole": "BASE",
+      "focus": "Сделать восстановимый альтернативный ход и найти выход",
+      "contrast": "Проверка честности ошибок, не строгая ловушка",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 66,
+      "paceRole": "PEAK",
+      "focus": "Пять категорий с различными очередностями завершения",
+      "contrast": "Пик с альтернативными решениями",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        6
+      ],
+      "cardBand": [
+        30,
+        36
+      ]
+    },
+    {
+      "level": 67,
+      "paceRole": "REST",
+      "focus": "Короткая обычная раздача, без модификаторов",
+      "contrast": "Отдых после развилки 66",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        16,
+        22
+      ]
+    },
+    {
+      "level": 68,
+      "paceRole": "BASE",
+      "focus": "Собрать два частичных пакета ради одной видимой карты",
+      "contrast": "Более локальная цель, чем у 66",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 69,
+      "paceRole": "BASE",
+      "focus": "Ordered: подготовить отсутствующее начало последовательности",
+      "contrast": "Использование порядка после освоения ядра",
+      "mechanic": "ordered:apply",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        20,
+        30
+      ]
+    },
+    {
+      "level": 70,
+      "paceRole": "BASE",
+      "focus": "Разгрузить столбец до назначения верхней темы",
+      "contrast": "Обычная стратегическая компенсация",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 71,
+      "paceRole": "PEAK",
+      "focus": "Длинная обычная партия с несколькими восстановимыми развилками",
+      "contrast": "Пиковое решение, не обязательная безошибочность",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        6
+      ],
+      "cardBand": [
+        30,
+        36
+      ]
+    },
+    {
+      "level": 72,
+      "paceRole": "REST",
+      "focus": "Быстрая победа на знакомых категориях",
+      "contrast": "Отдых без скрытых условий",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        16,
+        22
+      ]
+    },
+    {
+      "level": 73,
+      "paceRole": "BASE",
+      "focus": "Принять решение об очередности stock и tableau",
+      "contrast": "Контроль двух источников карт",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 74,
+      "paceRole": "BASE",
+      "focus": "Keys: открыть замок через заранее спланированную нижнюю подготовку",
+      "contrast": "Поздний самостоятельный ключевой уровень",
+      "mechanic": "keys:apply",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        20,
+        30
+      ]
+    },
+    {
+      "level": 75,
+      "paceRole": "BASE",
+      "focus": "Завершить ряд категорий без специальных правил",
+      "contrast": "Сильная обычная развязка волны",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 76,
+      "paceRole": "PEAK",
+      "focus": "Последний крупный пик: собрать пять–шесть тем осмысленным планом",
+      "contrast": "Большое поле, но без необходимости покупать продолжение",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        5,
+        6
+      ],
+      "cardBand": [
+        30,
+        36
+      ]
+    },
+    {
+      "level": 77,
+      "paceRole": "REST",
+      "focus": "Короткий отдых после 76",
+      "contrast": "Не наказывать игрока сразу новой сложной задачей",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        4
+      ],
+      "cardBand": [
+        16,
+        22
+      ]
+    },
+    {
+      "level": 78,
+      "paceRole": "BASE",
+      "focus": "Исправить неудачный приоритет верхнего слота",
+      "contrast": "Проверенная восстановимость ближе к финалу",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    },
+    {
+      "level": 79,
+      "paceRole": "BASE",
+      "focus": "Ordered: использовать уже знакомый приём с другой темой",
+      "contrast": "Никакого нового правила на 79",
+      "mechanic": "ordered:apply",
+      "unlock": null,
+      "categoryBand": [
+        3,
+        5
+      ],
+      "cardBand": [
+        20,
+        30
+      ]
+    },
+    {
+      "level": 80,
+      "paceRole": "BASE",
+      "focus": "Финал: объединить освоенные обычные решения в одной честной партии",
+      "contrast": "Последнее испытание кампании без обязательного сочетания модификаторов",
+      "mechanic": "none",
+      "unlock": null,
+      "categoryBand": [
+        4,
+        6
+      ],
+      "cardBand": [
+        22,
+        34
+      ]
+    }
+  ]
+}

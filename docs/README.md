@@ -1,4 +1,6 @@
-Current work: [0.17/content6 opening fifteen](content/OPENING_V6.md). Versioned content, existing-rule pacing, structural/oracle checks and owner playtest; old attempts and0.16UI/audio/performance preserved. Full CI/APK acceptance is still pending.
+**NEW DRAFT — not approved/implemented:** [Content 7 implementation specification](content/CONTENT_V7_IMPLEMENTATION_SPEC_2026-11-18.md) and [80-level machine-readable plan](content/CONTENT_V7_LEVEL_PLAN.json). This is a proposal in PR #32; it does NOT change the active game, rules, saves or content bank. Do not treat it as approved project policy before the owner's acceptance.
+
+**Current implementation:** [0.17.1/content6 opening fifteen](content/OPENING_V6.md) is delivered and accepted at source/build level (see [handoff](SESSION_HANDOFF.md)); old attempts, 0.16 UI/audio/performance and daily are preserved. Human balance/device feel remain separate acceptance gates.
 
 # Product sources
 

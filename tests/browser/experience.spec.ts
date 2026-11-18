@@ -24,12 +24,21 @@ test('all published category names stay distinct and fit the readable title floo
   expect(overflowing).toEqual([]);
 });
 test('a picture opens a real preview and closing it ends the mode without a charge',async({page})=>{
-  await load(page,7);const before=await read(page),deal=campaignDeals[7],r=(await page.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height),g=layout(before.attempt.board,deal,f.height);
+  await load(page,7);const before=await read(page),deal=campaignDeals[7],r=(await page.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,before.settings.deckPosition,deal),g=layout(before.attempt.board,deal,f.height,before.settings.deckSide,before.settings.deckPosition);
   const id=deal.initial.tableau.map(c=>c.at(-1)!).find(id=>cardArtwork(deal.cards[id],deal))!,pose=g.poses.find(p=>p.id===id)!;
-  await page.locator('#inspect').tap();await page.touchscreen.tap(r.x+pose.x*f.unit,r.y+pose.y*f.unit);
+  expect(id).toBeDefined();expect(pose).toBeDefined();
+  await page.locator('#inspect').tap();await page.touchscreen.tap(r.x+f.offsetX+pose.x*f.unit,r.y+pose.y*f.unit);
   await expect(page.locator('#word-image')).toBeVisible();expect(await page.locator('#word-image').evaluate(e=>(e as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expect(page.locator('#word-description')).toBeHidden();await page.locator('#inspect-dialog .primary').tap();await expect(page.locator('#inspect')).toHaveAttribute('aria-pressed','false');
   expect((await read(page)).attempt.board).toEqual(before.attempt.board);expect((await read(page)).profile).toEqual(before.profile);
+});
+test('reader opens only on release so the opening finger cannot click its close button',async({page,context})=>{
+  await load(page,7);const before=await read(page),deal=campaignDeals[7],r=(await page.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,before.settings.deckPosition,deal),g=layout(before.attempt.board,deal,f.height,before.settings.deckSide,before.settings.deckPosition);
+  const id=deal.initial.tableau.map(c=>c.at(-1)!).find(id=>cardArtwork(deal.cards[id],deal))!,pose=g.poses.find(p=>p.id===id)!;
+  const p={x:r.x+f.offsetX+pose.x*f.unit,y:r.y+pose.y*f.unit};await page.locator('#inspect').tap();const cdp=await context.newCDPSession(page);
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[p]});await expect(page.locator('#inspect-dialog')).toBeHidden();expect((await read(page)).attempt).toEqual(before.attempt);
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await cdp.detach();await expect(page.locator('#inspect-dialog')).toBeVisible();await expect(page.locator('#word-title')).toHaveText(deal.cards[id].text);await expect(page.locator('#word-image')).toBeVisible();
+  await page.locator('#inspect-dialog .primary').tap();expect((await read(page)).attempt).toEqual(before.attempt);expect((await read(page)).profile).toEqual(before.profile);
 });
 test('empty Undo opens only Undo, purchase returns to the same board without applying it',async({page})=>{
   await load(page,16,s=>{Object.assign(s,dispatch(s,campaignDeals[16].winningPath[0],campaignDeals[16]).next);s.profile.undos=0;});const before=await read(page);

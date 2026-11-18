@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { kitInstallEnvironment, validateKitPin, KIT_REVISION } from '../../tools/install-dependencies.mjs';
+import { kitInstallEnvironment, kitInstallArguments, validateKitPin, KIT_REVISION } from '../../tools/install-dependencies.mjs';
 
 test('SSH is rewritten only for the approved kit, without a persisted credential', () => {
   const parent = { PATH: '/bin', GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'color.ui', GIT_CONFIG_VALUE_0: 'false' };
@@ -28,4 +28,9 @@ test('transport repair refuses an implicit kit upgrade or an SSH lock entry', ()
   validateKitPin(pkg, lock);
   assert.throws(() => validateKitPin(pkg, { packages: { 'node_modules/@danilah/mini-games-kit': { resolved: pin.replace('git+https://', 'git+ssh://git@') } } }));
   assert.throws(() => validateKitPin({ dependencies: { '@danilah/mini-games-kit': pin.replace(KIT_REVISION, 'main') } }, lock));
+});
+test('accepted-cache mode stays offline without a credential and never overrides a provided credential',()=>{
+  assert.equal(kitInstallArguments({ASOC_KIT_OFFLINE_CACHE:'1'}).includes('--offline'),true);
+  assert.equal(kitInstallArguments({ASOC_KIT_OFFLINE_CACHE:'1',MINI_GAMES_KIT_READ_TOKEN:'fixture'}).includes('--offline'),false);
+  assert.equal(kitInstallArguments({}).includes('--offline'),false);
 });

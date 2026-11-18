@@ -1,5 +1,5 @@
 import {campaignId} from '../../src/domain/progression';
-import {mkdir,writeFile} from 'node:fs/promises';
+import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import { dismissTeaching } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
@@ -50,7 +50,7 @@ for (let chapter = 0; chapter < 4; chapter++) test(`chapter ${chapter + 1}: twen
     for(const cmd of deal.winningPath)await move(page,deal,cmd);
     await expect(page.locator('#result')).toBeVisible(); expect((await read(page)).attempt.board.phase).toBe('won');
     await mkdir('.recording/content7-ui',{recursive:true});
-    await writeFile(`.recording/content7-ui/level-${String(deal.campaignLevel).padStart(3,'0')}.json`,JSON.stringify({id:deal.id,project:info.project.name,viewport:page.viewportSize(),initialSHA:createHash('sha256').update(JSON.stringify(deal.initial)).digest('hex'),witnessSHA:createHash('sha256').update(JSON.stringify(deal.winningPath)).digest('hex'),acceptedActions:deal.winningPath.length,actualBoard:(await read(page)).attempt.board,input:'Real touchscreen taps and visible Next; each accepted board compared with the expected transition',status:'PASS'},null,2)+'\n');
+    await writeFile(`.recording/content7-ui/level-${String(deal.campaignLevel).padStart(3,'0')}.json`,JSON.stringify({id:deal.id,project:info.project.name,viewport:page.viewportSize(),runtimeHTMLSHA:createHash('sha256').update(await readFile('dist/index.html')).digest('hex'),initialSHA:createHash('sha256').update(JSON.stringify(deal.initial)).digest('hex'),witnessSHA:createHash('sha256').update(JSON.stringify(deal.winningPath)).digest('hex'),acceptedActions:deal.winningPath.length,actualBoard:(await read(page)).attempt.board,input:'Real touchscreen taps and visible Next; each accepted board compared with the expected transition',status:'PASS'},null,2)+'\n');
     console.info(`Touch campaign ${deal.campaignLevel}/80 won`); await page.locator('#next-level').tap();
   }
   const completed=await read(page);expect(completed.platform!.completedCampaign).toHaveLength(chapter*20+20);

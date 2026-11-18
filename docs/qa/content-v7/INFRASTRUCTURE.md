@@ -8,7 +8,7 @@ The kit repository is private; the consumer repository is public. A clean origin
 
 `tools/install-dependencies.mjs` runs ordinary `npm ci` with command-local Git configuration. It rewrites only the kit's two SSH URL forms to HTTPS. An optional `MINI_GAMES_KIT_READ_TOKEN` supplies an HTTP header scoped to this kit path; it is absent from URLs and never written to git/global configuration. The exact existing `a9325265e87583a4872cf6a158e1e881a0d7508e` revision is asserted in both manifests. No SDK/runtime upgrade, new registry or vendored private source is introduced.
 
-Three dependency-free Node tests pass: inherited Git configuration is retained, credentials are URL/path scoped and removed from the named child environment variable, and pin/transport mismatches are rejected.
+Four dependency-free Node tests pass: accepted-cache offline mode versus explicit credentials, inherited Git configuration is retained, credentials are URL/path scoped and removed from the named child environment variable, and pin/transport mismatches are rejected.
 
 ## Hosted CI prerequisite
 
@@ -21,3 +21,9 @@ The connected GitHub tools can read kit source but do not expose creation of Act
 The authorized connector supplied the exact 200 tracked files and original signed Git commit into an ignored local directory. Every blob, tree `ba301f7cc0dc2a17e6d7a245ccb4adb252649bbe`, and commit object `a9325265…` was reconstructed and hash-verified. A shallow local Git mirror supplies that exact revision to npm. The local install succeeded from an empty npm cache with SSH explicitly disabled: 161 packages installed. This permits local implementation/testing; it does not manufacture hosted credentials or claim hosted CI success. The mirror and all private kit code remain under `.recording/` and must never be committed to this public repository.
 
 KIT IMPACT: REUSE. The infrastructure wrapper is consumer-owned; no private kit source/API or production service setting is changed.
+
+## Restore-only bridge under verification
+
+An earlier accepted CI build43705624898 downloaded the same pinned kit while its codeload archive was available and saved the npm cache under `node-cache-Linux-x64-npm-b72d64cddd2598f03afa06a59e91966afa2a8b4294241cd7344533e12f49aaba`. CI now attempts only that exact cache with `actions/cache/restore`; it never saves private kit source into a new cache. Without a configured read credential the installer uses npm offline mode, so a miss fails rather than changing the revision or fabricating credentials. A credential selects the normal authenticated HTTPS path. Actual hosted cache availability/install success is PENDING, not assumed from the old log. This bridge is expiring infrastructure; a cold install still requires authorized read access.
+
+The existing preview signing key is mandatory. CI must fail if its accepted cache is unavailable or the APK certificate differs from `0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e`; it must not silently generate an incompatible update. Local debug and SDK-disabled unsigned release compilation both passed on the final reader-input source. The local debug certificate is different and that APK is not offered as an update. No production configuration or signing key is changed/exported.

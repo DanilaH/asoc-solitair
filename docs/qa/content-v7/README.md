@@ -8,7 +8,7 @@ Baseline: `main b612420fda4d8677073034a91c944c46573cbf08`,0.17.1. Research sourc
 - The approved roles are exact:15PEAK/15REST/48BASE/2TUTORIAL. First two unlimited. Every REST is at most75% of its preceding PEAK by both physical cards and accepted reference-route actions. All finite budgets leave at least4 moves. Four-move-floor outliers on short routes are declared per passport.
 - Ordered30/34/39/44/59/69/79; keys49/54/64/74; all PEAK/REST and80 ordinary. Hint3/Undo4/Joker8 unchanged. Ordered/keys instructions use actual encounter/seen flags even for veterans. C7 Joker explains itself only when pressed, without arming, spending or changing a board.
 - Every original80 definition, C6 fifteen, intro, daily28 and legacy rules witness stays available. Frozen source SHA256 checks protect the baseline. Save envelopes migrate6→7 without replacing active/parked attempt, Undo, spending, telemetry markers, receipts or settings. Restart retains the historical deal; the existing policy that new restarted attempts use current rules remains unchanged. Menu/Next select C7; canonical campaign-NNN identities retain reward ownership.
-- Current UI geometry/art/audio/wallet-settlement/performance/native SDK behavior are retained. Runtime changes are limited to catalog, content version, compatible decoding and contextual rule teaching. The runtime kit stays at a9325265; KIT IMPACT: REUSE.
+- Current UI geometry/art/audio/wallet-settlement/performance/native SDK behavior are retained. Runtime changes cover catalog, content version, compatible decoding and contextual rule teaching. One narrow input repair delays card inspection until the opening board click has completed: on compact screens the old pointer-down opening let the same finger close the newly opened dialog. Both old-source negative controls fail and both final-source phone/compact held-touch and real-picture controls pass; geometry and game rules stay unchanged. The runtime kit stays at a9325265; KIT IMPACT: REUSE.
 
 ## Actual authoring findings
 
@@ -33,13 +33,13 @@ Many categories are intentionally familiar. Content7 principally varies access, 
 | Rendered layout audit | PASS147 field states,0DOM/0raster issues,7 sizes320×480..520×700,4 deck configurations, modeled banner/safe-height reservations |
 | Full browser sweep / final80 UI records | IN PROGRESS; exact per-level SHA evidence and final counts will replace this row |
 | Native sync | PASS, exact existing SDK/plugin configuration retained |
-| Android debug/release compilation | PENDING network/build verification; not claimed PASS |
-| Same-signer test APK | BLOCKED: hosted private-kit read credential absent |
+| Android debug/release compilation | PASS local debug and SDK-disabled unsigned release; physical device remains untested |
+| Same-signer test APK | PENDING: restore-only accepted dependency/signing cache bridge; cold private-kit credential still absent |
 | Human balance, interest and physical-phone feel | UNKNOWN; see separate acceptance checklist |
 
 [Full80 curve](CURVE.md), [passports](passports.json), [independent analysis](independent-analysis.json), [all-rule comparisons](full-rules.json), [authoring provenance](design.json), [dependency access](INFRASTRUCTURE.md), [recordings](media.json). UI evidence requires both initial-board and witness SHA to match exactly; earlier draft wins do not satisfy this gate. Successful scripted input is not blind human play.
 
-The known routes contain1795 accepted actions across80 levels. Structural choice/routine counts in the passports follow an explicit action-availability classifier; neither class is human ground truth. Restricted searches are finite/bounded diagnostics. Sampled recoverability does not prove every possible move is safe or all states recover. Equal-cost winning alternatives are retained as valid plans, not mislabeled mistakes. No shortest-route, human success, D1 or retention claim.
+The known routes contain1795 accepted actions across80 levels. An additional independent survey replays296 distinct alternatives at78 sampled decision states; all sampled routes recover within budget. The verifier replays15069 route transitions including these examples. This is sampled coverage, not an exhaustive no-deadlock proof. See [branch survey](branch-survey.json). Structural choice/routine counts in the passports follow an explicit action-availability classifier; neither class is human ground truth. Restricted searches are finite/bounded diagnostics. Sampled recoverability does not prove every possible move is safe or all states recover. Equal-cost winning alternatives are retained as valid plans, not mislabeled mistakes. No shortest-route, human success, D1 or retention claim.
 
 ## Reproduce
 

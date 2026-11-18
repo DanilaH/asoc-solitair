@@ -1,0 +1,53 @@
+{
+  "totalIssues": 0,
+  "DOMIssues": [],
+  "rasterIssues": [],
+  "fieldCases": 147,
+  "sizes": [
+    [
+      320,
+      480
+    ],
+    [
+      320,
+      568
+    ],
+    [
+      360,
+      640
+    ],
+    [
+      360,
+      780
+    ],
+    [
+      393,
+      851
+    ],
+    [
+      412,
+      915
+    ],
+    [
+      520,
+      700
+    ]
+  ],
+  "levels": [
+    1,
+    16,
+    21,
+    30,
+    49,
+    76
+  ],
+  "deckPositions": [
+    "top",
+    "bottom"
+  ],
+  "deckSides": [
+    "left",
+    "right"
+  ],
+  "limits": "Actual DOM/raster/screenshots; modeled90px banner/48px shorter content. No native SDK or physical insets claim."
+}

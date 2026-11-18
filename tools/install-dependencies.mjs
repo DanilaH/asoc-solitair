@@ -35,6 +35,11 @@ export function validateKitPin(pkg, lock) {
     throw Error('The exact approved kit HTTPS revision must match package.json and package-lock.json');
   }
 }
+/** A restore-only cache from the accepted build can bridge existing CI without
+ * credentials. Cache misses fail; they never select a different Git revision. */
+export function kitInstallArguments(env) {
+  return ['ci','--no-audit','--no-fund',...(env.ASOC_KIT_OFFLINE_CACHE==='1'&&!env.MINI_GAMES_KIT_READ_TOKEN?['--offline']:[])];
+}
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   validateKitPin(JSON.parse(readFileSync('package.json')), JSON.parse(readFileSync('package-lock.json')));
@@ -43,7 +48,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   if (process.env.GITHUB_ACTIONS === 'true' && process.env.MINI_GAMES_KIT_READ_TOKEN) {
     console.log(`::add-mask::${env[`GIT_CONFIG_VALUE_${Number(env.GIT_CONFIG_COUNT) - 1}`]}`);
   }
-  const result = spawnSync('npm', ['ci', '--no-audit', '--no-fund', ...process.argv.slice(2)], { env, stdio: 'inherit' });
+  const args=kitInstallArguments(process.env);
+  if(args.includes('--offline'))console.log('Installing the exact pinned dependency graph from the accepted CI cache in offline mode. A cache miss requires the read-only kit credential.');
+  const result = spawnSync('npm', [...args, ...process.argv.slice(2)], { env, stdio: 'inherit' });
   if (result.error) console.error('Could not start npm ci');
   if (result.status !== 0 && !process.env.MINI_GAMES_KIT_READ_TOKEN) {
     console.error('The pinned kit repository is private. Configure MINI_GAMES_KIT_READ_TOKEN with Contents:read for DanilaH/mini-games-kit, or use an existing authorized Git credential. Do not publish the private kit or change its revision.');

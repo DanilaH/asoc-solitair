@@ -15,7 +15,7 @@ interface Options {
   readerZone?(): DOMRect; peek?(id: string | null): void;
 }
 interface BoardPointer { id: number; x: number; y: number; primaryDown: boolean; isDown: boolean }
-interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; liftedAt?: number; motion?: { x: number; at: number; tilt: number }; jokerColumn?: number }
+interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; inspectOnly?: boolean; liftedAt?: number; motion?: { x: number; at: number; tilt: number }; jokerColumn?: number }
 interface FoundationSurface { view: CardView; frontId: string }
 interface CoveredFace { frontId: string; strip: boolean }
 interface CollectionView { node: Phaser.GameObjects.Container; targets: Phaser.GameObjects.GameObject[]; timers: Phaser.Time.TimerEvent[]; sparks: Phaser.GameObjects.Image[] }
@@ -69,6 +69,7 @@ export class BoardScene extends Phaser.Scene {
   private hintObjects: Phaser.GameObjects.GameObject[] = [];
   private hintTweens: Phaser.Tweens.Tween[] = [];
   private inspectMode = false;
+  private inspectClick: {id:string;attempt:string} | null = null;
   private backStyle = '';
   private particles: Phaser.GameObjects.Image[] = [];
   private cues: Phaser.GameObjects.Container[] = [];
@@ -150,6 +151,12 @@ export class BoardScene extends Phaser.Scene {
     }, { signal: controller.signal });
     window.addEventListener('pointermove', event => { if (this.press?.pointerId !== event.pointerId) return; event.preventDefault(); this.game.loop.wake(); this.move(localPointer(event)); }, { signal: controller.signal, passive: false });
     window.addEventListener('pointerup', event => { if (this.press?.pointerId !== event.pointerId) return; this.game.loop.wake(); this.up(localPointer(event)); }, { signal: controller.signal });
+    input.addEventListener('click', () => {
+      const pending=this.inspectClick;this.inspectClick=null;
+      // The click target has now been chosen on the board. A newly opened
+      // dialog cannot receive this gesture as a click on its close button.
+      if(pending&&this.enabled&&this.inspectMode&&this.options.getSave().attempt.id===pending.attempt)this.options.inspect(pending.id);
+    }, {signal:controller.signal});
     const cancel = (event: PointerEvent) => { if (this.press?.pointerId === event.pointerId) this.cancel(); };
     window.addEventListener('pointercancel', cancel, { signal: controller.signal });
     input.addEventListener('lostpointercapture', cancel, { signal: controller.signal });
@@ -712,6 +719,7 @@ export class BoardScene extends Phaser.Scene {
   }
   private down(pointer: BoardPointer) {
     if (!this.enabled || !pointer.primaryDown || this.press) return;
+    this.inspectClick=null;
     // A new gesture may use an already-unlocked column immediately.
     // Settle the cosmetic lock before deciding which visible card was touched.
     this.clearKeys();
@@ -724,7 +732,9 @@ export class BoardScene extends Phaser.Scene {
     }
     if (this.inspectMode) {
       const pose = this.hitCard(x, y);
-      if (pose) this.options.inspect(pose.id);
+      // Capture this gesture and open on release. Opening a modal under a held
+      // finger can send its release/click straight into the new close button.
+      if (pose) this.press = {pointerId:pointer.id,toggle:false,from:null,x,y,moved:false,stock:false,target:null,poses:[],inspectId:pose.id,inspectOnly:true};
       return;
     }
     if (board.phase !== 'playing') return;
@@ -753,6 +763,11 @@ export class BoardScene extends Phaser.Scene {
     return hit({ x, y }) || Boolean(!fingerOnly && node && hit(node));
   }
   private move(pointer: BoardPointer) {
+    if (this.enabled && this.press?.inspectOnly && this.press.pointerId===pointer.id && pointer.isDown) {
+      const {x,y}=this.point(pointer);
+      this.press.moved ||= Math.hypot(x-this.press.x,y-this.press.y)>11;
+      return;
+    }
     if (!this.enabled || !this.press?.poses.length || this.press.pointerId !== pointer.id || this.press.target || !pointer.isDown) return;
     const { x, y } = this.point(pointer), press = this.press, firstMove = !press.moved;
     if (Math.hypot(x - press.x, y - press.y) > 11) press.moved = true;
@@ -801,6 +816,10 @@ export class BoardScene extends Phaser.Scene {
     this.dragPointer = undefined;
     this.dragCount.setVisible(false);
     if (!this.enabled || !press) return;
+    if (press.inspectOnly) {
+      if (!press.moved && Math.hypot(point.x-press.x,point.y-press.y)<11 && press.inspectId) this.inspectClick={id:press.inspectId,attempt:this.options.getSave().attempt.id};
+      return;
+    }
     this.pendingReturn = press.moved ? press : null;
     const { x, y } = this.point(pointer);
     if (reader && press.inspectId) { this.cancel(press); this.options.peek?.(press.inspectId); return; }
@@ -853,6 +872,7 @@ export class BoardScene extends Phaser.Scene {
   }
   public setJoker(active: boolean): void { this.cancel(); this.jokerSelecting = active; this.options.jokerMode?.(active); this.drawFocus(); this.game.loop.wake(); }
   public cancel(press = this.press ?? this.pendingReturn): void {
+    this.inspectClick=null;
     const board = this.options.getSave().attempt.board;
     const index = press?.moved && press.from?.kind === 'tableau' ? press.from.index : -1;
     const returning = index >= 0 && board.tableau[index]?.length && board.tableau[index].every(id => press!.poses.some(p => p.id === id)) && !this.options.getSave().settings.reducedMotion

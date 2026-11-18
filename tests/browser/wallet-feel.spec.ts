@@ -57,7 +57,36 @@ test('a delayed streak flight finishes with its sound before the win panel can c
 test('skipping win or reduced motion settles counters without losing or minting coins',async({page})=>{
   for(const reduced of [false,true]){const s=fixture(4,true);s.settings.reducedMotion=reduced;await seed(page,s);await move(page,campaignDeals[4],campaignDeals[4].winningPath.at(-1)!);await page.locator('#result[open]').waitFor();const paid=await read(page);await page.locator('#next-level').tap();await expect(page.locator('#coins')).toHaveText(String(paid.profile.coins));await page.waitForTimeout(1000);expect(await page.locator('.flying-coin:visible').count()).toBe(0);expect((await read(page)).profile).toEqual(paid.profile);}
 });
-test('a final streak and victory show their own amounts without paying the streak twice in the popup',async({page})=>{
-  let index=-1;for(let i=4;i<26;i++){const d=campaignDeals[i],s=fixture(i,true),r=dispatch(s,d.winningPath.at(-1)!,d);if(r.events.some(e=>e.type==='coins')){index=i;break;}}expect(index).toBeGreaterThanOrEqual(0);
-  for(const reduced of [false,true]){const d=campaignDeals[index],s=fixture(index,true);s.settings.reducedMotion=reduced;const result=dispatch(s,d.winningPath.at(-1)!,d),expected=result.next,core=result.events.filter(e=>e.type==='coins').reduce((n,e)=>n+(e.amount??0),0);await seed(page,s);await move(page,d,d.winningPath.at(-1)!);await expect(page.locator('.coin-gain')).toHaveText('+'+core);await page.waitForTimeout(130);expect(Number(await page.locator('#coins').innerText())).toBeLessThanOrEqual(s.profile.coins+core);await page.locator('#result[open]').waitFor();const award=expected.attempt.payout!.reduce((n,r)=>n+r.coins,0);await expect(page.locator('#result-total')).toHaveText('+'+award);await expect(page.locator('#coins')).toHaveText(String(expected.profile.coins));expect((await read(page)).profile).toEqual(expected.profile);}
+test('a final streak and victory show their own amounts without paying the streak twice in the popup', async ({page}) => {
+  await page.addInitScript(() => {
+    const show = HTMLDialogElement.prototype.showModal;
+    HTMLDialogElement.prototype.showModal = function () {
+      if (this.id === 'result') {
+        const trace = window as typeof window & { __coinsAtResult?: number };
+        trace.__coinsAtResult = Number(document.querySelector('#coins')!.textContent);
+      }
+      return show.call(this);
+    };
+  });
+  let index = -1;
+  for (let i = 4; i < 26; i++) {
+    const deal = campaignDeals[i], save = fixture(i, true);
+    if (dispatch(save, deal.winningPath.at(-1)!, deal).events.some(e => e.type === 'coins')) { index = i; break; }
+  }
+  expect(index).toBeGreaterThanOrEqual(0);
+  for (const reduced of [false, true]) {
+    const deal = campaignDeals[index], save = fixture(index, true), command = deal.winningPath.at(-1)!;
+    save.settings.reducedMotion = reduced;
+    const result = dispatch(save, command, deal), expected = result.next;
+    const core = result.events.filter(e => e.type === 'coins').reduce((n, e) => n + (e.amount ?? 0), 0);
+    await seed(page, save);
+    await move(page, deal, command);
+    await page.locator('#result[open]').waitFor();
+    const coinsAtResult = await page.evaluate(() => (window as typeof window & { __coinsAtResult?: number }).__coinsAtResult);
+    expect(coinsAtResult).toBe(save.profile.coins + core);
+    const award = expected.attempt.payout!.reduce((n, r) => n + r.coins, 0);
+    await expect(page.locator('#result-total')).toHaveText('+' + award);
+    await expect(page.locator('#coins')).toHaveText(String(expected.profile.coins));
+    expect((await read(page)).profile).toEqual(expected.profile);
+  }
 });

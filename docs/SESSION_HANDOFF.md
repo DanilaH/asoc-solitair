@@ -1,3 +1,7 @@
+# Continuous motion checkpoint — 0.18.2
+
+The owner approved one package covering staged Next entry, the landing of larger packets, reveal timing at source clearance, and event-driven victory presentation. Use the [implementation and verification notes](qa/continuous-feel/README.md). The preview continues the post-C7 feel branch. Physical Android feel is pending.
+
 # UI/UX and Game Feel checkpoint — 2026-11-18
 
 Owner authorized starting from the verified C7 preview before human/device acceptance. Draft [PR #35](https://github.com/DanilaH/asoc-solitair/pull/35) targets the C7 branch. Candidate 0.18.1/code28 runtime source is `ddaef8fedfd24638740bc253aaf7dcf4ce85dc53`. It cancels a target tap when the finger is released outside that target and shortens the reduced-motion victory delay while preserving wallet settlement. Signed test APK uses the C7 preview certificate. Rules/content/balance remain 3/7/3. See the [eight-scene comparison, regression evidence, and phone checklist](qa/post-c7-feel/README.md). The previous conditional launch was paused and the package proceeded in-session. Phone feel and human acceptance remain open.

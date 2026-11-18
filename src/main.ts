@@ -131,7 +131,6 @@ try {
   let save = await store.open();
   let presentingCommand = false;
   wallet = new WalletPresentation(save.profile.coins, $('#coin-layer'), $('#coins'), $('#helper-wallet'), $('#wallet-open'), () => runtime.play('coins', 'ui'), () => save.settings.reducedMotion);
-  let dealEntryPending = firstLaunch;
   deal = findDeal(save.attempt.dealId)!;
   let requestedLevel: number | undefined;
   let activeRule: RuleIntro | undefined;
@@ -276,12 +275,13 @@ try {
     $<HTMLButtonElement>('#apply-unlock').disabled = !unlockChoice || applied || saving || serviceBusy;
     $('#save-retry').hidden = !store.needsRecovery;
   }
-  function outcome() {
+  function outcome(collectionDeadline = Infinity) {
     if (save.attempt.board.phase === 'playing') return;
-    // Core streak income can start after card contact. Wait for its actual
-    // arrival/count rather than cancelling it at the fixed result deadline.
-    if (save.attempt.board.phase === 'won' && wallet?.settling) {
-      outcomeTimer = setTimeout(outcome, 32); return;
+    // The final count gets its reading beat. A delayed frame may skip the
+    // decorative tail, but it must never cancel a streak flight before contact.
+    const holdingCategory = !save.settings.reducedMotion && scene?.holdingCollection && performance.now() < collectionDeadline;
+    if (save.attempt.board.phase === 'won' && (holdingCategory || wallet?.settling)) {
+      outcomeTimer = setTimeout(() => outcome(collectionDeadline), 32); return;
     }
     // A local result coin layer must join the dialog's top layer to stay visible.
     $('#result').dataset.won = String(save.attempt.board.phase === 'won');
@@ -370,8 +370,9 @@ try {
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
       if (save.attempt.board.phase !== 'playing') {
-        const delay = save.settings.reducedMotion ? 100 : save.attempt.board.phase === 'won' ? 880 : 380;
-        clearTimeout(outcomeTimer); outcomeTimer = setTimeout(outcome, delay);
+        const delay = save.settings.reducedMotion ? 100 : save.attempt.board.phase === 'won' ? 0 : 380;
+        const collectionDeadline = hasCoinFlight ? Infinity : performance.now() + 720;
+        clearTimeout(outcomeTimer); outcomeTimer = setTimeout(() => outcome(collectionDeadline), delay);
       }
     } else {
       scene?.cancel(); scene?.reject(['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined); runtime.play('invalid'); runtime.pulse('invalid');
@@ -493,9 +494,9 @@ try {
       clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined; activeHint = undefined;
       clearTimeout(outcomeTimer); clearTimeout(guideTimer); setInspect(false);
       await write(next => switchMode(next, mode, target, crypto.randomUUID()));
-      dealEntryPending = !previousTarget || previousTarget.id !== save.attempt.id;
+      const animateEntry = !previousTarget || previousTarget.id !== save.attempt.id;
       outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false'; screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
-      scene?.setDeal(deal); game?.loop.wake();
+      scene?.setDeal(deal, animateEntry);
     } catch { message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
     finally { serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome(); }
   }
@@ -519,10 +520,9 @@ try {
         clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined;
         clearTimeout(outcomeTimer); clearTimeout(guideTimer); activeHint = undefined; setInspect(false);
         await write(next => { if (next.attempt.daily) switchMode(next, 'campaign', campaign ? findDeal(campaign.dealId)! : target, crypto.randomUUID()); beginDeal(next, target, crypto.randomUUID()); });
-        dealEntryPending = true;
         outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false';
         screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
-        scene?.setDeal(target); game?.loop.wake();
+        scene?.setDeal(target, true);
       } catch { message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
       finally { serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome(); }
     };
@@ -558,9 +558,8 @@ try {
       scene = active;
       active.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
         ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true'; $('#app').dataset.presentedDeal = deal.id;
-        if (firstLaunch) { firstLaunch = false; showGame(); }
+        if (firstLaunch) { firstLaunch = false; showGame(); active.presentDeal(); }
         else if (screen === 'game') showGuidance();
-        if (screen === 'game' && dealEntryPending) { dealEntryPending = false; active.presentDeal(); }
         if (screen === 'game' && save.attempt.board.phase !== 'playing') outcome();
       });
     },

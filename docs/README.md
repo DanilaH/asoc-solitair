@@ -1,3 +1,5 @@
+**Следующее отдельное ТЗ после приёмки Content 7:** [UI/UX & Game Feel — конкурентный side-by-side, узкие правки, Android sound/haptics и QA](qa/POST_C7_FEEL_IMPLEMENTATION_SPEC_2026-11-18.md). Документ **не является частью** PR Content 7; не менять игровую экономику, правила, SDK и арт-направление. Исходные доказательства — [mini-games-kit PR #70](https://github.com/DanilaH/mini-games-kit/pull/70). Человеческий/аппаратный feel остаётся отдельной проверкой.
+
 Current work: [0.17/content6 opening fifteen](content/OPENING_V6.md). Versioned content, existing-rule pacing, structural/oracle checks and owner playtest; old attempts and0.16UI/audio/performance preserved. Full CI/APK acceptance is still pending.
 
 # Product sources

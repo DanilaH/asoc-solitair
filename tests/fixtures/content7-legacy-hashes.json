@@ -1,0 +1,10 @@
+{
+  "src/content/campaign.json": "eefea281c4d0a5d40525420e6255a7c19b411e55639e675d9593a2eaaff9ce23",
+  "src/content/opening-v6.json": "78955adde2360549a11a96c95b9d42a422ce5968528d490475f5ff8655885330",
+  "src/content/modifiers.ts": "95860a3acd057174a66deee729630da720bca90d4bdeb3085c49e082655ac053",
+  "src/content/expansion.json": "b4ddcb4d671a15970d8299f03bf625ddb42390cd86726538d0310ff44f75ad04",
+  "src/content/daily-pool.json": "91240bcf71632287d29ce97ac3cad2011227ba445d84c42fa262ce4c2df509d4",
+  "src/content/rules-v3-paths.json": "c74f0196ad74147aaa3d36a32eedf6b2d8675029669ca2201d76aa345a523e57",
+  "src/content/topics.ts": "19228c9f31f3ba1d5c31aba60767b1957b233eaeed4359cecc7b219c8ee74a71",
+  "src/content/expansion-cards.ts": "574a3dc23d6f285508211075a47e42ba4bcd29ff43fe8892edcffd4df44beb1b"
+}

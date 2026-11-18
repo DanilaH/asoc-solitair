@@ -1,7 +1,7 @@
 /** Production-engine route finder for literal authored boards, not a random dealer. */
 import {applyBoard,legalCommands,packet} from '../../src/domain/engine';
 import type {Board,BoardCommand,Deal} from '../../src/domain/types';
-export function content7Witness(d:Deal,limit=30000){
+export function content7Witness(d:Deal,limit=30000,noLower=false){
  type N={b:Board;path:BoardCommand[];score:number};const heap:N[]=[],seen=new Map<string,number>();
  const key=(b:Board)=>JSON.stringify([d.lock?b.tableau:b.tableau.map(c=>c.join(',')).sort(),b.foundations.map(c=>c.join(',')).sort(),b.stock,b.waste,[...b.faceUp].sort(),b.collected.slice().sort(),b.keys??[]]);
  const score=(b:Board,g:number)=>(Object.keys(d.cards).length-b.collected.length)*3-b.foundations.flat().length*.9-b.tableau.reduce((s,_,i)=>s+Math.max(0,packet(b,i,d).length-1),0)*.28+b.stock.length*.5+g*.62;
@@ -12,6 +12,7 @@ export function content7Witness(d:Deal,limit=30000){
   const emptyF=n.b.foundations.findIndex(c=>!c.length),emptyT=n.b.tableau.findIndex(c=>!c.length);
   for(const a of legalCommands(n.b,d)){
    if(a.type==='transfer'){
+    if(noLower&&a.to.kind==='tableau')continue;
     if(a.to.kind==='foundation'&&!n.b.foundations[a.to.index].length&&a.to.index!==emptyF)continue;
     if(a.to.kind==='tableau'&&!n.b.tableau[a.to.index].length&&(a.to.index!==emptyT||a.from.kind==='tableau'&&packet(n.b,a.from.index,d).length===n.b.tableau[a.from.index].length))continue;
    }

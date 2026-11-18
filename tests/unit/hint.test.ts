@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { resolveHint } from '../../src/domain/hint';
 import { cardReader } from '../../src/game/card-reader';
-import { campaignDeals, legacyCampaignDeals } from '../../src/content/campaign';
+import { content6CampaignDeals as campaignDeals, legacyCampaignDeals } from '../../src/content/campaign';
 import { dailyPool } from '../../src/content/daily';
 import { applyBoard, freshSave } from '../../src/domain/engine';
 import { knownContinuation, solve } from '../../src/domain/solver';
@@ -10,7 +10,7 @@ import type { Board } from '../../src/domain/types';
 
 it('does not return an arbitrary move when the audited level-19 remainder is unsolvable', () => {
   expect(resolveHint(blocked as Board, campaignDeals[18])).toEqual({ status: 'UNSOLVABLE' });
-});
+}, 15000); // Same8000-state proof; allow slower developer CPUs without weakening the assertion.
 it('distinguishes an unfinished search from an unsolvable position', () => {
   const d = campaignDeals[20];
   const first = applyBoard(d.initial, d.winningPath[0], d); if (typeof first === 'string') throw Error(first);

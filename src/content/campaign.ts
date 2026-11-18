@@ -6,6 +6,7 @@ import { cardsFor, type TopicSelection } from './topics';
 import { introDeal } from './intro';
 import { withCurrentRules } from './current-rules';
 import { openingDeals } from './opening';
+import { content7Deals } from './campaign-v7';
 import type { Board, BoardCommand, Deal } from '../domain/types';
 
 export interface CampaignRecord {
@@ -18,6 +19,8 @@ export const legacyCampaignDeals: readonly Deal[] = [...campaignRecords.map(reco
   cards: cardsFor(record.topics), initial: record.initial, winningPath: record.winningPath,
   editorialStatus: record.editorialStatus, tags: record.tags,
 })), ...modifierDeals, ...expansionDeals];
-export const campaignDeals: readonly Deal[] = [...openingDeals, ...legacyCampaignDeals.slice(15)];
-const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals].map(deal => [deal.id, deal]));
+/** Explicit archive for historical QA and persisted attempts; never select it for Next. */
+export const content6CampaignDeals: readonly Deal[] = [...openingDeals, ...legacyCampaignDeals.slice(15)];
+export const campaignDeals: readonly Deal[] = content7Deals;
+const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);

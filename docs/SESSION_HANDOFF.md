@@ -1,3 +1,15 @@
+# Content7 checkpoint — 2026-11-18
+
+Branch `feat/content7-campaign-20261118`, draft [PR33](https://github.com/DanilaH/asoc-solitair/pull/33). Base and still-current main: b612420fda4d8677073034a91c944c46573cbf08 (0.17.1). This work targets0.18.0/code27/content7, rules3/balance3 unchanged. [Current acceptance and remaining blockers](qa/content-v7/README.md), [full curve](qa/content-v7/CURVE.md), [human checklist](qa/content-v7/HUMAN_ACCEPTANCE.md). The older accepted delivery below remains historical; do not replace it with new claims.
+
+The user explicitly approved the two exact research documents at8ca270d8f58fad2fff3d66cf700131fa74eada9b. All80 new C7 definitions are authored; original80, C6 fifteen, daily28 and rules-v3 witness archives are byte-protected against b612420. Original DRAFT research documents are preserved verbatim; the implementation request supplies approval. New campaign selection and envelope migration retain exact historical attempts/Undo/resources/receipts and canonical progress; old restart stays on its old definition and existing current-rules restart policy.
+
+Local check193 unit/platform PASS, all80 independent witnesses and recoveries PASS, exact340 archive-policy reproductions plus C6 QA PASS,96 prototype attempts PASS,147 new rendered layout states0DOM/0raster. Final full browser sweep and exact-C7 real-input evidence are tracked in the acceptance file, not inferred from earlier runs. Four normal-motion input recordings are saved with Library identities in media.json. Never create them again on resume; reuse those exact identities. No APK delivery yet.
+
+Hosted CI is blocked at installation because Actions secret MINI_GAMES_KIT_READ_TOKEN is empty. First observed run44300524229 proves HTTPS rewrite succeeds but the private repository is unauthorized. The connector can read the private kit but cannot create Actions secrets; browser was signed out. Do not publish its private source or rotate signing. The local exact signed kit Git mirror is ignored under .recording/; all200 blobs/tree/commit match a9325265 and clean npm ci succeeds with SSH disabled. Details in INFRASTRUCTURE.md. Local Android SDK36/tools36 was installed and Capacitor sync passes; Gradle network/build/signature status must be reported separately. Existing preview signer must remain0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e; key stays in asoc Actions cache.
+
+---
+
 # Continuation checkpoint — 2026-11-15
 
 

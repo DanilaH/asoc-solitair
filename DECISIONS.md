@@ -1,3 +1,11 @@
+# 2026-11-18 — Content7 offline campaign authoring
+
+The owner-approved Content7 spec and80-row plan replace campaign selection with80 distinct immutable IDs while preserving all historical definitions and attempt ownership. Content7 changes content only: rules3/balance3, helper unlocks3/4/8, canonical rewards, daily rotation, compact geometry/art/audio/native SDK settings remain. The5-level cycle starts6: PEAK, REST, BASE, BASE, BASE; first ordered30, first keys49, final80 ordinary. No runtime director/RNG, added economy or paywall.
+
+Author literal visible layouts and independently replay helper-free routes, budgeted recoveries and forbidden actions. Restricted search UNKNOWN is not impossibility; structural metrics are not human interest. Archived C6 QA remains explicitly pinned. C7 Joker introduction is on demand and never spends/arms automatically. [Implementation](docs/qa/content-v7/README.md), [full matrix](docs/qa/content-v7/CURVE.md).
+
+Private-kit transport is repaired with command-local HTTPS configuration and an unchanged exact pin. CI access requires a read-only kit Actions secret; never vendor private kit source into the public consumer or export its signing key. Human/device balance and same-signer APK acceptance are separate gates.
+
 # Decisions
 
 ## 2026-11-15 — Versioned opening curriculum instead of a live director

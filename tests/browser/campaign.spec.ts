@@ -1,11 +1,14 @@
 import {campaignId} from '../../src/domain/progression';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
 import { dismissTeaching } from '../../tools/qa/navigation';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
-import { freshSave, packet } from '../../src/domain/engine';
+import { freshSave, packet, applyBoard } from '../../src/domain/engine';
 import { boardFrame, layout } from '../../src/game/layout';
 import type { BoardCommand, Save, Deal } from '../../src/domain/types';
 test.describe.configure({ mode: 'parallel' });
+test.use({video:'on'});
 const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
 async function ready(page: Page, deal: Deal) {
   await expect.poll(async () => (await read(page)).attempt.dealId).toBe(deal.id);
@@ -15,7 +18,7 @@ async function ready(page: Page, deal: Deal) {
 }
 export async function move(page: Page, deal: Deal, cmd: BoardCommand) {
   const before=await read(page), rect=(await page.locator('#game-root').boundingBox())!;
-  const frame=boardFrame(rect.width,rect.height), geometry=layout(before.attempt.board,deal,frame.height);
+  const frame=boardFrame(rect.width,rect.height,before.settings.deckPosition,deal), geometry=layout(before.attempt.board,deal,frame.height,before.settings.deckSide,before.settings.deckPosition);
   const tap=(p:{x:number;y:number})=>page.touchscreen.tap(rect.x+frame.offsetX+p.x*frame.unit,rect.y+p.y*frame.unit);
   if(cmd.type==='transfer'){
     const id=cmd.from.kind==='waste'?before.attempt.board.waste.at(-1):packet(before.attempt.board,cmd.from.index,deal).at(-1);
@@ -23,6 +26,8 @@ export async function move(page: Page, deal: Deal, cmd: BoardCommand) {
     await tap(from);await tap(to);
   }else await tap(geometry.stock);
   await expect.poll(async()=> (await read(page)).revision,{message:`${deal.id}: ${JSON.stringify(cmd)}`}).toBeGreaterThan(before.revision);
+  const expected=applyBoard(before.attempt.board,cmd,deal);if(typeof expected==='string')throw Error(expected);
+  await expect.poll(async()=>(await read(page)).attempt.board).toEqual(expected.board);
   await page.evaluate(()=>new Promise<void>(resolve=>requestAnimationFrame(()=>resolve())));
 }
 async function fixture(page:Page,index:number){
@@ -44,6 +49,8 @@ for (let chapter = 0; chapter < 4; chapter++) test(`chapter ${chapter + 1}: twen
     if(deal.campaignLevel!<=2){await expect(page.locator('#moves')).toHaveText('∞');await expect(page.locator('#hint')).toBeHidden();await expect(page.locator('#undo')).toBeHidden();}
     for(const cmd of deal.winningPath)await move(page,deal,cmd);
     await expect(page.locator('#result')).toBeVisible(); expect((await read(page)).attempt.board.phase).toBe('won');
+    await mkdir('.recording/content7-ui',{recursive:true});
+    await writeFile(`.recording/content7-ui/level-${String(deal.campaignLevel).padStart(3,'0')}.json`,JSON.stringify({id:deal.id,project:info.project.name,viewport:page.viewportSize(),initialSHA:createHash('sha256').update(JSON.stringify(deal.initial)).digest('hex'),witnessSHA:createHash('sha256').update(JSON.stringify(deal.winningPath)).digest('hex'),acceptedActions:deal.winningPath.length,actualBoard:(await read(page)).attempt.board,input:'Real touchscreen taps and visible Next; each accepted board compared with the expected transition',status:'PASS'},null,2)+'\n');
     console.info(`Touch campaign ${deal.campaignLevel}/80 won`); await page.locator('#next-level').tap();
   }
   const completed=await read(page);expect(completed.platform!.completedCampaign).toHaveLength(chapter*20+20);

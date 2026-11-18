@@ -1,7 +1,7 @@
 import {campaignId} from '../../src/domain/progression';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals } from '../../src/content/campaign';
-import { dispatch, freshSave, packet } from '../../src/domain/engine';
+import { dispatch, freshSave, packet, applyBoard } from '../../src/domain/engine';
 import { boardFrame, layout } from '../../src/game/layout';
 import type { BoardCommand, Save } from '../../src/domain/types';
 const deal = campaignDeals[0];
@@ -65,7 +65,8 @@ test('touch drag survives entry and unchanged backing-size notifications', async
       await page.waitForTimeout(25);
     }
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
-    await expect.poll(async () => (await read(page)).attempt.board.foundations[index].length).toBe(1);
+    const expected=applyBoard(before.attempt.board,cmd,deal);if(typeof expected==='string')throw Error(expected);
+    await expect.poll(async () => (await read(page)).attempt.board).toEqual(expected.board);
     await page.waitForTimeout(250);
   }
   await cdp.detach();

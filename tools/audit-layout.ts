@@ -93,9 +93,9 @@ try {
    if(kind==='stale')s.parked={daily:freshSave(dailyForDay('2026-11-09'),'audit-old-daily').attempt};
    await load(page,s);await audit(page,`${width}x${height}-home-${kind}`,true);
   }
-  if(!dialogsOnly)for(const level of [1,17,21,23,26])for(const position of ['top','bottom'] as const)for(const side of ['left','right'] as const){
+  if(!dialogsOnly)for(const level of [1,16,21,30,49,76])for(const position of ['top','bottom'] as const)for(const side of ['left','right'] as const){
    if(level===1&&(position!=='top'||side!=='right'))continue;
-   let s=seed(level-1,true);if(level===21){const column=s.attempt.board.tableau.reduce((last,ids,i)=>ids.length?i:last,-1);const result=dispatch(s,{type:'place-joker',column},campaignDeals[level-1]);if(!result.accepted)throw Error('Joker audit fixture refused');s=result.next;}if(level===17){s.profile.coins=9999999;s.attempt.streak.tier=3;s.attempt.streak.progress=6;}s.settings.deckPosition=position;s.settings.deckSide=side;
+   let s=seed(level-1,true);if(level===21){const column=s.attempt.board.tableau.reduce((last,ids,i)=>ids.length?i:last,-1);const result=dispatch(s,{type:'place-joker',column},campaignDeals[level-1]);if(!result.accepted)throw Error('Joker audit fixture refused');s=result.next;}if(level===16){s.profile.coins=9999999;s.attempt.streak.tier=3;s.attempt.streak.progress=6;}s.settings.deckPosition=position;s.settings.deckSide=side;
    await load(page,s);await page.locator('#home-play').tap();
    // Model a short native content viewport and measured banner reservation,
    // not a claim of an Android SDK or physical-inset check.
@@ -109,7 +109,7 @@ try {
    await load(page,seed(25));await page.locator('#home-play').tap();
    for(const id of ['settings','settings-expanded','appearance','helpers','level-picker','calendar','cycle-info','restart-confirm','replace-daily','switch-level','inspect-dialog','result','result-exhausted','learn-joker','learn-ordered','learn-keys']){
     const dialogId=id.startsWith('result')?'result':id.startsWith('learn-')?'learn-rule':id.startsWith('settings')?'settings':id;
-    if (id.startsWith('learn-')) { const index = ({'learn-joker':20,'learn-ordered':22,'learn-keys':25} as Record<string,number>)[id]; await load(page,seed(index)); await page.locator('#home-play').tap(); await page.locator('#learn-rule[open]').waitFor(); }
+    if (id.startsWith('learn-')) { const index = ({'learn-joker':7,'learn-ordered':29,'learn-keys':48} as Record<string,number>)[id]; await load(page,seed(index)); await page.locator('#home-play').tap();if(id==='learn-joker')await page.locator('#joker').tap();await page.locator('#learn-rule[open]').waitFor(); }
     if(dialogId==='result'){
      const index=id==='result-exhausted'?16:19;let state=seed(index);state.meta!.winCycle=4;
      if(id!=='result-exhausted')for(const cmd of campaignDeals[index].winningPath)state=dispatch(state,cmd,campaignDeals[index]).next;

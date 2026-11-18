@@ -1,4 +1,4 @@
-import{test,expect}from'@playwright/test';import{campaignDeals,legacyCampaignDeals}from'../../src/content/campaign';
+import{test,expect}from'@playwright/test';import{content6CampaignDeals as campaignDeals,legacyCampaignDeals,campaignDeals as currentCampaignDeals}from'../../src/content/campaign';
 import{freshSave,dispatch}from'../../src/domain/engine';import{campaignId}from'../../src/domain/progression';import{dismissTeaching}from'../../tools/qa/navigation';
 import{seed,move,read}from'./wallet-fixture';
 for(let i=0;i<15;i++)test(`content6 level${i+1} wins through visible controls, reloads and preserves helper stock`,async({page})=>{
@@ -23,7 +23,7 @@ test('a revised Joker is optional, supports a real packet, survives reload and k
 });
 test('content5 resume stays on its old level and selecting the revised same level preserves wallet and canonical progress',async({page})=>{
  const d=legacyCampaignDeals[5];let s=freshSave(d,'historical-owner');s.contentVersion=5;s.settings.reducedMotion=true;s.profile.coins=281;s.platform={receipts:['earned-before'],continuedAttempts:[],continueCredits:1,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:Array.from({length:10},(_,i)=>campaignId(i+1))};s.campaign={version:1,tutorials:['learn:category','learn:match','learn:stock','hint-demo','undo-used','intro:joker']};s=dispatch(s,d.winningPath[0],d).next;await seed(page,s);expect((await read(page)).attempt.dealId).toBe(d.id);expect((await read(page)).attempt.board).toEqual(s.attempt.board);
- await page.locator('#menu').tap();await page.locator('#levels-open').tap();await page.locator('#level-picker-open').tap();await page.locator('#level-6').tap();await page.locator('#switch-confirm').tap();await expect.poll(async()=>(await read(page)).attempt.dealId).toBe(campaignDeals[5].id);const r=await read(page);expect(r.contentVersion).toBe(6);expect(r.profile).toEqual(s.profile);expect(r.platform?.completedCampaign).toEqual(s.platform?.completedCampaign);expect(r.platform?.receipts).toEqual(['earned-before']);
+ await page.locator('#menu').tap();await page.locator('#levels-open').tap();await page.locator('#level-picker-open').tap();await page.locator('#level-6').tap();await page.locator('#switch-confirm').tap();await expect.poll(async()=>(await read(page)).attempt.dealId).toBe(currentCampaignDeals[5].id);const r=await read(page);expect(r.contentVersion).toBe(7);expect(r.profile).toEqual(s.profile);expect(r.platform?.completedCampaign).toEqual(s.platform?.completedCampaign);expect(r.platform?.receipts).toEqual(['earned-before']);
 });
 
 test('an upgraded player jumping to the combined finale receives both unfamiliar rules without a move or charge',async({page})=>{

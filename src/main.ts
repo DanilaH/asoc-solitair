@@ -3,7 +3,7 @@ import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-ki
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
 import { campaignDeals, findDeal } from './content/campaign';
-import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, markTutorial } from './domain/progression';
+import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { dailyForDay } from './content/daily';
 import { switchMode } from './domain/sessions';
@@ -436,8 +436,8 @@ try {
       button.setAttribute('aria-label', `Уровень ${level}: ${item.title}${done ? ', пройден' : level > unlocked ? ', закрыт' : ''}`);
     }
   }
-  function maybeIntroduceRule(): boolean {
-    const intro = ruleIntroduction(save, deal);
+  function maybeIntroduceRule(requested?: 'joker'): boolean {
+    const intro = requested ?? ruleIntroduction(save, deal);
     if (!intro || dismissedRules.has(intro) || activeRule || !ready || saving || inspectMode || screen !== 'game' || runtime.activity.isBlocked()) return false;
     activeRule = intro;
     $('#learn-rule').dataset.rule = intro;
@@ -668,6 +668,7 @@ try {
     $('#pause-title').textContent = expanded ? 'Настройки' : screen === 'home' ? 'Настройки' : 'Пауза';
   }, domOptions);
   $('#joker').addEventListener('click', () => {
+    if (deal.id.startsWith('campaign-c7-') && !seenTutorial(save,'intro:joker') && maybeIntroduceRule('joker')) return;
     if (!save.profile.jokers) { openHelpers('joker'); return; }
     const active = $('#joker').getAttribute('aria-pressed') !== 'true'; setInspect(false); scene?.setJoker(active);
     message('');

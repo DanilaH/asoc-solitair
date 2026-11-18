@@ -5,6 +5,7 @@ import { campaignDeals } from '../../src/content/campaign';
 import { dailyPool } from '../../src/content/daily';
 import { freshSave, dispatch, packet } from '../../src/domain/engine';
 import { categoryCaption } from '../../src/game/captions';
+import {cardArtwork} from '../../src/game/art';
 import { boardFrame, layout } from '../../src/game/layout';
 import type { Save } from '../../src/domain/types';
 const read=(p:Page)=>p.evaluate(()=>JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
@@ -23,8 +24,8 @@ test('all published category names stay distinct and fit the readable title floo
   expect(overflowing).toEqual([]);
 });
 test('a picture opens a real preview and closing it ends the mode without a charge',async({page})=>{
-  await load(page,10);const before=await read(page),deal=campaignDeals[10],r=(await page.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height),g=layout(before.attempt.board,deal,f.height);
-  const id=deal.initial.tableau.map(c=>c.at(-1)!).find(id=>deal.cards[id].image)!,pose=g.poses.find(p=>p.id===id)!;
+  await load(page,7);const before=await read(page),deal=campaignDeals[7],r=(await page.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height),g=layout(before.attempt.board,deal,f.height);
+  const id=deal.initial.tableau.map(c=>c.at(-1)!).find(id=>cardArtwork(deal.cards[id],deal))!,pose=g.poses.find(p=>p.id===id)!;
   await page.locator('#inspect').tap();await page.touchscreen.tap(r.x+pose.x*f.unit,r.y+pose.y*f.unit);
   await expect(page.locator('#word-image')).toBeVisible();expect(await page.locator('#word-image').evaluate(e=>(e as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expect(page.locator('#word-description')).toBeHidden();await page.locator('#inspect-dialog .primary').tap();await expect(page.locator('#inspect')).toHaveAttribute('aria-pressed','false');
@@ -59,8 +60,8 @@ test('a brand new profile starts in the first deal and daily appears after the b
   await load(page,2);await page.locator('#menu').tap();await page.locator('#levels-open').tap();await expect(page.locator('#daily-play')).toBeVisible();
 });
 test('first modifier lessons can be dismissed without spending and stay dismissed after reload',async({page})=>{
-  for(const [index,rule] of [[20,'joker'],[22,'ordered'],[25,'keys']] as const){
-    await load(page,index);await expect(page.locator('#learn-rule')).toBeVisible();await expect(page.locator('#learn-rule')).toHaveAttribute('data-rule',rule);const before=await read(page);
+  for(const [index,rule] of [[7,'joker'],[29,'ordered'],[48,'keys']] as const){
+    await load(page,index);if(rule==='joker')await page.locator('#joker').tap();await expect(page.locator('#learn-rule')).toBeVisible();await expect(page.locator('#learn-rule')).toHaveAttribute('data-rule',rule);const before=await read(page);
     await page.locator('#learn-rule .primary').tap();await expect(page.locator('#learn-rule')).toBeHidden();const after=await read(page);expect(after.campaign!.tutorials).toContain(`intro:${rule}`);expect(after.profile).toEqual(before.profile);expect(after.attempt.board).toEqual(before.attempt.board);
     await page.reload();await page.locator('#app[data-ready=true]').waitFor();await page.locator('#home-play').tap();await expect(page.locator('#learn-rule')).toBeHidden();
   }

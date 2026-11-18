@@ -22,7 +22,7 @@ export function ruleIntroduction(save: Save, deal: Deal): RuleIntro | undefined 
   if (deal.tags?.includes('ordered')) rules.push('ordered');
   if (deal.lock) rules.push('keys');
   return rules.find(rule => !seenTutorial(save, `intro:${rule}`) &&
-    (deal.id.startsWith('campaign-c6-') || completedLevels(save) < { joker: 21, ordered: 23, keys: 26 }[rule]));
+    (deal.id.startsWith('campaign-c6-') || deal.id.startsWith('campaign-c7-') || completedLevels(save) < { joker: 21, ordered: 23, keys: 26 }[rule]));
 }
 /** Observe accepted state: teaching never moves cards or spends resources. */
 export function lesson(save: Save, deal: Deal): { action?: BoardCommand; delay?: number; attention?: 'hint' | 'undo' | 'joker' } | undefined {

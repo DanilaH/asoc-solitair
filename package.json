@@ -1,6 +1,6 @@
 {
   "name": "asoc-solitair",
-  "version": "0.17.1",
+  "version": "0.18.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -30,7 +30,10 @@
     "qa:rules": "vite build --ssr tools/verify-rules-v3.ts --outDir .recording/rules-verify-source && node .recording/rules-verify-source/verify-rules-v3.js",
     "qa:prototypes:build": "vite build --config vite.prototypes.config.ts",
     "qa:prototypes:validate": "vite build --ssr tools/prototypes/validate.ts --outDir .recording/prototypes-validator && node .recording/prototypes-validator/validate.js",
-    "qa:opening": "vite build --ssr tools/audit-opening.ts --outDir .recording/opening-audit-source && node .recording/opening-audit-source/audit-opening.js"
+    "qa:opening": "vite build --ssr tools/audit-opening.ts --outDir .recording/opening-audit-source && node .recording/opening-audit-source/audit-opening.js",
+    "qa:content7": "vite build --ssr tools/verify-content7.ts --outDir .recording/content7-gate-source && node .recording/content7-gate-source/verify-content7.js",
+    "content:author7": "vite build --ssr tools/content/build-content7.ts --outDir .authoring/content7-source && C7_STAGE=80 node .authoring/content7-source/build-content7.js",
+    "qa:content7:research": "vite build --ssr tools/audit-content7-draft.ts --outDir .authoring/content7-audit-source && C7_STAGE=80 node .authoring/content7-audit-source/audit-content7-draft.js"
   },
   "dependencies": {
     "@capacitor/android": "8.6.0",

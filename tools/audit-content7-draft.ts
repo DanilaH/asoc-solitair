@@ -1,4 +1,5 @@
 /** Bounded offline diagnostics. Structural choices are proxies, never enjoyment scores. */
+import {createHash} from 'node:crypto';
 import {readFile,writeFile} from 'node:fs/promises';
 import {advance,group,identity,options} from './qa/gameplay-oracle';
 import {independentRoute} from './qa/content7-search';
@@ -7,10 +8,11 @@ import {applyBoard} from '../src/domain/engine';
 import plan from '../docs/content/CONTENT_V7_LEVEL_PLAN.json' with {type:'json'};
 import type {Board,BoardCommand,Deal} from '../src/domain/types';
 const end=Number(process.env.C7_STAGE??15),records=JSON.parse(await readFile(`.authoring/content7/stage-${end}.json`,'utf8')) as {deal:Deal;author:unknown}[];
-const all=[];
+const selected=process.env.C7_LEVELS?.split(',').map(Number);
+const all:any[]=selected?JSON.parse(await readFile(`.authoring/content7/audit-${end}.json`,'utf8')):[];
 function check(d:Deal,input:Board,path:BoardCommand[]){let b=structuredClone(input);for(const a of path){const p=applyBoard(b,a,d),q=advance(b,a,d);if(typeof p==='string'||!q||JSON.stringify(p.board)!==JSON.stringify(q))throw Error(`${d.id}: replay disagreement`);b=q;}if(b.phase!=='won')throw Error(`${d.id}: recovery did not win`);}
 function candidates(b:Board,d:Deal){const seen=new Set<string>();return options(b,d,true).filter(x=>{const k=identity(x.board,d);if(seen.has(k))return false;seen.add(k);return true;});}
-for(const record of records){const d=record.deal,role=plan.levels[d.campaignLevel!-1].paceRole,probe=independentRoute(d,d.initial,'none',4000),noLower=independentRoute(d,d.initial,'no-lower',d.campaignLevel!<=15?5000:1500),noEmpty=independentRoute(d,d.initial,'no-empty',d.campaignLevel===4?5000:1000),branches=[],points=[];let b=structuredClone(d.initial),compared=0,forced=0,choiceStates=0;
+for(const record of records.filter(r=>!selected||selected.includes(r.deal.campaignLevel!))){const d=record.deal,role=plan.levels[d.campaignLevel!-1].paceRole,probe=independentRoute(d,d.initial,'none',4000),noLower=independentRoute(d,d.initial,'no-lower',d.campaignLevel!<=15?5000:1500),noEmpty=independentRoute(d,d.initial,'no-empty',d.campaignLevel===4?5000:1000),branches=[],points=[];let b=structuredClone(d.initial),compared=0,forced=0,choiceStates=0;
  check(d,d.initial,d.winningPath);if(probe.status==='FOUND')check(d,d.initial,probe.path);
  for(let i=0;i<d.winningPath.length;i++){
   const opts=candidates(b,d),locs=[...b.tableau.map((_,index)=>({kind:'tableau' as const,index})),...b.foundations.map((_,index)=>({kind:'foundation' as const,index})),{kind:'waste' as const,index:0}];
@@ -38,6 +40,6 @@ for(const record of records){const d=record.deal,role=plan.levels[d.campaignLeve
   b=advance(b,d.winningPath[i],d)!;
  }
  const runs=Array.from({length:17},(_,i)=>directOnly(d,i));for(const run of runs){let b=structuredClone(d.initial);for(const a of run.path){const p=applyBoard(b,a,d),q=advance(b,a,d);if(typeof p==='string'||!q||JSON.stringify(p.board)!==JSON.stringify(q))throw Error('simple policy oracle mismatch');b=q;}}
- const result={level:d.campaignLevel,independentSearch:{status:probe.status,visited:probe.visited,actions:probe.path.length,...(probe.status==='FOUND'?{path:probe.path}:{})},simple:{wins:runs.filter(r=>r.outcome==='won').length,runs:runs.map(({path,...r})=>r)},noLower:{status:noLower.status,visited:noLower.visited,actions:noLower.path.length},noEmpty:{status:noEmpty.status,visited:noEmpty.visited,actions:noEmpty.path.length},decisionPoints:points,recoverableAlternatives:branches,structuralProxy:{choiceStates,otherStates:forced,note:'Distinct actionable leader priorities, at least two lower uncovering transfers, or use-vs-bury waste. Other states include routine and unclassified decisions; not human meaningful/forced ground truth.'},compared};all.push(result);
+ const result={level:d.campaignLevel,initialBoardSHA:createHash('sha256').update(JSON.stringify(d.initial)).digest('hex'),independentSearch:{status:probe.status,visited:probe.visited,actions:probe.path.length,...(probe.status==='FOUND'?{path:probe.path}:{})},simple:{wins:runs.filter(r=>r.outcome==='won').length,runs:runs.map(({path,...r})=>r)},noLower:{status:noLower.status,visited:noLower.visited,actions:noLower.path.length},noEmpty:{status:noEmpty.status,visited:noEmpty.visited,actions:noEmpty.path.length},decisionPoints:points,recoverableAlternatives:branches,structuralProxy:{choiceStates,otherStates:forced,note:'Distinct actionable leader priorities, at least two lower uncovering transfers, or use-vs-bury waste. Other states include routine and unclassified decisions; not human meaningful/forced ground truth.'},compared};const existing=all.findIndex(r=>r.level===result.level);if(existing>=0)all[existing]=result;else all.push(result);all.sort((a,b)=>a.level-b.level);
  await writeFile(`.authoring/content7/audit-${end}.json`,JSON.stringify(all,null,2)+'\n');console.log(`${d.campaignLevel}: independent=${probe.status}/${probe.path.length}; direct=${result.simple.wins}/17; noLower=${noLower.status}; noEmpty=${noEmpty.status}; points=${points.length} recoveries=${branches.length}`);
 }

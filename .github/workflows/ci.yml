@@ -16,7 +16,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: /home/runner/.npm
-          key: node-cache-Linux-x64-npm-b72d64cddd2598f03afa06a59e91966afa2a8b4294241cd7344533e12f49aaba
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
       - run: node --test tests/infrastructure/*.test.mjs
       - run: node tools/install-dependencies.mjs
         env:
@@ -55,7 +55,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: /home/runner/.npm
-          key: node-cache-Linux-x64-npm-b72d64cddd2598f03afa06a59e91966afa2a8b4294241cd7344533e12f49aaba
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

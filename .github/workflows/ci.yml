@@ -13,7 +13,10 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm ci --no-audit --no-fund
+      - run: node --test tests/infrastructure/*.test.mjs
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
       - run: npm run check
       - run: npm run qa:rules
       - run: npm run qa:opening
@@ -47,7 +50,10 @@ jobs:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
       - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-      - run: npm ci --no-audit --no-fund
+      - run: node --test tests/infrastructure/*.test.mjs
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
       - run: npm run android:sync
       - uses: actions/cache@v4
         with:

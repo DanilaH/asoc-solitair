@@ -370,7 +370,8 @@ try {
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
       if (save.attempt.board.phase !== 'playing') {
-        clearTimeout(outcomeTimer); outcomeTimer = setTimeout(outcome, save.attempt.board.phase === 'won' ? 880 : save.settings.reducedMotion ? 100 : 380);
+        const delay = save.settings.reducedMotion ? 100 : save.attempt.board.phase === 'won' ? 880 : 380;
+        clearTimeout(outcomeTimer); outcomeTimer = setTimeout(outcome, delay);
       }
     } else {
       scene?.cancel(); scene?.reject(['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined); runtime.play('invalid'); runtime.pulse('invalid');

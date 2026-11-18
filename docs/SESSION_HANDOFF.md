@@ -1,3 +1,7 @@
+# UI/UX and Game Feel checkpoint — 2026-11-18
+
+Owner authorized starting from the verified C7 preview before human/device acceptance. Draft [PR #35](https://github.com/DanilaH/asoc-solitair/pull/35) targets the C7 branch. Candidate 0.18.1/code28 runtime source is `ddaef8fedfd24638740bc253aaf7dcf4ce85dc53`. It cancels a target tap when the finger is released outside that target and shortens the reduced-motion victory delay while preserving wallet settlement. Signed test APK uses the C7 preview certificate. Rules/content/balance remain 3/7/3. See the [eight-scene comparison, regression evidence, and phone checklist](qa/post-c7-feel/README.md). The previous conditional launch was paused and the package proceeded in-session. Phone feel and human acceptance remain open.
+
 # Content7 checkpoint — 2026-11-18
 
 Branch `feat/content7-campaign-20261118`, draft [PR33](https://github.com/DanilaH/asoc-solitair/pull/33). Base and still-current main: b612420fda4d8677073034a91c944c46573cbf08 (0.17.1). This work targets0.18.0/code27/content7, rules3/balance3 unchanged. [Current acceptance and remaining blockers](qa/content-v7/README.md), [full curve](qa/content-v7/CURVE.md), [human checklist](qa/content-v7/HUMAN_ACCEPTANCE.md). The older accepted delivery below remains historical; do not replace it with new claims.

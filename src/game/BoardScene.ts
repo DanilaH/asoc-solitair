@@ -836,6 +836,12 @@ export class BoardScene extends Phaser.Scene {
       }
       return;
     }
+    if (press.target) {
+      const released = this.hitTarget(x, y);
+      if (!released || !same(press.target.location, released.location) || Math.hypot(x - press.x, y - press.y) >= 11) {
+        this.cancel(); return;
+      }
+    }
     const target = press.target ?? drop;
     if (press.from && target && !same(press.from, target.location)) {
       this.selected = null; this.options.command({ type: 'transfer', from: press.from, to: target.location });

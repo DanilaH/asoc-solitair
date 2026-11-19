@@ -47,6 +47,11 @@ header{height:58px;flex-shrink:0;display:flex;align-items:center;gap:9px;padding
 #app[data-practice=true] #level-number{color:#f6ce99}
 main{position:relative;flex:1;min-height:0;touch-action:none}
 #game-root{position:absolute;inset:0}
+#game[data-exhausted=true] #game-root{filter:saturate(.55) brightness(.82);transition:filter .2s ease}
+#game[data-exhausted=true]::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:18px;box-shadow:inset 0 0 38px #c45f4570;animation:board-loss .42s ease-out}
+@keyframes board-loss{from{opacity:0}35%{opacity:1}to{opacity:.7}}
+:root[data-reduced=true] #game[data-exhausted=true]::after{animation:none}
+:root[data-reduced=true] #game[data-exhausted=true] #game-root{transition:none}
 canvas{display:block!important;width:100%!important;height:100%!important;touch-action:none}
 #loading{position:absolute;inset:0;display:grid;place-items:center;color:#d6e8df;font-size:18px;pointer-events:none}
 .deck-tools{position:absolute;top:12px;left:0;display:flex;gap:13px;align-items:flex-start;z-index:1;pointer-events:none}
@@ -54,6 +59,9 @@ canvas{display:block!important;width:100%!important;height:100%!important;touch-
 .moves{width:60px;min-height:80px;display:flex;flex-direction:column;align-items:center;padding:7px 8px 9px;border:2px solid #e4f0e1;border-radius:13px;background:linear-gradient(#dfebe0,#bdd4cf);box-shadow:0 3px 0 #8daab3;color:#376c75}
 .moves>span{font-size:10px;font-weight:900;color:#6f9797}
 .moves strong{font-size:29px;line-height:32px;font-weight:900}
+.moves[data-urgency=low] strong{color:#a83c33}
+.moves[data-urgency=critical] strong,.moves[data-urgency=lost] strong{color:#902c28}
+.moves[data-urgency=low] .move-track i,.moves[data-urgency=critical] .move-track i{background:#ba4841}
 .move-track{width:36px;height:4px;border-radius:4px;background:#89b9b64d;margin-top:8px;overflow:hidden}
 .move-track i{display:block;height:100%;background:#e5b884;transition:width .2s}
 #app[data-deck-edge=left] .deck-tools{left:auto;right:0;flex-direction:row-reverse}
@@ -61,6 +69,8 @@ canvas{display:block!important;width:100%!important;height:100%!important;touch-
 #message{min-height:26px;flex-shrink:0;margin:0;padding:4px 8px;text-align:center;font-size:10px;line-height:15px;color:#b3d3ce;overflow-wrap:anywhere}
 #message:empty{visibility:hidden}
 #message.error{color:#ffdda6}
+#no-transfer{position:absolute;inset:0;margin:0;padding:4px 8px;text-align:center;font-size:11px;line-height:15px;color:#ffdda6;pointer-events:none}
+#feedback-row:has(#message:not(:empty),#praise:not([hidden])) #no-transfer{visibility:hidden}
 footer{height:88px;flex-shrink:0;display:flex;justify-content:flex-start;gap:8px;align-items:center;padding-top:4px}
 footer button{position:relative;width:72px;height:76px;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:10px;font-weight:800;color:#c1d9d3;padding:0}
 footer .helper-icon{width:59px;height:59px;border-radius:19px;display:grid;place-items:center;font-size:45px;color:#5b96bd;border:3px solid #fffdf0;background:linear-gradient(#fffdf5,#e8edf1);box-shadow:0 4px 0 #a2b0c7,inset 0 -3px 0 #dce3ec;text-shadow:0 2px 0 #ccd8e7}
@@ -368,6 +378,7 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 #peek-description{font-size:13px;line-height:1.4;margin:9px 0 0}
 #peek-image{width:86px;height:86px;object-fit:contain;float:left;margin:0 12px 5px 0}
 #inspect-peek:after{content:'';display:block;clear:both}
+#peek-status{display:block;color:#76586b;font-size:12px;font-weight:800;margin-top:5px}
 /* Preferences replace the middle of the pause panel without recentering it. */
 #settings[open]{height:min(548px,calc(100dvh - 32px));display:flex;flex-direction:column;animation:pause-in .16s ease-out}
 #settings .eyebrow{flex-shrink:0}

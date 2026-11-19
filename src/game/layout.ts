@@ -1,4 +1,5 @@
 import type { Board, Deal, Location } from '../domain/types';
+import { packet } from '../domain/engine';
 export const WIDTH = 540;
 export const CARD_W = 138;
 export const CARD_H = 166;
@@ -11,6 +12,13 @@ export function boardFrame(width: number, height: number, deckPosition: 'top' | 
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
 export interface Target { location: Location; x: number; y: number; width: number; height: number }
+/** A movable packet with a leader always shows that leader on its face. */
+export function tableauPresentation(board: Board, deal: Deal, index: number): string[] {
+  const column = board.tableau[index], moving = packet(board, index, deal);
+  const leader = moving.find(id => deal.cards[id].leader);
+  if (!leader || moving.at(-1) === leader) return column;
+  return [...column.slice(0, -moving.length), ...moving.filter(id => id !== leader), leader];
+}
 /** Forgive only an unambiguous geometric near miss; the engine still validates the move. */
 export function dropTarget(targets: Target[], x: number, y: number, tolerance: number): Target | null {
   const distance = (t: Target) => Math.hypot(Math.max(0, Math.abs(x - t.x) - t.width / 2), Math.max(0, Math.abs(y - t.y) - t.height / 2));
@@ -62,9 +70,9 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
   });
   const tableauBottom = bottom ? stock.y - cardH / 2 - 28 : height - 12;
   const tableauY = Math.min(top + cardH + (bottom ? 30 : 44), tableauBottom - cardH / 2);
-  board.tableau.forEach((ids, index) => {
+  board.tableau.forEach((_, index) => {
     let y = tableauY;
-    const entries: (string | null)[] = [...ids];
+    const entries: (string | null)[] = [...tableauPresentation(board, deal, index)];
     if (board.joker?.column === index) entries.splice(board.joker.boundary, 0, null);
     const steps = entries.slice(0, -1), open = steps.filter(id => id === null || board.faceUp.includes(id)).length, closed = steps.length - open;
     const available = Math.max(0, tableauBottom - tableauY - cardH / 2);

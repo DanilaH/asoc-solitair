@@ -1,5 +1,5 @@
 import { Capacitor, registerPlugin } from '@capacitor/core';
-export type HapticCue = 'button' | 'transfer' | 'complete' | 'invalid' | 'hint' | 'undo' | 'coins' | 'win';
+export type HapticCue = 'button' | 'transfer' | 'complete' | 'invalid' | 'hint' | 'undo' | 'coins' | 'win' | 'loss' | 'streak-break';
 export interface FeedbackBridge {
   pulse(options: { cue: HapticCue; issuedAt: number; generation: number }): Promise<void>;
   cancel(options: { generation: number }): Promise<void>;

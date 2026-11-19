@@ -1,3 +1,7 @@
+# Android playtest feedback — 0.18.3
+
+Android playtest feedback on 0.18.2 is tracked in [the preview report](qa/ANDROID_PLAYTEST_0_18_3.md). Presentation and native banner geometry use the same Content 7. The opening stock audit is the starting point for any later content revision.
+
 # Continuous motion checkpoint — 0.18.2
 
 The owner approved one package covering staged Next entry, the landing of larger packets, reveal timing at source clearance, and event-driven victory presentation. Use the [implementation and verification notes](qa/continuous-feel/README.md). The preview continues the post-C7 feel branch. Physical Android feel is pending.

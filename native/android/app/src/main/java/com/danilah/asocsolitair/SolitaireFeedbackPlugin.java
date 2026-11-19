@@ -22,8 +22,8 @@ public class SolitaireFeedbackPlugin extends Plugin {
     @PluginMethod public void pulse(PluginCall call) { handler.post(() -> {
         String cue = call.getString("cue", "");
         long issued = call.getLong("issuedAt", 0L), epoch = call.getLong("generation", -1L), now = SystemClock.uptimeMillis();
-        if (epoch < generation || issued <= stoppedAt || Math.abs(System.currentTimeMillis() - issued) > 250 || !foreground || now - lastPulse < 60) { call.resolve(); return; }
-        if (!cue.matches("button|transfer|complete|invalid|hint|undo|coins|win")) { call.reject("Invalid haptic cue"); return; }
+        if (epoch < generation || issued <= stoppedAt || Math.abs(System.currentTimeMillis() - issued) > 250 || !foreground || (now - lastPulse < 60 && !cue.equals("loss") && !cue.equals("streak-break"))) { call.resolve(); return; }
+        if (!cue.matches("button|transfer|complete|invalid|hint|undo|coins|win|loss|streak-break")) { call.reject("Invalid haptic cue"); return; }
         generation = epoch;
         try {
             Vibrator v = vibrator();
@@ -34,6 +34,8 @@ public class SolitaireFeedbackPlugin extends Plugin {
                 boolean accent = cue.equals("win") || cue.equals("complete");
                 long[] timings = cue.equals("win") ? new long[]{0, 30, 42, 40, 50, 58}
                     : cue.equals("complete") ? new long[]{0, 25, 30, 35}
+                    : cue.equals("loss") ? new long[]{0, 36, 55, 54}
+                    : cue.equals("streak-break") ? new long[]{0, 19, 32, 28}
                     : cue.equals("undo") ? new long[]{0, 12, 20, 18}
                     : cue.equals("invalid") ? new long[]{0, 16, 25, 16} : null;
                 if (timings != null) {

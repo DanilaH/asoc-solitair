@@ -14,7 +14,7 @@ export interface AdsBridge {
   pending(): Promise<{ receipts: unknown[] }>;
   acknowledge(options: { id: string }): Promise<void>;
   cancelPending(): Promise<void>;
-  measureBanner(options: { viewportWidth: number; slotWidth: number }): Promise<Omit<NativeBannerPlacementInput, 'slot' | 'viewport'> | null>;
+  measureBanner(options: { viewportWidth: number; slotX: number; slotWidth: number }): Promise<Omit<NativeBannerPlacementInput, 'slot' | 'viewport'> | null>;
   placeBanner(options: { placement: NativeBannerPlacement; generation: number }): Promise<void>;
   hideBanner(options: { generation: number }): Promise<void>;
   dispose(): Promise<void>;

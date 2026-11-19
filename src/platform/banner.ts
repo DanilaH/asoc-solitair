@@ -32,9 +32,12 @@ export class NativeBanner {
     if (!this.alive || !this.visible || this.flight) return;
     this.flight = true; const generation = ++this.generation;
     try {
-      const rect = this.slot.getBoundingClientRect(), viewport = { width: innerWidth, height: innerHeight };
+      // The full document root and the slot share one fractional CSS space in the native WebView.
+      const rect = this.slot.getBoundingClientRect();
+      const { width, height } = document.documentElement.getBoundingClientRect();
+      const viewport = { width, height };
       if (rect.width <= 0 || rect.height <= 0) return;
-      const measurement = await this.bridge.measureBanner({ viewportWidth: viewport.width, slotWidth: rect.width });
+      const measurement = await this.bridge.measureBanner({ viewportWidth: viewport.width, slotX: rect.x, slotWidth: rect.width });
       if (!measurement || !this.alive || !this.visible || generation !== this.generation) return;
       const placement = resolveNativeBannerPlacement({ ...measurement, slot: { x: rect.x, y: rect.y, width: rect.width, height: rect.height }, viewport });
       if (placement.kind === 'reserve') {

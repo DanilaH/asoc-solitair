@@ -153,7 +153,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || next.profile.jokers <= 0) return refuse('В этой попытке Джокер недоступен');
     const placed = placeJoker(attempt.board, cmd.column, deal);
     if (typeof placed === 'string') return refuse(placed);
-    recordUndo(attempt); attempt.board = placed; attempt.jokerUsed = true; next.profile.jokers--;
+    delete attempt.lessonHint; recordUndo(attempt); attempt.board = placed; attempt.jokerUsed = true; next.profile.jokers--;
     markTutorial(next, 'joker-used'); events = [{ type: 'joker' }];
   } else if (cmd.type === 'hint') {
     const demo = freeHintDemo(input, deal);

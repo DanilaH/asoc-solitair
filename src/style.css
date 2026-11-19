@@ -523,7 +523,8 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 @media(max-height:540px){#home>.brand-scene{padding:1px 0 2px}#home .home-actions{margin-bottom:6px}#home .home-primary{min-height:58px}}
 
 /* Extra context fits the existing feedback area, including the smallest portrait. */
-#lesson-note{grid-area:1/1;display:flex;align-items:center;gap:4px;margin:0 auto;width:min(100%,390px);border:1px solid #89b4ac;border-radius:12px;background:#154e52;color:#fff3d6;text-align:left;padding-left:10px}
+#app[data-lesson=true] #feedback-row{height:54px}
+#lesson-note{position:absolute;inset:0;display:flex;align-items:center;gap:4px;margin:0 auto;width:min(100%,390px);border:1px solid #89b4ac;border-radius:12px;background:#154e52;color:#fff3d6;text-align:left;padding-left:10px}
 #lesson-note p{flex:1;margin:5px 0;font-size:11px;line-height:1.22}
 #lesson-skip{width:44px;height:40px;flex:0 0 44px;background:transparent;color:inherit;border:0;font-size:19px}
 #feedback-row>#message,#feedback-row>#no-transfer{grid-area:1/1}

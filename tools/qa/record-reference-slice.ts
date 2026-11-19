@@ -12,12 +12,14 @@ import { boardFrame, layout } from '../../src/game/layout';
 
 const opening = process.env.C8_ONBOARDING === '1';
 const catalog = opening ? content8Dealer : content8Slice;
-const output = opening ? '.recording/content8-onboarding' : '.recording/content8';
-const dist = output + '/dist';
+const output = process.env.C8_OUTPUT ?? (opening ? '.recording/content8-onboarding' : '.recording/content8');
+const dist = process.env.C8_DIST ?? output + '/dist';
+const consequences: { level: number; step: number; path: BoardCommand[] }[] = process.env.C8_DECISIONS === '1'
+  ? JSON.parse(await readFile('.authoring/content8-onboarding/unscripted.json', 'utf8')) : [];
 const port = Number(process.env.C8_PORT ?? 4230);
 const levels = (process.env.C8_RECORD_LEVELS ?? '15').split(',').map(Number);
 const width = Number(process.env.C8_WIDTH ?? 360), height = Number(process.env.C8_HEIGHT ?? 780);
-const slug = levels.join('-') + '-' + width;
+const slug = levels.join('-') + '-' + width + (consequences.length ? '-decision' : '');
 const recordDir = `${output}/ui/${slug}`;
 const sha = (value: Buffer | string) => createHash('sha256').update(value).digest('hex');
 const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
@@ -79,6 +81,8 @@ try {
     assert.deepEqual((await read(page)).attempt.board, d.initial);
     await page.screenshot({ path: `${recordDir}/level-${level}-start.png` });
     const acceptance = [];
+    const branch = consequences.find(record => record.level === level);
+    const path = branch?.path ?? d.winningPath;
     if (opening && level === 3) {
       const before = await read(page);
       await expect(page.locator('#lesson-copy')).toContainText('бесплатно');
@@ -98,7 +102,15 @@ try {
       assert((await read(page)).campaign?.tutorials.includes('undo-used'));
       await page.waitForTimeout(500);
     }
-    for (const [j, command] of d.winningPath.entries()) {
+    for (const [j, command] of path.entries()) {
+      if (branch && j === branch.step) {
+        const before = await read(page);
+        await page.locator('#hint').tap();
+        await expect.poll(async () => (await read(page)).profile.hints).toBe(before.profile.hints - 1);
+        await expect(page.locator('#hint-label')).toHaveText('Повторить');
+        assert.deepEqual((await read(page)).attempt.board, before.attempt.board);
+        await page.waitForTimeout(750);
+      }
       if (opening && level === 8 && command.type === 'transfer' && !(await read(page)).attempt.jokerUsed) {
         const before = await read(page), board = before.attempt.board;
         const after = applyBoard(board, command, d);
@@ -147,8 +159,8 @@ try {
     assert.equal(errors.length, 0, errors.join('\n'));
     await page.waitForTimeout(save.settings.reducedMotion ? 100 : 650);
     await page.screenshot({ path: `${recordDir}/level-${level}-result.png` });
-    evidence.push({ level, runtime, width, height, reduced: save.settings.reducedMotion, actions: d.winningPath.length, final: final.attempt.board.phase,
-      stockSize: d.initial.stock.length, initialSHA: sha(JSON.stringify(d.initial)), witnessSHA: sha(JSON.stringify(d.winningPath)), acceptance });
+    evidence.push({ level, runtime, width, height, reduced: save.settings.reducedMotion, actions: acceptance.length, final: final.attempt.board.phase,
+      stockSize: d.initial.stock.length, initialSHA: sha(JSON.stringify(d.initial)), witnessSHA: sha(JSON.stringify(path)), acceptance });
     await writeFile(`${recordDir}/evidence.json`, JSON.stringify(evidence, null, 2) + '\n');
     console.log(level, d.winningPath.length, final.attempt.board.movesLeft, 'PASS');
     if (i + 1 < levels.length) {

@@ -10,7 +10,7 @@ import { switchMode } from './domain/sessions';
 import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } from './domain/meta';
 import { WalletPresentation } from './app/wallet-presentation';
 import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
-import { lesson, recordLearning, ruleIntroduction, type RuleIntro } from './app/tutorial';
+import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, type RuleIntro } from './app/tutorial';
 import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import type { BoardCommand, Command, Deal } from './domain/types';
@@ -216,6 +216,7 @@ try {
     if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
     $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;
     $('#app').dataset.practice = String(training());
+    $('#app').dataset.lesson = String(Boolean(deal.training));
     $('#level-number').textContent = deal.daily ? `${training() ? 'ТРЕНИРОВКА' : 'ЗАДАНИЕ'} · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
     $('.level h1').textContent = deal.title;
     const hintUnlocked = helperUnlocked(save, 'hint', deal), undoUnlocked = helperUnlocked(save, 'undo', deal);
@@ -334,7 +335,7 @@ try {
     const next = daily ? undefined : campaignDeals[deal.campaignLevel ?? 0];
     const nextDifficulty = setDifficulty($('#next-level'), next);
     $('#next-level').textContent = daily ? 'К заданиям и уровням' : !next ? 'К уровням' :
-      `Уровень ${next.campaignLevel}${nextDifficulty ? ' · ' + nextDifficulty : ''} →`;
+      `${nextDifficulty ? nextDifficulty + ' уровень' : 'Уровень'} ${next.campaignLevel} →`;
     $('#result-home').hidden = daily || deal.campaignLevel === CAMPAIGN_LENGTH;
     openDialog('#result', true); pinWallet();
     if (won) wallet?.reveal($('#result-total'), earned);
@@ -352,7 +353,7 @@ try {
     if (!alive || saving || screen !== 'game' || runtime.activity.isBlocked()) return false;
     const progressBefore = save.attempt.streak.progress, movesBefore = save.attempt.board.movesLeft;
     let result: Result | undefined;
-    let started = false, finished = false;
+    let started = false, finished = false, coveredWaste = false;
     try {
       presentingCommand = true;
       await write(next => {
@@ -360,7 +361,13 @@ try {
         result = dispatch(next, cmd, deal, localDay());
         Object.assign(next, result.next);
         if (result.accepted) {
-          if (['transfer', 'draw', 'recycle'].includes(cmd.type)) recordLearning(next, beforeBoard, cmd as BoardCommand, deal);
+          if (cmd.type === 'transfer' || cmd.type === 'draw' || cmd.type === 'recycle') {
+            recordLearning(next, beforeBoard, cmd, deal);
+            if (!seenTutorial(next, 'learn:covered-waste') && coversPlayableWaste(beforeBoard, cmd, deal)) {
+              coveredWaste = true;
+              markTutorial(next, 'learn:covered-waste');
+            }
+          }
           const t = next.attempt.telemetry ??= { started: false, finished: false, activeMs: 0 };
           t.activeMs = cmd.type === 'restart' ? 0 : telemetry.activeMs();
           if (['transfer', 'draw', 'recycle'].includes(cmd.type) && !t.started) { t.started = true; started = true; }
@@ -399,6 +406,8 @@ try {
       };
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
+      if (coveredWaste && skippedLesson !== save.attempt.id)
+        message('Подходящая карта теперь под верхней картой сброса. Её можно вернуть на новом круге.');
       if (save.attempt.board.phase !== 'playing') {
         const delay = save.settings.reducedMotion ? 100 : save.attempt.board.phase === 'won' ? 0 : 465;
         const collectionDeadline = hasCoinFlight ? Infinity : performance.now() + 720;

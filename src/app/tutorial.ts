@@ -10,6 +10,11 @@ function skillFor(board: Board, action: BoardCommand, deal: Deal): Skill {
   return action.to.kind === 'foundation' && sourceCards(board, action.from, deal).some(id => deal.cards[id].leader) ? 'category' : 'match';
 }
 /** Called inside the accepted SaveStore transition; Undo does not erase a learned skill. */
+export function coversPlayableWaste(board: Board, action: BoardCommand, deal: Deal): boolean {
+  return deal.training === 'planning' && action.type === 'draw' && board.waste.length > 0 &&
+    legalCommands(board, deal).some(move => move.type === 'transfer' && move.from.kind === 'waste' && move.to.kind === 'foundation');
+}
+
 export function recordLearning(save: Save, before: Board, action: BoardCommand, deal: Deal): void {
   if (action.type === 'recycle' && deal.training) markTutorial(save, 'learn:recycle');
   if (action.type === 'transfer' && action.from.kind === 'waste' && deal.training === 'stock') markTutorial(save, 'learn:waste');
@@ -50,7 +55,7 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
       if (!seen('learn:stock')) return guide('Нажмите на закрытую колоду, чтобы открыть карту.');
       break;
     case 'stock':
-      if (!seen('learn:waste') && !board.waste.length) return guide('Нажмите на колоду. Открытая карта появится рядом, в сбросе.');
+      if (!seen('learn:waste') && !board.waste.length) return guide('Нажмите на колоду. За 1 ход карта откроется рядом, в сбросе.');
       if (!seen('learn:waste')) return guide('Из сброса можно взять верхнюю карту. Следующий добор накроет её.');
       break;
     case 'hint':
@@ -66,7 +71,7 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
     case 'planning': {
       const action = step();
       if (!board.stock.length && board.waste.length && !seen('learn:recycle')) return {
-        copy: 'Нажмите на пустую колоду. Оставшиеся карты вернутся из сброса на новый круг.',
+        copy: 'Нажмите на пустую колоду. За 1 ход сброс вернётся в колоду на новый круг.',
         action: action?.type === 'recycle' ? action : undefined,
       };
       if (board.foundations.filter(pile => pile.length).length >= board.foundations.length - 1 && !seen('learn:slots')) return {

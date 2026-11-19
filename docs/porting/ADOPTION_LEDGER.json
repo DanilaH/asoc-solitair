@@ -3,7 +3,7 @@
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
   "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/research/association-solitaire-full-porting-audit-20261119/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "d4764dd59c6056f0621f58edd5a95a5460be523e",
+  "sourceInventoryBlob": "5b49f8c927cc55f1e2bbc1df62b95e9a10507a7d",
   "sourceInventoryRef": "research/association-solitaire-full-porting-audit-20261119",
   "consumerBaseline": "Content8 PR41 source HEAD 1161d2171d52329bc4f29b44a848d71481794888, preserving C8 tests/compatible save; human Android acceptance OPEN",
   "coverageDisclaimer": "Expanded independent audit of known 2026-11-09..19 research: 76 source features; not exhaustive of original server. No owner exclusions; EVIDENCE_GAP retains next capture.",

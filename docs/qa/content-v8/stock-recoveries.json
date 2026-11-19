@@ -1,0 +1,11 @@
+[
+{"level":6,"step":130,"id":"house_3","path":"w>f0 d w>f0 r d w>f0","total":137,"remaining":24},
+{"level":7,"step":33,"id":"weather_1","path":"w>f2 d w>f0 d w>f1 t1>f1 d w>f0 d d w>f1 d w>f0 w>f0 d w>f1 d w>f1 d w>f0 d w>f0 d w>f0 d w>f0 r d w>f2","total":63,"remaining":7},
+{"level":8,"step":78,"id":"birds_3","path":"w>f3 d w>f3 d w>f2 d w>f0 d d w>f3 d w>f2 d w>f3 t3>f3 t3>f1 w>f3 d w>f2 d w>f3 d w>f0 d w>f0 d w>f2 d w>f3 d w>f3 r d w>f0","total":113,"remaining":4},
+{"level":10,"step":110,"id":"clothes_4","path":"w>f2 r d w>f3","total":115,"remaining":12},
+{"level":11,"step":137,"id":"birds_2","path":"w>f0 d w>f0 r d w>f1","total":144,"remaining":24},
+{"level":12,"step":36,"id":"pets_2","path":"w>f0 d w>f0 d w>f2 d w>f0 d w>f0 d d d w>f0 d w>f0 t0>f0 w>f0 w>f0 d w>f0 d w>f0 r d w>f2","total":62,"remaining":5},
+{"level":13,"step":77,"id":"fish_5","path":"w>f1 d w>f0 d w>f0 t2>f0 t3>f0 t3>f1 t3>f3 d w>f0 d w>f2 d w>f2 d w>f0 d w>f0 d w>f1 d w>f1 d w>f1 d w>f1 r d w>f2","total":108,"remaining":12},
+{"level":14,"step":77,"id":"water_3","path":"w>f2 d w>f0 d w>f0 d w>f3 d w>f3 d d w>f2 d w>f2 d w>f3 d w>f3 d w>f0 t0>f0 t3>f0 w>f0 d w>f3 d w>f0 d w>f0 r d w>f2","total":110,"remaining":8},
+{"level":15,"step":77,"id":"fruit_1","path":"d d d w>f2 d d w>f1 t2>f1 t1>f1 d d d d w>f2 d w>f3 d w>f2 t0>f2 w>f2 w>f2 w>f2 w>t3 w>f2 t3>f2 w>f2 w>f1 d w>f2 d w>f0 r d w>f0","total":112,"remaining":6}
+]

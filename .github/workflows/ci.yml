@@ -24,6 +24,7 @@ jobs:
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run check
       - run: npm run qa:rules
+      - run: npm run qa:content8
       - run: npm run qa:content7
       - run: npm run qa:opening
       - run: npm run qa:prototypes:build
@@ -71,6 +72,8 @@ jobs:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run android:sync
+        env:
+          VITE_CONTENT8_PREVIEW: ${{ (github.head_ref || github.ref_name) == 'feat/content8-reference-slice-20261119' && '1' || '0' }}
       - uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/asoc-debug-signing/debug.keystore

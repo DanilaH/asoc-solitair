@@ -1,0 +1,122 @@
+[
+  {
+    "level": 6,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 320,
+    "height": 568,
+    "reduced": false,
+    "actions": 135,
+    "final": "won",
+    "stockSize": 56,
+    "initialSHA": "d845e957bf0d452ba2872e778e6b69a14a2cb69f9e5d3b0b0aa57041bc4b1503",
+    "witnessSHA": "9eac66d2ca67da73822f3d7f93424606adf41e8631427ede6b99f430646b1cc1"
+  },
+  {
+    "level": 7,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 320,
+    "height": 568,
+    "reduced": false,
+    "actions": 61,
+    "final": "won",
+    "stockSize": 26,
+    "initialSHA": "ed56e2bd821d739c0df8793e3a45e98e8ca116de3fbd81d12c82a123acf5a779",
+    "witnessSHA": "17ef40b85c4985c80063ca66d7a36e435f4b5a67c48b6d7ba2b031b78de6bd41"
+  },
+  {
+    "level": 8,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 360,
+    "height": 780,
+    "reduced": true,
+    "actions": 111,
+    "final": "won",
+    "stockSize": 46,
+    "initialSHA": "405c68b988a7404c8f6c03a218080e58038c6e994de7b7a07846a7cca477ed6f",
+    "witnessSHA": "059fdf6cd6469b98d7ac625985c9ddade757e7f848d981e4031ac2aefd1a29a4"
+  },
+  {
+    "level": 9,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 360,
+    "height": 780,
+    "reduced": true,
+    "actions": 114,
+    "final": "won",
+    "stockSize": 46,
+    "initialSHA": "ef43b21f76124ba79e262fa700b92812395b1b63a618f38fc5e0ca77ae7df60a",
+    "witnessSHA": "b68c50021a92ff0c0a9f4b3eb48ec05b642d9c57ccd6b54e015bcc68db8c496c"
+  },
+  {
+    "level": 10,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 360,
+    "height": 780,
+    "reduced": true,
+    "actions": 113,
+    "final": "won",
+    "stockSize": 46,
+    "initialSHA": "1ad88505e5b3044f8343df55a225ad1b631a933b5614bdf4ecc66b158c39360b",
+    "witnessSHA": "8ee31b5d1f66e25fd7ebe2a3b0970e126dc67e2ab7911e1f414f1464eb72aebd"
+  },
+  {
+    "level": 11,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 360,
+    "height": 780,
+    "reduced": false,
+    "actions": 142,
+    "final": "won",
+    "stockSize": 62,
+    "initialSHA": "c042a4923370e30c1039b41b3d96760ae3d74fb1a144a676e364e39b385444c3",
+    "witnessSHA": "3b0fd62e80404f9a1aa3299ce2c08d0dc5fbd7aa7ebaa77adc0b47f88d9ee759"
+  },
+  {
+    "level": 12,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 360,
+    "height": 780,
+    "reduced": false,
+    "actions": 60,
+    "final": "won",
+    "stockSize": 24,
+    "initialSHA": "593fc120ad2ff397cb231c547b93619426ab7b83791ab626c13e169777517de3",
+    "witnessSHA": "dbe3dace0e6968e4a548ba36acab58b4db2cabe280eb41588e80395846b3c463"
+  },
+  {
+    "level": 13,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 360,
+    "height": 780,
+    "reduced": true,
+    "actions": 106,
+    "final": "won",
+    "stockSize": 42,
+    "initialSHA": "ae29e774afce88701d22b2c3168c892b5a804afb205db6d04e97a87ab5fa7cd2",
+    "witnessSHA": "f6544ac7aba32bbaeac34425188f8ce92f0a6ba8352f210bc6d89e69af3584a9"
+  },
+  {
+    "level": 14,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 360,
+    "height": 780,
+    "reduced": true,
+    "actions": 108,
+    "final": "won",
+    "stockSize": 42,
+    "initialSHA": "1d97d38c2e4745a77bc0f7ad2d5418dad11148bd19f9b0cf0d9051bb51ff15eb",
+    "witnessSHA": "0d43a3cdd6062945f9ffdc24caf4a4aadfc97a2ff79ee87e7d3c764122c69e51"
+  },
+  {
+    "level": 15,
+    "runtime": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+    "width": 360,
+    "height": 780,
+    "reduced": false,
+    "actions": 110,
+    "final": "won",
+    "stockSize": 42,
+    "initialSHA": "301d0bd7e1f28f6f69b4639770220e49b95a286c88e4874a61c92c398e662b38",
+    "witnessSHA": "9e58ec5cc079cf116cd8a239331dcc60a41a5ba09acab5f7f8e05b8001fb6f60"
+  }
+]

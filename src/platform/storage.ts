@@ -31,9 +31,12 @@ export function decodeSave(raw: string, source: DealSource): Save {
   const v2 = save.rulesVersion === 2 && save.contentVersion === 5 && save.balanceVersion === BALANCE_VERSION;
   const archived = save.rulesVersion === 3 && save.contentVersion === 5 && save.balanceVersion === BALANCE_VERSION;
   const content6 = save.rulesVersion === 3 && save.contentVersion === 6 && save.balanceVersion === BALANCE_VERSION;
+  const content7 = CONTENT_VERSION === 8 && save.rulesVersion === 3 && save.contentVersion === 7 && save.balanceVersion === BALANCE_VERSION;
   const attempts=[save.attempt,...Object.values(save.parked??{})];
-  const prematureIdentity=attempts.some(a=>a&&(save.contentVersion<6&&a.dealId.startsWith('campaign-c6-')||save.contentVersion<7&&a.dealId.startsWith('campaign-c7-')));
-  if (save.schema !== 1 || (!(legacy || previous || v2 || archived || content6) && (save.rulesVersion !== RULES_VERSION || save.contentVersion !== CONTENT_VERSION || save.balanceVersion !== BALANCE_VERSION)) || save.attempt.dealId !== deal.id || prematureIdentity) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
+  const prematureIdentity = attempts.some(a => a && [6, 7, 8].some(revision =>
+    save.contentVersion < revision && a.dealId.startsWith(`campaign-c${revision}-`)));
+  const migration = legacy || previous || v2 || archived || content6 || content7;
+  if (save.schema !== 1 || (!migration && (save.rulesVersion !== RULES_VERSION || save.contentVersion !== CONTENT_VERSION || save.balanceVersion !== BALANCE_VERSION)) || save.attempt.dealId !== deal.id || prematureIdentity) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
   // Tag every active/parked board before advancing the envelope. Undo may never change rules.
   const previousRules = save.rulesVersion < 3;
   for (const attempt of [save.attempt, ...Object.values(save.parked ?? {})]) {
@@ -46,7 +49,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
     }
   }
   if (legacy || previous) save.profile.jokers ??= BALANCE.initialJokers;
-  if (legacy || previous || v2 || archived || content6) { save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
+  if (migration) { save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
   assertBoard(save.attempt.board, deal);
   if (!natural(save.revision) || typeof save.attempt.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(save.attempt.id)) throw Error('Повреждён номер сохранения');
   for (const value of [save.profile.coins, save.profile.hints, save.profile.undos, save.profile.jokers, save.profile.wins, save.attempt.streak.coins]) if (!natural(value)) throw Error('Повреждён профиль');

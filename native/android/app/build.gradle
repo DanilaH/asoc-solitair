@@ -7,8 +7,8 @@ android {
         applicationId "com.danilah.asocsolitair"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 30
-        versionName "0.18.3"
+        versionCode 31
+        versionName "0.19.0"
         manifestPlaceholders = [asocAppLabel: '@string/app_name']
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {

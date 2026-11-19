@@ -1,3 +1,7 @@
+# Content 8 reference slice — 0.19.0
+
+The owner rejected C7 balance and requested an initial reference-sized playtest before moving on to all 80 levels. [The Content 8 slice report](qa/content-v8/README.md) tracks the new playable levels 6–15, the 31-position evidence matrix, the audit of all 80 C7 starts and the checked alternate routes. Freeze status: awaiting the owner's gameplay evaluation.
+
 # Android playtest feedback — 0.18.3
 
 Android playtest feedback on 0.18.2 is tracked in [the preview report](qa/ANDROID_PLAYTEST_0_18_3.md). Presentation and native banner geometry use the same Content 7. The opening stock audit is the starting point for any later content revision.

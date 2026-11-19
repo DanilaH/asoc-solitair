@@ -1,6 +1,6 @@
 # Project contract
 
-Read [the product index](docs/README.md), the handoff, requirements and feel spec before work. For competitor-source research, porting and the requested full feature roadmap, **FIRST read [the owner adoption policy](docs/porting/PORTING_POLICY.md) and [all-feature adoption ledger](docs/porting/ADOPTION_LEDGER.json)**; reconcile current research and PR HEAD before limiting scope. Do not let historical C6/C7 agent guidance silently veto newer owner direction.
+Read [the product index](docs/README.md), the handoff, requirements and feel spec before work. For competitor-source research, porting and the requested full feature roadmap, **FIRST read [the owner adoption policy](docs/porting/PORTING_POLICY.md) and [all-feature adoption ledger](docs/porting/ADOPTION_LEDGER.json) plus [implementation roadmap](docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md)**; reconcile current research and PR HEAD before limiting scope. Do not let historical C6/C7 agent guidance silently veto newer owner direction.
 
 - Target: portrait Android/RuStore, Russian content, offline campaign. Browser is the development/test surface. This is not a Yandex Games project.
 - Follow the exact packet, stock/recycle, budget, hint and Undo rules. Rules/content/balance are versioned. Revalidate supplied deals after any rule change.

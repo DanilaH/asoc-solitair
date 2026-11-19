@@ -1,0 +1,902 @@
+{
+  "schema": "reference-feature-inventory-v1",
+  "id": "association-solitaire-hitapps-azur-unico-20261119",
+  "sourceCatalog": "https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/README.md",
+  "scope": "Independent 2026-11-19 reread of source packaging/IAP, S1/S2 video, content and UI native-metadata reports. Includes evidence corrections and sub-feature decomposition; original remote runtime/active cohort still UNKNOWN.",
+  "coverageStatus": "RESEARCHED_CORPUS_RECONCILED_NOT_VENDOR_EXHAUSTIVE",
+  "producer": "DanilaH/mini-games-kit",
+  "features": [
+    {
+      "id": "hitapps-stock-dealer",
+      "name": "Hitapps seeded stock/tableau layout from category/word input",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-hitapps-plain-replay/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "EmbeddedRandom + 10 whole-list passes + ordinary placement validated in conditional model; original ARM32 final post-feature board NOT captured"
+    },
+    {
+      "id": "hitapps-level-wave",
+      "name": "Hitapps level-category/card/stock counts and five-position waves",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-level-map/README.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "content",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Source EN LevelBundle1–31 sizes/card/stock, not original live post-shuffle layouts; after31 exact default map UNKNOWN"
+    },
+    {
+      "id": "hitapps-candidate-priority",
+      "name": "Hitapps simulation-based Priority candidate selection",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-hitapps-candidate-selection/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native Priority accepts bot wins closest to target with tolerance; full solver strategy and live selected seed NOT captured"
+    },
+    {
+      "id": "hitapps-dynamic-difficulty",
+      "name": "Hitapps outcome-window difficulty adjustment and percent move penalty",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-difficulty/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "balance",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native 10-entry outcome history and penalty→budget confirmed; active coefficients/winRate range and live cohort UNKNOWN"
+    },
+    {
+      "id": "hitapps-easy-deals",
+      "name": "Hitapps EasyDeals loss-threshold relief policy",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-hitapps-static/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "balance",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native evaluation of loss thresholds/isRandom/isStableMoves and special Paywall branch; active difficulty config UNKNOWN"
+    },
+    {
+      "id": "hitapps-equality-paywall",
+      "name": "Hitapps NoPossibleMoves/Equality special candidate selection",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-hitapps-candidate-selection/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "monetization",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Conditional late bot-failure >=80% of move budget, NOT proof mathematically impossible deal or live activation"
+    },
+    {
+      "id": "hitapps-paywall-segmentation",
+      "name": "Hitapps eligibility gating and payer status groups",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-hitapps-paywall-activation/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "monetization",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Four eligible native conditions and payer groups; remote payerTypeList/minLevel/frequency and actual product purchase history UNKNOWN"
+    },
+    {
+      "id": "hitapps-adbreak",
+      "name": "Hitapps in-level interstitial trigger/cooldown/per-difficulty caps",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "ads",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native per-level/per-difficulty trigger and cap guards exist; in-game actual placement frequency from live remote config UNKNOWN"
+    },
+    {
+      "id": "hitapps-stock-restore",
+      "name": "Hitapps free-then-priced stock restoration",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-hitapps-static/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "help",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "First free then base+(n-1)*increment formula proven, real base/increment/reset trigger UNKNOWN"
+    },
+    {
+      "id": "hitapps-revive-offers",
+      "name": "Hitapps extra moves offer policy by purchase segment, cap and cooldown",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "monetization",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Segment/cooldown/cap product config names present; exact active revive grant offers/click behavior not observed"
+    },
+    {
+      "id": "azur-coin-moves",
+      "name": "AZUR coin-paid extra moves on exhausted board",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-loss-ads-flow/AZUR_NATIVE_PASS_2026-11-18.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "monetization",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Native confirmed spend coins then add positive moves; 900/10 local defaults subject to override, not live prices"
+    },
+    {
+      "id": "azur-rewarded-moves",
+      "name": "AZUR rewarded-earned extra moves on exhausted board",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-loss-ads-flow/AZUR_NATIVE_PASS_2026-11-18.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "monetization",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Native successful earned callback to BuyMoves branch; no real rewarded SDK device observation, 5 moves is local default"
+    },
+    {
+      "id": "azur-extra-foundation",
+      "name": "AZUR additional upper foundation offer for currency/rewarded",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "help",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Video shows offered extra upper slot for 500 coins/video; purchase and actual slot effect NOT observed"
+    },
+    {
+      "id": "azur-win-multiplier",
+      "name": "AZUR optional post-win x3/x5 rewarded multiplier",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "monetization",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Video shows x3 and temporary x5 CTA; successful earned ad or multiplier scope NOT observed"
+    },
+    {
+      "id": "hitapps-golden-cards",
+      "name": "Hitapps conditional Gold Rush golden-card insertion and event",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-final-phase/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core+events",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Gold card insertion is native Final-phase gated by CascadeEvents; actual Gold Rush config and final board UNKNOWN"
+    },
+    {
+      "id": "hitapps-ordered-category",
+      "name": "Hitapps ordered-category special rule",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-final-phase/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native ordered-category feature applier and observed Hitapps level49 I/II/III/IV behavior; original live unlock schedule UNKNOWN"
+    },
+    {
+      "id": "hitapps-lockers",
+      "name": "Hitapps key/lock patterns and feature-seeded application",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native Lockers Shuffle-phase pattern/feature seed; original player-visible placement only partially sampled"
+    },
+    {
+      "id": "hitapps-frozen",
+      "name": "Hitapps frozen card modifier",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native FrozenCard applier conditions and Failed bits found; exact activation/postFinal board UNKNOWN"
+    },
+    {
+      "id": "hitapps-bound",
+      "name": "Hitapps bound card modifier",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native BoundCard applier conditions and Failed bits found; exact activation/postFinal board UNKNOWN"
+    },
+    {
+      "id": "hitapps-magnet-hammer",
+      "name": "Hitapps booster-in-stock Magnet and Hammer insertion",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-final-phase/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "help",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native StarterBooster inserts Magnet/Hammer into stock after simulation using distinct Unity RNG; final stock target and behavior UNKNOWN"
+    },
+    {
+      "id": "azur-shuffle-helper",
+      "name": "AZUR later unlockable Shuffle helper",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "help",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "S2 shows level10 unlock indication, actual Shuffle action/redeal and native logic NOT observed"
+    },
+    {
+      "id": "hitapps-joker",
+      "name": "Hitapps Joker on existing lower tableau",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "help",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "S1 player video purchase and placement on existing column; full cost/grant lifecycle and edge states unknown"
+    },
+    {
+      "id": "hitapps-ghost-hint",
+      "name": "Hitapps ghost path hint with player-executed action",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "help",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "S1 ghost card movement visibly separate from player's executed transfer; original algorithm for suggested move UNKNOWN"
+    },
+    {
+      "id": "azur-action-ftue",
+      "name": "AZUR staged action-based first-use teaching and helper unlocks",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "ftue",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "S2 action-gated initial onboarding and demo Hint infinite/free state; general first-use schedule varies by build"
+    },
+    {
+      "id": "azur-difficulty-label",
+      "name": "AZUR source difficulty-to-show and visible hard level UI",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "ftue",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "AZUR LevelConfig Difficulty-to-show verified plus video Hard label; exact scoring formula or Hitapps type mapping UNKNOWN"
+    },
+    {
+      "id": "azur-topic-rotation",
+      "name": "AZUR independent theme scheduling from repeated layout templates",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "content",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "AZUR 2000-row level config shows zero adjacent topic ID overlap, min162-level reappearance; actual topic content may be remote"
+    },
+    {
+      "id": "hitapps-puzzle-event",
+      "name": "Hitapps picture-fragment collection/reveal reward event",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native 6-piece timed picture-event earning/spending/claim schema and video; active schedule/pricing unknown"
+    },
+    {
+      "id": "azur-daily-tasks",
+      "name": "AZUR task kinds, daily tasks and weekly milestones",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "meta",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "16 task kinds and nine rewards from metadata; 4/day 7day are local defaults, active schedules/payouts unknown"
+    },
+    {
+      "id": "azur-daily-bonus",
+      "name": "AZUR day-keyed card-choice daily bonus",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "meta",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Day-keyed card-choice state and prefab confirmed; live reward odds/claims not replayed"
+    },
+    {
+      "id": "hitapps-weekend-race",
+      "name": "Hitapps staged Weekend Race with bot parameters",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Race/bot config and visible event, synchronous human multiplayer NOT proven and bot results vary by config"
+    },
+    {
+      "id": "hitapps-lava-quest",
+      "name": "Hitapps Lava Quest first-try win streak participant presentation",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "S1 shows stage participants and seven first-try wins requirement; actual participant reality/live payouts not verified"
+    },
+    {
+      "id": "hitapps-daily-rewards",
+      "name": "Hitapps daily login/claim reward service",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native date-indexed daily reward getter/claim, visible S1 7-day calendar; server time/rate and actual grant rules unknown"
+    },
+    {
+      "id": "hitapps-win-streak",
+      "name": "Hitapps consecutive-win milestone event",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native win-streak progress/failure/claim state, live reward amounts/schedule unknown"
+    },
+    {
+      "id": "hitapps-meta-regions",
+      "name": "Hitapps stars/buildings/regions progression",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native meta-unlock/region building/star model, asset/remote activation and complete economy unknown"
+    },
+    {
+      "id": "hitapps-piggy-bank",
+      "name": "Hitapps accumulated purchasable piggy-bank rewards",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "S1 piggy bank UI/time and saved currency visible, actual IAP purchase fulfillment/refund unobserved"
+    },
+    {
+      "id": "hitapps-lives",
+      "name": "Hitapps lives and unlimited-lives states",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "S1 5 lives and temporary infinite-life reward observed, full loss/regen policy unknown"
+    },
+    {
+      "id": "azur-play-pass",
+      "name": "AZUR Play Pass premium/free rewards",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "meta",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "AZUR PlayPass UI prefab/config and IAP Gold Pass type0 present, real premium purchase and season claims unverified"
+    },
+    {
+      "id": "hitapps-rotating-offers",
+      "name": "Hitapps starter/event/IAP/offer family and timed eligibility",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "commerce",
+      "originalBuild": "Hitapps 1.26.2 or cross-game research",
+      "knownLimit": "Native offer family configs/thresholds exist, exact real eligible offer triggers and payouts UNKNOWN"
+    },
+    {
+      "id": "unico-win-and-task-streak",
+      "name": "Unico distinct win streak versus task streak progression",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "meta",
+      "originalBuild": "Unico video S3 (build unverified)",
+      "knownLimit": "S3 distinct task and win streak screens; win-loss resets and grants not exercised"
+    },
+    {
+      "id": "ui-motion-audio-coin",
+      "name": "Hitapps/AZUR card movement, sound, completion, coin flights, feedback",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-ui-feel-native/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "feel",
+      "originalBuild": "AZUR 1.3.3.8 metadata and Hitapps/AZUR/Unico recorded UX comparison",
+      "knownLimit": "The cited AZUR audit verifies 10 UI/audio feel type schemas via IL2CPP metadata, NOT executable native timing/body parity; phones untested"
+    },
+    {
+      "id": "hitapps-ingame-streak",
+      "name": "Hitapps move/collection in-game coin streak",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "economy",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Streak 4→2,5→3,6→4,7→5 is verified from video; edge cases Undo and native coin route not fully replayed"
+    },
+    {
+      "id": "hitapps-gold-rush-event",
+      "name": "Hitapps Gold Rush timed golden-card collection event",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "events",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "First-attempt x2 and 90-card/20000 visible example, not universal active event balance"
+    },
+    {
+      "id": "hitapps-puzzle-gallery",
+      "name": "Hitapps Puzzle Journey multi-picture gallery progression",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Gallery with six images in video; separate identity from timed PuzzleEvent not source-joined"
+    },
+    {
+      "id": "hitapps-cascade-events",
+      "name": "Hitapps cascade-event orchestration and event hooks",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "events",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Native golden applier uses CascadeEventsHook; no full scheduler/remote config or cadence"
+    },
+    {
+      "id": "hitapps-digging-event",
+      "name": "Hitapps Digging event system",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "events",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Named module/config is not activation or observed minigame rules"
+    },
+    {
+      "id": "hitapps-lucky-wheel",
+      "name": "Hitapps LuckyWheel prize system",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Named module only; odds, rewards and presentation unknown"
+    },
+    {
+      "id": "hitapps-endless-treasure",
+      "name": "Hitapps EndlessTreasure event system",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Named module only; rules, stage caps and active status unknown"
+    },
+    {
+      "id": "hitapps-birthday-offer",
+      "name": "Hitapps BirthdayOffer contextual sale",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "commerce",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Offer name/config present; triggering conditions and products unknown"
+    },
+    {
+      "id": "hitapps-decoy-offer",
+      "name": "Hitapps DecoyOffer contextual sale",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "commerce",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Offer config present; real offer UI and eligibility unknown"
+    },
+    {
+      "id": "hitapps-starter-offer",
+      "name": "Hitapps StarterOffer first-time offer",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "commerce",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Config present; actual pricing, eligibility and available IAP unknown"
+    },
+    {
+      "id": "hitapps-meta-prewarm",
+      "name": "Hitapps pre-unlock/prewarm gate for meta screens",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Source comparison currentLevel vs configuredUnlockLevel−1; actual unlock values unknown"
+    },
+    {
+      "id": "hitapps-daily-puzzle",
+      "name": "Hitapps daily puzzle availability — NOT yet verified (distinct from proven DailyRewards)",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "UNKNOWN",
+      "surface": "meta",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "S1 video and static Hitapps research prove DailyRewards, not a separately playable daily puzzle. Treat this as an evidence question; observed Unico daily puzzle is a separate verified feature."
+    },
+    {
+      "id": "hitapps-win-rewarded-offer",
+      "name": "Hitapps WinScreenRvReward offer policy",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "monetization",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Config exists; actual payout formula/offer trigger and live activity unknown"
+    },
+    {
+      "id": "hitapps-inapp-shop",
+      "name": "Hitapps shop and purchasable booster/soft currency offers",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "commerce",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "ShopConfig/SoftCurrencyConfig/StarterOfferConfig compiled; KYC/store prices and activation unknown"
+    },
+    {
+      "id": "hitapps-ingame-banner",
+      "name": "Hitapps gameplay banner advertising placement",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "ads",
+      "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
+      "knownLimit": "Banner seen during gameplay; placement/eligibility/SDK revenue unknown"
+    },
+    {
+      "id": "azur-card-dictionary",
+      "name": "AZUR word-definition card reader and unlock",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "ux",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Dictionary appears level4 in video; text/word catalog is protected content, don't copy"
+    },
+    {
+      "id": "azur-localized-move-budget",
+      "name": "AZUR locale-dependent move adjustment path",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "evidenceTier": "METADATA",
+      "surface": "balance",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "GetAdjustedMovesForCurrentLocale metadata; calculation/live use unknown"
+    },
+    {
+      "id": "azur-stock-side-setting",
+      "name": "AZUR bottom/right deck layout toggle without game reset",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "ux",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Real video shows intact state after change; exact geometry adaptive banner behavior varies"
+    },
+    {
+      "id": "azur-remote-level-overrides",
+      "name": "AZUR LevelConfigManager ApplyRemoteOverrides / server content assignments",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "content",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Remote handlers exist; no actual response/config captured"
+    },
+    {
+      "id": "azur-combo-streak",
+      "name": "AZUR ComboStreak progression",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "meta",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Official changelog confirms feature category; exact event rules not reproduced"
+    },
+    {
+      "id": "azur-unlimited-moves-offer",
+      "name": "AZUR unlimited-moves continuation option",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-loss-ads-flow/AZUR_NATIVE_PASS_2026-11-18.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "monetization",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "OutOfMovesPanel has unlimited handler and optional three-second restart reveal default; entitlement lifetime unverified"
+    },
+    {
+      "id": "azur-offer-campaign",
+      "name": "AZUR OfferCampaignService level/date/context-gated commercial campaigns",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "commerce",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "NotifyTrigger/CanShow names; actual trigger logic and remote active campaign unknown"
+    },
+    {
+      "id": "azur-fullscreen-ads-clock",
+      "name": "AZUR in-level/interstitial start and shared fullscreen cooldown clock",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-loss-ads-flow/AZUR_NATIVE_PASS_2026-11-18.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "ads",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Compiled defaults level3 and 120s; onAdShown updates clock, not proof of actual placement/frequency"
+    },
+    {
+      "id": "azur-ad-revenue-attribution",
+      "name": "AZUR MobileAdAdapter/AppsFlyer impression-level revenue callbacks",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "ads",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "OnRevenuePaid interfaces present; no live revenue event observed"
+    },
+    {
+      "id": "azur-cosmetics",
+      "name": "AZUR card backs, visual settings and themed appearance rewards",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "meta",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Back rewards and UI bundles/source enum present; full cosmetics catalog not audited"
+    },
+    {
+      "id": "unico-coffee-break",
+      "name": "Unico Coffee Break mid-party interruption and +3 coin display",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "ads",
+      "originalBuild": "Unico recorded gameplay (version unavailable)",
+      "knownLimit": "Video shows in-game break with +3 coin after return; cannot equate with opt-in rewarded"
+    },
+    {
+      "id": "unico-daily-fortune",
+      "name": "Unico Daily Fortune card/reward selection with extra rewarded try",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "meta",
+      "originalBuild": "Unico recorded gameplay (version unavailable)",
+      "knownLimit": "Video shows option; reward probability and redemption not verified"
+    },
+    {
+      "id": "unico-rewarded-theme",
+      "name": "Unico seasonal Halloween theme via video offer",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "meta",
+      "originalBuild": "Unico recorded gameplay (version unavailable)",
+      "knownLimit": "Try Now with video badge observed; exact entitlement and ad callback unknown"
+    },
+    {
+      "id": "unico-vip",
+      "name": "Unico VIP membership/premium offers",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "commerce",
+      "originalBuild": "Unico recorded gameplay (version unavailable)",
+      "knownLimit": "VIP offer in video but no successful payment/receipt or platform policy"
+    },
+    {
+      "id": "unico-redeal-restart",
+      "name": "Unico failure Retry deals a different board with same topics",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "core",
+      "originalBuild": "Unico recorded gameplay (version unavailable)",
+      "knownLimit": "Video shows changed visible cards and budget on next daily attempt; exact randomization/relief cause unknown"
+    },
+    {
+      "id": "unico-double-reward",
+      "name": "Unico post-win Double It reward action",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "monetization",
+      "originalBuild": "Unico recorded gameplay (version unavailable)",
+      "knownLimit": "Button on result; actual rewarded grant/bonus multiplication not shown"
+    },
+    {
+      "id": "unico-daily-puzzles",
+      "name": "Unico date-based daily challenge and calendar",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "meta",
+      "originalBuild": "Unico recorded gameplay (version unavailable)",
+      "knownLimit": "Daily puzzle observed; actual recurring bank/rotation unknown"
+    },
+    {
+      "id": "unico-loss-dialog",
+      "name": "Unico no-moves result with video/coins/Retry options",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "ux",
+      "originalBuild": "Unico recorded gameplay (version unavailable)",
+      "knownLimit": "Screen seen; exactly +10 for 1500 or video in sample, not default for our economy"
+    },
+    {
+      "id": "azur-structured-long-campaign",
+      "name": "AZUR 2000-stage structure with seven-step late-cycle geometry and semantic rotation",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/BUDGET_MODEL.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "content",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "2000 levels and 551–2000 seven-position repetition of four shapes; dynamic stock seed not reconstructed"
+    },
+    {
+      "id": "azur-purchase-receipts",
+      "name": "AZUR purchase confirmation and processed-transaction persistence",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "commerce",
+      "originalBuild": "AZUR 1.3.3.8",
+      "knownLimit": "Handler method names exist but crash-atomic reward persistence not proven"
+    },
+    {
+      "id": "unico-themes-and-skins",
+      "name": "Unico themes Default/Coral/Earth and unlock progression",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "meta",
+      "originalBuild": "Unico recorded gameplay (version unavailable)",
+      "knownLimit": "Visible theme selection; store unlock and permanent grant conditions unknown"
+    },
+    {
+      "id": "azur-iap-product-catalog",
+      "name": "AZUR authenticated local 41-SKU product catalog: consumer/nonconsumer types",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "commerce",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "41 local product IDs, 28 consumable/13 nonconsumable; empty payout/storeID arrays; no subscription SKU in this asset, not proof of live SKU availability"
+    },
+    {
+      "id": "azur-iap-helper-ladder",
+      "name": "AZUR five-tier SKU offer family for Hint/Undo/Definition/Boosters",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "commerce",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Four product families each have Min/Min2/More/NoAds/NoAds+More tiers; live UI/amount granted/buy rates UNKNOWN"
+    },
+    {
+      "id": "azur-iap-no-ads",
+      "name": "AZUR standalone and mixed-bundle ad-removal entitlements",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "commerce",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Two standalone No Ads entries plus NoAds/NoAds+More helper SKU titles; actual entitlement scope/callbacks not traced"
+    },
+    {
+      "id": "azur-iap-coin-packs",
+      "name": "AZUR eight coin package product tiers",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "commerce",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Eight local packaged denominations; price fields are local numeric values not store prices or legal product access"
+    },
+    {
+      "id": "azur-iap-coin-offer-series",
+      "name": "AZUR Coins Offer 1 Time / Next1 / Next2 SKU series",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "commerce",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Three distinct named SKUs; labels do not prove transition order, personalized pricing or activation"
+    },
+    {
+      "id": "azur-iap-premium-bundles",
+      "name": "AZUR Silver/Gold/Diamond premium item bundles",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "commerce",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Three product IDs verified; contents, redemption and eligibility are UNKNOWN"
+    },
+    {
+      "id": "azur-iap-welcome-offer",
+      "name": "AZUR Welcome Offer SKU separate from Hitapps starter offer",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "commerce",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "One local product ID; runtime onboarding offer and granted rewards UNKNOWN"
+    },
+    {
+      "id": "azur-iap-unlimited-moves-tiers",
+      "name": "AZUR Unlimited Moves/+ /++ SKU ladder (product catalog)",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "commerce",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Three local products; actual purchased entitlement duration and unlimited-moves gameplay semantics not recovered"
+    },
+    {
+      "id": "azur-definition-consumable",
+      "name": "AZUR dictionary/Definition as separately stocked consumable assistance",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "help",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "AZUR video shows reader and finite/intro unlimited access; exact price and charge lifecycle not isolated; IAP catalog confirms Definition product family"
+    },
+    {
+      "id": "azur-free-shop-coin-claim",
+      "name": "AZUR shop free 200-coin reward claim",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "economy",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Video shows 845→1045 after free store offer; ad watched/eligibility/cooldown not shown"
+    },
+    {
+      "id": "azur-variable-category-sizes",
+      "name": "AZUR unequal category lengths inside a single deal",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-14-gameplay/deep/references/S2_FINDINGS.txt",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "core",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Recorded S2 level2 includes 4/5/5/7 category sizes, contrasted with uniform current campaign groups; not a claim about universal distribution"
+    },
+    {
+      "id": "hitapps-mixed-word-image-cards",
+      "name": "Hitapps mixed word/text and image cards in the same association format",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "content",
+      "originalBuild": "Hitapps Solitaire Associations Journey 1.26.2/code3742 (S1 player recording; native source version not independently aligned to video)",
+      "knownLimit": "Video confirms examples in one session, not image coverage/editorial source for every category"
+    },
+    {
+      "id": "hitapps-language-change-restart",
+      "name": "Hitapps language switch restarts puzzle while keeping spent wallet/helpers",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "ux",
+      "originalBuild": "Hitapps Solitaire Associations Journey 1.26.2/code3742 (S1 player recording; native source version not independently aligned to video)",
+      "knownLimit": "S1 shows Russian switch and unchanged spent tokens; exact save migrations and multi-locale content policy UNKNOWN"
+    },
+    {
+      "id": "hitapps-win-multiresource-payout",
+      "name": "Hitapps simultaneous win resources: coins, keys, piggy-bank and puzzle fragments",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "economy",
+      "originalBuild": "Hitapps Solitaire Associations Journey 1.26.2/code3742 (S1 player recording; native source version not independently aligned to video)",
+      "knownLimit": "One result shows +50 coins, +5 keys, +150 piggy, +2 puzzle fragments; no universal reward formula or ledger dedupe proven"
+    },
+    {
+      "id": "azur-remaining-moves-coin-bonus",
+      "name": "AZUR leftover moves to reward currency conversion at victory",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "economy",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Three observed wins imply 5 coins per remaining move; inference from displayed balances not native backend formula"
+    },
+    {
+      "id": "azur-card-animation-controller",
+      "name": "AZUR per-card motion: move/flip/shake/click and cancellation",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-ui-feel-native/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "feel",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Exact CardAnimator methods/fields verified in IL2CPP metadata only; no native body timings or source-behavior parity"
+    },
+    {
+      "id": "azur-coin-flight-animator",
+      "name": "AZUR inbound/outbound coin flights with timeout and landing feedback",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-ui-feel-native/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "feel",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "CoinsFlyAnimator method/field names verified; numerical durations and actual animation ownership not recovered"
+    },
+    {
+      "id": "azur-victory-reward-sequencer",
+      "name": "AZUR victory transition, pending claims, reward flights and next-level reveal",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-ui-feel-native/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "feel",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "VictoryPanelController lifecycle method names verified; not proof of native execution ordering or actual timing"
+    },
+    {
+      "id": "azur-button-haptic-feedback",
+      "name": "AZUR separate button press/exit scale and Light/Medium/Heavy haptic feedback",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-ui-feel-native/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "feel",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "ButtonScaleTween/WorldPressScaleTween/AudioHapticService metadata only, not native measured tactile latency"
+    },
+    {
+      "id": "azur-shuffle-animation-controller",
+      "name": "AZUR center rotation/hold animation for Shuffle helper",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-ui-feel-native/README.md",
+      "evidenceTier": "METADATA",
+      "surface": "feel",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "ShuffleAnimationController timing fields verified; helper's actual redeal algorithm and visuals not replayed"
+    },
+    {
+      "id": "hitapps-invalid-transfer-feedback",
+      "name": "Hitapps invalid target explanation with no hidden move penalty",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "ux",
+      "originalBuild": "Hitapps Solitaire Associations Journey 1.26.2/code3742 (S1 player recording; native source version not independently aligned to video)",
+      "knownLimit": "S1 invalid drop shows message without changing budget in sampled scene; not all invalid input classes independently observed"
+    },
+    {
+      "id": "azur-locked-helper-discovery",
+      "name": "AZUR helper buttons explain required unlock level when tapped early",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "ftue",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "S2 pre-unlock Undo and Shuffle button behavior observed; actual helpful ability use not exercised in sample"
+    },
+    {
+      "id": "azur-localized-definition-packs",
+      "name": "AZUR per-locale Addressables dictionary packs and incremental topic streaming",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/README.md",
+      "evidenceTier": "ASSET_VERIFIED",
+      "surface": "content",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "36 locales and 468 local definition bundles; remote address list is developer HostingService, not observed live CDN; ownership/translation QA pending"
+    }
+  ],
+  "auditRevision": "2026-11-19-independent-falsification-pass3"
+}

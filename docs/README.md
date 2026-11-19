@@ -1,3 +1,5 @@
+**Норматив переноса всего исследованного (19.11):** [owner-governed reference adoption policy](porting/PORTING_POLICY.md) · [ADOPTION_LEDGER.json: 40 mechanisms, zero silent exclusions](porting/ADOPTION_LEDGER.json). При анализе исходных игр и планировании переноса сначала читать этот контракт и проверить полноту source→consumer. Исторические C6/C7 запреты на альбом/гонки/Gold/Paywall **не являются действующими запретами дальнейшей разработки**.
+
 Current work: [0.17/content6 opening fifteen](content/OPENING_V6.md). Versioned content, existing-rule pacing, structural/oracle checks and owner playtest; old attempts and0.16UI/audio/performance preserved. Full CI/APK acceptance is still pending.
 
 # Product sources

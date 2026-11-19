@@ -2,7 +2,7 @@
 
 **19 ноября 2026 · Owner scope: full reference-system adoption, staged implementation · research/program document, NO game runtime edits in this PR.**
 
-This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/audit/solitaire-independent-coverage-correction-20261119/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.
+This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/7f91abfd824162780a6567c6823b95864142957c/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.
 
 **Coverage at this reviewed snapshot:** **99 feature IDs**, 27 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 50 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 10 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
 
@@ -188,7 +188,7 @@ PuzzleEvent/Puzzle Journey, daily tasks, daily bonus, daily reward, streaks, cos
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
 | `hitapps-puzzle-event` | `ROADMAPPED` | Prototype original 6-piece picture reward on actual wins/daily; assess visual payoff |
-| `azur-daily-tasks` | `ROADMAPPED` | Design distinct earned 2–4 daily objectives and seven-day rewards with save identity |
+| `azur-daily-tasks` | `ROADMAPPED` | Inventory ALL 16 original DailyTask kinds and 9 reward kinds (engagement, helper-use, spend/purchase), with per-kind evidence and trigger; implement in owner-approved stages without silently dropping commercially oriented task types |
 | `azur-daily-bonus` | `ROADMAPPED` | Prototype optional daily card-choice mini reward; measure friction, scope and locale dates |
 | `hitapps-daily-rewards` | `ROADMAPPED` | Compare separate login reward against existing daily; propose value and dedup if selected |
 | `hitapps-win-streak` | `ROADMAPPED` | Define streak failure/reset milestone and test against current cycle without double credits |

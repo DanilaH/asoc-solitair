@@ -3,7 +3,7 @@ import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-ki
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
 import { campaignDeals, findDeal } from './content/campaign';
-import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, markTutorial, seenTutorial } from './domain/progression';
+import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { dailyForDay } from './content/daily';
 import { switchMode } from './domain/sessions';
@@ -146,7 +146,7 @@ try {
   deal = findDeal(save.attempt.dealId)!;
   let requestedLevel: number | undefined;
   let difficultyRequest: { level: number; returnTo: 'result' | 'picker' | undefined } | undefined;
-  let skippedLesson: string | undefined;
+
   let activeRule: RuleIntro | undefined;
   let unlockChoice: 'palette' | 'cardBack' | undefined;
   const dismissedRules = new Set<RuleIntro>();
@@ -200,6 +200,25 @@ try {
     else { const button = $(`#${helper}`); button.classList.remove('bump'); void button.offsetWidth; button.classList.add('bump'); }
   }
   let activeHint: { key: string; action: BoardCommand } | undefined;
+  let lessonSave: Save | undefined;
+  let instruction: ReturnType<typeof lesson>;
+  const currentLesson = () => {
+    if (save !== lessonSave) { lessonSave = save; instruction = lesson(save, deal); }
+    return instruction;
+  };
+  const allowsLesson = (command: Command) => command.type === 'restart' || currentLesson()?.accepts?.(command) !== false;
+  let pendingDealSound: string | undefined;
+  function playDealSound() {
+    if (pendingDealSound !== save.attempt.id || screen !== 'game' || runtime.activity.isBlocked() || navigator.userActivation?.hasBeenActive === false) return;
+    if (runtime.play('deal') || !save.settings.sfx) pendingDealSound = undefined;
+  }
+  function announceDeal() {
+    pendingDealSound = save.attempt.id;
+    playDealSound();
+    void runtime.soundReady.then(playDealSound);
+  }
+  window.addEventListener('pointerup', playDealSound, { ...domOptions, capture: true });
+  window.addEventListener('keydown', playDealSound, domOptions);
   const repeatHint = () => activeHint?.key === boardKey(save.attempt.board) ? activeHint.action : save.attempt.lessonHint;
   let hintSequence = 0;
   let pendingHint: Pick<HintRequest, 'requestId' | 'revision' | 'attemptId'> & { dealId: string } | undefined;
@@ -225,7 +244,6 @@ try {
     const jokerUnlocked = helperUnlocked(save, 'joker', deal);
     $('#joker').hidden = !jokerUnlocked; $('#joker-offer').hidden = !jokerUnlocked || Boolean(helperFocus && helperFocus !== 'joker');
     $('#joker-count').textContent = String(save.profile.jokers); $('#joker-stock').textContent = String(save.profile.jokers);
-    $<HTMLButtonElement>('#joker').disabled = board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving;
     $<HTMLButtonElement>('#buy-joker').disabled = serviceBusy || saving || save.profile.coins < BALANCE.helperPrices.joker;
     $<HTMLButtonElement>('#wallet-open').disabled = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
     $('.wallet-plus').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
@@ -239,11 +257,13 @@ try {
     $('#app').dataset.deckEdge = hasDeck ? save.settings.deckSide ?? 'right' : 'right';
     $('#app').dataset.deckRow = hasDeck ? save.settings.deckPosition ?? 'top' : 'top';
     positionDeckTools();
-    const instruction = screen === 'game' && skippedLesson !== save.attempt.id ? lesson(save, deal) : undefined;
+    const instruction = screen === 'game' ? currentLesson() : undefined;
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
       ? 'Коснитесь одного из отмеченных столбцов, чтобы поставить Джокера.' : instruction?.copy;
     if ($('#lesson-copy').textContent !== (note ?? '')) $('#lesson-copy').textContent = note ?? '';
     $('#lesson-note').hidden = !note;
+    $<HTMLButtonElement>('#joker').disabled = board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving ||
+      Boolean(instruction?.accepts && instruction.attention !== 'joker');
     $('#joker').classList.toggle('attention', instruction?.attention === 'joker');
     $('#hint').classList.toggle('attention', instruction?.attention === 'hint');
     $('#undo').classList.toggle('attention', instruction?.attention === 'undo');
@@ -259,8 +279,8 @@ try {
     $('#hint').setAttribute('aria-busy', String(searching));
     $('#hint').setAttribute('aria-label', searching ? 'Ищу подсказку' : replayHint ? 'Повторить подсказку бесплатно' : 'Подсказка');
     $('#hint-count').textContent = String(save.profile.hints); $('#undo-count').textContent = String(save.profile.undos);
-    $<HTMLButtonElement>('#hint').disabled = board.phase !== 'playing' || Boolean(workerDeadline) || saving;
-    $<HTMLButtonElement>('#undo').disabled = board.phase === 'won' || !save.attempt.undo.length || saving;
+    $<HTMLButtonElement>('#hint').disabled = board.phase !== 'playing' || Boolean(workerDeadline) || saving || Boolean(instruction?.accepts && instruction.attention !== 'hint' && !replayHint);
+    $<HTMLButtonElement>('#undo').disabled = board.phase === 'won' || !save.attempt.undo.length || saving || Boolean(instruction?.accepts && instruction.attention !== 'undo');
     const tier = STREAK[save.attempt.streak.tier];
     const streak = $('#streak');
     if (streak.children.length !== tier.count) streak.replaceChildren(...Array.from({ length: tier.count }, () => document.createElement('i')));
@@ -351,6 +371,11 @@ try {
   }
   async function execute(cmd: Command) {
     if (!alive || saving || screen !== 'game' || runtime.activity.isBlocked()) return false;
+    if (!allowsLesson(cmd)) {
+      scene?.cancel();
+      showGuidance();
+      return false;
+    }
     const progressBefore = save.attempt.streak.progress, movesBefore = save.attempt.board.movesLeft;
     let result: Result | undefined;
     let started = false, finished = false, coveredWaste = false;
@@ -381,7 +406,7 @@ try {
     if (!result) return false;
     if (result.accepted) {
       if (started) { telemetry.track('level_start'); if (save.attempt.daily) telemetry.track('daily_start'); }
-      if (cmd.type === 'restart') telemetry.track('level_restart');
+      if (cmd.type === 'restart') { telemetry.track('level_restart'); announceDeal(); }
       if (cmd.type === 'hint' || cmd.type === 'undo' || cmd.type === 'place-joker') telemetry.track('helper_used', { helper: cmd.type === 'place-joker' ? 'joker' : cmd.type });
       if (finished) telemetry.track(save.attempt.board.phase === 'won' ? 'level_win' : 'level_fail');
       for (const event of result.events) if ((event.type === 'coins' || event.type === 'meta-reward' || event.type === 'win' && !save.attempt.daily) && event.amount) telemetry.track('reward_granted', { reason: event.type === 'coins' ? 'core_streak' : event.type === 'meta-reward' ? event.reason! : 'level_win', amount: event.amount });
@@ -406,7 +431,7 @@ try {
       };
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
-      if (coveredWaste && skippedLesson !== save.attempt.id)
+      if (coveredWaste)
         message('Подходящая карта теперь под верхней картой сброса. Её можно вернуть на новом круге.');
       if (save.attempt.board.phase !== 'playing') {
         const delay = save.settings.reducedMotion ? 100 : save.attempt.board.phase === 'won' ? 0 : 465;
@@ -523,19 +548,16 @@ try {
   function showGuidance(animate = true, idle = false) {
     clearTimeout(guideTimer);
     if (maybeIntroduceRule()) return;
-    const instruction = skippedLesson === save.attempt.id ? undefined : lesson(save, deal);
+    const instruction = currentLesson();
     if (animate && instruction?.action && !inspectMode) {
       const attemptId = save.attempt.id, revision = save.revision;
       guideTimer = setTimeout(() => {
         if (alive && screen === 'game' && !runtime.activity.isBlocked() && save.attempt.id === attemptId && save.revision === revision) {
           game?.loop.wake(); scene?.teach(instruction.action!);
         }
-      }, idle ? 6000 : instruction.delay ?? 650);
+      }, instruction.accepts ? 450 : idle ? 6000 : instruction.delay ?? 650);
     }
   }
-  $('#lesson-skip').addEventListener('click', () => {
-    skippedLesson = save.attempt.id; clearTimeout(guideTimer); scene?.clearHint(); renderHud();
-  }, domOptions);
   function showGame() {
     clearPraise(); message(''); screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false;
     runtime.activity.setBlocked('screen', false); renderHud();
@@ -625,7 +647,7 @@ try {
     return { rect, backing: getBackingStoreSize(Math.max(1, rect.width), Math.max(1, rect.height), ratio) };
   }
   const initial = size();
-  scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, command: execute, praise: showPraise, sound: name => runtime.play(name),
+  scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, command: execute, allows: allowsLesson, praise: showPraise, sound: name => runtime.play(name),
     inputRoot: () => root, readerZone: () => $('#inspect').getBoundingClientRect(), peek: peekCard,
     boardBounds() { const rect = root.getBoundingClientRect(), zoom = game?.scale.zoom ?? initial.rect.width / initial.backing.width;
       return { x: (rect.width ? rect.x : Math.max(0, (innerWidth - 520) / 2) + 12) / zoom, y: (rect.height ? rect.y : 76) / zoom,
@@ -641,12 +663,12 @@ try {
       $('#word-title').textContent = content.title; $('#word-description').textContent = content.description ?? '';
       openDialog('#inspect-dialog');
     },
-    ready(active) {
+    ready(active, newDeal) {
       scene = active;
       active.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
         ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true'; $('#app').dataset.presentedDeal = deal.id;
-        if (firstLaunch) { firstLaunch = false; showGame(); active.presentDeal(); }
-        else if (screen === 'game') showGuidance();
+        if (firstLaunch) { firstLaunch = false; showGame(); active.presentDeal(); announceDeal(); }
+        else if (screen === 'game') { if (newDeal) announceDeal(); showGuidance(); }
         if (screen === 'game' && save.attempt.board.phase !== 'playing') outcome();
       });
     },
@@ -689,7 +711,7 @@ try {
     if (screen === 'game' && runtime.activity.getBlockReasons().every(r => r === 'modal') && ready) {
       scene?.sync();
       if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs();
-      if (!blocked) { void ads.refresh(); void ads.recover(); showGuidance(); }
+      if (!blocked) { void ads.refresh(); void ads.recover(); playDealSound(); showGuidance(); }
     }
     if (!renderer.isBooted) return;
     if (blocked && ready) { scene?.clearFeedback(); renderer.loop.sleep(); if (runtime.activity.getBlockReasons().some(r => r !== 'modal' && r !== 'screen')) cancelCoins(); }
@@ -756,7 +778,7 @@ try {
   }, domOptions);
   $('#joker').addEventListener('click', () => {
     if (deal.training !== 'joker' && deal.campaignLevel !== undefined && !seenTutorial(save,'joker-used') && !seenTutorial(save,'intro:joker') && maybeIntroduceRule('joker')) return;
-    if (!save.profile.jokers) { openHelpers('joker'); return; }
+    if (!save.profile.jokers && !freeJokerPractice(save, deal)) { openHelpers('joker'); return; }
     const active = $('#joker').getAttribute('aria-pressed') !== 'true'; setInspect(false); scene?.setJoker(active); renderHud();
     message('');
   }, domOptions);
@@ -766,7 +788,7 @@ try {
     catch { message('Не удалось сохранить покупку. Попробуйте ещё раз.', true); }
     renderHud();
   }, domOptions);
-  $('#undo').addEventListener('click', () => { if (!save.profile.undos) openHelpers('undo'); else void execute({ type: 'undo' }); }, domOptions);
+  $('#undo').addEventListener('click', () => { if (!save.profile.undos && !freeUndoPractice(save, deal)) openHelpers('undo'); else void execute({ type: 'undo' }); }, domOptions);
   $('#inspect').addEventListener('click', () => { setInspect(!inspectMode); if (!inspectMode) showGuidance(); }, domOptions);
   $('#restart').addEventListener('click', () => {
     if (save.attempt.board.phase !== 'won' && save.attempt.telemetry?.started) { $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`; openDialog('#restart-confirm'); }

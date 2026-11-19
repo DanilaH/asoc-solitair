@@ -1,6 +1,6 @@
 import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION } from './types';
 import { BALANCE } from './balance';
-import { freeHintDemo, helperUnlocked, markTutorial, seenTutorial } from './progression';
+import { freeHintDemo, freeJokerPractice, freeUndoPractice, helperUnlocked, markTutorial, seenTutorial } from './progression';
 import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, Result, Save } from './types';
 
 import { abandonCampaign, dailyRewardEligible, finishDaily } from './meta';
@@ -128,7 +128,7 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
   return { board, events };
 }
 
-function sameBoardCommand(a: BoardCommand, b: BoardCommand) {
+export function sameBoardCommand(a: BoardCommand, b: BoardCommand) {
   if (a.type !== 'transfer' || b.type !== 'transfer') return a.type === b.type;
   return a.from.kind === b.from.kind && a.from.index === b.from.index &&
     a.to.kind === b.to.kind && a.to.index === b.to.index;
@@ -147,13 +147,13 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     abandonCampaign(next);
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
   } else if (cmd.type === 'undo') {
-    if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || next.profile.undos <= 0) return refuse('Нет доступной отмены');
-    delete attempt.lessonHint; attempt.board = attempt.undo.pop()!; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
+    if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || (next.profile.undos <= 0 && !freeUndoPractice(input, deal))) return refuse('Нет доступной отмены');
+    delete attempt.lessonHint; attempt.board = attempt.undo.pop()!; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; if (next.profile.undos > 0) next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
   } else if (cmd.type === 'place-joker') {
-    if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || next.profile.jokers <= 0) return refuse('В этой попытке Джокер недоступен');
+    if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || (next.profile.jokers <= 0 && !freeJokerPractice(input, deal))) return refuse('В этой попытке Джокер недоступен');
     const placed = placeJoker(attempt.board, cmd.column, deal);
     if (typeof placed === 'string') return refuse(placed);
-    delete attempt.lessonHint; recordUndo(attempt); attempt.board = placed; attempt.jokerUsed = true; next.profile.jokers--;
+    delete attempt.lessonHint; recordUndo(attempt); attempt.board = placed; attempt.jokerUsed = true; if (next.profile.jokers > 0) next.profile.jokers--;
     markTutorial(next, 'joker-used'); events = [{ type: 'joker' }];
   } else if (cmd.type === 'hint') {
     const demo = freeHintDemo(input, deal);

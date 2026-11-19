@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { lesson, recordLearning } from '../../src/app/tutorial';
 import { expect, it } from 'vitest';
 import { content8Dealer } from '../../src/content/campaign-v8-dealer';
 import { applyBoard, dispatch, freshSave } from '../../src/domain/engine';
@@ -72,4 +73,60 @@ it('finds verified large-deal hints after different opening decisions and leaves
     expect(hint.status).toBe('SOLVED');
     if (hint.status === 'SOLVED') expect(() => step(board, hint.action, deal)).not.toThrow();
   }
+});
+
+it('keeps the opening gates on an executable, budget-safe route through category, stock and planning practice', () => {
+  for (const level of [1, 2, 5]) {
+    const deal = content8Dealer[level - 1];
+    let save = freshSave(deal, 'mandatory-' + level);
+    const taught: string[] = [];
+    for (const action of deal.winningPath) {
+      const current = lesson(save, deal);
+      expect(current?.accepts?.(action)).not.toBe(false);
+      if (current?.accepts) {
+        assert(current.copy);
+        assert.equal(current.accepts({ type: 'undo' }), false);
+        taught.push(current.copy);
+      }
+      const before = save.attempt.board;
+      const move = dispatch(save, action, deal);
+      assert(move.accepted);
+      save = move.next;
+      recordLearning(save, before, action, deal);
+    }
+    assert.equal(save.attempt.board.phase, 'won');
+    assert(taught.length >= 3);
+    if (level === 5) for (const key of ['learn:slots', 'learn:buffer', 'learn:recycle']) assert(seenTutorial(save, key));
+  }
+});
+
+it('keeps required helper practice possible after an update or restart with an empty inventory', () => {
+  const undoDeal = content8Dealer[3], jokerDeal = content8Dealer[7];
+  const setup = (deal: Deal) => {
+    const save = freshSave(deal, 'no-helpers');
+    save.platform = { completedCampaign: Array.from({ length: deal.campaignLevel! - 1 }, (_, i) => campaignId(i + 1)),
+      receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0 };
+    return save;
+  };
+  let save = setup(undoDeal);
+  save.profile.undos = 0;
+  save = dispatch(save, undoDeal.winningPath[0], undoDeal).next;
+  assert(!lesson(save, undoDeal)?.accepts?.({ type: 'draw' }));
+  const undone = dispatch(save, { type: 'undo' }, undoDeal);
+  assert(undone.accepted);
+  assert.equal(undone.next.profile.undos, 0);
+  assert.deepEqual(undone.next.attempt.board, undoDeal.initial);
+  assert(seenTutorial(undone.next, 'undo-used'));
+
+  save = setup(jokerDeal);
+  save.profile.jokers = 0;
+  const placed = dispatch(save, { type: 'place-joker', column: 0 }, jokerDeal);
+  assert(placed.accepted);
+  assert(!lesson(placed.next, jokerDeal)?.accepts?.({ type: 'draw' }));
+  const action = lesson(placed.next, jokerDeal)?.action;
+  assert(action);
+  const used = dispatch(placed.next, action, jokerDeal);
+  assert(used.accepted);
+  assert.equal(used.next.profile.jokers, 0);
+  assert(seenTutorial(used.next, 'joker-buffer'));
 });

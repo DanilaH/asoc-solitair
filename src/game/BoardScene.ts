@@ -9,8 +9,8 @@ import type { Pose, Target } from './layout';
 
 interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image }
 interface Options {
-  deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void;
-  praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene): void;
+  deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void; allows?(command: BoardCommand): boolean;
+  praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene, newDeal: boolean): void;
   inputRoot?(): HTMLElement; boardBounds?(): { x: number; y: number; width: number; height: number };
   readerZone?(): DOMRect; peek?(id: string | null, previewOnly?: boolean): void;
 }
@@ -44,7 +44,7 @@ export class BoardScene extends Phaser.Scene {
   private stockLayers: Phaser.GameObjects.Image[] = [];
   private stockBusyUntil = 0;
   private stockCount!: Phaser.GameObjects.Text;
-  private stockLabel!: Phaser.GameObjects.Text;
+  private stockBadge!: Phaser.GameObjects.Graphics;
   private collections = new Map<number, CollectionView>();
   private praiseIndex = 0;
   private views = new Map<string, CardView>();
@@ -88,7 +88,10 @@ export class BoardScene extends Phaser.Scene {
     const board = this.options.getSave().attempt.board;
     if (this.dropBoard !== board) { this.dropBoard = board; this.dropValidity.clear(); }
     const key = `${from.kind}:${from.index}:${to.kind}:${to.index}`;
-    if (!this.dropValidity.has(key)) this.dropValidity.set(key, typeof applyBoard(board, { type: 'transfer', from, to }, this.options.deal) !== 'string');
+    if (!this.dropValidity.has(key)) {
+      const action = { type: 'transfer', from, to } as const;
+      this.dropValidity.set(key, this.options.allows?.(action) !== false && typeof applyBoard(board, action, this.options.deal) !== 'string');
+    }
     return this.dropValidity.get(key)!;
   }
   private hoverSince = 0;
@@ -117,7 +120,8 @@ export class BoardScene extends Phaser.Scene {
     this.slotViews.clear();
     this.collections.clear();
     this.enteringCards.clear();
-    this.initial = this.animateEntryOnCreate;
+    const newDeal = this.animateEntryOnCreate;
+    this.initial = newDeal;
     this.animateEntryOnCreate = false;
     this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.dragPointer = undefined; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = []; this.stockBusyUntil = 0;
     installSceneTextSharpness(this);
@@ -128,8 +132,8 @@ export class BoardScene extends Phaser.Scene {
     this.slots = this.add.graphics(); this.stockArt = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH); this.focus = this.add.graphics().setDepth(450);
     this.stockLayers = Array.from({ length: 5 }, () => this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH).setTint(0xe4e1e7));
     this.stockCount = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(.5).setDepth(38);
-    this.stockLabel = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '17px', color: '#b0d7bf' }).setOrigin(.5).setDepth(38);
-    this.world.add([this.slots, ...this.stockLayers, this.stockArt, this.focus, this.stockCount, this.stockLabel]);
+    this.stockBadge = this.add.graphics().setDepth(37);
+    this.world.add([this.slots, ...this.stockLayers, this.stockArt, this.focus, this.stockBadge, this.stockCount]);
     for (const [kind, ids] of [['foundation', this.options.getSave().attempt.board.foundations], ['tableau', this.options.getSave().attempt.board.tableau]] as const) {
       ids.forEach((_, index) => {
         const view = this.add.image(0, 0, `art-slot-${kind}`).setVisible(false).setDepth(0);
@@ -179,7 +183,7 @@ export class BoardScene extends Phaser.Scene {
     this.events.once('shutdown', () => { controller.abort(); this.options.peek?.(null); this.presentedDealId = undefined; this.scale.off('resize', resize); this.clearHint(); this.clearFeedback(); this.foundationFaces.clear(); this.views.clear(); this.input.removeAllListeners(); });
     this.presentedDealId = this.options.deal.id;
     this.sync([], true);
-    this.options.ready(this);
+    this.options.ready(this, newDeal);
   }
   private label(x: number, y: number, text: string, size: number, color: string, maxHeight = Infinity) {
     const label = this.add.text(x, y, cardCaption(text, this.cardW < 125 && text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size * Math.min(1, this.cardW / 125)}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: this.cardW - 18 } }).setOrigin(.5, 0);
@@ -375,7 +379,7 @@ export class BoardScene extends Phaser.Scene {
     else if (contactAtKey) contact();
     const { stock } = this.metrics;
     const deckActive = Boolean(board.stock.length || board.waste.length);
-    this.stockArt.setVisible(deckActive); this.stockCount.setVisible(deckActive); this.stockLabel.setVisible(deckActive);
+    this.stockCount.setVisible(deckActive);
     this.stockArt.setPosition(stock.x, stock.y); this.paintBack(this.stockArt);
     this.stockArt.setVisible(deckActive && Boolean(board.stock.length));
     const thickness = stock.thickness;
@@ -384,8 +388,18 @@ export class BoardScene extends Phaser.Scene {
       layer.setDepth(2 + i).setVisible(board.stock.length > i + 1).setPosition(stock.x, stock.y + thickness * (this.stockLayers.length - i) / this.stockLayers.length);
     });
     this.stockArt.setDepth(8);
-    this.stockCount.setPosition(board.stock.length ? stock.x + this.cardW / 2 - 17 : stock.x, board.stock.length ? stock.y - this.cardH / 2 + 20 : stock.y).setFontSize(board.stock.length ? 20 : 42).setText(board.stock.length ? String(board.stock.length) : board.waste.length ? '↻' : '');
-    this.stockLabel.setText('');
+    this.stockBadge.clear();
+    if (board.stock.length) {
+      const x = stock.x, y = stock.y + thickness - this.cardH / 2 + 36;
+      const font = Math.max(31, 18 / this.cssUnit);
+      this.stockCount.setPosition(x, y).setFontSize(font).setText(String(board.stock.length));
+      const width = Math.max(font * 1.47, this.stockCount.width + font * .58);
+      const height = font * 1.08;
+      this.stockBadge.fillStyle(0x1c284c).fillRoundedRect(x - width / 2, y - height / 2, width, height, height / 2);
+      this.stockBadge.lineStyle(2, 0xffdfa3).strokeRoundedRect(x - width / 2, y - height / 2, width, height, height / 2);
+    } else this.stockCount.setPosition(stock.x, stock.y).setFontSize(42).setText(board.waste.length ? '↻' : '');
+    const root = this.options.inputRoot?.();
+    if (root) root.dataset.stockCount = deckActive ? String(board.stock.length) : '';
     this.foundationArt.clear();
     board.foundations.forEach((ids, i) => {
       const target = this.metrics.targets.find(t => t.location.kind === 'foundation' && t.location.index === i)!;

@@ -1,7 +1,7 @@
-import { legalCommands, sourceCards } from '../domain/engine';
+import { legalCommands, sameBoardCommand, sourceCards } from '../domain/engine';
 import { knownContinuation } from '../domain/solver';
 import { completedLevels, freeHintDemo, markTutorial, seenTutorial } from '../domain/progression';
-import type { Board, BoardCommand, Deal, Save } from '../domain/types';
+import type { Board, BoardCommand, Command, Deal, Save } from '../domain/types';
 
 type Skill = 'category' | 'match' | 'stock';
 const marker = (skill: Skill) => `learn:${skill}`;
@@ -41,72 +41,86 @@ export interface Guidance {
   delay?: number;
   attention?: 'hint' | 'undo' | 'joker';
   copy?: string;
+  accepts?: (command: Command) => boolean;
 }
 
 function openingLesson(save: Save, deal: Deal): Guidance | undefined {
   const board = save.attempt.board;
-  const seen = (marker: string) => seenTutorial(save, marker);
+  const seen = (key: string) => seenTutorial(save, key);
   const step = () => knownContinuation(board, deal)?.[0];
-  const guide = (copy: string, accepts: (action: BoardCommand) => boolean = () => true) => {
+  const exact = (copy: string, action: BoardCommand): Guidance =>
+    ({ copy, action, accepts: command => isBoardCommand(command) && sameBoardCommand(action, command) });
+  const guide = (copy: string, accepts: (action: BoardCommand) => boolean) => {
     const preferred = step();
     const action = preferred && accepts(preferred) ? preferred : legalCommands(board, deal).find(accepts);
-    return { copy, action, delay: 950 };
+    return action ? exact(copy, action) : undefined;
   };
+  const button = (copy: string, attention: NonNullable<Guidance['attention']>, type: Command['type']): Guidance =>
+    ({ copy, attention, accepts: command => command.type === type });
   switch (deal.training) {
     case 'first':
-      if (!seen('learn:category')) return guide('Положите карту с названием темы в пустой верхний слот.',
-        action => skillFor(board, action, deal) === 'category');
-      if (!seen('learn:match')) return guide('Собирайте карты одной темы в группы или добавляйте к теме сверху.',
-        action => skillFor(board, action, deal) === 'match');
-      if (!seen('learn:stock')) return guide('Нажмите на закрытую колоду, чтобы открыть карту.', action => action.type === 'draw');
+      if (!seen('learn:category')) return guide('Положите карту темы в верхний слот.', action => skillFor(board, action, deal) === 'category');
+      if (!seen('learn:match')) return guide('Соедините показанные карты одной темы.', action => skillFor(board, action, deal) === 'match');
+      if (!seen('learn:stock')) {
+        const next = step();
+        if (next?.type === 'transfer') return exact('Сделайте показанный перенос. Затем откроем колоду.', next);
+        return guide('Нажмите на колоду, чтобы открыть карту.', action => action.type === 'draw');
+      }
       break;
     case 'stock': {
       if (seen('learn:waste')) break;
       const next = step();
       if (!board.waste.length && next && skillFor(board, next, deal) === 'category')
-        return { copy: 'Сначала положите тему наверх, затем откройте карту из колоды.', action: next };
-      if (!board.waste.length) return guide('Нажмите на колоду. За 1 ход карта откроется рядом, в сбросе.', action => action.type === 'draw');
-      return guide('Из сброса можно взять только верхнюю карту. Если она не подходит, откройте следующую.',
-        action => action.type === 'transfer' && action.from.kind === 'waste' || action.type === 'draw');
+        return exact('Положите тему в верхний слот.', next);
+      if (!board.waste.length) return guide('Откройте колоду. Карта появится в сбросе.', action => action.type === 'draw');
+      if (next?.type === 'draw') return exact('Откройте следующую карту.', next);
+      return guide('Перенесите верхнюю карту из сброса.', action => action.type === 'transfer' && action.from.kind === 'waste')
+        ?? guide('Откройте следующую карту.', action => action.type === 'draw');
     }
     case 'hint':
       if (seen('hint-practiced')) break;
-      if (save.attempt.lessonHint) return { copy: 'Перенесите показанную карту или нажмите на показанную колоду.', action: save.attempt.lessonHint };
-      if (freeHintDemo(save, deal)) return { copy: 'Нажмите «Подсказка». Она бесплатно покажет ход, который вы сможете сделать сами.', attention: 'hint' };
-      if (save.profile.hints) return { copy: 'Подсказка показывает ход. Выполните его на поле, чтобы закончить обучение.', attention: 'hint' };
-      break;
+      if (save.attempt.lessonHint) {
+        const action = save.attempt.lessonHint;
+        return exact(action.type === 'transfer' ? 'Сделайте показанный перенос.' : 'Нажмите на показанную колоду.', action);
+      }
+      return button('Нажмите «Подсказка». Первый раз бесплатно.', 'hint', 'hint');
     case 'undo':
-      if (seen('undo-used') || !save.profile.undos) break;
-      if (!save.attempt.undo.length) return guide('Сделайте ход, чтобы попробовать «Отмену».');
-      return { copy: 'Нажмите «Отмена». Карты и счётчик вернутся на шаг назад. Расходуется 1 отмена.', attention: 'undo' };
+      if (seen('undo-used')) break;
+      if (!save.attempt.undo.length) return guide('Сделайте показанный ход.', () => true);
+      return button(save.profile.undos
+        ? 'Нажмите «Отмена», чтобы вернуть ход. Расходуется 1 отмена.'
+        : 'Нажмите «Отмена», чтобы вернуть ход. Учебное действие бесплатно.', 'undo', 'undo');
     case 'planning': {
+      if (seen('learn:slots') && seen('learn:buffer') && seen('learn:recycle')) break;
       const action = step();
-      if (!board.stock.length && board.waste.length && !seen('learn:recycle')) return {
-        copy: 'Нажмите на пустую колоду. За 1 ход сброс вернётся в колоду на новый круг.',
-        action: action?.type === 'recycle' ? action : undefined,
-      };
-      if (board.foundations.filter(pile => pile.length).length >= board.foundations.length - 1 && !seen('learn:slots')) return {
-        copy: 'Верхних слотов мало. Оставьте место для темы, которую сможете собрать раньше.',
-      };
-      if (!seen('learn:buffer') && board.tableau.some(pile => !pile.length)) return {
-        copy: 'В пустом столбце можно временно оставить карту или группу.',
-        action: action?.type === 'transfer' && action.to.kind === 'tableau' && !board.tableau[action.to.index].length ? action : undefined,
-      };
-      if (!seen('learn:recycle')) return { copy: 'Пропущенную карту можно вернуть. Дойдите до конца колоды и начните новый круг.' };
+      if (!board.stock.length && board.waste.length && !seen('learn:recycle') &&
+        (action?.type === 'recycle' || board.waste.length === 1))
+        return exact('Нажмите на пустую колоду, чтобы начать новый круг.', { type: 'recycle' });
+      if (action?.type !== 'transfer') break;
+      if (!seen('learn:slots') && action.to.kind === 'foundation' &&
+        !board.foundations[action.to.index].length && board.foundations.filter(pile => !pile.length).length === 1)
+        return exact('Остался один слот. Положите в него показанную тему.', action);
+      if (!seen('learn:buffer') && action.to.kind === 'tableau' && !board.tableau[action.to.index].length)
+        return exact('Положите группу в пустой столбец. Здесь она может подождать.', action);
       break;
     }
-    case 'joker':
+    case 'joker': {
       if (seen('joker-buffer')) break;
-      if (board.joker) return {
-        copy: 'Перенесите карту или группу на Джокера. Под ним останутся прежние карты.',
-        action: legalCommands(board, deal).find(command => command.type === 'transfer' &&
-          command.to.kind === 'tableau' && command.to.index === board.joker?.column),
-      };
-      if (!seen('joker-used') && save.profile.jokers) return {
-        copy: 'Нажмите «Джокер» и выберите непустой столбец. Он даст временное место для одной группы. Расходуется 1 джокер.',
-        attention: 'joker',
-      };
+      const joker = board.joker;
+      if (joker) {
+        const usesJoker = (command: Command) => command.type === 'transfer' && command.to.kind === 'tableau' && command.to.index === joker.column;
+        const action = legalCommands(board, deal).find(usesJoker);
+        if (action) return { copy: 'Положите карту или группу на Джокера.', action, accepts: usesJoker };
+      } else if (!save.attempt.jokerUsed && board.tableau.some(column => column.length)) {
+        return button('Нажмите «Джокер» и выберите непустой столбец.', 'joker', 'place-joker');
+      }
+      break;
+    }
   }
+}
+
+function isBoardCommand(command: Command): command is BoardCommand {
+  return command.type === 'transfer' || command.type === 'draw' || command.type === 'recycle';
 }
 
 /** Observe accepted state: teaching never moves cards or spends resources. */

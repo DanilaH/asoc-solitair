@@ -523,13 +523,11 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 @media(max-height:540px){#home>.brand-scene{padding:1px 0 2px}#home .home-actions{margin-bottom:6px}#home .home-primary{min-height:58px}}
 
 /* Extra context fits the existing feedback area, including the smallest portrait. */
-#app[data-lesson=true] #feedback-row{height:54px}
-#lesson-note{position:absolute;inset:0;display:flex;align-items:center;gap:4px;margin:0 auto;width:min(100%,390px);border:1px solid #89b4ac;border-radius:12px;background:#154e52;color:#fff3d6;text-align:left;padding-left:10px}
-#lesson-note p{flex:1;margin:5px 0;font-size:11px;line-height:1.22}
-#lesson-skip{width:44px;height:40px;flex:0 0 44px;background:transparent;color:inherit;border:0;font-size:19px}
+#app[data-lesson=true] #feedback-row{height:64px}
+#lesson-note{position:absolute;inset:0;display:flex;align-items:center;margin:0 auto;width:min(100%,390px);border:1px solid #99c9be;border-radius:12px;background:#154e52;color:#fff3d6;padding:5px 11px}
+#lesson-note p{margin:0;font-size:16px;font-weight:800;line-height:1.16}
 #feedback-row>#message,#feedback-row>#no-transfer{grid-area:1/1}
-#feedback-row:has(#message:not(:empty),#praise:not([hidden])) #lesson-note{visibility:hidden}
-#feedback-row:has(#lesson-note:not([hidden]),#message:not(:empty),#praise:not([hidden])) #no-transfer{visibility:hidden}
+#feedback-row:has(#lesson-note:not([hidden])) :is(#message,#praise,#no-transfer){visibility:hidden}
 [data-tier=hard]{--tier-bg:#f6d3a7;--tier-edge:#a86c45;--tier-fg:#582d17;--tier-bright:#ffead3}
 [data-tier=superhard]{--tier-bg:#e8cef2;--tier-edge:#88619a;--tier-fg:#462451;--tier-bright:#f8e7ff}
 #next-level:is([data-tier=hard],[data-tier=superhard]),#home #home-play:is([data-tier=hard],[data-tier=superhard]),#difficulty-entry .primary{background:var(--tier-bg);color:var(--tier-fg);border-color:var(--tier-bright);box-shadow:inset 0 2px 0 var(--tier-bright),0 4px 0 var(--tier-edge);text-shadow:none}

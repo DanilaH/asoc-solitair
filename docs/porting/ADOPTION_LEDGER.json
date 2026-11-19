@@ -2,10 +2,10 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/audit/solitaire-independent-coverage-correction-20261119/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/7f91abfd824162780a6567c6823b95864142957c/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
   "sourceInventoryBlob": "30dc681457cce379957cccc21f2ed4c8cfe25f76",
-  "sourceInventoryRef": "audit/solitaire-independent-coverage-correction-20261119",
-  "consumerBaseline": "Content8 PR41 source HEAD 1161d2171d52329bc4f29b44a848d71481794888, preserving C8 tests/compatible save; human Android acceptance OPEN",
+  "sourceInventoryRef": "7f91abfd824162780a6567c6823b95864142957c",
+  "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "99/99 source↔consumer current known research, not exhaustive original live runtime; one earlier Hitapps Daily puzzle attribution downgraded to EVIDENCE_GAP; provenance and CI consumer gate under audit.",
   "features": [
     {
@@ -214,7 +214,7 @@
       "id": "azur-daily-tasks",
       "status": "ROADMAPPED",
       "currentImplementation": "28 rotating daily puzzles != daily tasks",
-      "nextAction": "Design distinct earned 2–4 daily objectives and seven-day rewards with save identity",
+      "nextAction": "Inventory ALL 16 original DailyTask kinds and 9 reward kinds (engagement, helper-use, spend/purchase), with per-kind evidence and trigger; implement in owner-approved stages without silently dropping commercially oriented task types",
       "stage": "F1"
     },
     {

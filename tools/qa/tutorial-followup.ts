@@ -95,6 +95,16 @@ try {
   assert.equal((await read(page)).profile.hints, 0);
   assert.equal(await cueCount(page, .37), 0);
   assert.equal(await cueCount(page, .63), 0);
+  const dense = content8Dealer[5], large = freshSave(dense, 'followup-stock');
+  large.contentVersion = 8;
+  large.settings = { ...older.settings, deckSide: 'left', deckPosition: 'bottom' };
+  await page.evaluate(save => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(save)), large);
+  await page.reload(); await started(page); await page.locator('#home-play').tap();
+  await expect(page.locator('#game-root')).toHaveAttribute('data-stock-count', '56');
+  await page.screenshot({ path: root + '/proof/stock-56-320.png' });
+  await input(page, dense, { type: 'draw' });
+  await expect(page.locator('#game-root')).toHaveAttribute('data-stock-count', '55');
+
   const video = page.video();
   await page.close();
   await video?.saveAs(root + '/proof/touch.webm');

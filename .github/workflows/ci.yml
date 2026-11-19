@@ -86,7 +86,15 @@ jobs:
             echo '::error::The existing preview signing identity is required; do not generate a replacement key.'
             exit 1
           fi
-      - run: ./gradlew --no-daemon assembleDebug
+      - name: Build signed preview APK
+        shell: bash
+        run: |
+          if ./gradlew --no-daemon assembleDebug 2>&1 | tee "$RUNNER_TEMP/asoc-gradle.log"; then
+            exit 0
+          fi
+          grep -q 'https://repo.maven.apache.org/maven2' "$RUNNER_TEMP/asoc-gradle.log"
+          ASOC_MAVEN_CENTRAL_MIRROR=1 ./gradlew --no-daemon assembleDebug
+          echo 'ASOC_MAVEN_CENTRAL_MIRROR=1' >> "$GITHUB_ENV"
         working-directory: native/android
         env:
           ASOC_AD_MODE: test

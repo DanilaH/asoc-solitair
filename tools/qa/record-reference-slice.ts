@@ -48,12 +48,14 @@ async function perform(d: Deal, cmd: BoardCommand, before: Save) {
     const group = sourceCards(before.attempt.board, cmd.from, d);
     const front = g.poses.filter(p => group.includes(p.id)).at(-1)!;
     const dest = g.targets.find(t => t.location.kind === cmd.to.kind && t.location.index === cmd.to.index)!;
-    await tap(position(front)); await tap(position(dest));
+    await tap(position(front));
+    await page.waitForTimeout(35);
+    await tap(position(dest));
   } else await tap(position(g.stock));
   const expected = applyBoard(before.attempt.board, cmd, d);
   assert(typeof expected !== 'string');
   await expect.poll(async () => (await read(page)).attempt.board, { timeout: 4500 }).toEqual(expected.board);
-  if (!before.settings.reducedMotion) await page.waitForTimeout(cmd.type === 'draw' ? 315 : cmd.type === 'recycle' ? 405 : 225);
+  await page.waitForTimeout(before.settings.reducedMotion ? 30 : cmd.type === 'draw' ? 315 : cmd.type === 'recycle' ? 405 : 225);
 }
 
 try {
@@ -146,7 +148,11 @@ try {
         if ((await read(page)).attempt.jokerUsed) continue;
       }
       try { await perform(d, command, await read(page)); }
-      catch (error) { throw Error(`Level ${level}, action ${j + 1} ${JSON.stringify(command)}`, { cause: error }); }
+      catch (error) {
+        await page.screenshot({ path: `${recordDir}/failure-${level}-${j + 1}.png` });
+        const state = await read(page);
+        throw Error(`Level ${level}, action ${j + 1} ${JSON.stringify(command)}, ${state.attempt.board.movesLeft} moves left: ${await page.locator('#message').textContent()}`, { cause: error });
+      }
       acceptance.push({ time: await page.evaluate(() => performance.now()), command });
     }
     await page.locator('#result[open]').waitFor();

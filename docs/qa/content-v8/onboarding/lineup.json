@@ -1,0 +1,367 @@
+{
+  "algorithm": "ordinary-packed-v1",
+  "candidateCap": 100,
+  "tolerancePercent": 15,
+  "acceptedForPreview": "lesson",
+  "sourceRamp": [
+    {
+      "level": 1,
+      "seed": 12510,
+      "stock": 3,
+      "total": 21,
+      "categories": 4,
+      "slots": 2,
+      "budget": null,
+      "steps": 24,
+      "recycleAlternative": null
+    },
+    {
+      "level": 2,
+      "seed": 22503,
+      "stock": 23,
+      "total": 32,
+      "categories": 6,
+      "slots": 2,
+      "budget": 61,
+      "steps": 56,
+      "recycleAlternative": null
+    },
+    {
+      "level": 3,
+      "seed": 32504,
+      "stock": 43,
+      "total": 61,
+      "categories": 10,
+      "slots": 4,
+      "budget": 125,
+      "steps": 107,
+      "recycleAlternative": null
+    },
+    {
+      "level": 4,
+      "seed": 42504,
+      "stock": 44,
+      "total": 62,
+      "categories": 10,
+      "slots": 4,
+      "budget": 118,
+      "steps": 108,
+      "recycleAlternative": 2
+    },
+    {
+      "level": 5,
+      "seed": 52671,
+      "stock": 46,
+      "total": 64,
+      "categories": 10,
+      "slots": 3,
+      "budget": 125,
+      "steps": 118,
+      "recycleAlternative": 2
+    }
+  ],
+  "lessonRamp": [
+    {
+      "level": 1,
+      "seed": 10001,
+      "total": 16,
+      "stock": 5,
+      "categories": 4,
+      "slots": 2,
+      "budget": null,
+      "steps": 22,
+      "metrics": {
+        "buffer": 1,
+        "longest": 0,
+        "chosenStock": 5,
+        "competingSlots": 0
+      },
+      "alternatives": []
+    },
+    {
+      "level": 2,
+      "seed": 20005,
+      "total": 28,
+      "stock": 17,
+      "categories": 6,
+      "slots": 2,
+      "budget": 56,
+      "steps": 47,
+      "metrics": {
+        "buffer": 2,
+        "longest": 2,
+        "chosenStock": 11,
+        "competingSlots": 0
+      },
+      "alternatives": []
+    },
+    {
+      "level": 3,
+      "seed": 30002,
+      "total": 36,
+      "stock": 22,
+      "categories": 7,
+      "slots": 2,
+      "budget": 70,
+      "steps": 59,
+      "metrics": {
+        "buffer": 1,
+        "longest": 0,
+        "chosenStock": 22,
+        "competingSlots": 0
+      },
+      "alternatives": []
+    },
+    {
+      "level": 4,
+      "seed": 40002,
+      "total": 46,
+      "stock": 30,
+      "categories": 8,
+      "slots": 4,
+      "budget": 86,
+      "steps": 77,
+      "metrics": {
+        "buffer": 1,
+        "longest": 1,
+        "chosenStock": 25,
+        "competingSlots": 0
+      },
+      "alternatives": []
+    },
+    {
+      "level": 5,
+      "seed": 50036,
+      "total": 60,
+      "stock": 42,
+      "categories": 10,
+      "slots": 3,
+      "budget": 130,
+      "steps": 108,
+      "metrics": {
+        "buffer": 4,
+        "longest": 1,
+        "chosenStock": 41,
+        "competingSlots": 1
+      },
+      "alternatives": [
+        {
+          "kind": "miss-recycle",
+          "step": 103,
+          "extra": 2
+        },
+        {
+          "kind": "last-slot",
+          "step": 95,
+          "extra": 1
+        }
+      ]
+    },
+    {
+      "level": 6,
+      "seed": 60055,
+      "total": 78,
+      "stock": 56,
+      "categories": 12,
+      "slots": 4,
+      "budget": 161,
+      "steps": 137,
+      "metrics": {
+        "buffer": 3,
+        "longest": 0,
+        "chosenStock": 56,
+        "competingSlots": 1
+      },
+      "alternatives": [
+        {
+          "kind": "last-slot",
+          "step": 126,
+          "extra": 0
+        }
+      ]
+    },
+    {
+      "level": 7,
+      "seed": 70004,
+      "total": 35,
+      "stock": 26,
+      "categories": 6,
+      "slots": 3,
+      "budget": 70,
+      "steps": 63,
+      "metrics": {
+        "buffer": 2,
+        "longest": 2,
+        "chosenStock": 19,
+        "competingSlots": 0
+      },
+      "alternatives": []
+    },
+    {
+      "level": 8,
+      "seed": 80001,
+      "total": 34,
+      "stock": 20,
+      "categories": 6,
+      "slots": 3,
+      "budget": 68,
+      "steps": 56,
+      "metrics": {
+        "buffer": 2,
+        "longest": 1,
+        "chosenStock": 19,
+        "competingSlots": 0
+      },
+      "alternatives": [
+        {
+          "kind": "miss-recycle",
+          "step": 53,
+          "extra": 2
+        }
+      ]
+    },
+    {
+      "level": 9,
+      "seed": 90007,
+      "total": 64,
+      "stock": 46,
+      "categories": 10,
+      "slots": 4,
+      "budget": 120,
+      "steps": 113,
+      "metrics": {
+        "buffer": 3,
+        "longest": 0,
+        "chosenStock": 46,
+        "competingSlots": 0
+      },
+      "alternatives": [
+        {
+          "kind": "miss-recycle",
+          "step": 15,
+          "extra": 2
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "seed": 100001,
+      "total": 64,
+      "stock": 46,
+      "categories": 10,
+      "slots": 4,
+      "budget": 127,
+      "steps": 112,
+      "metrics": {
+        "buffer": 2,
+        "longest": 3,
+        "chosenStock": 23,
+        "competingSlots": 0
+      },
+      "alternatives": [
+        {
+          "kind": "miss-recycle",
+          "step": 98,
+          "extra": 2
+        }
+      ]
+    },
+    {
+      "level": 11,
+      "seed": 110097,
+      "total": 80,
+      "stock": 62,
+      "categories": 12,
+      "slots": 4,
+      "budget": 168,
+      "steps": 146,
+      "metrics": {
+        "buffer": 4,
+        "longest": 0,
+        "chosenStock": 62,
+        "competingSlots": 0
+      },
+      "alternatives": []
+    },
+    {
+      "level": 12,
+      "seed": 120003,
+      "total": 36,
+      "stock": 24,
+      "categories": 6,
+      "slots": 3,
+      "budget": 67,
+      "steps": 61,
+      "metrics": {
+        "buffer": 1,
+        "longest": 0,
+        "chosenStock": 24,
+        "competingSlots": 0
+      },
+      "alternatives": [
+        {
+          "kind": "miss-recycle",
+          "step": 52,
+          "extra": 2
+        }
+      ]
+    },
+    {
+      "level": 13,
+      "seed": 130021,
+      "total": 64,
+      "stock": 42,
+      "categories": 10,
+      "slots": 4,
+      "budget": 120,
+      "steps": 107,
+      "metrics": {
+        "buffer": 1,
+        "longest": 1,
+        "chosenStock": 36,
+        "competingSlots": 0
+      },
+      "alternatives": []
+    },
+    {
+      "level": 14,
+      "seed": 140008,
+      "total": 64,
+      "stock": 42,
+      "categories": 10,
+      "slots": 4,
+      "budget": 118,
+      "steps": 107,
+      "metrics": {
+        "buffer": 1,
+        "longest": 2,
+        "chosenStock": 38,
+        "competingSlots": 0
+      },
+      "alternatives": []
+    },
+    {
+      "level": 15,
+      "seed": 150002,
+      "total": 64,
+      "stock": 42,
+      "categories": 10,
+      "slots": 4,
+      "budget": 118,
+      "steps": 108,
+      "metrics": {
+        "buffer": 2,
+        "longest": 3,
+        "chosenStock": 30,
+        "competingSlots": 3
+      },
+      "alternatives": [
+        {
+          "kind": "last-slot",
+          "step": 64,
+          "extra": 0
+        }
+      ]
+    }
+  ]
+}

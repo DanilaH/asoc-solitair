@@ -47,17 +47,28 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
   const board = save.attempt.board;
   const seen = (marker: string) => seenTutorial(save, marker);
   const step = () => knownContinuation(board, deal)?.[0];
-  const guide = (copy: string) => ({ copy, action: step(), delay: 950 });
+  const guide = (copy: string, accepts: (action: BoardCommand) => boolean = () => true) => {
+    const preferred = step();
+    const action = preferred && accepts(preferred) ? preferred : legalCommands(board, deal).find(accepts);
+    return { copy, action, delay: 950 };
+  };
   switch (deal.training) {
     case 'first':
-      if (!seen('learn:category')) return guide('Положите карту с названием темы в пустой верхний слот.');
-      if (!seen('learn:match')) return guide('Добавляйте подходящие карты к теме сверху.');
-      if (!seen('learn:stock')) return guide('Нажмите на закрытую колоду, чтобы открыть карту.');
+      if (!seen('learn:category')) return guide('Положите карту с названием темы в пустой верхний слот.',
+        action => skillFor(board, action, deal) === 'category');
+      if (!seen('learn:match')) return guide('Собирайте карты одной темы в группы или добавляйте к теме сверху.',
+        action => skillFor(board, action, deal) === 'match');
+      if (!seen('learn:stock')) return guide('Нажмите на закрытую колоду, чтобы открыть карту.', action => action.type === 'draw');
       break;
-    case 'stock':
-      if (!seen('learn:waste') && !board.waste.length) return guide('Нажмите на колоду. За 1 ход карта откроется рядом, в сбросе.');
-      if (!seen('learn:waste')) return guide('Из сброса можно взять верхнюю карту. Следующий добор накроет её.');
-      break;
+    case 'stock': {
+      if (seen('learn:waste')) break;
+      const next = step();
+      if (!board.waste.length && next && skillFor(board, next, deal) === 'category')
+        return { copy: 'Сначала положите тему наверх, затем откройте карту из колоды.', action: next };
+      if (!board.waste.length) return guide('Нажмите на колоду. За 1 ход карта откроется рядом, в сбросе.', action => action.type === 'draw');
+      return guide('Из сброса можно взять только верхнюю карту. Если она не подходит, откройте следующую.',
+        action => action.type === 'transfer' && action.from.kind === 'waste' || action.type === 'draw');
+    }
     case 'hint':
       if (seen('hint-practiced')) break;
       if (save.attempt.lessonHint) return { copy: 'Перенесите показанную карту или нажмите на показанную колоду.', action: save.attempt.lessonHint };

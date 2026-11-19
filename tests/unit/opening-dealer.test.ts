@@ -5,6 +5,8 @@ import { applyBoard, dispatch, freshSave } from '../../src/domain/engine';
 import { resolveHint } from '../../src/domain/hint';
 import { campaignId, seenTutorial } from '../../src/domain/progression';
 import { knownContinuation } from '../../src/domain/solver';
+import { dealOrdinary } from '../../tools/content/plain-dealer';
+import lineup from '../../docs/qa/content-v8/onboarding/lineup.json';
 import { advance } from '../../tools/qa/gameplay-oracle';
 import type { Board, BoardCommand, Deal } from '../../src/domain/types';
 
@@ -16,6 +18,11 @@ function step(board: Board, command: BoardCommand, deal: Deal) {
 
 it('replays all 15 new layouts and verified recoveries with the independent oracle', () => {
   expect(content8Dealer.map(deal => deal.campaignLevel)).toEqual(Array.from({ length: 15 }, (_, i) => i + 1));
+  for (const [index, deal] of content8Dealer.entries()) {
+    const { seed, stock } = lineup.lessonRamp[index];
+    const distribution = dealOrdinary(Object.keys(deal.cards), stock, deal.initial.tableau.map(pile => pile.length), seed);
+    assert.deepEqual(distribution, { stock: deal.initial.stock, tableau: deal.initial.tableau });
+  }
   for (const deal of content8Dealer) for (const route of [deal.winningPath, ...(deal.recoveryPaths ?? [])]) {
     let board = deal.initial;
     for (const action of route) {

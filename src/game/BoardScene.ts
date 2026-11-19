@@ -484,7 +484,8 @@ export class BoardScene extends Phaser.Scene {
         if (origin) view.node.setPosition(origin.x, origin.y).setScale(1).setAlpha(1).setAngle(0);
       }
       const group = board.tableau.findIndex(col => col.includes(pose.id));
-      const groupIds = group >= 0 ? packet(board, group, this.options.deal) : board.foundations.find(col => col.includes(pose.id)) ?? [];
+      const columnPacket = group >= 0 ? packet(board, group, this.options.deal) : undefined;
+      const groupIds = columnPacket ? columnPacket.includes(pose.id) ? columnPacket : [] : board.foundations.find(col => col.includes(pose.id)) ?? [];
       const total = Object.values(this.options.deal.cards).filter(c => c.category === def.category && !c.leader).length;
       view.badge.setText(def.leader ? `${groupIds.filter(id => !this.options.deal.cards[id].leader).length} / ${total}` : def.rank ? `${def.rank} / ${total}` : groupIds.length > 1 ? `×${groupIds.length}` : '');
       const foundation = board.foundations.some(ids => ids.includes(pose.id));

@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/899869a19e64245c024dc02bebc36420f81f5487/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "192372a9df59a0318af6674f3652238ad1154297",
-  "sourceInventoryRef": "899869a19e64245c024dc02bebc36420f81f5487",
-  "consumerBaseline": "Content8 PR41 afd631c175c015dfafda9d00f1b68a9457935f97; native device not accepted",
-  "coverageDisclaimer": "Initial mapping of 40 researched features, not proof that all competitor binaries have been fully inspected.",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/research/association-solitaire-full-porting-audit-20261119/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "d4764dd59c6056f0621f58edd5a95a5460be523e",
+  "sourceInventoryRef": "research/association-solitaire-full-porting-audit-20261119",
+  "consumerBaseline": "Content8 PR41 source HEAD 1161d2171d52329bc4f29b44a848d71481794888, preserving C8 tests/compatible save; human Android acceptance OPEN",
+  "coverageDisclaimer": "Expanded independent audit of known 2026-11-09..19 research: 76 source features; not exhaustive of original server. No owner exclusions; EVIDENCE_GAP retains next capture.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -264,6 +264,281 @@
       "currentImplementation": "0.11–0.17 board/audio/coins feel, PR35–37 candidate fixes",
       "nextAction": "Complete actual device audio/vibration/rapid play acceptance and competitor 1x compare",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/36"
+    },
+    {
+      "id": "hitapps-ingame-streak",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "src/domain/balance.ts STREAK + src/domain/engine.ts transfers; Hitapps specific coin thresholds analogous",
+      "nextAction": "Replay negative invalid-drop/recycle/Undo against original video and Android coin UX",
+      "stage": "B1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "hitapps-gold-rush-event",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No gold-event lifecycle",
+      "nextAction": "Design prize progress and first-attempt bonus independent from GoldenCards insertion; ensure event grant once",
+      "stage": "D2"
+    },
+    {
+      "id": "hitapps-puzzle-gallery",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Current only card back/palette unlocks; no six-picture gallery",
+      "nextAction": "Reconstruct video-based gallery journey and distinguish from time-limited PuzzleEvent",
+      "stage": "D1"
+    },
+    {
+      "id": "hitapps-cascade-events",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "No cascade scheduler; general meta only",
+      "nextAction": "Trace native source config/calls to derive event sequencing before porting a generic event lifecycle",
+      "stage": "D3",
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+    },
+    {
+      "id": "hitapps-digging-event",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "No digging event",
+      "nextAction": "Inspect original event behavior and schema; define adaptation and authoring cost",
+      "stage": "D3",
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+    },
+    {
+      "id": "hitapps-lucky-wheel",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "No wheel rewards",
+      "nextAction": "Find original UI/state/odds evidence, then design own optional reward minigame",
+      "stage": "D3",
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+    },
+    {
+      "id": "hitapps-endless-treasure",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "No treasure progression event",
+      "nextAction": "Determine native phases and actual gameplay before creating design spec",
+      "stage": "D3",
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+    },
+    {
+      "id": "hitapps-birthday-offer",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "No birthday offers",
+      "nextAction": "Verify actual trigger/privacy/eligibility and legal storefront payments before implementing",
+      "stage": "E2",
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+    },
+    {
+      "id": "hitapps-decoy-offer",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "No decoy offers",
+      "nextAction": "Inspect concrete source display/eligibility and product semantics; avoid guessing from class name",
+      "stage": "E2",
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+    },
+    {
+      "id": "hitapps-starter-offer",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Basic coin wallet and helper shop; no IAP starter bundle",
+      "nextAction": "Define owner-approved first-play offer and legal store purchase contract",
+      "stage": "E2"
+    },
+    {
+      "id": "hitapps-meta-prewarm",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No separate event UI prewarm/unlock service",
+      "nextAction": "Add optional event unlock level and preload timing in meta scheduler after first event exists",
+      "stage": "D2"
+    },
+    {
+      "id": "hitapps-daily-puzzle",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "src/content/daily-pool.json daily puzzle rotation + src/domain/meta.ts calendar, mode switching",
+      "nextAction": "Audit original daily constraints and improve 28-puzzle repetition, human validation",
+      "stage": "C2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "hitapps-win-rewarded-offer",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No win screen rewarded bonus",
+      "nextAction": "Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK",
+      "stage": "E1"
+    },
+    {
+      "id": "hitapps-inapp-shop",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Coin-priced hints/Undo/Joker; no original-style IAP/shop tiers",
+      "nextAction": "Separate soft-currency helper store vs IAP; verify actual store capabilities and payouts",
+      "stage": "E2"
+    },
+    {
+      "id": "hitapps-ingame-banner",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Current native banner eligible campaign level>=3 in src/main.ts",
+      "nextAction": "Phone/RuStore safe-area+SDK ready/impression test; compare original placement and day mode",
+      "stage": "E1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-card-dictionary",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "src/game/card-reader.ts offers own explanations, not exact AZUR presentation/content",
+      "nextAction": "Compare on-device card readability, foreign/ambiguous semantics and text visibility",
+      "stage": "C1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-localized-move-budget",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "Rules v3 fixed Russian budgets; no per-locale adjustment",
+      "nextAction": "Trace real native method/data; only consider if multiple locales are supported",
+      "stage": "C3",
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+    },
+    {
+      "id": "azur-stock-side-setting",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Settings have mirrored stock/waste positions (existing compact meta)",
+      "nextAction": "Test both deck sides with tall stock, ads banner and active/parked game saves",
+      "stage": "C1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-remote-level-overrides",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "Current offline immutable campaign; no remote content overrides",
+      "nextAction": "Capture original config semantics before proposing optional versioned remote bank rollout",
+      "stage": "C3",
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+    },
+    {
+      "id": "azur-combo-streak",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "Own transfer streak and first-win cycle differ from AZUR ComboStreak",
+      "nextAction": "Reconstruct reward/counter reset/FTUE and determine whether separate progress necessary",
+      "stage": "D2",
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+    },
+    {
+      "id": "azur-unlimited-moves-offer",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Only earned+10 once/attempt; no unlimited-mode offer",
+      "nextAction": "Define exact entitlement duration/UI/server/SaveStore/budget migration without falsely copying AZUR",
+      "stage": "E2"
+    },
+    {
+      "id": "azur-offer-campaign",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No activated commercial campaigns other than fixed helper shop",
+      "nextAction": "Build separable offer schedule + owner-verified store provider after event state",
+      "stage": "E2"
+    },
+    {
+      "id": "azur-fullscreen-ads-clock",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Consumer campaign post-win fullscreenGapMs=120000, not AZUR entry placement",
+      "nextAction": "Reconcile actual shown-vs-attempt clock and in-level cooldown with native flow",
+      "stage": "E1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-ad-revenue-attribution",
+      "status": "ROADMAPPED",
+      "currentImplementation": "SDK events exist, no proven impression-level revenue metrics",
+      "nextAction": "Verify ILRD/currency+placements in target ad provider, not revenue from click",
+      "stage": "E1"
+    },
+    {
+      "id": "azur-cosmetics",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Two earned existing palette/card-back rewards at levels10/20",
+      "nextAction": "Compare catalog UX/unlocks; extend own assets without copying vendor artwork",
+      "stage": "D2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "unico-coffee-break",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No mid-game Coffee Break with +3 earned coins",
+      "nextAction": "Study exact observed break context; design separate optional break/reward and native ad return preservation",
+      "stage": "E2"
+    },
+    {
+      "id": "unico-daily-fortune",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No daily card-choice/second video try",
+      "nextAction": "Prototype isolated day-keyed reward selection with once-only claim and odds disclosure",
+      "stage": "D2"
+    },
+    {
+      "id": "unico-rewarded-theme",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No rewarded seasonal theme unlock, but two earned cosmetics",
+      "nextAction": "Design opt-in themed cosmetic offer, entitlement persistence and receipt grants",
+      "stage": "D2"
+    },
+    {
+      "id": "unico-vip",
+      "status": "BLOCKED",
+      "currentImplementation": "No subscribed VIP entitlement/IAP flow verified",
+      "nextAction": "Confirm legal IAP + Russian self-employed payout/provider before building premium policy",
+      "stage": "E3",
+      "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion"
+    },
+    {
+      "id": "unico-redeal-restart",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Restart preserves exact deal ID/definition; no adaptive redeal on loss",
+      "nextAction": "Study Unico sample vs true replay config; design new eligible variant and frozen save semantics",
+      "stage": "B2"
+    },
+    {
+      "id": "unico-double-reward",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Ordinary win payout only",
+      "nextAction": "Compare Unico post-win CTA to AZUR x3 and develop independent rewarded bonus policy",
+      "stage": "E1"
+    },
+    {
+      "id": "unico-daily-puzzles",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Daily calendar + 28 fixed pool, distinct from Unico seed and losses",
+      "nextAction": "Compare failure-retry loop and daily award once-per-date on actual Android",
+      "stage": "C2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "unico-loss-dialog",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "src/main.ts exhausted result with video+10, Undo and Restart",
+      "nextAction": "Compare visible alternatives on compact screen; SDK no-fill and clear Retry path",
+      "stage": "E1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-structured-long-campaign",
+      "status": "IN_PROGRESS",
+      "currentImplementation": "C8 levels1–15 with Hitapps counts, C7 fallback16–80; no scale policy to2000",
+      "nextAction": "Design C8 16–80 source-grounded curve, layout 5 columns, semantic de-dup and future endless/extended stages",
+      "stage": "C2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-purchase-receipts",
+      "status": "BLOCKED",
+      "currentImplementation": "Native rewarded receipt journal exists, but no IAP transaction ledger",
+      "nextAction": "Verify supported store billing provider and test pending/duplicate purchase recovery",
+      "stage": "E3",
+      "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion"
+    },
+    {
+      "id": "unico-themes-and-skins",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Own palette and card backs exist, no Unico-sized theme gallery",
+      "nextAction": "Audit unlock/reward placement and visual consistency without vendor art",
+      "stage": "D2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     }
-  ]
+  ],
+  "auditRevision": "2026-11-19-full-porting-pass2"
 }

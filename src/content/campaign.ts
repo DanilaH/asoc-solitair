@@ -7,6 +7,8 @@ import { introDeal } from './intro';
 import { withCurrentRules } from './current-rules';
 import { openingDeals } from './opening';
 import { content7Deals } from './campaign-v7';
+import { content8Slice } from './campaign-v8-preview';
+import { CONTENT8_PREVIEW } from '../domain/types';
 import type { Board, BoardCommand, Deal } from '../domain/types';
 
 export interface CampaignRecord {
@@ -21,6 +23,8 @@ export const legacyCampaignDeals: readonly Deal[] = [...campaignRecords.map(reco
 })), ...modifierDeals, ...expansionDeals];
 /** Explicit archive for historical QA and persisted attempts; never select it for Next. */
 export const content6CampaignDeals: readonly Deal[] = [...openingDeals, ...legacyCampaignDeals.slice(15)];
-export const campaignDeals: readonly Deal[] = content7Deals;
-const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals].map(deal => [deal.id, deal]));
+const previewByLevel = new Map(content8Slice.map(deal => [deal.campaignLevel, deal]));
+export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
+  ? content7Deals.map(deal => previewByLevel.get(deal.campaignLevel) ?? deal) : content7Deals;
+const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);

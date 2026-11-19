@@ -32,6 +32,8 @@ Guidance snapshot pin: aab9dc8e06bf1b487da9b3a5e67444975e7c8ac0. Runtime depende
 
 ## Content7 contract
 
+- 2026-11-19 owner decision: C7 balance was rejected. The 0.19.0 branch tests a reference-sized Content 8 slice at positions 6–15. The whole-campaign rewrite follows owner playtest of that slice. The frozen C7 definitions remain the exact save/Undo archive and temporary fallback outside 6–15. See [the comparison and proof](docs/qa/content-v8/README.md).
+
 - Active campaign is exactly80 immutable `campaign-c7-001`..`campaign-c7-080` definitions. Read [the approved implementation specification](docs/content/CONTENT_V7_IMPLEMENTATION_SPEC_2026-11-18.md), [80-row plan](docs/content/CONTENT_V7_LEVEL_PLAN.json) and [acceptance status](docs/qa/content-v7/README.md) before editing. Once accepted, create a new content revision rather than rewriting these boards. Authoring tools are offline only; no runtime RNG/director/paywall.
 - `content6CampaignDeals` is the explicit historical QA catalog. `findDeal` retains original80, C6 fifteen, intro and daily. Save envelopes advance to7; attempt IDs, boards, rules, Undo, hints, lock/key/Joker state and canonical reward IDs remain owned by their historical definition. Restart keeps that definition; new attempts use the existing current-rules policy. Menu/Next choose C7.
 - Rules3 and balance3 are unchanged. Hint3/Undo4/Joker8 remain. C7 ordered first30, keys first49; use actual encounter and stored seen flags. Joker is taught only when invoked, without spending/arming automatically. Preserve the compact board, simple subject art, audio, wallet settlement and SDK settings.

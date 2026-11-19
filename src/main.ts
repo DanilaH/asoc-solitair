@@ -693,7 +693,7 @@ try {
     $('#pause-title').textContent = expanded ? 'Настройки' : screen === 'home' ? 'Настройки' : 'Пауза';
   }, domOptions);
   $('#joker').addEventListener('click', () => {
-    if (deal.id.startsWith('campaign-c7-') && !seenTutorial(save,'intro:joker') && maybeIntroduceRule('joker')) return;
+    if (/^campaign-c[78]-/.test(deal.id) && !seenTutorial(save,'intro:joker') && maybeIntroduceRule('joker')) return;
     if (!save.profile.jokers) { openHelpers('joker'); return; }
     const active = $('#joker').getAttribute('aria-pressed') !== 'true'; setInspect(false); scene?.setJoker(active);
     message('');

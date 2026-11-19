@@ -1,0 +1,1396 @@
+{
+  "summary": {
+    "c7Levels": 80,
+    "c7HomogeneousLevels": 24,
+    "c7LevelsWithReadyLeader": 34,
+    "c7LevelsWithQuickFinish": 1,
+    "c8Levels": 10,
+    "c8BranchWins": 29
+  },
+  "content7": [
+    {
+      "level": 1,
+      "sameThemeColumns": 2,
+      "readyPackets": [
+        {
+          "theme": "fruit",
+          "cards": 2
+        },
+        {
+          "theme": "clothes",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 2,
+      "quicklyFinishable": {
+        "fruit": 2
+      }
+    },
+    {
+      "level": 2,
+      "sameThemeColumns": 2,
+      "readyPackets": [
+        {
+          "theme": "office",
+          "cards": 2
+        },
+        {
+          "theme": "flowers",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 2,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 3,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "shoes",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 4,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 5,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "shapes",
+          "cards": 2
+        },
+        {
+          "theme": "shoes",
+          "cards": 2
+        },
+        {
+          "theme": "weather",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 6,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 7,
+      "sameThemeColumns": 2,
+      "readyPackets": [
+        {
+          "theme": "fruit",
+          "cards": 3
+        },
+        {
+          "theme": "drinks",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 2,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 8,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "baking",
+          "cards": 2
+        },
+        {
+          "theme": "office",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 9,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "grains",
+          "cards": 2
+        },
+        {
+          "theme": "building",
+          "cards": 2
+        },
+        {
+          "theme": "pets",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 10,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "vegetables",
+          "cards": 2
+        },
+        {
+          "theme": "nuts",
+          "cards": 2
+        },
+        {
+          "theme": "house",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 11,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 12,
+      "sameThemeColumns": 2,
+      "readyPackets": [
+        {
+          "theme": "clothes",
+          "cards": 2
+        },
+        {
+          "theme": "flowers",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 2,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 13,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "insects",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 14,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 15,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 16,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "dishes",
+          "cards": 2
+        },
+        {
+          "theme": "lights",
+          "cards": 2
+        },
+        {
+          "theme": "music",
+          "cards": 2
+        },
+        {
+          "theme": "sports",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 4,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 17,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "berries",
+          "cards": 2
+        },
+        {
+          "theme": "furniture",
+          "cards": 2
+        },
+        {
+          "theme": "space",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 18,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "reptiles",
+          "cards": 2
+        },
+        {
+          "theme": "cutlery",
+          "cards": 2
+        },
+        {
+          "theme": "fabrics",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 19,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "jobs",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 1,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 20,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 21,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 22,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "birds",
+          "cards": 3
+        },
+        {
+          "theme": "bath",
+          "cards": 3
+        },
+        {
+          "theme": "drinks",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 23,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "building",
+          "cards": 2
+        },
+        {
+          "theme": "nuts",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 24,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "metals",
+          "cards": 2
+        },
+        {
+          "theme": "vegetables",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 25,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "sea",
+          "cards": 2
+        },
+        {
+          "theme": "grains",
+          "cards": 2
+        },
+        {
+          "theme": "trees",
+          "cards": 3
+        },
+        {
+          "theme": "house",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 4,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 26,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "road",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 1,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 27,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "fruit",
+          "cards": 2
+        },
+        {
+          "theme": "music",
+          "cards": 2
+        },
+        {
+          "theme": "furniture",
+          "cards": 2
+        },
+        {
+          "theme": "furniture",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 28,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "reptiles",
+          "cards": 2
+        },
+        {
+          "theme": "spices",
+          "cards": 2
+        },
+        {
+          "theme": "flowers",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 29,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 30,
+      "sameThemeColumns": 2,
+      "readyPackets": [
+        {
+          "theme": "pets",
+          "cards": 2
+        },
+        {
+          "theme": "dishes",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 2,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 31,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "forest",
+          "cards": 3
+        },
+        {
+          "theme": "tools",
+          "cards": 3
+        },
+        {
+          "theme": "dairy",
+          "cards": 3
+        },
+        {
+          "theme": "gems",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 4,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 32,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "vegetables",
+          "cards": 3
+        },
+        {
+          "theme": "shoes",
+          "cards": 3
+        },
+        {
+          "theme": "space",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 33,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "grains",
+          "cards": 2
+        },
+        {
+          "theme": "computer",
+          "cards": 2
+        },
+        {
+          "theme": "hats",
+          "cards": 2
+        },
+        {
+          "theme": "hats",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 34,
+      "sameThemeColumns": 1,
+      "readyPackets": [
+        {
+          "theme": "berries",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 1,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 35,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "office",
+          "cards": 2
+        },
+        {
+          "theme": "nuts",
+          "cards": 2
+        },
+        {
+          "theme": "sea",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 36,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 37,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "clothes",
+          "cards": 2
+        },
+        {
+          "theme": "fish",
+          "cards": 2
+        },
+        {
+          "theme": "baking",
+          "cards": 2
+        },
+        {
+          "theme": "clothes",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 38,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "trees",
+          "cards": 2
+        },
+        {
+          "theme": "kitchen",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 39,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "week",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 40,
+      "sameThemeColumns": 2,
+      "readyPackets": [
+        {
+          "theme": "weather",
+          "cards": 2
+        },
+        {
+          "theme": "cutlery",
+          "cards": 2
+        },
+        {
+          "theme": "spices",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 2,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 41,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "vegetables",
+          "cards": 2
+        },
+        {
+          "theme": "music",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 42,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "fruit",
+          "cards": 4
+        },
+        {
+          "theme": "lights",
+          "cards": 3
+        },
+        {
+          "theme": "fish",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 43,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "building",
+          "cards": 2
+        },
+        {
+          "theme": "flowers",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 44,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 45,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "birds",
+          "cards": 2
+        },
+        {
+          "theme": "shoes",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 2,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 46,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 47,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "pets",
+          "cards": 3
+        },
+        {
+          "theme": "cutlery",
+          "cards": 3
+        },
+        {
+          "theme": "space",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 48,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "tools",
+          "cards": 2
+        },
+        {
+          "theme": "dairy",
+          "cards": 2
+        },
+        {
+          "theme": "hats",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 49,
+      "sameThemeColumns": 3,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 50,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "bath",
+          "cards": 2
+        },
+        {
+          "theme": "road",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 51,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 52,
+      "sameThemeColumns": 4,
+      "readyPackets": [
+        {
+          "theme": "flowers",
+          "cards": 3
+        },
+        {
+          "theme": "music",
+          "cards": 3
+        },
+        {
+          "theme": "vegetables",
+          "cards": 3
+        },
+        {
+          "theme": "space",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 4,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 53,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "computer",
+          "cards": 2
+        },
+        {
+          "theme": "forest",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 54,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 55,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "berries",
+          "cards": 2
+        },
+        {
+          "theme": "city",
+          "cards": 2
+        },
+        {
+          "theme": "dairy",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 56,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "pets",
+          "cards": 2
+        },
+        {
+          "theme": "water",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 57,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "birds",
+          "cards": 2
+        },
+        {
+          "theme": "cutlery",
+          "cards": 2
+        },
+        {
+          "theme": "dances",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 58,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "fruit",
+          "cards": 2
+        },
+        {
+          "theme": "tools",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 59,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "roman",
+          "cards": 2
+        },
+        {
+          "theme": "roman",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 60,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "weather",
+          "cards": 2
+        },
+        {
+          "theme": "music",
+          "cards": 2
+        },
+        {
+          "theme": "flowers",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 61,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "road",
+          "cards": 2
+        },
+        {
+          "theme": "trees",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 62,
+      "sameThemeColumns": 4,
+      "readyPackets": [
+        {
+          "theme": "forest",
+          "cards": 3
+        },
+        {
+          "theme": "shoes",
+          "cards": 3
+        },
+        {
+          "theme": "spices",
+          "cards": 3
+        },
+        {
+          "theme": "computer",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 4,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 63,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "air",
+          "cards": 2
+        },
+        {
+          "theme": "baking",
+          "cards": 2
+        },
+        {
+          "theme": "air",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 2,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 64,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 65,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "vegetables",
+          "cards": 2
+        },
+        {
+          "theme": "cutlery",
+          "cards": 2
+        },
+        {
+          "theme": "pets",
+          "cards": 3
+        },
+        {
+          "theme": "genres",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 4,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 66,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 67,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "fruit",
+          "cards": 2
+        },
+        {
+          "theme": "hats",
+          "cards": 2
+        },
+        {
+          "theme": "office",
+          "cards": 2
+        },
+        {
+          "theme": "sea",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 4,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 68,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "music",
+          "cards": 2
+        },
+        {
+          "theme": "reptiles",
+          "cards": 2
+        },
+        {
+          "theme": "music",
+          "cards": 2
+        },
+        {
+          "theme": "berries",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 69,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 70,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "forest",
+          "cards": 2
+        },
+        {
+          "theme": "spices",
+          "cards": 2
+        },
+        {
+          "theme": "road",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 71,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 72,
+      "sameThemeColumns": 4,
+      "readyPackets": [
+        {
+          "theme": "vegetables",
+          "cards": 3
+        },
+        {
+          "theme": "shoes",
+          "cards": 3
+        },
+        {
+          "theme": "grains",
+          "cards": 3
+        },
+        {
+          "theme": "appliances",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 4,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 73,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "sea",
+          "cards": 2
+        },
+        {
+          "theme": "bath",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 2,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 74,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "office",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 75,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "furniture",
+          "cards": 2
+        },
+        {
+          "theme": "fruit",
+          "cards": 2
+        },
+        {
+          "theme": "nuts",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 76,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "trees",
+          "cards": 2
+        },
+        {
+          "theme": "dishes",
+          "cards": 2
+        },
+        {
+          "theme": "air",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 77,
+      "sameThemeColumns": 3,
+      "readyPackets": [
+        {
+          "theme": "forest",
+          "cards": 2
+        },
+        {
+          "theme": "music",
+          "cards": 2
+        },
+        {
+          "theme": "grains",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 78,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "water",
+          "cards": 2
+        },
+        {
+          "theme": "flowers",
+          "cards": 2
+        },
+        {
+          "theme": "metals",
+          "cards": 3
+        }
+      ],
+      "readyLeaderPackets": 3,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 79,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "roman",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    },
+    {
+      "level": 80,
+      "sameThemeColumns": 0,
+      "readyPackets": [
+        {
+          "theme": "sea",
+          "cards": 2
+        },
+        {
+          "theme": "road",
+          "cards": 2
+        }
+      ],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {}
+    }
+  ],
+  "content8": [
+    {
+      "level": 6,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 56,
+      "forcedRunMax": 1,
+      "branches": 2,
+      "stockRecoveries": 1
+    },
+    {
+      "level": 7,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 26,
+      "forcedRunMax": 1,
+      "branches": 2,
+      "stockRecoveries": 1
+    },
+    {
+      "level": 8,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 46,
+      "forcedRunMax": 1,
+      "branches": 2,
+      "stockRecoveries": 1
+    },
+    {
+      "level": 9,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 46,
+      "forcedRunMax": 3,
+      "branches": 2,
+      "stockRecoveries": 0
+    },
+    {
+      "level": 10,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 46,
+      "forcedRunMax": 4,
+      "branches": 2,
+      "stockRecoveries": 1
+    },
+    {
+      "level": 11,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 62,
+      "forcedRunMax": 1,
+      "branches": 2,
+      "stockRecoveries": 1
+    },
+    {
+      "level": 12,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 24,
+      "forcedRunMax": 1,
+      "branches": 2,
+      "stockRecoveries": 1
+    },
+    {
+      "level": 13,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 42,
+      "forcedRunMax": 2,
+      "branches": 2,
+      "stockRecoveries": 1
+    },
+    {
+      "level": 14,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 42,
+      "forcedRunMax": 1,
+      "branches": 2,
+      "stockRecoveries": 1
+    },
+    {
+      "level": 15,
+      "sameThemeColumns": 0,
+      "readyPackets": [],
+      "readyLeaderPackets": 0,
+      "quicklyFinishable": {},
+      "stockUsed": 42,
+      "forcedRunMax": 1,
+      "branches": 2,
+      "stockRecoveries": 1
+    }
+  ]
+}

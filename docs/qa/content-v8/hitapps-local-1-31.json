@@ -1,0 +1,312 @@
+[
+  {
+    "position": 1,
+    "sourceType": 0,
+    "categories": 4,
+    "cards": 21,
+    "stock": 3,
+    "columns": 3,
+    "baseMoves": -1,
+    "penalty": 0
+  },
+  {
+    "position": 2,
+    "sourceType": 0,
+    "categories": 6,
+    "cards": 32,
+    "stock": 23,
+    "columns": 3,
+    "baseMoves": 61,
+    "penalty": 15
+  },
+  {
+    "position": 3,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 61,
+    "stock": 43,
+    "columns": 4,
+    "baseMoves": 125,
+    "penalty": 2
+  },
+  {
+    "position": 4,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 62,
+    "stock": 44,
+    "columns": 4,
+    "baseMoves": 118,
+    "penalty": 2
+  },
+  {
+    "position": 5,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 46,
+    "columns": 4,
+    "baseMoves": 125,
+    "penalty": 2
+  },
+  {
+    "position": 6,
+    "sourceType": 2,
+    "categories": 12,
+    "cards": 78,
+    "stock": 56,
+    "columns": 4,
+    "baseMoves": 161,
+    "penalty": -3
+  },
+  {
+    "position": 7,
+    "sourceType": 0,
+    "categories": 6,
+    "cards": 35,
+    "stock": 26,
+    "columns": 3,
+    "baseMoves": 65,
+    "penalty": 15
+  },
+  {
+    "position": 8,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 46,
+    "columns": 4,
+    "baseMoves": 117,
+    "penalty": 2
+  },
+  {
+    "position": 9,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 46,
+    "columns": 4,
+    "baseMoves": 120,
+    "penalty": 2
+  },
+  {
+    "position": 10,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 46,
+    "columns": 4,
+    "baseMoves": 127,
+    "penalty": 2
+  },
+  {
+    "position": 11,
+    "sourceType": 2,
+    "categories": 12,
+    "cards": 80,
+    "stock": 62,
+    "columns": 4,
+    "baseMoves": 168,
+    "penalty": -3
+  },
+  {
+    "position": 12,
+    "sourceType": 0,
+    "categories": 6,
+    "cards": 36,
+    "stock": 24,
+    "columns": 3,
+    "baseMoves": 62,
+    "penalty": 15
+  },
+  {
+    "position": 13,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 42,
+    "columns": 4,
+    "baseMoves": 120,
+    "penalty": 2
+  },
+  {
+    "position": 14,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 42,
+    "columns": 4,
+    "baseMoves": 118,
+    "penalty": 2
+  },
+  {
+    "position": 15,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 42,
+    "columns": 4,
+    "baseMoves": 118,
+    "penalty": 2
+  },
+  {
+    "position": 16,
+    "sourceType": 2,
+    "categories": 12,
+    "cards": 80,
+    "stock": 54,
+    "columns": 4,
+    "baseMoves": 164,
+    "penalty": -3
+  },
+  {
+    "position": 17,
+    "sourceType": 0,
+    "categories": 6,
+    "cards": 36,
+    "stock": 24,
+    "columns": 3,
+    "baseMoves": 63,
+    "penalty": 15
+  },
+  {
+    "position": 18,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 42,
+    "columns": 4,
+    "baseMoves": 123,
+    "penalty": 2
+  },
+  {
+    "position": 19,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 42,
+    "columns": 4,
+    "baseMoves": 125,
+    "penalty": 2
+  },
+  {
+    "position": 20,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 42,
+    "columns": 4,
+    "baseMoves": 121,
+    "penalty": 2
+  },
+  {
+    "position": 21,
+    "sourceType": 2,
+    "categories": 12,
+    "cards": 80,
+    "stock": 54,
+    "columns": 4,
+    "baseMoves": 170,
+    "penalty": -3
+  },
+  {
+    "position": 22,
+    "sourceType": 0,
+    "categories": 6,
+    "cards": 36,
+    "stock": 24,
+    "columns": 3,
+    "baseMoves": 62,
+    "penalty": 15
+  },
+  {
+    "position": 23,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 63,
+    "stock": 41,
+    "columns": 4,
+    "baseMoves": 116,
+    "penalty": 2
+  },
+  {
+    "position": 24,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 65,
+    "stock": 43,
+    "columns": 4,
+    "baseMoves": 125,
+    "penalty": 2
+  },
+  {
+    "position": 25,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 42,
+    "columns": 4,
+    "baseMoves": 122,
+    "penalty": 2
+  },
+  {
+    "position": 26,
+    "sourceType": 3,
+    "categories": 14,
+    "cards": 94,
+    "stock": 59,
+    "columns": 5,
+    "baseMoves": 180,
+    "penalty": -4
+  },
+  {
+    "position": 27,
+    "sourceType": 0,
+    "categories": 6,
+    "cards": 36,
+    "stock": 24,
+    "columns": 3,
+    "baseMoves": 62,
+    "penalty": 15
+  },
+  {
+    "position": 28,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 42,
+    "columns": 4,
+    "baseMoves": 117,
+    "penalty": 2
+  },
+  {
+    "position": 29,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 64,
+    "stock": 42,
+    "columns": 4,
+    "baseMoves": 118,
+    "penalty": 2
+  },
+  {
+    "position": 30,
+    "sourceType": 1,
+    "categories": 10,
+    "cards": 66,
+    "stock": 44,
+    "columns": 4,
+    "baseMoves": 124,
+    "penalty": 2
+  },
+  {
+    "position": 31,
+    "sourceType": 4,
+    "categories": 15,
+    "cards": 100,
+    "stock": 65,
+    "columns": 5,
+    "baseMoves": 199,
+    "penalty": -5
+  }
+]

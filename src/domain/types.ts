@@ -1,5 +1,6 @@
 export const RULES_VERSION = 3;
-export const CONTENT_VERSION = 7;
+export const CONTENT8_PREVIEW = import.meta.env?.VITE_CONTENT8_PREVIEW === '1';
+export const CONTENT_VERSION = CONTENT8_PREVIEW ? 8 : 7;
 export const BALANCE_VERSION = 3;
 export interface Card {
   id: string; category: string; text: string; leader?: boolean; image?: string; rank?: number; ordered?: boolean; keyId?: string; explanation: string;

@@ -17,10 +17,10 @@
 
 ## 2. Где хранится нормативный статус
 
-1. **Оригинальные источники и найденные механизмы:** `mini-games-kit/research/games/association-solitaire/porting/SOURCE_FEATURES.json`, initial pinned inventory blob `192372a9df59a0318af6674f3652238ad1154297` в слитом kit commit [899869a19e64245c024dc02bebc36420f81f5487](https://github.com/DanilaH/mini-games-kit/tree/899869a19e64245c024dc02bebc36420f81f5487). Это отдельная версия исследования, а НЕ установленный runtime kit.
+1. **Оригинальные источники и найденные механизмы:** `mini-games-kit/research/games/association-solitaire/porting/SOURCE_FEATURES.json`, initial framework snapshot (40 features) was expanded by independent audit to **76 features**, source blob `d4764dd59c6056f0621f58edd5a95a5460be523e` in [kit PR #74](https://github.com/DanilaH/mini-games-kit/pull/74). Common framework was merged in kit commit [899869a19e64245c024dc02bebc36420f81f5487](https://github.com/DanilaH/mini-games-kit/tree/899869a19e64245c024dc02bebc36420f81f5487); source blob will be pinned to merged kit commit after PR #74 integration.. Это отдельная версия исследования, а НЕ установленный runtime kit.
 2. **Наша обязательная матрица:** [ADOPTION_LEDGER.json](ADOPTION_LEDGER.json). Каждый source feature ID имеет ровно одну строку, текущую реализацию, следующий этап и ссылку на исходное исследование. Машинные статусы не подменяют реальную проверку.
 3. **Методология:** [Reference → Product Porting Framework](https://github.com/DanilaH/mini-games-kit/blob/899869a19e64245c024dc02bebc36420f81f5487/docs/agent-workflows/REFERENCE_PORTING_FRAMEWORK.md). Старые [Reference Protocol](../kit-guidance/REFERENCE_PROTOCOL.md) и [Task Router](../kit-guidance/TASK_ROUTER.md) остаются полезны, но **полный adoption-проект не должен обрезаться до 1–2 маршрутов или 1–2 систем**.
-4. **Текущая ветка:** [Content8 PR #41](https://github.com/DanilaH/asoc-solitair/pull/41); [Hitapps Equality/+10 follow-up PR #42](https://github.com/DanilaH/asoc-solitair/pull/42); новое research-решение [mini-games-kit #71](https://github.com/DanilaH/mini-games-kit/pull/71); полный повторный разбор [kit #72](https://github.com/DanilaH/mini-games-kit/pull/72). На момент 19.11 это **открытые PR**, не слитый production.
+4. **Текущая ветка:** [Content8 PR #41](https://github.com/DanilaH/asoc-solitair/pull/41); [Hitapps Equality/+10 follow-up PR #42](https://github.com/DanilaH/asoc-solitair/pull/42); новое research-решение [mini-games-kit #71](https://github.com/DanilaH/mini-games-kit/pull/71); полный повторный разбор [kit #72](https://github.com/DanilaH/mini-games-kit/pull/72). По состоянию на аудит kit #71 и #73 слиты в main, game #43 слит в активную C8 ветку; game #41 и #42 и kit #72 остаются отдельными открытыми PR. Новый полный аудит — kit #74 и game docs-only follow-up. Не принимать открытые ветки за уже выпущенный APK.
 5. **Реальные ограничения:** `AGENTS.md`, product decisions, сохранить старые C1–C8 сохранения/attempt IDs, Rules v3, Undo/Hint, native receipts, package/signing, revenue attribution, Android lifecycle. Не переписывать старые preview-definition IDs задним числом.
 
 ## 3. Обязательный рабочий цикл агента
@@ -55,3 +55,7 @@ python3 ../mini-games-kit/tools/verify-reference-porting.py \
 При **одновременном изменении AGENTS и игрового контента** выбор верного HEAD и согласование PR обязательны; не перезаписывать новые изменения старым `main`.
 
 **KIT IMPACT:** новая методология принятия исследований и контроль полноты, без новых runtime export/SDK/config.
+
+## 6. Полная дорожная карта после независимого аудита
+
+[IMPLEMENTATION_ROADMAP_2026-11-19.md](IMPLEMENTATION_ROADMAP_2026-11-19.md) — 76 идентификаторов со стадиями B1–G1, проверяемыми зависимостями и владельческим управлением scope. На каждый новой находке обновлять эту карту и обе копии реестров. `EVIDENCE_GAP` не означает отказ; `BLOCKED` на IAP означает отсутствие подтверждённой платформенной инфраструктуры, а не запрет на такую систему.

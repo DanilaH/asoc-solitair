@@ -160,7 +160,7 @@ try {
           await page.touchscreen.tap(root.x + frame.offsetX + target.x * frame.unit, root.y + target.y * frame.unit);
           await expect.poll(async () => (await read(page)).attempt.board.joker).toEqual(placed.joker);
           assert.equal((await read(page)).profile.jokers, before.profile.jokers - 1);
-          await expect(page.locator('#lesson-copy')).toContainText('Перенесите карту');
+          await expect(page.locator('#lesson-copy')).toContainText('на Джокера');
           await page.waitForTimeout(650);
           await perform(d, toJoker, await read(page));
           assert((await read(page)).campaign?.tutorials.includes('joker-buffer'));

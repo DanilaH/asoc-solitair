@@ -1,3 +1,5 @@
+**Owner porting policy updated 19.11.2026:** this default `main` is the archived C6 runtime, not the active Content8 development base. New full-spectrum Hitapps/AZUR/Unico research and transfer must follow [current C8 owner policy](https://github.com/DanilaH/asoc-solitair/blob/feat/c8-onboarding-dealer-20261119/docs/porting/PORTING_POLICY.md), [verified source-to-product ledger](https://github.com/DanilaH/asoc-solitair/blob/feat/c8-onboarding-dealer-20261119/docs/porting/ADOPTION_LEDGER.json), and [complete roadmap](https://github.com/DanilaH/asoc-solitair/blob/feat/c8-onboarding-dealer-20261119/docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md). Historical “exclude races/Gold/Magnet” restrictions were not product-wide decisions. Do not mutate this main's old save IDs without versioning.
+
 Current work: [0.17/content6 opening fifteen](content/OPENING_V6.md). Versioned content, existing-rule pacing, structural/oracle checks and owner playtest; old attempts and0.16UI/audio/performance preserved. Full CI/APK acceptance is still pending.
 
 # Product sources

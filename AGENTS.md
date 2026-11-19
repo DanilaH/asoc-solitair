@@ -1,13 +1,19 @@
 # Project contract
 
+## Owner's updated reference adoption policy (supersedes old first-slice exclusions)
+
+**Owner decision — 2026-11-19:** research successful Hitapps/AZUR/Unico games for comprehensive *future* product transfer, including core gameplay, level generation, difficulty, monetization, ads, retention, events/meta, UX, audio and onboarding. Every researched mechanism must be registered and mapped to the actual consumer implementation/roadmap. Agent prioritization or staging is allowed; permanent `OWNER_EXCLUDED` requires an **explicit owner decision**. Earlier recommendations `HOLD/REJECT` or initial-MVP exclusions do **not** forbid future versions. Do not fake exact source parity from method names, incomplete static code or an unexecuted original APK.
+
+**The active consumer source is currently NOT this old C6 `main`.** Reference-porting tasks must consult the [full source-to-product roadmap](https://github.com/DanilaH/asoc-solitair/blob/feat/c8-onboarding-dealer-20261119/docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md), [owner policy](https://github.com/DanilaH/asoc-solitair/blob/feat/c8-onboarding-dealer-20261119/docs/porting/PORTING_POLICY.md) and [matching ledger](https://github.com/DanilaH/asoc-solitair/blob/feat/c8-onboarding-dealer-20261119/docs/porting/ADOPTION_LEDGER.json) from the latest active branch, plus [kit Reference → Product framework](https://github.com/DanilaH/mini-games-kit/blob/main/docs/agent-workflows/REFERENCE_PORTING_FRAMEWORK.md). The previous C6 code remains the production main baseline; don't rewrite its archived attempts or copy the new C8 docs into old runtime blindly. Reconcile PR branch heads before implementation.
+
 Read [the product index](docs/README.md), the handoff, requirements and feel spec before work.
 
 - Target: portrait Android/RuStore, Russian content, offline campaign. Browser is the development/test surface. This is not a Yandex Games project.
 - Follow the exact packet, stock/recycle, budget, hint and Undo rules. Rules/content/balance are versioned. Revalidate supplied deals after any rule change.
 - Domain state, economy and reward deduplication never depend on Phaser, animation completion, sound or ad dismissal. Persist the full coordinated profile/attempt before presenting an accepted transition.
 - Keep the exact kit SHA pinned. Start reuse discovery at its docs/API.md; use real exports. Native SDKs are not included in the kit.
-- First delivery is a complete short playable slice with card feel, not a static board. Then create twenty edited and validated campaign deals. Twenty is not an approved release-bank size.
-- Do not add excluded systems: races, VIP, albums, piggy bank, energy, Gold timers, shuffle, magnet or an extra foundation helper.
+- Historical first-slice work delivered a playable short loop; the twenty-deal milestone did not define final campaign size or permitted mechanics.
+- **Historical first-slice exclusions are superseded.** Races, VIP, albums, piggy bank, lives, GoldenCards, shuffle, magnet, extra foundation slot, adaptive difficulty, EasyDeals, Equality/Paywall and monetization remain valid researched future product systems tracked in the active roadmap. Not all should ship in one PR; none may be permanently removed by an agent without owner direction.
 - Joker, ordered and keys are implemented in the six-deal teaching chapter (docs/content/MODIFIERS.md). Compact campaign/daily meta is implemented; see docs/content/COMPACT_META.md for reward, date, migration and parked-attempt ownership. Never silently mark pending features done through placeholders.
 - Browser tests/builds do not establish Android device feel, native ads or analytics delivery. Unconfigured ads must never give fake rewards.
 - Keep decisions, roadmap and verification honest and current. Native changes require Android compilation where available and explicit device limitations.

@@ -3,7 +3,7 @@
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
   "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/docs/reference-porting-governance-20261119/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "5ed575cafe4767efdfa9275c349b9e475f531bd8",
+  "sourceInventoryBlob": "192372a9df59a0318af6674f3652238ad1154297",
   "sourceInventoryRef": "docs/reference-porting-governance-20261119",
   "consumerBaseline": "Content8 PR41 afd631c175c015dfafda9d00f1b68a9457935f97; native device not accepted",
   "coverageDisclaimer": "Initial mapping of 40 researched features, not proof that all competitor binaries have been fully inspected.",

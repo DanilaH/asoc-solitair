@@ -15,7 +15,7 @@ it('matches published EmbeddedRandom vectors and full-length swap bounds', () =>
     const positions = Array.from({ length: size }, (_, i) => i);
     swapDestinations(positions, n => { bounds.push(n); return rng.next(n); });
     expect(bounds).toEqual(Array(10 * Math.max(0, size - 1)).fill(size));
-    expect(positions.toSorted((a, b) => a - b)).toEqual(Array.from({ length: size }, (_, i) => i));
+    expect(positions.slice().sort((a, b) => a - b)).toEqual(Array.from({ length: size }, (_, i) => i));
   }
 });
 

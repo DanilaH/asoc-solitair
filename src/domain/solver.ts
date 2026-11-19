@@ -25,8 +25,17 @@ export function solve(start: Board, deal: Deal, limit = 8000): SearchResult {
 }
 
 export function knownContinuation(board: Board, deal: Deal): BoardCommand[] | null {
-  let current: Board = { ...structuredClone(deal.initial), rulesVersion: boardRules(board) };
-  const witness = boardRules(board) === 2 ? deal.legacyWinningPath ?? deal.winningPath : deal.winningPath;
+  const legacy = boardRules(board) === 2;
+  const routes = legacy ? [deal.legacyWinningPath ?? deal.winningPath] : [deal.winningPath, ...(deal.recoveryPaths ?? [])];
+  for (const route of routes) {
+    const continuation = matchRoute(board, deal, route);
+    if (continuation) return continuation;
+  }
+  return null;
+}
+
+function matchRoute(board: Board, deal: Deal, witness: BoardCommand[]): BoardCommand[] | null {
+  let current: Board = { ...structuredClone(deal.initial), rulesVersion: boardRules(board), movesLeft: null };
   for (let index = 0; index < witness.length; index++) {
     // Foundation slots have identical rules. Match their contents, then map the
     // stored route back to the player's actual slots; tableau/locks stay exact.

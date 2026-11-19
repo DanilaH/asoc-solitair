@@ -12,7 +12,7 @@ describe('reference slice save ownership', () => {
     const { campaignId } = await import('../../src/domain/progression');
     const { decodeSave } = await import('../../src/platform/storage');
     const old = findDeal('campaign-c7-015')!, candidate = campaignDeals[14];
-    expect(candidate.id).toBe('campaign-c8-015');
+    expect(candidate.id).toBe('campaign-c8-dealer-015');
     let save = freshSave(old, 'old-c7');
     save.contentVersion = 7;
     save = dispatch(save, old.winningPath[0], old).next;

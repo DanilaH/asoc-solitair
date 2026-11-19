@@ -73,7 +73,7 @@ jobs:
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run android:sync
         env:
-          VITE_CONTENT8_PREVIEW: ${{ (github.head_ref || github.ref_name) == 'feat/content8-reference-slice-20261119' && '1' || '0' }}
+          VITE_CONTENT8_PREVIEW: ${{ contains(fromJSON('["feat/c8-onboarding-dealer-20261119","feat/content8-reference-slice-20261119"]'), github.head_ref || github.ref_name) && '1' || '0' }}
       - uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/asoc-debug-signing/debug.keystore

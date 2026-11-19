@@ -1,3 +1,5 @@
+**Content 8 — следующий обязательный пакет по отзыву владельца, 19.11:** [обучение перед 78/56, первые уроки помощников, Hard/Super Hard + окрашенный Next, проверка и перенос нативного алгоритма выдачи Hitapps](qa/C8_ONBOARDING_DIFFICULTY_AND_DEALER_SPEC_2026-11-19.md). Текущее крупное C8 [PR #39](https://github.com/DanilaH/asoc-solitair/pull/39) копирует численные параметры6–15, **но не оригинальный генератор и не плавную1–5 учебную кривую**. Исследование source/native является обязательным доказательством; никакой новой экономической/SDK-политики.
+
 Current work: [0.17/content6 opening fifteen](content/OPENING_V6.md). Versioned content, existing-rule pacing, structural/oracle checks and owner playtest; old attempts and0.16UI/audio/performance preserved. Full CI/APK acceptance is still pending.
 
 # Product sources

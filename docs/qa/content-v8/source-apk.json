@@ -1,0 +1,27 @@
+{
+  "source": "04c1a72a7f565d2417690a80649bc721a25b384c",
+  "run": 44503740877,
+  "artifact": 14518109009,
+  "apk": "asoc-solitair-0.19.0-preview.apk",
+  "bytes": 11746720,
+  "sha256": "34743f46dd8477976cea1bf67ba3df66c92056cb33fc5984a8f3c5bfb4f40fc1",
+  "signerSHA256": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+  "webFilesMatched": 207,
+  "runtimeHTMLSHA": "e3f1bb3d7e2ccf1616436c48c5f2f92c87dba3c73940640f122398afac251d30",
+  "emptyCordovaShims": [
+    "assets/public/cordova.js",
+    "assets/public/cordova_plugins.js"
+  ],
+  "dexBuildConfig": {
+    "APPLICATION_ID": "com.danilah.asocsolitair.debug",
+    "VERSION_CODE": 31,
+    "VERSION_NAME": "0.19.0",
+    "AD_MODE": "test",
+    "ANALYTICS_API_KEY": "",
+    "BANNER_AD_UNIT_ID": "demo-banner-yandex",
+    "INTERSTITIAL_AD_UNIT_ID": "demo-interstitial-yandex",
+    "REWARDED_AD_UNIT_ID": "demo-rewarded-yandex"
+  },
+  "limits": "Packaged source, signer and test configuration verified. Physical Android installation, native ad playback, audio and human balance remain untested.",
+  "artifactZIPsha256": "2364739cca8437e178fa3b9fb8623dfdcd35d90d4e31975515e33e194eec0250"
+}

@@ -18,7 +18,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   const visibility = installDocumentVisibilityBlocker(activity);
   const audio = new OneShotPlayer({
     maxVoices: 4,
-    groups: { card: { minIntervalMs: 45, replacementFadeMs: 12 }, packet: { minIntervalMs: 120, replacementFadeMs: 18 }, flip: { minIntervalMs: 70, replacementFadeMs: 12 }, reward: { minIntervalMs: 80, replacementFadeMs: 18 }, coin: { minIntervalMs: 65, replacementFadeMs: 14 }, ui: { minIntervalMs: 40, replacementFadeMs: 8 } },
+    groups: { card: { minIntervalMs: 45, replacementFadeMs: 12 }, packet: { minIntervalMs: 120, replacementFadeMs: 18 }, flip: { minIntervalMs: 70, replacementFadeMs: 12 }, reward: { minIntervalMs: 80, replacementFadeMs: 18 }, coin: { minIntervalMs: 65, replacementFadeMs: 14 }, negative: { minIntervalMs: 60, replacementFadeMs: 12 }, ui: { minIntervalMs: 40, replacementFadeMs: 8 } },
   });
   const haptics = createHaptics();
   const nativeAudio = Capacitor.isNativePlatform() ? registerPlugin<AudioBridge>('SolitaireAudio') : undefined;
@@ -66,8 +66,9 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
     play(name: string, channel: 'gameplay' | 'ui' = 'gameplay') {
       const variant = (variants.get(name) ?? 0) % 3; variants.set(name, variant + 1);
       const key = `${name}:${variant}`;
-      const group = name === 'coins' ? 'coin' : ['win', 'complete'].includes(name) ? 'reward' : name === 'gather' ? 'packet' : name === 'flip' ? 'flip' : name === 'ui' ? 'ui' : 'card';
-      audio.play({ group, channel: name === 'ui' ? 'ui' : channel, gain: recordedCues[name] ? name === 'ui' ? .35 : name === 'lift' ? .4 : .5 : .18, buffer(ctx) {
+      const group = name === 'coins' ? 'coin' : ['win', 'complete'].includes(name) ? 'reward' : ['invalid', 'loss', 'streak-break'].includes(name) ? 'negative' : name === 'gather' ? 'packet' : name === 'flip' ? 'flip' : name === 'ui' ? 'ui' : 'card';
+      const gain = recordedCues[name] ? name === 'ui' ? .35 : name === 'lift' ? .4 : .5 : name === 'coins' ? .26 : .22;
+      audio.play({ group, channel: name === 'ui' ? 'ui' : channel, gain, buffer(ctx) {
         let buffer = buffers.get(key);
         if (!buffer) {
           const files = recordedCues[name], pcm = files && recordings.data.get(files[variant % files.length]);

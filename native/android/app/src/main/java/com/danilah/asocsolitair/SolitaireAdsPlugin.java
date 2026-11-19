@@ -201,9 +201,12 @@ public class SolitaireAdsPlugin extends Plugin {
         if (!available("banner") || background || session!=null) { call.resolve(); return; }
         try {
             View web=getBridge().getWebView(); FrameLayout parent=(FrameLayout)getActivity().findViewById(android.R.id.content);
-            double viewport=call.getDouble("viewportWidth",0.0), slot=call.getDouble("slotWidth",0.0);
-            if (!Double.isFinite(viewport) || !Double.isFinite(slot) || viewport<=0 || slot<=0 || slot>viewport || web.getWidth()<=0) { call.resolve(); return; }
-            int width=(int)Math.floor(web.getWidth()*slot/viewport);
+            double viewport=call.getDouble("viewportWidth",0.0), slot=call.getDouble("slotWidth",0.0), left=call.getDouble("slotX",0.0);
+            if (!Double.isFinite(viewport) || !Double.isFinite(slot) || !Double.isFinite(left) ||
+                viewport<=0 || slot<=0 || left<0 || left+slot>viewport || web.getWidth()<=0) { call.resolve(); return; }
+            // Match the kit's inward edge rounding, including centered or padded slots.
+            double scale=web.getWidth()/viewport;
+            int width=(int)Math.floor((left+slot)*scale)-(int)Math.ceil(left*scale);
             if (width<=0) { call.resolve(); return; }
             if (banner==null || width!=bannerWidth) {
                 destroyBanner(); bannerWidth=width;

@@ -11,7 +11,7 @@ import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } f
 import { WalletPresentation } from './app/wallet-presentation';
 import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
 import { lesson, recordLearning, ruleIntroduction, type RuleIntro } from './app/tutorial';
-import { boardKey, boardRules, dispatch, freshSave, STREAK } from './domain/engine';
+import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import type { BoardCommand, Command } from './domain/types';
 import { WIDTH, boardFrame } from './game/layout';
@@ -74,11 +74,12 @@ function closeDialogs(preserveCoins = false) {
 }
 function openDialog(selector: string, preserveCoins = false) { peekCard(null); clearPraise(); scene?.clearFeedback(); closeDialogs(preserveCoins); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
 let peeked: string | null = null;
-function peekCard(id: string | null) {
+function peekCard(id: string | null, previewOnly = false) {
   if (peeked === id) return;
   peeked = id; const panel = $('#inspect-peek'); panel.hidden = !id;
   $('#inspect').dataset.peeking = String(Boolean(id));
   if (!id) return;
+  $('#peek-status').hidden = !previewOnly;
   const card = deal.cards[id], content = cardReader(card, deal), image = $<HTMLImageElement>('#peek-image');
   $('#peek-title').textContent = content.title; $('#peek-description').textContent = content.description ?? '';
   const artwork = cardArtwork(card, deal);
@@ -191,11 +192,15 @@ try {
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
+  const hasTransfer = new WeakMap<Save['attempt']['board'], boolean>();
   function renderHud() {
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
     document.documentElement.dataset.reduced = String(save.settings.reducedMotion);
     const board = save.attempt.board;
+    $('#game').dataset.exhausted = String(board.phase === 'exhausted');
+    if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
+    $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;
     $('#app').dataset.practice = String(training());
     $('#level-number').textContent = deal.daily ? `${training() ? 'ТРЕНИРОВКА' : 'ЗАДАНИЕ'} · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
     $('.level h1').textContent = deal.title;
@@ -226,6 +231,7 @@ try {
 
     $('#wallet-open').setAttribute('aria-label', `${save.profile.coins} монет. Монеты и помощники`);
     $('#moves').textContent = board.movesLeft === null ? '∞' : String(board.movesLeft);
+    $('.moves').dataset.urgency = board.movesLeft === 0 ? 'lost' : board.movesLeft !== null && board.movesLeft <= 5 ? board.movesLeft <= 2 ? 'critical' : 'low' : '';
     $('#move-fill').style.width = `${100 * (board.movesLeft ?? 1) / (deal.initial.movesLeft ?? 1)}%`;
     const replayHint = activeHint?.key === boardKey(board);
     const searching = Boolean(pendingHint);
@@ -323,6 +329,7 @@ try {
   }
   async function execute(cmd: Command) {
     if (!alive || saving || screen !== 'game' || runtime.activity.isBlocked()) return false;
+    const progressBefore = save.attempt.streak.progress, movesBefore = save.attempt.board.movesLeft;
     let result: Result | undefined;
     let started = false, finished = false;
     try {
@@ -357,28 +364,46 @@ try {
       const major = result.events.find(e => e.type === 'win') ?? result.events.find(e => e.type === 'unlock') ?? result.events.find(e => e.type === 'complete') ?? result.events.find(e => e.type === 'key') ?? result.events.find(e => e.type === 'coins') ?? result.events[0];
       const coreCoins = result.events.filter(e => e.type === 'coins').reduce((n,e) => n + (e.amount ?? 0), 0);
       const hasCoinFlight = coreCoins > 0;
+      const lost = save.attempt.board.phase === 'exhausted';
       // The save/grant is already durable. Only optional sound/haptics/coins
       // follow the visible contact and may be dropped when superseded.
       const present = () => {
-        if (major) {
-          if (major.type !== 'coins') runtime.play(major.type);
+        if (lost) { runtime.play('loss'); runtime.pulse('loss'); }
+        else if (major) {
+          runtime.play(major.type === 'coins' ? 'transfer' : major.type);
           if (major.type === 'key' || major.type === 'unlock' || major.type === 'joker') runtime.pulse(major.type === 'key' ? 'coins' : major.type === 'unlock' ? 'complete' : 'hint');
-          if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type as 'transfer' | 'complete' | 'coins' | 'win' | 'undo' | 'hint');
+          if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type === 'coins' ? 'transfer' : major.type as 'transfer' | 'complete' | 'win' | 'undo' | 'hint');
         }
         if (hasCoinFlight) coinBurst($('#streak-reward'), coreCoins);
       };
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
       if (save.attempt.board.phase !== 'playing') {
-        const delay = save.settings.reducedMotion ? 100 : save.attempt.board.phase === 'won' ? 0 : 380;
+        const delay = save.settings.reducedMotion ? 100 : save.attempt.board.phase === 'won' ? 0 : 465;
         const collectionDeadline = hasCoinFlight ? Infinity : performance.now() + 720;
         clearTimeout(outcomeTimer); outcomeTimer = setTimeout(() => outcome(collectionDeadline), delay);
       }
     } else {
-      scene?.cancel(); scene?.reject(['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined); runtime.play('invalid'); runtime.pulse('invalid');
+      scene?.cancel(); scene?.reject(['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined);
+      const broken = progressBefore > 0 && save.attempt.streak.progress === 0;
+      runtime.play(broken ? 'streak-break' : 'invalid'); runtime.pulse(broken ? 'streak-break' : 'invalid');
+      if (broken) {
+        for (const cell of [...$('#streak').children].slice(0, progressBefore)) {
+          cell.getAnimations().forEach(animation => animation.cancel());
+          const fade = { background: '#e7a999', borderColor: '#ffd0b4' };
+          cell.animate(save.settings.reducedMotion ? [fade, {}] : [fade, { ...fade, transform: 'translateY(2px) scale(.83)' }, {}], { duration: 240 });
+        }
+      }
       telemetry.track('move_rejected', { reason: result.reason ?? 'unknown' }); message(result.reason ?? 'Сюда не подходит', true);
     }
     renderHud();
+    const moves = save.attempt.board.movesLeft;
+    if (result.accepted && moves !== null && moves > 0 && moves <= 5 && movesBefore !== null && moves < movesBefore && !save.settings.reducedMotion) {
+      const counter = $('#moves');
+      counter.getAnimations().forEach(animation => animation.cancel());
+      counter.animate([{ transform: 'none' }, { transform: 'translateX(-2px) scale(1.08)' },
+        { transform: 'translateX(2px)' }, { transform: 'none' }], { duration: 230, easing: 'ease-out' });
+    }
     if (save.attempt.board.phase === 'playing') showGuidance(cmd.type !== 'hint');
     return result.accepted;
   }

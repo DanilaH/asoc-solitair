@@ -3,7 +3,7 @@ import { installSceneTextSharpness } from '@danilah/mini-games-kit/phaser';
 import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
 import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
-import { boardFrame, cardMetrics, dragTarget, dropTarget, layout } from './layout';
+import { boardFrame, cardMetrics, dragTarget, dropTarget, layout, tableauPresentation } from './layout';
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 
@@ -12,7 +12,7 @@ interface Options {
   deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene): void;
   inputRoot?(): HTMLElement; boardBounds?(): { x: number; y: number; width: number; height: number };
-  readerZone?(): DOMRect; peek?(id: string | null): void;
+  readerZone?(): DOMRect; peek?(id: string | null, previewOnly?: boolean): void;
 }
 interface BoardPointer { id: number; x: number; y: number; primaryDown: boolean; isDown: boolean }
 interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; inspectOnly?: boolean; liftedAt?: number; motion?: { x: number; at: number; tilt: number }; jokerColumn?: number }
@@ -266,8 +266,26 @@ export class BoardScene extends Phaser.Scene {
       this.coveredFaces.delete(id);
       if (this.press?.poses.some(p => p.id === id)) continue;
       const view = this.views.get(id); if (!view) continue;
-      view.content.setVisible(false); view.caption?.setVisible(false); view.strip?.setVisible(pending.strip);
+      this.showFace(view, false, pending.strip, true);
     }
+  }
+  private showFace(view: CardView, full: boolean, strip: boolean, animate = false) {
+    const set = (item: CardView['content'] | CardView['strip'], visible: boolean) => {
+      if (!item) return;
+      this.tweens.killTweensOf(item);
+      if (!animate || item.visible === visible && item.alpha === 1) { item.setVisible(visible).setAlpha(1); return; }
+      if (!item.visible) item.setAlpha(0).setVisible(true);
+      this.tweens.add({ targets: item, alpha: visible ? 1 : 0, duration: 105, ease: 'Sine.easeOut',
+        onComplete: () => item.setVisible(visible).setAlpha(1) });
+    };
+    set(view.content, full); set(view.strip, strip);
+  }
+  private showcaseUnderLift(press: CardPress) {
+    const board = this.options.getSave().attempt.board, from = press.from;
+    const ordered = from?.kind === 'tableau' ? tableauPresentation(board, this.options.deal, from.index)
+      : from?.kind === 'waste' ? board.waste : undefined;
+    const under = ordered?.filter(id => !press.poses.some(p => p.id === id)).at(-1);
+    if (under && board.faceUp.includes(under)) this.showFace(this.views.get(under)!, true, false, !this.options.getSave().settings.reducedMotion);
   }
   private drawSlots() {
     const board = this.options.getSave().attempt.board;
@@ -304,7 +322,6 @@ export class BoardScene extends Phaser.Scene {
     const save = this.options.getSave(), board = save.attempt.board;
     const previousCollected = this.collectedIds; this.collectedIds = new Set(board.collected);
     const previous = this.metrics;
-    const drawUnder = command?.type === 'draw' && !save.settings.reducedMotion ? board.waste.at(-2) : undefined;
     const bounds = this.options.boardBounds?.() ?? { x: 0, y: 0, width: this.scale.width, height: this.scale.height };
     const frameKey = this.frameIdentity(), sameFrame = frameKey === this.frameKey;
     this.frameKey = frameKey;
@@ -315,7 +332,8 @@ export class BoardScene extends Phaser.Scene {
     const duration = save.settings.reducedMotion ? 0 : 215;
     const effects = new URLSearchParams(location.search);
     const cardsAnimate = effects.get('fxCards') !== '0';
-    const movedIds = events.find(e => e.type === 'transfer')?.cards ?? [];
+    const movedIds = (events.find(e => e.type === 'transfer')?.cards ?? []).slice();
+    movedIds.sort((a, b) => Number(Boolean(this.options.deal.cards[a].leader)) - Number(Boolean(this.options.deal.cards[b].leader)));
     const exposedId = duration && cardsAnimate && command?.type === 'transfer' && command.from.kind === 'tableau'
       ? board.tableau[command.from.index].at(-1) : undefined;
     const exposed = exposedId && events.some(e => e.type === 'flip' && e.cards?.includes(exposedId)) ? this.views.get(exposedId) : undefined;
@@ -337,9 +355,6 @@ export class BoardScene extends Phaser.Scene {
       return Math.hypot(p.x - view.node.x, p.y - view.node.y) * this.cssUnit;
     }));
     const settlingDuration = duration ? Phaser.Math.Clamp(75 + distance * .5, 80, undoing ? 210 : 180) : 0;
-    const receivingColumn = command?.type === 'transfer' && command.to.kind === 'tableau' ? board.tableau[command.to.index] : undefined;
-    const firstArrival = receivingColumn?.indexOf(movedIds[0]) ?? -1;
-    const tableauUnder = duration && cardsAnimate && firstArrival > 0 ? receivingColumn![firstArrival - 1] : undefined;
     if (events.some(e => e.type === 'undo' || e.type === 'restart')) {
       for (const key of this.keyFlights) { this.tweens.killTweensOf(key); key.setVisible(false); }
       this.options.praise('');
@@ -397,7 +412,7 @@ export class BoardScene extends Phaser.Scene {
       landed = true;
       if (!contactAtKey && !contactAtCollection) contact();
       const target = command?.type === 'transfer' && this.metrics.targets.find(t => same(t.location, command.to));
-      if (target && !completed) this.cue(target.x, target.y, 0xffd990);
+      if (target && !completed) this.cue(target.x, target.y, 0xa5ead1);
       const front = arrivalId && this.views.get(arrivalId);
       if (front && !this.press && !save.settings.reducedMotion && !completed) {
         const large = movedIds.length >= 3;
@@ -436,7 +451,7 @@ export class BoardScene extends Phaser.Scene {
         const old = previous.poses.find(p => p.id === id) ?? previous.waste;
         const index = board.stock.length - 1 - board.stock.indexOf(id), delay = index * Math.min(16, 120 / Math.max(1, board.stock.length - 1));
         view.node.setPosition(old.x, old.y).setDepth(100 + index).setScale(1).setAngle(0).setAlpha(1).setVisible(true);
-        view.face.setVisible(true); view.back.setVisible(false); view.content.setVisible(true); view.strip?.setVisible(false);
+        view.face.setVisible(true); view.back.setVisible(false); this.showFace(view, true, false);
         this.tweens.add({ targets: view.node, x: stock.x, y: stock.y, duration: 240, delay, ease: 'Sine.easeInOut',
           onUpdate: tween => { const t = tween.progress; view.node.setScale(Math.max(.045, Math.abs(1 - t * 2)), 1); view.face.setVisible(t < .5); view.back.setVisible(t >= .5); },
           onComplete: () => view.node.setVisible(false).setScale(1) });
@@ -469,7 +484,8 @@ export class BoardScene extends Phaser.Scene {
         if (origin) view.node.setPosition(origin.x, origin.y).setScale(1).setAlpha(1).setAngle(0);
       }
       const group = board.tableau.findIndex(col => col.includes(pose.id));
-      const groupIds = group >= 0 ? packet(board, group, this.options.deal) : board.foundations.find(col => col.includes(pose.id)) ?? [];
+      const columnPacket = group >= 0 ? packet(board, group, this.options.deal) : undefined;
+      const groupIds = columnPacket ? columnPacket.includes(pose.id) ? columnPacket : [] : board.foundations.find(col => col.includes(pose.id)) ?? [];
       const total = Object.values(this.options.deal.cards).filter(c => c.category === def.category && !c.leader).length;
       view.badge.setText(def.leader ? `${groupIds.filter(id => !this.options.deal.cards[id].leader).length} / ${total}` : def.rank ? `${def.rank} / ${total}` : groupIds.length > 1 ? `×${groupIds.length}` : '');
       const foundation = board.foundations.some(ids => ids.includes(pose.id));
@@ -480,7 +496,7 @@ export class BoardScene extends Phaser.Scene {
         view.badge.setText(def.ordered || def.rank ? view.badge.text : '');
         view.badge.setY(-this.cardH / 2 + 13);
       } else view.badge.setY(def.leader && !def.ordered ? -this.cardH / 2 + 13 : this.cardH / 2 - 30);
-      const column = group >= 0 ? board.tableau[group] : [], nextId = column[column.indexOf(pose.id) + 1];
+      const column = group >= 0 ? tableauPresentation(board, this.options.deal, group) : [], nextId = column[column.indexOf(pose.id) + 1];
       const next = group >= 0 && nextId ? this.metrics.poses.find(p => p.id === nextId) : undefined;
       const support = this.metrics.joker;
       const supportBelow = support && support.x === pose.x && support.depth > pose.depth && (!next || support.depth < next.depth);
@@ -500,11 +516,14 @@ export class BoardScene extends Phaser.Scene {
         view.strip.setAngle(rearWaste && view.strip instanceof Phaser.GameObjects.Text ? side * 90 : 0)
           .setPosition(rearWaste ? side * (this.cardW / 2 - band / 2) : 0, rearWaste ? 0 : -this.cardH / 2 + band / 2);
       }
-      const waitingForCover = pose.id === drawUnder || pose.id === tableauUnder;
+      const cover = rearWaste ? wasteAbove?.id : supportBelow ? undefined : nextId;
+      const waitingForCover = Boolean(duration && cardsAnimate && cover &&
+        (returningIds.includes(cover) || movedIds.includes(cover) && !movedIds.includes(pose.id) ||
+          command?.type === 'draw' && cover === board.waste.at(-1)));
       const stripVisible = Boolean(coveredCaption && pose.faceUp && view.strip && previewRoom >= 12 && (!(view.strip instanceof Phaser.GameObjects.Text) || view.strip.scaleX >= .65));
-      if (waitingForCover) this.coveredFaces.set(pose.id, { frontId: pose.id === drawUnder ? board.waste.at(-1)! : movedIds.at(-1)!, strip: stripVisible });
-      view.content.setVisible(!coveredCaption || waitingForCover); view.caption?.setVisible(!coveredCaption || waitingForCover);
-      view.strip?.setVisible(!waitingForCover && stripVisible);
+      if (waitingForCover && cover) this.coveredFaces.set(pose.id, { frontId: cover, strip: stripVisible });
+      this.showFace(view, !coveredCaption || waitingForCover, !waitingForCover && stripVisible,
+        Boolean(previous?.poses.some(old => old.id === pose.id && old.faceUp) && pose.faceUp && duration && !entering && !movedIds.includes(pose.id)));
       if (keepEntry) continue;
       const fresh = entering && this.initial && Boolean(duration) && cardsAnimate;
       if (fresh) {
@@ -752,7 +771,7 @@ export class BoardScene extends Phaser.Scene {
   private destroyCue(cue: Phaser.GameObjects.Container) { this.tweens.killTweensOf([cue, ...cue.list]); cue.destroy(true); }
   private cue(x: number, y: number, color: number, shake = false, delay = 0) {
     while (this.cues.length >= 4) this.destroyCue(this.cues.shift()!);
-    const wash = this.add.graphics().fillStyle(color, shake ? .2 : .08).fillRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
+    const wash = this.add.graphics().fillStyle(color, shake ? .2 : .14).fillRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
     const streak = this.add.graphics().fillStyle(color, .9).fillRoundedRect(-this.cardW * .17, this.cardH / 2 - 7, this.cardW * .34, 3, 1.5);
     const cue = this.add.container(x, y, [wash, streak]).setDepth(690).setAlpha(delay ? 0 : 1);
     this.world.add(cue); this.world.sort('depth'); this.cues.push(cue);
@@ -768,13 +787,14 @@ export class BoardScene extends Phaser.Scene {
   }
   public reject(command?: BoardCommand) {
     const target = command?.type === 'transfer' ? this.metrics.targets.find(t => same(t.location, command.to)) : undefined;
-    if (target) this.cue(target.x, target.y, 0xe9a08a, true);
+    if (target) this.cue(target.x, target.y, 0xf08f80, true);
   }
   private hitSource(x: number, y: number): Location | null {
     const board = this.options.getSave().attempt.board;
     for (const pose of [...this.metrics.poses].sort((a, b) => this.views.get(b.id)!.node.depth - this.views.get(a.id)!.node.depth)) {
       const view = this.views.get(pose.id)!;
-      if (!view.node.visible || this.enteringCards.has(pose.id) || !pose.faceUp || !inside(x, y, { x: view.node.x, y: view.node.y, width: this.cardW, height: this.cardH })) continue;
+      if (!view.node.visible || this.enteringCards.has(pose.id) || !inside(x, y, { x: view.node.x, y: view.node.y, width: this.cardW, height: this.cardH })) continue;
+      if (!pose.faceUp) return null;
       if (board.waste.at(-1) === pose.id) return { kind: 'waste', index: 0 };
       const index = board.tableau.findIndex(col => packet(board, board.tableau.indexOf(col), this.options.deal).includes(pose.id));
       if (index >= 0 && !packet(board, index, this.options.deal).some(id => this.enteringCards.has(id))) return { kind: 'tableau', index };
@@ -787,7 +807,11 @@ export class BoardScene extends Phaser.Scene {
   }
   private get stockTarget() { const stock = this.metrics.stock; return { x: stock.x, y: stock.y + stock.thickness / 2, width: this.cardW, height: this.cardH + stock.thickness }; }
   private hitCard(x: number, y: number): Pose | undefined {
-    return [...this.metrics.poses].sort((a, b) => this.views.get(b.id)!.node.depth - this.views.get(a.id)!.node.depth).find(p => !this.enteringCards.has(p.id) && this.views.get(p.id)!.node.visible && p.faceUp && inside(x, y, { x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y, width: this.cardW, height: this.cardH }));
+    const pose = [...this.metrics.poses].sort((a, b) => this.views.get(b.id)!.node.depth - this.views.get(a.id)!.node.depth).find(p => {
+      const { node } = this.views.get(p.id)!;
+      return node.visible && !this.enteringCards.has(p.id) && inside(x, y, { x: node.x, y: node.y, width: this.cardW, height: this.cardH });
+    });
+    return pose?.faceUp ? pose : undefined;
   }
   private down(pointer: BoardPointer) {
     if (!this.enabled || !pointer.primaryDown || this.press) return;
@@ -845,7 +869,10 @@ export class BoardScene extends Phaser.Scene {
     if (Math.hypot(x - press.x, y - press.y) > 11) press.moved = true;
     if (!press.moved) return;
     this.dragPointer = pointer;
-    if (press.liftedAt === undefined) { press.liftedAt = performance.now(); if (press.from && press.poses.length > 1) this.options.sound('gather'); }
+    if (press.liftedAt === undefined) {
+      press.liftedAt = performance.now(); this.showcaseUnderLift(press);
+      if (press.from && press.poses.length > 1) this.options.sound('gather');
+    }
     const reduced = this.options.getSave().settings.reducedMotion, now = performance.now();
     const progress = reduced ? 1 : 1 - (1 - Math.min(1, (now - press.liftedAt) / 80)) ** 3;
     const motion = press.motion ??= { x, at: now, tilt: 0 }, dt = Math.max(1, now - motion.at);
@@ -863,18 +890,18 @@ export class BoardScene extends Phaser.Scene {
       const view = this.views.get(pose.id)!;
       if (firstMove) { this.tweens.killTweensOf(view.node); this.tweens.killTweensOf(view.shade); }
       const front = i === press.poses.length - 1;
-      view.content.setVisible(front); view.caption?.setVisible(front); view.strip?.setVisible(false);
+      if (firstMove) this.showFace(view, front, false);
       if (gathering && front && !this.options.deal.cards[pose.id].rank && !this.options.deal.cards[pose.id].leader) view.badge.setVisible(false);
-      view.shade.setAlpha(front ? 0 : .16 * progress);
+      view.shade.setAlpha((!press.from ? .27 : front ? 0 : .16) * progress);
       view.shadow.setPosition(-tilt * .6, 4 * progress).setScale(1 + .03 * progress).setAlpha(front ? 1 : .45);
-      view.node.setPosition(pose.x + dx, heldY[i] + dy).setScale(1 + .035 * progress).setAngle(tilt).setDepth(800 + i);
+      view.node.setPosition(pose.x + dx, heldY[i] + dy).setScale(reduced ? 1 : 1 + .035 * progress).setAngle(tilt).setDepth(800 + i);
     });
     const front = press.poses.at(-1);
-    this.dragCount.setVisible(press.poses.length > 1);
-    if (front) { const node = this.views.get(front.id)!.node; this.dragCount.setDepth(850).setText(`×${press.poses.length}`).setFontSize(Math.max(20, 12 / this.cssUnit)).setPosition(node.x - this.cardW / 2 + 14, node.y - this.cardH / 2 + 12); }
+    this.dragCount.setVisible(!press.from || press.poses.length > 1);
+    if (front) { const node = this.views.get(front.id)!.node; this.dragCount.setDepth(850).setText(press.from ? `×${press.poses.length}` : 'Просмотр').setFontSize(Math.max(17, 11 / this.cssUnit)).setPosition(node.x - this.cardW / 2 + 10, node.y - this.cardH / 2 + 8); }
     if (firstMove) { this.world.sort('depth'); this.drawSlots(); }
     const hover = this.currentDrop(x, y), valid = hover && press.from && this.canDrop(press.from, hover.location);
-    this.options.peek?.(this.overReader(x, y, true) || this.overReader(x, y) && !valid ? press.inspectId! : null);
+    this.options.peek?.(this.overReader(x, y, true) || this.overReader(x, y) && !valid ? press.inspectId! : null, !press.from);
     this.drawFocus(hover);
   }
   private up(pointer: BoardPointer) {
@@ -894,7 +921,7 @@ export class BoardScene extends Phaser.Scene {
     }
     this.pendingReturn = press.moved ? press : null;
     const { x, y } = this.point(pointer);
-    if (reader && press.inspectId) { this.cancel(press); this.options.peek?.(press.inspectId); return; }
+    if (reader && press.inspectId) { this.cancel(press); this.options.peek?.(press.inspectId, !press.from); return; }
     if (press.jokerColumn !== undefined) {
       const target = this.hitTarget(x, y);
       if (Math.hypot(x - press.x, y - press.y) < 11 && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
@@ -934,10 +961,12 @@ export class BoardScene extends Phaser.Scene {
     if (this.selected && !this.press?.moved) {
       for (const id of sourceCards(this.options.getSave().attempt.board, this.selected, this.options.deal)) {
         const view = this.views.get(id)!;
-        this.tweens.killTweensOf(view.node);
         this.tweens.killTweensOf([view.face, view.back]);
         view.face.setVisible(true).setScale(1); view.back.setVisible(false).setScale(1);
-        view.node.setAlpha(1).setScale(this.options.getSave().settings.reducedMotion ? 1 : 1.025);
+        if (!this.options.getSave().settings.reducedMotion) {
+          this.tweens.killTweensOf(view.node);
+          this.tweens.add({ targets: view.node, scaleX: 1.025, scaleY: 1.025, duration: 95, ease: 'Cubic.easeOut' });
+        }
         view.shadow.setPosition(0, 3).setScale(1.035);
       }
     }

@@ -22,9 +22,10 @@ const loss = process.env.C8_EXHAUST === '1'
   : undefined;
 const port = Number(process.env.C8_PORT ?? 4230);
 const levels = (process.env.C8_RECORD_LEVELS ?? '15').split(',').map(Number);
+const demo = process.env.C8_DEMO === '1';
 const lastSteps = Number(process.env.C8_LAST_STEPS ?? 0);
 const width = Number(process.env.C8_WIDTH ?? 360), height = Number(process.env.C8_HEIGHT ?? 780);
-const slug = levels.join('-') + '-' + width + (loss ? '-exhausted' : lastSteps ? '-last-' + lastSteps : consequences.length ? '-decision' : '');
+const slug = levels.join('-') + '-' + width + (demo ? '-lesson' : loss ? '-exhausted' : lastSteps ? '-last-' + lastSteps : consequences.length ? '-decision' : '');
 const recordDir = `${output}/ui/${slug}`;
 const sha = (value: Buffer | string) => createHash('sha256').update(value).digest('hex');
 const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
@@ -125,6 +126,7 @@ try {
       assert.equal((await read(page)).profile.undos, before.profile.undos - 1);
       assert((await read(page)).campaign?.tutorials.includes('undo-used'));
       await page.waitForTimeout(500);
+      if (demo) { console.log('Undo lesson PASS'); break; }
     }
     for (const [j, command] of path.entries()) {
       if (branch && j === branch.step) {
@@ -167,7 +169,10 @@ try {
           acceptance.push({ time: await page.evaluate(() => performance.now()), command: fromJoker });
           break;
         }
-        if ((await read(page)).attempt.jokerUsed) continue;
+        if ((await read(page)).attempt.jokerUsed) {
+          if (demo) break;
+          continue;
+        }
       }
       try { await perform(d, command, await read(page)); }
       catch (error) {
@@ -176,6 +181,14 @@ try {
         throw Error(`Level ${level}, action ${j + 1} ${JSON.stringify(command)}, ${state.attempt.board.movesLeft} moves left: ${await page.locator('#message').textContent()}`, { cause: error });
       }
       acceptance.push({ time: await page.evaluate(() => performance.now()), command });
+      if (demo && (level === 2 && j === 2 || level === 3 && j === 0)) break;
+    }
+    if (demo) {
+      await page.waitForTimeout(800);
+      const markers = (await read(page)).campaign?.tutorials ?? [];
+      assert(markers.includes(({ 2: 'learn:waste', 3: 'hint-practiced', 8: 'joker-buffer' } as Record<number, string>)[level]));
+      console.log(level, 'lesson PASS');
+      break;
     }
     await page.locator('#result[open]').waitFor();
     const final = await read(page);

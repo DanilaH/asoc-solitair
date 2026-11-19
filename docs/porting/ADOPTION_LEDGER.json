@@ -2,9 +2,9 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/docs/reference-porting-governance-20261119/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/899869a19e64245c024dc02bebc36420f81f5487/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
   "sourceInventoryBlob": "192372a9df59a0318af6674f3652238ad1154297",
-  "sourceInventoryRef": "docs/reference-porting-governance-20261119",
+  "sourceInventoryRef": "899869a19e64245c024dc02bebc36420f81f5487",
   "consumerBaseline": "Content8 PR41 afd631c175c015dfafda9d00f1b68a9457935f97; native device not accepted",
   "coverageDisclaimer": "Initial mapping of 40 researched features, not proof that all competitor binaries have been fully inspected.",
   "features": [

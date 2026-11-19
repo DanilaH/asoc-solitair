@@ -1,3 +1,5 @@
+**Content 7 — blocking user balance feedback, 19.11:** [stock starvation / over-prepared category stacks / independent Hitapps-AZUR comparison](qa/C7_STOCK_AND_PREPACK_REFERENCE_AUDIT_2026-11-19.md) · [structural checker](../tools/qa/audit-c7-opening-density.py). PR #33 candidate **не прошёл продуктовую приёмку**: 10/15 стартовых уровней с пустой колодой, уровень15 16 карт/0 stock, максимум13 stock во всём банке; нельзя выдавать machine green за balance accepted. Отдельное исправление без изменения экономики/SDK.
+
 Current work: [0.17/content6 opening fifteen](content/OPENING_V6.md). Versioned content, existing-rule pacing, structural/oracle checks and owner playtest; old attempts and0.16UI/audio/performance preserved. Full CI/APK acceptance is still pending.
 
 # Product sources

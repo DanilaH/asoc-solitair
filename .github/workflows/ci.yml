@@ -17,6 +17,8 @@ jobs:
         with:
           path: /home/runner/.npm
           key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
+      - name: Verify all referenced source systems are represented in the real consumer roadmap
+        run: node tools/qa/verify-porting-ledger.mjs
       - run: node --test tests/infrastructure/*.test.mjs
       - run: node tools/install-dependencies.mjs
         env:

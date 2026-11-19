@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "47acf57e37638bee9f2922335161916aaaa5243a",
-  "sourceInventoryRef": "c751ae5e20cf5d466d4f2b4eb1ed504f0a220395",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/audit/solitaire-independent-coverage-correction-20261119/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "30dc681457cce379957cccc21f2ed4c8cfe25f76",
+  "sourceInventoryRef": "audit/solitaire-independent-coverage-correction-20261119",
   "consumerBaseline": "Content8 PR41 source HEAD 1161d2171d52329bc4f29b44a848d71481794888, preserving C8 tests/compatible save; human Android acceptance OPEN",
-  "coverageDisclaimer": "Expanded independent audit of known 2026-11-09..19 research: 76 source features; not exhaustive of original server. No owner exclusions; EVIDENCE_GAP retains next capture.",
+  "coverageDisclaimer": "99/99 source↔consumer current known research, not exhaustive original live runtime; one earlier Hitapps Daily puzzle attribution downgraded to EVIDENCE_GAP; provenance and CI consumer gate under audit.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -116,8 +116,8 @@
     {
       "id": "hitapps-golden-cards",
       "status": "ROADMAPPED",
-      "currentImplementation": "No Gold Rush per-card event",
-      "nextAction": "Develop one original golden-card event with undo/expiry/save and modified-board oracle",
+      "currentImplementation": "No GoldenCardsFeatureApplier-equivalent modifier of individual cards in final shuffle phase; no Gold Rush lifecycle",
+      "nextAction": "Restore separate native Final-phase GoldenCards insertion and check gold-marked win receipts; event policy tracked separately under hitapps-gold-rush-event",
       "stage": "D1"
     },
     {
@@ -299,8 +299,8 @@
     {
       "id": "ui-motion-audio-coin",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "0.11–0.17 board/audio/coins feel, PR35–37 candidate fixes",
-      "nextAction": "Complete actual device audio/vibration/rapid play acceptance and competitor 1x compare",
+      "currentImplementation": "Game has its own UI/audio/coin feedback but AZUR source research only verified metadata names, not native animation timing",
+      "nextAction": "Compare actual 1× device footage to game; track child IDs for CardAnimator/coin flights/victory/buttons/shuffle separately",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/36",
       "stage": "D2"
     },
@@ -390,11 +390,11 @@
     },
     {
       "id": "hitapps-daily-puzzle",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/content/daily-pool.json daily puzzle rotation + src/domain/meta.ts calendar, mode switching",
-      "nextAction": "Audit original daily constraints and improve 28-puzzle repetition, human validation",
-      "stage": "C2",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "Consumer has its own 28-puzzle Daily pool, but no independently verified Hitapps Daily Level reference; S1 only confirms DailyRewards",
+      "nextAction": "Acquire original Hitapps Daily Level actual session or native scene/level data; do not claim this was source-copied",
+      "stage": "F1",
+      "reason": "Original hitapps S1 reference lacks an independently verified daily puzzle scene; prior attribution was unsupported"
     },
     {
       "id": "hitapps-win-rewarded-offer",
@@ -577,8 +577,182 @@
       "nextAction": "Audit unlock/reward placement and visual consistency without vendor art",
       "stage": "F1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-iap-product-catalog",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Current soft-currency helper shop has no 41-SKU product catalog",
+      "nextAction": "Design source-backed own offer catalog and lawful supported store-product mapping; never treat AZUR local prices as live",
+      "stage": "E3"
+    },
+    {
+      "id": "azur-iap-helper-ladder",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Current Hint/Undo/Joker use fixed coin prices; no SKU-based five-tier assistance offers",
+      "nextAction": "Specify original 4×5 multi-offer schema and separately approved own pricing/entitlements",
+      "stage": "E3"
+    },
+    {
+      "id": "azur-iap-no-ads",
+      "status": "BLOCKED",
+      "currentImplementation": "Native banners/interstitials exist, but no purchased disable-ads entitlement",
+      "nextAction": "Verify target store billing + no-ads policy and persistence before paid offer/reward receipt",
+      "stage": "E3",
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+    },
+    {
+      "id": "azur-iap-coin-packs",
+      "status": "BLOCKED",
+      "currentImplementation": "Coins earned in game; no fiat-purchased coin bundles or legal billing confirmation",
+      "nextAction": "Check supported store IAP and payout, then model eight source tiers against own currency supply",
+      "stage": "E3",
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+    },
+    {
+      "id": "azur-iap-coin-offer-series",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No Coins Offer 1 Time/Next1/Next2 SKU/eligibility sequence",
+      "nextAction": "Recover live trigger sequence or author a declared own offer sequence; source titles are not logic",
+      "stage": "E3"
+    },
+    {
+      "id": "azur-iap-premium-bundles",
+      "status": "BLOCKED",
+      "currentImplementation": "No silver/gold/diamond premium SKU entitlement",
+      "nextAction": "Verify IAP provider, settlement, refund and specific benefit contents before shipping",
+      "stage": "E3",
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+    },
+    {
+      "id": "azur-iap-welcome-offer",
+      "status": "BLOCKED",
+      "currentImplementation": "No store-backed welcome purchase or original paid entry offer",
+      "nextAction": "Validate store purchases and first-use entitlement; keep future welcome-bundle ID in roadmap",
+      "stage": "E3",
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+    },
+    {
+      "id": "azur-iap-unlimited-moves-tiers",
+      "status": "BLOCKED",
+      "currentImplementation": "No purchasable Unlimited Moves/+ /++ tiers",
+      "nextAction": "Reconstruct true entitlement/expiry, billing and SaveStore restore before pricing or SDK calls",
+      "stage": "E3",
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+    },
+    {
+      "id": "azur-definition-consumable",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Reader exists as info view with free card explanations, no separately stocked Definition charges",
+      "nextAction": "Trace Definition usage/intro pricing and define own paid/free resource vs reader UX",
+      "stage": "E1"
+    },
+    {
+      "id": "azur-free-shop-coin-claim",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Earned coins from wins/milestones, no exact separate free shop claim",
+      "nextAction": "Prototype source-observed optional 200-coin claim with real receipt/availability/cooldown verification",
+      "stage": "E1"
+    },
+    {
+      "id": "azur-variable-category-sizes",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "C8 preview src/content/campaign-v8-dealer.json varies per-topic member counts (e.g. level3 5/4 and level6 6/5); dynamic category sizes already represented",
+      "nextAction": "Compare S2 4/5/5/7 (category cards incl leader), C8 topics and 80-level semantic curve; independent solve and Android UI QA",
+      "stage": "C2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "hitapps-mixed-word-image-cards",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "src/content/topics.ts Card.image and own authored imageByCard, card-reader/renderer support; actual C8 distribution varies",
+      "nextAction": "Audit mixed word/image proportions, asset quality and on-device legibility with original gameplay reference",
+      "stage": "C2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "hitapps-language-change-restart",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Current only Russian bank/settings; no language-switch with level regeneration",
+      "nextAction": "Design explicit locale/content compatibility, preserve spent wallet and attempt history, test forced restart notifications",
+      "stage": "G1"
+    },
+    {
+      "id": "hitapps-win-multiresource-payout",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Win coins and milestones exist, no single payout bundle to keys+piggy bank+picture fragments",
+      "nextAction": "Design separate earned resource identities and settlement when those systems implemented, compare S1 visible example",
+      "stage": "F1"
+    },
+    {
+      "id": "azur-remaining-moves-coin-bonus",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "src/domain/balance.ts coinsPerRemainingMove=2 and src/domain/engine.ts payout; AZUR video suggested 5",
+      "nextAction": "Check own multiplier/economy and baseline reward integrity; do not label adapted coefficient exact AZUR copy",
+      "stage": "E1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-card-animation-controller",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Game scene implements card move/flip/feedback motions, but not native AZUR timing/easing equivalence",
+      "nextAction": "Map source/target animation interruption and cancellation on phone; metadata alone is not exact native implementation",
+      "stage": "D2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-coin-flight-animator",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "src/app/wallet-presentation.ts visual coin flights with persisted-domain rewards",
+      "nextAction": "Compare timeout, landing and duplicate callbacks with original UI reference; physical Android audio pending",
+      "stage": "D2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-victory-reward-sequencer",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown",
+      "nextAction": "Replay skip/background/reopen/win/reward/Next with actual saved wallet and 320px UI",
+      "stage": "D2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-button-haptic-feedback",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Game button feedback/native haptic service exists; exact AZUR press states not compared",
+      "nextAction": "Test press/release/exit scale/sound/haptics alignment on signed Android",
+      "stage": "D2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-shuffle-animation-controller",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No Shuffle helper or center-turn animation in current game",
+      "nextAction": "Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees",
+      "stage": "D1"
+    },
+    {
+      "id": "hitapps-invalid-transfer-feedback",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "src/domain/engine.ts rejects illegal transfer before move charge; UI displays contextual invalid feedback",
+      "nextAction": "Recheck touch cancel/hitbox, displayed error semantics and 0 move cost on Android",
+      "stage": "D2",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-locked-helper-discovery",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Helpers currently hidden or inaccessible until unlock; S2 allows tapping early to show required level",
+      "nextAction": "Design previewable locked helper icon + level requirement without accidental spending; test screen reader and FTUE progression",
+      "stage": "C1"
+    },
+    {
+      "id": "azur-localized-definition-packs",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Own Russian-only semantic bank; no 36-locale Addressables/catalog delivery",
+      "nextAction": "Plan original localized dictionaries, missing-definition audit and level/locale save migration if expanding languages",
+      "stage": "G1"
     }
   ],
-  "auditRevision": "2026-11-19-full-porting-pass2",
+  "auditRevision": "2026-11-19-independent-falsification-pass3",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

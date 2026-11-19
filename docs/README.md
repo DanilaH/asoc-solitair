@@ -1,3 +1,5 @@
+**Новый источник/задача по выбору специально трудных раздач — 19.11:** [Hitapps Paywall / Equality / NoPossibleMoves: нативные четыре gate, 80%-late bot-failure, сегментация, +10 rewarded, статусы доказанности, source-port и 10-move rescue](qa/HITAPPS_PAYWALL_EQUALITY_IMPLEMENTATION_SPEC_2026-11-19.md). Владелец одобрил исследование и реализацию отдельной системы после Content 8; **не** путать поражение бота с доказанной невозможностью победы и исходную конфигурацию Hitapps с нашим коммерческим расширением. Пока это docs-only, без изменений production и kit API.
+
 Current work: [0.17/content6 opening fifteen](content/OPENING_V6.md). Versioned content, existing-rule pacing, structural/oracle checks and owner playtest; old attempts and0.16UI/audio/performance preserved. Full CI/APK acceptance is still pending.
 
 # Product sources

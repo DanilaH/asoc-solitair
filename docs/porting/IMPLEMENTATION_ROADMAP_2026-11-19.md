@@ -4,7 +4,7 @@
 
 This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/7f91abfd824162780a6567c6823b95864142957c/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.
 
-**Coverage at this reviewed snapshot:** **99 feature IDs**, 27 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 50 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 10 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
+**Coverage at this reviewed snapshot:** **110 feature IDs**, 29 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 56 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 13 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
 
 ## 1. Action priorities based on dependencies (not a feature ceiling)
 
@@ -38,9 +38,9 @@ Packages may run **in parallel** if independent. A smaller first playable or sho
 
 ## 3. Exact complete stage matrix
 
-Every source ID appears exactly once. Status is implementation evidence, not owner approval.
+Every known source ID appears exactly once; a stage is **not** a permission to omit other systems.
 
-### B1. Генератор и выбор обычного кандидата (2)
+### B1. Генератор и выбор обычного кандидата (6)
 
 C8 source-derived dealer; random seed/stock tableaux, known target steps and independent oracle before altering gameplay.
 
@@ -48,6 +48,10 @@ C8 source-derived dealer; random seed/stock tableaux, known target steps and ind
 | --- | --- | --- |
 | `hitapps-stock-dealer` | `IMPLEMENTED_UNVERIFIED` | Confirm original-device final-board parity and Content8 human/device QA |
 | `hitapps-candidate-priority` | `IMPLEMENTED_UNVERIFIED` | Independent original selected-seed/runtime parity; measure human decision quality |
+| `azur-deck-draw-and-recycle` | `IMPLEMENTED_UNVERIFIED` | Add exact source-model two-pass fixtures, Undo/reload/faceUp/cycle UI tests; compare user-observable order rather than internal array equality |
+| `azur-defeat-vs-no-valid-move` | `IMPLEMENTED_UNVERIFIED` | Verify native branch budget exhaustion&&!win separate from legal-action availability; test stock/recycle cycles and no false loss on temporary no-transfer |
+| `azur-generate-deal-entrypoints` | `EVIDENCE_GAP` | Disassemble AZUR GenerateCards/DealCards full source-state RNG/selection; capture actual original-seed and final stock/columns, then decide source vs own portfolio policy |
+| `hitapps-negative-seed-request-path` | `ROADMAPPED` | Implement native semantics negative-requested-seed→separate random seed draw on eligible paths, record selected seed and reproducibility; not same as EmbeddedRandom ctor(-seed) |
 
 ### B2. История игрока и восстановление сложности (3)
 
@@ -59,7 +63,7 @@ DynamicDifficulty (last10), EasyDeals relief, alternative Retry variant. Never c
 | `hitapps-easy-deals` | `ROADMAPPED` | Model native reason codes/threshold and relief after loss streak as separate selector |
 | `unico-redeal-restart` | `ROADMAPPED` | Study Unico sample vs true replay config; design new eligible variant and frozen save semantics |
 
-### B3. Special Equality / Paywall (2)
+### B3. Special Equality / Paywall (5)
 
 Source-based gating and late simulator failure vs our mathematically certified +10 continuation variant; two distinct modes, existing receipt.
 
@@ -67,6 +71,9 @@ Source-based gating and late simulator failure vs our mathematically certified +
 | --- | --- | --- |
 | `hitapps-equality-paywall` | `ROADMAPPED` | Implement source-bound Equality candidate selection and separate +10 validated recovery |
 | `hitapps-paywall-segmentation` | `ROADMAPPED` | Implement eligible profile/attempt gates with explicit source/runtime uncertainty |
+| `hitapps-equality-three-stack-pair-placement` | `ROADMAPPED` | Implement exactly flagged placeCategoryPairsOnTop for Equality only with same advanced RNG stream; compare selected stack indices and new candidate stock/cols in offline tests |
+| `hitapps-feature-seed-one-time-reshuffle` | `ROADMAPPED` | Model shared LevelShuffled flag and precisely one FeatureLevelSeed shuffle across valid Lockers/Frozen/Bound; test invalid pattern flags without assuming unchanged board |
+| `hitapps-initial-shuffle-final-pipeline` | `ROADMAPPED` | Implement source-ordered phases 10/40,20/25/27,30/45 around candidate simulation, with independent source/adapter distinctions |
 
 ### C1. Непрерывное обучение и Difficulty UX (3)
 
@@ -90,7 +97,7 @@ Finish C8 16–80, 5-column peaks, semantic repetition control, daily quality/va
 | `azur-variable-category-sizes` | `IMPLEMENTED_UNVERIFIED` | Compare S2 4/5/5/7 (category cards incl leader), C8 topics and 80-level semantic curve; independent solve and Android UI QA |
 | `hitapps-mixed-word-image-cards` | `IMPLEMENTED_UNVERIFIED` | Audit mixed word/image proportions, asset quality and on-device legibility with original gameplay reference |
 
-### D1. Специальные игровые правила (9)
+### D1. Специальные игровые правила (13)
 
 Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle each with standalone rule + solver + teaching.
 
@@ -105,6 +112,10 @@ Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle e
 | `hitapps-magnet-hammer` | `ROADMAPPED` | Prototype one differentiated helper first, preserving post-seed insertion proof boundaries |
 | `azur-shuffle-helper` | `ROADMAPPED` | Determine re-deal constraints/save/provable solvability and user teaching |
 | `azur-shuffle-animation-controller` | `ROADMAPPED` | Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees |
+| `azur-bonus-lower-column` | `ROADMAPPED` | Define lower bonus column as independent feature from extra upper foundation; add rules/save/Undo/solver/Hint/layout/touch/price tests and real source live enablement |
+| `hitapps-puzzle-top-bottom-cards` | `EVIDENCE_GAP` | Trace PuzzleTop/PuzzleBottom distribution, stock placements, move legality and interactions; then implement clean-room additional card types with verifier |
+| `hitapps-bound-scissors-pattern` | `EVIDENCE_GAP` | Recover actual native scissors reveal/remove, layer and move-cost rules for BoundPattern; create specified Rules/Undo/Solver/teaching test upon proof |
+| `unico-magnet-helper` | `EVIDENCE_GAP` | Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action |
 
 ### D2. Качество взаимодействия (11)
 
@@ -231,7 +242,7 @@ Locale move budgets, remote content settings, late-campaign structural cadence f
 
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
-| `azur-localized-move-budget` | `EVIDENCE_GAP` | Trace real native method/data; only consider if multiple locales are supported |
+| `azur-localized-move-budget` | `ROADMAPPED` | When localizing: implement 5*ceil(M*L/(5E)) capped INT_MAX only with verified locale/en word counts, valid guards, old-save/version migration; original live config remains UNKNOWN |
 | `azur-remote-level-overrides` | `EVIDENCE_GAP` | Capture original config semantics before proposing optional versioned remote bank rollout |
 | `azur-structured-long-campaign` | `IN_PROGRESS` | Design C8 16–80 source-grounded curve, layout 5 columns, semantic de-dup and future endless/extended stages |
 | `hitapps-language-change-restart` | `ROADMAPPED` | Design explicit locale/content compatibility, preserve spent wallet and attempt history, test forced restart notifications |
@@ -249,4 +260,6 @@ Every PR in this implementation program must report feature IDs, original refere
 
 **Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 76/76, and implement the next unblocked package with exact SDK/save/Android evidence.
 
-**Audit correction (19.11, pass3):** Previous 76/76 was incomplete across existing source packaging/IAP, uneven AZUR categories, multiresource rewards, language, helper discovery and 10 AZUR metadata UI systems. Source inventory now **99**, with real pinned-source consumer `qa:porting` mandatory. The old Hitapps Daily puzzle line was downgraded to `EVIDENCE_GAP` because only Hitapps DailyRewards and Unico actual Daily Level are proven. Source-like names do not prove live/runtime behavior.
+**Audit correction (19.11, pass3):** Previous 76/76 was incomplete across existing source packaging/IAP, uneven AZUR categories, multiresource rewards, language, helper discovery and 10 AZUR metadata UI systems. Source inventory now **110**, with real pinned-source consumer `qa:porting` mandatory. The old Hitapps Daily puzzle line was downgraded to `EVIDENCE_GAP` because only Hitapps DailyRewards and Unico actual Daily Level are proven. Source-like names do not prove live/runtime behavior.
+
+**Native core follow-up (20.11.2026):** [Exact AZUR/Hitapps/Unico core-source → gameplay implementation spec](../qa/CORE_REFERENCE_IMPLEMENTATION_SPEC_2026-11-20.md). This adds 11 separately tracked core mechanisms (including AZUR budget formula, native draw/recycle, loss vs no moves, independent lower bonus column; Hitapps Equality stack placement, reseed/phase/negative seed/puzzle/scissors; Unico Magnet). Published old C1–C8 saves remain unchanged until a scoped implementation PR. Kit source native verifier [mini-games-kit PR #78](https://github.com/DanilaH/mini-games-kit/pull/78).

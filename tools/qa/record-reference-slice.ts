@@ -5,7 +5,7 @@ import { chromium, expect, type Page } from '@playwright/test';
 import { preview } from 'vite';
 import { content8Dealer } from '../../src/content/campaign-v8-dealer';
 import { content8Slice } from '../../src/content/campaign-v8-preview';
-import { applyBoard, boardKey, freshSave, placeJoker, sourceCards } from '../../src/domain/engine';
+import { applyBoard, boardKey, dispatch, freshSave, placeJoker, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 import { boardFrame, layout } from '../../src/game/layout';
@@ -16,10 +16,15 @@ const output = process.env.C8_OUTPUT ?? (opening ? '.recording/content8-onboardi
 const dist = process.env.C8_DIST ?? output + '/dist';
 const consequences: { level: number; step: number; path: BoardCommand[] }[] = process.env.C8_DECISIONS === '1'
   ? JSON.parse(await readFile('.authoring/content8-onboarding/unscripted.json', 'utf8')) : [];
+const loss = process.env.C8_EXHAUST === '1'
+  ? (JSON.parse(await readFile('.authoring/content8-onboarding/consequences.json', 'utf8')) as
+    { level: number; exhaustion: { path: BoardCommand[] } }[]).find(row => row.level === 6)?.exhaustion.path
+  : undefined;
 const port = Number(process.env.C8_PORT ?? 4230);
 const levels = (process.env.C8_RECORD_LEVELS ?? '15').split(',').map(Number);
+const lastSteps = Number(process.env.C8_LAST_STEPS ?? 0);
 const width = Number(process.env.C8_WIDTH ?? 360), height = Number(process.env.C8_HEIGHT ?? 780);
-const slug = levels.join('-') + '-' + width + (consequences.length ? '-decision' : '');
+const slug = levels.join('-') + '-' + width + (loss ? '-exhausted' : lastSteps ? '-last-' + lastSteps : consequences.length ? '-decision' : '');
 const recordDir = `${output}/ui/${slug}`;
 const sha = (value: Buffer | string) => createHash('sha256').update(value).digest('hex');
 const read = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
@@ -60,13 +65,30 @@ async function perform(d: Deal, cmd: BoardCommand, before: Save) {
 
 try {
   const first = catalog.find(d => d.campaignLevel === levels[0])!;
-  const save = freshSave(first, `reference-ui-${slug}`);
+  let save = freshSave(first, `reference-ui-${slug}`);
   save.contentVersion = 8;
   save.settings.sfx = false;
   save.settings.reducedMotion = process.env.C8_REDUCED === '1';
   save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0,
     completedCampaign: Array.from({ length: levels[0] - 1 }, (_, i) => campaignId(i + 1)),
   };
+  if (lastSteps) {
+    assert.equal(levels.length, 1);
+    for (const action of first.winningPath.slice(0, -lastSteps)) {
+      const move = dispatch(save, action, first);
+      assert(move.accepted);
+      save = move.next;
+    }
+  }
+  if (loss) {
+    assert.deepEqual(levels, [6]);
+    for (const action of loss.slice(0, -6)) {
+      const move = dispatch(save, action, first);
+      assert(move.accepted);
+      save = move.next;
+    }
+    assert.equal(save.attempt.board.movesLeft, 6);
+  }
   if (!opening) save.campaign = { version: 1, tutorials: ['learn:category','learn:match','learn:stock','hint-demo','undo-used','intro:joker'] };
   await page.goto('/');
   await page.locator('#app[data-ready=true]').waitFor();
@@ -80,11 +102,11 @@ try {
     const d = catalog.find(deal => deal.campaignLevel === level)!;
     await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', d.id);
     await expect(page.locator('#game-root')).toHaveAttribute('data-dealing', '0');
-    assert.deepEqual((await read(page)).attempt.board, d.initial);
+    assert.deepEqual((await read(page)).attempt.board, loss || lastSteps ? save.attempt.board : d.initial);
     await page.screenshot({ path: `${recordDir}/level-${level}-start.png` });
     const acceptance = [];
     const branch = consequences.find(record => record.level === level);
-    const path = branch?.path ?? d.winningPath;
+    const path = loss?.slice(-6) ?? branch?.path ?? (lastSteps ? d.winningPath.slice(-lastSteps) : d.winningPath);
     if (opening && level === 3) {
       const before = await read(page);
       await expect(page.locator('#lesson-copy')).toContainText('бесплатно');
@@ -157,7 +179,17 @@ try {
     }
     await page.locator('#result[open]').waitFor();
     const final = await read(page);
-    assert.equal(final.attempt.board.phase, 'won');
+    assert.equal(final.attempt.board.phase, loss ? 'exhausted' : 'won');
+    if (loss) {
+      assert.equal(final.attempt.board.movesLeft, 0);
+      await expect(page.locator('#replay')).toBeVisible();
+      await page.screenshot({ path: `${recordDir}/exhausted.png` });
+      await page.locator('#result-undo').tap();
+      await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(1);
+      assert.equal((await read(page)).profile.undos, final.profile.undos - 1);
+      console.log(level, 'exhausted → Undo', 'PASS');
+      break;
+    }
     if (opening && level === 3) assert(final.campaign?.tutorials.includes('hint-practiced'));
     if (opening && level === 5) assert(final.campaign?.tutorials.includes('learn:recycle'));
     if (opening && level === 8) assert(final.campaign?.tutorials.includes('joker-buffer'));

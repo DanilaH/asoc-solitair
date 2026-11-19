@@ -61,6 +61,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   return {
     activity,
     soundReady: recordings.ready,
+    native: Boolean(nativeAudio),
     setMute(value: boolean) { mute = value; eligibility(); },
     setHaptics(value: boolean) { haptics.setEnabled(value); },
     pulse(cue: HapticCue) { haptics.pulse(cue); },

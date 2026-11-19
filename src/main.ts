@@ -209,13 +209,20 @@ try {
   const allowsLesson = (command: Command) => command.type === 'restart' || currentLesson()?.accepts?.(command) !== false;
   let pendingDealSound: string | undefined;
   function playDealSound() {
-    if (pendingDealSound !== save.attempt.id || screen !== 'game' || runtime.activity.isBlocked() || navigator.userActivation?.hasBeenActive === false) return;
+    if (pendingDealSound !== save.attempt.id || screen !== 'game' || runtime.activity.isBlocked() ||
+      !runtime.native && navigator.userActivation?.hasBeenActive === false) return;
     if (runtime.play('deal') || !save.settings.sfx) pendingDealSound = undefined;
   }
   function announceDeal() {
     pendingDealSound = save.attempt.id;
     playDealSound();
-    void runtime.soundReady.then(playDealSound);
+    const attemptId = pendingDealSound;
+    void runtime.soundReady.then(() => {
+      playDealSound();
+      if (runtime.native && pendingDealSound === attemptId && attemptId) setTimeout(() => {
+        if (alive && pendingDealSound === attemptId) playDealSound();
+      }, 90);
+    });
   }
   window.addEventListener('pointerup', playDealSound, { ...domOptions, capture: true });
   window.addEventListener('keydown', playDealSound, domOptions);

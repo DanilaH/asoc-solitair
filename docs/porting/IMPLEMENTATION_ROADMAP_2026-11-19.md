@@ -2,9 +2,9 @@
 
 **19 ноября 2026 · Owner scope: full reference-system adoption, staged implementation · research/program document, NO game runtime edits in this PR.**
 
-This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.
+This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/audit/solitaire-independent-coverage-correction-20261119/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.
 
-**Coverage at this reviewed snapshot:** **76 feature IDs**, 20 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 40 ROADMAPPED; 1 DEFERRED; 4 BLOCKED; 9 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
+**Coverage at this reviewed snapshot:** **99 feature IDs**, 27 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 50 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 10 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
 
 ## 1. Action priorities based on dependencies (not a feature ceiling)
 
@@ -38,7 +38,7 @@ Packages may run **in parallel** if independent. A smaller first playable or sho
 
 ## 3. Exact complete stage matrix
 
-Below: every source ID must appear once. `currentImplementation` and `nextAction` refer to the **audited C8 candidate and known PRs**, not necessarily accepted main.
+Every source ID appears exactly once. Status is implementation evidence, not owner approval.
 
 ### B1. Генератор и выбор обычного кандидата (2)
 
@@ -68,7 +68,7 @@ Source-based gating and late simulator failure vs our mathematically certified +
 | `hitapps-equality-paywall` | `ROADMAPPED` | Implement source-bound Equality candidate selection and separate +10 validated recovery |
 | `hitapps-paywall-segmentation` | `ROADMAPPED` | Implement eligible profile/attempt gates with explicit source/runtime uncertainty |
 
-### C1. Непрерывное обучение и Difficulty UX (2)
+### C1. Непрерывное обучение и Difficulty UX (3)
 
 User onboarding Hint/Undo/Joker, stock/waste/recycle, visible Hard/SuperHard, first-use evidence.
 
@@ -76,8 +76,9 @@ User onboarding Hint/Undo/Joker, stock/waste/recycle, visible Hard/SuperHard, fi
 | --- | --- | --- |
 | `azur-action-ftue` | `IMPLEMENTED_UNVERIFIED` | Owner plays 1–8 continuously on real phone; keep achievement markers action-based |
 | `azur-difficulty-label` | `IMPLEMENTED_UNVERIFIED` | Human/device check 320px, accessibility and perceived actual challenge |
+| `azur-locked-helper-discovery` | `ROADMAPPED` | Design previewable locked helper icon + level requirement without accidental spending; test screen reader and FTUE progression |
 
-### C2. Полная кампания и тематический контент (4)
+### C2. Полная кампания и тематический контент (5)
 
 Finish C8 16–80, 5-column peaks, semantic repetition control, daily quality/variation.
 
@@ -85,25 +86,27 @@ Finish C8 16–80, 5-column peaks, semantic repetition control, daily quality/va
 | --- | --- | --- |
 | `hitapps-level-wave` | `IN_PROGRESS` | Author reference-sized progression16–80 without abrupt stock collapse |
 | `azur-topic-rotation` | `ROADMAPPED` | Author semantic repeat-distance schedule independent from layout; test local-language ambiguities |
-| `hitapps-daily-puzzle` | `IMPLEMENTED_UNVERIFIED` | Audit original daily constraints and improve 28-puzzle repetition, human validation |
 | `unico-daily-puzzles` | `IMPLEMENTED_UNVERIFIED` | Compare failure-retry loop and daily award once-per-date on actual Android |
+| `azur-variable-category-sizes` | `IMPLEMENTED_UNVERIFIED` | Compare S2 4/5/5/7 (category cards incl leader), C8 topics and 80-level semantic curve; independent solve and Android UI QA |
+| `hitapps-mixed-word-image-cards` | `IMPLEMENTED_UNVERIFIED` | Audit mixed word/image proportions, asset quality and on-device legibility with original gameplay reference |
 
-### D1. Специальные игровые правила (8)
+### D1. Специальные игровые правила (9)
 
 Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle each with standalone rule + solver + teaching.
 
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
 | `azur-extra-foundation` | `ROADMAPPED` | Prototype 1 additional upper-slot effect with solver/save/hint/320px UI tests |
-| `hitapps-golden-cards` | `ROADMAPPED` | Develop one original golden-card event with undo/expiry/save and modified-board oracle |
+| `hitapps-golden-cards` | `ROADMAPPED` | Restore separate native Final-phase GoldenCards insertion and check gold-marked win receipts; event policy tracked separately under hitapps-gold-rush-event |
 | `hitapps-ordered-category` | `IMPLEMENTED_UNVERIFIED` | Verify first C8 introduction and match rule provenance; device teaching still pending |
 | `hitapps-lockers` | `IMPLEMENTED_UNVERIFIED` | Re-author gated C8 16–80 with independent solver and onboarding/device check |
 | `hitapps-frozen` | `ROADMAPPED` | Reconstruct eligible frozen state and design original mechanic + undo/solver/migration |
 | `hitapps-bound` | `ROADMAPPED` | Reconstruct bound-card pattern and design original mechanic + undo/solver/migration |
 | `hitapps-magnet-hammer` | `ROADMAPPED` | Prototype one differentiated helper first, preserving post-seed insertion proof boundaries |
 | `azur-shuffle-helper` | `ROADMAPPED` | Determine re-deal constraints/save/provable solvability and user teaching |
+| `azur-shuffle-animation-controller` | `ROADMAPPED` | Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees |
 
-### D2. Качество взаимодействия (6)
+### D2. Качество взаимодействия (11)
 
 Joker, Hint, info/dictionary, lower-buffer/stock side, feedback, sound, cross-device validation.
 
@@ -111,12 +114,17 @@ Joker, Hint, info/dictionary, lower-buffer/stock side, feedback, sound, cross-de
 | --- | --- | --- |
 | `hitapps-joker` | `IMPLEMENTED_UNVERIFIED` | Native playtest Joker, costs, save, cancel, reduced motion |
 | `hitapps-ghost-hint` | `IMPLEMENTED_UNVERIFIED` | Validate Hint after off-witness choice on Android and strict no-charge failure |
-| `ui-motion-audio-coin` | `IMPLEMENTED_UNVERIFIED` | Complete actual device audio/vibration/rapid play acceptance and competitor 1x compare |
+| `ui-motion-audio-coin` | `IMPLEMENTED_UNVERIFIED` | Compare actual 1× device footage to game; track child IDs for CardAnimator/coin flights/victory/buttons/shuffle separately |
 | `hitapps-ingame-streak` | `IMPLEMENTED_UNVERIFIED` | Replay negative invalid-drop/recycle/Undo against original video and Android coin UX |
 | `azur-card-dictionary` | `IMPLEMENTED_UNVERIFIED` | Compare on-device card readability, foreign/ambiguous semantics and text visibility |
 | `azur-stock-side-setting` | `IMPLEMENTED_UNVERIFIED` | Test both deck sides with tall stock, ads banner and active/parked game saves |
+| `azur-card-animation-controller` | `IMPLEMENTED_UNVERIFIED` | Map source/target animation interruption and cancellation on phone; metadata alone is not exact native implementation |
+| `azur-coin-flight-animator` | `IMPLEMENTED_UNVERIFIED` | Compare timeout, landing and duplicate callbacks with original UI reference; physical Android audio pending |
+| `azur-victory-reward-sequencer` | `IMPLEMENTED_UNVERIFIED` | Replay skip/background/reopen/win/reward/Next with actual saved wallet and 320px UI |
+| `azur-button-haptic-feedback` | `IMPLEMENTED_UNVERIFIED` | Test press/release/exit scale/sound/haptics alignment on signed Android |
+| `hitapps-invalid-transfer-feedback` | `IMPLEMENTED_UNVERIFIED` | Recheck touch cancel/hitbox, displayed error semantics and 0 move cost on Android |
 
-### E1. Rewarded и платежные решения на экране результата (10)
+### E1. Rewarded и платежные решения на экране результата (13)
 
 Continue +10, coin +moves, rewards multipliers, offer variants, correct no-fill and receipts.
 
@@ -132,6 +140,9 @@ Continue +10, coin +moves, rewards multipliers, offer variants, correct no-fill 
 | `unico-rewarded-theme` | `ROADMAPPED` | Design opt-in themed cosmetic offer, entitlement persistence and receipt grants |
 | `unico-double-reward` | `ROADMAPPED` | Compare Unico post-win CTA to AZUR x3 and develop independent rewarded bonus policy |
 | `unico-loss-dialog` | `IMPLEMENTED_UNVERIFIED` | Compare visible alternatives on compact screen; SDK no-fill and clear Retry path |
+| `azur-definition-consumable` | `ROADMAPPED` | Trace Definition usage/intro pricing and define own paid/free resource vs reader UX |
+| `azur-free-shop-coin-claim` | `ROADMAPPED` | Prototype source-observed optional 200-coin claim with real receipt/availability/cooldown verification |
+| `azur-remaining-moves-coin-bonus` | `IMPLEMENTED_UNVERIFIED` | Check own multiplier/economy and baseline reward integrity; do not label adapted coefficient exact AZUR copy |
 
 ### E2. Контекстные рекламные возможности (5)
 
@@ -145,7 +156,7 @@ In-game interstitial gates/caps, Coffee Break offer, banner, exact impression-le
 | `azur-ad-revenue-attribution` | `ROADMAPPED` | Verify ILRD/currency+placements in target ad provider, not revenue from click |
 | `unico-coffee-break` | `ROADMAPPED` | Study exact observed break context; design separate optional break/reward and native ad return preservation |
 
-### E3. Коммерческая витрина и предложения (10)
+### E3. Коммерческая витрина и предложения (18)
 
 Starter/Birthday/Decoy, shop bundles, PlayPass/VIP and IAP receipt integrity after store/legal verification.
 
@@ -161,8 +172,16 @@ Starter/Birthday/Decoy, shop bundles, PlayPass/VIP and IAP receipt integrity aft
 | `azur-offer-campaign` | `ROADMAPPED` | Build separable offer schedule + owner-verified store provider after event state |
 | `unico-vip` | `BLOCKED` | Confirm legal IAP + Russian self-employed payout/provider before building premium policy |
 | `azur-purchase-receipts` | `BLOCKED` | Verify supported store billing provider and test pending/duplicate purchase recovery |
+| `azur-iap-product-catalog` | `ROADMAPPED` | Design source-backed own offer catalog and lawful supported store-product mapping; never treat AZUR local prices as live |
+| `azur-iap-helper-ladder` | `ROADMAPPED` | Specify original 4×5 multi-offer schema and separately approved own pricing/entitlements |
+| `azur-iap-no-ads` | `BLOCKED` | Verify target store billing + no-ads policy and persistence before paid offer/reward receipt |
+| `azur-iap-coin-packs` | `BLOCKED` | Check supported store IAP and payout, then model eight source tiers against own currency supply |
+| `azur-iap-coin-offer-series` | `ROADMAPPED` | Recover live trigger sequence or author a declared own offer sequence; source titles are not logic |
+| `azur-iap-premium-bundles` | `BLOCKED` | Verify IAP provider, settlement, refund and specific benefit contents before shipping |
+| `azur-iap-welcome-offer` | `BLOCKED` | Validate store purchases and first-use entitlement; keep future welcome-bundle ID in roadmap |
+| `azur-iap-unlimited-moves-tiers` | `BLOCKED` | Reconstruct true entitlement/expiry, billing and SaveStore restore before pricing or SDK calls |
 
-### F1. Ежедневные и коллекционные системы (10)
+### F1. Ежедневные и коллекционные системы (12)
 
 PuzzleEvent/Puzzle Journey, daily tasks, daily bonus, daily reward, streaks, cosmetics and Daily Fortune.
 
@@ -175,9 +194,11 @@ PuzzleEvent/Puzzle Journey, daily tasks, daily bonus, daily reward, streaks, cos
 | `hitapps-win-streak` | `ROADMAPPED` | Define streak failure/reset milestone and test against current cycle without double credits |
 | `unico-win-and-task-streak` | `ROADMAPPED` | Compare separate reward ledgers; choose distinct milestones without duplicate grants |
 | `hitapps-puzzle-gallery` | `ROADMAPPED` | Reconstruct video-based gallery journey and distinguish from time-limited PuzzleEvent |
+| `hitapps-daily-puzzle` | `EVIDENCE_GAP` | Acquire original Hitapps Daily Level actual session or native scene/level data; do not claim this was source-copied |
 | `azur-cosmetics` | `IMPLEMENTED_UNVERIFIED` | Compare catalog UX/unlocks; extend own assets without copying vendor artwork |
 | `unico-daily-fortune` | `ROADMAPPED` | Prototype isolated day-keyed reward selection with once-only claim and odds disclosure |
 | `unico-themes-and-skins` | `IMPLEMENTED_UNVERIFIED` | Audit unlock/reward placement and visual consistency without vendor art |
+| `hitapps-win-multiresource-payout` | `ROADMAPPED` | Design separate earned resource identities and settlement when those systems implemented, compare S1 visible example |
 
 ### F2. Временные события и соревнования (6)
 
@@ -204,7 +225,7 @@ Region progression, LuckyWheel, Digging, EndlessTreasure, CascadeEvents; origina
 | `hitapps-lucky-wheel` | `EVIDENCE_GAP` | Find original UI/state/odds evidence, then design own optional reward minigame |
 | `hitapps-endless-treasure` | `EVIDENCE_GAP` | Determine native phases and actual gameplay before creating design spec |
 
-### G1. Долгосрочное масштабирование и адаптация (3)
+### G1. Долгосрочное масштабирование и адаптация (5)
 
 Locale move budgets, remote content settings, late-campaign structural cadence from AZUR after localizing.
 
@@ -213,6 +234,8 @@ Locale move budgets, remote content settings, late-campaign structural cadence f
 | `azur-localized-move-budget` | `EVIDENCE_GAP` | Trace real native method/data; only consider if multiple locales are supported |
 | `azur-remote-level-overrides` | `EVIDENCE_GAP` | Capture original config semantics before proposing optional versioned remote bank rollout |
 | `azur-structured-long-campaign` | `IN_PROGRESS` | Design C8 16–80 source-grounded curve, layout 5 columns, semantic de-dup and future endless/extended stages |
+| `hitapps-language-change-restart` | `ROADMAPPED` | Design explicit locale/content compatibility, preserve spent wallet and attempt history, test forced restart notifications |
+| `azur-localized-definition-packs` | `ROADMAPPED` | Plan original localized dictionaries, missing-definition audit and level/locale save migration if expanding languages |
 
 ## 4. Strict evidence and change controls
 
@@ -225,3 +248,5 @@ Every PR in this implementation program must report feature IDs, original refere
 **Backlog governance:** change `SOURCE_FEATURES.json` in kit and `ADOPTION_LEDGER.json` in game together for every discovered system. After implementation, update both roadmap and ledger to `IMPLEMENTED_UNVERIFIED` or `ACCEPTED` with evidence. Owner alone can exclude a roadmap entry. Previous `HOLD/REJECT` archived notes remain historical, not controlling policy.
 
 **Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 76/76, and implement the next unblocked package with exact SDK/save/Android evidence.
+
+**Audit correction (19.11, pass3):** Previous 76/76 was incomplete across existing source packaging/IAP, uneven AZUR categories, multiresource rewards, language, helper discovery and 10 AZUR metadata UI systems. Source inventory now **99**, with real pinned-source consumer `qa:porting` mandatory. The old Hitapps Daily puzzle line was downgraded to `EVIDENCE_GAP` because only Hitapps DailyRewards and Unico actual Daily Level are proven. Source-like names do not prove live/runtime behavior.

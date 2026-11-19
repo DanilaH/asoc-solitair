@@ -18,7 +18,7 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   const visibility = installDocumentVisibilityBlocker(activity);
   const audio = new OneShotPlayer({
     maxVoices: 4,
-    groups: { deal: { minIntervalMs: 300, replacementFadeMs: 20 }, card: { minIntervalMs: 45, replacementFadeMs: 12 }, packet: { minIntervalMs: 120, replacementFadeMs: 18 }, flip: { minIntervalMs: 70, replacementFadeMs: 12 }, reward: { minIntervalMs: 80, replacementFadeMs: 18 }, coin: { minIntervalMs: 65, replacementFadeMs: 14 }, negative: { minIntervalMs: 60, replacementFadeMs: 12 }, ui: { minIntervalMs: 40, replacementFadeMs: 8 } },
+    groups: { deal: { minIntervalMs: 300, replacementFadeMs: 20 }, card: { minIntervalMs: 45, replacementFadeMs: 12 }, packet: { minIntervalMs: 120, replacementFadeMs: 18 }, flip: { minIntervalMs: 70, replacementFadeMs: 12 }, reward: { minIntervalMs: 80, replacementFadeMs: 18 }, coin: { minIntervalMs: 350, replacementFadeMs: 18 }, negative: { minIntervalMs: 60, replacementFadeMs: 12 }, ui: { minIntervalMs: 40, replacementFadeMs: 8 } },
   });
   const haptics = createHaptics();
   const nativeAudio = Capacitor.isNativePlatform() ? registerPlugin<AudioBridge>('SolitaireAudio') : undefined;

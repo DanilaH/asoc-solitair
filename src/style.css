@@ -524,6 +524,7 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 
 /* Extra context fits the existing feedback area, including the smallest portrait. */
 #app[data-lesson=true] #feedback-row{height:64px}
+#app[data-lesson=true] #dock .attention .helper-icon{outline:2px solid #ffe4a4;outline-offset:2px}
 #lesson-note{position:absolute;inset:0;display:flex;align-items:center;margin:0 auto;width:min(100%,390px);border:1px solid #99c9be;border-radius:12px;background:#154e52;color:#fff3d6;padding:5px 11px}
 #lesson-note p{margin:0;font-size:16px;font-weight:800;line-height:1.16}
 #feedback-row>#message,#feedback-row>#no-transfer{grid-area:1/1}

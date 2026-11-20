@@ -2,9 +2,9 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/57bffb395e06200dc9f147c6f52f0128b4a4d370/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "d331f6161975fba47dee4f5c13505e081ce51914",
-  "sourceInventoryRef": "57bffb395e06200dc9f147c6f52f0128b4a4d370",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/71d9b414984ed71bd76634eacdf8c2851905c488/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "76a558e8f24080e035913234b1d730175f17a519",
+  "sourceInventoryRef": "71d9b414984ed71bd76634eacdf8c2851905c488",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "110 known source mechanics, including 11 extra core submechanics; source static AZUR native proof differs from live original runtime and from consumer acceptance. No permanent exclusions by agent.",
   "features": [
@@ -105,8 +105,8 @@
     {
       "id": "azur-extra-foundation",
       "status": "ROADMAPPED",
-      "currentImplementation": "Joker exists as lower buffer, not extra upper foundation",
-      "nextAction": "Prototype 1 additional upper-slot effect with solver/save/hint/320px UI tests",
+      "currentImplementation": "Source video upper foundation offer (500 coins/video) documented; C8 bonus upper foundation currently has no independently verified equivalent transactional unlock and native entitlement path.",
+      "nextAction": "Kit PR #81 proves upper bonus kind2 remote enabled/start level, regular foundation count 3/4, prefab required, coin SpendCoins success before GrantUnlock, rewarded readiness path and saved unlock flags. Implement distinct upper-slot gate and Save/Undo/solver/Hint/layout, reward receipts and 320px Android QA; live price, remote defaults, original earned callback and SDK/device parity remain UNKNOWN.",
       "stage": "D1"
     },
     {
@@ -777,16 +777,16 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "CORE-1 offline AzurDealer implements the source-confirmed single descending shuffle and positive DealCards geometry, with an explicitly injected RNG. Current C8 campaign still uses frozen Hitapps-derived deals.",
-      "nextAction": "Reconcile the research pin when game PR #50 merges. Capture original Unity RNG initialization, final board and preset schema before claiming full parity.",
+      "currentImplementation": "CORE-1 offline AzurDealer implements the verified single descending shuffle and positive DealCards placement and reveal, with an explicitly injected RNG. Current C8 uses frozen Hitapps-derived deals.",
+      "nextAction": "Capture original Unity RNG initialization, selected runtime board, preset schema and remote pathway before claiming full parity.",
       "stage": "B1",
-      "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
+      "reason": "Original Unity RNG initialization and runtime selected board remain unknown, despite now VERIFIED native dealer shuffle and placement body."
     },
     {
       "id": "azur-bonus-lower-column",
       "status": "ROADMAPPED",
-      "currentImplementation": "Our C8 tableau column count fixed by immutable deal; no bought/unlocked extra tableau column",
-      "nextAction": "Original source shows separate BonusColumn/BonusFoundation interfaces and verified ARM64 method pointers only; first reconstruct actual bonus column enable/unlock behavior and original gameplay trace, then implement separate lower-column rule, Save/Undo/solver/Hint/layout/price/first-use tests.",
+      "currentImplementation": "No independent bonus lower tableau column in C8 runtime; current tableau columns are fixed by the immutable Deal.",
+      "nextAction": "Kit PR #81: original lower type3 only when remotely enabled, level>=startLevel, normal column count 3/4 and matching prefab; source save retains independent enable/unlocked bits, coin spend success and rewarded readiness can lead to type-scoped grant/save. Implement as distinct optional lower tableau with Save/Undo/solver/Hint/layout/reward receipts; source price, actual live config/ad-earned and real UI geometry UNKNOWN.",
       "stage": "D1"
     },
     {
@@ -844,6 +844,6 @@
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
     }
   ],
-  "auditRevision": "2026-11-20-cross-verified-core-110",
+  "auditRevision": "2026-11-20-azur-native-dealer-and-bonus-gates-v7",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

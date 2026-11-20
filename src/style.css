@@ -440,7 +440,7 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
   #result h2{font-size:25px;margin:5px 0 10px}
   #result-earnings{margin:9px 0 12px}
   #result .sheet-actions{grid-template-columns:1fr 1fr}
-  #next-level,#result-continue,#result-undo{grid-column:1 / -1}
+  #next-level,#result-continue,#result-continue-coins,#result-save-retry,#result-undo{grid-column:1 / -1}
   #result .sheet-actions:has(#result-home[hidden]) #replay{grid-column:1 / -1}
   #result:has(#unlock-reward:not([hidden])) .result-star{display:none}
   #unlock-reward{grid-template-columns:1fr auto;gap:8px;margin:8px 0;padding:9px}

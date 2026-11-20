@@ -1,3 +1,7 @@
+# Content 8 CORE-5 · 0.20.1 preview
+
+[Coin continuation](qa/content-v8/CORE_5_COIN_CONTINUE.md) offers +10 for 120 coins on a verified exhausted C8 campaign board. Saved credits take priority and coin purchases share the single continuation allowance. The result screen can reconcile an ambiguous write. The preview price and physical-device choice remain playtest questions.
+
 # Content 8 CORE-5 · 0.20.0 preview
 
 [Verified +10 continuation](qa/content-v8/CORE_5_VERIFIED_CONTINUE.md) checks the actual exhausted campaign board before presenting a credit or video. Level 16 demonstrates a win on the tenth extra move and level 38 demonstrates a position beyond the ten-move limit with usable Undo. The real phone and original golden-card lifetime remain open.

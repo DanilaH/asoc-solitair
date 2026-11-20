@@ -28,7 +28,7 @@ import { SaveStore, createStorage } from './platform/storage';
 import { createTelemetry } from './platform/telemetry';
 import { createAds } from './platform/ads';
 import { NativeBanner } from './platform/banner';
-import { applyReceipt, platformState, purchaseHelper, interstitialEligible, useContinue, type RewardPlacement } from './domain/services';
+import { applyReceipt, buyContinue, platformState, purchaseHelper, interstitialEligible, useContinue, type RewardPlacement } from './domain/services';
 import type { Save, Result } from './domain/types';
 import './style.css';
 import './art.css';
@@ -370,14 +370,22 @@ try {
       $(`#video-${helper}`).hidden = !ads.status.rewarded;
     }
     const credits = save.platform?.continueCredits ?? 0;
-    const available = board.phase === 'exhausted' && !save.attempt.continued && (credits > 0 || ads.status.rewarded);
+    const exhausted = board.phase === 'exhausted' && !save.attempt.continued;
     const requiresProof = requiresContinueProof(save.attempt);
-    continueCheck.update(save.attempt, deal, ready && screen === 'game' && available);
+    continueCheck.update(save.attempt, deal, ready && screen === 'game' && exhausted && requiresProof);
     const proofStatus = continueCheck.status;
-    const canContinue = available && (!requiresProof || proofStatus === 'PROVEN_RECOVERABLE');
+    const canContinue = exhausted && (credits > 0 || ads.status.rewarded) && (!requiresProof || proofStatus === 'PROVEN_RECOVERABLE');
+    const showCoinOffer = exhausted && requiresProof && proofStatus === 'PROVEN_RECOVERABLE' && credits === 0;
+    const canBuyContinue = showCoinOffer && save.profile.coins >= BALANCE.continueCoinPrice;
+    const continueBusy = saving || serviceBusy || store.needsRecovery;
+    const coinButton = $<HTMLButtonElement>('#result-continue-coins');
+    coinButton.hidden = !showCoinOffer;
+    coinButton.disabled = !canBuyContinue || continueBusy;
+    coinButton.textContent = `+${BALANCE.continueMoves} ходов за ${BALANCE.continueCoinPrice} монет`;
     const continueButton = $<HTMLButtonElement>('#result-continue');
     continueButton.hidden = !canContinue;
-    continueButton.disabled = !canContinue || saving || serviceBusy || store.needsRecovery;
+    continueButton.disabled = !canContinue || continueBusy;
+    continueButton.className = canBuyContinue ? 'secondary' : 'primary';
     continueButton.textContent = credits > 0 ? '+10 ходов · использовать запас' : '+10 ходов · видео';
     $('#result').dataset.continueStatus = proofStatus ?? '';
     const continueNote = $('#result-continue-note');
@@ -386,11 +394,16 @@ try {
       : proofStatus === 'UNSOLVABLE' ? 'Из этой позиции за 10 ходов не выиграть.'
       : proofStatus === 'UNKNOWN' ? 'Путь к победе за 10 ходов не подтверждён.'
       : proofStatus === 'PROVEN_RECOVERABLE' ? continueVideoFailed === save.attempt.id
-        ? 'Видео сейчас недоступно.' : 'Из этой позиции можно выиграть за 10 ходов или меньше.'
+        ? 'Видео сейчас недоступно.' : showCoinOffer && !canBuyContinue
+          ? 'На +10 ходов не хватает монет.' : 'Из этой позиции можно выиграть за 10 ходов или меньше.'
       : '';
     const undoRecovery = board.phase === 'exhausted' && save.attempt.undo.length > 0 && (save.profile.undos > 0 || save.profile.coins >= BALANCE.helperPrices.undo || ads.status.rewarded);
-    $('#result-undo').className = !canContinue && undoRecovery ? 'primary' : 'secondary';
-    $('#replay').className = board.phase === 'exhausted' && !canContinue && !undoRecovery ? 'primary' : 'secondary';
+    const resultRetry = $<HTMLButtonElement>('#result-save-retry');
+    resultRetry.hidden = !store.needsRecovery;
+    resultRetry.disabled = saving || serviceBusy;
+    const hasContinueAction = canContinue || canBuyContinue || !resultRetry.hidden;
+    $('#result-undo').className = !hasContinueAction && undoRecovery ? 'primary' : 'secondary';
+    $('#replay').className = board.phase === 'exhausted' && !hasContinueAction && !undoRecovery ? 'primary' : 'secondary';
     const applied = unlockChoice === 'palette' ? save.settings.palette === 'ink' : save.settings.cardBack === 'diamonds';
     $('#apply-unlock').textContent = applied ? 'Применено' : 'Примерить';
     $<HTMLButtonElement>('#apply-unlock').disabled = !unlockChoice || applied || saving || serviceBusy;
@@ -407,6 +420,7 @@ try {
     // A local result coin layer must join the dialog's top layer to stay visible.
     $('#result').dataset.won = String(save.attempt.board.phase === 'won');
     const won = save.attempt.board.phase === 'won';
+    if (!store.needsRecovery) $('#result-continue-error').hidden = true;
     outcomeViewed = true;
     $('#result-title').textContent = won ? 'Всё сошлось!' : 'Ходы закончились';
     const daily = Boolean(save.attempt.daily), payout = save.attempt.payout;
@@ -981,11 +995,34 @@ try {
     const proof = continueCheck.proof;
     if (requiresContinueProof(save.attempt) && (!proof || !verifiesContinue(save.attempt, proof))) return;
     if ((save.platform?.continueCredits ?? 0) > 0) {
-      try {
-        if (await write(next => useContinue(next, proof))) { closeDialogs(); scene?.sync(); telemetry.sync(); }
-      }
-      catch { message('Не удалось сохранить продолжение.', true); }
+      await continueFromResult(next => useContinue(next, proof));
     } else void rewarded('continue');
+  }, domOptions);
+  $('#result-continue-coins').addEventListener('click', async () => {
+    const button = $<HTMLButtonElement>('#result-continue-coins'), proof = continueCheck.proof;
+    if (button.hidden || button.disabled || saving || serviceBusy || !proof) return;
+    await continueFromResult(next => buyContinue(next, proof), BALANCE.continueCoinPrice);
+  }, domOptions);
+  async function continueFromResult(change: (next: Save) => boolean, cost = 0) {
+    $('#result-continue-error').hidden = true;
+    try {
+      if (!await write(change)) return;
+      if (cost) telemetry.track('helper_purchase', { helper: 'continue-coins', cost });
+      closeDialogs(); scene?.sync(); telemetry.sync();
+    } catch {
+      const error = $('#result-continue-error');
+      error.textContent = store.needsRecovery ? 'Проверьте, сохранилось ли продолжение.' : 'Продолжение не сохранилось. Попробуйте ещё раз.';
+      error.hidden = false;
+    }
+  }
+  $('#result-save-retry').addEventListener('click', async () => {
+    if (saving || serviceBusy) return;
+    const error = $('#result-continue-error');
+    try {
+      await write(() => undefined);
+      if (save.attempt.board.phase === 'playing') { closeDialogs(); scene?.sync(); telemetry.sync(); }
+      error.hidden = true;
+    } catch { error.textContent = 'Пока не удалось проверить сохранение.'; error.hidden = false; }
   }, domOptions);
   $('#save-retry').addEventListener('click', async () => {
     try { await write(() => undefined); scene?.sync(); message('Сохранение проверено. Можно продолжать.'); }

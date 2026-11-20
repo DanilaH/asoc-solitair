@@ -1,7 +1,8 @@
 import { expect, it } from 'vitest';
 import { recoverable, unrecoverable, losingPath, loadLoss, winningRescue } from '../fixtures/content8-loss';
+import { BALANCE } from '../../src/domain/balance';
 import { findContinue, verifiesContinue, type ContinueProof } from '../../src/domain/continuation';
-import { applyReceipt, useContinue, type EarnedReceipt } from '../../src/domain/services';
+import { applyReceipt, buyContinue, platformState, useContinue, type EarnedReceipt } from '../../src/domain/services';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import { content8Wave } from '../../src/content/campaign-v8-dealer';
@@ -68,4 +69,46 @@ it('applies a matching earned receipt once and keeps a stale reward as a credit'
   applyReceipt(save, { ...receipt, id: 'duplicate-delivery' }, { continueProof: proof });
   expect(save.platform?.continueCredits).toBe(1);
   expect(useContinue(save, proof)).toBe(false);
+});
+
+it('checks the current proof and wallet, then buys the same ten-move allowance once', () => {
+  const save = loadLoss(recoverable, 'loss');
+  save.profile.coins = BALANCE.continueCoinPrice - 1;
+  expect(buyContinue(save, proof)).toBe(false);
+  expect(save.attempt.board.movesLeft).toBe(0);
+  save.profile.coins = BALANCE.continueCoinPrice;
+  expect(buyContinue(save, { ...proof, attemptId: 'stale' })).toBe(false);
+  expect(buyContinue(save, { ...proof, path: proof.path.slice(0, -1) })).toBe(false);
+  expect(save.profile.coins).toBe(BALANCE.continueCoinPrice);
+  expect(buyContinue(save, proof)).toBe(true);
+  expect(buyContinue(save, proof)).toBe(false);
+  expect(save.profile.coins).toBe(0);
+  expect(save.attempt.board.movesLeft).toBe(10);
+  platformState(save).completedCampaign = Array.from({ length: 15 }, (_, i) => campaignId(i + 1));
+  const undo = dispatch(save, { type: 'undo' }, recoverable);
+  expect(undo.accepted, undo.reason).toBe(true);
+  expect(undo.next.attempt.board.movesLeft).toBe(11);
+  expect(undo.next.profile.coins).toBe(0);
+});
+
+it('preserves a video earned before a coin purchase as a stored credit without a second continuation', () => {
+  const save = loadLoss(recoverable, 'loss');
+  save.profile.coins = BALANCE.continueCoinPrice;
+  expect(buyContinue(save, proof)).toBe(true);
+  expect(applyReceipt(save, receipt, { continueProof: proof })).toBe('applied');
+  expect(applyReceipt(save, { ...receipt, id: 'duplicate-earn' }, { continueProof: proof })).toBe('applied');
+  expect(save.attempt.board.movesLeft).toBe(10);
+  expect(save.platform?.continueCredits).toBe(1);
+  expect(save.profile.coins).toBe(0);
+});
+
+it('uses an existing earned credit before purchasing and never charges a stale offer', () => {
+  const save = loadLoss(recoverable, 'loss');
+  save.profile.coins = BALANCE.continueCoinPrice;
+  applyReceipt(save, { ...receipt, id: 'other', attempt: 'previous-attempt' });
+  expect(save.platform?.continueCredits).toBe(1);
+  expect(buyContinue(save, proof)).toBe(false);
+  expect(save.profile.coins).toBe(BALANCE.continueCoinPrice);
+  expect(useContinue(save, proof)).toBe(true);
+  expect(save.platform?.continueCredits).toBe(0);
 });

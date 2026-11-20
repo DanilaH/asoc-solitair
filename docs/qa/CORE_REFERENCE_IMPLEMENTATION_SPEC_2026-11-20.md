@@ -2,7 +2,7 @@
 
 **Дата:** 20.11.2026  
 **Источник продукта:** `DanilaH/asoc-solitair` — development `feat/c8-onboarding-dealer-20261119`, baseline `bf26fe7280b05c458e12626590bbe5cf789c6788` на момент аудита. `game/main 19ea067f1788f9aabdabf819c6008e15475b22be` — старый C6. Разработка Content8: [PR #41](https://github.com/DanilaH/asoc-solitair/pull/41). [PR #42](https://github.com/DanilaH/asoc-solitair/pull/42) — **исследовательское ТЗ Equality**, не реализованный runtime.  
-**Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **113** ID (after the separate AZUR tutorial preset study) и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research-gui-dance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.  
+**Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **114** IDs (including the AZUR art and locale preload study in #56) и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research guidance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.
 **Назначение:** **инженерная спецификация core системы для разработчика**, не новый список советов и не согласие вычеркнуть дорогие механики. Все найденные core-механики — генератор, баланс, модификаторы, сложность, рестарт, помощники, failure/revive — входят в программу продукта. Можно внедрять пакетами, **исключать из roadmap только по явному решению владельца**.
 
 ## 0. Истинные статусы доказанности и критерии закрытия
@@ -120,7 +120,8 @@ Hitapps original `DynamicDifficulty` различает `Clean=1`, `ExtraSteps=2
 Новое доказательство AZUR: `LevelConfigManager.GetAdjustedMovesForCurrentLocale` original ARM64 `0x262e4a8`, на positive `M,E,L` при включённом locale branch:
 
 [
-mathrm{movesLocalized}=min(2^{31}-1, 5lceil Mcdot L/(5E)ceil).
+mathrm{movesLocalized}=min(2^{31}-1, 5lceil Mcdot L/(5E)
+ceil).
 ]
 
 `M` authored source moves, `E` original English word count, `L` localized word count. Fixture `(70,16,17) → 75`, `(117,50,60) → 145`. **Это AZUR, не Hitapps; не использовать для нашей единственной RU локали до появления собственного локализованного контента**. Stage `G1` в реестре, не `OWNER_EXCLUDED`.
@@ -218,7 +219,7 @@ Suggested thresholds for each band must be **our own explicit tested balancing p
 
 ## 6. Реализационные пакеты для разработчика
 
-**Важно: ВСЕ обнаруженные core systems остаются в [113-feature roadmap](../porting/IMPLEMENTATION_ROADMAP_2026-11-19.md).** Пакеты ограничивают размер PR, **не финальный scope**. Точные стадии и зависимости:
+**Важно: ВСЕ обнаруженные core systems остаются в [114-feature roadmap](../porting/IMPLEMENTATION_ROADMAP_2026-11-19.md).** Пакеты ограничивают размер PR, **не финальный scope**. Точные стадии и зависимости:
 
 | Пакет | Что должен получить владелец | Точные source feature ID и основные изменения | Acceptance |
 | --- | --- | --- | --- |
@@ -242,7 +243,7 @@ Suggested thresholds for each band must be **our own explicit tested balancing p
 
 ## 8. Контракт сдачи и оформление PR
 
-Перед кодом агент обязан открыть актуальный `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, `ADOPTION_LEDGER.json` (113/113 with exact kit source SHA), source docs/real code and C8 active PR; сверить old 40–42 spec as historical data. Изменения в code сопровождать `sourceFeatureId` и real test. Если старые запреты конфликтуют с владельцем — исправить, а не отложить. Любой `BLOCKED/EVIDENCE_GAP` остаётся в дорожной карте с шагом закрытия, **не OWNER_EXCLUDED**.
+Перед кодом агент обязан открыть актуальный `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, `ADOPTION_LEDGER.json` (114/114 with exact kit source SHA), source docs/real code and C8 active PR; сверить old 40–42 spec as historical data. Изменения в code сопровождать `sourceFeatureId` и real test. Если старые запреты конфликтуют с владельцем — исправить, а не отложить. Любой `BLOCKED/EVIDENCE_GAP` остаётся в дорожной карте с шагом закрытия, **не OWNER_EXCLUDED**.
 
 **Формат сдачи одного implementation package:**
 ```text
@@ -296,7 +297,7 @@ Native `GameBoard.ConfigureBonusRewardedSlots` @`0x269f98c` independently config
 - **Rewarded:** independent `BonusSlotUnlockCoinsActive` flag, InternetConnectionHelper and AdServiceFacade reward-readiness; `RewardedAdLoadingHelper.ShowWithFeedback` is invoked with placement resolved differently for type2 and type3. **Original earned/closed/no-fill callbacks have not been run or fully reconstructed**. We must gate earned unlock on proven SDK reward and deduplicated receipt, not request/show/availability.
 - **Negative QA:** level below/at threshold, regular counts 2/3/4/5, one missing prefab, enable flag flips after active-save, separate type/index state, insufficient coins, SpendCoins returning false, delayed/duplicate/stale rewarded callback, no unlock on ad fail/no-fill, save/load/Undo and UI hit zones with optional fifth column.
 
-Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 113 registry entries.
+Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 114 registry entries.
 
 ### 9.4 Integration contract and no waiting for total research completion
 
@@ -374,3 +375,29 @@ This is a separate source system **`azur-art-sprite-wordcount-override`**, stage
 **Remaining runtime evidence:** which per-theme art sprite packs are actually loaded for the original 2000 levels/locales, whether source reuses visible word text or renders distinct images for repeated references, live remote override and Unity RNG state, exact final original deck/layout, Android behavior and human difficulty effect.
 
 Research registry advances to **113 systems**, no permanent exclusions; this document does NOT implement the new source rule.
+
+
+## 13. AZUR original packaged art × Russian locales × asynchronous preload (20 Nov 2026)
+
+**Original research:** [mini-games-kit PR #88](https://github.com/DanilaH/mini-games-kit/pull/88), actual owner AZUR XAPK 1.3.3.8/code244 `4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4`. Source-bound numeric verifier parses UnityFS/LZ4/SerializedFile and checks 10 native method registrations, 8 ARM64 BL target pairs and 5 opcode anchors. **No original Android execution, remote config or live sprite-loading success.**
+
+### 13.1 Real locally packaged resources — what is and is not proven
+
+- Original APK has **90** local `set_id` art bundles, **490** Sprite objects and matching `CardSpriteData` arrays. Source count distribution: 3 images in 3 bundles, 4 in 12, 5 in 35, 6 in 23, 7 in 16, 8 in 1. Each Sprite reference resolves to an actual packaged Sprite object.
+- **33** local word-theme banks, **4,539** matching theme IDs each, and **2,000** local `LevelConfig` rows. Original `WordsSet` references an art-pack `set_id` on **292** levels with **358** references. The separate `ArtThemes` level column only contains numeric values 0–4 in the local data; its exact visual meaning is not yet reconstructed and it **is not the same dimension as a set_id or image-card count**.
+- For English and Russian **89/90** packaged Sprite counts match the original theme's member word count. **Source numeric exception ID 385** has five word references and six Sprite objects; **if loaded** the earlier source-proven `GenerateCards` override would create one extra member card on only original level rows **44, 884, 1290, 1974**. The other **1,996** level rows have no change from this local art-count discrepancy. **No actual original screen is claimed.**
+- Source RU and EN dictionaries differ in member-word count for **1,357/4,539 themes**. Replaying the source `WordsSet` selections against each bank gives **1,687/2,000** local level rows with potentially different total card counts between those locales, even before any RNG. This is a *static content counterfactual*, not original live win rate.
+
+### 13.2 New independent source mechanism: async art preload with fallback
+
+**New feature ID `azur-async-theme-art-preload` (B1):** `GameController.LoadAndStartLevel` invokes `CardSpriteLoader.PreloadThemes` (native 0x2653848 → 0x25ceadc), which starts a coroutine for a nonempty theme collection (`PreloadThemesCoroutine`, 0x25ceb34 → 0x25cfd5c), with a callback or synchronous empty-list handling. The later `InitializeGameLogic → BuildArtCardCountsForThemes` checks **successfully loaded, positive** `CardSpriteData` sprite counts before ordinary card enumeration, rather than treating packaged availability alone as proof of load success.
+
+**Additional native connection:** `LevelConfigManager.GetLocalizedWordCount` checks `CardSpriteLoader.TryGetLoadedSpriteCount` at 0x262e790, and `GetAdjustedMovesForCurrentLocale` calls English/local word-count methods. Thus art availability **can** influence both the number of generated cards and *the inputs* to the source's optional localized budget adjustment, when the locale eligibility gate is active. These source call sites do **not** reveal original runtime remote flag values, Android download failures, or final delivered moves.
+
+### 13.3 Concrete CORE-1/CORE-6 developer contract
+
+Implement the distinct optional AZUR authoring pathway with **four explicit evidence-graded states**: `requested theme ID`, `packaged sprite references`, `successfully loaded artCount` (or unavailable), `effective member card count` using the original word count fallback. Do not equate `ArtThemes`, `WordsSet`, bundle asset count and user-visible pictures. Use a recorded language bank and immutable manifest digest, and freeze the **final generated Deal** with explicit word/member reference IDs, all unique Card IDs, stock/tableau count, locale budget result and separately labelled unknown original RNG state. An offline `preload → select content → author → freeze` step is an intentional `PRODUCT_ADAPTED` strategy; do **not** add network-dependent art loading as a requirement for an already published C8 attempt.
+
+Mandatory tests: loaded positive/missing/zero, late art response, repeat/duplicate asset, one mismatched ID 385, stable unchanged 89 sets, English/Russian distinct member counts, locale-count +5-rounding fixture, saved/parked Undo and immutable version across subsequent asset update, 320px with non-English longer labels, and real Android loss/stock UI. Existing C8 based on Hitapps **must not** be silently modified. `azur-localized-definition-packs`, `azur-localized-move-budget`, `azur-art-sprite-wordcount-override` remain separate from the new preload lifecycle entry.
+
+**Unclosed original source/runtime gates:** success/error callback behavior, original actual art bundles loaded on-device, remote packs, original selected RNG/board, original live locale M/E/L inputs, and how repeated word references are shown. No commercial/retention scope reductions; source/consumer inventory now **114/114** pending exact commit pin.

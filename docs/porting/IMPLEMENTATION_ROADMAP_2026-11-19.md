@@ -4,7 +4,7 @@
 
 This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/7f91abfd824162780a6567c6823b95864142957c/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.
 
-**Coverage after native P0 tutorial discovery:** **113 feature IDs**, 29 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 59 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 13 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
+**Coverage after native P0 tutorial discovery:** **114 feature IDs**, 29 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 60 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 13 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
 
 ## 1. Action priorities based on dependencies (not a feature ceiling)
 
@@ -40,7 +40,7 @@ Packages may run **in parallel** if independent. A smaller first playable or sho
 
 Every known source ID appears exactly once; a stage is **not** a permission to omit other systems.
 
-### B1. Генератор и выбор обычного кандидата (7)
+### B1. Генератор и выбор обычного кандидата (8)
 
 C8 source-derived dealer; random seed/stock tableaux, known target steps and independent oracle before altering gameplay.
 
@@ -50,6 +50,7 @@ C8 source-derived dealer; random seed/stock tableaux, known target steps and ind
 | `hitapps-candidate-priority` | `IMPLEMENTED_UNVERIFIED` | Independent original selected-seed/runtime parity; measure human decision quality |
 | `azur-deck-draw-and-recycle` | `IMPLEMENTED_UNVERIFIED` | Add exact source-model two-pass fixtures, Undo/reload/faceUp/cycle UI tests; compare user-observable order rather than internal array equality |
 | `azur-defeat-vs-no-valid-move` | `IMPLEMENTED_UNVERIFIED` | Verify native branch budget exhaustion&&!win separate from legal-action availability; test stock/recycle cycles and no false loss on temporary no-transfer |
+| `azur-async-theme-art-preload` | `ROADMAPPED` | [Original kit PR #88](https://github.com/DanilaH/mini-games-kit/pull/88): LoadAndStartLevel dispatches CardSpriteLoader.PreloadThemes with nonempty async coroutine/callback, later positive loaded sprite counts feed GenerateCards AND optional GetLocalizedWordCount. Source APK: 90 art packs/490 Sprite references, 292 art-eligible/2000 levels; actual on-device loaded art and remote/default flags UNKNOWN. Implement separate versioned optional AZUR manifest/preload/fallback/locale-count contract and immutable Deal after authoring, never alter existing C8 saves/deals. Test missing art/callback failure/locale/live Android and protect established Hitapps dealer |
 | `azur-art-sprite-wordcount-override` | `ROADMAPPED` | [Original AZUR 1.3.3.8 native source proof, kit PR #86](https://github.com/DanilaH/mini-games-kit/pull/86): BuildArtCardCountsForThemes looks up loaded CardSpriteData count per theme; positive count replaces default number of member cards in GenerateCards; member word ref uses i % original words count (unique new Card IDs). Implement isolated optional AZUR pre-shuffle content authoring and count/ordinal tests; preserve existing Hitapps C8 immutable deals and source art license. Original live loaded art, rendered images, Unity RNG/final board remain UNKNOWN |\n| `azur-generate-deal-entrypoints` | `EVIDENCE_GAP` | [Original ARM64 body verified in kit PR #80](https://github.com/DanilaH/mini-games-kit/pull/80): InitializeGame→GenerateCards→DealCards, Unity Random.Range single Fisher–Yates pass, FirstColumnCards+c placement, separate preset path. Implement separated authoring strategy with injected RNG callback and shape/face-up tests. **Remaining:** Unity engine seed/state, original runtime final board, remote/preset selection |
 | `hitapps-negative-seed-request-path` | `ROADMAPPED` | Implement native semantics negative-requested-seed→separate random seed draw on eligible paths, record selected seed and reproducibility; not same as EmbeddedRandom ctor(-seed) |
 
@@ -243,11 +244,11 @@ Locale move budgets, remote content settings, late-campaign structural cadence f
 
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
-| `azur-localized-move-budget` | `ROADMAPPED` | When localizing: implement 5*ceil(M*L/(5E)) capped INT_MAX only with verified locale/en word counts, valid guards, old-save/version migration; original live config remains UNKNOWN |
+| `azur-localized-move-budget` | `ROADMAPPED` | [Native/asset proof PR #88](https://github.com/DanilaH/mini-games-kit/pull/88): GetLocalizedWordCount conditionally uses loaded art-sprite counts; 33 theme locale banks differ substantially in word count. Implement 5*ceil(M*L/(5E)) only for separate validated locale configs with positive E/L, caps and saved attempt identity; original live remote flags/actual M/E/L and user-visible results still UNKNOWN |
 | `azur-remote-level-overrides` | `EVIDENCE_GAP` | Capture original config semantics before proposing optional versioned remote bank rollout |
 | `azur-structured-long-campaign` | `IN_PROGRESS` | Design C8 16–80 source-grounded curve, layout 5 columns, semantic de-dup and future endless/extended stages |
 | `hitapps-language-change-restart` | `ROADMAPPED` | Design explicit locale/content compatibility, preserve spent wallet and attempt history, test forced restart notifications |
-| `azur-localized-definition-packs` | `ROADMAPPED` | Plan original localized dictionaries, missing-definition audit and level/locale save migration if expanding languages |
+| `azur-localized-definition-packs` | `ROADMAPPED` | [Source XAPK PR #88](https://github.com/DanilaH/mini-games-kit/pull/88): 33 bundled theme banks × 4539 IDs; EN/RU differ in member count for 1357 themes and conditional total cards in 1687/2000 source configurations. Distinct from 36-locale/468 definition-bundle catalog. Validate missing/malformed numeric rows, localized content and SaveStore/Undo migration before multilingual rollout |
 
 ## 4. Strict evidence and change controls
 
@@ -259,7 +260,7 @@ Every PR in this implementation program must report feature IDs, original refere
 
 **Backlog governance:** change `SOURCE_FEATURES.json` in kit and `ADOPTION_LEDGER.json` in game together for every discovered system. After implementation, update both roadmap and ledger to `IMPLEMENTED_UNVERIFIED` or `ACCEPTED` with evidence. Owner alone can exclude a roadmap entry. Previous `HOLD/REJECT` archived notes remain historical, not controlling policy.
 
-**Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 113/113, and implement the next unblocked package with exact SDK/save/Android evidence.
+**Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 114/114, and implement the next unblocked package with exact SDK/save/Android evidence.
 
 **Audit correction (19.11, pass3):** Previous 76/76 was incomplete across existing source packaging/IAP, uneven AZUR categories, multiresource rewards, language, helper discovery and 10 AZUR metadata UI systems. Source inventory now **110**, with real pinned-source consumer `qa:porting` mandatory. The old Hitapps Daily puzzle line was downgraded to `EVIDENCE_GAP` because only Hitapps DailyRewards and Unico actual Daily Level are proven. Source-like names do not prove live/runtime behavior.
 
@@ -273,3 +274,5 @@ Every PR in this implementation program must report feature IDs, original refere
 **P0 shared Unity RNG and AZUR Joker follow-up (20.11, kit PR #84):** ordinary AZUR dealer, daily bonus, combo track, Joker helper and developer tools call the same Unity Random.Range native wrapper; some other original code directly calls InitState, source owners/runtime order unknown. A new separately tracked native source Joker chooses a random lower tableau, constructs/reveals/places a card and conditionally clears Undo. Game product policy should isolate deterministic authoring RNG and preserve immutable Deal. New row in D1; **112 total** source IDs, no owner exclusions; exact original live RNG/device and SDK remain unknown.
 
 **P0 AZUR card enumeration from art assets (20.11, kit PR #86):** Original `GameController.BuildArtCardCountsForThemes` supplies strictly positive loaded sprite counts to ordinary `GenerateCards`, changing per-theme member card count and using cyclic underlying word references with unique card IDs. This does not establish actual original Android art packs, rendered image/text variants or source RNG state. Added distinct B1 system; full roadmapped source inventory now **113/113**, zero exclusions. Keep game published deals immutable.
+
+**P0 original AZUR sprite-pack and localized count audit (20.11 kit PR #88):** Verified 90 UnityFS art sets/490 sprites, 89/90 art size parity with English and Russian word counts; set385 has one extra sprite conditionally affecting source levels44/884/1290/1974. Native level preload and localized count call sites now source-confirmed. All 33 theme dictionaries have 4539 IDs; EN/RU member counts differ in 1357 themes. The new independent B1 lifecycle item `azur-async-theme-art-preload` brings the complete map to **114/114**, no owner exclusions. Packaged != successfully loaded live; do not alter published C8 deals from this research alone.

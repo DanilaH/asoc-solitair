@@ -3,7 +3,7 @@
   "id": "association-solitaire-hitapps-azur-unico-20261119",
   "sourceCatalog": "https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/README.md",
   "scope": "Reviewed original AZUR XAPK ARM64 core code and 2,000 source rows, plus native-source Hitapps exact-build reports and Unico video. Every known core source system retained; remote and original Android runtime remain UNKNOWN.",
-  "coverageStatus": "SOURCE_CORE_113_RECONCILED_NOT_VENDOR_RUNTIME_EXHAUSTIVE",
+  "coverageStatus": "SOURCE_CORE_114_RECONCILED_NOT_VENDOR_RUNTIME_EXHAUSTIVE",
   "producer": "DanilaH/mini-games-kit",
   "features": [
     {
@@ -517,7 +517,7 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "balance",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "GetAdjustedMovesForCurrentLocale at native 0x262e4a8 uses 5*ceil(M*L/(5E)) with positive source M and English/local word counts, capped INT32_MAX; real enabled locale and remote flags UNKNOWN"
+      "knownLimit": "GetAdjustedMovesForCurrentLocale at native 0x262e4a8 uses 5*ceil(M*L/(5E)) with positive source M and English/local word counts, capped INT32_MAX; real enabled locale and remote flags UNKNOWN Native GetLocalizedWordCount calls CardSpriteLoader.TryGetLoadedSpriteCount (positive art-count gate) in addition to locale word data; statically packaged 33 theme banks show varying member counts. Actual enablement or original device M/E/L values not observed; see https://github.com/DanilaH/mini-games-kit/blob/1d7011a692d2146eb7aac0cadb84b6f9a2509acc/research/games/association-solitaire/2026-11-20-azur-packaged-art-locale/README.md."
     },
     {
       "id": "azur-stock-side-setting",
@@ -895,7 +895,7 @@
       "evidenceTier": "ASSET_VERIFIED",
       "surface": "content",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
-      "knownLimit": "36 locales and 468 local definition bundles; remote address list is developer HostingService, not observed live CDN; ownership/translation QA pending"
+      "knownLimit": "36 locales and 468 local definition bundles; remote address list is developer HostingService, not observed live CDN; ownership/translation QA pending Separate original themes dictionary analysis: 33 bundled language theme banks × 4539 identical theme IDs; EN/RU member counts differ for 1357 themes, corresponding to source-counterfactual total card differences on 1687/2000 authored rows. The earlier 36-locale/468-definition-bundle catalog is a DIFFERENT asset family. Actual original runtime locale/remote state UNKNOWN. Proof https://github.com/DanilaH/mini-games-kit/blob/1d7011a692d2146eb7aac0cadb84b6f9a2509acc/research/games/association-solitaire/2026-11-20-azur-packaged-art-locale/README.md."
     },
     {
       "id": "azur-deck-draw-and-recycle",
@@ -1021,8 +1021,17 @@
       "surface": "core",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/6ebc2c19798730e272ca6f8675dbccf6b7180e15/research/games/association-solitaire/2026-11-20-azur-art-sprite-card-count/README.md",
       "originalBuild": "AZUR Word Solitaire: Categories 1.3.3.8/code244, exact ARM64 XAPK",
-      "knownLimit": "GameController.BuildArtCardCountsForThemes obtains strictly positive per-theme loaded CardSpriteData counts; normal InitializeGame passes override map to GenerateCards while level1 preset handler passes null. GenerateCards creates a category leader, uses effective member count from positive sprite override or original Words list length, selects each member reference with i % original word count and unique Card IDs; Theme.SetWordCount stores effective count. UNKNOWN original runtime loaded art packs/locale, visible card image/text variants and duplicates, full final cards/Unity RNG state, remote settings and original Android parity."
+      "knownLimit": "GameController.BuildArtCardCountsForThemes obtains strictly positive per-theme loaded CardSpriteData counts; normal InitializeGame passes override map to GenerateCards while level1 preset handler passes null. GenerateCards creates a category leader, uses effective member count from positive sprite override or original Words list length, selects each member reference with i % original word count and unique Card IDs; Theme.SetWordCount stores effective count. UNKNOWN original runtime loaded art packs/locale, visible card image/text variants and duplicates, full final cards/Unity RNG state, remote settings and original Android parity. Original numeric packaged-source audit: 90 local art sets, 490 Sprite refs, 89/90 match EN/RU words, exceptional ID385 5 words vs 6 sprites and only conditional +1 members in authored levels44/884/1290/1974. Preload lifecycle and live available art remain separately tracked as azur-async-theme-art-preload; proof https://github.com/DanilaH/mini-games-kit/blob/1d7011a692d2146eb7aac0cadb84b6f9a2509acc/research/games/association-solitaire/2026-11-20-azur-packaged-art-locale/README.md."
+    },
+    {
+      "id": "azur-async-theme-art-preload",
+      "name": "AZUR source-native level art-bundle preloading before card enumeration with loaded/missing count fallback",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/1d7011a692d2146eb7aac0cadb84b6f9a2509acc/research/games/association-solitaire/2026-11-20-azur-packaged-art-locale/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244, exact ARM64 original XAPK",
+      "knownLimit": "LoadAndStartLevel directly dispatches CardSpriteLoader.PreloadThemes (nonempty collection starts PreloadThemesCoroutine, empty invokes callback); later InitializeGameLogic builds per-theme positive loaded CardSpriteData counts for GenerateCards. Native GetLocalizedWordCount also calls TryGetLoadedSpriteCount so effective count can enter gated locale move budgeting. Original 90 packaged art bundles contain 490 verified Sprite refs; 89/90 art-set member counts equal EN/RU word refs, exceptional set385 contributes +1 card conditionally on levels44/884/1290/1974. UNKNOWN actual Android preload success/cache/remote state, callback ordering on failure, live localization gates, original seed/deal and visible art content."
     }
   ],
-  "auditRevision": "2026-11-20-azur-art-sprite-count-native-v10"
+  "auditRevision": "2026-11-20-azur-packaged-art-33-locales-preload-native-v11"
 }

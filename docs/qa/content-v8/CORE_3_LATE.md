@@ -15,7 +15,7 @@ Our seven-level chapter uses four geometry profiles. The repeating rhythm adapts
 
 Each chapter starts with a rest deal and follows with standard, hard, standard, hard, standard and peak deals. The peaks are levels 38, 45, 52, 59, 66, 73 and 80. Hard and peak boards use guided offline card ordering on top of the seed distributor. Rest and standard boards use ordinary distribution. DynamicDifficulty R1 still issues its verified variants on levels 11–15.
 
-The [late recipes](core3-late-recipes.json) cover 77 topics, including 24 new Russian-language categories. A repeated topic has at least three intervening levels. Each board has four to six members per category and uses original project art for one complete picture category alongside word categories.
+The [late recipes](core3-late-recipes.json) cover 77 topics, including 24 new Russian-language categories. A repeated topic has at least three intervening levels. Each board has four to six members per category and uses original project art for one complete picture category alongside word categories. Native AZUR art preload and localized art-dependent counts remain distinct registry items from [#56](https://github.com/DanilaH/asoc-solitair/pull/56).
 
 ## Verification
 

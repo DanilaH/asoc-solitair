@@ -1,3 +1,7 @@
+# Content 8 CORE-4 · 0.19.8 preview
+
+[Ordered deals and three-key locks](qa/content-v8/CORE_4_SPECIAL_DEALS.md) are live at levels 17, 18, 26, 45 and 66. The first-use exercises and old deal migration are covered by the preview tests. This starts CORE-4. The next feature package can tackle independently configured bonus upper and lower slots with the existing save and receipt ownership.
+
 # Content 8 CORE-3 · full campaign preview 0.19.7
 
 [Levels 32–80 and verification](qa/content-v8/CORE_3_LATE.md). Fresh Content 8 attempts now use the full 80-level bank, including the previous 16–31 wave. The older C7 fallback IDs remain available for saved attempts. Physical Android playtest and human balance review remain open. The next roadmap package is CORE-4.

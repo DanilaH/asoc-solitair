@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { content8Dealer, content8Late, content8Wave } from '../../src/content/campaign-v8-dealer';
+import { content8Special } from '../../src/content/campaign-v8-special';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
@@ -190,6 +191,93 @@ test('the final C8 move records level 80 and opens the completed campaign', asyn
   expect(completed.platform?.completedCampaign).toContain(campaignId(80));
   await page.locator('#next-level').tap();
   await expect(page.locator('#home-progress')).toHaveText('Пройдено 80 из 80');
+});
+
+test('level 17 teaches the first ordered transfer and remembers accepted practice', async ({ page }) => {
+  const previous = content8Wave[0], deal = content8Special[0];
+  const save = freshSave(previous, 'core4-completed-sixteen');
+  for (const command of previous.winningPath) {
+    const applied = applyBoard(save.attempt.board, command, previous);
+    if (typeof applied === 'string') throw Error(applied);
+    save.attempt.board = applied.board;
+  }
+  await loadWaveFixture(page, save, 16);
+  await openGame(page, previous);
+  await page.locator('#next-level').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
+  await expect(page.locator('#learn-rule')).toHaveAttribute('data-rule', 'ordered');
+  await page.locator('#learn-rule .primary').tap();
+  await expect(page.locator('#lesson-copy')).toContainText('Будни');
+  const initial = (await read(page)).attempt.board;
+  await touch(page, deal, { type: 'draw' });
+  expect((await read(page)).attempt.board).toEqual(initial);
+  await touch(page, deal, deal.winningPath[0]);
+  await expect(page.locator('#lesson-copy')).toContainText('понедельника');
+  await page.reload();
+  await openGame(page, deal);
+  await expect(page.locator('#learn-rule')).toBeHidden();
+  await expect(page.locator('#lesson-copy')).toContainText('понедельника');
+  await touch(page, deal, deal.winningPath[1]);
+  await expect(page.locator('#lesson-note')).toBeHidden();
+  expect((await read(page)).campaign?.tutorials).toContain('learn:ordered');
+});
+
+test('the third key opens the column and Undo restores the saved two-key board', async ({ page }) => {
+  const deal = content8Special[1], save = freshSave(deal, 'core4-keys');
+  await loadWaveFixture(page, save, 17);
+  await openGame(page, deal);
+  await expect(page.locator('#learn-rule')).toHaveAttribute('data-rule', 'keys');
+  await page.locator('#learn-rule .primary').tap();
+  await expect(page.locator('#lesson-copy')).toContainText('0 из 3');
+  for (const [index, move] of deal.winningPath.slice(0, 2).entries()) {
+    await touch(page, deal, move);
+    await expect(page.locator('#lesson-copy')).toContainText(`${index + 1} из 3`);
+  }
+  const before = (await read(page)).attempt.board;
+  await page.reload();
+  await openGame(page, deal);
+  await expect(page.locator('#lesson-copy')).toContainText('2 из 3');
+  await touch(page, deal, deal.winningPath[2]);
+  await expect(page.locator('#lesson-note')).toBeHidden();
+  const opened = await read(page);
+  expect(opened.attempt.board.keys).toHaveLength(3);
+  expect(opened.attempt.board.faceUp).toContain(opened.attempt.board.tableau[deal.lock!.column].at(-1));
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board).toEqual(before);
+  expect((await read(page)).campaign?.tutorials).toContain('learn:keys');
+});
+
+test('level 66 opens and uses the rightmost locked column at 320px', async ({ page }) => {
+  const deal = content8Special.find(candidate => candidate.campaignLevel === 66)!;
+  const save = freshSave(deal, 'core4-rightmost-lock');
+  save.campaign = { version: 1, tutorials: ['intro:keys', 'learn:keys'] };
+  const column = deal.lock!.column;
+  let unlockIndex = -1;
+  for (const [index, move] of deal.winningPath.entries()) {
+    const applied = applyBoard(save.attempt.board, move, deal);
+    if (typeof applied === 'string') throw Error(applied);
+    if (applied.events.some(event => event.type === 'unlock')) { unlockIndex = index; break; }
+    save.attempt.board = applied.board;
+  }
+  expect(unlockIndex).toBeGreaterThanOrEqual(0);
+  expect(column).toBe(4);
+  expect(save.attempt.board.keys).toHaveLength(2);
+  await loadWaveFixture(page, save, 65);
+  await openGame(page, deal);
+  let board = save.attempt.board, usedRightmost = false;
+  for (const move of deal.winningPath.slice(unlockIndex)) {
+    const applied = applyBoard(board, move, deal);
+    if (typeof applied === 'string') throw Error(applied);
+    await touch(page, deal, move);
+    await expect.poll(async () => (await read(page)).attempt.board).toEqual(applied.board);
+    board = applied.board;
+    if (move.type === 'transfer' && [move.from, move.to].some(location => location.kind === 'tableau' && location.index === column)) {
+      usedRightmost = true;
+      break;
+    }
+  }
+  expect(usedRightmost).toBe(true);
+  expect(board.keys).toHaveLength(3);
 });
 
 test('the first lesson gates real touches at 320px and resumes after reload', async ({ page }) => {

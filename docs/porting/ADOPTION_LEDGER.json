@@ -132,18 +132,20 @@
     {
       "id": "hitapps-ordered-category",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Ordered rank mechanics in existing rules/content7; C8 1–15 ordinary-only",
-      "nextAction": "Verify first C8 introduction and match rule provenance; device teaching still pending",
+      "currentImplementation": "Existing rank and contiguous-prefix rules now apply in Content 8 at levels 17 and 45. Level 17 teaches the first ordered move through a resumable exercise.",
+      "nextAction": "Verify on physical Android, then evaluate placement and difficulty before extending the ordered schedule. Original live activation remains open.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "stage": "D1"
+      "stage": "D1",
+      "evidenceRef": "docs/qa/content-v8/CORE_4_SPECIAL_DEALS.md"
     },
     {
       "id": "hitapps-lockers",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Existing three keys/locked tableau in older C7 and archive",
-      "nextAction": "Re-author gated C8 16–80 with independent solver and onboarding/device check",
+      "currentImplementation": "Authored Content 8 deals at levels 18, 26 and 66 close a tableau column until three distinct key cards are revealed. Level 18 teaches actual unlocking. Saved state and Undo retain the column and key state.",
+      "nextAction": "Confirm Android touch, feedback and pacing. Source Shuffle pattern implementation and product positions are documented independently of the live original.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "stage": "D1"
+      "stage": "D1",
+      "evidenceRef": "docs/qa/content-v8/CORE_4_SPECIAL_DEALS.md"
     },
     {
       "id": "hitapps-frozen",

@@ -78,3 +78,20 @@ export function preparePriorityPlan<T, V>(options: {
     },
   };
 }
+
+/** Use for eligible Shuffle-phase appliers. An invalid pattern may fail after reseeding. */
+export function applyShufflePattern<T>(state: PhaseState<T>, options: {
+  enabled: boolean; level: number; minLevel: number; pattern: number; featureSeed: number;
+  shuffle: (snapshot: T, seed: number) => T;
+  apply: (snapshot: T, pattern: number) => T | undefined;
+  appliedFlag: number; failedFlag: number;
+}): PhaseState<T> {
+  const { enabled, level, minLevel, pattern, featureSeed } = options;
+  if (!enabled || level < minLevel || !Number.isInteger(pattern) || pattern < 0 ||
+    !Number.isInteger(featureSeed) || featureSeed <= 0 || featureSeed > SOURCE_SEED_MAX_EXCLUSIVE) return state;
+  const snapshot = state.levelShuffled ? state.snapshot : options.shuffle(state.snapshot, featureSeed);
+  const applied = options.apply(snapshot, pattern);
+  return applied === undefined
+    ? { ...state, snapshot, levelShuffled: true, failedFlags: state.failedFlags | options.failedFlag }
+    : { ...state, snapshot: applied, levelShuffled: true, appliedFlags: state.appliedFlags | options.appliedFlag };
+}

@@ -36,10 +36,15 @@ export interface Deal {
   legacyTutorialPath?: Command[];
   daily?: { dayId: string; contentVersion: number; poolId: string };
 }
+export interface CampaignOutcome {
+  outcome: 'Clean' | 'ExtraSteps' | 'Restart';
+  restarts: number;
+}
 export interface Attempt {
   id: string; dealId: string; board: Board; undo: Board[];
   streak: { tier: number; progress: number; coins: number; counted: string[] };
   continued?: boolean;
+  director?: { restarts: number; previousLosses: number; exhausted?: true };
   jokerUsed?: boolean;
   lessonHint?: BoardCommand;
   daily?: { dayId: string; contentVersion: number };
@@ -65,6 +70,8 @@ export interface Save {
   parked?: { campaign?: Attempt; daily?: Attempt };
   platform?: PlatformState;
   campaign?: { version: 1; tutorials: string[] };
+  difficultyHistory?: CampaignOutcome[];
+  difficultyPenalty?: number;
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';

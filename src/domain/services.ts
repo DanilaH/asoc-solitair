@@ -1,7 +1,8 @@
 import { campaignRewards } from './meta';
 import { BALANCE } from './balance';
 import { campaignId } from './progression';
-import type { PlatformState, Save } from './types';
+import { CONTENT8_PREVIEW, type PlatformState, type Save } from './types';
+import { recordCampaignOutcome } from './difficulty';
 
 export type RewardPlacement = 'hint' | 'undo' | 'continue';
 export interface EarnedReceipt { schema: 1; id: string; attempt: string; dealId: string; mode: 'campaign' | 'daily'; placement: RewardPlacement }
@@ -60,6 +61,7 @@ export function markCampaignWin(save: Save, dealId: string, level?: number): imp
   const progressId = campaignId(level);
   if (state.completedCampaign.includes(progressId)) return [];
   state.completedCampaign.push(progressId);
+  if (CONTENT8_PREVIEW && save.attempt.dealId === dealId) recordCampaignOutcome(save);
   if (level > BALANCE.ads.interstitialAfterLevel) state.winsSinceInterstitial++;
   return campaignRewards(save);
 }

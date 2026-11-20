@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { content8Dealer } from '../../src/content/campaign-v8-dealer';
+import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
@@ -39,6 +40,78 @@ async function expectLegibleLesson(page: Page) {
     return text.top >= panel.top && text.bottom <= panel.bottom && panel.bottom <= innerHeight;
   })).toBe(true);
 }
+
+test('a fresh campaign start persists its chosen variant and exact budget through a relaunch', async ({ page }) => {
+  const previous = content8Dealer[9], base = content8Dealer[10];
+  const selected = content8DirectorDeals.find(deal => deal.id === base.id + '-tight-r1')!;
+  const save = freshSave(previous, 'core2-won-level-10');
+  save.contentVersion = 8;
+  save.settings.reducedMotion = true;
+  let board = previous.initial;
+  for (const action of previous.winningPath) {
+    const result = applyBoard(board, action, previous);
+    if (typeof result === 'string') throw Error(result);
+    board = result.board;
+  }
+  save.attempt.board = board;
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0,
+    winsSinceInterstitial: 0, completedCampaign: Array.from({ length: 10 }, (_, i) => campaignId(i + 1)) };
+  save.difficultyHistory = Array.from({ length: 10 }, () => ({ outcome: 'Clean', restarts: 0 }));
+  await page.addInitScript(({ key, value }) => {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, value);
+  }, { key: 'asoc-solitaire.save.v1', value: JSON.stringify(save) });
+  await page.goto('/');
+  await openGame(page, previous);
+  await page.locator('#next-level').tap();
+  await page.locator('#difficulty-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', selected.id);
+  const starting = await read(page);
+  expect(starting.attempt.board).toEqual(selected.initial);
+  expect(starting.attempt.board.movesLeft).toBe(160);
+  await touch(page, selected, { type: 'draw' });
+  await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(159);
+  const afterDraw = (await read(page)).attempt;
+  await page.reload();
+  await openGame(page, selected);
+  const restored = (await read(page)).attempt;
+  expect(restored.id).toBe(afterDraw.id);
+  expect(restored.board).toEqual(afterDraw.board);
+  expect(restored.undo).toEqual(afterDraw.undo);
+  await page.locator('#menu').tap();
+  await page.locator('#levels-open').tap();
+  await page.locator('#level-picker-open').tap();
+  await page.locator('#level-11').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-screen', 'game');
+  await expect(page.locator('#switch-level')).toBeHidden();
+  expect((await read(page)).attempt.id).toBe(afterDraw.id);
+});
+
+test('starting the exhausted level again from Home uses the certified relief deal after three losses', async ({ page }) => {
+  const base = content8Dealer[11];
+  const relief = content8DirectorDeals.find(deal => deal.id === base.id + '-relief-r1')!;
+  const save = freshSave(base, 'core2-third-loss');
+  save.contentVersion = 8;
+  save.settings.reducedMotion = true;
+  save.attempt.board.movesLeft = 1;
+  const exhausted = applyBoard(save.attempt.board, { type: 'draw' }, base);
+  if (typeof exhausted === 'string') throw Error(exhausted);
+  save.attempt.board = exhausted.board;
+  save.attempt.director = { restarts: 2, previousLosses: 2, exhausted: true };
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0,
+    winsSinceInterstitial: 0, completedCampaign: Array.from({ length: 11 }, (_, i) => campaignId(i + 1)) };
+  await page.addInitScript(({ key, value }) => {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, value);
+  }, { key: 'asoc-solitaire.save.v1', value: JSON.stringify(save) });
+  await page.goto('/');
+  await openGame(page, base);
+  await page.locator('#result-home').tap();
+  await page.locator('#home-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', relief.id);
+  const issued = (await read(page)).attempt;
+  expect(issued.id).not.toBe(save.attempt.id);
+  expect(issued.board).toEqual(relief.initial);
+  expect(issued.director).toEqual({ restarts: 3, previousLosses: 3 });
+});
 
 test('the first lesson gates real touches at 320px and resumes after reload', async ({ page }) => {
   const deal = content8Dealer[0];

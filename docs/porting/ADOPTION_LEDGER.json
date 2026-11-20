@@ -37,33 +37,39 @@
     },
     {
       "id": "hitapps-dynamic-difficulty",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Not implemented",
-      "nextAction": "Prototype ten-result window, Clean/ExtraSteps/Restart and source-derived penalty on new attempts",
-      "stage": "B2"
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "C8 preview R1 updates the penalty from ten first clears and applies it only at fresh issuance for levels 11–15. Versioned variant IDs resolve the fixed effective budgets on reload and Restart.",
+      "nextAction": "Play-test both penalty directions on physical Android and tune product parameters. Capture original active rates, rounding and config before any parity claim.",
+      "stage": "B2",
+      "evidenceRef": "docs/qa/content-v8/CORE_2.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
     },
     {
       "id": "hitapps-easy-deals",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Not implemented",
-      "nextAction": "Model native reason codes/threshold and relief after loss streak as separate selector",
-      "stage": "B2"
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "C8 preview R1 offers a checked relief variant after three counted losses on fresh same-level issuance for levels 11–15. A regular Restart retains the deal ID. Four relief rows use a second seed and level 11 uses a wider budget on its reference board.",
+      "nextAction": "Capture the native decCoef/two lookups and post-Paywall branch. Observe player relief on Android and certify relief rows for CORE-3 level additions.",
+      "stage": "B2",
+      "evidenceRef": "docs/qa/content-v8/CORE_2.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
     },
     {
       "id": "hitapps-equality-paywall",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Game PR #42 exact research and implementation spec, no consumer code yet",
-      "nextAction": "Implement source-bound Equality candidate selection and separate +10 validated recovery",
+      "status": "IN_PROGRESS",
+      "currentImplementation": "Offline selector simulates actual Rules 3 across policies and verifies 79/80 percent plus UNKNOWN. Awarding and recovery remain separate.",
+      "nextAction": "Verify three-stack initial placement, generate immutable variants and persist selection, and prove +10 recovery from an actual exhausted board.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
-      "stage": "B3"
+      "stage": "B3",
+      "evidenceRef": "docs/qa/content-v8/CORE_2.md"
     },
     {
       "id": "hitapps-paywall-segmentation",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Game PR #42 source-shaped segment/activation design; no live purchase segments",
-      "nextAction": "Implement eligible profile/attempt gates with explicit source/runtime uncertainty",
+      "status": "IN_PROGRESS",
+      "currentImplementation": "Explicit positive seed, enabled/min-level/limit/segment whitelist enforced in the offline eligibility model.",
+      "nextAction": "Wire product eligibility and issued counters to immutable deals only with known segment or explicit unknown policy; preserve original live cohort UNKNOWN.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
-      "stage": "B3"
+      "stage": "B3",
+      "evidenceRef": "docs/qa/content-v8/CORE_2.md"
     },
     {
       "id": "hitapps-adbreak",
@@ -798,10 +804,11 @@
     },
     {
       "id": "hitapps-feature-seed-one-time-reshuffle",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No runtime source-feature-seeded re-shuffle and shared LevelShuffled state; only own immutable C8 plain deal",
-      "nextAction": "Model shared LevelShuffled flag and precisely one FeatureLevelSeed shuffle across valid Lockers/Frozen/Bound; test invalid pattern flags without assuming unchanged board",
-      "stage": "B3"
+      "status": "IN_PROGRESS",
+      "currentImplementation": "Source-ordered phase adapter performs a single fresh reseed before pattern application, skips it on pre-shuffled simulation and preserves explicit failure flags.",
+      "nextAction": "Connect the concrete Lockers/Frozen/Bound pattern appliers in CORE-4 and compare controlled original traces.",
+      "stage": "B3",
+      "evidenceRef": "docs/qa/content-v8/CORE_2.md"
     },
     {
       "id": "hitapps-initial-shuffle-final-pipeline",

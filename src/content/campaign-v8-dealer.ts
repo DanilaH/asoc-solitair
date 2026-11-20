@@ -14,7 +14,7 @@ function location(code: string): Location {
 }
 
 /** d = draw, r = recycle, t2>f0 = move tableau column 2 to foundation slot 0. */
-function decodeRoute(route: string): BoardCommand[] {
+export function decodeRoute(route: string): BoardCommand[] {
   return route.split(' ').map(step => {
     if (step === 'd') return { type: 'draw' };
     if (step === 'r') return { type: 'recycle' };

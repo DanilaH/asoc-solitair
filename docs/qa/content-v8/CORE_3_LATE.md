@@ -1,6 +1,6 @@
 # Content 8 through level 80 · 0.19.7 preview (38)
 
-This package builds on [the first CORE-3 wave](https://github.com/DanilaH/asoc-solitair/pull/55). Fresh Content 8 starts use the 80 published Content 8 definitions. Positions 32–80 use immutable `campaign-c8-wave-NNN` identities. Active and parked older attempts still resolve the original definition, including the prior C7 fallback at level 80. Campaign completion and awards keep the canonical level IDs. The production Content 7 bank remains available under its existing build flag.
+This package builds on [the first CORE-3 wave](https://github.com/DanilaH/asoc-solitair/pull/55). Fresh Content 8 starts use the 80 published Content 8 definitions. Positions 32–80 use immutable `campaign-c8-wave-NNN` identities. Active and parked older attempts still resolve the original definition, including the prior C7 fallback at level 80. Campaign completion and awards keep the canonical level IDs. The production Content 7 bank remains available under its existing build flag. The late vocabulary is loaded by Content 8 and the shared archive dictionary retains its protected hash.
 
 ## Chapter structure
 

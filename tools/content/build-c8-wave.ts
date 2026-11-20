@@ -1,8 +1,7 @@
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { isDeepStrictEqual } from 'node:util';
-import { content8Cards } from '../../src/content/content8-words';
-import type { TopicSelection } from '../../src/content/topics';
+import { content8Cards, type Content8TopicSelection } from '../../src/content/content8-words';
 import { applyBoard, assertBoard } from '../../src/domain/engine';
 import type { Board, BoardCommand, Deal, DifficultyTier, Location } from '../../src/domain/types';
 import earlyRecipes from '../../docs/qa/content-v8/core3-recipes.json';
@@ -102,7 +101,7 @@ const recipes = [
 for (const recipe of recipes.filter(row => row.level >= first && row.level <= last)) {
   const { level, title, target, budget, sourcePosition, sourceBaseMoves, seedOffset, searchCap } = recipe;
   const strategy = recipe.strategy as 'ordinary' | 'guided-stock';
-  const row = recipe, topics = recipe.topics as TopicSelection[];
+  const row = recipe, topics = recipe.topics as Content8TopicSelection[];
   const cards = content8Cards(topics), ids = Object.keys(cards);
   if (ids.length !== row.cards || topics.length !== row.categories || new Set(Object.values(cards).map(card => card.text.toLocaleLowerCase('ru'))).size !== ids.length) {
     throw Error('Invalid editorial bank at level ' + level);

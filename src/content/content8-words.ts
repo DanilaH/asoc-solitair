@@ -1,4 +1,10 @@
-import { cardsFor, topics as wordBank, type TopicSelection } from './topics';
+import type { Card } from '../domain/types';
+import { lateTopics } from './content8-late-topics';
+import { cardsFor, type TopicSelection } from './topics';
+
+type LateTopicId = keyof typeof lateTopics;
+export type Content8TopicSelection = Omit<TopicSelection, 'id'> & { id: TopicSelection['id'] | LateTopicId };
+const isLateTopic = (id: Content8TopicSelection['id']): id is LateTopicId => Object.hasOwn(lateTopics, id);
 
 /** New original entries, used by Content 8 only. Existing revisions retain their card sets. */
 export const extraWords: Partial<Record<TopicSelection['id'], readonly [string, string][]>> = {
@@ -34,13 +40,29 @@ export const extraWords: Partial<Record<TopicSelection['id'], readonly [string, 
   games: [['Регби', 'Командная игра с овальным мячом.']],
 };
 
-export function content8Cards(topics: readonly TopicSelection[]) {
-  const cards = cardsFor(topics.map(topic => ({ ...topic, count: Math.min(wordBank[topic.id][1].length, topic.count) })));
-  for (const { id, count } of topics) for (let n = wordBank[id][1].length + 1; n <= count; n++) {
-    const entry = extraWords[id]?.[n - wordBank[id][1].length - 1];
-    if (!entry) throw Error(`Нет нового слова ${id}_${n}`);
-    const key = `${id}_${n}`;
-    cards[key] = { id: key, category: id, text: entry[0], explanation: entry[1] };
+export function content8Cards(topics: readonly Content8TopicSelection[]) {
+  const cards: Record<string, Card> = {};
+  for (const { id, count, images } of topics) {
+    if (!isLateTopic(id)) {
+      Object.assign(cards, cardsFor([{ id, count: Math.min(5, count), images }]));
+      continue;
+    }
+    const [text, entries] = lateTopics[id];
+    cards[id] = { id, category: id, text, leader: true, explanation: 'Карта категории. Подберите к ней все подходящие карточки.' };
+    for (const [index, entry] of entries.slice(0, count).entries()) {
+      const [text, explanation] = entry.split('|'), key = `${id}_${index + 1}`;
+      cards[key] = { id: key, category: id, text, explanation };
+    }
+  }
+  for (const { id, count } of topics) {
+    if (isLateTopic(id)) continue;
+    // Early Content 8 seeds depend on extra members following the base bank.
+    for (let n = 6; n <= count; n++) {
+      const entry = extraWords[id]?.[n - 6];
+      if (!entry) throw Error(`Нет нового слова ${id}_${n}`);
+      const key = `${id}_${n}`;
+      cards[key] = { id: key, category: id, text: entry[0], explanation: entry[1] };
+    }
   }
   return cards;
 }

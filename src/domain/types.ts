@@ -71,6 +71,7 @@ export interface Save {
   platform?: PlatformState;
   campaign?: { version: 1; tutorials: string[] };
   difficultyHistory?: CampaignOutcome[];
+  difficultyPenalty?: number;
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';

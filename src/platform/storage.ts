@@ -75,6 +75,8 @@ export function decodeSave(raw: string, source: DealSource): Save {
     save.difficultyHistory.length > DIFFICULTY_WINDOW || save.difficultyHistory.some(entry =>
       !entry || !natural(entry.restarts) || !['Clean', 'ExtraSteps', 'Restart'].includes(entry.outcome) ||
       (entry.outcome === 'Restart') !== (entry.restarts > 0)))) throw Error('Повреждена история сложности');
+  if (save.difficultyPenalty !== undefined && (!Number.isSafeInteger(save.difficultyPenalty) ||
+    Math.abs(save.difficultyPenalty) > 100)) throw Error('Повреждён коэффициент сложности');
   const director = save.attempt.director;
   if (director !== undefined && (!director || deal.daily || deal.campaignLevel === undefined ||
     !natural(director.restarts) || !natural(director.previousLosses) || director.previousLosses > director.restarts ||

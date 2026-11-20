@@ -1,7 +1,10 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { adjustedMoveBudget, difficultyStats, nextPenalty } from '../../src/domain/difficulty';
+import { adjustedMoveBudget, difficultyStats, easyDealTarget, nextPenalty } from '../../src/domain/difficulty';
 import { applyShufflePattern, prepareFreshPlan, preparePriorityPlan } from '../../tools/content/candidate-pipeline';
-import { easyDealTarget, eligibleForEquality, selectEquality } from '../../tools/content/difficulty-selection';
+import { eligibleForEquality, selectEquality } from '../../tools/content/difficulty-selection';
+import { advance } from '../../tools/qa/gameplay-oracle';
+import { dealOrdinary } from '../../tools/content/plain-dealer';
+import directorBank from '../../src/content/campaign-v8-director.json';
 import type { Board, BoardCommand, CampaignOutcome, Deal } from '../../src/domain/types';
 
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
@@ -112,4 +115,71 @@ it('keeps campaign difficulty history and loss on restart across save reload and
   expect(save.difficultyHistory).toEqual([{ outcome: 'Restart', restarts: 1 }]);
   expect(decodeSave(JSON.stringify(save), findDeal)).toEqual(save);
   expect(decodeSave(JSON.stringify(freshSave(deal, 'legacy-no-history')), findDeal).difficultyHistory).toBeUndefined();
+});
+
+it('issues only certified variants to new C8 starts and keeps their identity across reload and Restart', async () => {
+  vi.stubEnv('VITE_CONTENT8_PREVIEW', '1');
+  const { campaignDeals, findDeal, selectCampaignDeal } = await import('../../src/content/campaign');
+  const { content8DirectorDeals } = await import('../../src/content/campaign-v8-director');
+  const { beginDeal } = await import('../../src/domain/campaign');
+  const { dispatch, freshSave } = await import('../../src/domain/engine');
+  const { campaignId } = await import('../../src/domain/progression');
+  const { switchMode } = await import('../../src/domain/sessions');
+  const { dailyForDay } = await import('../../src/content/daily');
+  const { decodeSave } = await import('../../src/platform/storage');
+  const base = campaignDeals[11];
+  let save = freshSave(base, 'original');
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0,
+    lastFullscreenAt: 0, completedCampaign: campaignDeals.slice(0, 11).map(d => campaignId(d.campaignLevel!)) };
+  save.difficultyHistory = Array.from({ length: 9 }, () => ({ outcome: 'Clean', restarts: 0 }));
+  expect(selectCampaignDeal(save, base)).toBe(base);
+  save.difficultyHistory.push({ outcome: 'Clean', restarts: 0 });
+  expect(selectCampaignDeal(save, campaignDeals[7])).toBe(campaignDeals[7]);
+  expect(selectCampaignDeal(save, campaignDeals[15])).toBe(campaignDeals[15]);
+  const tight = selectCampaignDeal(save, base);
+  expect(tight.id).toBe(base.id + '-tight-r1');
+  expect(tight.initial.movesLeft).toBe(64);
+  save.attempt.board.movesLeft = 0;
+  save.attempt.board.phase = 'exhausted';
+  save.attempt.director = { previousLosses: 1, restarts: 1, exhausted: true };
+  expect(selectCampaignDeal(save, base, save.attempt)).toBe(tight);
+  save.attempt.director = { previousLosses: 2, restarts: 2, exhausted: true };
+  const relief = selectCampaignDeal(save, base, save.attempt);
+  expect(relief.id).toBe(base.id + '-relief-r1');
+  expect(relief.initial.movesLeft).toBe(74);
+  expect(relief.initial.stock).not.toEqual(base.initial.stock);
+  beginDeal(save, relief, 'relief', base);
+  expect(save.attempt.director).toEqual({ previousLosses: 3, restarts: 3 });
+  save = dispatch(save, { type: 'draw' }, relief).next;
+  expect(save.attempt.board.movesLeft).toBe(73);
+  save.difficultyPenalty = -5;
+  const parked = structuredClone(save.attempt);
+  switchMode(save, 'daily', dailyForDay('2026-11-20'), 'daily');
+  save = decodeSave(JSON.stringify(save), findDeal);
+  switchMode(save, 'campaign', relief, 'resume');
+  expect(save.attempt).toEqual(parked);
+  expect(dispatch(save, { type: 'restart', attemptId: 'restart' }, relief).next.attempt).toMatchObject({
+    dealId: relief.id, board: relief.initial,
+  });
+  save.platform!.completedCampaign.push(campaignId(12));
+  expect(selectCampaignDeal(save, base, save.attempt)).toBe(base);
+
+  expect(content8DirectorDeals).toHaveLength(10);
+  for (const entry of directorBank) {
+    const initial = entry.relief.initial;
+    const cards = Object.keys(findDeal(entry.baseId)!.cards);
+    expect(dealOrdinary(cards, initial.stock.length, initial.tableau.map(col => col.length), entry.relief.seed))
+      .toEqual({ tableau: initial.tableau, stock: initial.stock });
+  }
+  for (const deal of content8DirectorDeals) {
+    expect(findDeal(deal.id)).toBe(deal);
+    let board = deal.initial;
+    for (const action of deal.winningPath) {
+      const result = advance(board, action, deal);
+      expect(result, deal.id).toBeDefined();
+      board = result!;
+    }
+    expect(board.phase, deal.id).toBe('won');
+    expect(board.movesLeft!, deal.id).toBeGreaterThanOrEqual(3);
+  }
 });

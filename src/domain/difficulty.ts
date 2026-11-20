@@ -1,14 +1,40 @@
-import type { Attempt, CampaignOutcome, Save } from './types';
+import type { Attempt, CampaignOutcome, DifficultyTier, Save } from './types';
 
 export const DIFFICULTY_WINDOW = 10;
 const INT32_MIN = -2147483648;
 const INT32_MAX = 2147483647;
 const isInt32 = (n: number) => Number.isInteger(n) && n >= INT32_MIN && n <= INT32_MAX;
 
+// Product preview settings. Original live values are unknown.
+export const C8_DIFFICULTY = {
+  minLevel: 11, minRate: 70, maxRate: 90, hardPenalty: -5, easyPenalty: 10, lossThreshold: 3,
+} as const;
+
 export function recordCampaignOutcome(save: Save) {
+  const previous = difficultyPenalty(save);
   const restarts = save.attempt.director?.restarts ?? 0;
   const outcome: CampaignOutcome['outcome'] = restarts ? 'Restart' : save.attempt.continued ? 'ExtraSteps' : 'Clean';
   save.difficultyHistory = [...(save.difficultyHistory ?? []), { outcome, restarts }].slice(-DIFFICULTY_WINDOW);
+  save.difficultyPenalty = nextPenalty(save.difficultyHistory, previous, C8_DIFFICULTY);
+}
+
+export function difficultyPenalty(save: Save): number {
+  // A 0.19.4 save may already have a full history but no applied penalty.
+  return save.difficultyPenalty ?? nextPenalty(save.difficultyHistory ?? [], 0, C8_DIFFICULTY);
+}
+
+export function easyDealTarget(input: {
+  level: number; random: boolean; stable: boolean; previousLosses: number; difficulty: DifficultyTier; special: boolean;
+}, config: {
+  enabled: boolean; minLevel: number;
+  byDifficulty: Partial<Record<DifficultyTier, { lossThreshold: number; targetSteps: number }>>;
+}) {
+  if (!config.enabled || input.level < config.minLevel || !input.random || !input.stable || input.special) return;
+  const setting = config.byDifficulty[input.difficulty];
+  if (!setting || !Number.isSafeInteger(setting.lossThreshold) || setting.lossThreshold < 1 ||
+    !Number.isSafeInteger(setting.targetSteps) || setting.targetSteps < 1) return;
+  if (!Number.isSafeInteger(input.previousLosses) || input.previousLosses < 0 || input.previousLosses + 1 < setting.lossThreshold) return;
+  return setting.targetSteps;
 }
 
 export function recordCampaignExhaustion(attempt: Attempt) {

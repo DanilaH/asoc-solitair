@@ -37,19 +37,21 @@
     },
     {
       "id": "hitapps-dynamic-difficulty",
-      "status": "IN_PROGRESS",
-      "currentImplementation": "Preview collects actual first-clear Clean/ExtraSteps/Restart and archives the ten-outcome window. Source-shaped weighting and explicit penalty math pass unit vectors.",
-      "nextAction": "Apply configured penalties only to new prevalidated immutable variants. Capture active original rate/rounding/config and verify device behavior.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "C8 preview R1 updates the penalty from ten first clears and applies it only at fresh issuance for levels 11–15. Versioned variant IDs resolve the fixed effective budgets on reload and Restart.",
+      "nextAction": "Play-test both penalty directions on physical Android and tune product parameters. Capture original active rates, rounding and config before any parity claim.",
       "stage": "B2",
-      "evidenceRef": "docs/qa/content-v8/CORE_2.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_2.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
     },
     {
       "id": "hitapps-easy-deals",
-      "status": "IN_PROGRESS",
-      "currentImplementation": "Offline model checks confirmed threshold and independent eligibility gates with product-configured targets. Preview preserves losses on restart.",
-      "nextAction": "Reconcile the two native lookups and the paywall branch. Connect a frozen relief plan pool and validate it after loss streaks.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "C8 preview R1 offers a checked relief variant after three counted losses on fresh same-level issuance for levels 11–15. A regular Restart retains the deal ID. Four relief rows use a second seed and level 11 uses a wider budget on its reference board.",
+      "nextAction": "Capture the native decCoef/two lookups and post-Paywall branch. Observe player relief on Android and certify relief rows for CORE-3 level additions.",
       "stage": "B2",
-      "evidenceRef": "docs/qa/content-v8/CORE_2.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_2.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
     },
     {
       "id": "hitapps-equality-paywall",

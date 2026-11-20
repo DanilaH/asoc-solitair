@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
-import { campaignDeals, findDeal } from './content/campaign';
+import { campaignDeals, findDeal, selectCampaignDeal } from './content/campaign';
 import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { dailyForDay } from './content/daily';
@@ -526,8 +526,9 @@ try {
       button.replaceChildren(document.createTextNode(String(level)));
       if (difficulty) button.append(Object.assign(document.createElement('span'), { className: 'tier-dot', textContent: item.difficultyTier === 'superhard' ? '!!' : '!' }));
       button.disabled = level > unlocked || !ready || saving || serviceBusy;
-      button.dataset.active = String(current && campaign?.dealId === item.id);
-      button.setAttribute('aria-current', current && campaign?.dealId === item.id ? 'step' : 'false');
+      const activeLevel = current && campaignDeal?.campaignLevel === item.campaignLevel;
+      button.dataset.active = String(activeLevel);
+      button.setAttribute('aria-current', activeLevel ? 'step' : 'false');
       button.dataset.completed = String(done); button.dataset.next = String(level === unlocked && !done);
       button.setAttribute('aria-label', `Уровень ${level}: ${item.title}${difficulty ? ', ' + difficulty : ''}${done ? ', пройден' : level > unlocked ? ', закрыт' : ''}`);
     }
@@ -611,8 +612,11 @@ try {
     if (!alive || !ready || saving || serviceBusy || level < 1 || level > unlockedLevel(save)) return;
     const target = campaignDeals[level - 1];
     const campaign = campaignAttempt(save);
-    if (save.attempt.daily && campaign?.dealId === target.id && campaign.board.phase === 'playing') { await activateMode('campaign'); return; }
-    if (target.id === deal.id && save.attempt.board.phase === 'playing') { closeDialogs(); showGame(); return; }
+    if (campaign?.board.phase === 'playing' && findDeal(campaign.dealId)?.campaignLevel === level) {
+      if (save.attempt.daily) await activateMode('campaign');
+      else { closeDialogs(); showGame(); }
+      return;
+    }
     if (!confirmed && campaign?.board.phase === 'playing' && (campaign.telemetry?.started || campaign.undo.length > 0)) {
       requestedLevel = level; $('#switch-title').textContent = `Начать уровень ${level}?`; openDialog('#switch-level'); return;
     }
@@ -635,10 +639,16 @@ try {
       try {
         clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined;
         clearTimeout(outcomeTimer); clearTimeout(guideTimer); activeHint = undefined; setInspect(false);
-        await write(next => { if (next.attempt.daily) switchMode(next, 'campaign', campaign ? findDeal(campaign.dealId)! : target, crypto.randomUUID()); beginDeal(next, target, crypto.randomUUID()); });
+        await write(next => {
+          const previous = campaignAttempt(next);
+          const previousDeal = previous && findDeal(previous.dealId);
+          const selected = selectCampaignDeal(next, target, previous);
+          if (next.attempt.daily) switchMode(next, 'campaign', previousDeal ?? selected, crypto.randomUUID());
+          beginDeal(next, selected, crypto.randomUUID(), previousDeal);
+        });
         outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false';
         screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
-        scene?.setDeal(target, true);
+        scene?.setDeal(deal, true);
       } catch { message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
       finally { serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome(); }
     };

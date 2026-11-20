@@ -1,5 +1,5 @@
 import { applyBoard, legalCommands, sameBoardCommand } from '../../src/domain/engine';
-import type { Board, BoardCommand, Deal, DifficultyTier } from '../../src/domain/types';
+import type { Board, BoardCommand, Deal } from '../../src/domain/types';
 
 export type PlayerSegment = 'NonPayer' | 'Payer' | 'PotentialPayer' | 'SleepPayer' | 'unknown';
 
@@ -10,22 +10,6 @@ export function eligibleForEquality(input: { level: number; seed: number; issued
     Number.isSafeInteger(input.level) && input.level >= config.minLevel &&
     Number.isSafeInteger(input.issued) && input.issued >= 0 && input.issued < config.limit &&
     config.segments.includes(input.segment);
-}
-
-export function easyDealTarget(input: {
-  level: number; random: boolean; stable: boolean; previousLosses: number; difficulty: DifficultyTier; special: boolean;
-}, config: {
-  enabled: boolean; minLevel: number;
-  byDifficulty: Partial<Record<DifficultyTier, { lossThreshold: number; targetSteps: number }>>;
-}) {
-  // Product configuration supplies explicit validated targets. The native
-  // paywall-specific decCoef and counter policy still require source evidence.
-  if (!config.enabled || input.level < config.minLevel || !input.random || !input.stable || input.special) return;
-  const setting = config.byDifficulty[input.difficulty];
-  if (!setting || !Number.isSafeInteger(setting.lossThreshold) || setting.lossThreshold < 1 ||
-    !Number.isSafeInteger(setting.targetSteps) || setting.targetSteps < 1) return;
-  if (!Number.isSafeInteger(input.previousLosses) || input.previousLosses < 0 || input.previousLosses + 1 < setting.lossThreshold) return;
-  return setting.targetSteps;
 }
 
 export interface SimulationPolicy {

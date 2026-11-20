@@ -1,3 +1,7 @@
+# Content 8 CORE-5 · 0.20.2 preview
+
+[Another layout after loss](qa/content-v8/CORE_5_REDEAL.md) offers a certified alternate on C8 levels 12–15. The button shows the new budget. The adjacent same-layout retry keeps the selected deal identity. Original Unico Daily and actual Android feel remain separate evidence checks.
+
 # Content 8 CORE-5 · 0.20.1 preview
 
 [Coin continuation](qa/content-v8/CORE_5_COIN_CONTINUE.md) offers +10 for 120 coins on a verified exhausted C8 campaign board. Saved credits take priority and coin purchases share the single continuation allowance. The result screen can reconcile an ambiguous write. The preview price and physical-device choice remain playtest questions.

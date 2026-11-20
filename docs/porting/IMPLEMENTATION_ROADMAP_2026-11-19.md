@@ -63,7 +63,7 @@ DynamicDifficulty (last10), EasyDeals relief, alternative Retry variant. Never c
 | --- | --- | --- |
 | `hitapps-dynamic-difficulty` | `ROADMAPPED` | Prototype ten-result window, Clean/ExtraSteps/Restart and source-derived penalty on new attempts |
 | `hitapps-easy-deals` | `ROADMAPPED` | Model native reason codes/threshold and relief after loss streak as separate selector |
-| `unico-redeal-restart` | `ROADMAPPED` | Study Unico sample vs true replay config; design new eligible variant and frozen save semantics |
+| `unico-redeal-restart` | `IMPLEMENTED_UNVERIFIED` | C8 levels 12–15 offer a certified different layout with the same topics. Verify actual Android and original Unico Daily Retry policy. [Checks](../qa/content-v8/CORE_5_REDEAL.md) |
 
 ### B3. Special Equality / Paywall (5)
 

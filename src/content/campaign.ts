@@ -11,7 +11,7 @@ import { openingDeals } from './opening';
 import { content7Deals } from './campaign-v7';
 import { content8Dealer, content8Late, content8Wave } from './campaign-v8-dealer';
 import { content8Slice } from './campaign-v8-preview';
-import { content8DirectorDeals, isC8DirectorVariant, selectC8Deal } from './campaign-v8-director';
+import { content8DirectorDeals, isC8DirectorVariant, otherC8Layout, selectC8Deal } from './campaign-v8-director';
 import { CONTENT8_PREVIEW } from '../domain/types';
 import type { Attempt, Board, BoardCommand, Deal, Save } from '../domain/types';
 
@@ -40,4 +40,10 @@ export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
 }
 export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): Deal {
   return CONTENT8_PREVIEW ? selectC8Deal(save, base, previous) : base;
+}
+
+export function campaignRedeal(attempt: Attempt): Deal | undefined {
+  if (!CONTENT8_PREVIEW || attempt.daily || attempt.board.phase !== 'exhausted' || attempt.board.movesLeft !== 0) return;
+  const current = findDeal(attempt.dealId);
+  if (current) return otherC8Layout(current);
 }

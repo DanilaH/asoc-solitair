@@ -544,9 +544,11 @@
     },
     {
       "id": "unico-redeal-restart",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Restart preserves exact deal ID/definition; no adaptive redeal on loss",
-      "nextAction": "Study Unico sample vs true replay config; design new eligible variant and frozen save semantics",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "C8 0.20.2 offers a certified second layout with the same topics and a visible budget after loss on levels 12–15. Same-layout retry stays available. SaveStore persists the chosen immutable deal and increments the loss history once.",
+      "nextAction": "Verify the campaign choice on physical Android. Capture original Unico Daily repeat conditions, randomization and budget before extending policy or claiming parity.",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/tree/feat/c8-core-5-verified-redeal-20261120",
+      "evidenceRef": "docs/qa/content-v8/CORE_5_REDEAL.md",
       "stage": "B2"
     },
     {

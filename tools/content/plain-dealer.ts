@@ -62,17 +62,25 @@ export function dealOrdinary<T>(cards: readonly T[], stockSize: number, columnSi
 }
 
 export interface WinCandidate<T> { seed: number; steps: number; value: T }
+const candidateCap = 100;
+
 /** Ordinary Priority ranking, using our engine's proven wins as input. */
 export function selectPriority<T>(seeds: Iterable<number>, simulateWin: (seed: number) => WinCandidate<T> | undefined,
-  target: number, tolerancePercent: number): WinCandidate<T> | undefined {
-  let closest: WinCandidate<T> | undefined, tries = 0;
+  target: number, tolerancePercent: number) {
+  if (!Number.isInteger(target) || target < 0 || !Number.isFinite(tolerancePercent) || tolerancePercent < 0 || tolerancePercent > 100)
+    throw Error('Invalid Priority target or tolerance');
+  let closest: WinCandidate<T> | undefined;
+  let attempts = 0;
   for (const seed of seeds) {
-    if (tries++ === 100) break;
+    attempts++;
     const candidate = simulateWin(seed);
-    if (!candidate) continue;
-    const gap = Math.abs(candidate.steps - target);
-    if (!closest || gap < Math.abs(closest.steps - target)) closest = candidate;
-    if (gap * 100 <= target * tolerancePercent) return candidate;
+    if (candidate) {
+      const gap = Math.abs(candidate.steps - target);
+      if (!closest || gap < Math.abs(closest.steps - target)) closest = candidate;
+      if (gap * 100 <= target * tolerancePercent)
+        return { candidate, attempts, reason: 'WITHIN_TOLERANCE' as const, reachedCap: false };
+    }
+    if (attempts === candidateCap) break;
   }
-  return closest;
+  return { candidate: closest, attempts, reason: closest ? 'CLOSEST_WIN' as const : 'NO_WIN' as const, reachedCap: attempts === candidateCap };
 }

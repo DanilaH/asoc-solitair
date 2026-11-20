@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto';
 import { expect, it } from 'vitest';
+import { content8Dealer } from '../../src/content/campaign-v8-dealer';
+import lineup from '../../docs/qa/content-v8/onboarding/lineup.json';
 import { dealOrdinary, EmbeddedRandom, selectPriority, swapDestinations } from '../../tools/content/plain-dealer';
 
 it('matches published EmbeddedRandom vectors and full-length swap bounds', () => {
@@ -33,7 +35,20 @@ it('reproduces all four published EN2/EN7 conditional hashes without card conten
 
 it('keeps closest proven win, retains ties and stops within tolerance', () => {
   const run = (seed: number) => seed ? { seed, steps: 10 + seed, value: seed } : undefined;
-  expect(selectPriority([0, 3, 1, 4], run, 12, 0)?.seed).toBe(3);
-  expect(selectPriority([0, 1, 2], run, 12, 10)?.seed).toBe(1);
-  expect(selectPriority(Array.from({ length: 101 }, (_, i) => i), n => n === 100 ? run(n) : undefined, 12, 0)).toBeUndefined();
+  expect(selectPriority([0, 3, 1, 4], run, 12, 0)).toMatchObject({ candidate: { seed: 3 }, attempts: 4, reason: 'CLOSEST_WIN' });
+  expect(selectPriority([0, 1, 2], run, 12, 10)).toMatchObject({ candidate: { seed: 1 }, attempts: 2, reason: 'WITHIN_TOLERANCE' });
+  expect(selectPriority(Array.from({ length: 101 }, (_, i) => i), n => n === 100 ? run(n) : undefined, 12, 0)).toEqual({
+    candidate: undefined, attempts: 100, reason: 'NO_WIN', reachedCap: true,
+  });
+});
+
+
+it('rebuilds every frozen Content 8 initial stock and tableau from its recorded seed', () => {
+  expect(content8Dealer).toHaveLength(lineup.lessonRamp.length);
+  for (const deal of content8Dealer) {
+    const { seed } = lineup.lessonRamp.find(row => row.level === deal.campaignLevel)!;
+    const { stock, tableau } = dealOrdinary(Object.keys(deal.cards), deal.initial.stock.length, deal.initial.tableau.map(col => col.length), seed);
+    expect(stock, deal.id).toEqual(deal.initial.stock);
+    expect(tableau, deal.id).toEqual(deal.initial.tableau);
+  }
 });

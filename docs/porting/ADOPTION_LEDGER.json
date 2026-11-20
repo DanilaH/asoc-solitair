@@ -871,7 +871,8 @@
       "status": "IN_PROGRESS",
       "currentImplementation": "Offline tools/content/azur-preset.ts resolves negative category references and ordered columns and deck from the schema in kit PR #93. Level 1 eligibility plus enabled and valid preset gates the branch. Product validation requires the exact card partition. Other options use the existing ordinary AZUR dealer. content:azur-preset exports a versioned Russian Rules 3 example and verifies each of its 19 moves against the engine and independent oracle. Tests cover fallback, RNG calls and stock order. See docs/qa/content-v8/AZUR_PRESET_AUTHORING.md.",
       "nextAction": "Verify the original Android first-level board, live tutorial activation and full native validator semantics. Any future campaign activation needs an owner decision and preservation of frozen C8 lesson identities and SaveStore/Undo compatibility.",
-      "stage": "C1"
+      "stage": "C1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/66"
     },
     {
       "id": "azur-joker-random-column-insertion",

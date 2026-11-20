@@ -98,7 +98,7 @@
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 preview 0.20.1 offers +10 for 120 internal coins on a verified exhausted board. SaveStore commits the debit and continuation together and preserves late earned credit without repeating the allowance.",
       "nextAction": "Verify the coin/video choice and price balance on physical Android. Compare native AZUR live price and original continuation.",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/tree/feat/c8-core-5-coin-continue-20261120",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/63",
       "evidenceRef": "docs/qa/content-v8/CORE_5_COIN_CONTINUE.md",
       "stage": "E1"
     },

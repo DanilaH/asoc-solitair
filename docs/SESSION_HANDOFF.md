@@ -1,3 +1,7 @@
+# Content 8 CORE-5 · 0.20.0 preview
+
+[Verified +10 continuation](qa/content-v8/CORE_5_VERIFIED_CONTINUE.md) checks the actual exhausted campaign board before presenting a credit or video. Level 16 demonstrates a win on the tenth extra move and level 38 demonstrates a position beyond the ten-move limit with usable Undo. The real phone and original golden-card lifetime remain open.
+
 # Content 8 CORE-4 · 0.19.9 preview
 
 [Independent AZUR bonus slots](qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md) are available on new attempts at levels 22, 30 and 40. Each is optional and opens for coins or a native earned receipt. The upper slot and lower column have separate rules, rewards, first-use practice and save identities. Physical Android and live original comparison remain open.

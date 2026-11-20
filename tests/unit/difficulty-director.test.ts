@@ -101,7 +101,8 @@ it('keeps campaign difficulty history and loss on restart across save reload and
   expect(save.attempt.director).toEqual({ restarts: 0, previousLosses: 0, exhausted: true });
   applyReceipt(save, { schema: 1, id: 'earned', attempt: 'loss-1', dealId: deal.id, placement: 'continue', mode: 'campaign' });
   const recovered = decodeSave(JSON.stringify(save), findDeal);
-  expect(recovered.attempt.continued).toBe(true);
+  expect(recovered.attempt.board.phase).toBe('exhausted');
+  expect(recovered.platform?.continueCredits).toBe(1);
   expect(recovered.platform?.receipts).toEqual(['earned']);
   save = dispatch(recovered, { type: 'restart', attemptId: 'loss-2' }, deal).next;
   expect(save.attempt.director).toEqual({ restarts: 1, previousLosses: 1 });

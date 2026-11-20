@@ -4,12 +4,12 @@ import { bonusKinds, bonusOffer, pilesFor } from './bonus-slots';
 export type SearchResult = { status: 'SOLVED'; path: BoardCommand[]; visited: number }
   | { status: 'UNKNOWN' | 'UNSOLVABLE'; visited: number };
 
-export function solve(start: Board, deal: Deal, limit = 8000): SearchResult {
+export function solve(start: Board, deal: Deal, limit = 8000, deadline = Infinity): SearchResult {
   const queue: { board: Board; path: BoardCommand[] }[] = [{ board: start, path: [] }];
   const seen = new Map<string, number>();
   seen.set(boardKey(start), start.movesLeft ?? Infinity);
   let head = 0;
-  while (head < queue.length && head < limit) {
+  while (head < queue.length && head < limit && performance.now() < deadline) {
     const { board, path } = queue[head++];
     if (board.phase === 'won') return { status: 'SOLVED', path, visited: head };
     for (const action of legalCommands(board, deal)) {

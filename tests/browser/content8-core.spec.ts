@@ -7,6 +7,7 @@ import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/dom
 import { campaignId } from '../../src/domain/progression';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 import { boardFrame, layout } from '../../src/game/layout';
+import { recoverable, unrecoverable, loadLoss, winningRescue } from '../fixtures/content8-loss';
 
 test.skip(process.env.VITE_CONTENT8_PREVIEW !== '1', 'Requires the Content 8 preview build.');
 
@@ -115,10 +116,10 @@ test('starting the exhausted level again from Home uses the certified relief dea
   expect(issued.director).toEqual({ restarts: 3, previousLosses: 3 });
 });
 
-async function loadWaveFixture(page: Page, save: Save, completed: number) {
+async function loadWaveFixture(page: Page, save: Save, completed: number, continueCredits = 0) {
   save.contentVersion = 8;
   save.settings.reducedMotion = true;
-  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0,
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits, lastFullscreenAt: 0,
     winsSinceInterstitial: 0, completedCampaign: Array.from({ length: completed }, (_, i) => campaignId(i + 1)) };
   await page.setViewportSize({ width: 320, height: 568 });
   await page.addInitScript(({ key, value }) => {
@@ -453,4 +454,57 @@ test('level 40 opens both fifth slots separately with the deck below and keeps e
   await expect(page.locator('#bonus-foundation')).toBeVisible();
   await expect(page.locator('#bonus-tableau')).toBeVisible();
   expect((await read(page)).profile.coins).toBe(40);
+});
+
+test('real level 16 exhaustion offers a verified ten-move recovery and the tenth tap can win', async ({ page }) => {
+  const save = loadLoss(recoverable, 'recoverable-l16', true);
+  await loadWaveFixture(page, save, 15, 1);
+  await openGame(page, recoverable);
+  const last = { type: 'transfer', from: { kind: 'tableau', index: 0 }, to: { kind: 'tableau', index: 2 } } as const;
+  await touch(page, recoverable, last);
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#result')).toHaveAttribute('data-continue-status', 'PROVEN_RECOVERABLE');
+  await page.reload();
+  await openGame(page, recoverable);
+  await expect(page.locator('#result-continue')).toBeEnabled();
+  await expect(page.locator('#result-continue-note')).toContainText('10 ходов или меньше');
+  await page.locator('#result-continue').tap();
+  await expect(page.locator('#result')).toBeHidden();
+  const continued = await read(page);
+  expect(continued.attempt.board.movesLeft).toBe(10);
+  expect(continued.attempt.id).toBe(save.attempt.id);
+  expect(continued.platform?.continueCredits).toBe(0);
+  for (const [index, move] of winningRescue.entries()) {
+    await touch(page, recoverable, move);
+    await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(9 - index);
+  }
+  await expect(page.locator('#result')).toHaveAttribute('data-won', 'true');
+  expect((await read(page)).platform?.completedCampaign).toContain(campaignId(16));
+});
+
+test('real level 38 exhaustion keeps the stored credit and promotes Undo when ten moves cannot win', async ({ page }) => {
+  const save = loadLoss(unrecoverable, 'unrecoverable-l38');
+  await loadWaveFixture(page, save, 37, 1);
+  await openGame(page, unrecoverable);
+  await expect(page.locator('#result')).toHaveAttribute('data-continue-status', 'UNSOLVABLE');
+  await expect(page.locator('#result-continue')).toBeHidden();
+  await expect(page.locator('#result-undo')).toHaveClass('primary');
+  await expect(page.locator('#result-continue-note')).toContainText('за 10 ходов не выиграть');
+  expect((await read(page)).platform?.continueCredits).toBe(1);
+  await page.locator('#result-undo').tap();
+  await expect(page.locator('#result')).toBeHidden();
+  expect((await read(page)).attempt.board.movesLeft).toBe(1);
+  expect((await read(page)).platform?.continueCredits).toBe(1);
+});
+
+test('an unavailable continuation worker keeps the credit and never offers an unverified rescue', async ({ page }) => {
+  await page.route('**/assets/continue.worker-*.js', route => route.abort());
+  const save = loadLoss(recoverable, 'continue-check-unavailable');
+  await loadWaveFixture(page, save, 15, 1);
+  await openGame(page, recoverable);
+  await expect(page.locator('#result')).toHaveAttribute('data-continue-status', 'UNKNOWN');
+  await expect(page.locator('#result-continue')).toBeHidden();
+  await expect(page.locator('#result-continue-note')).toContainText('не подтверждён');
+  await expect(page.locator('#result-undo')).toBeVisible();
+  expect((await read(page)).platform?.continueCredits).toBe(1);
 });

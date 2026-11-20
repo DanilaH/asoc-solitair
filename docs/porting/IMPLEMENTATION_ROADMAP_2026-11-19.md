@@ -71,7 +71,7 @@ Source-based gating and late simulator failure vs our mathematically certified +
 
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
-| `hitapps-equality-paywall` | `ROADMAPPED` | Implement source-bound Equality candidate selection and separate +10 validated recovery |
+| `hitapps-equality-paywall` | `ROADMAPPED` | Verify and issue source-bound Equality candidates. The product has a separate actual-board +10 check in CORE-5. |
 | `hitapps-paywall-segmentation` | `ROADMAPPED` | Implement eligible profile/attempt gates with explicit source/runtime uncertainty |
 | `hitapps-equality-three-stack-pair-placement` | `ROADMAPPED` | Implement exactly flagged placeCategoryPairsOnTop for Equality only with same advanced RNG stream; compare selected stack indices and new candidate stock/cols in offline tests |
 | `hitapps-feature-seed-one-time-reshuffle` | `ROADMAPPED` | Model shared LevelShuffled flag and precisely one FeatureLevelSeed shuffle across valid Lockers/Frozen/Bound; test invalid pattern flags without assuming unchanged board |
@@ -148,13 +148,13 @@ Continue +10, coin +moves, rewards multipliers, offer variants, correct no-fill 
 | `hitapps-stock-restore` | `DEFERRED` | Design true rule difference and migration before free/paid restore; don't sell existing free behavior |
 | `hitapps-revive-offers` | `ROADMAPPED` | Compare coin/rewarded/segment options and save/device flow |
 | `azur-coin-moves` | `ROADMAPPED` | Design coin price against our actual wallet supply and safeguard once-per-attempt |
-| `azur-rewarded-moves` | `IMPLEMENTED_UNVERIFIED` | Complete real phone SDK callback/no-fill/relaunch/earned verification; adapted amount differs from AZUR |
+| `azur-rewarded-moves` | `IMPLEMENTED_UNVERIFIED` | C8 shows +10 only for a verified exhausted-board route. Verify physical SDK earned, no-fill and relaunch. |
 | `azur-win-multiplier` | `ROADMAPPED` | Prototype optional post-win earned bonus with separate idempotent receipt and economy model |
 | `hitapps-win-rewarded-offer` | `ROADMAPPED` | Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK |
 | `azur-unlimited-moves-offer` | `ROADMAPPED` | Define exact entitlement duration/UI/server/SaveStore/budget migration without falsely copying AZUR |
 | `unico-rewarded-theme` | `ROADMAPPED` | Design opt-in themed cosmetic offer, entitlement persistence and receipt grants |
 | `unico-double-reward` | `ROADMAPPED` | Compare Unico post-win CTA to AZUR x3 and develop independent rewarded bonus policy |
-| `unico-loss-dialog` | `IMPLEMENTED_UNVERIFIED` | Compare visible alternatives on compact screen; SDK no-fill and clear Retry path |
+| `unico-loss-dialog` | `IMPLEMENTED_UNVERIFIED` | C8 gives Undo or Replay priority when +10 cannot be verified. Check compact Android, SDK no-fill and original Unico alternatives. |
 | `azur-definition-consumable` | `ROADMAPPED` | Trace Definition usage/intro pricing and define own paid/free resource vs reader UX |
 | `azur-free-shop-coin-claim` | `ROADMAPPED` | Prototype source-observed optional 200-coin claim with real receipt/availability/cooldown verification |
 | `azur-remaining-moves-coin-bonus` | `IMPLEMENTED_UNVERIFIED` | Check own multiplier/economy and baseline reward integrity; do not label adapted coefficient exact AZUR copy |

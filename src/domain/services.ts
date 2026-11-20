@@ -4,6 +4,7 @@ import { campaignId } from './progression';
 import { CONTENT8_PREVIEW, type Deal, type PlatformState, type Save } from './types';
 import { recordCampaignOutcome } from './difficulty';
 import { bonusKindFor, bonusPlacements, openBonusSlot, type BonusPlacement } from './bonus-slots';
+import { requiresContinueProof, verifiesContinue, type ContinueProof } from './continuation';
 
 export type RewardPlacement = 'hint' | 'undo' | 'continue' | BonusPlacement;
 export interface EarnedReceipt { schema: 1; id: string; attempt: string; dealId: string; mode: 'campaign' | 'daily'; placement: RewardPlacement }
@@ -22,30 +23,35 @@ export function parseReceipt(value: unknown): EarnedReceipt {
   return { schema: 1, id: r.id, attempt: r.attempt, dealId: r.dealId, placement: r.placement as RewardPlacement, mode: r.mode as EarnedReceipt['mode'] };
 }
 /** All effects and identities enter the same coordinated snapshot; Undo never owns these fields. */
-export function applyReceipt(save: Save, receipt: EarnedReceipt, deal?: Deal, onBonusUnlocked?: () => void): 'applied' | 'already-applied' {
+export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
+  deal?: Deal; onBonusUnlocked?: () => void; continueProof?: ContinueProof;
+}): 'applied' | 'already-applied' {
   const state = platformState(save);
   if (state.receipts.includes(receipt.id)) return 'already-applied';
   if (receipt.placement === 'continue') {
     if (!state.continuedAttempts.includes(receipt.attempt)) {
       state.continuedAttempts.push(receipt.attempt); state.continueCredits++;
       // A late receipt must not mutate a different attempt. Its earned credit remains available.
-      if (save.attempt.id === receipt.attempt) useContinue(save);
+      if (save.attempt.id === receipt.attempt && save.attempt.dealId === receipt.dealId &&
+        receipt.mode === (save.attempt.daily ? 'daily' : 'campaign')) useContinue(save, options?.continueProof);
     }
   } else if (receipt.placement === 'hint' || receipt.placement === 'undo') {
     save.profile[receipt.placement === 'hint' ? 'hints' : 'undos'] += BALANCE.rewardedCharges[receipt.placement];
   } else {
     const kind = bonusKindFor(receipt.placement);
     const attempt = save.attempt.daily ? save.parked?.campaign : save.attempt;
+    const deal = options?.deal;
     // Only that campaign attempt may get the purchased space, including when parked.
     if (kind && receipt.mode === 'campaign' && deal?.id === receipt.dealId && attempt?.id === receipt.attempt &&
-      openBonusSlot(attempt, deal, kind)) onBonusUnlocked?.();
+      openBonusSlot(attempt, deal, kind)) options?.onBonusUnlocked?.();
   }
   state.receipts.push(receipt.id); save.revision++;
   return 'applied';
 }
-export function useContinue(save: Save): boolean {
-  const state = platformState(save), attempt = save.attempt;
-  if (state.continueCredits < 1 || attempt.continued || attempt.board.phase !== 'exhausted' || attempt.board.movesLeft !== 0) return false;
+export function useContinue(save: Save, proof?: ContinueProof): boolean {
+  const state = save.platform, attempt = save.attempt;
+  if (!state?.continueCredits || attempt.continued || attempt.board.phase !== 'exhausted' || attempt.board.movesLeft !== 0 ||
+    (requiresContinueProof(attempt) && (!proof || !verifiesContinue(attempt, proof)))) return false;
   state.continueCredits--; attempt.continued = true; attempt.board.movesLeft = BALANCE.continueMoves; attempt.board.phase = 'playing';
   if (!state.continuedAttempts.includes(attempt.id)) state.continuedAttempts.push(attempt.id);
   if (attempt.telemetry) attempt.telemetry.finished = false;

@@ -17,4 +17,11 @@ export function markTutorial(save: Save, id: string): void {
   const campaign = save.campaign ??= { version: 1, tutorials: [] };
   if (!campaign.tutorials.includes(id)) campaign.tutorials.push(id);
 }
-export const freeHintDemo = (save: Save, deal: Deal) => deal.campaignLevel === 3 && !seenTutorial(save, 'hint-demo');
+export function needsOpeningLesson(save: Save, deal: Deal, lesson: Deal['training'], marker: string): boolean {
+  return deal.training === lesson && save.attempt.board.phase === 'playing' &&
+    completedLevels(save) < (deal.campaignLevel ?? 0) && !seenTutorial(save, marker);
+}
+export const freeHintDemo = (save: Save, deal: Deal) => deal.campaignLevel === 3 &&
+  (!seenTutorial(save, 'hint-demo') || needsOpeningLesson(save, deal, 'hint', 'hint-practiced'));
+export const freeUndoPractice = (save: Save, deal: Deal) => save.profile.undos === 0 && needsOpeningLesson(save, deal, 'undo', 'undo-used');
+export const freeJokerPractice = (save: Save, deal: Deal) => save.profile.jokers === 0 && needsOpeningLesson(save, deal, 'joker', 'joker-buffer');

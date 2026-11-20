@@ -1,6 +1,6 @@
 {
   "name": "asoc-solitair",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "private": true,
   "type": "module",
   "engines": {
@@ -35,7 +35,8 @@
     "content:author7": "vite build --ssr tools/content/build-content7.ts --outDir .authoring/content7-source && C7_STAGE=80 node .authoring/content7-source/build-content7.js",
     "qa:content7:research": "vite build --ssr tools/audit-content7-draft.ts --outDir .authoring/content7-audit-source && C7_STAGE=80 node .authoring/content7-audit-source/audit-content7-draft.js",
     "qa:content7:branches": "vite build --ssr tools/qa/survey-content7.ts --outDir .authoring/content7-branch-survey && node .authoring/content7-branch-survey/survey-content7.js",
-    "qa:content8": "vite build --ssr tools/qa/audit-reference-slice.ts --outDir .authoring/content8/audit-build && node .authoring/content8/audit-build/audit-reference-slice.js"
+    "qa:content8": "vite build --ssr tools/qa/audit-reference-slice.ts --outDir .authoring/content8/audit-build && node .authoring/content8/audit-build/audit-reference-slice.js",
+    "qa:porting": "node tools/qa/verify-porting-ledger.mjs"
   },
   "dependencies": {
     "@capacitor/android": "8.6.0",

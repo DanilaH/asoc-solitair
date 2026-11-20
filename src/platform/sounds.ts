@@ -1,7 +1,7 @@
 /** Small cached material cues: no network, media decoder or oscillator lifecycle. */
 export const cueDurations: Record<string, number> = {
   ui:.045,lift:.06,gather:.105,transfer:.10,flip:.10,draw:.08,recycle:.13,undo:.13,
-  invalid:.09,hint:.16,joker:.18,key:.16,unlock:.29,coins:.21,complete:.27,win:.44,loss:.31,'streak-break':.19,
+  invalid:.09,hint:.16,joker:.18,key:.16,unlock:.29,complete:.27,win:.44,loss:.31,'streak-break':.19,
 };
 export function cueSamples(name: string, sampleRate: number, variant = 0): Float32Array<ArrayBuffer> {
   const duration=cueDurations[name]??cueDurations.ui, data=new Float32Array(Math.ceil(sampleRate*duration));
@@ -23,7 +23,6 @@ export function cueSamples(name: string, sampleRate: number, variant = 0): Float
       const root=name==='undo'?540:name==='transfer'?290:430;
       value=weight*((n-low)*(.56*Math.exp(-t/.012)+.24*swipe)+low*.4*Math.exp(-t/.045)+.3*Math.sin(2*Math.PI*shift*(root*t-650*t*t))*Math.exp(-t/.023));
     }else if(name==='invalid')value=.34*(low*.45+Math.sin(2*Math.PI*165*t)*.5)*Math.exp(-t/.025);
-    else if(name==='coins')value=.53*soft(t,932.3*shift,.035)+.34*soft(t-.031,1244.5*shift,.047);
     else if(name==='loss')value=.43*soft(t,329.63,.08)+.47*soft(t-.074,246.94,.10);
     else if(name==='streak-break')value=.53*soft(t,587.33,.035)+.36*soft(t-.042,392,.052);
     else if(name==='win')for(const [k,f]of [523.25,659.25,783.99,1046.5].entries())value+=.43*bell(t-k*.045,f,.085);

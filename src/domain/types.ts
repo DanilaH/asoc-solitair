@@ -19,6 +19,8 @@ export type BoardCommand = { type: 'transfer'; from: Location; to: Location }
   | { type: 'draw' } | { type: 'recycle' };
 export type Command = BoardCommand | { type: 'place-joker'; column: number } | { type: 'undo' } | { type: 'restart'; attemptId: string }
   | { type: 'hint'; revision: number; action: BoardCommand };
+export type DifficultyTier = 'normal' | 'hard' | 'superhard';
+export type OpeningLesson = 'first' | 'stock' | 'hint' | 'undo' | 'planning' | 'joker';
 export interface Deal {
   id: string; version: number; title: string; cards: Record<string, Card>; initial: Board;
   winningPath: BoardCommand[]; editorialStatus: string;
@@ -27,6 +29,9 @@ export interface Deal {
   campaignLevel?: number;
   tags?: string[];
   lock?: { column: number; requiredKeys: string[] };
+  difficultyTier?: DifficultyTier;
+  training?: OpeningLesson;
+  recoveryPaths?: BoardCommand[][];
   tutorialPath?: Command[];
   legacyTutorialPath?: Command[];
   daily?: { dayId: string; contentVersion: number; poolId: string };
@@ -36,6 +41,7 @@ export interface Attempt {
   streak: { tier: number; progress: number; coins: number; counted: string[] };
   continued?: boolean;
   jokerUsed?: boolean;
+  lessonHint?: BoardCommand;
   daily?: { dayId: string; contentVersion: number };
   payout?: RewardGrant[];
   telemetry?: { started: boolean; finished: boolean; activeMs: number };

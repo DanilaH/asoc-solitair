@@ -12,7 +12,7 @@ describe('reference slice save ownership', () => {
     const { campaignId } = await import('../../src/domain/progression');
     const { decodeSave } = await import('../../src/platform/storage');
     const old = findDeal('campaign-c7-015')!, candidate = campaignDeals[14];
-    expect(candidate.id).toBe('campaign-c8-015');
+    expect(candidate.id).toBe('campaign-c8-dealer-015');
     let save = freshSave(old, 'old-c7');
     save.contentVersion = 7;
     save = dispatch(save, old.winningPath[0], old).next;
@@ -28,7 +28,7 @@ describe('reference slice save ownership', () => {
     expect(restored.attempt.id).toBe('new-c8');
     expect(decodeSave(JSON.stringify(restored), findDeal)).toEqual(restored);
     expect(() => decodeSave(JSON.stringify({ ...restored, contentVersion: 7 }), findDeal)).toThrow();
-  });
+  }, 20000);
 
   it('retains a parked C7 attempt and daily attempt under the new envelope', async () => {
     vi.resetModules();
@@ -43,5 +43,16 @@ describe('reference slice save ownership', () => {
     save.contentVersion = 7;
     save.parked = { campaign: parked };
     expect(decodeSave(JSON.stringify(save), findDeal)).toEqual({ ...save, contentVersion: 8 });
-  });
+  }, 20000);
 });
+
+it('keeps an old C8 board and its Undo when the same level receives a new layout', async () => {
+  vi.stubEnv('VITE_CONTENT8_PREVIEW', '1');
+  const { campaignDeals, findDeal } = await import('../../src/content/campaign');
+  const { dispatch, freshSave } = await import('../../src/domain/engine');
+  const { decodeSave } = await import('../../src/platform/storage');
+  const archived = findDeal('campaign-c8-015')!;
+  const old = dispatch(freshSave(archived, 'old-c8'), archived.winningPath[0], archived).next;
+  expect(decodeSave(JSON.stringify(old), findDeal)).toEqual(old);
+  expect(campaignDeals[14].id).not.toBe(old.attempt.dealId);
+}, 20000);

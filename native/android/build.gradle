@@ -4,7 +4,11 @@ buildscript {
 
     repositories {
         google()
-        mavenCentral()
+        if (System.getenv('ASOC_MAVEN_CENTRAL_MIRROR') == '1') {
+            maven { url 'https://maven-central.storage-download.googleapis.com/maven2' }
+        } else {
+            mavenCentral()
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.13.0'
@@ -20,7 +24,11 @@ apply from: "variables.gradle"
 allprojects {
     repositories {
         google()
-        mavenCentral()
+        if (System.getenv('ASOC_MAVEN_CENTRAL_MIRROR') == '1') {
+            maven { url 'https://maven-central.storage-download.googleapis.com/maven2' }
+        } else {
+            mavenCentral()
+        }
     }
 }
 

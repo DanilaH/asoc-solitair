@@ -1,3 +1,13 @@
+**Пресет обучения AZUR (20.11):** [нативная схема CardPresetLayout, отдельные колонки и колода, themeId/wordIndex, отрицательный индекс категории, условия валидации](https://github.com/DanilaH/mini-games-kit/pull/93). Это дополнение к [CORE-ТЗ](qa/CORE_REFERENCE_IMPLEMENTATION_SPEC_2026-11-20.md), без изменений текущего обучения и сохранений. Политика оригинального валидатора частично неизвестна; исходных Android-снимков 0.
+
+**Коррекция генератора AZUR (20.11):** [исходный ARM64 доказывает перемешивание временной копии карт, а не GameManager.allCards](https://github.com/DanilaH/mini-games-kit/pull/91); [обновлённый CORE-1 runtime-oracle контракт](qa/CORE_REFERENCE_IMPLEMENTATION_SPEC_2026-11-20.md). Компаратор v2 проверяет порядок столбцов+остатка колоды, исходный `allCards` сохраняется. Реальных оригинальных Android запусков 0; источник 114 систем.
+
+**Runtime-оракул AZUR (20.11):** [source-bound original ABI, Frida numeric board hooks and empty original execution gate](qa/CORE_REFERENCE_IMPLEMENTATION_SPEC_2026-11-20.md#14-azur-original-android-runtime-oracle-abi-ready-client-not-executed-20-nov-2026) · [mini-games-kit PR #90](https://github.com/DanilaH/mini-games-kit/pull/90). **0 original Android captures**, no claim of exact source dealer parity; current Hitapps C8 implementation continues independently.
+
+**Полное техническое ТЗ по core (20.11):** [источники Hitapps/AZUR/Unico → реальные Rules/C8 → CORE-0..6 и acceptance](qa/CORE_REFERENCE_IMPLEMENTATION_SPEC_2026-11-20.md). Нативный исследовательский verifier в mini-games-kit PR #78; оригинальные live configs и Unico APK остаются UNKNOWN. Сначала сверить actual C8 HEAD/AGS/SaveStore, не считать документацию готовым runtime.
+
+**Норматив переноса исследованного (19.11):** [Owner reference-adoption policy](porting/PORTING_POLICY.md) · [реестр: 114 исследованных систем, ноль самовольных исключений](porting/ADOPTION_LEDGER.json) · [полная дорожная карта со 114 системами](porting/IMPLEMENTATION_ROADMAP_2026-11-19.md). При анализе исходных игр и планировании переноса сначала читать этот контракт и проверить полноту source→consumer. Исторические C6/C7 запреты на альбом/гонки/Gold/Paywall **не являются действующими запретами дальнейшей разработки**.
+
 Current work: [0.17/content6 opening fifteen](content/OPENING_V6.md). Versioned content, existing-rule pacing, structural/oracle checks and owner playtest; old attempts and0.16UI/audio/performance preserved. Full CI/APK acceptance is still pending.
 
 # Product sources

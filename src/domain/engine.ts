@@ -1,6 +1,6 @@
 import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION } from './types';
 import { BALANCE } from './balance';
-import { freeHintDemo, helperUnlocked, markTutorial } from './progression';
+import { freeHintDemo, freeJokerPractice, freeUndoPractice, helperUnlocked, markTutorial, seenTutorial } from './progression';
 import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, Result, Save } from './types';
 
 import { abandonCampaign, dailyRewardEligible, finishDaily } from './meta';
@@ -128,6 +128,12 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
   return { board, events };
 }
 
+export function sameBoardCommand(a: BoardCommand, b: BoardCommand) {
+  if (a.type !== 'transfer' || b.type !== 'transfer') return a.type === b.type;
+  return a.from.kind === b.from.kind && a.from.index === b.from.index &&
+    a.to.kind === b.to.kind && a.to.index === b.to.index;
+}
+
 export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Result {
   const next = structuredClone(input);
   const attempt = next.attempt;
@@ -141,21 +147,29 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     abandonCampaign(next);
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
   } else if (cmd.type === 'undo') {
-    if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || next.profile.undos <= 0) return refuse('Нет доступной отмены');
-    attempt.board = attempt.undo.pop()!; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
+    if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || (next.profile.undos <= 0 && !freeUndoPractice(input, deal))) return refuse('Нет доступной отмены');
+    delete attempt.lessonHint; attempt.board = attempt.undo.pop()!; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; if (next.profile.undos > 0) next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
   } else if (cmd.type === 'place-joker') {
-    if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || next.profile.jokers <= 0) return refuse('В этой попытке Джокер недоступен');
+    if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || (next.profile.jokers <= 0 && !freeJokerPractice(input, deal))) return refuse('В этой попытке Джокер недоступен');
     const placed = placeJoker(attempt.board, cmd.column, deal);
     if (typeof placed === 'string') return refuse(placed);
-    recordUndo(attempt); attempt.board = placed; attempt.jokerUsed = true; next.profile.jokers--;
+    delete attempt.lessonHint; recordUndo(attempt); attempt.board = placed; attempt.jokerUsed = true; if (next.profile.jokers > 0) next.profile.jokers--;
     markTutorial(next, 'joker-used'); events = [{ type: 'joker' }];
   } else if (cmd.type === 'hint') {
     const demo = freeHintDemo(input, deal);
     if (!helperUnlocked(next, 'hint', deal) || cmd.revision !== input.revision || (!demo && next.profile.hints <= 0) || typeof applyBoard(attempt.board, cmd.action, deal) === 'string') return refuse('Подсказка больше не подходит');
-    if (demo) markTutorial(next, 'hint-demo'); else next.profile.hints--; events = [{ type: 'hint' }];
+    if (demo) markTutorial(next, 'hint-demo'); else next.profile.hints--;
+    if (deal.training === 'hint' && !seenTutorial(next, 'hint-practiced')) attempt.lessonHint = cmd.action;
+    events = [{ type: 'hint' }];
   } else {
     const result = applyBoard(attempt.board, cmd, deal);
     if (typeof result === 'string') return refuse(result, cmd.type === 'transfer' && attempt.board.phase === 'playing');
+    if (attempt.lessonHint) {
+      if (sameBoardCommand(attempt.lessonHint, cmd)) markTutorial(next, 'hint-practiced');
+      delete attempt.lessonHint;
+    }
+    if (deal.training === 'joker' && cmd.type === 'transfer' && cmd.to.kind === 'tableau' && cmd.to.index === attempt.board.joker?.column)
+      markTutorial(next, 'joker-buffer');
     recordUndo(attempt); attempt.board = result.board; events = result.events;
     if (cmd.type === 'transfer') {
       // Route identity excludes the budget/economy and survives Undo. Reversing the same group is the same edge.

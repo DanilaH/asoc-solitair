@@ -2,7 +2,7 @@ import { Capacitor, registerPlugin } from '@capacitor/core';
 import { JsonStorageRepository, type StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { dayNumber, metaState, milestoneRewards } from '../domain/meta';
 import { BALANCE } from '../domain/balance';
-import { assertBoard, boardRules } from '../domain/engine';
+import { applyBoard, assertBoard, boardRules } from '../domain/engine';
 import { MAX_UNDO_HISTORY } from '../domain/history';
 import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION, type Deal, type Save } from '../domain/types';
 
@@ -51,6 +51,13 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (legacy || previous) save.profile.jokers ??= BALANCE.initialJokers;
   if (migration) { save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
   assertBoard(save.attempt.board, deal);
+  if (save.attempt.lessonHint !== undefined) {
+    const command = save.attempt.lessonHint;
+    const location = (loc: { kind: string; index: number }) => loc && ['tableau', 'foundation', 'waste'].includes(loc.kind) && natural(loc.index);
+    if (deal.training !== 'hint' || !command || !(['draw', 'recycle'].includes(command.type) ||
+      command.type === 'transfer' && location(command.from) && location(command.to)) ||
+      typeof applyBoard(save.attempt.board, command, deal) === 'string') throw Error('Повреждена учебная подсказка');
+  }
   if (!natural(save.revision) || typeof save.attempt.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(save.attempt.id)) throw Error('Повреждён номер сохранения');
   for (const value of [save.profile.coins, save.profile.hints, save.profile.undos, save.profile.jokers, save.profile.wins, save.attempt.streak.coins]) if (!natural(value)) throw Error('Повреждён профиль');
   const streak = save.attempt.streak;

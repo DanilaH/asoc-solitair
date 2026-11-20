@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  classifyMove, loadPublishedPassports, summarize
+  classifyMove, loadPublishedPassports, loadSpecialRecoveryRoutes, summarize, summarizeSpecialRecoveryRoutes
 } from '../../tools/qa/audit-c8-decision-evidence.mjs';
 
 const mock = (level, move='d', missedWaste=true) => ({
@@ -26,7 +26,7 @@ test('only missed-waste draw alternatives do not certify diverse card transfers'
   const result=summarize([mock(16),mock(17)]);
   assert.equal(result.all.certifiedSelectedAlternatives,2);
   assert.equal(result.all.alternativesByType.card_transfer,0);
-  assert(result.warnings.includes('NO_DIFFERENT_TRANSFER_BRANCH_CERTIFIED'));
+  assert(result.warnings.includes('NO_TRANSFER_BRANCH_CERTIFIED_IN_BASE_CORE3_PASSPORTS'));
   assert(result.warnings.includes('ALL_SELECTED_ALTERNATIVES_ARE_MISSED_WASTE_ACTIONS'));
   assert(result.warnings.includes('CHOICE_PROBES_UNRESOLVED_ARE_NOT_LOSS_PROOFS'));
 });
@@ -35,7 +35,7 @@ test('diverse transfer choice removes that specific coverage warning', () => {
   const result=summarize([mock(16),mock(17,'t0>f0',false)]);
   assert.equal(result.all.alternativesByType.card_transfer,1);
   assert.equal(result.all.alternativesByType.stock_draw,1);
-  assert(!result.warnings.includes('NO_DIFFERENT_TRANSFER_BRANCH_CERTIFIED'));
+  assert(!result.warnings.includes('NO_TRANSFER_BRANCH_CERTIFIED_IN_BASE_CORE3_PASSPORTS'));
   assert(!result.warnings.includes('ALL_SELECTED_ALTERNATIVES_ARE_MISSED_WASTE_ACTIONS'));
 });
 
@@ -47,9 +47,19 @@ test('invalid or noncontiguous passport data fail instead of padding counts', ()
     choices:[{move:'unknown',extraActions:1,missedWaste:false}]}}]),/Unclassifiable/);
 });
 
+test('real CORE4 authored special alternatives are counted separately from CORE3 passports', () => {
+  const special=summarizeSpecialRecoveryRoutes(loadSpecialRecoveryRoutes());
+  assert.deepEqual(special.levels,[17,18,26,45,66]);
+  assert.equal(special.recoveryRoutes,8);
+  assert.equal(special.firstDifferentDraw,7);
+  assert.equal(special.firstDifferentTransfer,1);
+  assert.deepEqual(special.transferExamples.map(x=>({level:x.level,action:x.action})),
+    [{level:45,action:'w0>t0'}]);
+});
+
 test('published C8 source passports are contiguous and every retained choice has provenance', () => {
   const rows=loadPublishedPassports();
-  const report=summarize(rows);
+  const report=summarize(rows,loadSpecialRecoveryRoutes());
   assert.equal(rows.length,65);
   assert.deepEqual(report.all.levelRange,[16,80]);
   assert.equal(report.all.certifiedSelectedAlternatives,
@@ -59,5 +69,7 @@ test('published C8 source passports are contiguous and every retained choice has
   assert.equal(report.all.alternativesByType.card_transfer,
     rows.flatMap(row=>row.choices.choices).filter(c=>classifyMove(c.move)==='card_transfer').length);
   assert.equal(report.stages.late.levels,49);
+  assert.equal(report.activeSpecialOverrides.firstDifferentTransfer,1);
+  assert.deepEqual(report.bonusOverrideLevelsNotIncluded,[22,30,40]);
   assert.equal(report.evidence.includes('NOT human gameplay'),true);
 });

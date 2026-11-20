@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { content8Dealer, content8Wave } from '../../src/content/campaign-v8-dealer';
+import { content8Dealer, content8Late, content8Wave } from '../../src/content/campaign-v8-dealer';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
@@ -125,27 +125,28 @@ async function loadWaveFixture(page: Page, save: Save, completed: number) {
   await page.goto('/');
 }
 
-test('Next after C8 level 15 opens the new level 16 with 54 stock cards', async ({ page }) => {
-  const previous = content8Dealer[14], next = content8Wave[0];
-  const save = freshSave(previous, 'core3-won-level-15');
-  for (const action of previous.winningPath) {
-    const step = applyBoard(save.attempt.board, action, previous);
-    if (typeof step === 'string') throw Error(step);
-    save.attempt.board = step.board;
-  }
-  await loadWaveFixture(page, save, 15);
-  await openGame(page, previous);
-  await page.locator('#next-level').tap();
-  await page.locator('#difficulty-play').tap();
-  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', next.id);
-  expect((await read(page)).attempt.board).toEqual(next.initial);
-  expect(next.initial.stock).toHaveLength(54);
-  await touch(page, next, { type: 'draw' });
-  await expect.poll(async () => (await read(page)).attempt.board.stock.length).toBe(53);
-});
+for (const [previous, next] of [[content8Dealer[14], content8Wave[0]], [content8Wave[15], content8Late[0]]]) {
+  test(`Next from C8 level ${previous.campaignLevel} opens the authored level ${next.campaignLevel}`, async ({ page }) => {
+    const save = freshSave(previous, `core3-won-level-${previous.campaignLevel}`);
+    for (const action of previous.winningPath) {
+      const step = applyBoard(save.attempt.board, action, previous);
+      if (typeof step === 'string') throw Error(step);
+      save.attempt.board = step.board;
+    }
+    await loadWaveFixture(page, save, previous.campaignLevel!);
+    await openGame(page, previous);
+    await page.locator('#next-level').tap();
+    if (next.difficultyTier !== 'normal') await page.locator('#difficulty-play').tap();
+    await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', next.id);
+    expect((await read(page)).attempt.board).toEqual(next.initial);
+    expect(next.initial.stock).toHaveLength(previous.campaignLevel === 15 ? 54 : 28);
+    await touch(page, next, { type: 'draw' });
+    await expect.poll(async () => (await read(page)).attempt.board.stock.length).toBe(next.initial.stock.length - 1);
+  });
+}
 
-for (const level of [26, 31]) test(`level ${level} accepts a touch move through the fifth column at 320px`, async ({ page }) => {
-  const deal = content8Wave[level - 16];
+for (const level of [26, 31, 80]) test(`level ${level} accepts a touch move through the fifth column at 320px`, async ({ page }) => {
+  const deal = level === 80 ? content8Late[48] : content8Wave[level - 16];
   const save = freshSave(deal, `core3-five-column-${level}`);
   let move: BoardCommand | undefined;
   for (const action of deal.winningPath) {
@@ -169,6 +170,26 @@ for (const level of [26, 31]) test(`level ${level} accepts a touch move through 
   const reloaded = (await read(page)).attempt;
   expect(reloaded.board).toEqual(expected.board);
   expect(reloaded.undo.at(-1)).toEqual(save.attempt.board);
+});
+
+test('the final C8 move records level 80 and opens the completed campaign', async ({ page }) => {
+  const deal = content8Late[48], save = freshSave(deal, 'core3-final-move');
+  const lastAction = deal.winningPath.at(-1)!;
+  for (const action of deal.winningPath.slice(0, -1)) {
+    const step = applyBoard(save.attempt.board, action, deal);
+    if (typeof step === 'string') throw Error(step);
+    save.attempt.board = step.board;
+  }
+  await loadWaveFixture(page, save, 79);
+  await openGame(page, deal);
+  await touch(page, deal, lastAction);
+  await expect(page.locator('#result-copy')).toContainText('Все 80 уровней пройдены');
+  const completed = await read(page);
+  expect(completed.attempt.board.phase).toBe('won');
+  expect(completed.platform?.completedCampaign).toHaveLength(80);
+  expect(completed.platform?.completedCampaign).toContain(campaignId(80));
+  await page.locator('#next-level').tap();
+  await expect(page.locator('#home-progress')).toHaveText('Пройдено 80 из 80');
 });
 
 test('the first lesson gates real touches at 320px and resumes after reload', async ({ page }) => {

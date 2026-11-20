@@ -1,11 +1,12 @@
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { isDeepStrictEqual } from 'node:util';
-import { content8Cards } from '../../src/content/content8-words';
-import type { TopicSelection } from '../../src/content/topics';
+import { content8Cards, type Content8TopicSelection } from '../../src/content/content8-words';
 import { applyBoard, assertBoard } from '../../src/domain/engine';
 import type { Board, BoardCommand, Deal, DifficultyTier, Location } from '../../src/domain/types';
-import recipes from '../../docs/qa/content-v8/core3-recipes.json';
+import earlyRecipes from '../../docs/qa/content-v8/core3-recipes.json';
+import lateRecipes from '../../docs/qa/content-v8/core3-late-recipes.json';
+import { lateShapes, type LateShape } from './c8-late-shapes';
 import source from '../../docs/qa/content-v8/hitapps-local-1-31.json';
 import { advance, identity } from '../qa/gameplay-oracle';
 import { preparePriorityPlan } from './candidate-pipeline';
@@ -84,20 +85,30 @@ function auditChoices(deal: Deal, witness: BoardCommand[], probes: ReturnType<ty
 }
 
 await mkdir(output, { recursive: true });
-const first = Number(process.env.C8_FIRST ?? 16), last = Number(process.env.C8_LAST ?? 31);
+const first = Number(process.env.C8_FIRST ?? 16), last = Number(process.env.C8_LAST ?? 80);
+const recipes = [
+  ...earlyRecipes.map(recipe => {
+    const row = source[recipe.level - 1];
+    return {
+      ...recipe, ...row, budget: row.baseMoves + (row.columns === 3 ? 5 : 0),
+      sourcePosition: row.position, sourceBaseMoves: row.baseMoves,
+    };
+  }),
+  ...lateRecipes.map(recipe => ({
+    ...recipe, ...lateShapes[recipe.profile as LateShape], sourcePosition: null, sourceBaseMoves: null,
+  })),
+];
 for (const recipe of recipes.filter(row => row.level >= first && row.level <= last)) {
-  const { level, title, target, seedOffset, searchCap } = recipe;
+  const { level, title, target, budget, sourcePosition, sourceBaseMoves, seedOffset, searchCap } = recipe;
   const strategy = recipe.strategy as 'ordinary' | 'guided-stock';
-  const row = source[level - 1], topics = recipe.topics as TopicSelection[];
+  const row = recipe, topics = recipe.topics as Content8TopicSelection[];
   const cards = content8Cards(topics), ids = Object.keys(cards);
   if (ids.length !== row.cards || topics.length !== row.categories || new Set(Object.values(cards).map(card => card.text.toLocaleLowerCase('ru'))).size !== ids.length) {
     throw Error('Invalid editorial bank at level ' + level);
   }
-  const mild = row.columns === 3;
-  const budget = row.baseMoves + (mild ? 5 : 0);
   const columns = Array.from({ length: row.columns }, (_, index) =>
     Math.floor((row.cards - row.stock + index) / row.columns));
-  const difficultyTier: DifficultyTier = row.columns === 5 ? 'superhard' : row.cards >= 80 ? 'hard' : 'normal';
+  const difficultyTier: DifficultyTier = row.columns === 5 ? 'superhard' : row.cards >= 78 ? 'hard' : 'normal';
   const design = {
     id: 'campaign-c8-wave-' + String(level).padStart(3, '0'), version: 1, title, campaignLevel: level,
     difficultyTier, editorialStatus: 'playtest', tags: ['ordinary-dealer', 'content8-wave'],
@@ -144,7 +155,7 @@ for (const recipe of recipes.filter(row => row.level >= first && row.level <= la
     recoveryPaths: evaluation.choices.choices.map(choice => choice.recoveryPath),
   };
   const audit = {
-    level, sourcePosition: row.position, sourceBaseMoves: row.baseMoves, strategy, seed: actualSeed, seedOffset, searchCap,
+    level, sourcePosition, sourceBaseMoves, strategy, seed: actualSeed, seedOffset, searchCap,
     target, tolerancePercent, candidates: plan.attempts, selectedBy: plan.reason, columns, cards: ids.length,
     stock: row.stock, categories: topics.length, layoutHash: digest(deal.initial),
     witnessHash: digest(record.winningPath), steps: evaluation.path.length, initialLeaders: evaluation.leaders,

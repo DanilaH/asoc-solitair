@@ -4,6 +4,7 @@ import { dayNumber, metaState, milestoneRewards } from '../domain/meta';
 import { BALANCE } from '../domain/balance';
 import { applyBoard, assertBoard, boardRules } from '../domain/engine';
 import { MAX_UNDO_HISTORY } from '../domain/history';
+import { DIFFICULTY_WINDOW } from '../domain/difficulty';
 import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION, type Deal, type Save } from '../domain/types';
 
 export const SAVE_KEY = 'asoc-solitaire.save.v1';
@@ -70,6 +71,14 @@ export function decodeSave(raw: string, source: DealSource): Save {
     const p = save.platform;
     if (![p.receipts, p.continuedAttempts, p.completedCampaign].every(strings) || ![p.continueCredits, p.winsSinceInterstitial, p.lastFullscreenAt].every(natural)) throw Error('Повреждён журнал выдач');
   }
+  if (save.difficultyHistory !== undefined && (!Array.isArray(save.difficultyHistory) ||
+    save.difficultyHistory.length > DIFFICULTY_WINDOW || save.difficultyHistory.some(entry =>
+      !entry || !natural(entry.restarts) || !['Clean', 'ExtraSteps', 'Restart'].includes(entry.outcome) ||
+      (entry.outcome === 'Restart') !== (entry.restarts > 0)))) throw Error('Повреждена история сложности');
+  const director = save.attempt.director;
+  if (director !== undefined && (!director || deal.daily || deal.campaignLevel === undefined ||
+    !natural(director.restarts) || !natural(director.previousLosses) || director.previousLosses > director.restarts ||
+    (director.exhausted !== undefined && director.exhausted !== true))) throw Error('Повреждён прогресс сложности');
   if (save.attempt.continued !== undefined && typeof save.attempt.continued !== 'boolean') throw Error('Повреждено продолжение');
   const t = save.attempt.telemetry;
   if (t && (typeof t.started !== 'boolean' || typeof t.finished !== 'boolean' || !natural(t.activeMs))) throw Error('Повреждён счётчик времени');

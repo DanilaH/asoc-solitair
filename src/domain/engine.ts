@@ -1,5 +1,6 @@
-import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION } from './types';
+import { BALANCE_VERSION, CONTENT8_PREVIEW, CONTENT_VERSION, RULES_VERSION } from './types';
 import { BALANCE } from './balance';
+import { carryCampaignRestart, recordCampaignExhaustion } from './difficulty';
 import { freeHintDemo, freeJokerPractice, freeUndoPractice, helperUnlocked, markTutorial, seenTutorial } from './progression';
 import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, Result, Save } from './types';
 
@@ -137,6 +138,7 @@ export function sameBoardCommand(a: BoardCommand, b: BoardCommand) {
 export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Result {
   const next = structuredClone(input);
   const attempt = next.attempt;
+  const trackDifficulty = CONTENT8_PREVIEW && !deal.daily && deal.campaignLevel !== undefined;
   let events: GameEvent[] = [];
   const refuse = (reason: string, reset = false): Result => {
     if (reset && attempt.streak.progress) { attempt.streak.progress = 0; next.revision++; }
@@ -146,6 +148,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     if (cmd.attemptId === attempt.id) return refuse('Для повтора нужен новый номер попытки');
     abandonCampaign(next);
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
+    if (trackDifficulty && attempt.board.phase !== 'won') carryCampaignRestart(attempt, next.attempt);
   } else if (cmd.type === 'undo') {
     if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || (next.profile.undos <= 0 && !freeUndoPractice(input, deal))) return refuse('Нет доступной отмены');
     delete attempt.lessonHint; attempt.board = attempt.undo.pop()!; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; if (next.profile.undos > 0) next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
@@ -171,6 +174,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     if (deal.training === 'joker' && cmd.type === 'transfer' && cmd.to.kind === 'tableau' && cmd.to.index === attempt.board.joker?.column)
       markTutorial(next, 'joker-buffer');
     recordUndo(attempt); attempt.board = result.board; events = result.events;
+    if (trackDifficulty && attempt.board.phase === 'exhausted') recordCampaignExhaustion(attempt);
     if (cmd.type === 'transfer') {
       // Route identity excludes the budget/economy and survives Undo. Reversing the same group is the same edge.
       const endpoints = [cmd.from.kind + cmd.from.index, cmd.to.kind + cmd.to.index].sort().join(':');

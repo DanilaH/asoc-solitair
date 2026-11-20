@@ -117,11 +117,11 @@
     {
       "id": "azur-extra-foundation",
       "name": "AZUR additional upper foundation offer for currency/rewarded",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/228fb2b99b91f5be45a175151b0b6eab2eaf2c3b/research/games/association-solitaire/2026-11-20-azur-bonus-gates-and-reward/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "help",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "Video shows offered extra upper slot for 500 coins/video; purchase and actual slot effect NOT observed"
+      "knownLimit": "Original video shows upper foundation extra slot 500 coins/video offer, while native GameController+BonusRewardedSlot source bodies verify type2 foundation gating by remote enabled/startLevel, ordinary count 3/4 and prefab, coin debit before grant, rewarded readiness dispatch, type-scoped unlock and save-state persistence. Original live enabled values, actual offer price/SDK earned callback, real UI geometry and original Android purchase result UNKNOWN."
     },
     {
       "id": "azur-win-multiplier",
@@ -918,19 +918,19 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "name": "AZUR GameManager GenerateCards / DealCards / DealCardsFromPreset native entry points",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "core",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md",
-      "knownLimit": "Exact GenerateCards/DealCards/DealCardsFromPreset IL2CPP RID→ARM64 native pointer mappings VERIFIED, but function bodies, shuffle/RNG/seed/preset logic and final user-visible layout are NOT decoded or executed. Native RVA identity is not generator behavior.",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/64a6871c4b0959d69ba23efb36e2e2b7f79f6e96/research/games/association-solitaire/2026-11-20-azur-dealer-bonus-body/README.md",
+      "knownLimit": "Exact original ARM64 body: InitializeGame calls GenerateCards then DealCards; DealCards uses single descending Fisher–Yates generic shuffle with Unity RandomRangeInt and distributes FirstColumnCards+c, revealing last each column and assigning remaining to stock. Separate preset path uses FindCardByPreset. Upstream Unity RNG state/seed, full preset serialization, remote inputs and original Android output UNKNOWN; partial native behavior != final-board parity.",
       "originalBuild": "AZUR 1.3.3.8/code244"
     },
     {
       "id": "azur-bonus-lower-column",
       "name": "AZUR bonus lower tableau column (not extra upper foundation slot)",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "core",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md",
-      "knownLimit": "Distinct BonusColumn/BonusFoundation names, getters, enable/unlock/index and exact IL2CPP RID→ARM64 pointer mapping VERIFIED; method body logic, actual playable unlocked column, ad price/remote config and runtime use UNKNOWN (pointer mapping alone is not source behavior).",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/228fb2b99b91f5be45a175151b0b6eab2eaf2c3b/research/games/association-solitaire/2026-11-20-azur-bonus-gates-and-reward/README.md",
+      "knownLimit": "Original ARM64 GameController.CreateBonusConfigForLevel checks type3 lower column remote enabled/minLevel, regular columns 3/4, prefab; saved board four flags retained on restore; separate coin balance/SpendCoins success and rewarded readiness UI routes; type-specific index unlock persisted via SaveCurrentGameState. UNKNOWN: current remote flags, prefab visibility/geometry, coin price, genuine SDK earned callback and original device behavior.",
       "originalBuild": "AZUR 1.3.3.8/code244"
     },
     {
@@ -997,5 +997,5 @@
       "originalBuild": "Unico S3 recorded video; native build not authenticated"
     }
   ],
-  "auditRevision": "2026-11-20-core-evidence-tier-correction-v5"
+  "auditRevision": "2026-11-20-azur-bonus-native-eligibility-v7"
 }

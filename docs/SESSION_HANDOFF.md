@@ -1,3 +1,7 @@
+# Content 8 CORE-3 · 0.19.6
+
+[Levels 16–31 and verification](qa/content-v8/CORE_3.md). CORE-3 replaces the C7 fallback at those positions in Content 8 preview, including the first five-column deals (26 and 31). Resume with the remaining wave 32–80 using the independent verification and editorial recipes described there. Physical playtest remains open.
+
 # Content 8 reference slice — 0.19.0
 
 The owner rejected C7 balance and requested an initial reference-sized playtest before moving on to all 80 levels. [The Content 8 slice report](qa/content-v8/README.md) tracks the new playable levels 6–15, the 31-position evidence matrix, the audit of all 80 C7 starts and the checked alternate routes. Freeze status: awaiting the owner's gameplay evaluation.

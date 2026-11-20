@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
-import { content8Dealer } from '../../src/content/campaign-v8-dealer';
+import { content8Dealer, content8Wave } from '../../src/content/campaign-v8-dealer';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
-import { applyBoard, freshSave, sourceCards } from '../../src/domain/engine';
+import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 import { boardFrame, layout } from '../../src/game/layout';
@@ -111,6 +111,64 @@ test('starting the exhausted level again from Home uses the certified relief dea
   expect(issued.id).not.toBe(save.attempt.id);
   expect(issued.board).toEqual(relief.initial);
   expect(issued.director).toEqual({ restarts: 3, previousLosses: 3 });
+});
+
+async function loadWaveFixture(page: Page, save: Save, completed: number) {
+  save.contentVersion = 8;
+  save.settings.reducedMotion = true;
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0,
+    winsSinceInterstitial: 0, completedCampaign: Array.from({ length: completed }, (_, i) => campaignId(i + 1)) };
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.addInitScript(({ key, value }) => {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, value);
+  }, { key: 'asoc-solitaire.save.v1', value: JSON.stringify(save) });
+  await page.goto('/');
+}
+
+test('Next after C8 level 15 opens the new level 16 with 54 stock cards', async ({ page }) => {
+  const previous = content8Dealer[14], next = content8Wave[0];
+  const save = freshSave(previous, 'core3-won-level-15');
+  for (const action of previous.winningPath) {
+    const step = applyBoard(save.attempt.board, action, previous);
+    if (typeof step === 'string') throw Error(step);
+    save.attempt.board = step.board;
+  }
+  await loadWaveFixture(page, save, 15);
+  await openGame(page, previous);
+  await page.locator('#next-level').tap();
+  await page.locator('#difficulty-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', next.id);
+  expect((await read(page)).attempt.board).toEqual(next.initial);
+  expect(next.initial.stock).toHaveLength(54);
+  await touch(page, next, { type: 'draw' });
+  await expect.poll(async () => (await read(page)).attempt.board.stock.length).toBe(53);
+});
+
+for (const level of [26, 31]) test(`level ${level} accepts a touch move through the fifth column at 320px`, async ({ page }) => {
+  const deal = content8Wave[level - 16];
+  const save = freshSave(deal, `core3-five-column-${level}`);
+  let move: BoardCommand | undefined;
+  for (const action of deal.winningPath) {
+    move = legalCommands(save.attempt.board, deal).find(candidate => candidate.type === 'transfer' &&
+      (level === 26 ? candidate.from.kind === 'tableau' && candidate.from.index === 4 :
+        candidate.to.kind === 'foundation' && candidate.to.index === 4));
+    if (move) break;
+    const step = applyBoard(save.attempt.board, action, deal);
+    if (typeof step === 'string') throw Error(step);
+    save.attempt.board = step.board;
+  }
+  if (!move) throw Error('Fixture has no legal move through the fifth column');
+  const expected = applyBoard(save.attempt.board, move, deal);
+  if (typeof expected === 'string') throw Error(expected);
+  await loadWaveFixture(page, save, level - 1);
+  await openGame(page, deal);
+  await touch(page, deal, move);
+  await expect.poll(async () => (await read(page)).attempt.board).toEqual(expected.board);
+  await page.reload();
+  await openGame(page, deal);
+  const reloaded = (await read(page)).attempt;
+  expect(reloaded.board).toEqual(expected.board);
+  expect(reloaded.undo.at(-1)).toEqual(save.attempt.board);
 });
 
 test('the first lesson gates real touches at 320px and resumes after reload', async ({ page }) => {

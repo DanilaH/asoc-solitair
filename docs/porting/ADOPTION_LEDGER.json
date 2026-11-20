@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/cb0b605c242fe6235ca48eabe24f2bde41f41ea0/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "e50f6746638ca456963d6104a555f41f183fa156",
-  "sourceInventoryRef": "cb0b605c242fe6235ca48eabe24f2bde41f41ea0",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/eba8f9d655c4f55eb1b02f9022456d3bf941b979/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "6211aaf82bc95ec29a97cd4de243ac93363f9286",
+  "sourceInventoryRef": "eba8f9d655c4f55eb1b02f9022456d3bf941b979",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "112 known Hitapps/AZUR/Unico source mechanisms, including AZUR distinct random-column Joker; original source ARM64 static evidence does not prove any live remote/ad/Android behavior, initial Unity RNG state, exact original output or consumer acceptance. No agent-feature exclusion.",
+  "coverageDisclaimer": "113 known source systems; AZUR art-sprite count affects pre-shuffle card multiplicity. Source-native static opcode checks do NOT prove live original art packs, image display, Unity RNG state, original-client layout or consumer human acceptance. No feature excluded by agent.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -20,11 +20,11 @@
     {
       "id": "hitapps-level-wave",
       "status": "IN_PROGRESS",
-      "currentImplementation": "Content 8 first 15 deals with Content 7 fallback at 16–80. CORE-0 supports five-column geometry and checks the compact tap zones with synthetic boards.",
-      "nextAction": "Author reference-sized Content 8 levels 16–80 in CORE-3, including five-column peaks at 26/31 and real Android touch checks.",
+      "currentImplementation": "CORE-3 Content 8 extends the playable campaign through level 31, matching EN16–31 source counts for cards, stock and columns. Positions 26 and 31 use five tableau columns and five foundations.",
+      "nextAction": "Validate the sampled wave on Android. Author 32–80 as product extensions without claiming exact Hitapps geometry beyond EN31.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "C2",
-      "evidenceRef": "docs/qa/content-v8/CORE_0.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
     },
     {
       "id": "hitapps-candidate-priority",
@@ -208,10 +208,11 @@
     },
     {
       "id": "azur-topic-rotation",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Current 35 unique topics across first15 with repetition; no rotation policy",
-      "nextAction": "Author semantic repeat-distance schedule independent from layout; test local-language ambiguities",
-      "stage": "C2"
+      "status": "IN_PROGRESS",
+      "currentImplementation": "The 16–31 editorial plan uses zero adjacent shared category IDs, including the 15→16 boundary. A per-level recipe preserves the exact topics and card counts.",
+      "nextAction": "Measure near-level vocabulary recurrence and set chapter-scale rotation for levels 32–80. Native AZUR dictionary repetition distances are reference evidence.",
+      "stage": "C2",
+      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
     },
     {
       "id": "hitapps-puzzle-event",
@@ -567,10 +568,11 @@
     {
       "id": "azur-structured-long-campaign",
       "status": "IN_PROGRESS",
-      "currentImplementation": "C8 levels1–15 with Hitapps counts, C7 fallback16–80; no scale policy to2000",
-      "nextAction": "Design C8 16–80 source-grounded curve, layout 5 columns, semantic de-dup and future endless/extended stages",
+      "currentImplementation": "Content 8 now provides continuous authored positions 1–31. The new wave uses Hitapps dimensions and a distinct product topic plan inspired by AZUR long-campaign design.",
+      "nextAction": "Author and independently certify C8 levels 32–80; compare pacing with playtest data. Leave the native AZUR long-row format and original runtime evidence tracked.",
       "stage": "G1",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
     },
     {
       "id": "azur-purchase-receipts",
@@ -665,19 +667,21 @@
     },
     {
       "id": "azur-variable-category-sizes",
-      "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 preview src/content/campaign-v8-dealer.json varies per-topic member counts (e.g. level3 5/4 and level6 6/5); dynamic category sizes already represented",
-      "nextAction": "Compare S2 4/5/5/7 (category cards incl leader), C8 topics and 80-level semantic curve; independent solve and Android UI QA",
+      "status": "IN_PROGRESS",
+      "currentImplementation": "CORE-3 uses original categories of four to six member cards with per-level authored totals. Recipes record exact counts against the Hitapps aggregate card dimensions.",
+      "nextAction": "Playtest size variation, extend the editorial pool for 32–80 and keep the AZUR native art-dependent count rule separate.",
       "stage": "C2",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
     },
     {
       "id": "hitapps-mixed-word-image-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/content/topics.ts Card.image and own authored imageByCard, card-reader/renderer support; actual C8 distribution varies",
-      "nextAction": "Audit mixed word/image proportions, asset quality and on-device legibility with original gameplay reference",
+      "currentImplementation": "Each CORE-3 deal has a picture category using complete original project art and word-only categories. Members inside a single category share a presentation.",
+      "nextAction": "Check card recognition and text fit on physical Android at the five-column peaks and extend full-category original art coverage for later content.",
       "stage": "C2",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
     },
     {
       "id": "hitapps-language-change-restart",
@@ -863,8 +867,15 @@
       "currentImplementation": "C8 implements a separate Hitapps-inspired Joker foundation/tableau lesson, but not original AZUR's randomly selected lower tableau insertion, card creation and UndoSystem.Clear source branch.",
       "nextAction": "Research kit PR #84 original AZUR GameManager.AddJokerCard: shared Unity Random.Range(0,min(configured limit,current tableau columns)) chooses GetColumn, adds revealed card using PlaceCardForced, conditionally clears UndoSystem and TryAddJokerCard emits RaiseJokerUsed only on nonnull. Define versioned separate optional AZUR helper with source-derived/random-column tests and explicit Undo reset policy; actual positive/zero bounds, UI unlocking, coin/SDK receipts, original Android/restart/save states and global RNG state remain UNKNOWN.",
       "stage": "D1"
+    },
+    {
+      "id": "azur-art-sprite-wordcount-override",
+      "status": "ROADMAPPED",
+      "stage": "B1",
+      "currentImplementation": "Active C8 uses the Hitapps seeded source-shaped offline dealer; category/member counts are authored in immutable deal JSON. There is no distinct AZUR CardSpriteLoader-driven per-theme member-card count override or modulo word-ref authoring pass.",
+      "nextAction": "Original AZUR native research kit PR #86 verifies BuildArtCardCountsForThemes → CardSpriteLoader positive count map → ordinary GenerateCards (preset passes null), creating one category leader and S members on positive sprite override else W source words, with each member from source index i%W and unique Card ID. Implement OPTIONAL separate AZUR authoring branch with exact source-case fixtures, artwork provenance, card-count/stock geometry and immutable Save/Undo version; original live loaded assets, renderer, remote config, Unity seed, final original deck remain UNKNOWN."
     }
   ],
-  "auditRevision": "2026-11-20-azur-global-unity-rng-joker-112-v9",
+  "auditRevision": "2026-11-20-azur-art-sprite-native-113-v10",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

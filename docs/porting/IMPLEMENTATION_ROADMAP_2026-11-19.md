@@ -4,7 +4,7 @@
 
 This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/7f91abfd824162780a6567c6823b95864142957c/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.
 
-**Coverage at this reviewed snapshot:** **110 feature IDs**, 29 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 56 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 13 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
+**Coverage after native P0 tutorial discovery:** **112 feature IDs**, 29 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 58 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 13 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
 
 ## 1. Action priorities based on dependencies (not a feature ceiling)
 
@@ -50,7 +50,7 @@ C8 source-derived dealer; random seed/stock tableaux, known target steps and ind
 | `hitapps-candidate-priority` | `IMPLEMENTED_UNVERIFIED` | Independent original selected-seed/runtime parity; measure human decision quality |
 | `azur-deck-draw-and-recycle` | `IMPLEMENTED_UNVERIFIED` | Add exact source-model two-pass fixtures, Undo/reload/faceUp/cycle UI tests; compare user-observable order rather than internal array equality |
 | `azur-defeat-vs-no-valid-move` | `IMPLEMENTED_UNVERIFIED` | Verify native branch budget exhaustion&&!win separate from legal-action availability; test stock/recycle cycles and no false loss on temporary no-transfer |
-| `azur-generate-deal-entrypoints` | `EVIDENCE_GAP` | Disassemble AZUR GenerateCards/DealCards full source-state RNG/selection; capture actual original-seed and final stock/columns, then decide source vs own portfolio policy |
+| `azur-generate-deal-entrypoints` | `EVIDENCE_GAP` | [Original ARM64 body verified in kit PR #80](https://github.com/DanilaH/mini-games-kit/pull/80): InitializeGame→GenerateCards→DealCards, Unity Random.Range single Fisher–Yates pass, FirstColumnCards+c placement, separate preset path. Implement separated authoring strategy with injected RNG callback and shape/face-up tests. **Remaining:** Unity engine seed/state, original runtime final board, remote/preset selection |
 | `hitapps-negative-seed-request-path` | `ROADMAPPED` | Implement native semantics negative-requested-seed→separate random seed draw on eligible paths, record selected seed and reproducibility; not same as EmbeddedRandom ctor(-seed) |
 
 ### B2. История игрока и восстановление сложности (3)
@@ -75,13 +75,13 @@ Source-based gating and late simulator failure vs our mathematically certified +
 | `hitapps-feature-seed-one-time-reshuffle` | `ROADMAPPED` | Model shared LevelShuffled flag and precisely one FeatureLevelSeed shuffle across valid Lockers/Frozen/Bound; test invalid pattern flags without assuming unchanged board |
 | `hitapps-initial-shuffle-final-pipeline` | `ROADMAPPED` | Implement source-ordered phases 10/40,20/25/27,30/45 around candidate simulation, with independent source/adapter distinctions |
 
-### C1. Непрерывное обучение и Difficulty UX (3)
+### C1. Непрерывное обучение и Difficulty UX (4)
 
 User onboarding Hint/Undo/Joker, stock/waste/recycle, visible Hard/SuperHard, first-use evidence.
 
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
-| `azur-action-ftue` | `IMPLEMENTED_UNVERIFIED` | Owner plays 1–8 continuously on real phone; keep achievement markers action-based |
+| `azur-action-ftue` | `IMPLEMENTED_UNVERIFIED` | Owner plays 1–8 continuously on real phone; keep achievement markers action-based |\n| `azur-tutorial-preset-deal` | `ROADMAPPED` | [AZUR native level-one tutorial preset proof PR #82](https://github.com/DanilaH/mini-games-kit/pull/82): ShouldUseCardPreset only when level==1, enabled config+ValidateCardPreset+nonnull GetCardPreset; GenerateCards→DealCardsFromPreset when enabled, ordinary random fallback otherwise. Implement versioned authored preset validation/fallback without rewriting approved C8 FTUE; original preset contents/live enablement, Unity RNG state and original device snapshots remain UNKNOWN |
 | `azur-difficulty-label` | `IMPLEMENTED_UNVERIFIED` | Human/device check 320px, accessibility and perceived actual challenge |
 | `azur-locked-helper-discovery` | `ROADMAPPED` | Design previewable locked helper icon + level requirement without accidental spending; test screen reader and FTUE progression |
 
@@ -97,13 +97,13 @@ Finish C8 16–80, 5-column peaks, semantic repetition control, daily quality/va
 | `azur-variable-category-sizes` | `IMPLEMENTED_UNVERIFIED` | Compare S2 4/5/5/7 (category cards incl leader), C8 topics and 80-level semantic curve; independent solve and Android UI QA |
 | `hitapps-mixed-word-image-cards` | `IMPLEMENTED_UNVERIFIED` | Audit mixed word/image proportions, asset quality and on-device legibility with original gameplay reference |
 
-### D1. Специальные игровые правила (13)
+### D1. Специальные игровые правила (14)
 
 Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle each with standalone rule + solver + teaching.
 
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
-| `azur-extra-foundation` | `ROADMAPPED` | Prototype 1 additional upper-slot effect with solver/save/hint/320px UI tests |
+| `azur-extra-foundation` | `ROADMAPPED` | [Original source native gates verified PR #81](https://github.com/DanilaH/mini-games-kit/pull/81): upper type2 requires remote active/start level, normal foundation count 3/4, prefab; coin SpendCoins success or distinct rewarded request path, saved enabled/unlocked flags. Implement separate upper-slot rule and receipt-safe rewarded/coin choice with 320px/UI/save/Hint/Undo/solver tests; live config/price/SDK earned callback and device parity remain UNKNOWN |
 | `hitapps-golden-cards` | `ROADMAPPED` | Restore separate native Final-phase GoldenCards insertion and check gold-marked win receipts; event policy tracked separately under hitapps-gold-rush-event |
 | `hitapps-ordered-category` | `IMPLEMENTED_UNVERIFIED` | Verify first C8 introduction and match rule provenance; device teaching still pending |
 | `hitapps-lockers` | `IMPLEMENTED_UNVERIFIED` | Re-author gated C8 16–80 with independent solver and onboarding/device check |
@@ -112,7 +112,7 @@ Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle e
 | `hitapps-magnet-hammer` | `ROADMAPPED` | Prototype one differentiated helper first, preserving post-seed insertion proof boundaries |
 | `azur-shuffle-helper` | `ROADMAPPED` | Determine re-deal constraints/save/provable solvability and user teaching |
 | `azur-shuffle-animation-controller` | `ROADMAPPED` | Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees |
-| `azur-bonus-lower-column` | `ROADMAPPED` | Define lower bonus column as independent feature from extra upper foundation; add rules/save/Undo/solver/Hint/layout/touch/price tests and real source live enablement |
+| `azur-bonus-lower-column` | `ROADMAPPED` | [Original native lower slot and remote/coin/save proof PR #80/#81](https://github.com/DanilaH/mini-games-kit/pull/81): type3 lower column, count3/4, minLevel/remote flag, required prefab, coin SpendCoins before GrantUnlock, separate rewarded ad readiness, saved enabled/unlocked booleans, index0 sentinel. Implement independent Rules/Save/Undo/Hint/solver/layout + source-time eligibility and receipt safety. **Remaining:** live thresholds, price, earned SDK callback, user-visible geometry |
 | `hitapps-puzzle-top-bottom-cards` | `EVIDENCE_GAP` | Trace PuzzleTop/PuzzleBottom distribution, stock placements, move legality and interactions; then implement clean-room additional card types with verifier |
 | `hitapps-bound-scissors-pattern` | `EVIDENCE_GAP` | Recover actual native scissors reveal/remove, layer and move-cost rules for BoundPattern; create specified Rules/Undo/Solver/teaching test upon proof |
 | `unico-magnet-helper` | `EVIDENCE_GAP` | Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action |
@@ -123,7 +123,7 @@ Joker, Hint, info/dictionary, lower-buffer/stock side, feedback, sound, cross-de
 
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
-| `hitapps-joker` | `IMPLEMENTED_UNVERIFIED` | Native playtest Joker, costs, save, cancel, reduced motion |
+| `hitapps-joker` | `IMPLEMENTED_UNVERIFIED` | Native playtest Joker, costs, save, cancel, reduced motion |\n| `azur-joker-random-column-insertion` | `ROADMAPPED` | [Original AZUR ARM64 PR #84](https://github.com/DanilaH/mini-games-kit/pull/84): GameManager.AddJokerCard uses shared Unity Random.Range bounded by min(configured limit,current columns), gets a lower tableau column, creates/reveals/force-places card, conditionally clears Undo; UI success emits RaiseJokerUsed. Implement separate gated optional helper with documented Undo policy, saved receipt/migration and 320px Android QA, distinct from existing Hitapps Joker. Actual live unlock/price, zero bounds, source device behaviour and RNG state remain UNKNOWN |
 | `hitapps-ghost-hint` | `IMPLEMENTED_UNVERIFIED` | Validate Hint after off-witness choice on Android and strict no-charge failure |
 | `ui-motion-audio-coin` | `IMPLEMENTED_UNVERIFIED` | Compare actual 1× device footage to game; track child IDs for CardAnimator/coin flights/victory/buttons/shuffle separately |
 | `hitapps-ingame-streak` | `IMPLEMENTED_UNVERIFIED` | Replay negative invalid-drop/recycle/Undo against original video and Android coin UX |
@@ -258,8 +258,15 @@ Every PR in this implementation program must report feature IDs, original refere
 
 **Backlog governance:** change `SOURCE_FEATURES.json` in kit and `ADOPTION_LEDGER.json` in game together for every discovered system. After implementation, update both roadmap and ledger to `IMPLEMENTED_UNVERIFIED` or `ACCEPTED` with evidence. Owner alone can exclude a roadmap entry. Previous `HOLD/REJECT` archived notes remain historical, not controlling policy.
 
-**Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 110/110, and implement the next unblocked package with exact SDK/save/Android evidence.
+**Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 112/112, and implement the next unblocked package with exact SDK/save/Android evidence.
 
 **Audit correction (19.11, pass3):** Previous 76/76 was incomplete across existing source packaging/IAP, uneven AZUR categories, multiresource rewards, language, helper discovery and 10 AZUR metadata UI systems. Source inventory now **110**, with real pinned-source consumer `qa:porting` mandatory. The old Hitapps Daily puzzle line was downgraded to `EVIDENCE_GAP` because only Hitapps DailyRewards and Unico actual Daily Level are proven. Source-like names do not prove live/runtime behavior.
 
 **Native core follow-up (20.11.2026):** [Exact AZUR/Hitapps/Unico core-source → gameplay implementation spec](../qa/CORE_REFERENCE_IMPLEMENTATION_SPEC_2026-11-20.md). This adds 11 separately tracked core mechanisms (including AZUR budget formula, native draw/recycle, loss vs no moves, independent lower bonus column; Hitapps Equality stack placement, reseed/phase/negative seed/puzzle/scissors; Unico Magnet). Published old C1–C8 saves remain unchanged until a scoped implementation PR. Kit source native verifier [mini-games-kit PR #78](https://github.com/DanilaH/mini-games-kit/pull/78).
+
+**P0 source follow-up (20.11 native-body, mini-games-kit PR #80):** AZUR normal deal uses Unity `Random.Range` one-pass Fisher–Yates, not the Hitapps ten-pass EmbeddedRandom; its column widths grow from `FirstColumnCards`. Bonus type2 foundation and type3 tableau column have decoded, independent unlock gates. Their ledger/roadmap entries remain open until source-seed/original-device/monetization evidence and product implementation. Research/consumer inventory remains 110/110. Existing C8 frozen deals and kit runtime dependency are unchanged.
+
+**P0 native bonus eligibility follow-up (20.11, mini-games-kit PR #81):** Source code establishes separate upper/lower min-level and 3/4-normal-slot/prefab gates, saved configuration restoration, coin debit-before-unlock, and an advertised rewarded route. No inference of active live monetization, current prices or SDK earnings. These are source-evidence advancements only; both game rows remain ROADMAPPED.
+
+**P0 tutorial preset and RNG source discovery (20.11, mini-games-kit PR #82):** A separate original AZUR level-one authored tutorial preset route is source-proven; disabled/missing/invalid preset falls back to ordinary Unity Random dealer. `UnityEngine.Random.InitState` has a native CoreModule wrapper but no direct call in inspected level-routing ranges; global seed/state and real original board remain UNKNOWN. Added the separate `azur-tutorial-preset-deal` system to C1. Source and product coverage now 111/111, no owner exclusions.\n
+**P0 shared Unity RNG and AZUR Joker follow-up (20.11, kit PR #84):** ordinary AZUR dealer, daily bonus, combo track, Joker helper and developer tools call the same Unity Random.Range native wrapper; some other original code directly calls InitState, source owners/runtime order unknown. A new separately tracked native source Joker chooses a random lower tableau, constructs/reveals/places a card and conditionally clears Undo. Game product policy should isolate deterministic authoring RNG and preserve immutable Deal. New row in D1; **112 total** source IDs, no owner exclusions; exact original live RNG/device and SDK remain unknown.

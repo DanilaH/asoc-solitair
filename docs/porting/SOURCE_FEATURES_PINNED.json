@@ -3,7 +3,7 @@
   "id": "association-solitaire-hitapps-azur-unico-20261119",
   "sourceCatalog": "https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/README.md",
   "scope": "Reviewed original AZUR XAPK ARM64 core code and 2,000 source rows, plus native-source Hitapps exact-build reports and Unico video. Every known core source system retained; remote and original Android runtime remain UNKNOWN.",
-  "coverageStatus": "SOURCE_CORE_110_RECONCILED_NOT_VENDOR_RUNTIME_EXHAUSTIVE",
+  "coverageStatus": "SOURCE_CORE_112_RECONCILED_NOT_VENDOR_RUNTIME_EXHAUSTIVE",
   "producer": "DanilaH/mini-games-kit",
   "features": [
     {
@@ -117,11 +117,11 @@
     {
       "id": "azur-extra-foundation",
       "name": "AZUR additional upper foundation offer for currency/rewarded",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/228fb2b99b91f5be45a175151b0b6eab2eaf2c3b/research/games/association-solitaire/2026-11-20-azur-bonus-gates-and-reward/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "help",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "Video shows offered extra upper slot for 500 coins/video; purchase and actual slot effect NOT observed"
+      "knownLimit": "Original video shows upper foundation extra slot 500 coins/video offer, while native GameController+BonusRewardedSlot source bodies verify type2 foundation gating by remote enabled/startLevel, ordinary count 3/4 and prefab, coin debit before grant, rewarded readiness dispatch, type-scoped unlock and save-state persistence. Original live enabled values, actual offer price/SDK earned callback, real UI geometry and original Android purchase result UNKNOWN."
     },
     {
       "id": "azur-win-multiplier",
@@ -265,7 +265,7 @@
       "evidenceTier": "ASSET_VERIFIED",
       "surface": "meta",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "Day-keyed card-choice state and prefab confirmed; live reward odds/claims not replayed"
+      "knownLimit": "Day-keyed card-choice state and prefab confirmed; live reward odds/claims not replayed Original native BuildShuffledColumnIndices and WeightedPick each call shared Unity Random.Range; real opening order relative to game dealer remains UNKNOWN."
     },
     {
       "id": "hitapps-weekend-race",
@@ -544,7 +544,7 @@
       "evidenceTier": "METADATA",
       "surface": "meta",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "Official changelog confirms feature category; exact event rules not reproduced"
+      "knownLimit": "Official changelog confirms feature category; exact event rules not reproduced Original ComboSeriesBalance.PickRandomTrack native direct call to shared Unity Random.Range is verified, but actual streak reward/reset/live event remains UNKNOWN."
     },
     {
       "id": "azur-unlimited-moves-offer",
@@ -918,19 +918,19 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "name": "AZUR GameManager GenerateCards / DealCards / DealCardsFromPreset native entry points",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "core",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md",
-      "knownLimit": "Exact GenerateCards/DealCards/DealCardsFromPreset IL2CPP RID→ARM64 native pointer mappings VERIFIED, but function bodies, shuffle/RNG/seed/preset logic and final user-visible layout are NOT decoded or executed. Native RVA identity is not generator behavior.",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/64a6871c4b0959d69ba23efb36e2e2b7f79f6e96/research/games/association-solitaire/2026-11-20-azur-dealer-bonus-body/README.md",
+      "knownLimit": "Exact original ARM64 body: InitializeGame calls GenerateCards then DealCards; DealCards uses single descending Fisher–Yates generic shuffle with Unity RandomRangeInt and distributes FirstColumnCards+c, revealing last each column and assigning remaining to stock. Separate preset path uses FindCardByPreset. Upstream Unity RNG state/seed, full preset serialization, remote inputs and original Android output UNKNOWN; partial native behavior != final-board parity. Separate level-one tutorial validated authored preset selection/fallback is tracked as azur-tutorial-preset-deal; no inference that presets govern ordinary later levels. Additional original ARM64 proof shows shared UnityEngine.Random.Range wrapper is also used by DailyBonus, ComboSeries, Joker and developer tooling; call timing and global RNG state remain UNKNOWN. Source: https://github.com/DanilaH/mini-games-kit/blob/1cee602843a0fdbdf83cb104ab94c55dd15f752a/research/games/association-solitaire/2026-11-20-azur-shared-rng-joker/README.md.",
       "originalBuild": "AZUR 1.3.3.8/code244"
     },
     {
       "id": "azur-bonus-lower-column",
       "name": "AZUR bonus lower tableau column (not extra upper foundation slot)",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "core",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md",
-      "knownLimit": "Distinct BonusColumn/BonusFoundation names, getters, enable/unlock/index and exact IL2CPP RID→ARM64 pointer mapping VERIFIED; method body logic, actual playable unlocked column, ad price/remote config and runtime use UNKNOWN (pointer mapping alone is not source behavior).",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/228fb2b99b91f5be45a175151b0b6eab2eaf2c3b/research/games/association-solitaire/2026-11-20-azur-bonus-gates-and-reward/README.md",
+      "knownLimit": "Original ARM64 GameController.CreateBonusConfigForLevel checks type3 lower column remote enabled/minLevel, regular columns 3/4, prefab; saved board four flags retained on restore; separate coin balance/SpendCoins success and rewarded readiness UI routes; type-specific index unlock persisted via SaveCurrentGameState. UNKNOWN: current remote flags, prefab visibility/geometry, coin price, genuine SDK earned callback and original device behavior.",
       "originalBuild": "AZUR 1.3.3.8/code244"
     },
     {
@@ -995,7 +995,25 @@
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
       "knownLimit": "S3 video shows level4 Magnet tooltip and glowing slot click instruction; actual activation, target selection, card movement and native algorithm NOT observed",
       "originalBuild": "Unico S3 recorded video; native build not authenticated"
+    },
+    {
+      "id": "azur-tutorial-preset-deal",
+      "name": "AZUR tutorial level-one authored card preset with validation, enable gate and ordinary-dealer fallback",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/5a040c3d6dd5f12f2644457e0fd3fa3312e98da4/research/games/association-solitaire/2026-11-20-azur-tutorial-preset/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "ftue",
+      "originalBuild": "AZUR Word Solitaire 1.3.3.8/code244 ARM64",
+      "knownLimit": "Native GameController checks TutorialManager.ShouldUseCardPreset (level==1, enabled) then ValidateCardPreset and nonnull GetCardPreset; InitializeGameWithPreset calls GenerateCards then DealCardsFromPreset, and invalid/disabled paths fall back to ordinary InitializeGame. Unity Random state/seed, serialized preset schema/content, actual live tutorial configuration, Android layout, restart output and indirect RNG initialization remain UNKNOWN."
+    },
+    {
+      "id": "azur-joker-random-column-insertion",
+      "name": "AZUR native Joker helper: choose bounded random lower tableau column, create/force-place card, clear Undo and signal success",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/1cee602843a0fdbdf83cb104ab94c55dd15f752a/research/games/association-solitaire/2026-11-20-azur-shared-rng-joker/README.md",
+      "originalBuild": "AZUR Word Solitaire: Categories 1.3.3.8/code244 original ARM64",
+      "knownLimit": "Original GameManager.AddJokerCard native: Unity Random.Range(0,min(configuredBound,tableauColumnCount)) selects GameBoard.GetColumn, constructs face-up card with discriminator 2, Column.PlaceCardForced, conditional UndoSystem.Clear; GameUIController.TryAddJokerCard reports RaiseJokerUsed only for nonnull result. UNKNOWN: original live unlock/price/SDK rewarded policy, configured bound and zero/no-target behavior, card enum semantics beyond method name, UI/Android/save/restart parity. Do not conflate with Hitapps Joker."
     }
   ],
-  "auditRevision": "2026-11-20-core-evidence-tier-correction-v5"
+  "auditRevision": "2026-11-20-azur-unity-rng-cross-system-joker-v9"
 }

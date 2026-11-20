@@ -15,6 +15,7 @@ export interface Board {
   keys?: string[];
 }
 export interface Location { kind: 'tableau' | 'waste' | 'foundation'; index: number }
+export type BonusKind = 'foundation' | 'tableau';
 export type BoardCommand = { type: 'transfer'; from: Location; to: Location }
   | { type: 'draw' } | { type: 'recycle' };
 export type Command = BoardCommand | { type: 'place-joker'; column: number } | { type: 'undo' } | { type: 'restart'; attemptId: string }
@@ -29,6 +30,7 @@ export interface Deal {
   campaignLevel?: number;
   tags?: string[];
   lock?: { column: number; requiredKeys: string[] };
+  bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
   difficultyTier?: DifficultyTier;
   training?: OpeningLesson;
   recoveryPaths?: BoardCommand[][];

@@ -13,8 +13,9 @@ import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
 import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, type RuleIntro } from './app/tutorial';
 import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
-import type { BoardCommand, Command, Deal } from './domain/types';
-import { WIDTH, boardFrame } from './game/layout';
+import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
+import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
+import { WIDTH, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
 import { cardReader } from './game/card-reader';
@@ -105,13 +106,24 @@ function showPraise(text: string) {
   ], { duration: reduced ? 450 : 900, fill: 'both' });
   praiseAnimation.onfinish = clearPraise;
 }
-function positionDeckTools() {
+function positionDeckTools(save: Save) {
   const rect = $('#game-root').getBoundingClientRect(); if (!rect.width || !rect.height) return;
   const tools = $('.deck-tools'), app = $('#app');
   const frame = boardFrame(rect.width, rect.height, app.dataset.deckRow as 'top' | 'bottom', deal);
   const right = app.dataset.deckRow === 'bottom' || app.dataset.deckEdge === 'left';
   tools.style.transform = `scale(${frame.unit})`; tools.style.top = `${20 * frame.unit}px`;
   tools.style.left = right ? 'auto' : `${frame.offsetX}px`; tools.style.right = right ? `${rect.width - frame.offsetX - WIDTH * frame.unit}px` : 'auto';
+  const offers = deal.bonusSlots && ready && screen === 'game' && save.attempt.board.phase === 'playing'
+    ? layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition).offers : [];
+  for (const kind of bonusKinds) {
+    const button = $(`#bonus-${kind}`), offer = offers.find(target => target.kind === kind);
+    button.hidden = !offer;
+    if (offer) {
+      button.style.left = `${frame.offsetX + offer.x * frame.unit}px`;
+      button.style.top = `${offer.y * frame.unit}px`;
+      button.style.width = `${offer.width * frame.unit}px`;
+    }
+  }
 }
 function message(text: string, error = false) {
   if (error) clearPraise();
@@ -179,8 +191,12 @@ try {
       await store.mutate(next => { const state = platformState(next); state.lastFullscreenAt = Date.now(); if (request.kind === 'interstitial') state.winsSinceInterstitial = 0; });
     },
     async commit(receipt) {
-      const result = await store.mutate(next => applyReceipt(next, receipt));
-      if (result === 'applied') telemetry.track('reward_granted', { attemptId: receipt.attempt, dealId: receipt.dealId, mode: receipt.mode, reason: `rewarded_${receipt.placement}`, amount: receipt.placement === 'continue' ? BALANCE.continueMoves : BALANCE.rewardedCharges[receipt.placement] });
+      let openedBonus = false;
+      const result = await store.mutate(next => applyReceipt(next, receipt, findDeal(receipt.dealId), () => { openedBonus = true; }));
+      const placement = receipt.placement;
+      const amount = placement === 'continue' ? BALANCE.continueMoves : placement === 'hint' || placement === 'undo'
+        ? BALANCE.rewardedCharges[placement] : Number(openedBonus);
+      if (result === 'applied' && amount) telemetry.track('reward_granted', { attemptId: receipt.attempt, dealId: receipt.dealId, mode: receipt.mode, reason: `rewarded_${placement}`, amount });
       // Ack failure must not freeze spending/restart or replay the already durable grant.
       if (runtime.activity.getBlockReasons().every(r => r === 'modal')) { scene?.sync(); if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs(); }
       return result;
@@ -192,6 +208,24 @@ try {
   telemetry.track('session_start');
   if (save.attempt.telemetry?.started && save.attempt.board.phase === 'playing') telemetry.track('level_resume');
   let helperFocus: 'hint' | 'undo' | 'joker' | undefined;
+  let bonusSelection: { kind: BonusKind; attemptId: string } | undefined;
+  function selectedBonus() {
+    if (!bonusSelection || bonusSelection.attemptId !== save.attempt.id || save.attempt.board.phase !== 'playing') return;
+    const offer = bonusOffer(deal, bonusSelection.kind);
+    if (offer && pilesFor(save.attempt.board, bonusSelection.kind).length === offer.index) return offer;
+  }
+  function renderBonusSheet() {
+    const offer = selectedBonus();
+    const busy = saving || serviceBusy || store.needsRecovery;
+    const buy = $<HTMLButtonElement>('#bonus-buy'), video = $<HTMLButtonElement>('#bonus-video');
+    buy.disabled = busy || !offer || save.profile.coins < offer.coins;
+    video.hidden = !offer || !ads.status.rewarded;
+    video.disabled = busy || video.hidden;
+    if (!offer) return;
+    buy.textContent = `Открыть за ${offer.coins} монет`;
+    $('#bonus-balance').textContent = save.profile.coins < offer.coins
+      ? `Не хватает ${offer.coins - save.profile.coins} монет.` : `В кошельке ${save.profile.coins} монет.`;
+  }
   function openHelpers(focus?: typeof helperFocus) { helperFocus = focus; renderHud(); openDialog('#helpers'); }
   function helperBought(helper: NonNullable<typeof helperFocus>) {
     if (helperFocus !== helper || screen !== 'game') return;
@@ -263,7 +297,8 @@ try {
     const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
     $('#app').dataset.deckEdge = hasDeck ? save.settings.deckSide ?? 'right' : 'right';
     $('#app').dataset.deckRow = hasDeck ? save.settings.deckPosition ?? 'top' : 'top';
-    positionDeckTools();
+    positionDeckTools(save);
+    if (deal.bonusSlots) renderBonusSheet();
     const instruction = screen === 'game' ? currentLesson() : undefined;
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
       ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.' : instruction?.copy;
@@ -698,7 +733,7 @@ try {
   let boardSize = '';
   function resizeToRoot() {
     if (!ready || screen !== 'game' || !game?.isBooted) return;
-    const next = size(); positionDeckTools();
+    const next = size(); positionDeckTools(save);
     // ResizeObserver can report an unchanged rounded backing size. Emitting a
     // scene resize for that notification would cancel a perfectly valid drag.
     const rect = root.getBoundingClientRect(), key = [rect.x, rect.y, rect.width, rect.height].join(':');
@@ -808,7 +843,11 @@ try {
   $('#undo').addEventListener('click', () => { if (!save.profile.undos && !freeUndoPractice(save, deal)) openHelpers('undo'); else void execute({ type: 'undo' }); }, domOptions);
   $('#inspect').addEventListener('click', () => { setInspect(!inspectMode); if (!inspectMode) showGuidance(); }, domOptions);
   $('#restart').addEventListener('click', () => {
-    if (save.attempt.board.phase !== 'won' && save.attempt.telemetry?.started) { $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`; openDialog('#restart-confirm'); }
+    const hasBonus = bonusKinds.some(kind => pilesFor(save.attempt.board, kind).length > pilesFor(deal.initial, kind).length);
+    if (save.attempt.board.phase !== 'won' && (save.attempt.telemetry?.started || hasBonus)) {
+      $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${hasBonus ? ' Дополнительные места закроются.' : ''}${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`;
+      openDialog('#restart-confirm');
+    }
     else void replay();
   }, domOptions);
   $('#restart-confirm-yes').addEventListener('click', () => { void replay(); }, domOptions);
@@ -859,6 +898,36 @@ try {
     hintWorker.postMessage(request); renderHud();
   }, domOptions);
   $('#helpers-open').addEventListener('click', () => { runtime.pulse('button'); openHelpers(); }, domOptions);
+  for (const kind of bonusKinds) {
+    $(`#bonus-${kind}`).addEventListener('click', () => {
+      if (!ready || saving || serviceBusy || store.needsRecovery || runtime.activity.isBlocked()) return;
+      bonusSelection = { kind, attemptId: save.attempt.id };
+      if (!selectedBonus()) return;
+      $('#bonus-title').textContent = kind === 'foundation' ? 'Слот для темы' : 'Дополнительный столбец';
+      $('#bonus-copy').textContent = kind === 'foundation'
+        ? 'Соберите ещё одну тему одновременно. Слот открыт до конца этой попытки.'
+        : 'Перекладывайте сюда карты и группы. Столбец открыт до конца этой попытки.';
+      $('#bonus-error').hidden = true;
+      renderBonusSheet();
+      openDialog('#bonus-offer');
+    }, domOptions);
+  }
+  $('#bonus-buy').addEventListener('click', async () => {
+    const selection = bonusSelection, offer = selectedBonus();
+    if (!selection || !offer || saving || serviceBusy) return;
+    try {
+      if (await write(next => purchaseBonusSlot(next, deal, selection.attemptId, selection.kind))) {
+        telemetry.track('helper_purchase', { helper: bonusPlacements[selection.kind], cost: offer.coins });
+        closeDialogs(); scene?.sync(); game?.loop.wake(); showGuidance();
+      }
+    } catch {
+      if (store.needsRecovery) { closeDialogs(); message('Проверяем сохранение покупки.', true); }
+      else { $('#bonus-error').textContent = 'Покупка не сохранилась. Попробуйте ещё раз.'; $('#bonus-error').hidden = false; }
+    }
+  }, domOptions);
+  $('#bonus-video').addEventListener('click', () => {
+    if (bonusSelection && selectedBonus()) void rewarded(bonusPlacements[bonusSelection.kind]);
+  }, domOptions);
   for (const helper of ['hint', 'undo'] as const) {
     $(`#buy-${helper}`).addEventListener('click', async () => {
       if (serviceBusy || saving) return;
@@ -891,11 +960,14 @@ try {
     void store.mutate(next => { if (next.attempt.telemetry) next.attempt.telemetry.activeMs = activeMs; }).catch(() => undefined);
   }, 5000);
   const removeTouch = installTouchActivation($('#dock'), { resolveButton: target => target instanceof Element ? target.closest('button') : null });
+  const removeBonusTouch = installTouchActivation($('#game'), {
+    resolveButton: target => target instanceof Element ? target.closest<HTMLButtonElement>('.board-bonus') : null,
+  });
   renderHud(); renderHome();
   const cleanup = () => {
     if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
-    abort.abort(); removeTouch(); wallet?.dispose();
+    abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
     worker?.terminate(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };
   window.addEventListener('pagehide', event => { if (!event.persisted) cleanup(); }, domOptions);

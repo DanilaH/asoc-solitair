@@ -1,9 +1,12 @@
-import type { Board, Deal, Location } from '../domain/types';
+import type { Board, BonusKind, Deal, Location } from '../domain/types';
 import { packet } from '../domain/engine';
+import { bonusKinds, bonusOffer, pilesFor } from '../domain/bonus-slots';
 export const WIDTH = 540;
 export const CARD_W = 138;
 export const CARD_H = 166;
-const columnCount = (deal: Deal) => Math.max(deal.initial.tableau.length, deal.initial.foundations.length);
+export const slotCount = (deal: Deal, kind: BonusKind) =>
+  pilesFor(deal.initial, kind).length + Number(Boolean(bonusOffer(deal, kind)));
+const columnCount = (deal: Deal) => Math.max(slotCount(deal, 'tableau'), slotCount(deal, 'foundation'));
 export function cardMetrics(deal: Deal) {
   const columns = columnCount(deal);
   const width = columns < 4 ? CARD_W : columns === 4 ? 124 : Math.floor((WIDTH - (columns - 1) * 14) / columns);
@@ -12,11 +15,13 @@ export function cardMetrics(deal: Deal) {
 /** Reserve enough logical height even when a real native banner shortens the canvas. */
 export function boardFrame(width: number, height: number, deckPosition: 'top' | 'bottom' = 'top', deal?: Deal) {
   const hasDeck = !deal || Boolean(deal.initial.stock.length || deal.initial.waste.length);
-  const unit = Math.min(width / WIDTH, height / (deckPosition === 'bottom' && hasDeck ? 680 : 650));
+  const deepUpperRow = deal && bonusOffer(deal, 'foundation');
+  const unit = Math.min(width / WIDTH, height / (deckPosition === 'bottom' && hasDeck ? deepUpperRow ? 760 : 680 : 650));
   return { unit, offsetX: 0, height: height / unit };
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
 export interface Target { location: Location; x: number; y: number; width: number; height: number }
+interface BonusTarget { kind: BonusKind; x: number; y: number; width: number }
 /** A movable packet with a leader always shows that leader on its face. */
 export function tableauPresentation(board: Board, deal: Deal, index: number): string[] {
   const column = board.tableau[index], moving = packet(board, index, deal);
@@ -45,8 +50,8 @@ export function dragTarget(targets: Target[], finger: { x: number; y: number }, 
   const near = dropTarget(targets, finger.x, finger.y, tolerance);
   return near && valid(near) ? near : directCard ?? directFinger ?? near;
 }
-export function layout(board: Board, deal: Deal, height: number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; stock: { x: number; y: number; thickness: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
-  const poses: Pose[] = [], targets: Target[] = [];
+export function layout(board: Board, deal: Deal, height: number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; offers: BonusTarget[]; stock: { x: number; y: number; thickness: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
+  const poses: Pose[] = [], targets: Target[] = [], offers: BonusTarget[] = [];
   let joker: { x: number; y: number; depth: number } | undefined;
   const { width: cardW, height: cardH } = cardMetrics(deal);
   // A short row stays together at the left edge rather than stretching to fill
@@ -66,7 +71,8 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
   // Preserve earlier positions while the initial three-card fan is opening.
   const fanWidth = Math.max(0, Math.min(3, board.waste.length) - 1) * fanStep;
   const waste = { x: stock.x + (left ? 1 : -1) * (cardW + gap + fanWidth), y: deckY };
-  const top = cardH / 2 + (bottom ? 30 : hasDeck ? cardH + 54 : 185);
+  // The inspect/remaining-moves badge owns the far right at the top with a bottom deck.
+  const top = cardH / 2 + (bottom ? bonusOffer(deal, 'foundation') ? 154 : 30 : hasDeck ? cardH + 54 : 185);
   board.foundations.forEach((ids, index) => {
     const x = center(index);
     targets.push({ location: { kind: 'foundation', index }, x, y: top, width: cardW + 8, height: cardH + 8 });
@@ -95,5 +101,11 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
   });
   // Fan away from the stock: even the rear waste cards keep a visible gap.
   board.waste.slice(-3).forEach((id, i, shown) => poses.push({ id, x: waste.x + (shown.length - i - 1) * (left ? -fanStep : fanStep), y: waste.y, depth: 35 + i, faceUp: true }));
-  return { poses, targets, stock, waste, joker };
+  for (const kind of bonusKinds) {
+    const offer = bonusOffer(deal, kind);
+    if (offer && pilesFor(board, kind).length === offer.index) offers.push({
+      kind, x: center(offer.index), y: kind === 'foundation' ? top : tableauY, width: cardW,
+    });
+  }
+  return { poses, targets, offers, stock, waste, joker };
 }

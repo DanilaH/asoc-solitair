@@ -3,7 +3,8 @@ import { installSceneTextSharpness } from '@danilah/mini-games-kit/phaser';
 import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
 import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
-import { boardFrame, cardMetrics, dragTarget, dropTarget, layout, tableauPresentation } from './layout';
+import { boardFrame, cardMetrics, dragTarget, dropTarget, layout, slotCount, tableauPresentation } from './layout';
+import { bonusKinds } from '../domain/bonus-slots';
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 
@@ -134,14 +135,15 @@ export class BoardScene extends Phaser.Scene {
     this.stockCount = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(.5).setDepth(38);
     this.stockBadge = this.add.graphics().setDepth(37);
     this.world.add([this.slots, ...this.stockLayers, this.stockArt, this.focus, this.stockBadge, this.stockCount]);
-    for (const [kind, ids] of [['foundation', this.options.getSave().attempt.board.foundations], ['tableau', this.options.getSave().attempt.board.tableau]] as const) {
-      ids.forEach((_, index) => {
+    for (const kind of bonusKinds) {
+      for (let index = 0; index < slotCount(this.options.deal, kind); index++) {
         const view = this.add.image(0, 0, `art-slot-${kind}`).setVisible(false).setDepth(0);
         this.world.add(view); this.slotViews.set(`${kind}:${index}`, view);
-      });
+      }
     }
     this.foundationArt = this.add.graphics().setDepth(200);
-    this.foundationTitles = this.options.getSave().attempt.board.foundations.map(() => this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold', color: '#886347' }).setOrigin(.5).setDepth(201));
+    this.foundationTitles = Array.from({ length: slotCount(this.options.deal, 'foundation') }, () =>
+      this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold', color: '#886347' }).setOrigin(.5).setDepth(201));
     this.world.add([this.foundationArt, ...this.foundationTitles]);
     const gold = this.add.image(0, 0, 'art-card-category').setDisplaySize(this.cardW, this.cardH);
     this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.add.image(0, 5, 'art-joker').setDisplaySize(78, 78)]).setVisible(false);

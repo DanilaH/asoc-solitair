@@ -1,3 +1,7 @@
+# Content 8 CORE-4 · 0.19.9 preview
+
+[Independent AZUR bonus slots](qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md) are available on new attempts at levels 22, 30 and 40. Each is optional and opens for coins or a native earned receipt. The upper slot and lower column have separate rules, rewards, first-use practice and save identities. Physical Android and live original comparison remain open.
+
 # Content 8 CORE-4 · 0.19.8 preview
 
 [Ordered deals and three-key locks](qa/content-v8/CORE_4_SPECIAL_DEALS.md) are live at levels 17, 18, 26, 45 and 66. The first-use exercises and old deal migration are covered by the preview tests. This starts CORE-4. The next feature package can tackle independently configured bonus upper and lower slots with the existing save and receipt ownership.

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GameplayActivityCoordinator, type StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { introDeal as deal } from '../../src/content/intro';
+import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { applyReceipt, parseReceipt, purchaseHelper, useContinue, platformState, interstitialEligible, markCampaignWin, type EarnedReceipt } from '../../src/domain/services';
 import { SaveStore, SAVE_KEY, decodeSave } from '../../src/platform/storage';
@@ -117,6 +118,34 @@ describe('coordinated save writer and earned effects', () => {
 });
 
 describe('optional native services', () => {
+  it('grants the exact bonus only for a journal receipt, through no-fill, dismissal and failed ack', async () => {
+    const bonus = { ...content8BonusDeals[2], id: 'bonus-bridge-fixture' }, b = bridge(), m = memory();
+    const store = new SaveStore(m.storage, bonus, () => freshSave(bonus, 'attempt-1'));
+    await store.open();
+    const reward: EarnedReceipt = { ...receipt, dealId: bonus.id, placement: 'bonus-tableau' };
+    const ads = createAds({
+      activity: new GameplayActivityCoordinator(() => undefined, () => undefined),
+      commit: earned => store.mutate(next => applyReceipt(next, earned, bonus)),
+      beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
+    }, b.api);
+    try {
+      await ads.refresh();
+      const request = { kind: 'rewarded', attempt: reward.attempt, placement: reward.placement, dealId: bonus.id, mode: 'campaign' } as const;
+      vi.mocked(b.api.show).mockResolvedValueOnce({ shown: false, outcome: 'unavailable' });
+      await ads.show(request);
+      await ads.show(request);
+      await ads.recover();
+      expect(store.state.attempt.board.tableau).toHaveLength(4);
+      b.api.pending = vi.fn(async () => ({ receipts: [reward] }));
+      b.api.acknowledge = vi.fn(async () => { throw Error('ack failed'); });
+      await ads.recover();
+      await ads.recover();
+      expect(store.state.attempt.board.tableau).toHaveLength(5);
+      expect(store.state.attempt.board.foundations).toHaveLength(4);
+      expect(store.state.profile.coins).toBe(100);
+      expect(store.state.platform?.receipts).toEqual([reward.id]);
+    } finally { ads.destroy(); }
+  });
   it('deduplicates receipts after failed ack while allowing commands and spending', async () => {
     const b = bridge(), m = memory(), store = new SaveStore(m.storage, deal, fresh); await store.open();
     b.api.pending = vi.fn(async () => ({ receipts: [receipt] })); b.api.acknowledge = vi.fn(async () => { throw Error('ack failed'); });

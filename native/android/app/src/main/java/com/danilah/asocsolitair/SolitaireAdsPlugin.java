@@ -103,9 +103,11 @@ public class SolitaireAdsPlugin extends Plugin {
         String kind = call.getString("kind", ""), placement = call.getString("placement", "");
         String attempt = call.getString("attempt", ""), mode = call.getString("mode", "");
         String dealId = call.getString("dealId", "");
+        boolean rewardPlacement = placement.equals("hint") || placement.equals("undo") || placement.equals("continue") ||
+            (mode.equals("campaign") && (placement.equals("bonus-foundation") || placement.equals("bonus-tableau")));
         if ((!kind.equals("interstitial") && !kind.equals("rewarded")) ||
             !attempt.matches("[a-zA-Z0-9_-]{1,100}") || !dealId.matches("[a-zA-Z0-9_-]{1,100}") || (!mode.equals("campaign") && !mode.equals("daily")) ||
-            (kind.equals("rewarded") ? !placement.equals("hint") && !placement.equals("undo") && !placement.equals("continue") : !placement.equals("continue"))) {
+            (kind.equals("rewarded") ? !rewardPlacement : !placement.equals("continue"))) {
             call.reject("Invalid ad request"); return;
         }
         if (!available(kind) || session != null || background || !getActivity().hasWindowFocus()) { resolve(call, false, "unavailable"); return; }

@@ -64,7 +64,11 @@ export function decodeSave(raw: string, source: DealSource): Save {
   const streak = save.attempt.streak;
   if (!natural(streak.tier) || streak.tier > 3 || !natural(streak.progress) || streak.progress >= 4 + streak.tier || !strings(streak.counted)) throw Error('Повреждена серия');
   if (!strings(save.profile.rewards) || !Array.isArray(save.attempt.undo)) throw Error('Повреждена история');
-  save.attempt.undo.forEach(board => assertBoard(board, deal));
+  save.attempt.undo.forEach(board => {
+    assertBoard(board, deal);
+    if (board.tableau.length !== save.attempt.board.tableau.length ||
+      board.foundations.length !== save.attempt.board.foundations.length) throw Error('Повреждены бонусные места в истории');
+  });
   // Validate the full old history before discarding only its oldest entries.
   if (['sfx', 'haptics', 'reducedMotion'].some(key => typeof save.settings[key as keyof Save['settings']] !== 'boolean')) throw Error('Повреждены настройки');
   if (save.platform) {

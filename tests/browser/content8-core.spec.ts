@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { content8Dealer, content8Late, content8Wave } from '../../src/content/campaign-v8-dealer';
 import { content8Special } from '../../src/content/campaign-v8-special';
+import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
@@ -345,4 +346,111 @@ test('the free Hint lesson survives relaunch until the demonstrated play is made
   expect(practiced.attempt.lessonHint).toBeUndefined();
   expect(practiced.profile.hints).toBe(save.profile.hints);
   await expect(page.locator('#lesson-note')).toBeHidden();
+});
+
+async function tapBonus(page: Page, kind: 'foundation' | 'tableau') {
+  const offer = page.locator('#bonus-' + kind);
+  expect(await offer.evaluate(button => {
+    const r = button.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    return r.width >= 44 && r.height >= 44 && r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight && button.contains(hit);
+  })).toBe(true);
+  await offer.tap();
+  await expect(page.locator('#bonus-offer')).toBeVisible();
+}
+
+test('Next at level 22 introduces an optional upper slot that can collect a topic at 320px', async ({ page }) => {
+  const previous = content8Wave.find(deal => deal.campaignLevel === 21)!, deal = content8BonusDeals[0];
+  const save = freshSave(previous, 'won-before-upper-bonus');
+  for (const action of previous.winningPath) {
+    const result = applyBoard(save.attempt.board, action, previous);
+    if (typeof result === 'string') throw Error(result);
+    save.attempt.board = result.board;
+  }
+  await loadWaveFixture(page, save, 21);
+  await openGame(page, previous);
+  await page.locator('#next-level').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
+  await expect(page.locator('#bonus-tableau')).toBeHidden();
+  const before = await read(page);
+  await tapBonus(page, 'foundation');
+  await expect(page.locator('#bonus-title')).toHaveText('Слот для темы');
+  await expect(page.locator('#bonus-video')).toBeHidden();
+  await expect(page.locator('#bonus-buy')).toHaveText('Открыть за 100 монет');
+  await page.locator('#bonus-buy').tap();
+  await expect(page.locator('#bonus-foundation')).toBeHidden();
+  await expectLegibleLesson(page);
+  expect((await read(page)).attempt.board.movesLeft).toBe(before.attempt.board.movesLeft);
+  expect((await read(page)).profile.coins).toBe(before.profile.coins - 100);
+  await page.reload();
+  await openGame(page, deal);
+  await expect(page.locator('#lesson-copy')).toContainText('новый слот');
+  const first = deal.winningPath[0];
+  if (first.type !== 'transfer') throw Error('Expected foundation transfer');
+  await touch(page, deal, { ...first, to: { kind: 'foundation', index: 3 } });
+  await expect.poll(async () => (await read(page)).campaign?.tutorials).toContain('learn:bonus-foundation');
+  expect((await read(page)).attempt.board.foundations[3].length).toBeGreaterThan(0);
+});
+
+test('the lower offer can be declined and regular play works without coins or video', async ({ page }) => {
+  const deal = content8BonusDeals[1], save = freshSave(deal, 'lower-without-coins');
+  save.profile.coins = 20;
+  await loadWaveFixture(page, save, 29);
+  await openGame(page, deal);
+  await expect(page.locator('#bonus-foundation')).toBeHidden();
+  await tapBonus(page, 'tableau');
+  await expect(page.locator('#bonus-title')).toHaveText('Дополнительный столбец');
+  await expect(page.locator('#bonus-buy')).toBeDisabled();
+  await expect(page.locator('#bonus-balance')).toHaveText('Не хватает 40 монет.');
+  await expect(page.locator('#bonus-video')).toBeHidden();
+  await page.locator('#bonus-offer .close').tap();
+  await touch(page, deal, deal.winningPath[0]);
+  await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(deal.initial.movesLeft! - 1);
+  expect((await read(page)).attempt.board.tableau).toHaveLength(4);
+  expect((await read(page)).profile.coins).toBe(20);
+});
+
+test('level 40 opens both fifth slots separately with the deck below and keeps each through Undo', async ({ page }) => {
+  const deal = content8BonusDeals[2], save = freshSave(deal, 'both-bonuses');
+  save.settings.deckPosition = 'bottom';
+  save.profile.coins = 200;
+  await loadWaveFixture(page, save, 39);
+  await openGame(page, deal);
+
+  await tapBonus(page, 'foundation');
+  await page.locator('#bonus-buy').tap();
+  await expect(page.locator('#bonus-foundation')).toBeHidden();
+  const first = deal.winningPath[0];
+  if (first.type !== 'transfer') throw Error('Expected foundation transfer');
+  await touch(page, deal, { ...first, to: { kind: 'foundation', index: 4 } });
+  await expect.poll(async () => (await read(page)).attempt.board.foundations[4].length).toBeGreaterThan(0);
+
+  await tapBonus(page, 'tableau');
+  await expect(page.locator('#bonus-buy')).toHaveText('Открыть за 60 монет');
+  await page.locator('#bonus-buy').tap();
+  await expect(page.locator('#bonus-tableau')).toBeHidden();
+  await expectLegibleLesson(page);
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(deal.initial.movesLeft);
+  const undone = (await read(page)).attempt.board;
+  expect(undone.foundations).toEqual([...deal.initial.foundations, []]);
+  expect(undone.tableau).toEqual([...deal.initial.tableau, []]);
+
+  const park = legalCommands(undone, deal).find(cmd => cmd.type === 'transfer' && cmd.to.kind === 'tableau' && cmd.to.index === 4)!;
+  await touch(page, deal, park);
+  await expect.poll(async () => (await read(page)).campaign?.tutorials).toContain('learn:bonus-tableau');
+  const parked = await read(page);
+  expect(parked.profile.coins).toBe(40);
+  expect(parked.attempt.board.tableau[4].length).toBeGreaterThan(0);
+  await page.reload();
+  await openGame(page, deal);
+  expect((await read(page)).attempt).toMatchObject({ board: parked.attempt.board, undo: parked.attempt.undo });
+  await expect(page.locator('#bonus-foundation')).toBeHidden();
+  await expect(page.locator('#bonus-tableau')).toBeHidden();
+  await page.locator('#menu').tap();
+  await page.locator('#restart').tap();
+  await expect(page.locator('#restart-confirm-copy')).toContainText('Дополнительные места закроются.');
+  await page.locator('#restart-confirm-yes').tap();
+  await expect(page.locator('#bonus-foundation')).toBeVisible();
+  await expect(page.locator('#bonus-tableau')).toBeVisible();
+  expect((await read(page)).profile.coins).toBe(40);
 });

@@ -77,6 +77,7 @@ test('a fresh campaign start persists its chosen variant and exact budget throug
   expect(restored.id).toBe(afterDraw.id);
   expect(restored.board).toEqual(afterDraw.board);
   expect(restored.undo).toEqual(afterDraw.undo);
+  await page.locator('#menu').tap();
   await page.locator('#levels-open').tap();
   await page.locator('#level-picker-open').tap();
   await page.locator('#level-11').tap();

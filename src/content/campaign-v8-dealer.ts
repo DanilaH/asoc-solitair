@@ -1,4 +1,5 @@
 import data from './campaign-v8-dealer.json' with { type: 'json' };
+import wave from './campaign-v8-wave.json' with { type: 'json' };
 import type { BoardCommand, Deal, Location } from '../domain/types';
 import { content8Cards } from './content8-words';
 import type { TopicSelection } from './topics';
@@ -23,6 +24,11 @@ export function decodeRoute(route: string): BoardCommand[] {
   });
 }
 
-export const content8Dealer: readonly Deal[] = (data as DealerRecord[]).map(({ topics, winningPath, recoveryPaths, ...deal }) => ({
-  ...deal, cards: content8Cards(topics), winningPath: decodeRoute(winningPath), recoveryPaths: recoveryPaths?.map(decodeRoute),
-}));
+function decodeDeal({ topics, winningPath, recoveryPaths, ...deal }: DealerRecord): Deal {
+  return {
+    ...deal, cards: content8Cards(topics), winningPath: decodeRoute(winningPath), recoveryPaths: recoveryPaths?.map(decodeRoute),
+  };
+}
+
+export const content8Dealer: readonly Deal[] = (data as DealerRecord[]).map(decodeDeal);
+export const content8Wave: readonly Deal[] = (wave as DealerRecord[]).map(decodeDeal);

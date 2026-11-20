@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GameplayActivityCoordinator, type StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { introDeal as deal } from '../../src/content/intro';
 import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
+import { recoverable, loadLoss, winningRescue } from '../fixtures/content8-loss';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { applyReceipt, parseReceipt, purchaseHelper, useContinue, platformState, interstitialEligible, markCampaignWin, type EarnedReceipt } from '../../src/domain/services';
 import { SaveStore, SAVE_KEY, decodeSave } from '../../src/platform/storage';
@@ -118,6 +119,31 @@ describe('coordinated save writer and earned effects', () => {
 });
 
 describe('optional native services', () => {
+  it('continues a proven C8 loss only after an earned native receipt', async () => {
+    const b = bridge(), save = loadLoss(recoverable, 'attempt-1');
+    const earned = { ...receipt, dealId: recoverable.id, placement: 'continue' } as const;
+    const proof = { attemptId: save.attempt.id, deal: recoverable, path: winningRescue };
+    const ads = createAds({
+      activity: new GameplayActivityCoordinator(() => undefined, () => undefined),
+      commit: async value => applyReceipt(save, value, { continueProof: proof }),
+      beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
+    }, b.api);
+    try {
+      await ads.refresh();
+      const request = { kind: 'rewarded', placement: earned.placement, dealId: earned.dealId, mode: earned.mode, attempt: earned.attempt } as const;
+      vi.mocked(b.api.show).mockResolvedValueOnce({ shown: false, outcome: 'unavailable' });
+      await ads.show(request);
+      await ads.show(request);
+      await ads.recover();
+      expect(save.attempt.board.movesLeft).toBe(0);
+      b.api.pending = vi.fn(async () => ({ receipts: [earned, earned] }));
+      await ads.recover();
+      expect(save.attempt.board.movesLeft).toBe(10);
+      expect(save.attempt.continued).toBe(true);
+      expect(save.platform?.receipts).toEqual([earned.id]);
+      expect(save.platform?.continueCredits).toBe(0);
+    } finally { ads.destroy(); }
+  });
   it('grants the exact bonus only for a journal receipt, through no-fill, dismissal and failed ack', async () => {
     const bonus = { ...content8BonusDeals[2], id: 'bonus-bridge-fixture' }, b = bridge(), m = memory();
     const store = new SaveStore(m.storage, bonus, () => freshSave(bonus, 'attempt-1'));
@@ -125,7 +151,7 @@ describe('optional native services', () => {
     const reward: EarnedReceipt = { ...receipt, dealId: bonus.id, placement: 'bonus-tableau' };
     const ads = createAds({
       activity: new GameplayActivityCoordinator(() => undefined, () => undefined),
-      commit: earned => store.mutate(next => applyReceipt(next, earned, bonus)),
+      commit: earned => store.mutate(next => applyReceipt(next, earned, { deal: bonus })),
       beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
     }, b.api);
     try {

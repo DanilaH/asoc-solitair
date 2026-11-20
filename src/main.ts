@@ -9,10 +9,12 @@ import { dailyForDay } from './content/daily';
 import { switchMode } from './domain/sessions';
 import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } from './domain/meta';
 import { WalletPresentation } from './app/wallet-presentation';
+import { ContinueCheck } from './app/continue-check';
 import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
 import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, type RuleIntro } from './app/tutorial';
 import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
+import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
 import { WIDTH, boardFrame, layout } from './game/layout';
@@ -167,6 +169,8 @@ try {
   const training = () => Boolean(save.attempt.daily && save.attempt.board.phase !== 'won' && !dailyRewardEligible(save, localDay()));
   let removeForeground: (() => void) | undefined;
   let saving = false, serviceBusy = false;
+  const continueCheck = new ContinueCheck(() => { if (alive) renderHud(); });
+  let continueVideoFailed: string | undefined;
   // A backing-store resize clears the canvas even when the model is static.
   // Keep a bounded repaint tail instead of sleeping in that POST_RENDER turn.
   let repaintFrames = 0;
@@ -188,13 +192,29 @@ try {
   const ads = createAds({
     activity: runtime.activity,
     async beforeShow(request) {
-      await store.mutate(next => { const state = platformState(next); state.lastFullscreenAt = Date.now(); if (request.kind === 'interstitial') state.winsSinceInterstitial = 0; });
+      await store.mutate(next => {
+        if (request.kind === 'rewarded' && request.placement === 'continue' && requiresContinueProof(next.attempt)) {
+          const proof = continueCheck.proof;
+          if (!proof || request.attempt !== proof.attemptId || request.dealId !== proof.deal.id ||
+            next.attempt.continued || !verifiesContinue(next.attempt, proof)) throw Error('Продолжение недоступно');
+        }
+        const state = platformState(next);
+        state.lastFullscreenAt = Date.now();
+        if (request.kind === 'interstitial') state.winsSinceInterstitial = 0;
+      });
     },
     async commit(receipt) {
-      let openedBonus = false;
-      const result = await store.mutate(next => applyReceipt(next, receipt, findDeal(receipt.dealId), () => { openedBonus = true; }));
       const placement = receipt.placement;
-      const amount = placement === 'continue' ? BALANCE.continueMoves : placement === 'hint' || placement === 'undo'
+      let openedBonus = false, earnedContinue = false;
+      const result = await store.mutate(next => {
+        const hadContinue = next.platform?.continuedAttempts.includes(receipt.attempt);
+        const applied = applyReceipt(next, receipt, {
+          deal: findDeal(receipt.dealId), onBonusUnlocked: () => { openedBonus = true; }, continueProof: continueCheck.proof,
+        });
+        earnedContinue = placement === 'continue' && !hadContinue && Boolean(next.platform?.continuedAttempts.includes(receipt.attempt));
+        return applied;
+      });
+      const amount = placement === 'continue' ? Number(earnedContinue) * BALANCE.continueMoves : placement === 'hint' || placement === 'undo'
         ? BALANCE.rewardedCharges[placement] : Number(openedBonus);
       if (result === 'applied' && amount) telemetry.track('reward_granted', { attemptId: receipt.attempt, dealId: receipt.dealId, mode: receipt.mode, reason: `rewarded_${placement}`, amount });
       // Ack failure must not freeze spending/restart or replay the already durable grant.
@@ -349,14 +369,28 @@ try {
       $<HTMLButtonElement>(`#video-${helper}`).disabled = serviceBusy || !ads.status.rewarded;
       $(`#video-${helper}`).hidden = !ads.status.rewarded;
     }
-    const canContinue = board.phase === 'exhausted' && !save.attempt.continued && (platformState(structuredClone(save)).continueCredits > 0 || ads.status.rewarded);
-    $('#result-continue').hidden = !canContinue;
+    const credits = save.platform?.continueCredits ?? 0;
+    const available = board.phase === 'exhausted' && !save.attempt.continued && (credits > 0 || ads.status.rewarded);
+    const requiresProof = requiresContinueProof(save.attempt);
+    continueCheck.update(save.attempt, deal, ready && screen === 'game' && available);
+    const proofStatus = continueCheck.status;
+    const canContinue = available && (!requiresProof || proofStatus === 'PROVEN_RECOVERABLE');
+    const continueButton = $<HTMLButtonElement>('#result-continue');
+    continueButton.hidden = !canContinue;
+    continueButton.disabled = !canContinue || saving || serviceBusy || store.needsRecovery;
+    continueButton.textContent = credits > 0 ? '+10 ходов · использовать запас' : '+10 ходов · видео';
+    $('#result').dataset.continueStatus = proofStatus ?? '';
+    const continueNote = $('#result-continue-note');
+    continueNote.hidden = !proofStatus;
+    continueNote.textContent = proofStatus === 'CHECKING' ? 'Проверяем, хватит ли ещё 10 ходов.'
+      : proofStatus === 'UNSOLVABLE' ? 'Из этой позиции за 10 ходов не выиграть.'
+      : proofStatus === 'UNKNOWN' ? 'Путь к победе за 10 ходов не подтверждён.'
+      : proofStatus === 'PROVEN_RECOVERABLE' ? continueVideoFailed === save.attempt.id
+        ? 'Видео сейчас недоступно.' : 'Из этой позиции можно выиграть за 10 ходов или меньше.'
+      : '';
     const undoRecovery = board.phase === 'exhausted' && save.attempt.undo.length > 0 && (save.profile.undos > 0 || save.profile.coins >= BALANCE.helperPrices.undo || ads.status.rewarded);
-    $('#result-continue').className = 'primary';
     $('#result-undo').className = !canContinue && undoRecovery ? 'primary' : 'secondary';
     $('#replay').className = board.phase === 'exhausted' && !canContinue && !undoRecovery ? 'primary' : 'secondary';
-    $<HTMLButtonElement>('#result-continue').disabled = serviceBusy || (!platformState(structuredClone(save)).continueCredits && !ads.status.rewarded);
-    $('#result-continue').textContent = platformState(structuredClone(save)).continueCredits > 0 ? '+10 ходов · использовать запас' : '+10 ходов · видео';
     const applied = unlockChoice === 'palette' ? save.settings.palette === 'ink' : save.settings.cardBack === 'diamonds';
     $('#apply-unlock').textContent = applied ? 'Применено' : 'Примерить';
     $<HTMLButtonElement>('#apply-unlock').disabled = !unlockChoice || applied || saving || serviceBusy;
@@ -507,9 +541,11 @@ try {
   async function rewarded(placement: RewardPlacement) {
     if (serviceBusy || saving) return;
     const requestAttempt = save.attempt.id;
+    if (placement === 'continue') continueVideoFailed = undefined;
     serviceBusy = true; closeDialogs(); renderHud();
     const result = await ads.show({ kind: 'rewarded', placement, attempt: requestAttempt, dealId: deal.id, mode: save.attempt.daily ? 'daily' : 'campaign' });
     // Dismissal itself grants nothing; receipt recovery independently commits an earned reward.
+    if (placement === 'continue' && !result.shown) continueVideoFailed = requestAttempt;
     serviceBusy = false; renderHud();
     if (!result.shown) message('Сейчас видео недоступно. Попробуйте позже.', true);
     if (save.attempt.board.phase === 'exhausted' && !runtime.activity.isBlocked()) outcome();
@@ -940,9 +976,14 @@ try {
     $(`#video-${helper}`).addEventListener('click', () => { void rewarded(helper); }, domOptions);
   }
   $('#result-continue').addEventListener('click', async () => {
-    if (serviceBusy || saving || save.attempt.continued) return;
-    if (platformState(structuredClone(save)).continueCredits > 0) {
-      try { await write(next => useContinue(next)); closeDialogs(); scene?.sync(); telemetry.sync(); }
+    const button = $<HTMLButtonElement>('#result-continue');
+    if (button.hidden || button.disabled || serviceBusy || saving) return;
+    const proof = continueCheck.proof;
+    if (requiresContinueProof(save.attempt) && (!proof || !verifiesContinue(save.attempt, proof))) return;
+    if ((save.platform?.continueCredits ?? 0) > 0) {
+      try {
+        if (await write(next => useContinue(next, proof))) { closeDialogs(); scene?.sync(); telemetry.sync(); }
+      }
       catch { message('Не удалось сохранить продолжение.', true); }
     } else void rewarded('continue');
   }, domOptions);
@@ -968,7 +1009,7 @@ try {
     if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
-    worker?.terminate(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
+    worker?.terminate(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };
   window.addEventListener('pagehide', event => { if (!event.persisted) cleanup(); }, domOptions);
   window.addEventListener('pageshow', () => { if (alive) renderer.loop.wake(); }, domOptions);

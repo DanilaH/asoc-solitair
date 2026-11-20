@@ -56,8 +56,8 @@
     {
       "id": "hitapps-equality-paywall",
       "status": "IN_PROGRESS",
-      "currentImplementation": "Offline selector simulates actual Rules 3 across policies and verifies 79/80 percent plus UNKNOWN. Awarding and recovery remain separate.",
-      "nextAction": "Verify three-stack initial placement, generate immutable variants and persist selection, and prove +10 recovery from an actual exhausted board.",
+      "currentImplementation": "Offline selector simulates Rules 3 across policies and verifies 79/80 percent plus UNKNOWN. The separate CORE-5 product continuation now verifies the actual exhausted C8 board before offering +10.",
+      "nextAction": "Verify three-stack initial placement, author/persist immutable Equality variants, and measure the distinct selector and continuation on device.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
       "stage": "B3",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md"
@@ -103,10 +103,11 @@
     {
       "id": "azur-rewarded-moves",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/domain/services.ts rewarded +10 once per attempt; code/receipt tests",
-      "nextAction": "Complete real phone SDK callback/no-fill/relaunch/earned verification; adapted amount differs from AZUR",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "stage": "E1"
+      "currentImplementation": "C8 preview 0.20.0 uses a bounded actual-board proof for the product's +10 continuation, with one earned receipt per attempt and the same proof for saved credits.",
+      "nextAction": "Test physical Android SDK earned/no-fill/relaunch and the original AZUR continuation. The product's +10 policy is separately specified.",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/62",
+      "stage": "E1",
+      "evidenceRef": "docs/qa/content-v8/CORE_5_VERIFIED_CONTINUE.md"
     },
     {
       "id": "azur-extra-foundation",
@@ -564,10 +565,11 @@
     {
       "id": "unico-loss-dialog",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/main.ts exhausted result with video+10, Undo and Restart",
-      "nextAction": "Compare visible alternatives on compact screen; SDK no-fill and clear Retry path",
+      "currentImplementation": "C8 preview 0.20.0 result shows a verified +10 route when available and promotes Undo or Replay otherwise.",
+      "nextAction": "Compare physical-device loss/Undo/restart, the original Unico dialog and native no-fill.",
       "stage": "E1",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/62",
+      "evidenceRef": "docs/qa/content-v8/CORE_5_VERIFIED_CONTINUE.md"
     },
     {
       "id": "azur-structured-long-campaign",

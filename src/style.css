@@ -523,10 +523,10 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 @media(max-height:540px){#home>.brand-scene{padding:1px 0 2px}#home .home-actions{margin-bottom:6px}#home .home-primary{min-height:58px}}
 
 /* Extra context fits the existing feedback area, including the smallest portrait. */
-#app[data-lesson=true] #feedback-row{height:64px}
+#app[data-lesson=true] #feedback-row{height:70px}
 #app[data-lesson=true] #dock .attention .helper-icon{outline:2px solid #ffe4a4;outline-offset:2px}
 #lesson-note{position:absolute;inset:0;display:flex;align-items:center;margin:0 auto;width:min(100%,390px);border:1px solid #99c9be;border-radius:12px;background:#154e52;color:#fff3d6;padding:5px 11px}
-#lesson-note p{margin:0;font-size:16px;font-weight:800;line-height:1.16}
+#lesson-note p{margin:0;font-size:18px;font-weight:800;line-height:1.1}
 #feedback-row>#message,#feedback-row>#no-transfer{grid-area:1/1}
 #feedback-row:has(#lesson-note:not([hidden])) :is(#message,#praise,#no-transfer){visibility:hidden}
 [data-tier=hard]{--tier-bg:#f6d3a7;--tier-edge:#a86c45;--tier-fg:#582d17;--tier-bright:#ffead3}

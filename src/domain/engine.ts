@@ -225,8 +225,9 @@ export function legalCommands(board: Board, deal: Deal): BoardCommand[] {
 
 /** Detect a stock loop with no transfers, independent of the remaining move budget. */
 export function canReachTransfer(board: Board, deal: Deal): boolean {
+  if (board.phase === 'won') return false;
   const seen = new Set<string>();
-  let position: Board = { ...board, movesLeft: null };
+  let position: Board = { ...board, phase: 'playing', movesLeft: null };
   for (;;) {
     const key = boardKey(position);
     if (seen.has(key)) return false;

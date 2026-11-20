@@ -266,7 +266,7 @@ try {
     positionDeckTools();
     const instruction = screen === 'game' ? currentLesson() : undefined;
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
-      ? 'Коснитесь одного из отмеченных столбцов, чтобы поставить Джокера.' : instruction?.copy;
+      ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.' : instruction?.copy;
     if ($('#lesson-copy').textContent !== (note ?? '')) $('#lesson-copy').textContent = note ?? '';
     $('#lesson-note').hidden = !note;
     $<HTMLButtonElement>('#joker').disabled = board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving ||

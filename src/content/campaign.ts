@@ -9,7 +9,7 @@ import { openingDeals } from './opening';
 import { content7Deals } from './campaign-v7';
 import { content8Dealer, content8Wave } from './campaign-v8-dealer';
 import { content8Slice } from './campaign-v8-preview';
-import { content8DirectorDeals, selectC8Deal } from './campaign-v8-director';
+import { content8DirectorDeals, isC8DirectorVariant, selectC8Deal } from './campaign-v8-director';
 import { CONTENT8_PREVIEW } from '../domain/types';
 import type { Attempt, Board, BoardCommand, Deal, Save } from '../domain/types';
 
@@ -30,6 +30,9 @@ export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
   ? content7Deals.map(deal => previewByLevel.get(deal.campaignLevel) ?? deal) : content7Deals;
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice, ...content8Dealer, ...content8Wave, ...content8DirectorDeals].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
+export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
+  return dealId === base.id || (CONTENT8_PREVIEW && isC8DirectorVariant(dealId, base.id));
+}
 export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): Deal {
   return CONTENT8_PREVIEW ? selectC8Deal(save, base, previous) : base;
 }

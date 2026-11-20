@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
-import { campaignDeals, findDeal, selectCampaignDeal } from './content/campaign';
+import { campaignDeals, findDeal, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
 import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { dailyForDay } from './content/daily';
@@ -526,7 +526,7 @@ try {
       button.replaceChildren(document.createTextNode(String(level)));
       if (difficulty) button.append(Object.assign(document.createElement('span'), { className: 'tier-dot', textContent: item.difficultyTier === 'superhard' ? '!!' : '!' }));
       button.disabled = level > unlocked || !ready || saving || serviceBusy;
-      const activeLevel = current && campaignDeal?.campaignLevel === item.campaignLevel;
+      const activeLevel = campaign?.board.phase === 'playing' && isCurrentCampaignDeal(campaign.dealId, item);
       button.dataset.active = String(activeLevel);
       button.setAttribute('aria-current', activeLevel ? 'step' : 'false');
       button.dataset.completed = String(done); button.dataset.next = String(level === unlocked && !done);
@@ -612,7 +612,7 @@ try {
     if (!alive || !ready || saving || serviceBusy || level < 1 || level > unlockedLevel(save)) return;
     const target = campaignDeals[level - 1];
     const campaign = campaignAttempt(save);
-    if (campaign?.board.phase === 'playing' && findDeal(campaign.dealId)?.campaignLevel === level) {
+    if (campaign?.board.phase === 'playing' && isCurrentCampaignDeal(campaign.dealId, target)) {
       if (save.attempt.daily) await activateMode('campaign');
       else { closeDialogs(); showGame(); }
       return;

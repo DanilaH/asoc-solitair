@@ -23,6 +23,11 @@ export function recordLearning(save: Save, before: Board, action: BoardCommand, 
   if (deal.training === 'planning' && action.type === 'transfer' && action.to.kind === 'foundation' &&
     before.foundations.filter(pile => !pile.length).length === 1 && !before.foundations[action.to.index].length)
     markTutorial(save, 'learn:slots');
+  if (deal.training === 'ordered' && action.type === 'transfer' && action.to.kind === 'foundation' &&
+    sourceCards(before, action.from, deal).some(id => deal.cards[id].rank === 1))
+    markTutorial(save, 'learn:ordered');
+  if (deal.training === 'keys' && deal.lock?.requiredKeys.every(key => save.attempt.board.keys?.includes(key)))
+    markTutorial(save, 'learn:keys');
   if (deal.campaignLevel && deal.campaignLevel <= 2) markTutorial(save, marker(skillFor(before, action, deal)));
 }
 export type RuleIntro = 'joker' | 'ordered' | 'keys';
@@ -115,6 +120,19 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
         return button('Нажмите «Джокер» и выберите непустой столбец.', 'joker', 'place-joker');
       }
       break;
+    }
+    case 'ordered': {
+      if (seen('learn:ordered')) break;
+      const action = step();
+      if (!action) break;
+      const opening = action.type === 'transfer' && sourceCards(board, action.from, deal).some(id => deal.cards[id].ordered);
+      return exact(opening ? 'Положите «Будни» в верхний слот.' : 'Начните с понедельника, карты №1.', action);
+    }
+    case 'keys': {
+      if (seen('learn:keys')) break;
+      const action = step();
+      if (!action) break;
+      return exact(`Сделайте отмеченный ход. Найдено ${board.keys?.length ?? 0} из 3 ключей.`, action);
     }
   }
 }

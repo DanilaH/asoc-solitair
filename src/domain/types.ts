@@ -20,7 +20,7 @@ export type BoardCommand = { type: 'transfer'; from: Location; to: Location }
 export type Command = BoardCommand | { type: 'place-joker'; column: number } | { type: 'undo' } | { type: 'restart'; attemptId: string }
   | { type: 'hint'; revision: number; action: BoardCommand };
 export type DifficultyTier = 'normal' | 'hard' | 'superhard';
-export type OpeningLesson = 'first' | 'stock' | 'hint' | 'undo' | 'planning' | 'joker';
+export type OpeningLesson = 'first' | 'stock' | 'hint' | 'undo' | 'planning' | 'joker' | 'ordered' | 'keys';
 export interface Deal {
   id: string; version: number; title: string; cards: Record<string, Card>; initial: Board;
   winningPath: BoardCommand[]; editorialStatus: string;

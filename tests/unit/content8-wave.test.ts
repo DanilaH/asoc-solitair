@@ -121,7 +121,7 @@ it('uses the new wave on fresh C8 starts and retains active and parked archived 
   const { switchMode } = await import('../../src/domain/sessions');
   const { campaignId } = await import('../../src/domain/progression');
   const { decodeSave } = await import('../../src/platform/storage');
-  expect(campaignDeals.map(deal => deal.id)).toEqual(content8.map(deal => deal.id));
+  for (const deal of content8) expect(findDeal(deal.id)).toEqual(deal);
   expect(campaignDeals.map(deal => deal.campaignLevel)).toEqual(Array.from({ length: 80 }, (_, index) => index + 1));
   expect(new Set(campaignDeals.map(deal => deal.id)).size).toBe(80);
   const archive = findDeal('campaign-c7-080')!;

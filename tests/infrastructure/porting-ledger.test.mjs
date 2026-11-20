@@ -77,6 +77,14 @@ test('a product mechanic cannot disappear from the staged roadmap', () => {
   assert(hasError(inspect(source, ledger, altered), 'Missing/duplicate roadmap row'));
 });
 
+test('literal escaped newline must not count as two physical roadmap table rows', () => {
+  const id = ledger.features[0].id;
+  const row = '| ' + String.fromCharCode(96) + id + String.fromCharCode(96) + ' |';
+  assert(roadmap.includes('\n' + row), 'fixture requires a physical source row');
+  const corrupted = roadmap.replace('\n' + row, String.raw`\n` + row);
+  assert(hasError(inspect(source, ledger, corrupted), 'Missing/duplicate roadmap row: ' + id));
+});
+
 test('source must have actual stable evidence URL and known limit', () => {
   const changed = structuredClone(source);
   changed.features[0].sourceEvidence = 'https://github.com/DanilaH/mini-games-kit/blob/main/bogus.md';

@@ -258,7 +258,7 @@ Every PR in this implementation program must report feature IDs, original refere
 
 **Backlog governance:** change `SOURCE_FEATURES.json` in kit and `ADOPTION_LEDGER.json` in game together for every discovered system. After implementation, update both roadmap and ledger to `IMPLEMENTED_UNVERIFIED` or `ACCEPTED` with evidence. Owner alone can exclude a roadmap entry. Previous `HOLD/REJECT` archived notes remain historical, not controlling policy.
 
-**Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 76/76, and implement the next unblocked package with exact SDK/save/Android evidence.
+**Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 110/110, and implement the next unblocked package with exact SDK/save/Android evidence.
 
 **Audit correction (19.11, pass3):** Previous 76/76 was incomplete across existing source packaging/IAP, uneven AZUR categories, multiresource rewards, language, helper discovery and 10 AZUR metadata UI systems. Source inventory now **110**, with real pinned-source consumer `qa:porting` mandatory. The old Hitapps Daily puzzle line was downgraded to `EVIDENCE_GAP` because only Hitapps DailyRewards and Unico actual Daily Level are proven. Source-like names do not prove live/runtime behavior.
 

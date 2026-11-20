@@ -1,3 +1,7 @@
+# AZUR tutorial preset authoring
+
+[Offline authoring and verification](qa/content-v8/AZUR_PRESET_AUTHORING.md) converts independent authored columns and stock into a Rules 3 deal. The Russian sample clears in 19 moves. The preset path consumes zero RNG and invalid input uses the ordinary AZUR dealer. Included in CI. This package is for authors. Campaign activation and original Android comparison remain open.
+
 # Content 8 CORE-5 · 0.20.2 preview
 
 [Another layout after loss](qa/content-v8/CORE_5_REDEAL.md) offers a certified alternate on C8 levels 12–15. The button shows the new budget. The adjacent same-layout retry keeps the selected deal identity. Original Unico Daily and actual Android feel remain separate evidence checks.

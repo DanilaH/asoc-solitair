@@ -18,6 +18,7 @@
     "check": "npm run typecheck && npm test && npm run content:validate && npm run build",
     "android:sync": "npm run build && node tools/prepare-native.mjs && cap sync android",
     "content:author": "vite build --ssr tools/content/build-campaign.ts --outDir .authoring && node .authoring/build-campaign.js",
+    "content:azur-preset": "vite build --ssr tools/content/build-azur-preset.ts --outDir .authoring/azur-preset-build && node .authoring/azur-preset-build/build-azur-preset.js",
     "qa:campaign": "npm run build && vite build --ssr tools/record-campaign.ts --outDir .recording/campaign-source && node .recording/campaign-source/record-campaign.js",
     "qa:modifiers": "npm run build && vite build --ssr tools/record-modifiers.ts --outDir .recording/modifiers-source && node .recording/modifiers-source/record-modifiers.js",
     "content:daily": "vite build --ssr tools/content/build-daily.ts --outDir .authoring/daily && node .authoring/daily/build-daily.js",

@@ -868,9 +868,9 @@
     },
     {
       "id": "azur-tutorial-preset-deal",
-      "status": "ROADMAPPED",
-      "currentImplementation": "C8 level-one tutorial uses an authored frozen Deal and staged instructional flow, but there is no distinct source-verified AZUR CardPresetLayout/Column/Item parser, exact native validation gates or explicit native preset-to-stock/columns mapping. This is not evidence that our current tutorial violates approved C8 UX.",
-      "nextAction": "Original exact AZUR XAPK kit PR #93: CardPresetLayout IsEnabled/ordered columns/separate deckCards; CardPresetColumn.cards; CardPresetItem themeId/wordIndex with any negative wordIndex category marker; GetTotalCardCount adds column+deck lengths; TutorialConfig.ValidatePreset null/disabled returns success but does not activate; enabled preset goes through Validate; level==1 tutorial picker gates route, InitializeGameWithPreset generates with null art-count map then resolves theme/word identities and places ordered cards/stock. Implement separately versioned optional authoring parser/validation/fallback, keep existing C8 frozen FTUE and save/Undo. Full original invalid/duplicate policy, authored original preset values, live enablement, actual Android board still UNKNOWN.",
+      "status": "IN_PROGRESS",
+      "currentImplementation": "Offline tools/content/azur-preset.ts resolves negative category references and ordered columns and deck from the schema in kit PR #93. Level 1 eligibility plus enabled and valid preset gates the branch. Product validation requires the exact card partition. Other options use the existing ordinary AZUR dealer. content:azur-preset exports a versioned Russian Rules 3 example and verifies each of its 19 moves against the engine and independent oracle. Tests cover fallback, RNG calls and stock order. See docs/qa/content-v8/AZUR_PRESET_AUTHORING.md.",
+      "nextAction": "Verify the original Android first-level board, live tutorial activation and full native validator semantics. Any future campaign activation needs an owner decision and preservation of frozen C8 lesson identities and SaveStore/Undo compatibility.",
       "stage": "C1"
     },
     {

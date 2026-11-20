@@ -2,7 +2,7 @@
 
 **Дата:** 20.11.2026  
 **Источник продукта:** `DanilaH/asoc-solitair` — development `feat/c8-onboarding-dealer-20261119`, baseline `bf26fe7280b05c458e12626590bbe5cf789c6788` на момент аудита. `game/main 19ea067f1788f9aabdabf819c6008e15475b22be` — старый C6. Разработка Content8: [PR #41](https://github.com/DanilaH/asoc-solitair/pull/41). [PR #42](https://github.com/DanilaH/asoc-solitair/pull/42) — **исследовательское ТЗ Equality**, не реализованный runtime.  
-**Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **112** ID (after the separate AZUR tutorial preset study) и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research-gui-dance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.  
+**Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **113** ID (after the separate AZUR tutorial preset study) и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research-gui-dance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.  
 **Назначение:** **инженерная спецификация core системы для разработчика**, не новый список советов и не согласие вычеркнуть дорогие механики. Все найденные core-механики — генератор, баланс, модификаторы, сложность, рестарт, помощники, failure/revive — входят в программу продукта. Можно внедрять пакетами, **исключать из roadmap только по явному решению владельца**.
 
 ## 0. Истинные статусы доказанности и критерии закрытия
@@ -218,7 +218,7 @@ Suggested thresholds for each band must be **our own explicit tested balancing p
 
 ## 6. Реализационные пакеты для разработчика
 
-**Важно: ВСЕ обнаруженные core systems остаются в [112-feature roadmap](../porting/IMPLEMENTATION_ROADMAP_2026-11-19.md).** Пакеты ограничивают размер PR, **не финальный scope**. Точные стадии и зависимости:
+**Важно: ВСЕ обнаруженные core systems остаются в [113-feature roadmap](../porting/IMPLEMENTATION_ROADMAP_2026-11-19.md).** Пакеты ограничивают размер PR, **не финальный scope**. Точные стадии и зависимости:
 
 | Пакет | Что должен получить владелец | Точные source feature ID и основные изменения | Acceptance |
 | --- | --- | --- | --- |
@@ -242,7 +242,7 @@ Suggested thresholds for each band must be **our own explicit tested balancing p
 
 ## 8. Контракт сдачи и оформление PR
 
-Перед кодом агент обязан открыть актуальный `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, `ADOPTION_LEDGER.json` (112/112 with exact kit source SHA), source docs/real code and C8 active PR; сверить old 40–42 spec as historical data. Изменения в code сопровождать `sourceFeatureId` и real test. Если старые запреты конфликтуют с владельцем — исправить, а не отложить. Любой `BLOCKED/EVIDENCE_GAP` остаётся в дорожной карте с шагом закрытия, **не OWNER_EXCLUDED**.
+Перед кодом агент обязан открыть актуальный `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, `ADOPTION_LEDGER.json` (113/113 with exact kit source SHA), source docs/real code and C8 active PR; сверить old 40–42 spec as historical data. Изменения в code сопровождать `sourceFeatureId` и real test. Если старые запреты конфликтуют с владельцем — исправить, а не отложить. Любой `BLOCKED/EVIDENCE_GAP` остаётся в дорожной карте с шагом закрытия, **не OWNER_EXCLUDED**.
 
 **Формат сдачи одного implementation package:**
 ```text
@@ -296,7 +296,7 @@ Native `GameBoard.ConfigureBonusRewardedSlots` @`0x269f98c` independently config
 - **Rewarded:** independent `BonusSlotUnlockCoinsActive` flag, InternetConnectionHelper and AdServiceFacade reward-readiness; `RewardedAdLoadingHelper.ShowWithFeedback` is invoked with placement resolved differently for type2 and type3. **Original earned/closed/no-fill callbacks have not been run or fully reconstructed**. We must gate earned unlock on proven SDK reward and deduplicated receipt, not request/show/availability.
 - **Negative QA:** level below/at threshold, regular counts 2/3/4/5, one missing prefab, enable flag flips after active-save, separate type/index state, insufficient coins, SpendCoins returning false, delayed/duplicate/stale rewarded callback, no unlock on ad fail/no-fill, save/load/Undo and UI hit zones with optional fifth column.
 
-Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 112 registry entries.
+Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 113 registry entries.
 
 ### 9.4 Integration contract and no waiting for total research completion
 
@@ -349,3 +349,28 @@ Original `Solitaire.GameManager.AddJokerCard` native RVA `0x26a4188`: in its pos
 **Implement only under a versioned feature package:** separately decide whether clearing historical Undo is appropriate for our product; no unexpected deletion of saved Undo/receipt/attempt state. Test an eligible nonempty board with min(configuredLimit,columnCount), card creation/reveal and placement, append identity, no-column/invalid bounds, successful and failed UI helper paths, replay after saved reload, player-facing first use, adapter coin/reward earned/duplicate callbacks if connected. Every added mechanic must survive 320px portrait layout and actual signed Android acceptance.
 
 **Product status ≠ source evidence:** no runtime implementation is claimed by this spec addendum. Newly registered ID requires pinning the exact kit source snapshot and coverage **112/112**, without deleting a previously studied item.
+
+
+## 12. AZUR art-sprite count determines card multiplicity before shuffle — native P0 (20 Nov)
+
+**Source:** [mini-games-kit original ARM64 research PR #86](https://github.com/DanilaH/mini-games-kit/pull/86) on AZUR `com.solitaire.match.words` `1.3.3.8/code244`; XAPK SHA256 `4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4`. Reproducible original binary verifier checks **10 IL2CPP RID→RVA methods, 34 exact ARM64 opcodes, 9 direct BL targets**; independent synthetic negative fixtures, **NOT an original Android runtime trace**.
+
+### 12.1 Source exact positive-path card construction
+
+In ordinary `GameController.InitializeGameLogic`, `BuildArtCardCountsForThemes` checks the loaded `CardSpriteLoader` count per theme. A theme receives an override only when `TryGetLoadedSpriteCount(themeId)` succeeds with a **positive** `CardSpriteData.get_Count`. This map is passed to normal `GameManager.InitializeGame → GenerateCards`. **Tutorial `InitializeGameWithPreset` passes no such map** to GenerateCards; do not conflate its authored tutorial preset with this live-art-dependent ordinary branch.
+
+The source `GenerateCards` creates one category leader then checks the original words list length `W`. If `W=0`, it skips member-card enumeration. Otherwise, if the theme has a positive loaded-art override `S`, the **effective member count `M=S`**, else `M=W`. It writes this into `Theme.SetWordCount`. For each `i=0..M−1`, source selects `theme.Words[i % W]`, constructs a **new unique card ID** and stores sequential ordinal `i`; its original source-word reference can repeat when `M>W`. Because leader is independent, the source count contribution is `1+M` per theme on this well-formed branch.
+
+Examples with **synthetic source-theme indices** (not original content): `W=3,S=0 → [0,1,2]` original word indices; `W=4,S=2 → [0,1]`; `W=3,S=8 → [0,1,2,0,1,2,0,1]`; `W=0,S=8` creates category leader only. Distinct Card IDs and word references are different facts. **Do NOT assert the player sees duplicate text or eight actual images**: original renderer, loaded art packs and runtime image placement have not been executed.
+
+### 12.2 Why this matters to core and Android content
+
+This is a separate source system **`azur-art-sprite-wordcount-override`**, stage **B1**, on top of existing `azur-variable-category-sizes` (observed 4/5/5/7) and `azur-generate-deal-entrypoints` (complete ordinary/preset dealer). Do not merge any of these IDs. The native art count can alter the **total input card count BEFORE Fisher–Yates**, stock length, tableau fit and potentially move-budget requirements; the actual downstream adaptations/solvability remain UNKNOWN.
+
+**Developer contract (separate AZUR offline authoring option):** explicit per-theme original `W`, positive available-art `S` or unavailable, effective `M`, original word-ref identity and new unique Card IDs, count-aware final layout and deterministic injected Unity-`Range` stream. A source-like authoring pass may use `M` to choose card count, but it must be **gated** and never silently change the already-published **Hitapps** C8 deals or previous Save/Undo identities. Once authored, **freeze** the accepted Deal independently of later image pack changes as `PRODUCT_ADAPTED`; the original client’s live asset lifecycle is not proven to do the same.
+
+**Acceptance:** no loaded art → original count; zero/negative counts are not overrides; one theme S<W, S=W and S>W; index modulo word list, no duplicate Card IDs; zero original W guard; multiple themes with different art packs; tutorial preset null-map branch; whole-board count reconciliation, solver/witness, budget, stock/recycle, SaveStore and 320px Android art/card fit. When rendering an art-backed card, avoid protected original word/image assets.
+
+**Remaining runtime evidence:** which per-theme art sprite packs are actually loaded for the original 2000 levels/locales, whether source reuses visible word text or renders distinct images for repeated references, live remote override and Unity RNG state, exact final original deck/layout, Android behavior and human difficulty effect.
+
+Research registry advances to **113 systems**, no permanent exclusions; this document does NOT implement the new source rule.

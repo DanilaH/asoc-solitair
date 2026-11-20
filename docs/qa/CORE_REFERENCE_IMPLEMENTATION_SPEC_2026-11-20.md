@@ -2,7 +2,7 @@
 
 **Дата:** 20.11.2026  
 **Источник продукта:** `DanilaH/asoc-solitair` — development `feat/c8-onboarding-dealer-20261119`, baseline `bf26fe7280b05c458e12626590bbe5cf789c6788` на момент аудита. `game/main 19ea067f1788f9aabdabf819c6008e15475b22be` — старый C6. Разработка Content8: [PR #41](https://github.com/DanilaH/asoc-solitair/pull/41). [PR #42](https://github.com/DanilaH/asoc-solitair/pull/42) — **исследовательское ТЗ Equality**, не реализованный runtime.  
-**Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **110** ID и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research-gui-dance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.  
+**Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **111** ID (after the separate AZUR tutorial preset study) и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research-gui-dance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.  
 **Назначение:** **инженерная спецификация core системы для разработчика**, не новый список советов и не согласие вычеркнуть дорогие механики. Все найденные core-механики — генератор, баланс, модификаторы, сложность, рестарт, помощники, failure/revive — входят в программу продукта. Можно внедрять пакетами, **исключать из roadmap только по явному решению владельца**.
 
 ## 0. Истинные статусы доказанности и критерии закрытия
@@ -218,7 +218,7 @@ Suggested thresholds for each band must be **our own explicit tested balancing p
 
 ## 6. Реализационные пакеты для разработчика
 
-**Важно: ВСЕ обнаруженные core systems остаются в [110-feature roadmap](../porting/IMPLEMENTATION_ROADMAP_2026-11-19.md).** Пакеты ограничивают размер PR, **не финальный scope**. Точные стадии и зависимости:
+**Важно: ВСЕ обнаруженные core systems остаются в [111-feature roadmap](../porting/IMPLEMENTATION_ROADMAP_2026-11-19.md).** Пакеты ограничивают размер PR, **не финальный scope**. Точные стадии и зависимости:
 
 | Пакет | Что должен получить владелец | Точные source feature ID и основные изменения | Acceptance |
 | --- | --- | --- | --- |
@@ -242,7 +242,7 @@ Suggested thresholds for each band must be **our own explicit tested balancing p
 
 ## 8. Контракт сдачи и оформление PR
 
-Перед кодом агент обязан открыть актуальный `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, `ADOPTION_LEDGER.json` (110/110 with exact kit source SHA), source docs/real code and C8 active PR; сверить old 40–42 spec as historical data. Изменения в code сопровождать `sourceFeatureId` и real test. Если старые запреты конфликтуют с владельцем — исправить, а не отложить. Любой `BLOCKED/EVIDENCE_GAP` остаётся в дорожной карте с шагом закрытия, **не OWNER_EXCLUDED**.
+Перед кодом агент обязан открыть актуальный `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, `ADOPTION_LEDGER.json` (111/111 with exact kit source SHA), source docs/real code and C8 active PR; сверить old 40–42 spec as historical data. Изменения в code сопровождать `sourceFeatureId` и real test. Если старые запреты конфликтуют с владельцем — исправить, а не отложить. Любой `BLOCKED/EVIDENCE_GAP` остаётся в дорожной карте с шагом закрытия, **не OWNER_EXCLUDED**.
 
 **Формат сдачи одного implementation package:**
 ```text
@@ -296,11 +296,11 @@ Native `GameBoard.ConfigureBonusRewardedSlots` @`0x269f98c` independently config
 - **Rewarded:** independent `BonusSlotUnlockCoinsActive` flag, InternetConnectionHelper and AdServiceFacade reward-readiness; `RewardedAdLoadingHelper.ShowWithFeedback` is invoked with placement resolved differently for type2 and type3. **Original earned/closed/no-fill callbacks have not been run or fully reconstructed**. We must gate earned unlock on proven SDK reward and deduplicated receipt, not request/show/availability.
 - **Negative QA:** level below/at threshold, regular counts 2/3/4/5, one missing prefab, enable flag flips after active-save, separate type/index state, insufficient coins, SpendCoins returning false, delayed/duplicate/stale rewarded callback, no unlock on ad fail/no-fill, save/load/Undo and UI hit zones with optional fifth column.
 
-Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 110 registry entries.
+Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 111 registry entries.
 
 ### 9.4 Integration contract and no waiting for total research completion
 
-- Research source pin: kit [PR #80](https://github.com/DanilaH/mini-games-kit/pull/80), exact `SOURCE_FEATURES_PINNED.json` and ledger blob/ref updated together. IDs remain **110/110**; **no `OWNER_EXCLUDED`**.
+- Research source pin: kit [PR #80](https://github.com/DanilaH/mini-games-kit/pull/80), exact `SOURCE_FEATURES_PINNED.json` and ledger blob/ref updated together. At the time of PR80, IDs were **110/110**; after kit PR82 the current inventory is **111/111**, **no `OWNER_EXCLUDED`**.
 - CORE-1 and CORE-4 may proceed for known code paths in their already-approved implementation packages. Incomplete source parity is represented as `EVIDENCE_GAP`, not a guessed `ORIGINAL_RUNTIME`. No new release APK is implied by this docs change.
 - Research continues on Unity random state, original app final board and bonus-column live/price config. Any further corrections must update kit source inventory **and** this consumer ledger/roadmap using a recorded source Git SHA.
 

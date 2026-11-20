@@ -35,6 +35,16 @@ export function isC8DirectorVariant(dealId: string, baseId: string): boolean {
   return pool?.tight.id === dealId || pool?.relief.id === dealId;
 }
 
+/** Return another stored layout for the same deck. A budget-only variant is not a redeal. */
+export function otherC8Layout(current: Deal): Deal | undefined {
+  const base = content8Dealer.find(deal => deal.campaignLevel === current.campaignLevel);
+  const pool = base && pools.get(base.id);
+  if (!base || !pool || (current.id !== base.id && !isC8DirectorVariant(current.id, base.id))) return;
+  const alternate = current.id === pool.relief.id ? base : pool.relief;
+  const layout = (deal: Deal) => JSON.stringify([deal.initial.tableau, deal.initial.stock]);
+  if (layout(current) !== layout(alternate)) return alternate;
+}
+
 export function selectC8Deal(save: Save, base: Deal, previous?: Attempt): Deal {
   const pool = pools.get(base.id), level = base.campaignLevel;
   if (!pool || level === undefined || save.platform?.completedCampaign.includes(campaignId(level))) return base;

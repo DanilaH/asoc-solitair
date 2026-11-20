@@ -184,3 +184,38 @@ it('issues only certified variants to new C8 starts and keeps their identity acr
     expect(board.movesLeft!, deal.id).toBeGreaterThanOrEqual(3);
   }
 });
+
+it('offers another stored layout only after C8 exhaustion and keeps both starts playable', async () => {
+  vi.stubEnv('VITE_CONTENT8_PREVIEW', '1');
+  const { campaignRedeal, campaignDeals, findDeal } = await import('../../src/content/campaign');
+  const { applyBoard, freshSave } = await import('../../src/domain/engine');
+  const { dailyForDay } = await import('../../src/content/daily');
+  const exhausted = (deal: Deal) => {
+    const board = { ...deal.initial, phase: 'exhausted' as const, movesLeft: 0 };
+    return { ...freshSave(deal, 'lost').attempt, board };
+  };
+  for (const level of [12, 13, 14, 15]) {
+    const base = campaignDeals[level - 1], relief = findDeal(base.id + '-relief-r1')!, tight = findDeal(base.id + '-tight-r1')!;
+    expect(campaignRedeal(exhausted(base))).toBe(relief);
+    expect(campaignRedeal(exhausted(tight))).toBe(relief);
+    expect(campaignRedeal(exhausted(relief))).toBe(base);
+    expect(relief.cards).toBe(base.cards);
+    expect(relief.initial.tableau).not.toEqual(base.initial.tableau);
+    for (const deal of [base, relief]) {
+      let board = deal.initial;
+      for (const move of deal.winningPath) {
+        const result = applyBoard(board, move, deal);
+        if (typeof result === 'string') throw Error(result);
+        expect(result.board).toEqual(advance(board, move, deal));
+        board = result.board;
+      }
+      expect(board.phase).toBe('won');
+    }
+  }
+  const sameLayout = campaignDeals[10];
+  expect(campaignRedeal(exhausted(sameLayout))).toBeUndefined();
+  expect(campaignRedeal(exhausted(findDeal(sameLayout.id + '-relief-r1')!))).toBeUndefined();
+  expect(campaignRedeal(exhausted(campaignDeals[15]))).toBeUndefined();
+  expect(campaignRedeal(exhausted(dailyForDay('2026-11-20')))).toBeUndefined();
+  expect(campaignRedeal(freshSave(campaignDeals[11], 'playing').attempt)).toBeUndefined();
+});

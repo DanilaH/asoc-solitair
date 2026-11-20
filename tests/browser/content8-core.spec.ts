@@ -589,3 +589,90 @@ test('an ambiguous coin write can be checked from the result without a second de
   expect(settled.attempt.board.movesLeft).toBe(10);
   expect(settled.profile.coins).toBe(0);
 });
+
+test('level 12 can change layout from the loss result and saves the chosen deal and budget', async ({ page }) => {
+  const deal = content8Dealer[11], alternate = content8DirectorDeals.find(candidate => candidate.id === deal.id + '-relief-r1')!;
+  const save = loadLoss(deal, 'redeal-loss');
+  await loadWaveFixture(page, save, 11, 1);
+  await openGame(page, deal);
+  await expect(page.locator('#replay')).toHaveText('Тот же расклад');
+  const button = page.locator('#result-redeal');
+  await expect(button).toContainText('Лимит 74');
+  await expect(button).toBeEnabled();
+  expect(await button.evaluate(e => {
+    const r = e.getBoundingClientRect();
+    return r.height >= 44 && r.top >= 0 && r.bottom <= innerHeight && e.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
+  })).toBe(true);
+  const before = await read(page);
+  await button.tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', alternate.id);
+  const started = await read(page);
+  expect(started.attempt.id).not.toBe(before.attempt.id);
+  expect(started.attempt.board).toEqual(alternate.initial);
+  expect(started.attempt.undo).toEqual([]);
+  expect(started.profile).toEqual(before.profile);
+  expect(started.platform?.continueCredits).toBe(1);
+  expect(started.attempt.director).toEqual({ restarts: 1, previousLosses: 1 });
+  await page.reload();
+  await openGame(page, alternate);
+  expect((await read(page)).attempt).toEqual(started.attempt);
+  await touch(page, alternate, { type: 'draw' });
+  await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(73);
+});
+
+test('the same-layout replay keeps its original cards and a budget-only variant offers no redeal', async ({ page }) => {
+  const deal = content8Dealer[11];
+  const save = loadLoss(deal, 'same-replay');
+  await loadWaveFixture(page, save, 11);
+  await openGame(page, deal);
+  await expect(page.locator('#result-redeal')).toBeVisible();
+  await page.locator('#replay').tap();
+  await expect(page.locator('#result')).toBeHidden();
+  const restarted = await read(page);
+  expect(restarted.attempt.id).not.toBe(save.attempt.id);
+  expect(restarted.attempt.dealId).toBe(deal.id);
+  expect(restarted.attempt.board).toEqual(deal.initial);
+  const budgetOnly = content8Dealer[10];
+  const other = loadLoss(budgetOnly, 'no-layout-change');
+  other.contentVersion = 8;
+  await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), other);
+  await page.reload();
+  await openGame(page, budgetOnly);
+  await expect(page.locator('#result-redeal')).toBeHidden();
+  await expect(page.locator('#replay')).toHaveText('Ещё раз');
+});
+
+test('a reconciled alternate-deal save presents the committed board exactly once', async ({ page }) => {
+  const deal = content8Dealer[11], alternate = content8DirectorDeals.find(candidate => candidate.id === deal.id + '-relief-r1')!;
+  const save = loadLoss(deal, 'redeal-uncertain');
+  await loadWaveFixture(page, save, 11);
+  await openGame(page, deal);
+  await page.evaluate(alternateId => {
+    const write = Storage.prototype.setItem, read = Storage.prototype.getItem;
+    let failRead = false;
+    Storage.prototype.setItem = function (key, value) {
+      write.call(this, key, value);
+      if (key === 'asoc-solitaire.save.v1' && JSON.parse(value).attempt.dealId === alternateId) {
+        Storage.prototype.setItem = write;
+        failRead = true;
+        throw Error('Lost response after write');
+      }
+    };
+    Storage.prototype.getItem = function (key) {
+      if (key === 'asoc-solitaire.save.v1' && failRead) {
+        failRead = false;
+        Storage.prototype.getItem = read;
+        throw Error('Read-back failed once');
+      }
+      return read.call(this, key);
+    };
+  }, alternate.id);
+  await page.locator('#result-redeal').tap();
+  await expect(page.locator('#result-continue-error')).toContainText('Проверьте, сохранился ли новый расклад');
+  await expect(page.locator('#result-redeal')).toBeDisabled();
+  const committed = await read(page);
+  await page.locator('#result-save-retry').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', alternate.id);
+  expect((await read(page)).attempt).toEqual(committed.attempt);
+  expect(committed.attempt.board).toEqual(alternate.initial);
+});

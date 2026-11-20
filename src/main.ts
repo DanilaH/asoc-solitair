@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
-import { campaignDeals, findDeal, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
+import { campaignDeals, campaignRedeal, findDeal, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
 import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { dailyForDay } from './content/daily';
@@ -401,6 +401,14 @@ try {
     const resultRetry = $<HTMLButtonElement>('#result-save-retry');
     resultRetry.hidden = !store.needsRecovery;
     resultRetry.disabled = saving || serviceBusy;
+    const alternate = campaignRedeal(save.attempt);
+    const redeal = $<HTMLButtonElement>('#result-redeal');
+    redeal.hidden = !alternate;
+    redeal.disabled = saving || serviceBusy || store.needsRecovery;
+    if (alternate) {
+      $('#result-redeal small').textContent = `Лимит ${alternate.initial.movesLeft}`;
+      $('#replay').textContent = 'Тот же расклад';
+    }
     const hasContinueAction = canContinue || canBuyContinue || !resultRetry.hidden;
     $('#result-undo').className = !hasContinueAction && undoRecovery ? 'primary' : 'secondary';
     $('#replay').className = board.phase === 'exhausted' && !hasContinueAction && !undoRecovery ? 'primary' : 'secondary';
@@ -693,8 +701,14 @@ try {
     difficultyRequest = undefined;
     if (level) void openLevel(level, true, false);
   }, domOptions);
-  async function openLevel(level: number, confirmed = false, announce = true) {
+  function presentLevelStart() {
+    outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false';
+    screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
+    scene?.setDeal(deal, true);
+  }
+  async function openLevel(level: number, confirmed = false, announce = true, redeal?: { attemptId: string; dealId: string }) {
     if (!alive || !ready || saving || serviceBusy || level < 1 || level > unlockedLevel(save)) return;
+    if (redeal && (redeal.attemptId !== save.attempt.id || campaignRedeal(save.attempt)?.id !== redeal.dealId)) return;
     const target = campaignDeals[level - 1];
     const campaign = campaignAttempt(save);
     if (campaign?.board.phase === 'playing' && isCurrentCampaignDeal(campaign.dealId, target)) {
@@ -721,21 +735,36 @@ try {
     const enter = async () => {
       removeForeground?.(); removeForeground = undefined;
       runtime.activity.setBlocked('level-transition', true);
+      let started = false, failed = false;
       try {
         clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined;
         clearTimeout(outcomeTimer); clearTimeout(guideTimer); activeHint = undefined; setInspect(false);
-        await write(next => {
+        started = await write(next => {
           const previous = campaignAttempt(next);
           const previousDeal = previous && findDeal(previous.dealId);
-          const selected = selectCampaignDeal(next, target, previous);
+          const selected = redeal ? campaignRedeal(next.attempt) : selectCampaignDeal(next, target, previous);
+          if (!selected || (redeal && (next.attempt.id !== redeal.attemptId || selected.id !== redeal.dealId))) return false;
           if (next.attempt.daily) switchMode(next, 'campaign', previousDeal ?? selected, crypto.randomUUID());
           beginDeal(next, selected, crypto.randomUUID(), previousDeal);
+          return true;
         });
-        outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false';
-        screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
-        scene?.setDeal(deal, true);
-      } catch { message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
+        if (started) {
+          if (redeal) telemetry.track('level_restart');
+          presentLevelStart();
+        }
+      } catch { failed = true; if (!redeal) message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
       finally { serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome(); }
+      if (redeal && !started) {
+        if (save.attempt.board.phase === 'playing') showGame();
+        else {
+          outcome();
+          if (failed) {
+            const error = $('#result-continue-error');
+            error.textContent = store.needsRecovery ? 'Проверьте, сохранился ли новый расклад.' : 'Не удалось сохранить новый расклад. Попробуйте ещё раз.';
+            error.hidden = false;
+          }
+        }
+      }
     };
     if (runtime.activity.getBlockReasons().some(r => r !== 'screen')) {
       removeForeground?.(); removeForeground = runtime.activity.onBlockReasonsChange(() => {
@@ -903,6 +932,11 @@ try {
   $('#restart-confirm-yes').addEventListener('click', () => { void replay(); }, domOptions);
   $('#replace-daily-yes').addEventListener('click', () => { void activateMode('daily', false, true); }, domOptions);
   $('#replay').addEventListener('click', () => { void replay(); }, domOptions);
+  $('#result-redeal').addEventListener('click', () => {
+    const alternate = campaignRedeal(save.attempt);
+    if (alternate?.campaignLevel !== undefined && !store.needsRecovery)
+      void openLevel(alternate.campaignLevel, true, false, { attemptId: save.attempt.id, dealId: alternate.id });
+  }, domOptions);
   $('#result-undo').addEventListener('click', () => { if (!save.profile.undos) openHelpers('undo'); else { closeDialogs(); execute({ type: 'undo' }); } }, domOptions);
   for (const [id, key] of [['sfx', 'sfx'], ['haptics', 'haptics'], ['reduced', 'reducedMotion']] as const) {
     $<HTMLInputElement>(`#${id}`).addEventListener('change', async event => {
@@ -1020,7 +1054,13 @@ try {
     const error = $('#result-continue-error');
     try {
       await write(() => undefined);
-      if (save.attempt.board.phase === 'playing') { closeDialogs(); scene?.sync(); telemetry.sync(); }
+      if (save.attempt.board.phase === 'playing') {
+        closeDialogs();
+        if ($('#app').dataset.presentedDeal !== deal.id) {
+          runtime.activity.setBlocked('level-transition', true);
+          presentLevelStart();
+        } else { scene?.sync(); telemetry.sync(); }
+      }
       error.hidden = true;
     } catch { error.textContent = 'Пока не удалось проверить сохранение.'; error.hidden = false; }
   }, domOptions);

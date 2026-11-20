@@ -328,3 +328,24 @@ AZUR ordinary `DealCards` still consumes `N−1` Unity `Random.Range(0, remainin
 Native `GameController.RestartLevel` branches to `LoadAndStartLevel`; this confirms level lifecycle re-entry but says nothing conclusive about preserved/randomized card positions without comparing original device snapshots and active save state. Never transfer Unico's observed Retry redeal semantics to AZUR by analogy.
 
 **Practical integration:** CORE-0/1 continue immediately, without waiting for full Unity RNG investigation. New tutorial preset entry remains roadmapped with full evidence/test dependencies; older 110 systems remain. Source inventory and consumer ledger must be pinned to the same exact kit Git blob. No game runtime changes implied by this research documentation.
+
+
+## 11. AZUR shared Unity Random and distinct Joker insertion — original-native P0 update (20 November 2026)
+
+**Source:** [mini-games-kit PR #84](https://github.com/DanilaH/mini-games-kit/pull/84) original AZUR 1.3.3.8/code244 ARM64 with method RID→native RVA and verified call targets. This is **SOURCE_NATIVE_STATIC**, not original Android runtime or live feature activation. Preserve earlier research, especially the different Hitapps seeded dealer and Hitapps Joker.
+
+### 11.1 CORE-1: random stream ownership is not isolated in the AZUR original
+
+The ordinary AZUR `DealCards` generic Fisher–Yates invokes the shared Unity `Random.Range(int,int)` native wrapper at RVA `0x53bba88`. Source bodies of DailyBonus `BuildShuffledColumnIndices` and `WeightedPick`, ComboSeries `PickRandomTrack`, `GameManager.AddJokerCard` and **developer tools** `ShowRandomOffer` also directly call that same wrapper. There are **four original executable direct BL locations** to Unity `Random.InitState` outside the three previously examined level-routing methods. The owning methods/activation for these four calls have **not** been proven. Direct call registration proves sharing the same Unity API, **not** that a daily bonus or event occurred before a real deal or that it changed a particular user's cards.
+
+**Developer contract:** do not model AZUR `seed = levelId`, assume no Unity reseeds anywhere, or claim an exact original seed-to-layout oracle. Our **product adaptation** should create an independently injected RNG stream per authoring operation and keep UI/meta random calls separate from published campaign deals. Archive final immutable Deal and original evidence tier; test identical initial authoring inputs despite simulated unrelated daily/combo random calls and distinguish the corresponding original-state UNKNOWN. This protects C8 reproducibility without a fictitious claim about source call order.
+
+### 11.2 CORE-4: new source feature, AZUR random lower-column Joker, clears Undo
+
+Original `Solitaire.GameManager.AddJokerCard` native RVA `0x26a4188`: in its positive valid-column branch computes an upperExclusive bounded by the **minimum** of its configured limit and currently available tableau count, calls shared `Random.Range(0,upperExclusive)`, retrieves `GameBoard.GetColumn` for that index, constructs/reveals a new card, forces placement through `Column.PlaceCardForced` and **conditionally calls `UndoSystem.Clear`** when UndoSystem exists. `Solitaire.UI.GameUIController.TryAddJokerCard` reports `GameplayEvents.RaiseJokerUsed` only after a nonnull returned card. The native Card constructor receives discriminator 2; do not conflate this with Hitapps CardType values or claim exhaustive AZUR enum parity.
+
+**New separately tracked source ID:** `azur-joker-random-column-insertion`, **D1**, `NATIVE_STATIC`. This is **not** the existing `hitapps-joker` (implemented, unverified). Preserve both mechanisms in the roadmap. The AZUR player-visible helper availability, coin/ad price, original zero/invalid bounds, actual selected column and full Save/Undo trace remain UNKNOWN.
+
+**Implement only under a versioned feature package:** separately decide whether clearing historical Undo is appropriate for our product; no unexpected deletion of saved Undo/receipt/attempt state. Test an eligible nonempty board with min(configuredLimit,columnCount), card creation/reveal and placement, append identity, no-column/invalid bounds, successful and failed UI helper paths, replay after saved reload, player-facing first use, adapter coin/reward earned/duplicate callbacks if connected. Every added mechanic must survive 320px portrait layout and actual signed Android acceptance.
+
+**Product status ≠ source evidence:** no runtime implementation is claimed by this spec addendum. Newly registered ID requires pinning the exact kit source snapshot and coverage **112/112**, without deleting a previously studied item.

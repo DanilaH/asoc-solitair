@@ -11,10 +11,11 @@
     {
       "id": "hitapps-stock-dealer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 PR #41 tools/content/plain-dealer.ts (clean-room numerical conditional model)",
-      "nextAction": "Confirm original-device final-board parity and Content8 human/device QA",
+      "currentImplementation": "CORE-1 verifies the four published numeric hashes and exact stock/tableau for all 15 frozen Content 8 deals from recorded seeds.",
+      "nextAction": "Obtain numeric geometry export for the source-bound 752-candidate replay and original-device final-board parity. Have the owner play the frozen Content 8 catalog.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "stage": "B1"
+      "stage": "B1",
+      "evidenceRef": "docs/qa/content-v8/CORE_1.md"
     },
     {
       "id": "hitapps-level-wave",
@@ -28,10 +29,11 @@
     {
       "id": "hitapps-candidate-priority",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 PR #41 offline selectPriority() and independent route test",
-      "nextAction": "Independent original selected-seed/runtime parity; measure human decision quality",
+      "currentImplementation": "CORE-1 offline Priority chooser records attempts, early exit or first-closest fallback, restores the selected seed and replays the winning route independently. Our solver and target are adaptation.",
+      "nextAction": "Measure actual original strategy/config on device. Connect selected immutable variants to new attempts in later CORE packages.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "stage": "B1"
+      "stage": "B1",
+      "evidenceRef": "docs/qa/content-v8/CORE_1.md"
     },
     {
       "id": "hitapps-dynamic-difficulty",
@@ -775,8 +777,8 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "C8 ordinary dealer uses Hitapps source-shaped seeded authoring only. No distinct source-proven AZUR dealer strategy has been implemented.",
-      "nextAction": "AZUR native PR #80 proves ordinary InitializeGame→GenerateCards→DealCards (Unity Random.Range single Fisher–Yates, FirstColumnCards+c placement), and PR #82 separately proves level1 tutorial preset guard+validation/ordinary fallback. Implement separate AZUR dealer with scripted RNG fixtures; upstream Unity RNG state/seed, real original stock/tableau, preset serialization and active config still UNKNOWN. Kit PR #84 additionally proves shared UnityEngine.Random.Range callers from DailyBonus, ComboSeries and Joker, plus direct InitState call sites outside inspected level routes; original runtime call ordering/state still UNKNOWN. Our authoring should isolate UI/meta randomness as PRODUCT_ADAPTED.",
+      "currentImplementation": "CORE-1 offline AzurDealer implements the verified single descending shuffle and positive DealCards placement and reveal, with an explicitly injected RNG. Current C8 uses frozen Hitapps-derived deals.",
+      "nextAction": "Capture original upstream shared Unity RNG call order and state across DailyBonus, ComboSeries and Joker, original device stock/tableau, level-one preset serialization and active remote path. Use isolated randomness in product authoring. See kit PRs #80, #82 and #84.",
       "stage": "B1",
       "reason": "Original Unity RNG initialization and runtime selected board remain unknown, despite now VERIFIED native dealer shuffle and placement body."
     },
@@ -803,17 +805,19 @@
     },
     {
       "id": "hitapps-initial-shuffle-final-pipeline",
-      "status": "ROADMAPPED",
-      "currentImplementation": "C8 plain dealer lacks separate native Initial/Shuffle/Final application pipeline",
-      "nextAction": "Implement source-ordered phases 10/40,20/25/27,30/45 around candidate simulation, with independent source/adapter distinctions",
-      "stage": "B3"
+      "status": "IN_PROGRESS",
+      "currentImplementation": "CORE-1 routes fresh and simulated plans through source-ordered phase hooks. Shuffle precedes scoring and bounded fallback replays it. Final runs once for the selected result.",
+      "nextAction": "Connect confirmed feature appliers in CORE-2/4, including a single eligible feature reseed and separately sourced Final RNG. Verify with original final-board traces.",
+      "stage": "B3",
+      "evidenceRef": "docs/qa/content-v8/CORE_1.md"
     },
     {
       "id": "hitapps-negative-seed-request-path",
-      "status": "ROADMAPPED",
-      "currentImplementation": "C8 authoring enumerates positive explicit test seeds; no native negative-seed helper path",
-      "nextAction": "Implement native semantics negative-requested-seed→separate random seed draw on eligible paths, record selected seed and reproducibility; not same as EmbeddedRandom ctor(-seed)",
-      "stage": "B1"
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "CORE-1 authoring handles negative requests with an injected [0, INT32_MAX) seed source and records both requested and actual seed.",
+      "nextAction": "Capture original entropy behavior and selected seed on Android. Product authoring uses its own entropy, and saves resume fixed variants.",
+      "stage": "B1",
+      "evidenceRef": "docs/qa/content-v8/CORE_1.md"
     },
     {
       "id": "hitapps-puzzle-top-bottom-cards",

@@ -1,3 +1,4 @@
+import { createHash, randomInt } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { content8Cards, extraWords } from '../../src/content/content8-words';
 import type { TopicSelection } from '../../src/content/topics';
@@ -7,7 +8,8 @@ import { applyBoard, assertBoard, sourceCards } from '../../src/domain/engine';
 import type { Board, BoardCommand, Deal } from '../../src/domain/types';
 import { advance } from '../qa/gameplay-oracle';
 import { findReferenceRoute, referenceActions } from './reference-route';
-import { dealOrdinary, selectPriority } from './plain-dealer';
+import { dealOrdinary } from './plain-dealer';
+import { preparePriorityPlan } from './candidate-pipeline';
 
 type Topic = TopicSelection['id'];
 const opening: readonly Topic[][] = [
@@ -20,6 +22,7 @@ const opening: readonly Topic[][] = [
 const lessonRamp = [[16,5,4],[28,17,6],[36,22,7],[46,30,8],[60,42,10]] as const;
 const labels = ['Первая тема','Карты из колоды','Подсказка в деле','Ход назад','Кому отдать верхний слот'];
 const ramp = process.env.C8_RAMP === 'source' ? 'source' : 'lesson';
+const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const transfers = (xs: BoardCommand[]) => xs.filter(x => x.type === 'transfer');
 const root = '.authoring/content8-onboarding/'+ramp;
 await mkdir(root,{recursive:true});
@@ -87,24 +90,58 @@ for(let level=from;level<=to;level++){
   const seedOffset=Number(process.env.C8_SEED_OFFSET??0), target=Number(process.env.C8_TARGET??(startLimit===null?total+stockSize:Math.round(startLimit*.89)));
   const tolerance=15;
   const seeds=Array.from({length:100},(_,i)=>level*10000+i+seedOffset+1+(ramp==='source'?2500:0));
-  const selected=selectPriority(seeds,(seed)=>{
-    const {stock,tableau}=dealOrdinary(ids,stockSize,lengths,seed), faceUp=tableau.flatMap(col=>col.slice(-1));
-    if(!faceUp.some(id=>cards[id].leader))return;
-    // The native-derived allocation stays intact from this point. Reject a whole monochrome lower column.
-    if(level>=5 && tableau.some(col=>col.length>1 && col.every(id=>cards[id].category===cards[col[0]].category)))return;
-    const initial:Board={tableau,stock,faceUp,foundations:Array.from({length:slots},()=>[]),waste:[],collected:[],movesLeft:startLimit,phase:'playing',rulesVersion:3};
-    const deal:Deal={...design,initial,cards,winningPath:[]}; assertBoard(initial,deal);
-    const path=findReferenceRoute(deal,initial,level===5?1500:650);
-    if(path.status!=='FOUND' || (startLimit!==null && startLimit-path.path.length<3))return;
-    if(replay(deal,path.path)?.phase!=='won')throw Error('Candidate replay');
-    const metrics=consequences(deal,path.path,[5,6,11,15].includes(level)); count++;
-    if(level>=5 && metrics.longest>9)return;
-    if(level===5 && (!metrics.buffer || !metrics.competingSlots || !metrics.routes.some(x=>x.kind==='miss-recycle')))return;
-    const record={...design,initial,winningPath:path.path,topics};
-    return {seed,steps:path.path.length,value:{record,audit:{level,seed,ramp,target,tolerance,limits:startLimit,lengths,auditedWins:count,metrics}}};
-  },target,tolerance);
-  if(!selected){console.log(level,'NO WIN IN WINDOW',count);continue;}
-  await writeFile(root+'/level-'+level+'.json',JSON.stringify(selected.value)+'\n');
-  const a=selected.value.audit;
-  console.log(level,selected.seed,selected.steps,a.limits,a.metrics.longest,a.metrics.buffer,a.metrics.competingSlots,a.metrics.routes.map(x=>[x.kind,x.extra]));
+  const plan = preparePriorityPlan({
+    requests: seeds,
+    drawSeed: bound => randomInt(bound),
+    target,
+    tolerancePercent: tolerance,
+    shuffle(seed) {
+      const { stock, tableau } = dealOrdinary(ids, stockSize, lengths, seed);
+      const faceUp = tableau.flatMap(col => col.slice(-1));
+      return { tableau, stock, faceUp, foundations: Array.from({ length: slots }, () => []),
+        waste: [], collected: [], movesLeft: startLimit, phase: 'playing', rulesVersion: 3 } satisfies Board;
+    },
+    digest,
+    evaluate({ snapshot: initial }) {
+      if (!initial.faceUp.some(id => cards[id].leader)) return;
+      if (level >= 5 && initial.tableau.some(col => col.length > 1 && col.every(id => cards[id].category === cards[col[0]].category))) return;
+      const deal: Deal = { ...design, initial, cards, winningPath: [] };
+      assertBoard(initial, deal);
+      const path = findReferenceRoute(deal, initial, level === 5 ? 1500 : 650);
+      if (path.status !== 'FOUND' || (startLimit !== null && startLimit - path.path.length < 3)) return;
+      if (replay(deal, path.path)?.phase !== 'won') throw Error('Candidate replay');
+      const metrics = consequences(deal, path.path, [5, 6, 11, 15].includes(level));
+      count++;
+      if (level >= 5 && metrics.longest > 9) return;
+      if (level === 5 && (!metrics.buffer || !metrics.competingSlots || !metrics.routes.some(x => x.kind === 'miss-recycle'))) return;
+      return { steps: path.path.length, value: { witness: path.path, metrics } };
+    },
+  });
+  const auditBase = {
+    level, ramp, target, tolerance, limits: startLimit, lengths, auditedWins: count,
+    sourceBuild: 'Hitapps 1.26.2/code3742', localLevelPosition: ref.position,
+    configDigest: digest({ topics, cards, ids, stockSize, lengths, slots, startLimit, target, tolerance }),
+    authoredLevelVersion: design.version, strategy: 'Adapted', candidateCount: plan.attempts,
+    selectedBy: plan.reason, moveBudgetBase: startLimit,
+  };
+  const selected = plan.selected;
+  if (!selected) {
+    await writeFile(root + '/level-' + level + '.json', JSON.stringify({ record: null, audit: auditBase }) + '\n');
+    console.log(level, 'NO WIN IN WINDOW', count);
+    continue;
+  }
+  const { actualSeed, requestedSeed, evaluation, final, afterShuffle } = selected;
+  const record = { ...design, initial: final.snapshot, winningPath: evaluation.witness, topics };
+  if (replay({ ...record, cards }, record.winningPath)?.phase !== 'won') throw Error('Final candidate replay');
+  const audit = {
+    ...auditBase, seed: actualSeed, requestedSeed, actualSeed, metrics: evaluation.metrics,
+    afterShuffleHash: digest(afterShuffle.snapshot), postFinalHash: digest(final.snapshot),
+    appliedFeatureFlags: final.appliedFlags, failedFeatureFlags: final.failedFlags,
+    moveBudgetEffective: final.snapshot.movesLeft, independentWinningWitness: digest(record.winningPath),
+    evaluatedPolicies: [{ policyId: 'asoc-rules3-reference-route', result: 'WON', steps: selected.steps, terminalReason: 'all-categories-completed' }],
+    proofLevel: 'MODEL_CROSSCHECK',
+  };
+  await writeFile(root + '/level-' + level + '.json', JSON.stringify({ record, audit }) + '\n');
+  console.log(level, actualSeed, selected.steps, audit.limits, audit.metrics.longest, audit.metrics.buffer,
+    audit.metrics.competingSlots, audit.metrics.routes.map(x => [x.kind, x.extra]));
 }

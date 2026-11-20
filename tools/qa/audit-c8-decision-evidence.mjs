@@ -78,7 +78,36 @@ function validate(rows) {
   }
 }
 
-export function summarize(rows) {
+export function summarizeSpecialRecoveryRoutes(records) {
+  if (!Array.isArray(records)) throw Error('Special recovery records missing');
+  const outcomes=[];
+  for (const record of records) {
+    if (!Number.isInteger(record.campaignLevel) || typeof record.winningPath !== 'string' ||
+        !Array.isArray(record.recoveryPaths)) throw Error('Invalid special recovery record');
+    const main=record.winningPath.split(' ');
+    for (const path of record.recoveryPaths) {
+      if (typeof path!=='string') throw Error('Invalid special recovery path');
+      const alternative=path.split(' ');
+      let step=0;
+      while (step<main.length && step<alternative.length && main[step]===alternative[step]) step++;
+      if (step===alternative.length || step===main.length)
+        throw Error('Special recovery has no actual first-different action at level '+record.campaignLevel);
+      const action=alternative[step], type=classifyMove(action);
+      if (type==='unclassified') throw Error('Unknown special recovery command at level '+record.campaignLevel);
+      outcomes.push({level:record.campaignLevel,step,type,action,extraActions:alternative.length-main.length});
+    }
+  }
+  return {
+    levels:records.map(x=>x.campaignLevel).sort((a,b)=>a-b),
+    recoveryRoutes:outcomes.length,
+    firstDifferentDraw:outcomes.filter(x=>x.type==='stock_draw').length,
+    firstDifferentTransfer:outcomes.filter(x=>x.type==='card_transfer').length,
+    firstDifferentRecycle:outcomes.filter(x=>x.type==='stock_recycle').length,
+    transferExamples:outcomes.filter(x=>x.type==='card_transfer')
+  };
+}
+
+export function summarize(rows, specialRecords=[]) {
   validate(rows);
   const data=sorted(rows.map(x=>x.level));
   for(let i=1;i<data.length;i++) if(data[i]!==data[i-1]+1)
@@ -91,9 +120,10 @@ export function summarize(rows) {
   ].map(([label,cards])=>[label,{
     cards, ...profile(late.filter(x=>x.cards===cards))
   }]));
+  const special=summarizeSpecialRecoveryRoutes(specialRecords);
   const warnings=[];
   if (all.alternativesByType.card_transfer===0)
-    warnings.push('NO_DIFFERENT_TRANSFER_BRANCH_CERTIFIED');
+    warnings.push('NO_TRANSFER_BRANCH_CERTIFIED_IN_BASE_CORE3_PASSPORTS');
   if (all.certifiedSelectedAlternatives===all.alternativesThatMissWaste)
     warnings.push('ALL_SELECTED_ALTERNATIVES_ARE_MISSED_WASTE_ACTIONS');
   if (lateInfo.levels && lateInfo.witnessRecycles===0)
@@ -101,12 +131,18 @@ export function summarize(rows) {
   if (all.choiceProbesUnresolved>0)
     warnings.push('CHOICE_PROBES_UNRESOLVED_ARE_NOT_LOSS_PROOFS');
   return {
-    schema:'content8-independent-choice-evidence-audit-v1',
+    schema:'content8-independent-choice-evidence-audit-v2',
     evidence:'published CORE-3 JSON witness passports only; NOT human gameplay',
     stages:{early:profile(early),late:lateInfo,lateProfiles},
+    baselineScope:'65 CORE-3 ordinary wave passports; actual fresh C8 substitutes special deals on 17/18/26/45/66 and optional bonus variants on 22/30/40',
+    activeSpecialOverrides:special,
+    bonusOverrideLevelsNotIncluded:[22,30,40],
     all,warnings,
     note:'No warning proves missing game mechanics or bad balance. The current authoring gate prioritizes missed-waste draw probes; add stratified different-transfer probes and human replay before difficulty acceptance.'
   };
+}
+export function loadSpecialRecoveryRoutes() {
+  return JSON.parse(readFileSync(new URL('../../src/content/campaign-v8-special.json',import.meta.url),'utf8'));
 }
 export function loadPublishedPassports() {
   const from = path => JSON.parse(readFileSync(new URL(path, import.meta.url),'utf8'));
@@ -115,8 +151,8 @@ export function loadPublishedPassports() {
     .sort((a,b)=>a.level-b.level);
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
-  const result=summarize(loadPublishedPassports());
+  const result=summarize(loadPublishedPassports(),loadSpecialRecoveryRoutes());
   console.log(JSON.stringify(result,null,2));
   if(process.argv.includes('--strict-transfer-coverage') &&
-     result.warnings.includes('NO_DIFFERENT_TRANSFER_BRANCH_CERTIFIED'))process.exitCode=2;
+     result.warnings.includes('NO_TRANSFER_BRANCH_CERTIFIED_IN_BASE_CORE3_PASSPORTS'))process.exitCode=2;
 }

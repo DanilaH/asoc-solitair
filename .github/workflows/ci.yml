@@ -37,6 +37,13 @@ jobs:
       - run: npm run qa:content7
         env:
           C7_REQUIRE_UI: '1'
+      - name: Verify the Content 8 preview with actual touch input
+        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-') || github.base_ref == 'feat/c8-onboarding-dealer-20261119'
+        env:
+          VITE_CONTENT8_PREVIEW: '1'
+        run: |
+          npm run build
+          npx playwright test tests/browser/content8-core.spec.ts --output=test-results/content8-core
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -75,7 +82,7 @@ jobs:
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run android:sync
         env:
-          VITE_CONTENT8_PREVIEW: ${{ contains(fromJSON('["feat/c8-onboarding-dealer-20261119","feat/content8-reference-slice-20261119"]'), github.head_ref || github.ref_name) && '1' || '0' }}
+          VITE_CONTENT8_PREVIEW: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-') || github.ref_name == 'feat/content8-reference-slice-20261119' || github.head_ref == 'feat/content8-reference-slice-20261119' || github.base_ref == 'feat/c8-onboarding-dealer-20261119') && '1' || '0' }}
       - uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/asoc-debug-signing/debug.keystore

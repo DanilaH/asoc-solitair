@@ -114,17 +114,26 @@ test('the receiving apple keeps its picture until the arriving packet covers it'
   if (cmd.type !== 'transfer' || cmd.to.kind !== 'tableau') throw Error('Fixture');
   const under = save.attempt.board.tableau[cmd.to.index].at(-1)!, ids = sourceCards(save.attempt.board, cmd.from, c.deal), a = point(g.poses.find(p => p.id === under)!), front = point(g.poses.find(p => p.id === ids.at(-1))!);
   const screenshot = await page.screenshot({ scale: 'css' }), size = 104 * f.unit * .75;
-  const apple = await pattern(screenshot, a, size), moving = await pattern(screenshot, front, size), timeOrigin = await page.evaluate(() => performance.timeOrigin);
-  const frames = await record(page, () => tapCommand(page, c.deal, cmd));
-  const trace = await page.evaluate(() => (window as typeof window & { __contactTrace: Trace }).__contactTrace), commit = trace.writes.find(w => w.revision > c.save.revision)!.at + timeOrigin;
+  const apple = await pattern(screenshot, a, size), moving = await pattern(screenshot, front, size);
+  const direction = Math.sign(front.x - a.x);
+  // The near half can be covered on the first moving frame. Compare the
+  // painted icon on the far half until the incoming card reaches its center.
+  apple.points = apple.points.filter(([x]) => (x - apple.size / 2) * direction <= 0);
+  expect(apple.points.length).toBeGreaterThan(5);
+  // Sample animation time directly after the durable move. CDP screencast can
+  // drop every intermediate frame on a busy runner, even with a correct flight.
+  await page.clock.install(); await page.clock.pauseAt(new Date());
+  await tapCommand(page, c.deal, cmd);
   let checked = 0;
-  for (const frame of frames.filter(f => f.epoch >= commit)) {
-    const image = await pixels(frame.buffer, page.viewportSize()!.width), incoming = locate(image, moving, r.y, r.y + r.height);
-    // Check only frames where even the full incoming card width is still away
-    // from the old picture; legitimate physical coverage may hide it later.
-    if (incoming.error > 30 || Math.abs(incoming.x - a.x) < cardMetrics(c.deal).width * f.unit / 2 + apple.size + 3) continue;
+  for (let i = 0; i < 12; i++) {
+    await page.clock.runFor(8);
+    const buffer = await page.screenshot({ scale: 'css' });
+    const image = await pixels(buffer, page.viewportSize()!.width), incoming = locate(image, moving, r.y, r.y + r.height);
+    const hasMoved = Math.hypot(incoming.x - front.x, incoming.y - front.y) > 4;
+    const isClear = (incoming.x - a.x) * direction > cardMetrics(c.deal).width * f.unit / 2 + 3;
+    if (!hasMoved || !isClear || incoming.error > 30) continue;
     const error = errorAt(image, apple, Math.round(a.x / 2 - apple.size / 2), Math.round(a.y / 2 - apple.size / 2));
-    await test.info().attach(`uncovered-apple-${checked}`, { body: frame.buffer, contentType: 'image/png' });
+    await test.info().attach(`uncovered-apple-${checked}`, { body: buffer, contentType: 'image/png' });
     expect(error, 'Old picture cannot disappear while the incoming group is elsewhere').toBeLessThan(32); checked++;
   }
   expect(checked, 'Capture an intermediate uncovered receiving card').toBeGreaterThan(0);

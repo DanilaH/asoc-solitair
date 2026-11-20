@@ -1,8 +1,9 @@
 import { expect, it } from 'vitest';
 import { introDeal } from '../../src/content/intro';
 import { campaignDeals } from '../../src/content/campaign';
+import { content8Dealer } from '../../src/content/campaign-v8-dealer';
 import { dispatch, freshSave } from '../../src/domain/engine';
-import { cardMetrics, layout } from '../../src/game/layout';
+import { boardFrame, cardMetrics, dropTarget, layout } from '../../src/game/layout';
 import type { BoardCommand, Deal } from '../../src/domain/types';
 const overlap = (a: {x:number;y:number;width:number;height:number}, b: {x:number;y:number;width:number;height:number}) => Math.abs(a.x-b.x) < (a.width+b.width)/2 && Math.abs(a.y-b.y) < (a.height+b.height)/2;
 it('the first waste card lands beside the stock and later cards open away without pushing earlier cards', () => {
@@ -47,6 +48,40 @@ it('three-card waste and the full stock stack stay clear of an occupied foundati
       for(const t of g.targets.filter(t=>t.location.kind==='foundation'&&board.foundations[t.location.index].length)) {
         const title = {x:t.x,y:t.y-cardH/2-26+14.5,width:width-10,height:29};
         for(const card of cards)expect(overlap(card,title), `${deal.id} ${side}/${row}: deck obscures category`).toBe(false);
+      }
+    }
+  }
+});
+
+it('fits five aligned, individually tappable columns and foundations in the compact banner frame', () => {
+  const source = content8Dealer.find(d => d.initial.tableau.length === 4 && d.initial.stock.length >= 28)!;
+  const initial = structuredClone(source.initial);
+  initial.tableau.push(initial.stock.splice(0, 23));
+  initial.faceUp.push(initial.tableau[4].at(-1)!);
+  initial.waste = initial.stock.splice(0, 3);
+  initial.faceUp.push(...initial.waste);
+  const screen = { width: 320, height: 328 };
+  for (const count of [4, 5]) {
+    initial.foundations = Array.from({ length: count }, () => []);
+    const deal = { ...source, initial };
+    const metrics = cardMetrics(deal);
+    for (const side of ['left', 'right'] as const) for (const row of ['top', 'bottom'] as const) {
+      const frame = boardFrame(screen.width, screen.height, row, deal);
+      const { poses, targets, stock } = layout(initial, deal, frame.height, side, row);
+      const tableau = targets.filter(t => t.location.kind === 'tableau');
+      const foundations = targets.filter(t => t.location.kind === 'foundation');
+      expect(tableau).toHaveLength(5);
+      expect(foundations.map(t => t.x)).toEqual(tableau.slice(0, count).map(t => t.x));
+      for (const t of targets) {
+        expect(dropTarget(targets, t.x, t.y, 0)).toEqual(t);
+        const hitWidth = Math.min(screen.width, (t.x + t.width / 2) * frame.unit) - Math.max(0, (t.x - t.width / 2) * frame.unit);
+        expect(hitWidth).toBeGreaterThanOrEqual(44);
+      }
+      const floor = row === 'bottom' ? stock.y - metrics.height / 2 - 28 : frame.height - 12;
+      for (const pose of poses) {
+        expect((pose.x - metrics.width / 2) * frame.unit).toBeGreaterThanOrEqual(0);
+        expect((pose.x + metrics.width / 2) * frame.unit).toBeLessThanOrEqual(screen.width + .01);
+        if (!initial.waste.includes(pose.id)) expect(pose.y + metrics.height / 2).toBeLessThanOrEqual(floor + .01);
       }
     }
   }

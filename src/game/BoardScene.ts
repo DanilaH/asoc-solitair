@@ -212,8 +212,13 @@ export class BoardScene extends Phaser.Scene {
         const crown = this.add.graphics(); content.add(crown);
         crown.fillStyle(0xd0a16b).beginPath().moveTo(x, y).lineTo(x + 5, y + 7).lineTo(x + 9, y - 2).lineTo(x + 13, y + 7).lineTo(x + 18, y).lineTo(x + 16, y + 15).lineTo(x + 2, y + 15).closePath().fillPath();
       }
-      caption = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '24px', fontStyle: 'bold', color: '#294d5d', align: 'center' }).setOrigin(.5);
-      caption.setScale(Math.max(.74, Math.min(1, (this.cardW - 18) / caption.width))); content.add(caption);
+      const title = categoryCaption(card.text);
+      if (this.cardW < 124) caption = this.label(0, 0, title, 24, '#294d5d', this.cardH - 72).setOrigin(.5);
+      else {
+        caption = this.add.text(0, 0, title, { fontFamily: 'Nunito, Arial', fontSize: '24px', fontStyle: 'bold', color: '#294d5d', align: 'center' }).setOrigin(.5);
+        caption.setScale(Math.max(.74, Math.min(1, (this.cardW - 18) / caption.width)));
+      }
+      content.add(caption);
       strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
     } else if (image) {

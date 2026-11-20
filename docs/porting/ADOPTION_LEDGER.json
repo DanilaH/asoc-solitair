@@ -19,10 +19,11 @@
     {
       "id": "hitapps-level-wave",
       "status": "IN_PROGRESS",
-      "currentImplementation": "C8 PR #41 first15; C7 fallback16–80",
-      "nextAction": "Author reference-sized progression16–80 without abrupt stock collapse",
+      "currentImplementation": "Content 8 first 15 deals with Content 7 fallback at 16–80. CORE-0 supports five-column geometry and checks the compact tap zones with synthetic boards.",
+      "nextAction": "Author reference-sized Content 8 levels 16–80 in CORE-3, including five-column peaks at 26/31 and real Android touch checks.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "stage": "C2"
+      "stage": "C2",
+      "evidenceRef": "docs/qa/content-v8/CORE_0.md"
     },
     {
       "id": "hitapps-candidate-priority",
@@ -183,10 +184,11 @@
     {
       "id": "azur-action-ftue",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 PR #41 staged first five plus level8 helper lesson",
-      "nextAction": "Owner plays 1–8 continuously on real phone; keep achievement markers action-based",
+      "currentImplementation": "Content 8 has required action steps and saved Hint practice. CORE-0 enlarges the prompt and covers blocked alternate input and restored steps in the compact browser preview.",
+      "nextAction": "Owner plays 1–8 continuously on a real phone. Check mandatory lesson text, Hint, Undo and Joker at native banner height.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "stage": "C1"
+      "stage": "C1",
+      "evidenceRef": "docs/qa/content-v8/CORE_0.md"
     },
     {
       "id": "azur-difficulty-label",
@@ -755,18 +757,20 @@
     {
       "id": "azur-deck-draw-and-recycle",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Current RulesV3 applyBoard draw shift/stock recycle waste.slice, same observable repeated draw order; internal storage orientation differs from AZUR native stack",
-      "nextAction": "Add exact source-model two-pass fixtures, Undo/reload/faceUp/cycle UI tests; compare user-observable order rather than internal array equality",
+      "currentImplementation": "Rules 3 uses shift and same-order recycle. CORE-0 verifies observable AZUR draw order with an independent reverse-waste model, removal mid-cycle, face-up state, and Rules 3 move costs.",
+      "nextAction": "Capture original Android reset action costs, cycle UI and any paid restoration gate. Verify draw, reset and Undo on the Content 8 preview APK.",
       "stage": "B1",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "evidenceRef": "docs/qa/content-v8/CORE_0.md"
     },
     {
       "id": "azur-defeat-vs-no-valid-move",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/domain/engine.ts phase exhausted only when movesLeft===0; independent canReachTransfer and hint search; no separate source-level native no-valid placement",
-      "nextAction": "Verify native branch budget exhaustion&&!win separate from legal-action availability; test stock/recycle cycles and no false loss on temporary no-transfer",
+      "currentImplementation": "CORE-0 verifies last-move win and budget exhaustion in Rules 3. The separate stock-cycle reachability query explicitly ignores the budget, including exhausted positions.",
+      "nextAction": "Capture original Android callbacks for no-valid-move help versus defeat and playtest both states on our APK. Continuation proof from exhausted positions is CORE-5.",
       "stage": "B1",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "evidenceRef": "docs/qa/content-v8/CORE_0.md"
     },
     {
       "id": "azur-generate-deal-entrypoints",

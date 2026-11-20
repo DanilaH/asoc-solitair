@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 afterEach(() => { vi.unstubAllEnvs(); vi.resetModules(); });
 
 describe('reference slice save ownership', () => {
-  it('opens an existing C7 attempt and its history before starting the new version explicitly', async () => {
+  it.each([6, 7])('opens an existing C%i attempt and its history before starting the new version explicitly', async version => {
     vi.resetModules();
     vi.stubEnv('VITE_CONTENT8_PREVIEW', '1');
     const { campaignDeals, findDeal } = await import('../../src/content/campaign');
@@ -11,11 +11,13 @@ describe('reference slice save ownership', () => {
     const { beginDeal } = await import('../../src/domain/campaign');
     const { campaignId } = await import('../../src/domain/progression');
     const { decodeSave } = await import('../../src/platform/storage');
-    const old = findDeal('campaign-c7-015')!, candidate = campaignDeals[14];
+    const old = findDeal(`campaign-c${version}-015`)!, candidate = campaignDeals[14];
     expect(candidate.id).toBe('campaign-c8-dealer-015');
-    let save = freshSave(old, 'old-c7');
-    save.contentVersion = 7;
-    save = dispatch(save, old.winningPath[0], old).next;
+    let save = freshSave(old, `old-c${version}`);
+    save.contentVersion = version;
+    const moved = dispatch(save, old.winningPath[0], old);
+    expect(moved.accepted).toBe(true);
+    save = moved.next;
     save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0,
       completedCampaign: Array.from({ length: 14 }, (_, i) => campaignId(i + 1)) };
     const restored = decodeSave(JSON.stringify(save), findDeal);

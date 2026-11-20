@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/71d9b414984ed71bd76634eacdf8c2851905c488/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "76a558e8f24080e035913234b1d730175f17a519",
-  "sourceInventoryRef": "71d9b414984ed71bd76634eacdf8c2851905c488",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/691bad84a4d99ab183a8213fd8108a74de32d0fe/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "b07ba141b93b1a14be2443e494f8e2143ef690b6",
+  "sourceInventoryRef": "691bad84a4d99ab183a8213fd8108a74de32d0fe",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "110 known source mechanics, including 11 extra core submechanics; source static AZUR native proof differs from live original runtime and from consumer acceptance. No permanent exclusions by agent.",
+  "coverageDisclaimer": "111 known source mechanisms; one separately guarded AZUR tutorial-only preset route added after the previous 110, all retained. Static original native evidence differs from live original runtime and consumer acceptance. No permanent exclusions by agent.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -772,7 +772,7 @@
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "C8 ordinary dealer uses Hitapps source-shaped seeded authoring only. No distinct source-proven AZUR dealer strategy has been implemented.",
-      "nextAction": "ARM64 bodies in kit PR #80 verify InitializeGame→GenerateCards→DealCards; Unity Random.Range single-pass Fisher–Yates, FirstColumnCards+c placement/reveal and separate preset pathway. Implement distinct injectable-RNG offline AZUR dealer tests (not default C8), independently recover Unity RNG state/seed, original runtime numeric board and preset/remote selection before original parity claim.",
+      "nextAction": "AZUR native PR #80 proves ordinary InitializeGame→GenerateCards→DealCards (Unity Random.Range single Fisher–Yates, FirstColumnCards+c placement), and PR #82 separately proves level1 tutorial preset guard+validation/ordinary fallback. Implement separate AZUR dealer with scripted RNG fixtures; upstream Unity RNG state/seed, real original stock/tableau, preset serialization and active config still UNKNOWN.",
       "stage": "B1",
       "reason": "Original Unity RNG initialization and runtime selected board remain unknown, despite now VERIFIED native dealer shuffle and placement body."
     },
@@ -834,8 +834,15 @@
       "nextAction": "Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
+    },
+    {
+      "id": "azur-tutorial-preset-deal",
+      "status": "ROADMAPPED",
+      "currentImplementation": "C8 first-level FTUE uses versioned authored tutorial and frozen deal, not an independently verified AZUR TutorialManager preset validation/normal-branch fallback implementation.",
+      "nextAction": "Original AZUR 1.3.3.8 native PR #82 shows level1-only ShouldUseCardPreset, enabled+ValidateCardPreset+nonnull GetCardPreset, enabled InitializeGameWithPreset→GenerateCards→DealCardsFromPreset and ordinary fallback when missing/invalid. Design own optional versioned preset validation/fallback while preserving accepted C8 tutorial and old saves; original preset schema/cards, live enablement, Unity Random upstream state/seed, original Android board/restart remain UNKNOWN.",
+      "stage": "C1"
     }
   ],
-  "auditRevision": "2026-11-20-azur-native-dealer-and-bonus-gates-v7",
+  "auditRevision": "2026-11-20-azur-tutorial-preset-source-111-v8",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

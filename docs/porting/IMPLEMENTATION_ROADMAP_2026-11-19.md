@@ -4,7 +4,7 @@
 
 This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/7f91abfd824162780a6567c6823b95864142957c/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.
 
-**Coverage at this reviewed snapshot:** **110 feature IDs**, 29 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 56 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 13 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
+**Coverage after native P0 tutorial discovery:** **111 feature IDs**, 29 IMPLEMENTED_UNVERIFIED; 2 IN_PROGRESS; 57 ROADMAPPED; 1 DEFERRED; 9 BLOCKED; 13 EVIDENCE_GAP. **0 OWNER_EXCLUDED**. No `ACCEPTED` yet, because an original compiled-source match, a browser bot and a green unit test are not user/Android/live-source approval. Later source discoveries must be added; this inventory is not exhaustive of all original remote configurations.
 
 ## 1. Action priorities based on dependencies (not a feature ceiling)
 
@@ -75,13 +75,13 @@ Source-based gating and late simulator failure vs our mathematically certified +
 | `hitapps-feature-seed-one-time-reshuffle` | `ROADMAPPED` | Model shared LevelShuffled flag and precisely one FeatureLevelSeed shuffle across valid Lockers/Frozen/Bound; test invalid pattern flags without assuming unchanged board |
 | `hitapps-initial-shuffle-final-pipeline` | `ROADMAPPED` | Implement source-ordered phases 10/40,20/25/27,30/45 around candidate simulation, with independent source/adapter distinctions |
 
-### C1. Непрерывное обучение и Difficulty UX (3)
+### C1. Непрерывное обучение и Difficulty UX (4)
 
 User onboarding Hint/Undo/Joker, stock/waste/recycle, visible Hard/SuperHard, first-use evidence.
 
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
-| `azur-action-ftue` | `IMPLEMENTED_UNVERIFIED` | Owner plays 1–8 continuously on real phone; keep achievement markers action-based |
+| `azur-action-ftue` | `IMPLEMENTED_UNVERIFIED` | Owner plays 1–8 continuously on real phone; keep achievement markers action-based |\n| `azur-tutorial-preset-deal` | `ROADMAPPED` | [AZUR native level-one tutorial preset proof PR #82](https://github.com/DanilaH/mini-games-kit/pull/82): ShouldUseCardPreset only when level==1, enabled config+ValidateCardPreset+nonnull GetCardPreset; GenerateCards→DealCardsFromPreset when enabled, ordinary random fallback otherwise. Implement versioned authored preset validation/fallback without rewriting approved C8 FTUE; original preset contents/live enablement, Unity RNG state and original device snapshots remain UNKNOWN |
 | `azur-difficulty-label` | `IMPLEMENTED_UNVERIFIED` | Human/device check 320px, accessibility and perceived actual challenge |
 | `azur-locked-helper-discovery` | `ROADMAPPED` | Design previewable locked helper icon + level requirement without accidental spending; test screen reader and FTUE progression |
 
@@ -258,7 +258,7 @@ Every PR in this implementation program must report feature IDs, original refere
 
 **Backlog governance:** change `SOURCE_FEATURES.json` in kit and `ADOPTION_LEDGER.json` in game together for every discovered system. After implementation, update both roadmap and ledger to `IMPLEMENTED_UNVERIFIED` or `ACCEPTED` with evidence. Owner alone can exclude a roadmap entry. Previous `HOLD/REJECT` archived notes remain historical, not controlling policy.
 
-**Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 110/110, and implement the next unblocked package with exact SDK/save/Android evidence.
+**Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 111/111, and implement the next unblocked package with exact SDK/save/Android evidence.
 
 **Audit correction (19.11, pass3):** Previous 76/76 was incomplete across existing source packaging/IAP, uneven AZUR categories, multiresource rewards, language, helper discovery and 10 AZUR metadata UI systems. Source inventory now **110**, with real pinned-source consumer `qa:porting` mandatory. The old Hitapps Daily puzzle line was downgraded to `EVIDENCE_GAP` because only Hitapps DailyRewards and Unico actual Daily Level are proven. Source-like names do not prove live/runtime behavior.
 
@@ -267,3 +267,5 @@ Every PR in this implementation program must report feature IDs, original refere
 **P0 source follow-up (20.11 native-body, mini-games-kit PR #80):** AZUR normal deal uses Unity `Random.Range` one-pass Fisher–Yates, not the Hitapps ten-pass EmbeddedRandom; its column widths grow from `FirstColumnCards`. Bonus type2 foundation and type3 tableau column have decoded, independent unlock gates. Their ledger/roadmap entries remain open until source-seed/original-device/monetization evidence and product implementation. Research/consumer inventory remains 110/110. Existing C8 frozen deals and kit runtime dependency are unchanged.
 
 **P0 native bonus eligibility follow-up (20.11, mini-games-kit PR #81):** Source code establishes separate upper/lower min-level and 3/4-normal-slot/prefab gates, saved configuration restoration, coin debit-before-unlock, and an advertised rewarded route. No inference of active live monetization, current prices or SDK earnings. These are source-evidence advancements only; both game rows remain ROADMAPPED.
+
+**P0 tutorial preset and RNG source discovery (20.11, mini-games-kit PR #82):** A separate original AZUR level-one authored tutorial preset route is source-proven; disabled/missing/invalid preset falls back to ordinary Unity Random dealer. `UnityEngine.Random.InitState` has a native CoreModule wrapper but no direct call in inspected level-routing ranges; global seed/state and real original board remain UNKNOWN. Added the separate `azur-tutorial-preset-deal` system to C1. Source and product coverage now 111/111, no owner exclusions.\n

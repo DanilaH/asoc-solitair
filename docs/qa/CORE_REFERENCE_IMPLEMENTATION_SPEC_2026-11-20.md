@@ -2,7 +2,7 @@
 
 **Дата:** 20.11.2026  
 **Источник продукта:** `DanilaH/asoc-solitair` — development `feat/c8-onboarding-dealer-20261119`, baseline `bf26fe7280b05c458e12626590bbe5cf789c6788` на момент аудита. `game/main 19ea067f1788f9aabdabf819c6008e15475b22be` — старый C6. Разработка Content8: [PR #41](https://github.com/DanilaH/asoc-solitair/pull/41). [PR #42](https://github.com/DanilaH/asoc-solitair/pull/42) — **исследовательское ТЗ Equality**, не реализованный runtime.  
-**Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **110** ID и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research-gui-dance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.  
+**Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **112** ID (after the separate AZUR tutorial preset study) и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research-gui-dance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.  
 **Назначение:** **инженерная спецификация core системы для разработчика**, не новый список советов и не согласие вычеркнуть дорогие механики. Все найденные core-механики — генератор, баланс, модификаторы, сложность, рестарт, помощники, failure/revive — входят в программу продукта. Можно внедрять пакетами, **исключать из roadmap только по явному решению владельца**.
 
 ## 0. Истинные статусы доказанности и критерии закрытия
@@ -218,7 +218,7 @@ Suggested thresholds for each band must be **our own explicit tested balancing p
 
 ## 6. Реализационные пакеты для разработчика
 
-**Важно: ВСЕ обнаруженные core systems остаются в [110-feature roadmap](../porting/IMPLEMENTATION_ROADMAP_2026-11-19.md).** Пакеты ограничивают размер PR, **не финальный scope**. Точные стадии и зависимости:
+**Важно: ВСЕ обнаруженные core systems остаются в [112-feature roadmap](../porting/IMPLEMENTATION_ROADMAP_2026-11-19.md).** Пакеты ограничивают размер PR, **не финальный scope**. Точные стадии и зависимости:
 
 | Пакет | Что должен получить владелец | Точные source feature ID и основные изменения | Acceptance |
 | --- | --- | --- | --- |
@@ -242,7 +242,7 @@ Suggested thresholds for each band must be **our own explicit tested balancing p
 
 ## 8. Контракт сдачи и оформление PR
 
-Перед кодом агент обязан открыть актуальный `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, `ADOPTION_LEDGER.json` (110/110 with exact kit source SHA), source docs/real code and C8 active PR; сверить old 40–42 spec as historical data. Изменения в code сопровождать `sourceFeatureId` и real test. Если старые запреты конфликтуют с владельцем — исправить, а не отложить. Любой `BLOCKED/EVIDENCE_GAP` остаётся в дорожной карте с шагом закрытия, **не OWNER_EXCLUDED**.
+Перед кодом агент обязан открыть актуальный `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, `ADOPTION_LEDGER.json` (112/112 with exact kit source SHA), source docs/real code and C8 active PR; сверить old 40–42 spec as historical data. Изменения в code сопровождать `sourceFeatureId` и real test. Если старые запреты конфликтуют с владельцем — исправить, а не отложить. Любой `BLOCKED/EVIDENCE_GAP` остаётся в дорожной карте с шагом закрытия, **не OWNER_EXCLUDED**.
 
 **Формат сдачи одного implementation package:**
 ```text
@@ -296,10 +296,56 @@ Native `GameBoard.ConfigureBonusRewardedSlots` @`0x269f98c` independently config
 - **Rewarded:** independent `BonusSlotUnlockCoinsActive` flag, InternetConnectionHelper and AdServiceFacade reward-readiness; `RewardedAdLoadingHelper.ShowWithFeedback` is invoked with placement resolved differently for type2 and type3. **Original earned/closed/no-fill callbacks have not been run or fully reconstructed**. We must gate earned unlock on proven SDK reward and deduplicated receipt, not request/show/availability.
 - **Negative QA:** level below/at threshold, regular counts 2/3/4/5, one missing prefab, enable flag flips after active-save, separate type/index state, insufficient coins, SpendCoins returning false, delayed/duplicate/stale rewarded callback, no unlock on ad fail/no-fill, save/load/Undo and UI hit zones with optional fifth column.
 
-Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 110 registry entries.
+Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 112 registry entries.
 
 ### 9.4 Integration contract and no waiting for total research completion
 
-- Research source pin: kit [PR #80](https://github.com/DanilaH/mini-games-kit/pull/80), exact `SOURCE_FEATURES_PINNED.json` and ledger blob/ref updated together. IDs remain **110/110**; **no `OWNER_EXCLUDED`**.
+- Research source pin: kit [PR #80](https://github.com/DanilaH/mini-games-kit/pull/80), exact `SOURCE_FEATURES_PINNED.json` and ledger blob/ref updated together. At the time of PR80, IDs were **110/110**; after kit PR82 the historical post-PR82 inventory was **111/111**, now **112/112**, **no `OWNER_EXCLUDED`**.
 - CORE-1 and CORE-4 may proceed for known code paths in their already-approved implementation packages. Incomplete source parity is represented as `EVIDENCE_GAP`, not a guessed `ORIGINAL_RUNTIME`. No new release APK is implied by this docs change.
 - Research continues on Unity random state, original app final board and bonus-column live/price config. Any further corrections must update kit source inventory **and** this consumer ledger/roadmap using a recorded source Git SHA.
+
+
+## 10. AZUR tutorial preset — original native dispatcher and Unity RNG boundary (20 November 2026)
+
+**New source:** mini-games-kit [PR #82](https://github.com/DanilaH/mini-games-kit/pull/82), original AZUR 1.3.3.8/code244. Source-native verification: 12 IL2CPP method registrations, 18 exact ARM64 opcodes, 10 call/branch targets and UnityEngine.CoreModule.dll Random wrappers. **No original Android runtime capture yet.**
+
+### 10.1 Distinct source system: authored tutorial placement with fallback
+
+Native `GameController.InitializeGameLogic` checks `TutorialManager.ShouldUseCardPreset` → `ValidateCardPreset` → nonnull `GetCardPreset`. In the verified direct path, `ShouldUseCardPreset` explicitly checks that the requested level **equals 1** and the tutorial preset configuration is enabled. Only a valid, present preset reaches `GameManager.InitializeGameWithPreset`. The handler additionally verifies the preset's enabled flag, calls `GenerateCards` and then `DealCardsFromPreset`, or falls back to ordinary `InitializeGame` if disabled. This separate branch is **not** AZUR's default later-campaign RNG and is not a Hitapps seed experiment.
+
+**Source feature ID:** `azur-tutorial-preset-deal` (new, stage C1/FTUE). This mechanism requires separate authoring/validation/fallback support; preserve the complete source registry and all earlier systems. The original preset structural data, active tutorial config and final visible board remain UNKNOWN.
+
+**Developer delta:** preserve current C8 purposely customized first-five lessons and frozen deal IDs until owner approval. For source-based future tutorial authoring, model `eligibility → validated preset → normal fallback` as an explicit branch, never silently interpret a missing/malformed preset as an impossible/successful deal. Keep level-specific source variant identity in SaveStore and existing old-version Undo. Test level1 vs 0/2/2000, config disabled, invalid schema, null card list, disabled preset object, valid authored preset, and retry after changing config. A documented adapted lesson is legitimate but cannot be labelled an exact original AZUR level-1 tutorial.
+
+### 10.2 Unity Random — correctness of source claim
+
+The original `UnityEngine.CoreModule.dll` compiled module maps `UnityEngine.Random.InitState(int)` (method RID 2719) to wrapper RVA `0x53bb910` and `Random.Range(int,int)` (RID 2723) to RVA `0x53bba88`; both icall names verified. **No direct branch to InitState in the three inspected native control-flow ranges**, including normal/preset initialization, GameController dispatch and tutorial eligibility; this does **not** exclude indirect, engine-startup or elsewhere initiated seed/state writes.
+
+AZUR ordinary `DealCards` still consumes `N−1` Unity `Random.Range(0, remaining)` results. We can reconstruct ordering once given the **actual Unity RNG values/state**; we **cannot yet** reproduce original seed→final stock/tableau from a level ID. The model's scripted RNG fixture is `MODEL_ONLY`. Continue source research into upstream engine state, generated real level-2 trace and actual preset level-1 trace; don't push speculative PRNG equivalence into runtime.
+
+### 10.3 Restart route is a lifecycle fact, not a random-card proof
+
+Native `GameController.RestartLevel` branches to `LoadAndStartLevel`; this confirms level lifecycle re-entry but says nothing conclusive about preserved/randomized card positions without comparing original device snapshots and active save state. Never transfer Unico's observed Retry redeal semantics to AZUR by analogy.
+
+**Practical integration:** CORE-0/1 continue immediately, without waiting for full Unity RNG investigation. New tutorial preset entry remains roadmapped with full evidence/test dependencies; older 110 systems remain. Source inventory and consumer ledger must be pinned to the same exact kit Git blob. No game runtime changes implied by this research documentation.
+
+
+## 11. AZUR shared Unity Random and distinct Joker insertion — original-native P0 update (20 November 2026)
+
+**Source:** [mini-games-kit PR #84](https://github.com/DanilaH/mini-games-kit/pull/84) original AZUR 1.3.3.8/code244 ARM64 with method RID→native RVA and verified call targets. This is **SOURCE_NATIVE_STATIC**, not original Android runtime or live feature activation. Preserve earlier research, especially the different Hitapps seeded dealer and Hitapps Joker.
+
+### 11.1 CORE-1: random stream ownership is not isolated in the AZUR original
+
+The ordinary AZUR `DealCards` generic Fisher–Yates invokes the shared Unity `Random.Range(int,int)` native wrapper at RVA `0x53bba88`. Source bodies of DailyBonus `BuildShuffledColumnIndices` and `WeightedPick`, ComboSeries `PickRandomTrack`, `GameManager.AddJokerCard` and **developer tools** `ShowRandomOffer` also directly call that same wrapper. There are **four original executable direct BL locations** to Unity `Random.InitState` outside the three previously examined level-routing methods. The owning methods/activation for these four calls have **not** been proven. Direct call registration proves sharing the same Unity API, **not** that a daily bonus or event occurred before a real deal or that it changed a particular user's cards.
+
+**Developer contract:** do not model AZUR `seed = levelId`, assume no Unity reseeds anywhere, or claim an exact original seed-to-layout oracle. Our **product adaptation** should create an independently injected RNG stream per authoring operation and keep UI/meta random calls separate from published campaign deals. Archive final immutable Deal and original evidence tier; test identical initial authoring inputs despite simulated unrelated daily/combo random calls and distinguish the corresponding original-state UNKNOWN. This protects C8 reproducibility without a fictitious claim about source call order.
+
+### 11.2 CORE-4: new source feature, AZUR random lower-column Joker, clears Undo
+
+Original `Solitaire.GameManager.AddJokerCard` native RVA `0x26a4188`: in its positive valid-column branch computes an upperExclusive bounded by the **minimum** of its configured limit and currently available tableau count, calls shared `Random.Range(0,upperExclusive)`, retrieves `GameBoard.GetColumn` for that index, constructs/reveals a new card, forces placement through `Column.PlaceCardForced` and **conditionally calls `UndoSystem.Clear`** when UndoSystem exists. `Solitaire.UI.GameUIController.TryAddJokerCard` reports `GameplayEvents.RaiseJokerUsed` only after a nonnull returned card. The native Card constructor receives discriminator 2; do not conflate this with Hitapps CardType values or claim exhaustive AZUR enum parity.
+
+**New separately tracked source ID:** `azur-joker-random-column-insertion`, **D1**, `NATIVE_STATIC`. This is **not** the existing `hitapps-joker` (implemented, unverified). Preserve both mechanisms in the roadmap. The AZUR player-visible helper availability, coin/ad price, original zero/invalid bounds, actual selected column and full Save/Undo trace remain UNKNOWN.
+
+**Implement only under a versioned feature package:** separately decide whether clearing historical Undo is appropriate for our product; no unexpected deletion of saved Undo/receipt/attempt state. Test an eligible nonempty board with min(configuredLimit,columnCount), card creation/reveal and placement, append identity, no-column/invalid bounds, successful and failed UI helper paths, replay after saved reload, player-facing first use, adapter coin/reward earned/duplicate callbacks if connected. Every added mechanic must survive 320px portrait layout and actual signed Android acceptance.
+
+**Product status ≠ source evidence:** no runtime implementation is claimed by this spec addendum. Newly registered ID requires pinning the exact kit source snapshot and coverage **112/112**, without deleting a previously studied item.

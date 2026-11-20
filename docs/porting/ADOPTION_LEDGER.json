@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/71d9b414984ed71bd76634eacdf8c2851905c488/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "76a558e8f24080e035913234b1d730175f17a519",
-  "sourceInventoryRef": "71d9b414984ed71bd76634eacdf8c2851905c488",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/cb0b605c242fe6235ca48eabe24f2bde41f41ea0/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "e50f6746638ca456963d6104a555f41f183fa156",
+  "sourceInventoryRef": "cb0b605c242fe6235ca48eabe24f2bde41f41ea0",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "110 known source mechanics, including 11 extra core submechanics; source static AZUR native proof differs from live original runtime and from consumer acceptance. No permanent exclusions by agent.",
+  "coverageDisclaimer": "112 known Hitapps/AZUR/Unico source mechanisms, including AZUR distinct random-column Joker; original source ARM64 static evidence does not prove any live remote/ad/Android behavior, initial Unity RNG state, exact original output or consumer acceptance. No agent-feature exclusion.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -776,7 +776,7 @@
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "C8 ordinary dealer uses Hitapps source-shaped seeded authoring only. No distinct source-proven AZUR dealer strategy has been implemented.",
-      "nextAction": "ARM64 bodies in kit PR #80 verify InitializeGame→GenerateCards→DealCards; Unity Random.Range single-pass Fisher–Yates, FirstColumnCards+c placement/reveal and separate preset pathway. Implement distinct injectable-RNG offline AZUR dealer tests (not default C8), independently recover Unity RNG state/seed, original runtime numeric board and preset/remote selection before original parity claim.",
+      "nextAction": "AZUR native PR #80 proves ordinary InitializeGame→GenerateCards→DealCards (Unity Random.Range single Fisher–Yates, FirstColumnCards+c placement), and PR #82 separately proves level1 tutorial preset guard+validation/ordinary fallback. Implement separate AZUR dealer with scripted RNG fixtures; upstream Unity RNG state/seed, real original stock/tableau, preset serialization and active config still UNKNOWN. Kit PR #84 additionally proves shared UnityEngine.Random.Range callers from DailyBonus, ComboSeries and Joker, plus direct InitState call sites outside inspected level routes; original runtime call ordering/state still UNKNOWN. Our authoring should isolate UI/meta randomness as PRODUCT_ADAPTED.",
       "stage": "B1",
       "reason": "Original Unity RNG initialization and runtime selected board remain unknown, despite now VERIFIED native dealer shuffle and placement body."
     },
@@ -838,8 +838,22 @@
       "nextAction": "Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
+    },
+    {
+      "id": "azur-tutorial-preset-deal",
+      "status": "ROADMAPPED",
+      "currentImplementation": "C8 first-level FTUE uses versioned authored tutorial and frozen deal, not an independently verified AZUR TutorialManager preset validation/normal-branch fallback implementation.",
+      "nextAction": "Original AZUR 1.3.3.8 native PR #82 shows level1-only ShouldUseCardPreset, enabled+ValidateCardPreset+nonnull GetCardPreset, enabled InitializeGameWithPreset→GenerateCards→DealCardsFromPreset and ordinary fallback when missing/invalid. Design own optional versioned preset validation/fallback while preserving accepted C8 tutorial and old saves; original preset schema/cards, live enablement, Unity Random upstream state/seed, original Android board/restart remain UNKNOWN.",
+      "stage": "C1"
+    },
+    {
+      "id": "azur-joker-random-column-insertion",
+      "status": "ROADMAPPED",
+      "currentImplementation": "C8 implements a separate Hitapps-inspired Joker foundation/tableau lesson, but not original AZUR's randomly selected lower tableau insertion, card creation and UndoSystem.Clear source branch.",
+      "nextAction": "Research kit PR #84 original AZUR GameManager.AddJokerCard: shared Unity Random.Range(0,min(configured limit,current tableau columns)) chooses GetColumn, adds revealed card using PlaceCardForced, conditionally clears UndoSystem and TryAddJokerCard emits RaiseJokerUsed only on nonnull. Define versioned separate optional AZUR helper with source-derived/random-column tests and explicit Undo reset policy; actual positive/zero bounds, UI unlocking, coin/SDK receipts, original Android/restart/save states and global RNG state remain UNKNOWN.",
+      "stage": "D1"
     }
   ],
-  "auditRevision": "2026-11-20-azur-native-dealer-and-bonus-gates-v7",
+  "auditRevision": "2026-11-20-azur-global-unity-rng-joker-112-v9",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

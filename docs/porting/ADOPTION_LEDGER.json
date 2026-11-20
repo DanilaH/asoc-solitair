@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/44e43051a5ac05e82d9a132943b2c42362175b3d/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "65061f5813fc4f4fef1c088313008945d4b75f99",
-  "sourceInventoryRef": "44e43051a5ac05e82d9a132943b2c42362175b3d",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/095b6387f3303884d258fa4b2e967699d405d605/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "1a0bb1c9924650b0a787055e7c9252462ff528ad",
+  "sourceInventoryRef": "095b6387f3303884d258fa4b2e967699d405d605",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "114 source mechanisms; AZUR original ARM64 Frida runtime-oracle ABI and numeric capture scripts statically verified (12 methods/25 fields/7 exports), but ZERO executions/actual original samples. Synthetic comparator passes do not establish original source runtime parity or paid SDK behavior. No owner exclusions.",
+  "coverageDisclaimer": "114 source systems; AZUR original ARM64 source confirms DealCards shuffles a temporary copy of allCards (not persistent GameManager.allCards). Prior v1 trace comparator had a potential false-negative and has been corrected. Still zero Android original executions, so no source runtime/final board parity. No owner exclusions.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -771,10 +771,10 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "C8 ordinary dealer uses Hitapps source-shaped seeded authoring only. No distinct source-proven AZUR dealer strategy has been implemented.",
-      "nextAction": "Original-XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: read-only ARM64 Frida probe captures GenerateCards, filtered real Unity Random.Range draws (caller 0x2c6ac40), DealCards and numeric stock/tableau; verifier checked 12 method pointers/25 field schemas/7 reflection exports, but 0 source executions. On an authorized compatible ARM64 Android original, require >=2 independent actual captures + SHA/version/locale/config and compare source Fisher–Yates stream/board conservation; preserve separate Hitapps C8 dealer and old immutable saves. UNKNOWN original RNG initial seed, actual Android state and source remote activation.",
+      "currentImplementation": "Active C8 uses a Hitapps-oriented seeded ordinary dealer and frozen level definitions, not a separately accepted AZUR source-native shuffle/deal implementation. Original AZUR stores allCards in generated order and shuffles a separate cloned list.",
+      "nextAction": "Original exact AZUR ARM64 kit PR #91 proves DealCards clones manager.allCards before Fisher-Yates, consumes cloned temporary shuffled list column-by-column with FirstColumnCards+c widths and stock suffix; v1 Frida oracle incorrectly compared mutated allCards, now corrected v2 compares recorded real RNG-derived temporary permutation to ordered tableau+stock, verifies original allCards unchanged/face-up/stock conservation, rejects outside-positive branches. Need >=2 real authorized original ARM64 Android captures (currently 0), actual Unity random draws, locale/remote/art state and final board before claiming source runtime parity; do not mutate published Hitapps C8 Deal/Undo.",
       "stage": "B1",
-      "reason": "Original ARM64 shuffle/body/source metadata and numeric capture ABI are verified, but no original Android process was executed, no RNG samples/stock/tableau or selected remote state captured. Exact original initial Unity RNG and final board remain evidence gaps."
+      "reason": "Original source clone, shuffle and placement ARM64 are verified; actual selected Unity random stream/config, original Android stock and tableau still have zero genuine captures. Corrected original trace comparator synthetic fixtures are not live source parity."
     },
     {
       "id": "azur-bonus-lower-column",
@@ -864,6 +864,6 @@
       "nextAction": "Original XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: capture-ready hooks for PreloadThemes + TryGetLoadedSpriteCount, recording requested/loaded theme counts without protected image data; static 90 art packs/490 Sprite counts verified by kit PR #88, but original Android preload and error/late/remote behavior NOT observed. Need actual authorized device trace with success/missing art, content count and immutable Save/Undo path before product source-runtime parity."
     }
   ],
-  "auditRevision": "2026-11-20-azur-native-runtime-oracle-prepared-zero-captures-v12",
+  "auditRevision": "2026-11-20-azur-native-deal-temporary-clone-oracle-v13",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

@@ -2,9 +2,9 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/fix/solitaire-core-native-tier-20261120/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/57bffb395e06200dc9f147c6f52f0128b4a4d370/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
   "sourceInventoryBlob": "d331f6161975fba47dee4f5c13505e081ce51914",
-  "sourceInventoryRef": "fix/solitaire-core-native-tier-20261120",
+  "sourceInventoryRef": "57bffb395e06200dc9f147c6f52f0128b4a4d370",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "110 known source mechanics, including 11 extra core submechanics; source static AZUR native proof differs from live original runtime and from consumer acceptance. No permanent exclusions by agent.",
   "features": [

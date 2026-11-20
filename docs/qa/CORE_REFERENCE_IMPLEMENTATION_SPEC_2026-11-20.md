@@ -286,6 +286,18 @@ Native `GameBoard.ConfigureBonusRewardedSlots` @`0x269f98c` independently config
 
 **Still UNKNOWN:** who configures these slot indexes and their default/remote values, whether original UI *allocates* a new column or unlocks a reserved one, original level eligibility, ad/IAP price, when an active player sees type3, original save/restore behavior, and genuine SDK rewards. Static branch ≠ live monetization.
 
+### 9.4 CORE-4 follow-up: original AZUR remote eligibility, coins, rewarded and saved unlock
+
+**Source:** [mini-games-kit bonus gate/source-body research PR #81](https://github.com/DanilaH/mini-games-kit/pull/81), original AZUR 1.3.3.8, independent of a live Android callback. This **supersedes only specific OPEN items in 9.2**, not the remaining pricing/SDK/live-state blockers.
+
+- **When available:** `GameController.CreateBonusConfigForLevel` reads four independent remote fields: `BonusBaseRewardedActive`, `BonusBaseRewardedStartLevel`, `BonusColumnRewardedActive`, `BonusColumnRewardedStartLevel`. A type2 foundation/type3 lower-column candidate needs its active flag, `level >= startLevel`, respective **regular slot count 3 or 4** and presence of the matching `BoardLayoutGenerator` foundation/column prefab. Source constructs independent enabled and initially-unlocked=false flags. Native feature existence ≠ active remote values.
+- **Resume:** `GameController.CreateBonusConfigFromSave` restores four saved enabled/unlocked booleans for foundation+column from the saved board, not blindly recalculating eligibility under new remote flags. `UnlockBonusRewardedSlot` sets only the matching kind/index saved flag and enters `SaveCurrentGameState`. For our product, SaveStore must persist canonical, attempt-specific source-time feature state and preserve it through Undo/relaunch.
+- **Coins:** `BonusRewardedSlot.TryUnlockForCoins` checks balance, shows the out-of-coins flow if insufficient, calls `PlayerDataManager.SpendCoins` and **only on successful spend** invokes GrantUnlock and the type-specific Save flow. Price comes from an external input/config; the original video 500-coin example is not a universal native default.
+- **Rewarded:** independent `BonusSlotUnlockCoinsActive` flag, InternetConnectionHelper and AdServiceFacade reward-readiness; `RewardedAdLoadingHelper.ShowWithFeedback` is invoked with placement resolved differently for type2 and type3. **Original earned/closed/no-fill callbacks have not been run or fully reconstructed**. We must gate earned unlock on proven SDK reward and deduplicated receipt, not request/show/availability.
+- **Negative QA:** level below/at threshold, regular counts 2/3/4/5, one missing prefab, enable flag flips after active-save, separate type/index state, insufficient coins, SpendCoins returning false, delayed/duplicate/stale rewarded callback, no unlock on ad fail/no-fill, save/load/Undo and UI hit zones with optional fifth column.
+
+Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 110 registry entries.
+
 ### 9.3 Integration contract and no waiting for total research completion
 
 - Research source pin: kit [PR #80](https://github.com/DanilaH/mini-games-kit/pull/80), exact `SOURCE_FEATURES_PINNED.json` and ledger blob/ref updated together. IDs remain **110/110**; **no `OWNER_EXCLUDED`**.

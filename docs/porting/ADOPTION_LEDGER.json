@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/44e43051a5ac05e82d9a132943b2c42362175b3d/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "65061f5813fc4f4fef1c088313008945d4b75f99",
-  "sourceInventoryRef": "44e43051a5ac05e82d9a132943b2c42362175b3d",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/a5c246d9935474d7fe662da95fb657c61c245c0a/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "72efdad46077213e1ce68475b004544fe9dfec75",
+  "sourceInventoryRef": "a5c246d9935474d7fe662da95fb657c61c245c0a",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "114 source mechanisms; AZUR original ARM64 Frida runtime-oracle ABI and numeric capture scripts statically verified (12 methods/25 fields/7 exports), but ZERO executions/actual original samples. Synthetic comparator passes do not establish original source runtime parity or paid SDK behavior. No owner exclusions.",
+  "coverageDisclaimer": "114 source systems; AZUR original ARM64 source confirms DealCards shuffles a temporary copy of allCards (not persistent GameManager.allCards). Prior v1 trace comparator had a potential false-negative and has been corrected. Still zero Android original executions, so no source runtime/final board parity. No owner exclusions.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -797,10 +797,10 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "CORE-1 offline AzurDealer implements verified descending Fisher–Yates and deal placement with injected RNG. Current C8 uses frozen Hitapps-derived deals.",
-      "nextAction": "Kit PR #90 provides original ARM64 numeric capture for GenerateCards, filtered Unity Random.Range draws (caller 0x2c6ac40) and post-deal stock/tableau. Static verifier covers 12 methods, 25 fields and 7 exports. Obtain at least two real captures of the authorized original and compare the sampled board; original RNG initialization, actual device state, remote configuration and upstream stream sharing remain open.",
+      "currentImplementation": "CORE-1 offline AzurDealer shuffles a temporary copy with injected RNG and places the ordinary branch. The active C8 uses frozen Hitapps-derived deals.",
+      "nextAction": "Use the corrected v2 oracle from kit PR #91 to compare actual Unity draws with the temporary permutation, while keeping generated allCards unchanged. Obtain at least two original ARM64 captures with locale/config, actual stock/tableau and correct card conservation. Device output, original RNG initialization and upstream stream sharing remain open.",
       "stage": "B1",
-      "reason": "Original ARM64 shuffle/body/source metadata and numeric capture ABI are verified, but no original Android process was executed, no RNG samples/stock/tableau or selected remote state captured. Exact original initial Unity RNG and final board remain evidence gaps."
+      "reason": "Original source clone, shuffle and placement ARM64 are verified; actual selected Unity random stream/config, original Android stock and tableau still have zero genuine captures. Corrected original trace comparator synthetic fixtures are not live source parity."
     },
     {
       "id": "azur-bonus-lower-column",
@@ -869,8 +869,8 @@
     {
       "id": "azur-tutorial-preset-deal",
       "status": "ROADMAPPED",
-      "currentImplementation": "C8 first-level FTUE uses versioned authored tutorial and frozen deal, not an independently verified AZUR TutorialManager preset validation/normal-branch fallback implementation.",
-      "nextAction": "Original AZUR 1.3.3.8 native PR #82 shows level1-only ShouldUseCardPreset, enabled+ValidateCardPreset+nonnull GetCardPreset, enabled InitializeGameWithPreset→GenerateCards→DealCardsFromPreset and ordinary fallback when missing/invalid. Design own optional versioned preset validation/fallback while preserving accepted C8 tutorial and old saves; original preset schema/cards, live enablement, Unity Random upstream state/seed, original Android board/restart remain UNKNOWN.",
+      "currentImplementation": "C8 level-one tutorial uses an authored frozen Deal and staged instructional flow, but there is no distinct source-verified AZUR CardPresetLayout/Column/Item parser, exact native validation gates or explicit native preset-to-stock/columns mapping. This is not evidence that our current tutorial violates approved C8 UX.",
+      "nextAction": "Original exact AZUR XAPK kit PR #93: CardPresetLayout IsEnabled/ordered columns/separate deckCards; CardPresetColumn.cards; CardPresetItem themeId/wordIndex with any negative wordIndex category marker; GetTotalCardCount adds column+deck lengths; TutorialConfig.ValidatePreset null/disabled returns success but does not activate; enabled preset goes through Validate; level==1 tutorial picker gates route, InitializeGameWithPreset generates with null art-count map then resolves theme/word identities and places ordered cards/stock. Implement separately versioned optional authoring parser/validation/fallback, keep existing C8 frozen FTUE and save/Undo. Full original invalid/duplicate policy, authored original preset values, live enablement, actual Android board still UNKNOWN.",
       "stage": "C1"
     },
     {
@@ -895,6 +895,6 @@
       "nextAction": "Original XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: capture-ready hooks for PreloadThemes + TryGetLoadedSpriteCount, recording requested/loaded theme counts without protected image data; static 90 art packs/490 Sprite counts verified by kit PR #88, but original Android preload and error/late/remote behavior NOT observed. Need actual authorized device trace with success/missing art, content count and immutable Save/Undo path before product source-runtime parity."
     }
   ],
-  "auditRevision": "2026-11-20-azur-native-runtime-oracle-prepared-zero-captures-v12",
+  "auditRevision": "2026-11-20-azur-preset-schema-native-114-v14",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

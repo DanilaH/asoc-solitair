@@ -26,6 +26,7 @@ jobs:
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run check
       - run: npm run qa:rules
+      - run: npm run content:azur-preset
       - run: npm run qa:content8
       - run: npm run qa:content7
       - run: npm run qa:opening

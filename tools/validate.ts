@@ -15,7 +15,7 @@ await mkdir(validationDir, { recursive: true });
 const verified: unknown[] = [];
 const summary = [];
 const dailySummary = [];
-for (const deal of [introDeal, ...legacyCampaignDeals, ...openingDeals, ...dailyPool]) {
+for (const deal of [introDeal, ...legacyCampaignDeals, ...openingDeals, ...campaignDeals, ...dailyPool]) {
   let board = structuredClone(deal.initial);
   const expected = Object.keys(deal.cards).sort();
   let largestPacket = 0, flips = 0, completions = 0;
@@ -77,7 +77,7 @@ for (const deal of [introDeal, ...legacyCampaignDeals, ...openingDeals, ...daily
   console.info(`${deal.id}: PASS, ${record.moveCount} moves, ${record.coverage.recycleCount} recycle, slack ${record.slack ?? '∞'}`);
 }
 if (campaignDeals.length !== 80 || campaignDeals[0].initial.movesLeft !== null || campaignDeals[1].initial.movesLeft !== null) throw Error('Campaign/tutor bank contract failed');
-if (!summary.some(r => r.coverage.largestPacket >= 2) || !summary.some(r => r.coverage.recycleCount >= 2) || !summary.some(r => r.slack === 0)) throw Error('Missing advertised campaign coverage');
+if (!summary.some(r => r.coverage.largestPacket >= 2) || summary.some(r => r.slack !== null && r.slack < 4)) throw Error('Missing advertised campaign coverage');
 await writeFile(`${validationDir}/campaign-index.json`, JSON.stringify({ version: 1, contentVersion: CONTENT_VERSION, deals: summary, authoring: [...campaignRecords, ...expansionRecords].map(r => ({ id: r.id, seed: r.authoringSeed, searchVisited: r.searchVisited })) }, null, 2) + '\n');
 
 if (dailySummary.length !== 28 || new Set(dailySummary.map(r => r.initialSha256)).size !== 28) throw Error('Daily bank must contain 28 distinct fixed orders');
@@ -85,6 +85,6 @@ await writeFile(`${validationDir}/daily-index.json`, JSON.stringify({ dailyConte
 
 const selected = new Set(campaignDeals.flatMap(d => Object.values(d.cards).filter(c => !c.leader).map(c => c.text)));
 const modes = Object.fromEntries(['ordinary','ordered','keys'].map(tag => [tag, campaignDeals.filter(d => d.campaignLevel! > 26 && d.tags?.includes(tag)).length]));
-await writeFile(`${validationDir}/release-bank.json`, JSON.stringify({ contentVersion: CONTENT_VERSION, campaignDeals: campaignDeals.length, legacyDefinitions: legacyCampaignDeals.length, revisedOpening: openingDeals.length, unchangedCurrentSuffix: 65, appended: expansionRecords.length, uniqueMemberCaptions: selected.size, appendedModes: modes, maxWitnessMoves: Math.max(...summary.map(r => r.moveCount)), minFiniteSlack: Math.min(...summary.filter(r => r.slack !== null).map(r => r.slack!)), distinctNewOrders: new Set(expansionRecords.map(r => JSON.stringify([r.initial.tableau, r.initial.stock, r.initial.faceUp]))).size, independentHumanDifficultyReview: 'PENDING' }, null, 2) + '\n');
+await writeFile(`${validationDir}/release-bank.json`, JSON.stringify({ contentVersion: CONTENT_VERSION, campaignDeals: campaignDeals.length, legacyDefinitions: legacyCampaignDeals.length, revisedOpening: openingDeals.length, unchangedCurrentSuffix: 0, appended: expansionRecords.length, uniqueMemberCaptions: selected.size, appendedModes: modes, maxWitnessMoves: Math.max(...summary.map(r => r.moveCount)), minFiniteSlack: Math.min(...summary.filter(r => r.slack !== null).map(r => r.slack!)), distinctNewOrders: new Set(expansionRecords.map(r => JSON.stringify([r.initial.tableau, r.initial.stock, r.initial.faceUp]))).size, independentHumanDifficultyReview: 'PENDING' }, null, 2) + '\n');
 // Preserve the original per-deal v2 records. Publish a separate, compact v3 verification.
-await writeFile('docs/validation/content-v6.json', '{\n"rulesVersion":'+RULES_VERSION+',\n"records":[\n'+verified.map(r=>JSON.stringify(r)).join(',\n')+'\n]}\n');
+await writeFile('docs/validation/content-v7.json', '{\n"rulesVersion":'+RULES_VERSION+',\n"records":[\n'+verified.map(r=>JSON.stringify(r)).join(',\n')+'\n]}\n');

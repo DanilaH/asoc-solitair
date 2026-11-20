@@ -1,0 +1,75 @@
+/** Final gate: independent rule replay, immutable inputs, authored intent and measured curve. */
+import assert from 'node:assert/strict';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {campaignDeals,findDeal,legacyCampaignDeals,content6CampaignDeals} from '../src/content/campaign';
+import {dailyPool} from '../src/content/daily';
+import {applyBoard,assertBoard,sourceCards} from '../src/domain/engine';
+import {advance} from './qa/gameplay-oracle';
+import {directOnly} from './qa/direct-only-policy';
+import plan from '../docs/content/CONTENT_V7_LEVEL_PLAN.json' with {type:'json'};
+import frozen from '../tests/fixtures/content7-legacy-hashes.json' with {type:'json'};
+import type {Board,BoardCommand,Deal} from '../src/domain/types';
+const sha=(x:unknown)=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
+const design=JSON.parse(await readFile('docs/qa/content-v7/design.json','utf8'));
+const analyses=JSON.parse(await readFile('docs/qa/content-v7/independent-analysis.json','utf8'));
+const survey=JSON.parse(await readFile('docs/qa/content-v7/branch-survey.json','utf8'));
+assert.equal(design.authoringSourceSHA256,createHash('sha256').update(await readFile('tools/content/content7-recipes.ts')).digest('hex'));
+assert.equal(design.routeFinderSHA256,createHash('sha256').update(await readFile('tools/content/content7-witness.ts')).digest('hex'));
+assert.equal(campaignDeals.length,80);assert.equal(design.levels.length,80);assert.equal(analyses.length,80);assert.equal(survey.length,80);
+for(const [p,h] of Object.entries(frozen))assert.equal(createHash('sha256').update(await readFile(p)).digest('hex'),h,`Frozen baseline changed: ${p}`);
+for(const d of [...legacyCampaignDeals,...content6CampaignDeals])assert.equal(findDeal(d.id),d);
+assert.equal(dailyPool.length,28);
+let comparisons=0;const passports:any[]=[];
+let runtimeHTMLSHA:string|undefined;try{runtimeHTMLSHA=createHash('sha256').update(await readFile('dist/index.html')).digest('hex');}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
+function replay(d:Deal,start:Board,path:BoardCommand[]){let b=structuredClone(start);for(const a of path){const p=applyBoard(b,a,d),q=advance(b,a,d);assert.notEqual(typeof p,'string',d.id);assert(q,d.id);if(typeof p==='string')throw Error(p);assert.deepEqual(p.board,q,d.id);b=q;assertBoard(b,d);comparisons++;}assert.equal(b.phase,'won',d.id);return b;}
+function actionName(b:Board,a:BoardCommand,d:Deal){if(a.type!=='transfer')return a.type==='draw'?'Взять карту из колоды':'Вернуть сброс в колоду';const ids=sourceCards(b,a.from,d),cat=d.cards[ids[0]].category;const source=a.from.kind==='waste'?'сброс':`столбец ${a.from.index+1}`,target=a.to.kind==='foundation'?`верхний слот ${a.to.index+1}`:`столбец ${a.to.index+1}`;return `«${d.cards[cat].text}», ${ids.length} карт: ${source} → ${target}`;}
+for(const [i,d] of campaignDeals.entries()){
+ const p=plan.levels[i],a=design.levels[i],q=analyses[i],cats=Object.values(d.cards).filter(c=>c.leader),cards=Object.keys(d.cards).length;
+ assert.equal(d.id,`campaign-c7-${String(i+1).padStart(3,'0')}`);assert.equal(d.campaignLevel,i+1);assert.equal(d.version,1);assert.equal(d.initial.rulesVersion,3);
+ assert.equal(q.level,i+1);assert.equal(q.initialBoardSHA,sha(d.initial),d.id+' stale independent analysis');assert.equal(a.initialSha256,sha(d.initial),d.id+' stale design');
+ assert.equal(survey[i].id,d.id);assert.equal(survey[i].initialSHA,sha(d.initial));
+ for(const state of survey[i].states){let b=structuredClone(d.initial);for(const cmd of state.prefix){const next=advance(b,cmd,d);assert(next);b=next;}
+  for(const alternative of state.alternatives){const next=advance(b,alternative.action,d);assert(next);if(alternative.status==='FOUND')replay(d,next,alternative.recoveryPath);}
+ }
+ assert(cats.length>=p.categoryBand[0]&&cats.length<=p.categoryBand[1]);assert(cards>=p.cardBand[0]&&cards<=p.cardBand[1]);assert(d.initial.tableau.length<=4&&d.initial.foundations.length<=3);
+ assert.equal(Boolean(d.lock),p.mechanic.startsWith('keys:'));assert.equal(Boolean(d.tags?.includes('ordered')),p.mechanic.startsWith('ordered:'));
+ if(i<2)assert.equal(d.initial.movesLeft,null);else assert(d.initial.movesLeft!-d.winningPath.length>=4);
+ if(p.paceRole==='REST'){assert(cards<=Object.keys(campaignDeals[i-1].cards).length*.75);assert(d.winningPath.length<=campaignDeals[i-1].winningPath.length*.75);}
+ const final=replay(d,d.initial,d.winningPath);assert.equal(q.independentSearch.status,'FOUND');replay(d,d.initial,q.independentSearch.path);
+ const runs=Array.from({length:17},(_,seed)=>directOnly(d,seed));assert.deepEqual(runs.map(({path,...r})=>r),q.simple.runs,d.id+' stale policy analysis');
+ const extraBranches=survey[i].states.flatMap((s:any)=>s.alternatives.filter((x:any)=>x.status==='FOUND'&&x.totalActions>d.winningPath.length&&!q.recoverableAlternatives.some((old:any)=>old.atStep===s.atStep&&JSON.stringify(old.action)===JSON.stringify(x.action))).slice(0,1).map((x:any)=>({atStep:s.atStep,action:x.action,recoveryPath:x.recoveryPath,totalAcceptedActions:x.totalActions,extraAgainstReference:x.totalActions-d.winningPath.length,reason:'Более затратный проверенный маршрут из полного опроса этой развилки; не доказательство минимальной цены хода.'})));
+ const examples=[],keySteps=[],lowerSteps=[],emptySteps=[],orderedSteps=[];let b=structuredClone(d.initial);
+ for(const [step,cmd] of d.winningPath.entries()){
+  const n=advance(b,cmd,d)!;
+  if(cmd.type==='transfer'&&cmd.to.kind==='tableau'){lowerSteps.push(step);if(!b.tableau[cmd.to.index].length)emptySteps.push(step);if(sourceCards(b,cmd.from,d).some(id=>d.cards[id].rank!==undefined))orderedSteps.push(step);}
+  if((n.keys?.length??0)>(b.keys?.length??0))keySteps.push({step,keys:n.keys});
+  for(const branch of [...q.recoverableAlternatives,...extraBranches].filter((x:any)=>x.atStep===step)){
+   const n=advance(b,branch.action,d);assert(n);const end=replay(d,n,branch.recoveryPath);assert.equal(end.phase,'won');assert(branch.totalAcceptedActions<=d.initial.movesLeft!);
+   examples.push({...branch,prefix:d.winningPath.slice(0,step),choice:actionName(b,branch.action,d),remainingMoves:d.initial.movesLeft!-branch.totalAcceptedActions,needsHelper:false});
+  }
+  b=n;
+ }
+ if(d.lock){assert.equal(final.keys?.length,3);assert.equal(keySteps.length,3);for(const key of Object.values(d.cards).filter(c=>c.keyId))assert(!d.initial.faceUp.includes(key.id));}
+ if(p.paceRole==='PEAK'){assert(q.decisionPoints.length>=2);assert(examples.length>=1);}
+ const bestSimple=runs.filter(r=>r.outcome==='won').sort((a,b)=>a.steps-b.steps)[0];
+ let ui:any={status:'UNKNOWN',note:'No exact matching real UI recording in this checkout'};
+ try{const r=JSON.parse(await readFile(`.recording/content7-ui/level-${String(i+1).padStart(3,'0')}.json`,'utf8'));if(runtimeHTMLSHA&&r.runtimeHTMLSHA===runtimeHTMLSHA&&r.id===d.id&&r.initialSHA===sha(d.initial)&&r.witnessSHA===sha(d.winningPath)){assert.equal(r.actualBoard.phase,'won');ui={status:'PASS',project:r.project,viewport:r.viewport,runtimeHTMLSHA,input:r.input};}}catch(e){if((e as NodeJS.ErrnoException).code!=='ENOENT')throw e;}
+ const semanticSet=cats.map(c=>c.id).sort().join('|'),symbols=new Map(cats.map((c,i)=>[c.category,String.fromCharCode(97+i)]));
+ const encode=(id:string)=>symbols.get(d.cards[id].category)+(d.cards[id].leader?'':id.slice(d.cards[id].category.length));
+ const shape=sha({columns:d.initial.tableau.map(c=>c.map(encode)).sort(),stock:d.initial.stock.map(encode),open:d.initial.faceUp.map(encode).sort(),slots:d.initial.foundations.length,ordered:cats.filter(c=>c.ordered).map(c=>symbols.get(c.category)),lock:d.lock?{column:d.lock.column,keys:Object.values(d.cards).filter(c=>c.keyId).map(c=>encode(c.id))}:null});
+ passports.push({campaignLevel:i+1,id:d.id,title:d.title,version:1,contentVersion:7,paceRole:p.paceRole,focus:p.focus,decisionSignature:a.signature,differentiator:a.rationale,plannedContrast:p.contrast,changeFromContent6:{id:content6CampaignDeals[i].id,cards:Object.keys(content6CampaignDeals[i].cards).length,actions:content6CampaignDeals[i].winningPath.length,feature:content6CampaignDeals[i].lock?'keys':content6CampaignDeals[i].tags?.includes('ordered')?'ordered':'ordinary'},targetCategories:p.categoryBand,actualCategories:cats.length,targetCards:p.cardBand,totalCards:cards,foundationSlots:d.initial.foundations.length,tableauDepth:d.initial.tableau.map(c=>c.length),stockSize:d.initial.stock.length,recycle:d.winningPath.filter(x=>x.type==='recycle').length,feature:p.mechanic,requiredFeatureApplied:d.lock?keySteps.length===3:p.mechanic.startsWith('ordered:')?final.collected.some(id=>d.cards[id].ordered):null,tutorialFirstUse:i===29?'ordered':i===48?'keys':null,witnessSteps:d.winningPath.length,moveBudget:d.initial.movesLeft,slack:final.movesLeft,budgetException:d.initial.movesLeft!==null&&(d.initial.movesLeft-d.winningPath.length)/d.winningPath.length>.3?'Four-move minimum on a short route exceeds30%; not a human difficulty estimate':null,authoringProof:{lowerSteps,emptySteps,orderedSteps,keySteps},recoverableAlternatives:examples,inefficientBranch:examples.some(x=>x.extraAgainstReference>0)?'Verified route uses more moves than the reference; no optimality or causal-minimum claim':p.paceRole==='REST'||p.paceRole==='TUTORIAL'?'Intentional direct rest/tutorial; no contrived wrong choice required':'Verified alternatives can cost the same or less than the reference. Multiple valid orders are intentional; do not call them mistakes or claim the reference optimal.',initialBoardSHA:sha(d.initial),authoredSeed:null,contentSourceRevision:a.sourceRevision,authoringSourceSHA256:design.authoringSourceSHA256,routeFinderSHA256:design.routeFinderSHA256,independentOracleResult:'PASS',independentSearch:q.independentSearch.status,restrictedNoLower:q.noLower,restrictedNoEmpty:q.noEmpty,simplePolicy:{wins:q.simple.wins,runs:17,bestSteps:bestSimple?.steps??null,bestRecycles:bestSimple?.recycles??null},decisionPoints:q.decisionPoints,structuralProxy:q.structuralProxy,uiPlayResult:ui,semanticSet,normalizedLayoutSHA:shape,humanAcceptance:'UNKNOWN'});
+ console.info(`${d.id}: oracle PASS; ${p.paceRole}; ${cards} cards; ${d.winningPath.length}/${d.initial.movesLeft??'∞'} actions; UI ${ui.status}`);
+}
+const median=(xs:number[])=>{const a=xs.slice().sort((a,b)=>a-b);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;},mean=(xs:number[])=>xs.reduce((a,b)=>a+b,0)/xs.length;
+const roles=Object.fromEntries(['PEAK','REST','BASE','TUTORIAL'].map(role=>[role,passports.filter(r=>r.paceRole===role).length]));assert.deepEqual(roles,{PEAK:15,REST:15,BASE:48,TUTORIAL:2});
+const repeats=passports.flatMap((r,i)=>passports.slice(0,i).filter(q=>q.normalizedLayoutSHA===r.normalizedLayoutSHA||q.semanticSet===r.semanticSet&&r.campaignLevel-q.campaignLevel<=5).map(q=>({levels:[q.campaignLevel,r.campaignLevel],sameLayout:q.normalizedLayoutSHA===r.normalizedLayoutSHA,sameTopics:q.semanticSet===r.semanticSet,intentionalRest:r.paceRole==='REST'&&q.paceRole==='REST'})));
+assert(!repeats.some(r=>r.sameLayout&&!r.intentionalRest),'Undeclared non-rest clone');
+const surveyed=survey.flatMap((r:any)=>r.states.flatMap((s:any)=>s.alternatives));
+const branchSurvey={states:survey.reduce((n:number,r:any)=>n+r.states.length,0),alternatives:surveyed.length,withinBudget:surveyed.filter((x:any)=>x.status==='FOUND').length,unknown:surveyed.filter((x:any)=>x.status==='UNKNOWN').length,exhaustedBudgetGraphs:surveyed.filter((x:any)=>x.status==='UNSOLVABLE').length,scope:'Every nonsymmetric legal alternative at first2 authored peak decision states / first1 base decision state. Not all game states.'};
+const summary={contentVersion:7,roles,branchSurvey,independentReplayComparisons:comparisons,curve:Array.from({length:4},(_,i)=>{const a=passports.slice(i*20,i*20+20);return{chapter:i+1,meanCards:mean(a.map(r=>r.totalCards)),medianCards:median(a.map(r=>r.totalCards)),meanActions:mean(a.map(r=>r.witnessSteps)),medianActions:median(a.map(r=>r.witnessSteps))};}),peakRest:passports.filter(r=>r.paceRole==='REST').map(r=>({peak:r.campaignLevel-1,rest:r.campaignLevel,cardsRatio:r.totalCards/passports[r.campaignLevel-2].totalCards,actionsRatio:r.witnessSteps/passports[r.campaignLevel-2].witnessSteps})),repeats,ordinary:passports.filter(r=>r.feature==='none').length,ordered:passports.filter(r=>r.feature.startsWith('ordered:')).map(r=>r.campaignLevel),keys:passports.filter(r=>r.feature.startsWith('keys:')).map(r=>r.campaignLevel),uiPassed:passports.filter(r=>r.uiPlayResult.status==='PASS').length,structuralProxy:{choiceStates:passports.reduce((s,r)=>s+r.structuralProxy.choiceStates,0),otherStates:passports.reduce((s,r)=>s+r.structuralProxy.otherStates,0),algorithm:'See each row: actionable limited-slot leader priorities,2+lower uncovering transfers,or use-vs-bury waste. Other states are unclassified/routine, not proven forced. This is not a measure of thought or fun.'},boundedBranchFailures:analyses.flatMap((r:any)=>r.decisionPoints.flatMap((p:any)=>p.alternatives.filter((a:any)=>a.status!=='FOUND').map((a:any)=>({level:r.level,atStep:p.atStep,status:a.status,visited:a.visited})))),limits:'Replays prove correctness of the supplied routes. Independent and restricted searches are bounded; UNKNOWN is not an impossibility proof. Sampled branches are not exhaustive. No human enjoyment, win rate, retention, native feel or balance acceptance has been measured.'};
+await mkdir('docs/qa/content-v7',{recursive:true});await writeFile('docs/qa/content-v7/passports.json','{\n"summary":'+JSON.stringify(summary)+',\n"levels":[\n'+passports.map(r=>JSON.stringify(r)).join(',\n')+'\n]}\n');
+if(process.env.C7_REQUIRE_UI==='1')assert.equal(summary.uiPassed,80,'All80 exact real-input records are required');
+const rows=passports.map(r=>`| ${r.campaignLevel} | ${r.paceRole} | ${r.totalCards} | ${r.witnessSteps} / ${r.moveBudget??'∞'} | ${r.title}: ${r.focus} | ${r.uiPlayResult.status} |`).join('\n');
+await writeFile('docs/qa/content-v7/CURVE.md',`# Content7: вся кривая80 уровней\n\nЭто измерения фиксированных раздач и записанных маршрутов, а не подтверждённый баланс для людей. ${summary.limits}\n\n| Глава | Карты: среднее / медиана | Действия: среднее / медиана |\n|---|---|---|\n${summary.curve.map(r=>`| ${r.chapter} | ${r.meanCards.toFixed(1)} / ${r.medianCards} | ${r.meanActions.toFixed(1)} / ${r.medianActions} |`).join('\n')}\n\nРоли:15 PEAK,15 REST,48 BASE,2 TUTORIAL. Ordered:${summary.ordered.join(', ')}. Keys:${summary.keys.join(', ')}. Каждый REST≤75% предыдущего PEAK по картам и принятому маршруту.\n\n| Уровень | Роль | Карт | Действия / бюджет | Проверяемый приём | UI |\n|---|---|---:|---:|---|---|\n${rows}\n\nПолные развилки, исходные SHA, восстановление, ограничения поиска и различия соседей находятся в passports.json. Исторические определения сверены с b612420 по неизменяемым SHA256. UI PASS относится к точной раздаче/маршруту в браузере; Android и человеческая приёмка учитываются отдельно.\n`);
+console.info(JSON.stringify(summary));

@@ -12,16 +12,28 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci --no-audit --no-fund
+      - name: Restore the accepted pinned dependency cache without writing private source back
+        uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/.npm
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
+      - run: node --test tests/infrastructure/*.test.mjs
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
+          ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run check
       - run: npm run qa:rules
+      - run: npm run qa:content7
       - run: npm run qa:opening
       - run: npm run qa:prototypes:build
       - run: npm run qa:prototypes:validate
       - run: npx playwright install --with-deps chromium
       - run: npm run qa:layout
       - run: npm run test:browser
+      - run: npm run qa:content7
+        env:
+          C7_REQUIRE_UI: '1'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -29,6 +41,8 @@ jobs:
           path: |
             test-results/
             .recording/layout-audit/
+            .recording/content7-ui/
+            .recording/content7-recordings/
           retention-days: 7
   android:
     runs-on: ubuntu-24.04
@@ -37,7 +51,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
-          cache: npm
+      - name: Restore the accepted pinned dependency cache without writing private source back
+        uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/.npm
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -47,7 +65,11 @@ jobs:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
       - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-      - run: npm ci --no-audit --no-fund
+      - run: node --test tests/infrastructure/*.test.mjs
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
+          ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run android:sync
       - uses: actions/cache@v4
         with:
@@ -58,11 +80,8 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/asoc-debug-signing"
           if [ ! -s "$RUNNER_TEMP/asoc-debug-signing/debug.keystore" ]; then
-            keytool -genkeypair -noprompt -storetype JKS \
-              -keystore "$RUNNER_TEMP/asoc-debug-signing/debug.keystore" \
-              -storepass android -keypass android -alias androiddebugkey \
-              -dname 'CN=Android Debug,O=Android,C=US' \
-              -keyalg RSA -keysize 2048 -validity 10000
+            echo '::error::The existing preview signing identity is required; do not generate a replacement key.'
+            exit 1
           fi
       - run: ./gradlew --no-daemon assembleDebug
         working-directory: native/android
@@ -72,6 +91,7 @@ jobs:
       - name: Verify the preview APK signature
         run: |
           $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk
+          $ANDROID_HOME/build-tools/36.0.0/apksigner verify --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk | grep -F '0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e'
           $ANDROID_HOME/build-tools/36.0.0/aapt dump badging native/android/app/build/outputs/apk/debug/app-debug.apk | head -1
       - run: ./gradlew --no-daemon assembleRelease
         working-directory: native/android

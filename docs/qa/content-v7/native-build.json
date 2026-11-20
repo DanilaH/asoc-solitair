@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "19f7547b6e951cda8a26b2b8081ad9edc54ab334",
+  "runtimeHTMLSHA": "cd9435284d05b9500fca308f68cdac7eb030723f9cf243158e3e0bf4b5941007",
+  "debug": {
+    "status": "PASS",
+    "package": "com.danilah.asocsolitair.debug",
+    "versionName": "0.18.0",
+    "versionCode": 27,
+    "adMode": "test",
+    "adUnitIds": [
+      "demo-banner-yandex",
+      "demo-interstitial-yandex",
+      "demo-rewarded-yandex"
+    ],
+    "analyticsAPIKey": "",
+    "sha256": "5e675d41e927a3666492a59e7084b7135b0cc34cfe17c6862e204350206f170a",
+    "bytes": 11759377,
+    "localCertificateSHA256": "06534d5dedb7cd83e2eb694622c6ab7ae60926c594bcd58109f892358dc264b2",
+    "updateCompatible": false,
+    "deliverable": false
+  },
+  "release": {
+    "status": "PASS",
+    "signed": false,
+    "adMode": "disabled",
+    "analyticsAPIKey": "",
+    "sha256": "b579602f99c984d35faa780feb259d62ba2adf2272fbdc372815f9c2b0001c10",
+    "bytes": 6980765,
+    "compileOnly": true
+  },
+  "packagedWebFiles": 208,
+  "packagedWebMismatches": 0,
+  "physicalDevice": "UNKNOWN",
+  "productionConfigurationChanged": false,
+  "previewSignatureRequired": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e"
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { campaignDeals } from '../../src/content/campaign';
+import { campaignDeals, legacyCampaignDeals } from '../../src/content/campaign';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { campaignId, markTutorial } from '../../src/domain/progression';
 import { lesson, recordLearning, ruleIntroduction } from '../../src/app/tutorial';
@@ -42,7 +42,7 @@ it('learned skills survive restart and leave an independent stretch in the secon
 });
 it('new rule introductions are once-only metadata and never change resources',()=>{
   for(const [index,kind]of [[20,'joker'],[22,'ordered'],[25,'keys']] as const){
-    const deal=campaignDeals[index],save=freshSave(deal,'intro');save.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d => campaignId(d.campaignLevel!))};
+    const deal=legacyCampaignDeals[index],save=freshSave(deal,'intro');save.platform={receipts:[],continuedAttempts:[],continueCredits:0,lastFullscreenAt:0,winsSinceInterstitial:0,completedCampaign:campaignDeals.slice(0,index).map(d => campaignId(d.campaignLevel!))};
     const profile=structuredClone(save.profile),board=structuredClone(save.attempt.board);expect(ruleIntroduction(save,deal)).toBe(kind);markTutorial(save,`intro:${kind}`);expect(ruleIntroduction(save,deal)).toBeUndefined();expect(save.profile).toEqual(profile);expect(save.attempt.board).toEqual(board);
   }
 });

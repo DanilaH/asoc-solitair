@@ -1,6 +1,6 @@
 import {campaignId} from '../../src/domain/progression';
 import { describe, expect, it } from 'vitest';
-import { campaignDeals, findDeal } from '../../src/content/campaign';
+import { campaignDeals, legacyCampaignDeals, findDeal } from '../../src/content/campaign';
 import { dailyForDay, dailyPool } from '../../src/content/daily';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { beginDeal } from '../../src/domain/campaign';
@@ -47,7 +47,7 @@ describe('compact campaign goals', () => {
     beginDeal(save, campaignDeals[3], 'other-level'); expect(save.meta!.winCycle).toBe(0);
   });
   it('migrates the 0.4 save once, preserving attempts/receipts and granting earned cosmetics/milestones without inventing a win cycle', () => {
-    const save = freshSave(campaignDeals[19], 'old20'); completed(save, 20); save.platform!.receipts = ['already-earned']; save.rulesVersion = 2; save.contentVersion = 3; save.balanceVersion = 2; delete save.meta;
+    const save = freshSave(legacyCampaignDeals[19], 'old20'); completed(save, 20); save.platform!.receipts = ['already-earned']; save.rulesVersion = 2; save.contentVersion = 3; save.balanceVersion = 2; delete save.meta;
     save.attempt.board.rulesVersion = 2;
     const before = structuredClone(save), next = decodeSave(JSON.stringify(save), findDeal);
     expect(next.attempt).toEqual(before.attempt); expect(next.platform).toEqual(before.platform); expect(next.profile.coins).toBe(before.profile.coins + 80);

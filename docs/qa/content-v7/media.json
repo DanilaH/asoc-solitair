@@ -1,0 +1,242 @@
+{
+  "contentVersion": 7,
+  "files": [
+    {
+      "file_name": "Association-Solitaire-Content7-peak-rest.gif",
+      "library_file_id": "libfile_fde3_f-7ea18b57c6c88191afd179a7575fcf0f_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_0000000098f081f581e66fa1e52f0cc5",
+      "version": 1,
+      "local_path": ".recording/content7-delivery/Association-Solitaire-Content7-peak-rest.gif",
+      "bytes": 1926279,
+      "sha256": "c6abfd9d895da549daf7b26e15beed157b5c0613605428d76cae2239110c90e8"
+    },
+    {
+      "file_name": "Association-Solitaire-Content7-space-ordered.gif",
+      "library_file_id": "libfile_fde3_f-6fb7d97a483881918df075aead46c14a_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_00000000a66881f5b18db9d30abda7e8",
+      "version": 1,
+      "local_path": ".recording/content7-delivery/Association-Solitaire-Content7-space-ordered.gif",
+      "bytes": 2869795,
+      "sha256": "bfe3e1cb3fb5cdaab4fffa5f6c39a664ea5191701b1d72ae7db6730c208087a6"
+    },
+    {
+      "file_name": "Association-Solitaire-Content7-keys.gif",
+      "library_file_id": "libfile_fde3_f-c4269e3c8b008191909cceba6e6796a4_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_00000000cb5c81f5b5546489bd0965c7",
+      "version": 1,
+      "local_path": ".recording/content7-delivery/Association-Solitaire-Content7-keys.gif",
+      "bytes": 1700418,
+      "sha256": "d21dfcf946c1aa29ac40da04c558fd9818db9e3296a0e55b1c5c21bde2493441"
+    },
+    {
+      "file_name": "Association-Solitaire-Content7-final-peak-rest.gif",
+      "library_file_id": "libfile_fde3_f-ca93490f2ff881919fe51fcc4b82af6b_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_000000003f2881f5b1fe283c58748fee",
+      "version": 1,
+      "local_path": ".recording/content7-delivery/Association-Solitaire-Content7-final-peak-rest.gif",
+      "bytes": 3010698,
+      "sha256": "3dfc873682dcd2f84d8879cd5ede328e604e4b3e58792e22dfd71d33c2595a89"
+    },
+    {
+      "file_name": "Association-Solitaire-Content7-curve.png",
+      "library_file_id": "libfile_fde3_f-2b0cbc23f2e88191bca77c6fd3f50fc3_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_00000000f8c481f5a84fbbb3bd3fecc9",
+      "version": 0,
+      "local_path": ".recording/content7-delivery/Association-Solitaire-Content7-curve.png",
+      "bytes": 247871,
+      "sha256": "11c13f4f0f00a52ee2b7082b2a6f3f4e4b8acf00ba5305c590042165614639a8"
+    },
+    {
+      "file_name": "Association-Solitaire-Content7-level76.png",
+      "library_file_id": "libfile_fde3_f-16070e3fb4748191be6f5e657f5aa746_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_00000000ca0481f5b02e3bafdf2512be",
+      "version": 0,
+      "local_path": ".recording/content7-delivery/Association-Solitaire-Content7-level76.png",
+      "bytes": 246035,
+      "sha256": "dca2e0e5a418921c86b7572b7ae16e887683d84cbaefc1310f7bdfdbee7c6898"
+    },
+    {
+      "file_name": "Association-Solitaire-Content7-gameplay-evidence.zip",
+      "library_file_id": "libfile_fde3_f-810f2f2b76a4819182851c3b25d9c8cc_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_00000000405c81f5954cfa932aea38a9",
+      "version": 1,
+      "local_path": ".recording/content7-delivery/Association-Solitaire-Content7-gameplay-evidence.zip",
+      "bytes": 78241330,
+      "sha256": "4c968fa7ce15d124eec96648b93c037c9913c409eea9eb696e9c430899df065d"
+    },
+    {
+      "file_name": "Association-Solitaire-Content7-middle-wave.gif",
+      "library_file_id": "libfile_fde3_f-af86e535cd948191a483689553e256e2_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_000000007ad481f59ee74032057eab3a",
+      "version": 0,
+      "local_path": ".recording/content7-delivery/Association-Solitaire-Content7-middle-wave.gif",
+      "bytes": 3312503,
+      "sha256": "52cb21312320fa922455a60bd841f7460e9ed9e2a4aab383eaabba20e7372332"
+    },
+    {
+      "file_name": "asoc-solitair-0.18.0-preview.apk",
+      "library_file_id": "libfile_fde3_f-eae5c95d7a408191b81e91dd6e2aa0da_2841ca9da26c8191b7a266fa9b41a810",
+      "file_id": "file_00000000141881f5938bf56aae36dbd2",
+      "version": 0,
+      "local_path": ".recording/content7-delivery/asoc-solitair-0.18.0-preview.apk",
+      "bytes": 11759357,
+      "sha256": "19af95a20e669a5f77f8ac32933bf6f4859e49b0d0e38fa0914ad5f849a68e31"
+    }
+  ],
+  "recordings": {
+    "contentVersion": 7,
+    "runtimeHTMLSHA": "cd9435284d05b9500fca308f68cdac7eb030723f9cf243158e3e0bf4b5941007",
+    "records": [
+      {
+        "level": 6,
+        "id": "campaign-c7-006",
+        "initialSHA": "ed8cf6bcfe24f9294c06605dac0d1f9ee410b5498e9b1ad74cfe0872cade0262",
+        "actions": 19,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": true,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      },
+      {
+        "level": 7,
+        "id": "campaign-c7-007",
+        "initialSHA": "4cfbb831cb4e73a0f9dd801fadcfe58fce667d1f8717caf29d468da44eb5e044",
+        "actions": 8,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": true,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      },
+      {
+        "level": 29,
+        "id": "campaign-c7-029",
+        "initialSHA": "0d093a094a04acf2403eaae427134b120ab58d636b0377b037076b71c48d01a8",
+        "actions": 28,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": true,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      },
+      {
+        "level": 30,
+        "id": "campaign-c7-030",
+        "initialSHA": "bbb82bd1e253580189b28288e825ea71690e80d471a88a7df0faae390cbea22e",
+        "actions": 26,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": true,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      },
+      {
+        "level": 49,
+        "id": "campaign-c7-049",
+        "initialSHA": "0ac5fcecebf93e5b1d7eb5aca0251268d6684edf262e595083a9f93c0bfc9c37",
+        "actions": 28,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": false,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      },
+      {
+        "level": 20,
+        "id": "campaign-c7-020",
+        "initialSHA": "9bf6068c26a5658ca2b00c5a802720a8e1016440bfaa6679bb7999f5e8c9a76d",
+        "actions": 27,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": true,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      },
+      {
+        "level": 21,
+        "id": "campaign-c7-021",
+        "initialSHA": "49cd163ea993903e1116161e68b17dc211a183094a0309ff38c6a69bec92c02d",
+        "actions": 22,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": true,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      },
+      {
+        "level": 22,
+        "id": "campaign-c7-022",
+        "initialSHA": "79601f25378a3dd00a6806f702186b4364a1f42ec5602f3093b40f20fddcf554",
+        "actions": 12,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": true,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      },
+      {
+        "level": 76,
+        "id": "campaign-c7-076",
+        "initialSHA": "4b52c10e3f9c48df49ebec212e63a559204deb751215fee2e16d96884c6799c4",
+        "actions": 30,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": true,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      },
+      {
+        "level": 77,
+        "id": "campaign-c7-077",
+        "initialSHA": "5c06063e8151eaf9776f413b0b7a37893644f4d01896d805782b23cc60854d13",
+        "actions": 17,
+        "phase": "won",
+        "normalMotion": true,
+        "dragged": true,
+        "source": "Production mouse drag + touchscreen taps; no runtime test bridge",
+        "humanPlaytest": false
+      }
+    ],
+    "limitations": "Automated known routes with real UI input. WebM/GIF does not capture browser audio. No human difficulty, physical-device performance or native ad claim."
+  },
+  "notes": "Five production-input scenes use normal motion; four chapter recordings cover every campaign level using reduced motion. GIFs are exported at 6 fps and 300 px wide at original speed. Videos and GIFs are silent. Reuse the existing delivery file identities.",
+  "chapterRecordings": [
+    {
+      "levels": [
+        1,
+        20
+      ],
+      "file_name": "campaign-01-20.webm",
+      "motion": "reduced",
+      "uiEvidence": "ui-evidence.json"
+    },
+    {
+      "levels": [
+        21,
+        40
+      ],
+      "file_name": "campaign-21-40.webm",
+      "motion": "reduced",
+      "uiEvidence": "ui-evidence.json"
+    },
+    {
+      "levels": [
+        41,
+        60
+      ],
+      "file_name": "campaign-41-60.webm",
+      "motion": "reduced",
+      "uiEvidence": "ui-evidence.json"
+    },
+    {
+      "levels": [
+        61,
+        80
+      ],
+      "file_name": "campaign-61-80.webm",
+      "motion": "reduced",
+      "uiEvidence": "ui-evidence.json"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import {campaignId} from '../../src/domain/progression';
 import { describe, expect, it } from 'vitest';
 import { modifierDeals } from '../../src/content/modifiers';
-import { campaignDeals, findDeal } from '../../src/content/campaign';
+import { campaignDeals, legacyCampaignDeals, findDeal } from '../../src/content/campaign';
 import { introDeal } from '../../src/content/intro';
 import { applyBoard, assertBoard, boardKey, dispatch, freshSave, isLocked, packet, placeJoker } from '../../src/domain/engine';
 import { solve, knownContinuation } from '../../src/domain/solver';
@@ -144,7 +144,7 @@ describe('three keys in one atomic board transaction', () => {
 });
 describe('compatible saves and resource ownership', () => {
   it('migrates real rules-v1 control/campaign saves with spent resources and receipts intact, once', () => {
-    for (const deal of [introDeal, campaignDeals[17]]) {
+    for (const deal of [introDeal, legacyCampaignDeals[17]]) {
       const save = freshSave(deal, 'legacy-modifiers'); save.rulesVersion = 1; save.contentVersion = deal === introDeal ? 1 : 2; save.balanceVersion = 1;
       save.attempt.board.rulesVersion = 2;
       save.profile.hints = 0; save.profile.undos = 2; save.profile.coins = 917;

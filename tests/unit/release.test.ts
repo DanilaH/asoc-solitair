@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { campaignDeals, findDeal } from '../../src/content/campaign';
+import { campaignDeals, legacyCampaignDeals, findDeal } from '../../src/content/campaign';
 import { CONTENT_VERSION } from '../../src/domain/types';
 import { introDeal } from '../../src/content/intro';
 import { expansionDeals } from '../../src/content/expansion';
@@ -15,7 +15,7 @@ it('has 54 distinct appended puzzles spanning the new topics and existing modifi
   expect(expansionDeals.every(d => d.winningPath.length <= 62 && d.initial.movesLeft! > d.winningPath.length)).toBe(true);
 });
 it('migrates content-v4 active campaign and parked daily without altering reward identities, spending, appearance or attempt state', () => {
-  const save = freshSave(campaignDeals[25], 'old-campaign'); save.contentVersion = 4; save.profile.rewards = ['milestone:10','milestone:20','cycle:1']; save.profile.coins = 319; save.profile.jokers = 0;
+  const save = freshSave(legacyCampaignDeals[25], 'old-campaign'); save.contentVersion = 4; save.profile.rewards = ['milestone:10','milestone:20','cycle:1']; save.profile.coins = 319; save.profile.jokers = 0;
   save.parked = { daily: freshSave(dailyForDay('2026-11-09'),'old-daily').attempt }; save.settings.palette = 'ink'; save.settings.deckSide = 'left';
   save.rulesVersion = 2; save.attempt.board.rulesVersion = 2; save.parked.daily!.board.rulesVersion = 2;
   const migrated = decodeSave(JSON.stringify(save), findDeal);

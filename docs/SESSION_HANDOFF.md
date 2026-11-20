@@ -1,3 +1,15 @@
+# Content7 checkpoint — 2026-11-18
+
+Branch `feat/content7-campaign-20261118`, draft [PR33](https://github.com/DanilaH/asoc-solitair/pull/33). Base and still-current main: b612420fda4d8677073034a91c944c46573cbf08 (0.17.1). This work targets0.18.0/code27/content7, rules3/balance3 unchanged. [Current acceptance and remaining blockers](qa/content-v7/README.md), [full curve](qa/content-v7/CURVE.md), [human checklist](qa/content-v7/HUMAN_ACCEPTANCE.md). The older accepted delivery below remains historical; do not replace it with new claims.
+
+The user explicitly approved the two exact research documents at8ca270d8f58fad2fff3d66cf700131fa74eada9b. All80 new C7 definitions are authored; original80, C6 fifteen, daily28 and rules-v3 witness archives are byte-protected against b612420. Original DRAFT research documents are preserved verbatim; the implementation request supplies approval. New campaign selection and envelope migration retain exact historical attempts/Undo/resources/receipts and canonical progress; old restart stays on its old definition and existing current-rules restart policy.
+
+Local check: 193 unit/platform tests, independent validation of all 80 witnesses, 296 sampled recoveries, 340 reproduced archive-policy runs, 96 prototype attempts and 147 layout states with no detected DOM/raster overlaps. The final campaign has 80 exact-source touchscreen wins with matching board and route hashes. Five normal-motion scenes and four full chapter recordings are indexed in [media.json](qa/content-v7/media.json). The archive includes the required campaign transitions. Keep its existing file identities on resume.
+
+Hosted run 44315807948 recovered the exact main dependency cache after the HTTPS/pin repair. Both jobs installed the kit; Android debug and unsigned release compilation passed. Cold installs still require the private-kit read secret described in [INFRASTRUCTURE.md](qa/content-v7/INFRASTRUCTURE.md). The full browser pass is tracked in the acceptance report. The same-signer preview APK is ready for playtest. It carries test ads and an empty analytics key, and its 208 game files match the browser build. See [APK proof](qa/content-v7/source-apk.json). Install over the 0.17.1 preview to test on-device migration. Physical Android behavior and human balance remain open.
+
+---
+
 # Continuation checkpoint — 2026-11-15
 
 

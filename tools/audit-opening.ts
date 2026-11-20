@@ -1,7 +1,7 @@
 /** Independent acceptance for one fixed content batch; bots are diagnostics, not people. */
 import assert from'node:assert/strict';import{readFile,writeFile,mkdir}from'node:fs/promises';
 import reference from'../tests/fixtures/opening-audit-baseline.json'with{type:'json'};
-import{campaignDeals,legacyCampaignDeals}from'../src/content/campaign';
+import{content6CampaignDeals as campaignDeals,legacyCampaignDeals}from'../src/content/campaign';
 import{applyBoard,legalCommands,placeJoker}from'../src/domain/engine';
 import{advance,group}from'./qa/gameplay-oracle';import{oracleRoute}from'./qa/opening-oracle-search';
 import{directOnly}from'./qa/direct-only-policy';import{searchOpening}from'./content/opening-search';

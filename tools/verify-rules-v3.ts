@@ -1,7 +1,7 @@
 /** Release gate against the separate oracle, including forbidden commands and v2 compatibility. */
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { campaignDeals, legacyCampaignDeals } from '../src/content/campaign';
+import { campaignDeals, legacyCampaignDeals, content6CampaignDeals } from '../src/content/campaign';
 import { dailyPool } from '../src/content/daily';
 import { applyBoard } from '../src/domain/engine';
 import { advance } from './qa/gameplay-oracle';
@@ -9,7 +9,7 @@ import { CONTENT_VERSION } from '../src/domain/types';
 import type { Board, BoardCommand, Location } from '../src/domain/types';
 
 const records:object[]=[];let states=0,accepted=0,rejected=0;
-const allDeals=[...legacyCampaignDeals,...campaignDeals.filter(d=>d.id.startsWith('campaign-c6-')),...dailyPool];
+const allDeals=[...legacyCampaignDeals,...content6CampaignDeals.filter(d=>d.id.startsWith('campaign-c6-')),...campaignDeals,...dailyPool];
 for(const d of allDeals)for(const version of (d.legacyWinningPath?[2,3]:[3]) as (2|3)[]) {
   let b:Board={...structuredClone(d.initial),rulesVersion:version};const path=version===2?d.legacyWinningPath!:d.winningPath;
   for(const action of path) {
@@ -26,6 +26,6 @@ for(const d of allDeals)for(const version of (d.legacyWinningPath?[2,3]:[3]) as 
   console.info(d.id+' v'+version+' verified');
 }
 const summary={versions:{rules:3,content:CONTENT_VERSION,balance:3},deals:allDeals.length,paths:records.length,states,accepted,rejected,comparisons:accepted+rejected,note:'Checks rule implementation and both witnesses; not human enjoyment or exhaustive state-space proof.'};
-await mkdir('docs/qa/opening-v6',{recursive:true});
-await writeFile('docs/qa/opening-v6/full-rules.json','{\n"summary":'+JSON.stringify(summary)+',\n"records":[\n'+records.map(r=>JSON.stringify(r)).join(',\n')+'\n]}\n');
+await mkdir('docs/qa/content-v7',{recursive:true});
+await writeFile('docs/qa/content-v7/full-rules.json','{\n"summary":'+JSON.stringify(summary)+',\n"records":[\n'+records.map(r=>JSON.stringify(r)).join(',\n')+'\n]}\n');
 console.info(JSON.stringify(summary));

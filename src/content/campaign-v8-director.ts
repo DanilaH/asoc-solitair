@@ -30,6 +30,11 @@ const pools = new Map(bank.map(record => {
 
 export const content8DirectorDeals = [...pools.values()].flatMap(({ tight, relief }) => [tight, relief]);
 
+export function isC8DirectorVariant(dealId: string, baseId: string): boolean {
+  const pool = pools.get(baseId);
+  return pool?.tight.id === dealId || pool?.relief.id === dealId;
+}
+
 export function selectC8Deal(save: Save, base: Deal, previous?: Attempt): Deal {
   const pool = pools.get(base.id), level = base.campaignLevel;
   if (!pool || level === undefined || save.platform?.completedCampaign.includes(campaignId(level))) return base;
@@ -37,7 +42,7 @@ export function selectC8Deal(save: Save, base: Deal, previous?: Attempt): Deal {
   // Count the current exhaustion only when deliberately starting this level
   // again. Reload, mode switches and in-place Restart retain their deal ID.
   const exhaustedHere = previous?.board.phase === 'exhausted' &&
-    (previous.dealId === base.id || previous.dealId === pool.tight.id || previous.dealId === pool.relief.id);
+    (previous.dealId === base.id || isC8DirectorVariant(previous.dealId, base.id));
   if (exhaustedHere && previous.dealId !== pool.relief.id) {
     const difficulty = base.difficultyTier ?? 'normal';
     const target = easyDealTarget({

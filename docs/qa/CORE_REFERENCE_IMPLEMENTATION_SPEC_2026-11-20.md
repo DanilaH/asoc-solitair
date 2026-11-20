@@ -303,3 +303,28 @@ Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **na
 - Research source pin: kit [PR #80](https://github.com/DanilaH/mini-games-kit/pull/80), exact `SOURCE_FEATURES_PINNED.json` and ledger blob/ref updated together. IDs remain **110/110**; **no `OWNER_EXCLUDED`**.
 - CORE-1 and CORE-4 may proceed for known code paths in their already-approved implementation packages. Incomplete source parity is represented as `EVIDENCE_GAP`, not a guessed `ORIGINAL_RUNTIME`. No new release APK is implied by this docs change.
 - Research continues on Unity random state, original app final board and bonus-column live/price config. Any further corrections must update kit source inventory **and** this consumer ledger/roadmap using a recorded source Git SHA.
+
+
+## 10. AZUR tutorial preset — original native dispatcher and Unity RNG boundary (20 November 2026)
+
+**New source:** mini-games-kit [PR #82](https://github.com/DanilaH/mini-games-kit/pull/82), original AZUR 1.3.3.8/code244. Source-native verification: 12 IL2CPP method registrations, 18 exact ARM64 opcodes, 10 call/branch targets and UnityEngine.CoreModule.dll Random wrappers. **No original Android runtime capture yet.**
+
+### 10.1 Distinct source system: authored tutorial placement with fallback
+
+Native `GameController.InitializeGameLogic` checks `TutorialManager.ShouldUseCardPreset` → `ValidateCardPreset` → nonnull `GetCardPreset`. In the verified direct path, `ShouldUseCardPreset` explicitly checks that the requested level **equals 1** and the tutorial preset configuration is enabled. Only a valid, present preset reaches `GameManager.InitializeGameWithPreset`. The handler additionally verifies the preset's enabled flag, calls `GenerateCards` and then `DealCardsFromPreset`, or falls back to ordinary `InitializeGame` if disabled. This separate branch is **not** AZUR's default later-campaign RNG and is not a Hitapps seed experiment.
+
+**Source feature ID:** `azur-tutorial-preset-deal` (new, stage C1/FTUE). This mechanism requires separate authoring/validation/fallback support; preserve the complete source registry and all earlier systems. The original preset structural data, active tutorial config and final visible board remain UNKNOWN.
+
+**Developer delta:** preserve current C8 purposely customized first-five lessons and frozen deal IDs until owner approval. For source-based future tutorial authoring, model `eligibility → validated preset → normal fallback` as an explicit branch, never silently interpret a missing/malformed preset as an impossible/successful deal. Keep level-specific source variant identity in SaveStore and existing old-version Undo. Test level1 vs 0/2/2000, config disabled, invalid schema, null card list, disabled preset object, valid authored preset, and retry after changing config. A documented adapted lesson is legitimate but cannot be labelled an exact original AZUR level-1 tutorial.
+
+### 10.2 Unity Random — correctness of source claim
+
+The original `UnityEngine.CoreModule.dll` compiled module maps `UnityEngine.Random.InitState(int)` (method RID 2719) to wrapper RVA `0x53bb910` and `Random.Range(int,int)` (RID 2723) to RVA `0x53bba88`; both icall names verified. **No direct branch to InitState in the three inspected native control-flow ranges**, including normal/preset initialization, GameController dispatch and tutorial eligibility; this does **not** exclude indirect, engine-startup or elsewhere initiated seed/state writes.
+
+AZUR ordinary `DealCards` still consumes `N−1` Unity `Random.Range(0, remaining)` results. We can reconstruct ordering once given the **actual Unity RNG values/state**; we **cannot yet** reproduce original seed→final stock/tableau from a level ID. The model's scripted RNG fixture is `MODEL_ONLY`. Continue source research into upstream engine state, generated real level-2 trace and actual preset level-1 trace; don't push speculative PRNG equivalence into runtime.
+
+### 10.3 Restart route is a lifecycle fact, not a random-card proof
+
+Native `GameController.RestartLevel` branches to `LoadAndStartLevel`; this confirms level lifecycle re-entry but says nothing conclusive about preserved/randomized card positions without comparing original device snapshots and active save state. Never transfer Unico's observed Retry redeal semantics to AZUR by analogy.
+
+**Practical integration:** CORE-0/1 continue immediately, without waiting for full Unity RNG investigation. New tutorial preset entry remains roadmapped with full evidence/test dependencies; older 110 systems remain. Source inventory and consumer ledger must be pinned to the same exact kit Git blob. No game runtime changes implied by this research documentation.

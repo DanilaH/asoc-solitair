@@ -1,3 +1,7 @@
+# Independent CORE-0…5 decision-quality audit · 20 November 2026
+
+[Independent source/code passport audit](qa/content-v8/INDEPENDENT_CORE_0_5_REVIEW_2026-11-20.md) checks the published levels 16–80 on the latest CORE-5 development branch. **65 certified winning witnesses**, but **all 109 recorded alternative winning routes first choose draw rather than an alternative card transfer**; only one witness recycles (level 21), none among 32–80. These are **limitations of the automated choice-quality evidence**, not proof the actual levels lack strategic choices. New diagnostic node tools/qa/audit-c8-decision-evidence.mjs prints nonblocking CI warnings and unit tests check classification; it does not alter any boards or declare human difficulty accepted. Q1 is stratified transfer-branch audit; Q2–4 are real device/novice UX, rewarded/coin continuation and human balance; all 114 source systems remain in full roadmap.
+
 # Content 8 CORE-5 · 0.20.2 preview
 
 [Another layout after loss](qa/content-v8/CORE_5_REDEAL.md) offers a certified alternate on C8 levels 12–15. The button shows the new budget. The adjacent same-layout retry keeps the selected deal identity. Original Unico Daily and actual Android feel remain separate evidence checks.

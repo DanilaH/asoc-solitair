@@ -20,6 +20,8 @@ jobs:
       - name: Verify all referenced source systems are represented in the real consumer roadmap
         run: node tools/qa/verify-porting-ledger.mjs
       - run: node --test tests/infrastructure/*.test.mjs
+      - name: Report independent C8 decision-diversity evidence (research warning, not release gate)
+        run: node tools/qa/audit-c8-decision-evidence.mjs
       - run: node tools/install-dependencies.mjs
         env:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}

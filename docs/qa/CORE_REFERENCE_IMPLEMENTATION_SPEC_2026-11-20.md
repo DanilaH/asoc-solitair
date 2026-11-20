@@ -400,3 +400,24 @@ Implement the distinct optional AZUR authoring pathway with **four explicit evid
 Mandatory tests: loaded positive/missing/zero, late art response, repeat/duplicate asset, one mismatched ID 385, stable unchanged 89 sets, English/Russian distinct member counts, locale-count +5-rounding fixture, saved/parked Undo and immutable version across subsequent asset update, 320px with non-English longer labels, and real Android loss/stock UI. Existing C8 based on Hitapps **must not** be silently modified. `azur-localized-definition-packs`, `azur-localized-move-budget`, `azur-art-sprite-wordcount-override` remain separate from the new preload lifecycle entry.
 
 **Unclosed original source/runtime gates:** success/error callback behavior, original actual art bundles loaded on-device, remote packs, original selected RNG/board, original live locale M/E/L inputs, and how repeated word references are shown. No commercial/retention scope reductions; source/consumer inventory now **114/114** pending exact commit pin.
+
+
+## 14. AZUR original Android runtime oracle: ABI ready, client not executed (20 Nov 2026)
+
+**Source:** [mini-games-kit original-XAPK source-bound Frida capture PR #90](https://github.com/DanilaH/mini-games-kit/pull/90), exact AZUR `1.3.3.8/code244` SHA256 `4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4`. The source verifier actually inspected the original ARM64/metadata for **12 method RID→RVA identities, 25 managed fields in eight classes and seven executable IL2CPP reflection exports**. Synthetic capture/comparator tests are CI-verifiable without the original binary.
+
+### CORE-1: verify a real shuffle using actual drawn random numbers
+
+The static AZUR dealer's descending Fisher–Yates passes `Random.Range(0,remaining)`. A read-only Frida probe now tracks the native generic shuffle's **exact caller RVA 0x2c6ac40**, its **actual returned random integer on each draw**, pre-shuffle numeric `GameManager.allCards` and post-deal `GameBoard` columns, foundations and Deck stock/waste. With these captured values, the source-model permutation can be independently checked on **that concrete original execution without assuming Unity.InitState(levelId)** or manufacturing a seed. The generic wrapper is also used by daily/combo/Joker, whose separate caller sites are tagged so their random draws are not accidentally counted as the dealer's.
+
+The `compare-azur-trace.py` tool **rejects** wrong original SHA markers, missing/invalid draw bounds, missing cards and fewer than two host-marked source level loads. Crucially a JSONL host marker is **not** cryptographic execution attestation. A synthetic green test is **not** `ORIGINAL_RUNTIME_PARITY`; compare real-device captured original program states and human-verified original build/locale/level first.
+
+### CORE-6/asset-preload: numeric art and locale capture
+
+Capture `CardSpriteLoader.PreloadThemes` request count and `TryGetLoadedSpriteCount` actual success/count for numeric theme IDs (no protected art/text); separately native `GetEnglishWordCount`, `GetLocalizedWordCount` and `GetAdjustedMovesForCurrentLocale` results. Confirm which of the 90 packaged source art sets loaded for a chosen RU/EN level; measure the original `M/E/L` branch and source card count before claiming live localized budget or source pack parity. Negative art/cache/reload cases must remain explicit.
+
+### Current blocker: original Android unavailable here
+
+**Original Android executions: 0. Captured original RNG streams: 0. Final original boards: 0.** The local work container is x86_64 without `/dev/kvm`, Android SDK, ADB or Frida server; direct SDK download is unavailable. An authorized isolated **ARM64 Android** environment running the exact original build with an allowed Frida server/Gadget is required. Do not instruct the owner to install unknown/repacked software on a daily phone. The scripts are prepared and statically validated, **not device-tested**.
+
+**Do not block developer's CORE-0/1/2 Hitapps implementation.** Source inventory remains **114**, status of `azur-generate-deal-entrypoints` remains `EVIDENCE_GAP`; `azur-async-theme-art-preload` and `azur-localized-move-budget` remain roadmapped. No legacy C6/C7/C8 Deal IDs, SaveStore, Undo or runtime kit dependencies changed by this research handoff.

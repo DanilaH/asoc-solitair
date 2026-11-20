@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/cb0b605c242fe6235ca48eabe24f2bde41f41ea0/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "e50f6746638ca456963d6104a555f41f183fa156",
-  "sourceInventoryRef": "cb0b605c242fe6235ca48eabe24f2bde41f41ea0",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/eba8f9d655c4f55eb1b02f9022456d3bf941b979/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "6211aaf82bc95ec29a97cd4de243ac93363f9286",
+  "sourceInventoryRef": "eba8f9d655c4f55eb1b02f9022456d3bf941b979",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "112 known Hitapps/AZUR/Unico source mechanisms, including AZUR distinct random-column Joker; original source ARM64 static evidence does not prove any live remote/ad/Android behavior, initial Unity RNG state, exact original output or consumer acceptance. No agent-feature exclusion.",
+  "coverageDisclaimer": "113 known source systems; AZUR art-sprite count affects pre-shuffle card multiplicity. Source-native static opcode checks do NOT prove live original art packs, image display, Unity RNG state, original-client layout or consumer human acceptance. No feature excluded by agent.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -863,8 +863,15 @@
       "currentImplementation": "C8 implements a separate Hitapps-inspired Joker foundation/tableau lesson, but not original AZUR's randomly selected lower tableau insertion, card creation and UndoSystem.Clear source branch.",
       "nextAction": "Research kit PR #84 original AZUR GameManager.AddJokerCard: shared Unity Random.Range(0,min(configured limit,current tableau columns)) chooses GetColumn, adds revealed card using PlaceCardForced, conditionally clears UndoSystem and TryAddJokerCard emits RaiseJokerUsed only on nonnull. Define versioned separate optional AZUR helper with source-derived/random-column tests and explicit Undo reset policy; actual positive/zero bounds, UI unlocking, coin/SDK receipts, original Android/restart/save states and global RNG state remain UNKNOWN.",
       "stage": "D1"
+    },
+    {
+      "id": "azur-art-sprite-wordcount-override",
+      "status": "ROADMAPPED",
+      "stage": "B1",
+      "currentImplementation": "Active C8 uses the Hitapps seeded source-shaped offline dealer; category/member counts are authored in immutable deal JSON. There is no distinct AZUR CardSpriteLoader-driven per-theme member-card count override or modulo word-ref authoring pass.",
+      "nextAction": "Original AZUR native research kit PR #86 verifies BuildArtCardCountsForThemes → CardSpriteLoader positive count map → ordinary GenerateCards (preset passes null), creating one category leader and S members on positive sprite override else W source words, with each member from source index i%W and unique Card ID. Implement OPTIONAL separate AZUR authoring branch with exact source-case fixtures, artwork provenance, card-count/stock geometry and immutable Save/Undo version; original live loaded assets, renderer, remote config, Unity seed, final original deck remain UNKNOWN."
     }
   ],
-  "auditRevision": "2026-11-20-azur-global-unity-rng-joker-112-v9",
+  "auditRevision": "2026-11-20-azur-art-sprite-native-113-v10",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

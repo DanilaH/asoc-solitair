@@ -12,6 +12,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 
 export function classifyMove(move) {
   if (move === 'd') return 'stock_draw';
@@ -113,7 +114,7 @@ export function loadPublishedPassports() {
           ...from('../../docs/qa/content-v8/core3-late-passports.json')]
     .sort((a,b)=>a.level-b.level);
 }
-if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   const result=summarize(loadPublishedPassports());
   console.log(JSON.stringify(result,null,2));
   if(process.argv.includes('--strict-transfer-coverage') &&

@@ -2,9 +2,9 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/57bffb395e06200dc9f147c6f52f0128b4a4d370/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "d331f6161975fba47dee4f5c13505e081ce51914",
-  "sourceInventoryRef": "57bffb395e06200dc9f147c6f52f0128b4a4d370",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/b6e71122134f89ab76498aebd3f38a8cfd0683d5/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "d0b3c27cbd747c954539fe0adde4dfcfd4c24a3d",
+  "sourceInventoryRef": "b6e71122134f89ab76498aebd3f38a8cfd0683d5",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "110 known source mechanics, including 11 extra core submechanics; source static AZUR native proof differs from live original runtime and from consumer acceptance. No permanent exclusions by agent.",
   "features": [
@@ -771,16 +771,16 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "C8 generator based on Hitapps ordinary model, not AZUR GenerateCards/DealCards/DealCardsFromPreset native algorithm",
-      "nextAction": "Original native method pointers mapped, but GenerateCards/DealCards/DealCardsFromPreset bodies/RNG not reconstructed: disassemble full algorithm and capture original runtime selected seed and final board before claiming parity.",
+      "currentImplementation": "C8 ordinary dealer uses Hitapps source-shaped seeded authoring only. No distinct source-proven AZUR dealer strategy has been implemented.",
+      "nextAction": "ARM64 bodies in kit PR #80 verify InitializeGame→GenerateCards→DealCards; Unity Random.Range single-pass Fisher–Yates, FirstColumnCards+c placement/reveal and separate preset pathway. Implement distinct injectable-RNG offline AZUR dealer tests (not default C8), independently recover Unity RNG state/seed, original runtime numeric board and preset/remote selection before original parity claim.",
       "stage": "B1",
-      "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
+      "reason": "Original Unity RNG initialization and runtime selected board remain unknown, despite now VERIFIED native dealer shuffle and placement body."
     },
     {
       "id": "azur-bonus-lower-column",
       "status": "ROADMAPPED",
-      "currentImplementation": "Our C8 tableau column count fixed by immutable deal; no bought/unlocked extra tableau column",
-      "nextAction": "Original source shows separate BonusColumn/BonusFoundation interfaces and verified ARM64 method pointers only; first reconstruct actual bonus column enable/unlock behavior and original gameplay trace, then implement separate lower-column rule, Save/Undo/solver/Hint/layout/price/first-use tests.",
+      "currentImplementation": "No independent bonus lower tableau column in C8 runtime; current tableau columns are fixed by the immutable Deal.",
+      "nextAction": "Kit PR #80 ARM64 proves distinct type3 lower column vs type2 upper foundation; separate configured indexes, enable/unlocked flags, index0 sentinel and type-scoped unlock. CORE-4 implement own Rules/Save/Undo/solver/Hint/layout/touch with separate gates; capture original live UI geometry, remote/ad price, SDK receipt and persistence before runtime/monetization parity.",
       "stage": "D1"
     },
     {
@@ -836,6 +836,6 @@
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
     }
   ],
-  "auditRevision": "2026-11-20-cross-verified-core-110",
+  "auditRevision": "2026-11-20-azur-dealer-bonus-body-sync-v6",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

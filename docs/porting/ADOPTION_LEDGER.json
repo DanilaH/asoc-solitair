@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/eba8f9d655c4f55eb1b02f9022456d3bf941b979/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "6211aaf82bc95ec29a97cd4de243ac93363f9286",
-  "sourceInventoryRef": "eba8f9d655c4f55eb1b02f9022456d3bf941b979",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/1c2d12621ba47f7f164a418dab84781c025ee855/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "9a740783e79f0613ce6cccf9de281e2a5b3dc930",
+  "sourceInventoryRef": "1c2d12621ba47f7f164a418dab84781c025ee855",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "113 known source systems; AZUR art-sprite count affects pre-shuffle card multiplicity. Source-native static opcode checks do NOT prove live original art packs, image display, Unity RNG state, original-client layout or consumer human acceptance. No feature excluded by agent.",
+  "coverageDisclaimer": "114 source systems; original AZUR packaged 90/490 Sprite sets, 33 locales and source ART preload/counted cards verified, but original Android preload success, active locale move policy, remote art and selected RNG board remain UNKNOWN. No agent-initiated feature exclusions.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -430,7 +430,7 @@
       "id": "azur-localized-move-budget",
       "status": "ROADMAPPED",
       "currentImplementation": "Russian-only content has fixed author budgets; no AZUR locale word-count scaling in our RulesV3. Original AZUR positive-input branch proven static native at RVA0x262e4a8",
-      "nextAction": "When localizing: implement 5*ceil(M*L/(5E)) capped INT_MAX only with verified locale/en word counts, valid guards, old-save/version migration; original live config remains UNKNOWN",
+      "nextAction": "Kit PR #88 verifies GetLocalizedWordCount itself queries CardSpriteLoader.TryGetLoadedSpriteCount; plan source-branch 5*ceil(M*L/(5E)) capped INTMAX, using verified English/local word counts and loaded-art status with explicit original remote enable/eligibility UNKNOWN. Test nonempty E/L, out-of-range, language-change old attempts, SaveStore, and do not silently adjust existing RU-only published budget.",
       "stage": "G1",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -749,7 +749,7 @@
       "id": "azur-localized-definition-packs",
       "status": "ROADMAPPED",
       "currentImplementation": "Own Russian-only semantic bank; no 36-locale Addressables/catalog delivery",
-      "nextAction": "Plan original localized dictionaries, missing-definition audit and level/locale save migration if expanding languages",
+      "nextAction": "Kit PR #88 confirms distinct 33 local theme/word banks with 4539 identical IDs, EN/RU member counts different in 1357 themes and potentially different total cards in 1687/2000 source levels. Existing 36-locale/468 definition bundles are a different source asset family. Plan language-specific content, missing/malformed Num handling, semantic review and save migration before localization; actual native runtime content loading not yet captured.",
       "stage": "G1"
     },
     {
@@ -854,9 +854,16 @@
       "status": "ROADMAPPED",
       "stage": "B1",
       "currentImplementation": "Active C8 uses the Hitapps seeded source-shaped offline dealer; category/member counts are authored in immutable deal JSON. There is no distinct AZUR CardSpriteLoader-driven per-theme member-card count override or modulo word-ref authoring pass.",
-      "nextAction": "Original AZUR native research kit PR #86 verifies BuildArtCardCountsForThemes → CardSpriteLoader positive count map → ordinary GenerateCards (preset passes null), creating one category leader and S members on positive sprite override else W source words, with each member from source index i%W and unique Card ID. Implement OPTIONAL separate AZUR authoring branch with exact source-case fixtures, artwork provenance, card-count/stock geometry and immutable Save/Undo version; original live loaded assets, renderer, remote config, Unity seed, final original deck remain UNKNOWN."
+      "nextAction": "Kit PR #86 original source: positive loaded CardSpriteData S overrides W native word count and loops i%W. Kit PR #88 proves concrete packaged 90 sets/490 sprites with 89/90 count parity EN/RU; set385 has S6/W5, conditionally +1 on original levels44/884/1290/1974 only if actually loaded. Author optional isolated AZUR content branch with preload state and immutable manifest; actual Android art load/visible text and exact final board UNKNOWN."
+    },
+    {
+      "id": "azur-async-theme-art-preload",
+      "status": "ROADMAPPED",
+      "stage": "B1",
+      "currentImplementation": "Our published C8 levels use offline immutable Hitapps-derived Deals and bundled own game art. There is no AZUR-specific level-scoped CardSpriteLoader asynchronous asset preload, loaded-count fallback or source-aware locale word-count bridge.",
+      "nextAction": "Kit PR #88 proves source native LoadAndStartLevel→CardSpriteLoader.PreloadThemes→PreloadThemesCoroutine before later BuildArtCardCounts/GenerateCards, and GetLocalizedWordCount queries TryGetLoadedSpriteCount; source XAPK has 90 art packs/490 Sprite refs, 292 art-eligible levels, only conditional set385 +1 in levels44/884/1290/1974, 33 theme locales. Implement separately as optional AZUR authored, versioned asset manifest and explicit preload success/failure/fallback before freezing an immutable Deal; do not refetch/retune active saved attempts. Original device-loaded assets, remote config, live locale budget and RNG/final stock remain UNKNOWN."
     }
   ],
-  "auditRevision": "2026-11-20-azur-art-sprite-native-113-v10",
+  "auditRevision": "2026-11-20-azur-packaged-art-locale-114-v11",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

@@ -154,7 +154,7 @@ Continue +10, coin +moves, rewards multipliers, offer variants, correct no-fill 
 | `azur-unlimited-moves-offer` | `ROADMAPPED` | Define exact entitlement duration/UI/server/SaveStore/budget migration without falsely copying AZUR |
 | `unico-rewarded-theme` | `ROADMAPPED` | Design opt-in themed cosmetic offer, entitlement persistence and receipt grants |
 | `unico-double-reward` | `ROADMAPPED` | Compare Unico post-win CTA to AZUR x3 and develop independent rewarded bonus policy |
-| `unico-loss-dialog` | `IMPLEMENTED_UNVERIFIED` | C8 gives Undo or Replay priority when +10 cannot be verified. Check compact Android, SDK no-fill and original Unico alternatives. |
+| `unico-loss-dialog` | `IMPLEMENTED_UNVERIFIED` | [C8 loss recovery](../qa/content-v8/CORE_5_LOSS_RECOVERY.md) promotes a usable action after video fails. Background callbacks are verified against the Android bridge contract. Check physical Android no-fill, earned callbacks and original Unico alternatives. |
 | `azur-definition-consumable` | `ROADMAPPED` | Trace Definition usage/intro pricing and define own paid/free resource vs reader UX |
 | `azur-free-shop-coin-claim` | `ROADMAPPED` | Prototype source-observed optional 200-coin claim with real receipt/availability/cooldown verification |
 | `azur-remaining-moves-coin-bonus` | `IMPLEMENTED_UNVERIFIED` | Check own multiplier/economy and baseline reward integrity; do not label adapted coefficient exact AZUR copy |

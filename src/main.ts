@@ -171,6 +171,7 @@ try {
   let saving = false, serviceBusy = false;
   const continueCheck = new ContinueCheck(() => { if (alive) renderHud(); });
   let continueVideoFailed: string | undefined;
+  let rewardedResultAttempt: string | undefined;
   // A backing-store resize clears the canvas even when the model is static.
   // Keep a bounded repaint tail instead of sleeping in that POST_RENDER turn.
   let repaintFrames = 0;
@@ -375,6 +376,8 @@ try {
     continueCheck.update(save.attempt, deal, ready && screen === 'game' && exhausted && requiresProof);
     const proofStatus = continueCheck.status;
     const canContinue = exhausted && (credits > 0 || ads.status.rewarded) && (!requiresProof || proofStatus === 'PROVEN_RECOVERABLE');
+    const videoFailed = continueVideoFailed === save.attempt.id;
+    const retryVideo = canContinue && !credits && videoFailed;
     const showCoinOffer = exhausted && requiresProof && proofStatus === 'PROVEN_RECOVERABLE' && credits === 0;
     const canBuyContinue = showCoinOffer && save.profile.coins >= BALANCE.continueCoinPrice;
     const continueBusy = saving || serviceBusy || store.needsRecovery;
@@ -385,15 +388,15 @@ try {
     const continueButton = $<HTMLButtonElement>('#result-continue');
     continueButton.hidden = !canContinue;
     continueButton.disabled = !canContinue || continueBusy;
-    continueButton.className = canBuyContinue ? 'secondary' : 'primary';
-    continueButton.textContent = credits > 0 ? '+10 ходов · использовать запас' : '+10 ходов · видео';
+    continueButton.className = canBuyContinue || retryVideo || store.needsRecovery ? 'secondary' : 'primary';
+    continueButton.textContent = credits > 0 ? '+10 ходов · использовать запас' : retryVideo ? 'Повторить запрос видео' : '+10 ходов · видео';
     $('#result').dataset.continueStatus = proofStatus ?? '';
     const continueNote = $('#result-continue-note');
     continueNote.hidden = !proofStatus;
     continueNote.textContent = proofStatus === 'CHECKING' ? 'Проверяем, хватит ли ещё 10 ходов.'
       : proofStatus === 'UNSOLVABLE' ? 'Из этой позиции за 10 ходов не выиграть.'
       : proofStatus === 'UNKNOWN' ? 'Путь к победе за 10 ходов не подтверждён.'
-      : proofStatus === 'PROVEN_RECOVERABLE' ? continueVideoFailed === save.attempt.id
+      : proofStatus === 'PROVEN_RECOVERABLE' ? videoFailed && !credits
         ? 'Видео сейчас недоступно.' : showCoinOffer && !canBuyContinue
           ? 'На +10 ходов не хватает монет.' : 'Из этой позиции можно выиграть за 10 ходов или меньше.'
       : '';
@@ -409,7 +412,7 @@ try {
       $('#result-redeal small').textContent = `Лимит ${alternate.initial.movesLeft}`;
       $('#replay').textContent = 'Тот же расклад';
     }
-    const hasContinueAction = canContinue || canBuyContinue || !resultRetry.hidden;
+    const hasContinueAction = (canContinue && !retryVideo) || canBuyContinue || !resultRetry.hidden;
     $('#result-undo').className = !hasContinueAction && undoRecovery ? 'primary' : 'secondary';
     $('#replay').className = board.phase === 'exhausted' && !hasContinueAction && !undoRecovery ? 'primary' : 'secondary';
     const applied = unlockChoice === 'palette' ? save.settings.palette === 'ink' : save.settings.cardBack === 'diamonds';
@@ -560,17 +563,31 @@ try {
     if (save.attempt.board.phase === 'playing') showGuidance(cmd.type !== 'hint');
     return result.accepted;
   }
+  function restoreRewardedResult() {
+    if (!rewardedResultAttempt) return false;
+    if (screen !== 'game' || save.attempt.id !== rewardedResultAttempt || save.attempt.board.phase !== 'exhausted') {
+      rewardedResultAttempt = undefined;
+      return false;
+    }
+    if (runtime.activity.isBlocked()) return false;
+    rewardedResultAttempt = undefined;
+    outcome();
+    return true;
+  }
   async function rewarded(placement: RewardPlacement) {
     if (serviceBusy || saving) return;
     const requestAttempt = save.attempt.id;
-    if (placement === 'continue') continueVideoFailed = undefined;
+    const fromLoss = save.attempt.board.phase === 'exhausted';
     serviceBusy = true; closeDialogs(); renderHud();
     const result = await ads.show({ kind: 'rewarded', placement, attempt: requestAttempt, dealId: deal.id, mode: save.attempt.daily ? 'daily' : 'campaign' });
+    if (!alive) return;
     // Dismissal itself grants nothing; receipt recovery independently commits an earned reward.
-    if (placement === 'continue' && !result.shown) continueVideoFailed = requestAttempt;
+    if (placement === 'continue') continueVideoFailed = result.shown ? undefined : requestAttempt;
+    if (fromLoss) rewardedResultAttempt = requestAttempt;
     serviceBusy = false; renderHud();
-    if (!result.shown) message('Сейчас видео недоступно. Попробуйте позже.', true);
-    if (save.attempt.board.phase === 'exhausted' && !runtime.activity.isBlocked()) outcome();
+    if (!result.shown && (!fromLoss || placement !== 'continue' || !requiresContinueProof(save.attempt)))
+      message('Сейчас видео недоступно. Попробуйте позже.', true);
+    restoreRewardedResult();
   }
   async function replay() {
     if (serviceBusy || saving) return;
@@ -842,7 +859,11 @@ try {
     if (screen === 'game' && runtime.activity.getBlockReasons().every(r => r === 'modal') && ready) {
       scene?.sync();
       if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs();
-      if (!blocked) { void ads.refresh(); void ads.recover(); playDealSound(); showGuidance(); }
+      if (!blocked) {
+        void ads.refresh(); void ads.recover();
+        if (restoreRewardedResult()) return;
+        playDealSound(); showGuidance();
+      }
     }
     if (!renderer.isBooted) return;
     if (blocked && ready) { scene?.clearFeedback(); renderer.loop.sleep(); if (runtime.activity.getBlockReasons().some(r => r !== 'modal' && r !== 'screen')) cancelCoins(); }

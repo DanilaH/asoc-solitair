@@ -6,8 +6,10 @@ import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import { BALANCE } from '../../src/domain/balance';
+import type { EarnedReceipt } from '../../src/domain/services';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 import { boardFrame, layout } from '../../src/game/layout';
+import type { AdOutcome, AdRequest } from '../../src/platform/ads';
 import { recoverable, unrecoverable, loadLoss, winningRescue } from '../fixtures/content8-loss';
 
 test.skip(process.env.VITE_CONTENT8_PREVIEW !== '1', 'Requires the Content 8 preview build.');
@@ -128,6 +130,81 @@ async function loadWaveFixture(page: Page, save: Save, completed: number, contin
   }, { key: 'asoc-solitaire.save.v1', value: JSON.stringify(save) });
   await page.goto('/');
 }
+
+interface AdTestControls {
+  requests: AdRequest[];
+  acknowledged: string[];
+  active(isActive: boolean): void;
+  finish(outcome: AdOutcome): void;
+  earn(receipt: EarnedReceipt): void;
+}
+
+async function installNativeAdTestBridge(page: Page) {
+  await page.addInitScript(() => {
+    const listeners = new Map<string, (event: object) => void>();
+    const requests: AdRequest[] = [];
+    const acknowledged: string[] = [];
+    const receipts: EarnedReceipt[] = [];
+    let finish: (outcome: AdOutcome) => void;
+    const controls: AdTestControls = {
+      requests, acknowledged,
+      active: isActive => listeners.get('App.appStateChange')?.({ isActive }),
+      finish: outcome => finish(outcome),
+      earn(receipt) {
+        receipts.push(receipt);
+        listeners.get('SolitaireAds.adEvent')?.({ kind: 'rewarded', phase: 'earned' });
+      },
+    };
+    const methods = (name: string, promises: string[], events = false) => ({
+      name, methods: [
+        ...promises.map(name => ({ name, rtype: 'promise' })),
+        ...events ? [{ name: 'addListener', rtype: 'callback' }, { name: 'removeListener', rtype: 'callback' }] : [],
+      ],
+    });
+    Object.assign(window, {
+      adTestControls: controls, androidBridge: {},
+      Capacitor: {
+        PluginHeaders: [
+          methods('App', ['getState'], true), methods('SolitaireStorage', ['get', 'set', 'remove']),
+          methods('SolitaireAds', ['status', 'show', 'pending', 'acknowledge', 'hideBanner', 'dispose'], true),
+          methods('SolitaireAudio', ['configure'], true), methods('SolitaireFeedback', ['configure', 'pulse']),
+        ],
+        async nativeCallback(plugin: string, method: string, options: { eventName: string }, callback: (event: object) => void) {
+          const id = `${plugin}.${options.eventName}`;
+          if (method === 'addListener') listeners.set(id, callback);
+          else listeners.delete(id);
+          return id;
+        },
+        async nativePromise(plugin: string, method: string, options: { key: string; value: string; id: string }) {
+          if (plugin === 'App') return { isActive: true };
+          if (plugin === 'SolitaireAudio') return { focused: true };
+          if (plugin === 'SolitaireStorage') {
+            if (method === 'get') return { value: localStorage.getItem(options.key) };
+            if (method === 'set') localStorage.setItem(options.key, options.value);
+            else localStorage.removeItem(options.key);
+          }
+          if (plugin === 'SolitaireAds') {
+            if (method === 'status') return { rewarded: true, interstitial: false, banner: false, ready: true, mode: 'test' };
+            if (method === 'show') {
+              requests.push(options as unknown as AdRequest);
+              return new Promise<AdOutcome>(resolve => { finish = resolve; });
+            }
+            if (method === 'pending') return { receipts: [...receipts] };
+            if (method === 'acknowledge') {
+              acknowledged.push(options.id);
+              const index = receipts.findIndex(receipt => receipt.id === options.id);
+              if (index >= 0) receipts.splice(index, 1);
+            }
+          }
+          return {};
+        },
+      },
+    });
+  });
+}
+
+const adControls = (page: Page) => page.evaluate(() =>
+  (window as unknown as { adTestControls: AdTestControls }).adTestControls.requests);
 
 for (const [previous, next] of [[content8Dealer[14], content8Wave[0]], [content8Wave[15], content8Late[0]]]) {
   test(`Next from C8 level ${previous.campaignLevel} opens the authored level ${next.campaignLevel}`, async ({ page }) => {
@@ -511,6 +588,73 @@ test('an unavailable continuation worker keeps the credit and never offers an un
   await expect(page.locator('#result-continue-note')).toContainText('не подтверждён');
   await expect(page.locator('#result-undo')).toBeVisible();
   expect((await read(page)).platform?.continueCredits).toBe(1);
+});
+
+test('an unavailable video returns to the same loss after foreground and promotes Undo', async ({ page }) => {
+  await installNativeAdTestBridge(page);
+  const save = loadLoss(recoverable, 'video-unavailable');
+  save.profile.coins = 0;
+  await loadWaveFixture(page, save, 15);
+  await openGame(page, recoverable);
+  const video = page.locator('#result-continue');
+  await expect(video).toHaveClass('primary');
+  await video.tap();
+  await expect.poll(() => adControls(page)).toEqual([{
+    kind: 'rewarded', placement: 'continue', attempt: save.attempt.id, dealId: recoverable.id, mode: 'campaign',
+  }]);
+  await page.evaluate(() => {
+    const bridge = (window as unknown as { adTestControls: AdTestControls }).adTestControls;
+    bridge.active(false);
+    bridge.finish({ shown: false, outcome: 'unavailable' });
+  });
+  await expect(video).toHaveText('Повторить запрос видео');
+  await expect(page.locator('#result')).toBeHidden();
+  await page.evaluate(() => (window as unknown as { adTestControls: AdTestControls }).adTestControls.active(true));
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#result-continue-note')).toHaveText('Видео сейчас недоступно.');
+  await expect(video).toHaveClass('secondary');
+  const undo = page.locator('#result-undo');
+  await expect(undo).toHaveClass('primary');
+  const exhausted = await read(page);
+  expect(exhausted.attempt).toEqual(save.attempt);
+  expect(exhausted.profile).toEqual(save.profile);
+  expect(exhausted.platform?.receipts).toEqual([]);
+  expect(exhausted.platform?.continueCredits).toBe(0);
+  const bounds = (await undo.boundingBox())!;
+  const point = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 };
+  expect(await undo.evaluate((button, { x, y }) => button.contains(document.elementFromPoint(x, y)), point)).toBe(true);
+  await page.touchscreen.tap(point.x, point.y);
+  await expect(page.locator('#result')).toBeHidden();
+  expect((await read(page)).attempt.board.movesLeft).toBe(1);
+});
+
+test('an earned video continuation in background resumes play without reopening the loss', async ({ page }) => {
+  await installNativeAdTestBridge(page);
+  const save = loadLoss(recoverable, 'video-earned');
+  save.profile.coins = 0;
+  await loadWaveFixture(page, save, 15);
+  await openGame(page, recoverable);
+  await page.locator('#result-continue').tap();
+  await expect.poll(async () => (await adControls(page)).length).toBe(1);
+  const receipt = { schema: 1, id: 'video-earned-receipt', dealId: recoverable.id,
+    attempt: save.attempt.id, placement: 'continue', mode: 'campaign' } satisfies EarnedReceipt;
+  await page.evaluate(receipt => {
+    const bridge = (window as unknown as { adTestControls: AdTestControls }).adTestControls;
+    bridge.active(false);
+    bridge.earn(receipt);
+    bridge.finish({ shown: true, outcome: 'dismissed' });
+  }, receipt);
+  await expect.poll(() => page.evaluate(() =>
+    (window as unknown as { adTestControls: AdTestControls }).adTestControls.acknowledged)).toEqual([receipt.id]);
+  await page.evaluate(() => (window as unknown as { adTestControls: AdTestControls }).adTestControls.active(true));
+  await expect(page.locator('#result')).toBeHidden();
+  const resumed = await read(page);
+  expect(resumed.attempt.id).toBe(save.attempt.id);
+  expect(resumed.attempt.board).toEqual({ ...save.attempt.board, phase: 'playing', movesLeft: 10 });
+  expect(resumed.platform?.receipts).toEqual([receipt.id]);
+  expect(resumed.platform?.continueCredits).toBe(0);
+  await touch(page, recoverable, winningRescue[0]);
+  await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(9);
 });
 
 test('a proven C8 loss buys ten moves offline and keeps the debit after reload and Undo', async ({ page }) => {

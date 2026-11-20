@@ -1,3 +1,7 @@
+# Content 8 CORE-5 · 0.20.3 preview
+
+[Loss screen recovery](qa/content-v8/CORE_5_LOSS_RECOVERY.md) returns to the same exhausted attempt after a background video result. Unavailable video becomes a secondary retry and a usable recovery action takes priority. Earned receipts can resume play. The Android bridge cases are reproduced with browser touch. Physical Android and original Unico comparison remain open.
+
 # AZUR tutorial preset authoring
 
 [Offline authoring and verification](qa/content-v8/AZUR_PRESET_AUTHORING.md) converts independent authored columns and stock into a Rules 3 deal. The Russian sample clears in 19 moves. The preset path consumes zero RNG and invalid input uses the ordinary AZUR dealer. Included in CI. This package is for authors. Campaign activation and original Android comparison remain open.

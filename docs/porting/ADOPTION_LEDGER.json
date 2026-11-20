@@ -569,11 +569,11 @@
     {
       "id": "unico-loss-dialog",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 preview 0.20.0 result shows a verified +10 route when available and promotes Undo or Replay otherwise.",
-      "nextAction": "Compare physical-device loss/Undo/restart, the original Unico dialog and native no-fill.",
+      "currentImplementation": "C8 preview 0.20.3 promotes a usable alternative when rewarded video is unavailable. A callback received in background restores the result on foreground for the same exhausted attempt. An earned receipt can resume that attempt. Browser coverage exercises both branches through the Android bridge contract.",
+      "nextAction": "Compare on a physical Android phone with live no-fill, actual earned callbacks and the original Unico loss dialog.",
       "stage": "E1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/62",
-      "evidenceRef": "docs/qa/content-v8/CORE_5_VERIFIED_CONTINUE.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_5_LOSS_RECOVERY.md"
     },
     {
       "id": "azur-structured-long-campaign",

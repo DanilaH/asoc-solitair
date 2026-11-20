@@ -14,3 +14,7 @@
 [Исходный отчёт Kit](https://github.com/DanilaH/mini-games-kit/blob/57bffb395e06200dc9f147c6f52f0128b4a4d370/research/games/association-solitaire/2026-11-18-hitapps-plain-replay/README.md) содержит агрегат 752 снимков Python/C++. Для независимого прогона TypeScript по всем 752 нужен числовой экспорт исходных 188 геометрий. [Проверка агрегата](../../../tools/qa/verify-hitapps-plain-prefix.ts) принимает формат `{sourceXapk,rows:[{locale,position,stockSize,columnSizes}]}` и пробует семена 0, 1, 42 и 43. Хеши четырёх опубликованных векторов проверяются в CI. Живые исходные доски, фактический выбор алгоритма и параметры активации остаются открыты.
 
 Сигнатуры опубликованных раздач, сохранений и Undo продолжают использовать существующий runtime. Отдельные настраиваемые аплаеры нужны для CORE-2/4. Для AZUR нативные тела GenerateCards/DealCards остаются предметом исследования.
+
+## AZUR 1.3.3.8
+
+По [новому нативному исследованию](https://github.com/DanilaH/mini-games-kit/pull/80) подготовка вызывает GenerateCards, затем DealCards. [Модель AZUR](../../../tools/content/azur-dealer.ts) отдельно воспроизводит один проход Fisher–Yates, передаёт диапазон `[0, remaining)` вызывающему RNG, раскладывает столбцы по `FirstColumnCards + columnIndex` и открывает только их верхние карты. Остаток хранится в порядке входа `Deck.Initialize`. Тесты проверяют 0/1/2/100 карт, длины столбцов, выход за диапазон и нехватку карт. Текущий Content 8 сохраняет ранее выбранную выдачу Hitapps. Исходный Unity RNG, точный путь пресетов и живые снимки остаются открыты.

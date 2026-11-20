@@ -777,8 +777,8 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "C8 generator based on Hitapps ordinary model, not AZUR GenerateCards/DealCards/DealCardsFromPreset native algorithm",
-      "nextAction": "Original native method pointers mapped, but GenerateCards/DealCards/DealCardsFromPreset bodies/RNG not reconstructed: disassemble full algorithm and capture original runtime selected seed and final board before claiming parity.",
+      "currentImplementation": "CORE-1 offline AzurDealer implements the source-confirmed single descending shuffle and positive DealCards geometry, with an explicitly injected RNG. Current C8 campaign still uses frozen Hitapps-derived deals.",
+      "nextAction": "Reconcile the research pin when game PR #50 merges. Capture original Unity RNG initialization, final board and preset schema before claiming full parity.",
       "stage": "B1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
     },

@@ -433,3 +433,24 @@ Capture `CardSpriteLoader.PreloadThemes` request count and `TryGetLoadedSpriteCo
 **CORE-1 developer impact:** if implementing an optional independent AZUR dealer, model the original `allCards` source enumeration and the temporary working shuffle separately. The frozen authored Deal contains observable tableau and stock in the correct order; don't demand mutated `allCards` parity. This source-derived contract does **not** alter the main Hitapps C8 generator, current saves/Undo or owner-reviewed authored level definitions. The 114-feature inventory is unchanged; the single existing `azur-generate-deal-entrypoints` evidence gap remains for **0 actual original Android executions**, RNG seed/global-state selection, live locale/art and final source board parity.
 
 **Minimum acceptance:** run authentic exact-build ARM64 original Frida capture at least twice, record pre-deal generated list IDs, source native `Random.Range` values, ordered tableau and stock, then compare with corrected fail-closed `compare-azur-trace.py`. Synthetic comparator and native static proofs do NOT establish original runtime.
+
+
+## 16. AZUR tutorial preset: source-verified authored columns, deck and category sentinel (20 Nov 2026)
+
+**Original:** [mini-games-kit native schema PR #93](https://github.com/DanilaH/mini-games-kit/pull/93), original AZUR 1.3.3.8/code244 XAPK SHA256 `4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4`. Read-only verifier on the real original XAPK passed **8 IL2CPP native method registrations, 7 field-name anchors, 32 ARM64 instructions and 8 call/branch targets**. These are native static findings, **not live Android gameplay**.
+
+### Source-authoritative structure and positive branch
+
+`CardPresetLayout` contains an `IsEnabled` flag, **ordered** `columns` and independent **ordered** `deckCards`. Each `CardPresetColumn` contains a `cards` sequence. Each `CardPresetItem` contains integer `themeId` and `wordIndex`. Original `get_IsCategoryCard` is implemented using `wordIndex<0`; default constructor uses `-1`, but do **not** incorrectly insist that only `-1` identifies a category card. `GetTotalCardCount` explicitly sums the lengths of all column-card lists and the deck-card list.
+
+`TutorialConfig.ValidatePreset` returns **true** when the preset object is null or disabled (valid *configuration*); it delegates enabled presets to `CardPresetLayout.Validate`. This is different from *activating* the special deal: `TutorialManager.ShouldUseCardPreset` requires eligible **level 1**, tutorial gate, validation and present preset. `InitializeGameWithPreset` uses `GenerateCards` with a **null art-count override**, then `DealCardsFromPreset`, resolving theme+category/word identities into the authored columns and deck. Per native positive branch, last card in each authored column is revealed; deck stays in explicitly authored order and the previously verified `Deck.DrawNextCard` takes its **last** entry first.
+
+**Still unknown:** actual original level-one preset item lists, all native duplicate/card-total/out-of-range/error constraints inside `CardPresetLayout.Validate`, selected original Android tutorial configuration, and original first-level displayed tableau/stock. Do not claim complete validation or live source parity.
+
+### CORE-0/CORE-1 consumer contract
+
+Keep the existing **Hitapps-oriented frozen Content 8 tutorials** and current SaveStore/Undo identities. If implementing a separate AZUR-inspired preset authoring route, use explicit `enabled`, `levelEligible`, `validated`, and `present` gates. Parse ordered columns and deck as separate sequences; resolve category cards with negative `wordIndex`; preserve new unique IDs, card counts, last-card faceUp and last-stock-item-first draw semantics. Missing/disabled/invalid preset must have independently specified ordinary-generator fallback; stricter authoring checks against duplicate/unknown references are **PRODUCT_ADAPTED**, not an exact `CardPresetLayout.Validate` copy without additional source proof. Source actor should not silently replace current first lesson, mutate prior published deals or use proprietary card text and image assets.
+
+**Acceptance:** ordinary fallback on absent/disabled preset, positive level-one gate, source mode null art-count override, column count mismatch, empty stock, negative category sentinel (including -2), nonnegative word indices (0 included), authored ordering, source tableaus/stock counts, late config change, Android 320px and Undo/Hint. No original-runtime match claim until an actual isolated original Android trace.
+
+The existing source feature `azur-tutorial-preset-deal` remains **ROADMAPPED**, total original source inventory **114/114**, zero exclusions. Original/native source tier `NATIVE_STATIC`; original app execution count still **0**.

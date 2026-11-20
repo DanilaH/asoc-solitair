@@ -7,6 +7,7 @@ import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, 
 import { abandonCampaign, dailyRewardEligible, finishDaily } from './meta';
 import { markCampaignWin } from './services';
 import { recordUndo } from './history';
+import { bonusKinds, bonusOffer, pilesFor } from './bonus-slots';
 
 export const STREAK = BALANCE.streak;
 export const boardRules = (board: Board): 2 | 3 => board.rulesVersion ?? RULES_VERSION;
@@ -251,7 +252,10 @@ export function boardKey(board: Board): string {
 }
 export function assertBoard(board: Board, deal: Deal): void {
   if (board.rulesVersion !== undefined && board.rulesVersion !== 2 && board.rulesVersion !== 3) throw Error('Неизвестные правила попытки');
-  if (board.tableau.length !== deal.initial.tableau.length || board.foundations.length !== deal.initial.foundations.length) throw Error('Неверное число столбцов');
+  for (const kind of bonusKinds) {
+    const count = pilesFor(board, kind).length, regular = pilesFor(deal.initial, kind).length;
+    if (count !== regular && !(count === regular + 1 && bonusOffer(deal, kind))) throw Error('Неверное число столбцов');
+  }
   if (board.joker) {
     const j = board.joker;
     if (!Number.isInteger(j.column) || !Number.isInteger(j.boundary) || j.boundary < 1 || !board.tableau[j.column] || j.boundary > board.tableau[j.column].length || isLocked(board, j.column, deal)) throw Error('Некорректный Джокер');

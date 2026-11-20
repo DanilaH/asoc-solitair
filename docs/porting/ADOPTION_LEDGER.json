@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/1c2d12621ba47f7f164a418dab84781c025ee855/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "9a740783e79f0613ce6cccf9de281e2a5b3dc930",
-  "sourceInventoryRef": "1c2d12621ba47f7f164a418dab84781c025ee855",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/44e43051a5ac05e82d9a132943b2c42362175b3d/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "65061f5813fc4f4fef1c088313008945d4b75f99",
+  "sourceInventoryRef": "44e43051a5ac05e82d9a132943b2c42362175b3d",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "114 source systems; original AZUR packaged 90/490 Sprite sets, 33 locales and source ART preload/counted cards verified, but original Android preload success, active locale move policy, remote art and selected RNG board remain UNKNOWN. No agent-initiated feature exclusions.",
+  "coverageDisclaimer": "114 source mechanisms; AZUR original ARM64 Frida runtime-oracle ABI and numeric capture scripts statically verified (12 methods/25 fields/7 exports), but ZERO executions/actual original samples. Synthetic comparator passes do not establish original source runtime parity or paid SDK behavior. No owner exclusions.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -110,9 +110,11 @@
     },
     {
       "id": "azur-extra-foundation",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Source video upper foundation offer (500 coins/video) documented; C8 bonus upper foundation currently has no independently verified equivalent transactional unlock and native entitlement path.",
-      "nextAction": "Kit PR #81 proves upper bonus kind2 remote enabled/start level, regular foundation count 3/4, prefab required, coin SpendCoins success before GrantUnlock, rewarded readiness path and saved unlock flags. Implement distinct upper-slot gate and Save/Undo/solver/Hint/layout, reward receipts and 320px Android QA; live price, remote defaults, original earned callback and SDK/device parity remain UNKNOWN.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fourth/fifth upper foundation at levels 22/40 with coin or earned video, legal category moves, persistent opening, Hint and post-transfer practice.",
+      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings.",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/tree/feat/c8-core-4-azur-bonuses-20261120",
+      "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
       "stage": "D1"
     },
     {
@@ -443,7 +445,7 @@
       "id": "azur-localized-move-budget",
       "status": "ROADMAPPED",
       "currentImplementation": "Russian-only content has fixed author budgets; no AZUR locale word-count scaling in our RulesV3. Original AZUR positive-input branch proven static native at RVA0x262e4a8",
-      "nextAction": "Kit PR #88 verifies GetLocalizedWordCount itself queries CardSpriteLoader.TryGetLoadedSpriteCount; plan source-branch 5*ceil(M*L/(5E)) capped INTMAX, using verified English/local word counts and loaded-art status with explicit original remote enable/eligibility UNKNOWN. Test nonempty E/L, out-of-range, language-change old attempts, SaveStore, and do not silently adjust existing RU-only published budget.",
+      "nextAction": "Original XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: ABI-verified hook points for GetEnglishWordCount/GetLocalizedWordCount/GetAdjustedMovesForCurrentLocale; 0 live original Android samples. Recover actual EN/RU and remote localization flag with source loaded-art counts and numeric M/E/L, compare compiled 5*ceil(M*L/(5E)) positive branch; preserve existing immutable RU C8 budget and migration until separately approved.",
       "stage": "G1",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -789,16 +791,18 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "CORE-1 offline AzurDealer implements the verified single descending shuffle and positive DealCards placement and reveal, with an explicitly injected RNG. Current C8 uses frozen Hitapps-derived deals.",
-      "nextAction": "Capture original upstream shared Unity RNG call order and state across DailyBonus, ComboSeries and Joker, original device stock/tableau, level-one preset serialization and active remote path. Use isolated randomness in product authoring. See kit PRs #80, #82 and #84.",
+      "currentImplementation": "CORE-1 offline AzurDealer implements verified descending Fisher–Yates and deal placement with injected RNG. Current C8 uses frozen Hitapps-derived deals.",
+      "nextAction": "Kit PR #90 provides original ARM64 numeric capture for GenerateCards, filtered Unity Random.Range draws (caller 0x2c6ac40) and post-deal stock/tableau. Static verifier covers 12 methods, 25 fields and 7 exports. Obtain at least two real captures of the authorized original and compare the sampled board; original RNG initialization, actual device state, remote configuration and upstream stream sharing remain open.",
       "stage": "B1",
-      "reason": "Original Unity RNG initialization and runtime selected board remain unknown, despite now VERIFIED native dealer shuffle and placement body."
+      "reason": "Original ARM64 shuffle/body/source metadata and numeric capture ABI are verified, but no original Android process was executed, no RNG samples/stock/tableau or selected remote state captured. Exact original initial Unity RNG and final board remain evidence gaps."
     },
     {
       "id": "azur-bonus-lower-column",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No independent bonus lower tableau column in C8 runtime; current tableau columns are fixed by the immutable Deal.",
-      "nextAction": "Kit PR #81: original lower type3 only when remotely enabled, level>=startLevel, normal column count 3/4 and matching prefab; source save retains independent enable/unlocked bits, coin spend success and rewarded readiness can lead to type-scoped grant/save. Implement as distinct optional lower tableau with Save/Undo/solver/Hint/layout/reward receipts; source price, actual live config/ad-earned and real UI geometry UNKNOWN.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fifth lower tableau at levels 30/40 with coin or earned video, legal temporary storage, verified Hint continuation, persistent opening and post-transfer practice.",
+      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings.",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/tree/feat/c8-core-4-azur-bonuses-20261120",
+      "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
       "stage": "D1"
     },
     {
@@ -882,9 +886,9 @@
       "status": "ROADMAPPED",
       "stage": "B1",
       "currentImplementation": "Our published C8 levels use offline immutable Hitapps-derived Deals and bundled own game art. There is no AZUR-specific level-scoped CardSpriteLoader asynchronous asset preload, loaded-count fallback or source-aware locale word-count bridge.",
-      "nextAction": "Kit PR #88 proves source native LoadAndStartLevel→CardSpriteLoader.PreloadThemes→PreloadThemesCoroutine before later BuildArtCardCounts/GenerateCards, and GetLocalizedWordCount queries TryGetLoadedSpriteCount; source XAPK has 90 art packs/490 Sprite refs, 292 art-eligible levels, only conditional set385 +1 in levels44/884/1290/1974, 33 theme locales. Implement separately as optional AZUR authored, versioned asset manifest and explicit preload success/failure/fallback before freezing an immutable Deal; do not refetch/retune active saved attempts. Original device-loaded assets, remote config, live locale budget and RNG/final stock remain UNKNOWN."
+      "nextAction": "Original XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: capture-ready hooks for PreloadThemes + TryGetLoadedSpriteCount, recording requested/loaded theme counts without protected image data; static 90 art packs/490 Sprite counts verified by kit PR #88, but original Android preload and error/late/remote behavior NOT observed. Need actual authorized device trace with success/missing art, content count and immutable Save/Undo path before product source-runtime parity."
     }
   ],
-  "auditRevision": "2026-11-20-azur-packaged-art-locale-114-v11",
+  "auditRevision": "2026-11-20-azur-native-runtime-oracle-prepared-zero-captures-v12",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

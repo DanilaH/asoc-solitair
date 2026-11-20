@@ -1,5 +1,6 @@
 import { applyBoard, boardKey, boardRules, legalCommands } from './engine';
 import type { Board, BoardCommand, Deal } from './types';
+import { bonusKinds, bonusOffer, pilesFor } from './bonus-slots';
 export type SearchResult = { status: 'SOLVED'; path: BoardCommand[]; visited: number }
   | { status: 'UNKNOWN' | 'UNSOLVABLE'; visited: number };
 
@@ -27,15 +28,32 @@ export function solve(start: Board, deal: Deal, limit = 8000): SearchResult {
 export function knownContinuation(board: Board, deal: Deal): BoardCommand[] | null {
   const legacy = boardRules(board) === 2;
   const routes = legacy ? [deal.legacyWinningPath ?? deal.winningPath] : [deal.winningPath, ...(deal.recoveryPaths ?? [])];
-  for (const route of routes) {
-    const continuation = matchRoute(board, deal, route);
-    if (continuation) return continuation;
+  const match = (state: Board) => {
+    for (const route of routes) {
+      const continuation = matchRoute(state, deal, route);
+      if (continuation) return continuation;
+    }
+    return null;
+  };
+  const direct = match(board), lower = bonusOffer(deal, 'tableau');
+  if (direct || !lower || !board.tableau[lower.index]?.length) return direct;
+  // A group temporarily parked in the extra column can rejoin an authored route.
+  for (const action of legalCommands(board, deal)) {
+    if (action.type !== 'transfer' || action.from.kind !== 'tableau' || action.from.index !== lower.index) continue;
+    const next = applyBoard(board, action, deal);
+    if (typeof next === 'string') continue;
+    const continuation = match(next.board);
+    if (continuation) return [action, ...continuation];
   }
   return null;
 }
 
 function matchRoute(board: Board, deal: Deal, witness: BoardCommand[]): BoardCommand[] | null {
   let current: Board = { ...structuredClone(deal.initial), rulesVersion: boardRules(board), movesLeft: null };
+  for (const kind of bonusKinds) {
+    const offer = bonusOffer(deal, kind);
+    if (offer && pilesFor(board, kind).length > offer.index) pilesFor(current, kind).push([]);
+  }
   for (let index = 0; index < witness.length; index++) {
     // Foundation slots have identical rules. Match their contents, then map the
     // stored route back to the player's actual slots; tableau/locks stay exact.
@@ -46,7 +64,8 @@ function matchRoute(board: Board, deal: Deal, witness: BoardCommand[]): BoardCom
       slots[i] = board.foundations.findIndex((other, j) => !used.has(j) && JSON.stringify(current.foundations[i]) === JSON.stringify(other));
       if (slots[i] >= 0) used.add(slots[i]);
     }
-    if (slots.every(i => i >= 0) && boardKey(current) === boardKey({ ...board, foundations: slots.map(i => board.foundations[i]) })) {
+    if (slots.length === board.foundations.length && slots.every(i => i >= 0) &&
+      boardKey(current) === boardKey({ ...board, foundations: slots.map(i => board.foundations[i]) })) {
       const path = witness.slice(index).map(action => action.type === 'transfer' ? {
         ...action,
         from: action.from.kind === 'foundation' ? { ...action.from, index: slots[action.from.index] } : action.from,

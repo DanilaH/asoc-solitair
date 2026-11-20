@@ -1,6 +1,7 @@
 import { legalCommands, sameBoardCommand, sourceCards } from '../domain/engine';
 import { knownContinuation } from '../domain/solver';
 import { completedLevels, freeHintDemo, markTutorial, seenTutorial } from '../domain/progression';
+import { bonusKinds, bonusOffer, pilesFor } from '../domain/bonus-slots';
 import type { Board, BoardCommand, Command, Deal, Save } from '../domain/types';
 
 type Skill = 'category' | 'match' | 'stock';
@@ -16,6 +17,8 @@ export function coversPlayableWaste(board: Board, action: BoardCommand, deal: De
 }
 
 export function recordLearning(save: Save, before: Board, action: BoardCommand, deal: Deal): void {
+  if (action.type === 'transfer' && action.to.kind !== 'waste' &&
+    action.to.index === bonusOffer(deal, action.to.kind)?.index) markTutorial(save, `learn:bonus-${action.to.kind}`);
   if (action.type === 'recycle' && deal.training) markTutorial(save, 'learn:recycle');
   if (action.type === 'transfer' && action.from.kind === 'waste' && deal.training === 'stock') markTutorial(save, 'learn:waste');
   if (action.type === 'transfer' && action.to.kind === 'tableau' && before.tableau[action.to.index].length === 0 && deal.training === 'planning')
@@ -144,6 +147,15 @@ function isBoardCommand(command: Command): command is BoardCommand {
 /** Observe accepted state: teaching never moves cards or spends resources. */
 export function lesson(save: Save, deal: Deal): Guidance | undefined {
   if (save.attempt.board.phase !== 'playing') return;
+  const board = save.attempt.board;
+  for (const kind of bonusKinds) {
+    const offer = bonusOffer(deal, kind);
+    if (!offer || pilesFor(board, kind).length <= offer.index || seenTutorial(save, `learn:bonus-${kind}`)) continue;
+    const action = legalCommands(board, deal).find(step => step.type === 'transfer' &&
+      step.to.kind === kind && step.to.index === offer.index);
+    if (action) return { action, copy: kind === 'foundation'
+      ? 'Поставьте тему в новый слот.' : 'Переложите карту в столбец.' };
+  }
   if (deal.training) {
     if (completedLevels(save) >= (deal.campaignLevel ?? Infinity) && !save.attempt.lessonHint) return;
     return openingLesson(save, deal);

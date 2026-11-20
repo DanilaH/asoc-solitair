@@ -18,6 +18,8 @@ Native SDK `onRewarded` creates an AtomicFile receipt before JS notification. JS
 
 Hint/Undo rewarded offers grant +2/+3 charges. Continuation gives +10 moves at most once per attempt, outside board Undo. Historical Undo budgets receive the same earned addition so undoing a board move cannot erase the paid-for allowance. A late continuation for an abandoned attempt becomes a retained continuation credit, used explicitly on a future exhausted attempt; it never modifies a different live board or disappears on acknowledgement. An unavailable/cancelled/dismissed ad alone gives nothing. Existing schema-1 saves remain compatible; optional platform/telemetry fields initialize when first used. Card rules and existing numeric rewards are unchanged.
 
+Content 8 preview adds `bonus-foundation` and `bonus-tableau` rewarded placements. Each receipt targets a single slot in the exact campaign deal and attempt, active or parked. The slot and new receipt ID enter one SaveStore snapshot, then native receives the acknowledgement. A duplicate or a discarded attempt cannot open space elsewhere. Opening by coin purchase uses the same slot entitlement and writes the debit in the same save. Undo preserves the available space.
+
 ## Ads and UI
 
 Yandex Mobile Ads and AppMetrica are pinned to 8.6.0, verified against official docs below. Native SDK initialization, status/pending/ack and telemetry never gate the first playable frame. Each optional operation has at most one unresolved request; recovery retries in the background. Listener handles arriving after disposal are removed. A displayed fullscreen is not released by a generic JS timeout.

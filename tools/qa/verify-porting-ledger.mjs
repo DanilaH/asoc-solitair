@@ -92,7 +92,9 @@ export function validatePortingInventory(source, ledger, roadmap, agents, rawSou
       errors.push('Accepted with no acceptance evidence: ' + id);
     }
     const row = '| ' + String.fromCharCode(96) + id + String.fromCharCode(96) + ' |';
-    const appearances = roadmap.split(row).length - 1;
+    // Count actual Markdown table rows, not arbitrary substrings: a literal escaped \\n
+    // must not silently satisfy the complete reference-to-product coverage gate.
+    const appearances = roadmap.split(/\r?\n/).filter(line => line.startsWith(row)).length;
     if (appearances !== 1) errors.push('Missing/duplicate roadmap row: ' + id + ' (' + appearances + ')');
     if (!roadmap.includes('### ' + record.stage + '.')) {
       errors.push('Stage not found in roadmap: ' + record.stage);

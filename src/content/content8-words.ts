@@ -1,4 +1,4 @@
-import { cardsFor, type TopicSelection } from './topics';
+import { cardsFor, topics as wordBank, type TopicSelection } from './topics';
 
 /** New original entries, used by Content 8 only. Existing revisions retain their card sets. */
 export const extraWords: Partial<Record<TopicSelection['id'], readonly [string, string][]>> = {
@@ -35,9 +35,9 @@ export const extraWords: Partial<Record<TopicSelection['id'], readonly [string, 
 };
 
 export function content8Cards(topics: readonly TopicSelection[]) {
-  const cards = cardsFor(topics.map(topic => ({ ...topic, count: Math.min(5, topic.count) })));
-  for (const { id, count } of topics) for (let n = 6; n <= count; n++) {
-    const entry = extraWords[id]?.[n - 6];
+  const cards = cardsFor(topics.map(topic => ({ ...topic, count: Math.min(wordBank[topic.id][1].length, topic.count) })));
+  for (const { id, count } of topics) for (let n = wordBank[id][1].length + 1; n <= count; n++) {
+    const entry = extraWords[id]?.[n - wordBank[id][1].length - 1];
     if (!entry) throw Error(`Нет нового слова ${id}_${n}`);
     const key = `${id}_${n}`;
     cards[key] = { id: key, category: id, text: entry[0], explanation: entry[1] };

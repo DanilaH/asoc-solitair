@@ -1,5 +1,6 @@
 import data from './campaign-v8-dealer.json' with { type: 'json' };
 import wave from './campaign-v8-wave.json' with { type: 'json' };
+import late from './campaign-v8-late.json' with { type: 'json' };
 import type { BoardCommand, Deal, Location } from '../domain/types';
 import { content8Cards } from './content8-words';
 import type { TopicSelection } from './topics';
@@ -32,3 +33,4 @@ function decodeDeal({ topics, winningPath, recoveryPaths, ...deal }: DealerRecor
 
 export const content8Dealer: readonly Deal[] = (data as DealerRecord[]).map(decodeDeal);
 export const content8Wave: readonly Deal[] = (wave as DealerRecord[]).map(decodeDeal);
+export const content8Late: readonly Deal[] = (late as DealerRecord[]).map(decodeDeal);

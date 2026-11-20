@@ -1,3 +1,7 @@
+# Content 8 CORE-3 · full campaign preview 0.19.7
+
+[Levels 32–80 and verification](qa/content-v8/CORE_3_LATE.md). Fresh Content 8 attempts now use the full 80-level bank, including the previous 16–31 wave. The older C7 fallback IDs remain available for saved attempts. Physical Android playtest and human balance review remain open. The next roadmap package is CORE-4.
+
 # Content 8 CORE-3 · 0.19.6
 
 [Levels 16–31 and verification](qa/content-v8/CORE_3.md). CORE-3 replaces the C7 fallback at those positions in Content 8 preview, including the first five-column deals (26 and 31). Resume with the remaining wave 32–80 using the independent verification and editorial recipes described there. Physical playtest remains open.

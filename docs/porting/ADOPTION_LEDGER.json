@@ -19,12 +19,12 @@
     },
     {
       "id": "hitapps-level-wave",
-      "status": "IN_PROGRESS",
-      "currentImplementation": "CORE-3 Content 8 extends the playable campaign through level 31, matching EN16–31 source counts for cards, stock and columns. Positions 26 and 31 use five tableau columns and five foundations.",
-      "nextAction": "Validate the sampled wave on Android. Author 32–80 as product extensions without claiming exact Hitapps geometry beyond EN31.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Content 8 has 80 authored deals. The 16–31 section matches the verified Hitapps EN counts for cards, stock and columns. The 32–80 product wave has seven five-column peaks.",
+      "nextAction": "Evaluate pacing on physical Android and keep exact Hitapps geometry beyond the verified local EN31 boundary open.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "C2",
-      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
     },
     {
       "id": "hitapps-candidate-priority",
@@ -208,11 +208,11 @@
     },
     {
       "id": "azur-topic-rotation",
-      "status": "IN_PROGRESS",
-      "currentImplementation": "The 16–31 editorial plan uses zero adjacent shared category IDs, including the 15→16 boundary. A per-level recipe preserves the exact topics and card counts.",
-      "nextAction": "Measure near-level vocabulary recurrence and set chapter-scale rotation for levels 32–80. Native AZUR dictionary repetition distances are reference evidence.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "C8 positions 32–80 contain 77 original project topics including 24 new ones. At least three other levels intervene before any topic is reused in the late slice.",
+      "nextAction": "Playtest topic recognition and compare longer semantic recurrence to reference evidence before planning an endless bank.",
       "stage": "C2",
-      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
     },
     {
       "id": "hitapps-puzzle-event",
@@ -567,12 +567,12 @@
     },
     {
       "id": "azur-structured-long-campaign",
-      "status": "IN_PROGRESS",
-      "currentImplementation": "Content 8 now provides continuous authored positions 1–31. The new wave uses Hitapps dimensions and a distinct product topic plan inspired by AZUR long-campaign design.",
-      "nextAction": "Author and independently certify C8 levels 32–80; compare pacing with playtest data. Leave the native AZUR long-row format and original runtime evidence tracked.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "C8 positions 32–80 use seven seven-level chapters with four product-authored geometry and budget profiles. The AZUR observed cadence informs the product structure.",
+      "nextAction": "Test long-play pacing on device. Keep native long-campaign configuration and evidence for exact original behaviour tracked.",
       "stage": "G1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
     },
     {
       "id": "azur-purchase-receipts",
@@ -667,21 +667,21 @@
     },
     {
       "id": "azur-variable-category-sizes",
-      "status": "IN_PROGRESS",
-      "currentImplementation": "CORE-3 uses original categories of four to six member cards with per-level authored totals. Recipes record exact counts against the Hitapps aggregate card dimensions.",
-      "nextAction": "Playtest size variation, extend the editorial pool for 32–80 and keep the AZUR native art-dependent count rule separate.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Late C8 recipes use four to six members per category and vary category count between eight and fifteen per board. Published totals match each product geometry profile.",
+      "nextAction": "Check recognition and pacing on Android. The AZUR art-dependent native sizing rule is tracked separately.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
     },
     {
       "id": "hitapps-mixed-word-image-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Each CORE-3 deal has a picture category using complete original project art and word-only categories. Members inside a single category share a presentation.",
-      "nextAction": "Check card recognition and text fit on physical Android at the five-column peaks and extend full-category original art coverage for later content.",
+      "currentImplementation": "Every newly authored CORE-3 layout across 16–80 mixes one whole picture category using original art with word categories.",
+      "nextAction": "Evaluate card recognition and text fit on physical Android at five-column peaks.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "evidenceRef": "docs/qa/content-v8/CORE_3.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
     },
     {
       "id": "hitapps-language-change-restart",

@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/7f91abfd824162780a6567c6823b95864142957c/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "30dc681457cce379957cccc21f2ed4c8cfe25f76",
-  "sourceInventoryRef": "7f91abfd824162780a6567c6823b95864142957c",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/57bffb395e06200dc9f147c6f52f0128b4a4d370/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "d331f6161975fba47dee4f5c13505e081ce51914",
+  "sourceInventoryRef": "57bffb395e06200dc9f147c6f52f0128b4a4d370",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "99/99 source↔consumer current known research, not exhaustive original live runtime; one earlier Hitapps Daily puzzle attribution downgraded to EVIDENCE_GAP; provenance and CI consumer gate under audit.",
+  "coverageDisclaimer": "110 known source mechanics, including 11 extra core submechanics; source static AZUR native proof differs from live original runtime and from consumer acceptance. No permanent exclusions by agent.",
   "features": [
     {
       "id": "hitapps-stock-dealer",
@@ -428,9 +428,9 @@
     },
     {
       "id": "azur-localized-move-budget",
-      "status": "EVIDENCE_GAP",
-      "currentImplementation": "Rules v3 fixed Russian budgets; no per-locale adjustment",
-      "nextAction": "Trace real native method/data; only consider if multiple locales are supported",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Russian-only content has fixed author budgets; no AZUR locale word-count scaling in our RulesV3. Original AZUR positive-input branch proven static native at RVA0x262e4a8",
+      "nextAction": "When localizing: implement 5*ceil(M*L/(5E)) capped INT_MAX only with verified locale/en word counts, valid guards, old-save/version migration; original live config remains UNKNOWN",
       "stage": "G1",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -751,8 +751,91 @@
       "currentImplementation": "Own Russian-only semantic bank; no 36-locale Addressables/catalog delivery",
       "nextAction": "Plan original localized dictionaries, missing-definition audit and level/locale save migration if expanding languages",
       "stage": "G1"
+    },
+    {
+      "id": "azur-deck-draw-and-recycle",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Current RulesV3 applyBoard draw shift/stock recycle waste.slice, same observable repeated draw order; internal storage orientation differs from AZUR native stack",
+      "nextAction": "Add exact source-model two-pass fixtures, Undo/reload/faceUp/cycle UI tests; compare user-observable order rather than internal array equality",
+      "stage": "B1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-defeat-vs-no-valid-move",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "src/domain/engine.ts phase exhausted only when movesLeft===0; independent canReachTransfer and hint search; no separate source-level native no-valid placement",
+      "nextAction": "Verify native branch budget exhaustion&&!win separate from legal-action availability; test stock/recycle cycles and no false loss on temporary no-transfer",
+      "stage": "B1",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+    },
+    {
+      "id": "azur-generate-deal-entrypoints",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "C8 generator based on Hitapps ordinary model, not AZUR GenerateCards/DealCards/DealCardsFromPreset native algorithm",
+      "nextAction": "Original native method pointers mapped, but GenerateCards/DealCards/DealCardsFromPreset bodies/RNG not reconstructed: disassemble full algorithm and capture original runtime selected seed and final board before claiming parity.",
+      "stage": "B1",
+      "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
+    },
+    {
+      "id": "azur-bonus-lower-column",
+      "status": "ROADMAPPED",
+      "currentImplementation": "Our C8 tableau column count fixed by immutable deal; no bought/unlocked extra tableau column",
+      "nextAction": "Original source shows separate BonusColumn/BonusFoundation interfaces and verified ARM64 method pointers only; first reconstruct actual bonus column enable/unlock behavior and original gameplay trace, then implement separate lower-column rule, Save/Undo/solver/Hint/layout/price/first-use tests.",
+      "stage": "D1"
+    },
+    {
+      "id": "hitapps-equality-three-stack-pair-placement",
+      "status": "ROADMAPPED",
+      "currentImplementation": "C8 ordinary Priority dealer skips Equality-specific unique 3-stack pairing",
+      "nextAction": "Implement exactly flagged placeCategoryPairsOnTop for Equality only with same advanced RNG stream; compare selected stack indices and new candidate stock/cols in offline tests",
+      "stage": "B3"
+    },
+    {
+      "id": "hitapps-feature-seed-one-time-reshuffle",
+      "status": "ROADMAPPED",
+      "currentImplementation": "No runtime source-feature-seeded re-shuffle and shared LevelShuffled state; only own immutable C8 plain deal",
+      "nextAction": "Model shared LevelShuffled flag and precisely one FeatureLevelSeed shuffle across valid Lockers/Frozen/Bound; test invalid pattern flags without assuming unchanged board",
+      "stage": "B3"
+    },
+    {
+      "id": "hitapps-initial-shuffle-final-pipeline",
+      "status": "ROADMAPPED",
+      "currentImplementation": "C8 plain dealer lacks separate native Initial/Shuffle/Final application pipeline",
+      "nextAction": "Implement source-ordered phases 10/40,20/25/27,30/45 around candidate simulation, with independent source/adapter distinctions",
+      "stage": "B3"
+    },
+    {
+      "id": "hitapps-negative-seed-request-path",
+      "status": "ROADMAPPED",
+      "currentImplementation": "C8 authoring enumerates positive explicit test seeds; no native negative-seed helper path",
+      "nextAction": "Implement native semantics negative-requested-seed→separate random seed draw on eligible paths, record selected seed and reproducibility; not same as EmbeddedRandom ctor(-seed)",
+      "stage": "B1"
+    },
+    {
+      "id": "hitapps-puzzle-top-bottom-cards",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "C8 leader and ordinary word types only; no native puzzle top/bottom special card types",
+      "nextAction": "Trace PuzzleTop/PuzzleBottom distribution, stock placements, move legality and interactions; then implement clean-room additional card types with verifier",
+      "stage": "D1",
+      "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
+    },
+    {
+      "id": "hitapps-bound-scissors-pattern",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "No BoundCard/Scissors in current game; only plain/ordered/lock/Joker",
+      "nextAction": "Recover actual native scissors reveal/remove, layer and move-cost rules for BoundPattern; create specified Rules/Undo/Solver/teaching test upon proof",
+      "stage": "D1",
+      "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
+    },
+    {
+      "id": "unico-magnet-helper",
+      "status": "EVIDENCE_GAP",
+      "currentImplementation": "No Unico Magnet, and Hitapps Magnet starter booster is independent reference",
+      "nextAction": "Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action",
+      "stage": "D1",
+      "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
     }
   ],
-  "auditRevision": "2026-11-19-independent-falsification-pass3",
+  "auditRevision": "2026-11-20-cross-verified-core-110",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

@@ -1,0 +1,264 @@
+# Association Solitaire — полное ТЗ переноса core gameplay из Hitapps / AZUR / Unico
+
+**Дата:** 20.11.2026  
+**Источник продукта:** `DanilaH/asoc-solitair` — development `feat/c8-onboarding-dealer-20261119`, baseline `bf26fe7280b05c458e12626590bbe5cf789c6788` на момент аудита. `game/main 19ea067f1788f9aabdabf819c6008e15475b22be` — старый C6. Разработка Content8: [PR #41](https://github.com/DanilaH/asoc-solitair/pull/41). [PR #42](https://github.com/DanilaH/asoc-solitair/pull/42) — **исследовательское ТЗ Equality**, не реализованный runtime.  
+**Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **110** ID и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research-gui-dance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.  
+**Назначение:** **инженерная спецификация core системы для разработчика**, не новый список советов и не согласие вычеркнуть дорогие механики. Все найденные core-механики — генератор, баланс, модификаторы, сложность, рестарт, помощники, failure/revive — входят в программу продукта. Можно внедрять пакетами, **исключать из roadmap только по явному решению владельца**.
+
+## 0. Истинные статусы доказанности и критерии закрытия
+
+| Маркер | Что действительно известно | Что НЕ означает |
+| --- | --- | --- |
+| `ORIGINAL_NATIVE_STATIC` | ARM/IL2CPP RVA/инструкции/вызовы проверены относительно конкретной сборки и exact hashes | Что этот путь активен в удалённой конфигурации / что видел игрок |
+| `ASSET_VERIFIED` | исходные authenticated LevelBundle / LevelConfig значения | Итоговая выбранная генератором раздача или online override |
+| `VIDEO_OBSERVED` | конкретное действие/экран/результат | Точный seed/RNG, payout policy, SDK callback |
+| `MODEL_PARITY` | две свои модели или наш engine+oracle дали одинаковый replay | Сопоставление с запущенным оригинальным APK |
+| `GAME_IMPLEMENTED` | изменение есть в точном коде/коммите | Плейтест на телефоне или коммерческий успех |
+| `ORIGINAL_RUNTIME_PARITY` | точные оригинальные build/config/seed и сравнённые состояния **реально выполняемого** оригинала | Невозможно получить из статического отчёта |
+| `UNKNOWN` | конкретно указана отсутствующая проверка | Можно подменить произвольной эвристикой и объявить копию |
+
+**Первоисточники:**
+- Hitapps `com.hitappsgames.wordsolitaire`, **1.26.2/code3742**, XAPK SHA256 `22aaff3a6d5b70f217b8feb7348538f5ab3352d4e8c766406cbddcbcd71e49f0`, ARM32 ELF SHA `f25d9a988f6fa61eb201879f72c556a5875a4ac2c5f541670950589afbb51e26`. [source map](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-17-hitapps-level-map/README.md), [seed/RNG](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-17-hitapps-rng-stacks/README.md), [candidate selector](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-18-hitapps-candidate-selection/README.md), [special phases](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-17-hitapps-final-phase/README.md), [source simulation callback](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-17-hitapps-simulation-callback/README.md), [runtime oracle OPEN](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-18-hitapps-runtime-oracle/README.md).
+- AZUR `com.solitaire.match.words`, **1.3.3.8/code244**, XAPK SHA256 `4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4`, ARM64 ELF SHA `27eb2e67ba00093ed575e16fc01a876a9e90fff8e53b504338047a4bf2c0d924`. [native core verifier and results](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md), [2000-row LevelConfig](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-16-azur-static/README.md), [budget/cadence](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-16-azur-static/BUDGET_MODEL.md), [loss/revive native](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-18-loss-ads-flow/README.md).
+- Unico `com.unicostudio.wordsolitaire`: источник [S3 video analysis](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md). **Исходный XAPK отсутствует** в подтверждённом [Drive каталоге исходников](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/source-apks/unico/README.md): core не восстановлен нативно. Никаких выдуманных чисел от Unico.
+
+Оригинальный Hitapps XAPK на Drive имеет ~288 MB и не может быть целиком передан через нынешний Drive connector download с ограничением 256 MiB. Старые read-only proof scripts и результаты source-bound исследовательских проверок сохранены в kit; **настоящий Android original runtime не захвачен**. Для AZUR нативные static evidence и исходный verifier были проведены в отдельном исследовательском окружении; CI в kit может проверить модели/fixtures без приватного XAPK, но **не может доказать повторный запуск оригинала без него**.
+
+## 1. Системная схема ядра, которую надо реализовать
+
+```text
+Reference source LevelConfig / LevelBundle (source hash, local override, remote UNKNOWN)
+  → Level preparation (locale/difficulty budget, player history, source type and feature seeds)
+  → Chosen plan:
+      non-random/tutorial
+      ordinary Priority + EasyDeals decision when eligible
+      source-supported special Equality/Paywall when eligible
+  → Card/slot enumeration (leader→members; puzzle/ordered/booster special types)
+  → Seeded destination-list shuffle (EmbeddedRandom + ten full-length passes)
+  → optional Equality three-distinct-stack pair placement
+  → feature-conditioned Shuffle phase (Lockers / Frozen / Bound, optional FeatureLevelSeed re-shuffle ONCE)
+  → real rule-accurate simulation, scoring & selected candidate (bounded 100, fallback)
+  → separately applied Final phase (GoldenCards / StarterBooster independent RNG)
+  → IMMUTABLE final Deal + effective moves + 1..5 columns + witness / unknown proof
+  → Rules v3 versioned gameplay: legal move / draw / recycle / group completion / loss
+  → optional Undo/Hint/booster/rewarded+10 / re-deal / restart / next level
+  → saved exact attempt, receipt and outcome history for future eligible adaptive difficulty
+```
+
+**ВАЖНО:** native Hitapps `RunForNewLevel` (`Initial→Shuffle→Final`) и `BuildSimulatedPlan` (candidate search + delegated `RunShufflePhase` BEFORE scoring + `RunFinalPhase` afterward) — **разные ветви**. Не упрощать их до «после рандома включить все эффекты». `LevelType` flags и `Applied/Failed` результаты хранить отдельно от вероятности победы.
+
+Core должен быть построен на **нашем чистом коде**, а не копировании стороннего Unity/IL2CPP. Для опубликованных уровней итоговый `Deal` заморожен; тяжёлый solver/генератор выполняется offline или отдельным worker, а не во время жеста на UI-thread.
+
+## 2. Блок R — точность обычных правил и cost model
+
+### R1. Проверить правила на реальных состояниях
+
+В текущем `src/domain/engine.ts` уже есть `packet`, `applyBoard`, `draw/recycle`, foundation/temporary tableau, ordered, ключи, Joker. Прежде чем переделывать правила, сделать независимую таблицу **source action → наш action → expected board/cost**, с fixtures:
+
+1. Лидер категории может открыть пустой верхний слот, слово — присоединиться к соответствующему лидеру; категориальные пачки и порядок `rank` должны проходить с теми же ограничениями, которые **подтверждены** для нашего game Rules v3; для неизвестного original поведения — `ADAPTED, NOT SOURCE EXACT`.
+2. Перемещение группы из нижней колонки и открытие нижней карты, перенос из waste, временное складывание на нижние колонки, завершение/освобождение верхнего слота. `Joker` — временная нижняя опора, **не** свободный upper slot и не бонусный нижний столбец.
+3. `draw` обязан потреблять ход и перенести следующую карту из stock в waste; `recycle` потребляет ход по **нашему** Rules v3, переоткрывает ту же последовательность. На AZUR native `Deck.DrawNextCard` берёт конец списка, `Deck.Reset` переворачивает waste обратно в stock, скрывает карты и увеличивает счётчик цикла; **внутренняя ориентация массива** может отличаться при одинаковом user-visible цикле.
+4. После завершения партии `movesLeft=0` и `won` имеют приоритет **победы в последний ход**. Отдельно проверять `HasAnyValidMove`, `canReachTransfer` через полный recycle/stock и `actualBudgetExhausted`; **не объявлять поражение**, пока существует допустимый draw/recycle до будущего переноса.
+5. Ошибочное действие/tap/drag не тратит ход; Undo восстанавливает состояние и **не отзывает заработанные рекламные +10**, корректно сохраняет revisions/receipts. `Hint` **не списывает заряд**, если solver возвращает UNKNOWN или не доказал полезный ход.
+
+**Original AZUR native verified:** `GameManager.CheckDefeat 0x26a4090` вызывает `MovesSystem.HasMovesLeft 0x26a91e8` и `GameBoard.IsVictory 0x269fce8`; отдельный `HasAnyValidMove 0x26a40f8 → MoveValidator.HasAnyValidMove 0x26a9b14`. Это **две разные семантики** и **не доказательство**, что AZUR всегда заканчивает уровень заранее при отсутствии хода.
+
+### R2. Обязательная матрица игровых состояний
+
+Снимки: stock full/one/empty, waste full/one/empty, нижний столбец empty, blocked by lock/frozen/bound, foundation full/empty/one-slot-left, past recyclable zero cards, win last move, loss at zero, true inability to transfer despite deck, Undo/rewarded after low budget, saved tutorial step and app relaunch. Для каждого — one-step transition, move delta, face-up flags, legal actions, `phase`, hint response и Android hit region.
+
+**Source Unknown:** Hitapps точная стоимость всех special действия/условия revert/restore и AZUR фактический paid stock reset vs обычный не возвращают `ORIGINAL_RUNTIME_PARITY`; зафиксировать отдельно.
+
+## 3. Блок G — источник уровня, RNG и выбор раздачи
+
+### G1. Config → final distribution
+
+Только Hitapps original local EN1–31 подтверждены точно; 14 локалей/226 authenticated `map→LevelBundle` записей. `isRandom=false` для первого local уровня, EN2–31 randomized. Остальные исходные уровни/online override UNKNOWN.
+
+`AllCards`: category leader first, потом собственные `wordsData` по исходному порядку. `N=stockSize + Σ columnSize`; сформировать `ushort` destination labels (low-byte container type Stock=0 или PlayStack=2; high-byte index/position), затем `System.EmbeddedRandom(seed)` 56-state и **10 полных проходов** swap: `for pass=0..9, i=N-1..1, j=Next(N)`, **НЕ Fisher–Yates** и `N` не уменьшается. Всего `10*(N-1)` вызовов `Next(N)`.
+
+`src/content/campaign.ts` в normal build показывает Content7; C8 preview selection через `VITE_CONTENT8_PREVIEW=1` заменяет позиции **1–15**; 16–80 FALLBACK Content7. `tools/content/build-opening-dealer.ts` уже реализует ordinary source-prefix и свой solver. **Старый** `tools/content/build-reference-slice.ts` содержит xorshift/Fisher–Yates/«woven» и остаётся исторической адаптацией, **не может случайно стать source canonical**.
+
+**Проверки:** sample seed0,1,42,43 по source 188×4 conditional ordinary placements, source hash `ac7cf98c3c522a6f8593c2a98d38ccd966c130feea9f6a9948b04651b98fabf5`, плюс самостоятельно сгенерированные mini fixtures, exact stock and tableau occupancy, order leader/member. Источник conditional `MODEL_PARITY` ≠ оригинальный terminal Android board. `Int32.MinValue` constructor behavior vs negative `ShuffleLevelWithSeed(seed<0)` (выбрать новый seed) — **разные случаи**.
+
+### G2. Отбор кандидата и provenance
+
+Сейчас C8 `selectPriority` смотрит **только успешные** маршруты собственного `findReferenceRoute`, целевой steps выбирается нашим default `round(.89 * movesLimit)`, tolerance15%. Это **приближение нашей модели**, не подтверждённые Hitapps `accuracy/targetSteps/solverStrategies`.
+
+Портируемые стратегии:
+- `Priority=0`: `TryToWinLevel` success → ближе к target steps; первая лучшая при равенстве, ранний выход при `IsWithinPercentRange`, верхняя граница **100 кандидатов только одной нативной ветки**, fallback and errors.
+- `Equality=1`: `TryToWinLevel` **did not win**, but sim consumed **≥0.8×MovesLimit**; последовательная проверка требуемого числа `StrategySystems`, отказ на успешном боте. Это поиск *late bot failure*, **не доказательство математической непроходимости**. Параметр `placeCategoryPairsOnTop=true` делает три **разных** `playStack` placement (не повторно созданный RNG).
+- `None=2`: original source enum существует, семантика конкретного выбора/использование в live UNKNOWN — не заменять `Priority` по умолчанию.
+- `EasyDeals`: отдельное вычисление по порогу поражений/гейтов и source types, **не** свойство `Equality`. После неудач может выбирать релаксирующий план, но конкретный активный `lossThreshold` UNKNOWN.
+
+**Данные кандидата** в frozen audit-паспорте:
+
+```ts
+type DealAudit = {
+  sourceBuild: string; configDigest: string; localLevelPosition?: number;
+  authoredLevelVersion: number; strategy: 'Priority'|'Equality'|'None'|'Adapted';
+  requestedSeed: number; actualSeed: number; featureSeed?: number;
+  candidateCount: number; selectedBy: string; sourceAccuracy?: number;
+  targetSteps?: number; evaluatedPolicies: {
+    policyId: string; result: 'WON'|'LOST'|'UNKNOWN';
+    steps: number; terminalReason: string;
+  }[];
+  appliedFeatureFlags: number; failedFeatureFlags: number;
+  afterShuffleHash: string; postFinalHash: string;
+  moveBudgetBase: number|null; moveBudgetEffective: number|null;
+  independentWinningWitness?: string; proofLevel:
+    'SOURCE_PREFIX'|'MODEL_CROSSCHECK'|'ORIGINAL_RUNTIME'|'UNKNOWN';
+}
+```
+
+Это **предложенная структура нашего авторинга**, не оригинальный тип Hitapps. Она не должна попадать в приватный runtime/analytics целиком; запись production `DealId+version+immutable seed` для восстановления попытки.
+
+### G3. Сложность и лимиты
+
+Hitapps original `DynamicDifficulty` различает `Clean=1`, `ExtraSteps=2`, `Restart=3`. Ведёт окно **10 исходов**, проверяет win-rate interval, нелинейно взвешивает повторы, применяет `Penalty` через `LevelDataHandler.PrepareLevelForGameplay → Convert → GetStepsLimit` **только при `isStableMoves=true`**. Нативная формула использует процентное signed изменение `MovesLimit` c rounding **AwayFromZero**. **Положительный Penalty в проверенной формуле увеличивает доступные ходы**, отрицательный уменьшает. Не привязывать знак автоматически к `Hard/SuperHard`. Активные `hardPenalty/easyPenalty/winRateRange` UNKNOWN, вводятся **явными нашими конфигами**, не выдуманными «оригинальными значениями».
+
+Новое доказательство AZUR: `LevelConfigManager.GetAdjustedMovesForCurrentLocale` original ARM64 `0x262e4a8`, на positive `M,E,L` при включённом locale branch:
+
+[
+mathrm{movesLocalized}=min(2^{31}-1, 5lceil Mcdot L/(5E)ceil).
+]
+
+`M` authored source moves, `E` original English word count, `L` localized word count. Fixture `(70,16,17) → 75`, `(117,50,60) → 145`. **Это AZUR, не Hitapps; не использовать для нашей единственной RU локали до появления собственного локализованного контента**. Stage `G1` в реестре, не `OWNER_EXCLUDED`.
+
+**Не менять бюджет уже выданной партии при следующей победе/рестарте/получении события**: корректировать при подготовке **нового canonical attempt**, сохранять применённый effective budget и config revision.
+
+### G4. Не смешивать математические свойства с рекламой
+
+Пользователь отдельно одобрил систему специальной сложной выдачи, включая возможность проигрыша/продолжения. [Полный source-bound spec](https://github.com/DanilaH/asoc-solitair/pull/42).
+
+- `SourceEquality`: source-native late bot non-win после 80% — это свойство симулятора, а не гарантия.
+- `ContinueConvertible`: **наше адаптивное требование** для одного rewarded `+10`. Для положительного сценария от начального deal проверить конкретную последовательность победы ≤`B+10`; для утверждения «при B победа невозможна» нужен exhaustive proof `minimumRequiredSteps>B`, а не timeout/UNKNOWN. Для гарантий «+10 спасают» требуется **путь из реального exhausted state**, а не только с начала.
+- `BALANCE.continueMoves=10`, `src/domain/services.ts` earned receipt ledger и once-per-attempt already exist; не строить второй экономический кошелёк. Никаких grants по `onShown`, двойных из-за callback, или скрытого перерасчёта бюджета на уже сохранённом уровне.
+
+## 4. Блок F — функциональные фазовые модификаторы
+
+Все source-модификаторы Hitapps остаются в программе, **не только наиболее лёгкие**. В исходном IL2CPP:
+
+| Phase | Priority (НЕ номер открытия) | Applier | Product delta / проверка |
+| --- | ---: | --- | --- |
+| Initial | 10 | Paywall | seed / special status + segment/counter eligibility; [PR42](https://github.com/DanilaH/asoc-solitair/pull/42) |
+| Initial | 40 | OrderedCategory | порядок категориальной последовательности, card.rank/prefix test; current C8 training beyond L15 |
+| Shuffle | 20 | Lockers | source pattern index into config; key count/positions; Applied=2/Failed=4 |
+| Shuffle | 25 | FrozenCards | `layers/column/position`; Applied=32/Failed=64 |
+| Shuffle | 27 | BoundCards | `boundCards/scissors`; Applied=128/Failed=256; scissors actual behavior **UNKNOWN**, нужна отдельная исходная трасса |
+| Final | 30 | GoldenCards | GoldRush `CascadeEventsHook` conditional, type=8, first-time tutorial branch |
+| Final | 45 | StarterBooster | after candidate choice insert Magnet/Hammer into stock using **new Unity RNG**, not candidate's EmbeddedRandom |
+
+`LevelType`: Basic=0, Paywall=1, Lockers=2, LockersFailed=4, GoldenCards=8, OrderedCategory=16, FrozenCards=32, FrozenCardsFailed=64, BoundCards=128, BoundCardsFailed=256, EasyDeal=512.
+
+**Critical distinction**:
+- In `RunForNewLevel`, shared `LevelFeatureContext.LevelShuffled` initially false: first eligible Shuffle applier may **once** reshuffle with `FeatureLevelSeed` and others use the same board.
+- In `BuildSimulatedPlan`, candidate is already `ShuffleLevelWithSeed(candidateSeed)`, then bound delegate `RunShufflePhase` sets `LevelShuffled=true` and applies modifiers **without a second seed shuffle** before `TryToWinLevel`. Fallback restore of best seed repeats shuffle+phase.
+- **`Failed` feature bits are NOT automatic rejection by native `LevelSimulationRunner.Run`** in inspected scorer. Do not silently reject them and call it source parity. Our product **can** require a separate correctness gate for authoring a playable special level; mark `PRODUCT_POLICY`, not `HITAPPS_SOURCE`.
+- `Joker=2`, `PuzzleTop=3`, `PuzzleBottom=4`, `Magnet=5`, `Hammer=6` in `CardType`; **PuzzleTop/PuzzleBottom placement and Bound scissors interaction remain `EVIDENCE_GAP`**, not removed.
+- AZUR original metadata plus native function addresses identify **two different rewarded bonus slot interfaces** (method bodies NOT reconstructed): `BonusFoundation` (extra upper) and `BonusColumn` (extra lower tableau column). Exact method-pointer identities verified; native bodies, effective rule, prices and visible user flow UNKNOWN. Implement separately, including dynamic geometry and Hint solver; do not alias Joker to either.
+
+**Strict QA for each new state:** independently authored category/text/asset, source pattern ID, board invariants, legality/Undo, solver/Hint, source/config seed provenance, one-time help/FTUE, 320px touch layout, saved/reloaded/frozen attempts, stop/restart, eventual win/loss and real-device review. Separate PRs for rules that change save schema; never mutate old C6/C7 archived deal definitions.
+
+## 5. Блок C — Content 8 1–80 и качество интеллектуальных решений
+
+### C1. Размеры и ритм исходников
+
+**Hitapps authenticated EN source** (сравнивать с локальной EN позицией, не утверждать, что это публичные level numbers):
+
+| EN position | Categories | Total cards | Stock | Columns | Base moves | Source type |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 4 | 21 | 3 | 3 | −1 | 0 |
+| 2 | 6 | 32 | 23 | 3 | 61 | 0 |
+| 3 | 10 | 61 | 43 | 4 | 125 | 1 |
+| 4 | 10 | 62 | 44 | 4 | 118 | 1 |
+| 5 | 10 | 64 | 46 | 4 | 125 | 1 |
+| 6 | 12 | 78 | 56 | 4 | 161 | 2 |
+| 7 | 6 | 35 | 26 | 3 | 65 | 0 |
+| 11 | 12 | 80 | 62 | 4 | 168 | 2 |
+| 16 | 12 | 80 | 54 | 4 | 164 | 2 |
+| 21 | 12 | 80 | 54 | 4 | 170 | 2 |
+| 26 | 14 | 94 | 59 | **5** | 180 | 3 |
+| 31 | 15 | 100 | 65 | **5** | 199 | 4 |
+
+At EN18/21/23/25/26/29/31 original map overrides `movesLimit` and supplies feature seeds/locker patterns. Например, EN26 `base180→map182`, EN31 `199→201`; **active precedence** unknown. `type` numbers 0–4 **не сопоставлены native способом** с `Hard/SuperHard`. Исходная пятёрка позиций чередует крупный пик, передышку и 3 обычных, дальше добавляет более сложные **5 колонок**. После EN31 exact pattern **UNKNOWN**; не создавать «точный Hitapps80» из домысла.
+
+**AZUR** authenticated `2 000` authored rows: after level550 recurring period7 but **четыре структурных шаблона**, zero adjacent shared `WordsSet` IDs for all pairs, min observed repeat gap162. Mean budget after550 roughly100 moves; different structure and display-difficulty confounded. This is a **content strategy reference**, not copied random algorithm or directive to use 2,000 new levels immediately.
+
+### C2. Реальная текущая кампания
+
+Content8 `src/content/campaign-v8-dealer.json` содержит **15** frozen authored раздач с `tags=['ordinary-dealer']`. Часть первых уроков умышленно уменьшена против Hitapps:
+- L1 `16 total/5 stock` vs EN1 `21/3` — unlimited tutorial;
+- L2 `28/17` vs `32/23`;
+- L3 `36/22` vs `61/43`;
+- L4 `46/30` vs `62/44`;
+- L5 `60/42` vs `64/46`;
+- L8 `34/20` vs EN8 `64/46` for Joker practice.
+These adaptations are **known product design**, not exact source reproduction. **Do not undo them without owner's Android FTUE feedback**.
+
+**Hard cliff:** C8 L15 `64 total/42 stock` → old C7 L16 `24 total/0 stock` while preview only overlays first15. This is a concrete release blocker, not a subjective recommendation.
+
+**Layout blocker:** `src/game/layout.ts` `cardMetrics` uses width124 and `gap=(540−4*124)/3` whenever tableau columns≥4. For 5 columns, positions exceed logical viewport. Need dynamic 3/4/5-column grid with correct foundation alignment, stock positioning, tap targets, portrait 320px and native banner safe area. Do not just shrink CSS; cards must remain legible.
+
+**Tutorial warning:** C8 [onboarding README](../qa/content-v8/onboarding/README.md) says player may hide lesson hints and proceed. Owner previously required **mandatory, non-skippable, larger-font actionable lessons** until completed. Independently inspect current `src/app/tutorial.ts` and `src/main.ts`; document/code must align with owner decision. No «реализовано» until Android acceptance.
+
+### C3. Качество партии — отдельный authoring gate, а не только winning witness
+
+Current `tools/content/build-opening-dealer.ts` uses local solver+heuristics; >1 route checks only on handful of levels. **Do not measure interestingness from a 100% solved bot route alone.** For every newly authored deal record:
+- `openingLeaderVisibility`; leader-first blockers, early full categories in ≤3 actions, homogeneous prepacked columns, duplicate topics and slot pressure;
+- `meaningfulDecisionCount`: how many different legal actions have **measurably distinct downstream outcomes** (not just two identical foundation slots). Discard automatic no-brainer rotations from this count;
+- `forcedDrawRunLongest`, fraction of moves spent forced on stock, repeated waste loop count, stock abandonment and recycle recovery;
+- `wasteCriticality`: a missed active waste card can be recovered later vs requires redo; min extra actions after misplay;
+- `errorRecoverability`: branch from a noncanonical choice wins without help, with Undo, with +10, or is `UNKNOWN`;
+- `slack`: moves available after winning route; plan multiple plausible human policies, not only one witness;
+- `semanticNovelty`: repeated same topic and ambiguities across adjacent/nearby levels, independent from structural difficulty;
+- `specialFirstUse`: mandatory practice for Ordered/Keys/Frozen/Bound/Golden/extra slots and source unlock flags; these need their own acceptance.
+
+Suggested thresholds for each band must be **our own explicit tested balancing parameters**, not invented Hitapps values. Record provenance as `PRODUCT_POLICY` and compare 1–15 human device sessions before locking constants.
+
+## 6. Реализационные пакеты для разработчика
+
+**Важно: ВСЕ обнаруженные core systems остаются в [110-feature roadmap](../porting/IMPLEMENTATION_ROADMAP_2026-11-19.md).** Пакеты ограничивают размер PR, **не финальный scope**. Точные стадии и зависимости:
+
+| Пакет | Что должен получить владелец | Точные source feature ID и основные изменения | Acceptance |
+| --- | --- | --- | --- |
+| **CORE-0 — базовые правила, тесты и исходный PIN** | Signed playable C8 preview and explicit original-vs-our matrix | `azur-deck-draw-and-recycle`, `azur-defeat-vs-no-valid-move`, stock rules, `src/domain/engine.ts`, `src/domain/solver.ts`, `src/game/layout.ts` | `qa:porting`, existing browser/Android CI, stock rotation + last-move win + no-legal-transfer+future-stock, old C6/C7/C8 saves, actual phone pending |
+| **CORE-1 — native-authored baseline** | Offline deterministic complete candidate snapshots | `hitapps-stock-dealer`, `hitapps-negative-seed-request-path`, `hitapps-candidate-priority`, `hitapps-initial-shuffle-final-pipeline`, AZUR generate entrypoints tracked as `EVIDENCE_GAP` | source seed vectors and 752 conditional model fixtures; truly unknown native paths marked explicitly; immutable Deal |
+| **CORE-2 — difficulty director** | Player history and strategy chooser, documented own config and effective budget | `hitapps-dynamic-difficulty`, `hitapps-easy-deals`, `hitapps-equality-paywall`, `hitapps-paywall-segmentation`, `hitapps-equality-three-stack-pair-placement`, `hitapps-feature-seed-one-time-reshuffle` | Ten-outcome unit vectors, restart/continue history, 0.8 bot-failure tests, once-per-attempt selection persisted, no pseudoparity |
+| **CORE-3 — complete campaign** | Real C8 levels 16–80 (not fake C7 fallthrough); 5-column peaks and decision passports | `hitapps-level-wave`, `azur-structured-long-campaign`, `azur-topic-rotation`, `azur-variable-category-sizes`, `hitapps-mixed-word-image-cards` | Every level finite/budget, independent oracle, accessible 320px/5 columns, semantic-distance and forced-draw tests, human Android samples |
+| **CORE-4 — special core modifiers** | Source-shaped and individually toggleable standalone rules/assists | `hitapps-lockers`, `hitapps-frozen`, `hitapps-bound`, `hitapps-bound-scissors-pattern`, `hitapps-golden-cards`, `hitapps-puzzle-top-bottom-cards`, `hitapps-magnet-hammer`, `azur-extra-foundation`, `azur-bonus-lower-column`, `unico-magnet-helper`, `azur-shuffle-helper`, Ordered/Joker | Versioned save/Undo/Hint and source-phase tests per modifier; real Android first-use lesson; no copied content |
+| **CORE-5 — loss/assist/continuation & adaptive revenue** | One cohesive out-of-moves screen with truthful alternative options, exact receipts | `hitapps-equality-paywall`, `azur-coin-moves`, `azur-rewarded-moves`, `azur-unlimited-moves-offer`, `hitapps-stock-restore`, `unico-redeal-restart`, `unico-loss-dialog` | Actual exhausted-state +10 proof where possible, no-fill/duplicate/Undo recovery, restart seed/version freeze, receipt lifecycle |
+| **CORE-6 — extended locale and platform** | Language-aware meaningful budgets and native original parity evidence | `azur-localized-move-budget`, `azur-localized-definition-packs`, `hitapps-language-change-restart`, `azur-generate-deal-entrypoints` | 5*ceil fixtures, translation word count, SaveStore migration, original AZUR generated board oracle pending |
+
+**Pараллельность:** CORE-1 source-model and CORE-3 level authoring can run independently after CORE-0 contracts. CORE-2 Director must not silently retune an active saved deal. CORE-4 individual mechanics in own feature PRs can overlap without modifying locked older levels. CORE-5 uses existing receipt code.
+
+## 7. Инструменты, тесты и отрицательные контрпримеры
+
+- **Actual source refs:** [kit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78), [source-native verifier](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/verify-azur-core.py), [numeric evidence](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/azur-core-evidence.json). Hitapps native-static verifiers remain under their original research folders. **Не хранить чужие APK, защищённые слова, изображения, ключи в repo/CI**.
+- **Independent consumer tests:** `tests/unit/stock-loop.test.ts`, `tests/unit/rules-v3.test.ts`, `tests/unit/content8-preview.test.ts`, `tests/unit/opening-dealer.test.ts`, `tools/qa/gameplay-oracle.ts`, `tools/qa/audit-reference-slice.ts`. New QA should verify each new candidate strategy, no double-spend, actual fallback, `UNKNOWN` vs `UNSOLVABLE` and no extra moves sold when impossible rescue.
+- **Adversarial tests:** lost original native config, missing/invalid feature pattern, `featureSeed=0`, `paywallSeed=0`, `payerType=unknown`, expired config while on saved board, 100 candidates none qualifies, bot lost at 79% not accepted, bot lost at 80% accepted only if other policies agree, Player won at last move, card in waste skipped but later recovered, Undo after earned+10, duplicate/lost receipt, alternative foundation ordering, face-up flag after reset, five-column touch hit zones.
+- **Performance and input:** avoid UI-thread candidate search for 100-card/five-column game; precompute signed immutable content with small game-runtime selection. Measure frame/tap action on real Android with native banner, wrong tap/drag zero movement charge, no request timeout mistaken as unsolvable.
+- **Source evidence status:** without an actual original Android (Hitapps ARM32/AZUR ARM64) execution, acceptance can be `GAME_MODEL_PASS` but **cannot be `ORIGINAL_RUNTIME_PARITY`**. The returned PR must explicitly say which proof tier it passed.
+
+## 8. Контракт сдачи и оформление PR
+
+Перед кодом агент обязан открыть актуальный `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, `ADOPTION_LEDGER.json` (110/110 with exact kit source SHA), source docs/real code and C8 active PR; сверить old 40–42 spec as historical data. Изменения в code сопровождать `sourceFeatureId` и real test. Если старые запреты конфликтуют с владельцем — исправить, а не отложить. Любой `BLOCKED/EVIDENCE_GAP` остаётся в дорожной карте с шагом закрытия, **не OWNER_EXCLUDED**.
+
+**Формат сдачи одного implementation package:**
+```text
+SOURCE ID: <ids> — verified evidence links/build/sha, unknown gates
+ACTUAL BASE: <consumer branch/sha>, kit research pin, runtime kit pin
+CHANGES: <source files + emitted immutable Deal IDs + behavior>
+PARITY: SOURCE_NATIVE / MODEL / GAME / ORIGINAL_RUNTIME [which actually passed]
+QA: unit + negative + full content + browser touch + signed Android + owner test
+ROLLBACK/MIGRATION: old C6/C7/C8 deals/Undo/receipt safe; flags and ABI
+COMMERCIAL: earned/no-fill, never infer ad revenue from SDK request
+BACKLOG: all remaining core and meta/commercial feature IDs unchanged or advanced
+KIT IMPACT: REUSE / IMPROVE / CANDIDATE / NONE
+```
+
+**Research completeness acceptance:** native-static core branches for Hitapps and AZUR documented; original runtime-gated unknowns called out with instrumented capture instructions; Unico missing APK explicitly listed. **Product completion acceptance:** only after separately implemented CORE-0..6, human Android and owner-approved balance. This TЗ is **not** a fake claim of completed runtime or native device proof.
+
+**Owner priority note:** «Вся найденная система остаётся в общей разработке, даже когда внедряется поэтапно». Ближайшие пакеты по приоритету согласуются с владельцем, но весь CORE scope определён сейчас и не сокращён до MVP.
+
+**Evidence correction (20.11):** AZUR `GenerateCards/DealCards/DealCardsFromPreset` and `BonusColumn/BonusFoundation` are verified **method identities + ARM64 code pointers**, not independently decoded native behavior. The corresponding inventory tiers are `METADATA`, not `NATIVE_STATIC`. Do not assert the precise native lower-column unlock algorithm or original AZUR RNG until original method-body and runtime traces exist. This correction is recorded in [kit PR #79](https://github.com/DanilaH/mini-games-kit/pull/79), merged at `57bffb395e06200dc9f147c6f52f0128b4a4d370`.

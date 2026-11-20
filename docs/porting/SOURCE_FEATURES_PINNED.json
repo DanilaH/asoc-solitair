@@ -2,8 +2,8 @@
   "schema": "reference-feature-inventory-v1",
   "id": "association-solitaire-hitapps-azur-unico-20261119",
   "sourceCatalog": "https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/README.md",
-  "scope": "Independent 2026-11-19 reread of source packaging/IAP, S1/S2 video, content and UI native-metadata reports. Includes evidence corrections and sub-feature decomposition; original remote runtime/active cohort still UNKNOWN.",
-  "coverageStatus": "RESEARCHED_CORPUS_RECONCILED_NOT_VENDOR_EXHAUSTIVE",
+  "scope": "Reviewed original AZUR XAPK ARM64 core code and 2,000 source rows, plus native-source Hitapps exact-build reports and Unico video. Every known core source system retained; remote and original Android runtime remain UNKNOWN.",
+  "coverageStatus": "SOURCE_CORE_110_RECONCILED_NOT_VENDOR_RUNTIME_EXHAUSTIVE",
   "producer": "DanilaH/mini-games-kit",
   "features": [
     {
@@ -512,12 +512,12 @@
     },
     {
       "id": "azur-localized-move-budget",
-      "name": "AZUR locale-dependent move adjustment path",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "name": "AZUR source-verified locale-scaled and rounded move budget",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "balance",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "GetAdjustedMovesForCurrentLocale metadata; calculation/live use unknown"
+      "knownLimit": "GetAdjustedMovesForCurrentLocale at native 0x262e4a8 uses 5*ceil(M*L/(5E)) with positive source M and English/local word counts, capped INT32_MAX; real enabled locale and remote flags UNKNOWN"
     },
     {
       "id": "azur-stock-side-setting",
@@ -896,7 +896,106 @@
       "surface": "content",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
       "knownLimit": "36 locales and 468 local definition bundles; remote address list is developer HostingService, not observed live CDN; ownership/translation QA pending"
+    },
+    {
+      "id": "azur-deck-draw-and-recycle",
+      "name": "AZUR native Deck DrawNextCard/Reset/CanReset, card visibility and recycle cycle",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md",
+      "knownLimit": "Original stock pop-last, waste reverse-to-stock, card hidden and cycle increment verified on ARM64; exact UI/order semantics with other modifiers and live callbacks UNKNOWN",
+      "originalBuild": "AZUR 1.3.3.8/code244"
+    },
+    {
+      "id": "azur-defeat-vs-no-valid-move",
+      "name": "AZUR separate budget defeat vs no-valid-action gate",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md",
+      "knownLimit": "CheckDefeat calls HasMovesLeft + IsVictory; HasAnyValidMove separately calls MoveValidator. Player-visible early loss/offer invocation NOT observed",
+      "originalBuild": "AZUR 1.3.3.8/code244"
+    },
+    {
+      "id": "azur-generate-deal-entrypoints",
+      "name": "AZUR GameManager GenerateCards / DealCards / DealCardsFromPreset native entry points",
+      "evidenceTier": "METADATA",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md",
+      "knownLimit": "Exact GenerateCards/DealCards/DealCardsFromPreset IL2CPP RID→ARM64 native pointer mappings VERIFIED, but function bodies, shuffle/RNG/seed/preset logic and final user-visible layout are NOT decoded or executed. Native RVA identity is not generator behavior.",
+      "originalBuild": "AZUR 1.3.3.8/code244"
+    },
+    {
+      "id": "azur-bonus-lower-column",
+      "name": "AZUR bonus lower tableau column (not extra upper foundation slot)",
+      "evidenceTier": "METADATA",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md",
+      "knownLimit": "Distinct BonusColumn/BonusFoundation names, getters, enable/unlock/index and exact IL2CPP RID→ARM64 pointer mapping VERIFIED; method body logic, actual playable unlocked column, ad price/remote config and runtime use UNKNOWN (pointer mapping alone is not source behavior).",
+      "originalBuild": "AZUR 1.3.3.8/code244"
+    },
+    {
+      "id": "hitapps-equality-three-stack-pair-placement",
+      "name": "Hitapps Equality-only 3-distinct-play-stack category-pair placement",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-17-hitapps-rng-stacks/README.md",
+      "knownLimit": "Native flag enabled only by Equality=1; exactly three distinct indices via EmbeddedRandom.Next(playStackCount). Actual consumed RNG state/visible live usage UNKNOWN",
+      "originalBuild": "Hitapps 1.26.2/code3742"
+    },
+    {
+      "id": "hitapps-feature-seed-one-time-reshuffle",
+      "name": "Hitapps feature-level seed re-shuffle once before gated Lockers/Frozen/Bound",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md",
+      "knownLimit": "First applicable Shuffle feature may reroll with FeatureLevelSeed and context.LevelShuffled blocks subsequent rerolls; after-failed-feature board may already be mutated; remote configs UNKNOWN",
+      "originalBuild": "Hitapps 1.26.2/code3742"
+    },
+    {
+      "id": "hitapps-initial-shuffle-final-pipeline",
+      "name": "Hitapps phase-separated ordered feature appliers (Initial Shuffle Final)",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-17-hitapps-final-phase/README.md",
+      "knownLimit": "Initial Paywall/Ordered; Shuffle Locker/Frozen/Bound; Final Golden/StarterBooster. Order values are priorities not unlock levels; live source config UNKNOWN",
+      "originalBuild": "Hitapps 1.26.2/code3742"
+    },
+    {
+      "id": "hitapps-negative-seed-request-path",
+      "name": "Hitapps negative requested seed triggers a fresh randomized seed",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-16-hitapps-native-pass3/README.md",
+      "knownLimit": "ShuffleLevelWithSeed(seed<0) takes random-seed helper branch distinct from direct EmbeddedRandom constructor's negative-seed behavior; exact source entropy and selected future seed UNKNOWN",
+      "originalBuild": "Hitapps 1.26.2/code3742"
+    },
+    {
+      "id": "hitapps-puzzle-top-bottom-cards",
+      "name": "Hitapps special PuzzleTop/PuzzleBottom/Joker card type distribution (beyond ordinary words)",
+      "evidenceTier": "METADATA",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-17-hitapps-allcards/README.md",
+      "knownLimit": "CardType enum/proven source empty puzzle branch; 21 bundled levels excluded from ordinary parity due to special cards. Exact puzzle-card placement/interaction not reconstructed",
+      "originalBuild": "Hitapps 1.26.2/code3742"
+    },
+    {
+      "id": "hitapps-bound-scissors-pattern",
+      "name": "Hitapps bound-card pattern includes scissors as separate release element",
+      "evidenceTier": "METADATA",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md",
+      "knownLimit": "BoundCardPattern{id,boundCards,scissors} verified as config fields; scissors interaction, activation, moves cost and complete native rule UNKNOWN",
+      "originalBuild": "Hitapps 1.26.2/code3742"
+    },
+    {
+      "id": "unico-magnet-helper",
+      "name": "Unico Magnet helper unlocked in FTUE (distinct from Hitapps starter stock booster)",
+      "evidenceTier": "VIDEO_OBSERVED",
+      "surface": "core",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "knownLimit": "S3 video shows level4 Magnet tooltip and glowing slot click instruction; actual activation, target selection, card movement and native algorithm NOT observed",
+      "originalBuild": "Unico S3 recorded video; native build not authenticated"
     }
   ],
-  "auditRevision": "2026-11-19-independent-falsification-pass3"
+  "auditRevision": "2026-11-20-core-evidence-tier-correction-v5"
 }

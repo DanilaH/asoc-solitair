@@ -50,14 +50,37 @@ export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
 }
 export function useContinue(save: Save, proof?: ContinueProof): boolean {
   const state = save.platform, attempt = save.attempt;
-  if (!state?.continueCredits || attempt.continued || attempt.board.phase !== 'exhausted' || attempt.board.movesLeft !== 0 ||
-    (requiresContinueProof(attempt) && (!proof || !verifiesContinue(attempt, proof)))) return false;
-  state.continueCredits--; attempt.continued = true; attempt.board.movesLeft = BALANCE.continueMoves; attempt.board.phase = 'playing';
+  if (!state?.continueCredits || !canResume(save, proof)) return false;
+  state.continueCredits--;
   if (!state.continuedAttempts.includes(attempt.id)) state.continuedAttempts.push(attempt.id);
+  resumeAttempt(save);
+  return true;
+}
+
+export function buyContinue(save: Save, proof: ContinueProof): boolean {
+  if (!requiresContinueProof(save.attempt) || save.profile.coins < BALANCE.continueCoinPrice ||
+    save.platform?.continueCredits || !canResume(save, proof)) return false;
+  save.profile.coins -= BALANCE.continueCoinPrice;
+  // A receipt already earned from an earlier video remains payable as a credit.
+  resumeAttempt(save);
+  return true;
+}
+
+function canResume(save: Save, proof?: ContinueProof): boolean {
+  const attempt = save.attempt;
+  return !attempt.continued && attempt.board.phase === 'exhausted' && attempt.board.movesLeft === 0 &&
+    (!requiresContinueProof(attempt) || Boolean(proof && verifiesContinue(attempt, proof)));
+}
+
+function resumeAttempt(save: Save) {
+  const attempt = save.attempt;
+  attempt.continued = true;
+  attempt.board.movesLeft = BALANCE.continueMoves;
+  attempt.board.phase = 'playing';
   if (attempt.telemetry) attempt.telemetry.finished = false;
-  // Keep the earned budget when undoing an earlier board move. The allowance itself is never rolled back.
+  // Undo can restore the cards, while the acquired move budget is kept.
   for (const board of attempt.undo) if (board.movesLeft !== null) board.movesLeft += BALANCE.continueMoves;
-  save.revision++; return true;
+  save.revision++;
 }
 export function purchaseHelper(save: Save, helper: 'hint' | 'undo' | 'joker'): boolean {
   const cost = BALANCE.helperPrices[helper];

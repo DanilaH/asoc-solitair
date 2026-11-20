@@ -147,7 +147,7 @@ Continue +10, coin +moves, rewards multipliers, offer variants, correct no-fill 
 | --- | --- | --- |
 | `hitapps-stock-restore` | `DEFERRED` | Design true rule difference and migration before free/paid restore; don't sell existing free behavior |
 | `hitapps-revive-offers` | `ROADMAPPED` | Compare coin/rewarded/segment options and save/device flow |
-| `azur-coin-moves` | `ROADMAPPED` | Design coin price against our actual wallet supply and safeguard once-per-attempt |
+| `azur-coin-moves` | `IMPLEMENTED_UNVERIFIED` | C8 preview offers +10 for 120 coins after exact-board proof and durable debit. Verify price and channel choice on Android. [Checks](../qa/content-v8/CORE_5_COIN_CONTINUE.md) |
 | `azur-rewarded-moves` | `IMPLEMENTED_UNVERIFIED` | C8 shows +10 only for a verified exhausted-board route. Verify physical SDK earned, no-fill and relaunch. |
 | `azur-win-multiplier` | `ROADMAPPED` | Prototype optional post-win earned bonus with separate idempotent receipt and economy model |
 | `hitapps-win-rewarded-offer` | `ROADMAPPED` | Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK |

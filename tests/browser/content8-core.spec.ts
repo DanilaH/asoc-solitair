@@ -5,6 +5,7 @@ import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
+import { BALANCE } from '../../src/domain/balance';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 import { boardFrame, layout } from '../../src/game/layout';
 import { recoverable, unrecoverable, loadLoss, winningRescue } from '../fixtures/content8-loss';
@@ -467,6 +468,7 @@ test('real level 16 exhaustion offers a verified ten-move recovery and the tenth
   await page.reload();
   await openGame(page, recoverable);
   await expect(page.locator('#result-continue')).toBeEnabled();
+  await expect(page.locator('#result-continue-coins')).toBeHidden();
   await expect(page.locator('#result-continue-note')).toContainText('10 ходов или меньше');
   await page.locator('#result-continue').tap();
   await expect(page.locator('#result')).toBeHidden();
@@ -488,6 +490,7 @@ test('real level 38 exhaustion keeps the stored credit and promotes Undo when te
   await openGame(page, unrecoverable);
   await expect(page.locator('#result')).toHaveAttribute('data-continue-status', 'UNSOLVABLE');
   await expect(page.locator('#result-continue')).toBeHidden();
+  await expect(page.locator('#result-continue-coins')).toBeHidden();
   await expect(page.locator('#result-undo')).toHaveClass('primary');
   await expect(page.locator('#result-continue-note')).toContainText('за 10 ходов не выиграть');
   expect((await read(page)).platform?.continueCredits).toBe(1);
@@ -504,7 +507,85 @@ test('an unavailable continuation worker keeps the credit and never offers an un
   await openGame(page, recoverable);
   await expect(page.locator('#result')).toHaveAttribute('data-continue-status', 'UNKNOWN');
   await expect(page.locator('#result-continue')).toBeHidden();
+  await expect(page.locator('#result-continue-coins')).toBeHidden();
   await expect(page.locator('#result-continue-note')).toContainText('не подтверждён');
   await expect(page.locator('#result-undo')).toBeVisible();
   expect((await read(page)).platform?.continueCredits).toBe(1);
+});
+
+test('a proven C8 loss buys ten moves offline and keeps the debit after reload and Undo', async ({ page }) => {
+  const save = loadLoss(recoverable, 'coins-continue');
+  save.profile.coins = BALANCE.continueCoinPrice;
+  await loadWaveFixture(page, save, 15);
+  await openGame(page, recoverable);
+  const coinOffer = page.locator('#result-continue-coins');
+  await expect(coinOffer).toBeEnabled();
+  await expect(coinOffer).toHaveText('+10 ходов за 120 монет');
+  await expect(page.locator('#result-continue')).toBeHidden();
+  expect(await coinOffer.evaluate(button => {
+    const r = button.getBoundingClientRect();
+    return r.height >= 44 && r.top >= 0 && r.bottom <= innerHeight && button.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
+  })).toBe(true);
+  await coinOffer.tap();
+  await expect(page.locator('#result')).toBeHidden();
+  const purchased = await read(page);
+  expect(purchased.attempt.board.movesLeft).toBe(10);
+  expect(purchased.attempt.id).toBe(save.attempt.id);
+  expect(purchased.profile.coins).toBe(0);
+  await page.reload();
+  await openGame(page, recoverable);
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(11);
+  expect((await read(page)).profile.coins).toBe(0);
+});
+
+test('one coin short leaves Undo and Replay available without a charge', async ({ page }) => {
+  const save = loadLoss(recoverable, 'short-coins-continue');
+  save.profile.coins = BALANCE.continueCoinPrice - 1;
+  await loadWaveFixture(page, save, 15);
+  await openGame(page, recoverable);
+  const coinOffer = page.locator('#result-continue-coins');
+  await expect(coinOffer).toBeVisible();
+  await expect(coinOffer).toBeDisabled();
+  await expect(page.locator('#result-continue-note')).toContainText('не хватает монет');
+  await expect(page.locator('#result-undo')).toHaveClass('primary');
+  await expect(page.locator('#replay')).toBeVisible();
+  expect((await read(page)).profile.coins).toBe(BALANCE.continueCoinPrice - 1);
+});
+
+test('an ambiguous coin write can be checked from the result without a second debit', async ({ page }) => {
+  const save = loadLoss(recoverable, 'coin-uncertain');
+  save.profile.coins = BALANCE.continueCoinPrice;
+  await loadWaveFixture(page, save, 15);
+  await openGame(page, recoverable);
+  const button = page.locator('#result-continue-coins');
+  await expect(button).toBeEnabled();
+  await page.evaluate(() => {
+    const write = Storage.prototype.setItem, read = Storage.prototype.getItem;
+    let failRead = false;
+    Storage.prototype.setItem = function (key, value) {
+      write.call(this, key, value);
+      if (key === 'asoc-solitaire.save.v1' && JSON.parse(value).attempt.continued) {
+        Storage.prototype.setItem = write;
+        failRead = true;
+        throw Error('Bridge response lost after writing');
+      }
+    };
+    Storage.prototype.getItem = function (key) {
+      if (key === 'asoc-solitaire.save.v1' && failRead) {
+        failRead = false;
+        Storage.prototype.getItem = read;
+        throw Error('Read-back unavailable once');
+      }
+      return read.call(this, key);
+    };
+  });
+  await button.tap();
+  await expect(page.locator('#result-continue-error')).toContainText('Проверьте');
+  await expect(button).toBeDisabled();
+  await page.locator('#result-save-retry').tap();
+  await expect(page.locator('#result')).toBeHidden();
+  const settled = await read(page);
+  expect(settled.attempt.board.movesLeft).toBe(10);
+  expect(settled.profile.coins).toBe(0);
 });

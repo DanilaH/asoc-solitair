@@ -348,7 +348,7 @@ Original `Solitaire.GameManager.AddJokerCard` native RVA `0x26a4188`: in its pos
 
 **Implement only under a versioned feature package:** separately decide whether clearing historical Undo is appropriate for our product; no unexpected deletion of saved Undo/receipt/attempt state. Test an eligible nonempty board with min(configuredLimit,columnCount), card creation/reveal and placement, append identity, no-column/invalid bounds, successful and failed UI helper paths, replay after saved reload, player-facing first use, adapter coin/reward earned/duplicate callbacks if connected. Every added mechanic must survive 320px portrait layout and actual signed Android acceptance.
 
-**Product status ≠ source evidence:** no runtime implementation is claimed by this spec addendum. Newly registered ID requires pinning the exact kit source snapshot and coverage **112/112**, without deleting a previously studied item.
+**Product status ≠ source evidence:** no runtime implementation is claimed by this spec addendum. Newly registered ID required pinning 112/112 at that historical step; CURRENT source snapshot/ledger must cover **113/113**, without deleting a previously studied item.
 
 
 ## 12. AZUR art-sprite count determines card multiplicity before shuffle — native P0 (20 Nov)

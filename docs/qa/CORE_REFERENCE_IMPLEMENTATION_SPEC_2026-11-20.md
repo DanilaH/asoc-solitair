@@ -286,7 +286,7 @@ Native `GameBoard.ConfigureBonusRewardedSlots` @`0x269f98c` independently config
 
 **Still UNKNOWN:** who configures these slot indexes and their default/remote values, whether original UI *allocates* a new column or unlocks a reserved one, original level eligibility, ad/IAP price, when an active player sees type3, original save/restore behavior, and genuine SDK rewards. Static branch ≠ live monetization.
 
-### 9.4 CORE-4 follow-up: original AZUR remote eligibility, coins, rewarded and saved unlock
+### 9.3 CORE-4 follow-up: original AZUR remote eligibility, coins, rewarded and saved unlock
 
 **Source:** [mini-games-kit bonus gate/source-body research PR #81](https://github.com/DanilaH/mini-games-kit/pull/81), original AZUR 1.3.3.8, independent of a live Android callback. This **supersedes only specific OPEN items in 9.2**, not the remaining pricing/SDK/live-state blockers.
 
@@ -298,7 +298,7 @@ Native `GameBoard.ConfigureBonusRewardedSlots` @`0x269f98c` independently config
 
 Source IDs: `azur-extra-foundation` and `azur-bonus-lower-column`. Both are **native-static partially proven, runtime never claimed**. Do not retroactively alter C8 published deals, and keep all 110 registry entries.
 
-### 9.3 Integration contract and no waiting for total research completion
+### 9.4 Integration contract and no waiting for total research completion
 
 - Research source pin: kit [PR #80](https://github.com/DanilaH/mini-games-kit/pull/80), exact `SOURCE_FEATURES_PINNED.json` and ledger blob/ref updated together. IDs remain **110/110**; **no `OWNER_EXCLUDED`**.
 - CORE-1 and CORE-4 may proceed for known code paths in their already-approved implementation packages. Incomplete source parity is represented as `EVIDENCE_GAP`, not a guessed `ORIGINAL_RUNTIME`. No new release APK is implied by this docs change.

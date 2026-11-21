@@ -75,14 +75,14 @@
       "id": "hitapps-adbreak",
       "status": "ROADMAPPED",
       "currentImplementation": "Current interstitial only post-new-win, level>5,3 wins,120s",
-      "nextAction": "Prototype in-level configurable opportunities/cooldowns with valid SDK impression attribution",
+      "nextAction": "Prototype in-level configurable opportunities/cooldowns with valid SDK impression attribution Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Current source does not prove the in-level live placement; issue #80 prevents treating attempted show as actual display.",
       "stage": "E2"
     },
     {
       "id": "hitapps-stock-restore",
       "status": "DEFERRED",
       "currentImplementation": "Core Rules v3 currently permits recycle for one move",
-      "nextAction": "Design true rule difference and migration before free/paid restore; don't sell existing free behavior",
+      "nextAction": "Design true rule difference and migration before free/paid restore; don't sell existing free behavior Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "reason": "Existing free recycle contract requires a substantive rule/economy redesign",
       "stage": "E1"
     },
@@ -90,14 +90,14 @@
       "id": "hitapps-revive-offers",
       "status": "ROADMAPPED",
       "currentImplementation": "Existing rewarded+10 and Undo; no full contextual multi-offer",
-      "nextAction": "Compare coin/rewarded/segment options and save/device flow",
+      "nextAction": "Compare coin/rewarded/segment options and save/device flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
     {
       "id": "azur-coin-moves",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 preview 0.20.1 offers +10 for 120 internal coins on a verified exhausted board. SaveStore commits the debit and continuation together and preserves late earned credit without repeating the allowance.",
-      "nextAction": "Verify the coin/video choice and price balance on physical Android. Compare native AZUR live price and original continuation.",
+      "nextAction": "Verify the coin/video choice and price balance on physical Android. Compare native AZUR live price and original continuation. Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/63",
       "evidenceRef": "docs/qa/content-v8/CORE_5_COIN_CONTINUE.md",
       "stage": "E1"
@@ -106,7 +106,7 @@
       "id": "azur-rewarded-moves",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 preview 0.20.0 uses a bounded actual-board proof for the product's +10 continuation, with one earned receipt per attempt and the same proof for saved credits.",
-      "nextAction": "Test physical Android SDK earned/no-fill/relaunch and the original AZUR continuation. The product's +10 policy is separately specified.",
+      "nextAction": "Test physical Android SDK earned/no-fill/relaunch and the original AZUR continuation. The product's +10 policy is separately specified. Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/62",
       "stage": "E1",
       "evidenceRef": "docs/qa/content-v8/CORE_5_VERIFIED_CONTINUE.md"
@@ -124,7 +124,7 @@
       "id": "azur-win-multiplier",
       "status": "ROADMAPPED",
       "currentImplementation": "No rewarded win multiplier; baseline earned win payout",
-      "nextAction": "Prototype optional post-win earned bonus with separate idempotent receipt and economy model",
+      "nextAction": "Prototype optional post-win earned bonus with separate idempotent receipt and economy model Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
     {
@@ -418,7 +418,7 @@
       "id": "hitapps-win-rewarded-offer",
       "status": "ROADMAPPED",
       "currentImplementation": "No win screen rewarded bonus",
-      "nextAction": "Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK",
+      "nextAction": "Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
     {
@@ -432,7 +432,7 @@
       "id": "hitapps-ingame-banner",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Current native banner eligible campaign level>=3 in src/main.ts",
-      "nextAction": "Phone/RuStore safe-area+SDK ready/impression test; compare original placement and day mode",
+      "nextAction": "Phone/RuStore safe-area+SDK ready/impression test; compare original placement and day mode Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
@@ -480,7 +480,7 @@
       "id": "azur-unlimited-moves-offer",
       "status": "ROADMAPPED",
       "currentImplementation": "Only earned+10 once/attempt; no unlimited-mode offer",
-      "nextAction": "Define exact entitlement duration/UI/server/SaveStore/budget migration without falsely copying AZUR",
+      "nextAction": "Define exact entitlement duration/UI/server/SaveStore/budget migration without falsely copying AZUR Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
     {
@@ -494,7 +494,7 @@
       "id": "azur-fullscreen-ads-clock",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Consumer campaign post-win fullscreenGapMs=120000, not AZUR entry placement",
-      "nextAction": "Reconcile actual shown-vs-attempt clock and in-level cooldown with native flow",
+      "nextAction": "Reconcile actual shown-vs-attempt clock and in-level cooldown with native flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. P1 failed-show clock/counter issue https://github.com/DanilaH/asoc-solitair/issues/80 requires shown-vs-attempt verification before calling current timing parity.",
       "stage": "E2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
@@ -502,7 +502,7 @@
       "id": "azur-ad-revenue-attribution",
       "status": "ROADMAPPED",
       "currentImplementation": "SDK events exist, no proven impression-level revenue metrics",
-      "nextAction": "Verify ILRD/currency+placements in target ad provider, not revenue from click",
+      "nextAction": "Verify ILRD/currency+placements in target ad provider, not revenue from click Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E2"
     },
     {
@@ -517,7 +517,7 @@
       "id": "unico-coffee-break",
       "status": "ROADMAPPED",
       "currentImplementation": "No mid-game Coffee Break with +3 earned coins",
-      "nextAction": "Study exact observed break context; design separate optional break/reward and native ad return preservation",
+      "nextAction": "Study exact observed break context; design separate optional break/reward and native ad return preservation Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E2"
     },
     {
@@ -531,7 +531,7 @@
       "id": "unico-rewarded-theme",
       "status": "ROADMAPPED",
       "currentImplementation": "No rewarded seasonal theme unlock, but two earned cosmetics",
-      "nextAction": "Design opt-in themed cosmetic offer, entitlement persistence and receipt grants",
+      "nextAction": "Design opt-in themed cosmetic offer, entitlement persistence and receipt grants Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
     {
@@ -555,7 +555,7 @@
       "id": "unico-double-reward",
       "status": "ROADMAPPED",
       "currentImplementation": "Ordinary win payout only",
-      "nextAction": "Compare Unico post-win CTA to AZUR x3 and develop independent rewarded bonus policy",
+      "nextAction": "Compare Unico post-win CTA to AZUR x3 and develop independent rewarded bonus policy Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
     {
@@ -570,7 +570,7 @@
       "id": "unico-loss-dialog",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 preview 0.20.3 promotes a usable alternative when rewarded video is unavailable. A callback received in background restores the result on foreground for the same exhausted attempt. An earned receipt can resume that attempt. Browser coverage exercises both branches through the Android bridge contract.",
-      "nextAction": "Compare on a physical Android phone with live no-fill, actual earned callbacks and the original Unico loss dialog.",
+      "nextAction": "Compare on a physical Android phone with live no-fill, actual earned callbacks and the original Unico loss dialog. Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/62",
       "evidenceRef": "docs/qa/content-v8/CORE_5_LOSS_RECOVERY.md"
@@ -665,14 +665,14 @@
       "id": "azur-definition-consumable",
       "status": "ROADMAPPED",
       "currentImplementation": "Reader exists as info view with free card explanations, no separately stocked Definition charges",
-      "nextAction": "Trace Definition usage/intro pricing and define own paid/free resource vs reader UX",
+      "nextAction": "Trace Definition usage/intro pricing and define own paid/free resource vs reader UX Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
     {
       "id": "azur-free-shop-coin-claim",
       "status": "ROADMAPPED",
       "currentImplementation": "Earned coins from wins/milestones, no exact separate free shop claim",
-      "nextAction": "Prototype source-observed optional 200-coin claim with real receipt/availability/cooldown verification",
+      "nextAction": "Prototype source-observed optional 200-coin claim with real receipt/availability/cooldown verification Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
     {
@@ -711,7 +711,7 @@
       "id": "azur-remaining-moves-coin-bonus",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "src/domain/balance.ts coinsPerRemainingMove=2 and src/domain/engine.ts payout; AZUR video suggested 5",
-      "nextAction": "Check own multiplier/economy and baseline reward integrity; do not label adapted coefficient exact AZUR copy",
+      "nextAction": "Check own multiplier/economy and baseline reward integrity; do not label adapted coefficient exact AZUR copy Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },

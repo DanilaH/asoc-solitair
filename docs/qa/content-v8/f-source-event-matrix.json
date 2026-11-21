@@ -1,0 +1,299 @@
+{
+  "schema": "c8-f1-f3-source-event-coverage-v1",
+  "asOf": "2026-11-21",
+  "source": {
+    "kitRetentionEvidenceGitBlob": "a108bc5d843ea45ece26aed67e7ca4cb91735589",
+    "consumerSourceInventoryGitBlob": "72efdad46077213e1ce68475b004544fe9dfec75",
+    "originalHitappsXapkSha256": "22aaff3a6d5b70f217b8feb7348538f5ab3352d4e8c766406cbddcbcd71e49f0",
+    "originalAzurXapkSha256": "4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4",
+    "sourceTier": "REPORT_FROM_ORIGINAL_SHA_CHECKED_BINARIES_NOT_EXECUTED_THIS_TURN",
+    "originalLiveEventObserved": false
+  },
+  "azurDailyTasks": {
+    "compiledDefaults": {
+      "daily_tasks_per_day": 4,
+      "daily_tasks_event_duration_days": 7,
+      "daily_tasks_default_unlock_level": 2,
+      "daily_tasks_default_unlock_day": 1
+    },
+    "taskEnum": [
+      {
+        "name": "Unknown",
+        "value": 0
+      },
+      {
+        "name": "CompleteLevels",
+        "value": 1
+      },
+      {
+        "name": "CollectThemes",
+        "value": 2
+      },
+      {
+        "name": "ExecuteMoves",
+        "value": 3
+      },
+      {
+        "name": "UseHints",
+        "value": 4
+      },
+      {
+        "name": "WinNoHints",
+        "value": 5
+      },
+      {
+        "name": "DrawCards",
+        "value": 6
+      },
+      {
+        "name": "DailyLogin",
+        "value": 7
+      },
+      {
+        "name": "CollectDailyBonuses",
+        "value": 8
+      },
+      {
+        "name": "UseDefinitions",
+        "value": 9
+      },
+      {
+        "name": "UseJokers",
+        "value": 10
+      },
+      {
+        "name": "UseRollbacks",
+        "value": 11
+      },
+      {
+        "name": "UseShuffles",
+        "value": 12
+      },
+      {
+        "name": "EarnCoins",
+        "value": 13
+      },
+      {
+        "name": "BuyExtraMoves",
+        "value": 14
+      },
+      {
+        "name": "BuyBoosters",
+        "value": 15
+      },
+      {
+        "name": "MakePurchase",
+        "value": 16
+      }
+    ],
+    "rewardEnum": [
+      {
+        "name": "Coins",
+        "value": 0
+      },
+      {
+        "name": "MoveHint",
+        "value": 1
+      },
+      {
+        "name": "Undo",
+        "value": 2
+      },
+      {
+        "name": "Definition",
+        "value": 3
+      },
+      {
+        "name": "Shuffle",
+        "value": 4
+      },
+      {
+        "name": "Joker",
+        "value": 5
+      },
+      {
+        "name": "Medals",
+        "value": 6
+      },
+      {
+        "name": "RandomBoostersChest",
+        "value": 7
+      },
+      {
+        "name": "CardBack",
+        "value": 8
+      }
+    ],
+    "liveTaskDistributionVerified": false,
+    "originalRewardsObserved": false,
+    "consumerTaskEngineImplemented": false
+  },
+  "featureCoverage": [
+    {
+      "id": "hitapps-puzzle-event",
+      "stage": "F1",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "azur-daily-tasks",
+      "stage": "F1",
+      "pinnedSourceTier": "ASSET_VERIFIED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "azur-daily-bonus",
+      "stage": "F1",
+      "pinnedSourceTier": "ASSET_VERIFIED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-weekend-race",
+      "stage": "F2",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-lava-quest",
+      "stage": "F2",
+      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-daily-rewards",
+      "stage": "F1",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-win-streak",
+      "stage": "F1",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-meta-regions",
+      "stage": "F3",
+      "pinnedSourceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-lives",
+      "stage": "F2",
+      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "unico-win-and-task-streak",
+      "stage": "F1",
+      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-gold-rush-event",
+      "stage": "F2",
+      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-puzzle-gallery",
+      "stage": "F1",
+      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-cascade-events",
+      "stage": "F3",
+      "pinnedSourceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerAuditStatus": "EVIDENCE_GAP"
+    },
+    {
+      "id": "hitapps-digging-event",
+      "stage": "F3",
+      "pinnedSourceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerAuditStatus": "EVIDENCE_GAP"
+    },
+    {
+      "id": "hitapps-lucky-wheel",
+      "stage": "F3",
+      "pinnedSourceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerAuditStatus": "EVIDENCE_GAP"
+    },
+    {
+      "id": "hitapps-endless-treasure",
+      "stage": "F3",
+      "pinnedSourceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerAuditStatus": "EVIDENCE_GAP"
+    },
+    {
+      "id": "hitapps-meta-prewarm",
+      "stage": "F2",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-daily-puzzle",
+      "stage": "F1",
+      "pinnedSourceTier": "UNKNOWN",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerAuditStatus": "EVIDENCE_GAP"
+    },
+    {
+      "id": "azur-combo-streak",
+      "stage": "F2",
+      "pinnedSourceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "consumerAuditStatus": "EVIDENCE_GAP"
+    },
+    {
+      "id": "azur-cosmetics",
+      "stage": "F1",
+      "pinnedSourceTier": "ASSET_VERIFIED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "consumerAuditStatus": "IMPLEMENTED_UNVERIFIED"
+    },
+    {
+      "id": "unico-daily-fortune",
+      "stage": "F1",
+      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    },
+    {
+      "id": "unico-themes-and-skins",
+      "stage": "F1",
+      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerAuditStatus": "IMPLEMENTED_UNVERIFIED"
+    },
+    {
+      "id": "hitapps-win-multiresource-payout",
+      "stage": "F1",
+      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerAuditStatus": "ROADMAPPED"
+    }
+  ],
+  "statusCountsAtAudit": {
+    "ROADMAPPED": 15,
+    "EVIDENCE_GAP": 6,
+    "IMPLEMENTED_UNVERIFIED": 2
+  }
+}

@@ -841,7 +841,7 @@
       "order": 34,
       "title": "Locale, art-count, source budget и language",
       "workstream": "LONGTAIL",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P05",

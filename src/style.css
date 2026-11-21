@@ -561,3 +561,6 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 #daily-tasks-list section{padding:.4rem 0;border-bottom:1px solid #dcd0b9}
 #daily-tasks-list section strong{display:block}
 #daily-tasks-list section button{width:100%;margin:.3rem 0 0}
+
+#card-language-controls label{display:block;font-size:.9rem;margin:.6rem 0 .2rem}
+#card-language{font:inherit;width:100%;padding:.5rem;border:1px solid #d8cdb9;border-radius:8px;background:#fffaf0;color:inherit}

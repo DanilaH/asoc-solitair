@@ -3,3 +3,14 @@ include ':capacitor-cordova-android-plugins'
 project(':capacitor-cordova-android-plugins').projectDir = new File('./capacitor-cordova-android-plugins/')
 
 apply from: 'capacitor.settings.gradle'
+
+// Each Capacitor subproject resolves its own buildscript classpath.
+if (System.getenv('ASOC_MAVEN_CENTRAL_MIRROR') == '1') {
+    gradle.beforeProject { project ->
+        if (project != project.rootProject) {
+            project.buildscript.repositories.maven {
+                url = 'https://maven-central.storage-download.googleapis.com/maven2'
+            }
+        }
+    }
+}

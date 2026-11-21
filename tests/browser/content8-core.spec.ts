@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { content8Dealer, content8Late, content8Wave } from '../../src/content/campaign-v8-dealer';
 import { content8Special } from '../../src/content/campaign-v8-special';
 import { content8FrozenDeal } from '../../src/content/campaign-v8-frozen';
+import { content8BoundDeal } from '../../src/content/campaign-v8-bound';
 import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
@@ -389,6 +390,34 @@ test('the Frozen preview thaws with completed groups and restores ice after Undo
   await expect(page.locator('#lesson-copy')).toBeVisible();
   expect((await read(page)).attempt.id).toBe(save.attempt.id);
   for (const [index, action] of deal.winningPath.slice(1).entries()) {
+    await touch(page, deal, action);
+    await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(22 - index);
+  }
+  expect((await read(page)).attempt.board.phase).toBe('won');
+});
+
+test('the five-column Scissors preview releases the bond on transfer and restores it after Undo', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_BOUND !== '1', 'Requires the separate Bound preview.');
+  const deal = content8BoundDeal;
+  const save = freshSave(deal, 'scissors-preview-tap');
+  await loadWaveFixture(page, save, 23);
+  await openGame(page, deal);
+  await expect(page.locator('#lesson-copy')).toHaveText('Перенесите ножницы в верхний слот, чтобы разрезать связь.');
+  expect((await read(page)).attempt.board.tableau).toHaveLength(5);
+  for (const [index, action] of deal.winningPath.slice(0, 4).entries()) {
+    await touch(page, deal, action);
+    await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(25 - index);
+    if (index === 2) await expect(page.locator('#lesson-copy')).toBeVisible();
+  }
+  await expect(page.locator('#lesson-copy')).toBeHidden();
+  await page.locator('#undo').tap();
+  await expect(page.locator('#lesson-copy')).toBeVisible();
+  expect((await read(page)).attempt.board.waste.at(-1)).toBe('tools-word');
+  await page.reload();
+  await openGame(page, deal);
+  await expect(page.locator('#lesson-copy')).toBeVisible();
+  expect((await read(page)).attempt.id).toBe(save.attempt.id);
+  for (const [index, action] of deal.winningPath.slice(3).entries()) {
     await touch(page, deal, action);
     await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(22 - index);
   }

@@ -9,6 +9,7 @@ import { markCampaignWin } from './services';
 import { recordUndo } from './history';
 import { bonusKinds, bonusOffer, pilesFor } from './bonus-slots';
 import { frozenLayers } from './frozen-cards';
+import { isBoundCard } from './bound-cards';
 
 export const STREAK = BALANCE.streak;
 export const boardRules = (board: Board): 2 | 3 => board.rulesVersion ?? RULES_VERSION;
@@ -26,9 +27,9 @@ export function packet(board: Board, index: number, deal: Deal): string[] {
   const boundary = board.joker?.column === index ? board.joker.boundary : 0;
   if (col.length === boundary) return [];
   const last = col.at(-1)!;
-  if (!board.faceUp.includes(last) || frozenLayers(board, deal, last)) return [];
+  if (!board.faceUp.includes(last) || frozenLayers(board, deal, last) || isBoundCard(board, deal, last)) return [];
   let start = col.length - 1;
-  while (start > boundary && board.faceUp.includes(col[start - 1]) && !frozenLayers(board, deal, col[start - 1]) &&
+  while (start > boundary && board.faceUp.includes(col[start - 1]) && !frozenLayers(board, deal, col[start - 1]) && !isBoundCard(board, deal, col[start - 1]) &&
     deal.cards[col[start - 1]].category === deal.cards[last].category && !orderError(col.slice(start - 1), deal)) start--;
   return col.slice(start);
 }
@@ -53,6 +54,7 @@ export function placeJoker(board: Board, column: number, deal: Deal): Board | st
   if (board.phase !== 'playing' || board.joker) return 'Джокер уже на поле';
   if (!Number.isInteger(column) || !board.tableau[column]?.length || isLocked(board, column, deal)) return 'Выберите непустой открытый столбец';
   if (frozenLayers(board, deal, board.tableau[column].at(-1))) return 'Сначала снимите лёд с карты';
+  if (isBoundCard(board, deal, board.tableau[column].at(-1))) return 'Сначала разрежьте связь ножницами';
   const next = structuredClone(board);
   next.joker = { column, boundary: board.tableau[column].length };
   assertBoard(next, deal); return next;
@@ -82,6 +84,7 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
     if (!moving.length) {
       const top = cmd.from.kind === 'tableau' ? board.tableau[cmd.from.index]?.at(-1) : undefined;
       if (top && board.faceUp.includes(top) && frozenLayers(board, deal, top)) return 'Соберите тему, чтобы снять слой льда';
+      if (top && board.faceUp.includes(top) && isBoundCard(board, deal, top)) return 'Перенесите ножницы в верхний слот';
       return 'Эти карты пока недоступны';
     }
     const category = deal.cards[moving[0]].category;
@@ -98,6 +101,7 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
       if (!target) return 'Здесь нет столбца';
       if (isLocked(board, cmd.to.index, deal)) return 'Нужны все три ключа';
       if (frozenLayers(board, deal, target.at(-1))) return 'Нельзя накрыть замёрзшую карту';
+      if (isBoundCard(board, deal, target.at(-1))) return 'Нельзя накрыть связанную карту';
       const available = packet(board, cmd.to.index, deal);
       const support = board.joker?.column === cmd.to.index;
       if (support && target.length > board.joker!.boundary) return 'Джокер держит только одну группу';
@@ -265,6 +269,14 @@ export function assertBoard(board: Board, deal: Deal): void {
     if (deal.frozen.version !== 1 || boardRules(board) !== 3 || Object.entries(deal.frozen.layers).some(([id, layers]) =>
       !tableau.has(id) || !Number.isSafeInteger(layers) || layers < 1 ||
       (frozenLayers(board, deal, id) > 0 && !board.tableau.some(col => col.includes(id))))) throw Error('Некорректный лёд на картах');
+  }
+  if (deal.bound) {
+    const links = Object.entries(deal.bound.scissorsByCard);
+    if (deal.bound.version !== 1 || boardRules(board) !== 3 || new Set(links.map(([, scissors]) => scissors)).size !== links.length ||
+      links.some(([id, scissors]) => !deal.initial.tableau.some(col => col.includes(id)) || !deal.cards[scissors] ||
+        deal.bound!.scissorsByCard[scissors] || (isBoundCard(board, deal, id) && !board.tableau.some(col => col.includes(id))))) {
+      throw Error('Некорректная связь карт');
+    }
   }
   for (const kind of bonusKinds) {
     const count = pilesFor(board, kind).length, regular = pilesFor(deal.initial, kind).length;

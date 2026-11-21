@@ -284,7 +284,7 @@
       "order": 11,
       "title": "Bound + Scissors",
       "workstream": "SPECIAL",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P05",

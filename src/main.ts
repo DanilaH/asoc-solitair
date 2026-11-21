@@ -17,6 +17,7 @@ import { BALANCE } from './domain/balance';
 import { frozenLayers } from './domain/frozen-cards';
 import { isBoundCard } from './domain/bound-cards';
 import { collectedGold, goldenRewardKey } from './domain/golden-cards';
+import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-shuffle';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
@@ -287,6 +288,7 @@ try {
   const repeatHint = () => activeHint?.key === boardKey(save.attempt.board) ? activeHint.action : save.attempt.lessonHint;
   let hintSequence = 0;
   let pendingHint: Pick<HintRequest, 'requestId' | 'revision' | 'attemptId'> & { dealId: string } | undefined;
+  let cancelShuffle: (() => void) | undefined;
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
@@ -296,6 +298,12 @@ try {
     $('#game-surface').hidden = screen !== 'game';
     document.documentElement.dataset.reduced = String(save.settings.reducedMotion);
     const board = save.attempt.board;
+    const shuffle = $<HTMLButtonElement>('#proof-shuffle');
+    const shuffling = runtime.activity.getBlockReasons().includes('shuffle');
+    shuffle.hidden = !deal.shufflePreview;
+    shuffle.disabled = !canShuffle(save, deal) || saving || shuffling;
+    shuffle.setAttribute('aria-busy', String(shuffling));
+    $('#proof-shuffle-label').textContent = shuffling ? 'Ищу…' : save.attempt.shuffleUsed ? 'Использовано' : 'Перемешать';
     $('#game').dataset.exhausted = String(board.phase === 'exhausted');
     if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
     $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;
@@ -878,6 +886,7 @@ try {
   document.querySelectorAll('.sheet-body').forEach(body => body.addEventListener('scroll', () => cancelCoins(), domOptions));
   const unblock = runtime.activity.onBlockReasonsChange(() => {
     const blocked = runtime.activity.isBlocked();
+    if (runtime.activity.getBlockReasons().some(reason => reason !== 'shuffle')) cancelShuffle?.();
     setInput(); updateBanner();
     if (screen === 'game' && runtime.activity.getBlockReasons().every(r => r === 'modal') && ready) {
       scene?.sync();
@@ -1026,6 +1035,40 @@ try {
     hintWorker.postMessage(request); renderHud();
   }, domOptions);
   $('#helpers-open').addEventListener('click', () => { runtime.pulse('button'); openHelpers(); }, domOptions);
+  $('#proof-shuffle').addEventListener('click', async () => {
+    if (!ready || saving || serviceBusy || screen !== 'game' || runtime.activity.isBlocked() || !canShuffle(save, deal)) return;
+    const request: ShuffleRequest = {
+      attemptId: save.attempt.id, dealId: deal.id, revision: save.revision, board: save.attempt.board, deal,
+      seed: crypto.getRandomValues(new Uint32Array(1))[0],
+    };
+    runtime.activity.setBlocked('shuffle', true);
+    renderHud();
+    try {
+      const proof = await new Promise<BoardCommand[] | null>(resolve => {
+        const worker = new Worker(new URL('./game/shuffle.worker.ts', import.meta.url), { type: 'module' });
+        const finish = (route: BoardCommand[] | null) => {
+          clearTimeout(deadline); worker.terminate(); cancelShuffle = undefined; resolve(route);
+        };
+        const deadline = setTimeout(() => finish(null), 3500);
+        cancelShuffle = () => finish(null);
+        worker.onmessage = (event: MessageEvent<BoardCommand[] | null>) => finish(event.data);
+        worker.onerror = () => finish(null);
+        worker.postMessage(request);
+      });
+      if (!alive || screen !== 'game' || runtime.activity.getBlockReasons().some(reason => reason !== 'shuffle')) return;
+      if (!proof) { message('Не удалось найти выигрышный порядок колоды.', true); return; }
+      if (!await write(next => commitShuffle(next, deal, request, proof))) return;
+      scene?.sync();
+      if (!runtime.activity.getBlockReasons().some(reason => reason !== 'shuffle')) {
+        renderer.loop.wake();
+        scene?.animateStockShuffle();
+      }
+    } catch { if (alive) message('Не удалось перемешать колоду.', true); }
+    finally {
+      cancelShuffle?.(); runtime.activity.setBlocked('shuffle', false);
+      if (alive) renderHud();
+    }
+  }, domOptions);
   for (const kind of bonusKinds) {
     $(`#bonus-${kind}`).addEventListener('click', () => {
       if (!ready || saving || serviceBusy || store.needsRecovery || runtime.activity.isBlocked()) return;
@@ -1130,7 +1173,7 @@ try {
     if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
-    worker?.terminate(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
+    worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };
   window.addEventListener('pagehide', event => { if (!event.persisted) cleanup(); }, domOptions);
   window.addEventListener('pageshow', () => { if (alive) renderer.loop.wake(); }, domOptions);

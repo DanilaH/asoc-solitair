@@ -110,6 +110,13 @@ export class BoardScene extends Phaser.Scene {
   }
   /** Called only after the visible board has its final bounds, for a new attempt. */
   public presentDeal(): void { this.initial = true; this.sync([], true); }
+  public animateStockShuffle(): void {
+    if (this.options.getSave().settings.reducedMotion) return;
+    const cards = [this.stockArt, ...this.stockLayers];
+    this.tweens.killTweensOf(cards);
+    cards.forEach(card => card.setAngle(0));
+    this.tweens.add({ targets: cards, angle: 9, duration: 170, ease: 'Sine.easeInOut', yoyo: true });
+  }
   public preload(): void {
     if (!this.textures.exists('tutorial-hand')) this.load.image('tutorial-hand', 'art/ui/tutorial-hand.webp');
     for (const name of UI_ART) if (!this.textures.exists('art-' + name)) this.load.image('art-' + name, artUrl(name));

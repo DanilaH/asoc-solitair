@@ -122,8 +122,8 @@ Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle e
 | `hitapps-frozen` | `IMPLEMENTED_UNVERIFIED` | [P10 PRODUCT_ADAPTED preview](P10_FROZEN_CARDS.md), per-card layers, Undo and two proven routes. Original thaw and source configuration remain P36. |
 | `hitapps-bound` | `IMPLEMENTED_UNVERIFIED` | [P11 PRODUCT_ADAPTED binding](P11_BOUND_SCISSORS.md), separately replayed with ice and Undo. Original remains P36. |
 | `hitapps-magnet-hammer` | `IMPLEMENTED_UNVERIFIED` | [P14 Final gate and PRODUCT_ADAPTED starter cards](P14_STARTER_BOOSTERS.md). Native placement and actual actions remain P36. |
-| `azur-shuffle-helper` | `ROADMAPPED` | Determine re-deal constraints/save/provable solvability and user teaching |
-| `azur-shuffle-animation-controller` | `ROADMAPPED` | Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees |
+| `azur-shuffle-helper` | `IMPLEMENTED_UNVERIFIED` | [P16 PRODUCT_ADAPTED stock shuffle](P16_PROOF_SHUFFLE.md), exact proof, SaveStore and Undo. Original limits remain P36. |
+| `azur-shuffle-animation-controller` | `IMPLEMENTED_UNVERIFIED` | [P16 post-save motion](P16_PROOF_SHUFFLE.md), separate from selected order and reduced motion aware. Native timing remains P36. |
 | `azur-bonus-lower-column` | `IMPLEMENTED_UNVERIFIED` | C8 levels 30/40 open a separate lower column by coin debit or its earned receipt. Temporary card storage, Hint, save and Undo are tested with up to five columns. Physical taps, production ad behavior and original runtime parity remain open. [Verification](../qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md) |
 | `hitapps-puzzle-top-bottom-cards` | `IMPLEMENTED_UNVERIFIED` | [P12 PRODUCT_ADAPTED paired cards](P12_PUZZLE_PAIRS.md). Original placement and moves remain P36. |
 | `hitapps-bound-scissors-pattern` | `IMPLEMENTED_UNVERIFIED` | [P11 PRODUCT_ADAPTED scissors transfer](P11_BOUND_SCISSORS.md). Native reveal, cost and target remain open. |

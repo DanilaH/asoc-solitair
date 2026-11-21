@@ -35,6 +35,7 @@ export interface Deal {
   puzzle?: { version: 1; pairs: readonly { top: string; bottom: string }[] };
   golden?: { version: 1; ids: readonly string[]; coinsPerCard: number };
   starter?: { version: 1; cards: Readonly<Record<string, 'magnet' | 'hammer'>> };
+  shufflePreview?: 1;
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
   difficultyTier?: DifficultyTier;
   training?: OpeningLesson;
@@ -53,6 +54,7 @@ export interface Attempt {
   continued?: boolean;
   director?: { restarts: number; previousLosses: number; exhausted?: true };
   jokerUsed?: boolean;
+  shuffleUsed?: true;
   lessonHint?: BoardCommand;
   daily?: { dayId: string; contentVersion: number };
   payout?: RewardGrant[];

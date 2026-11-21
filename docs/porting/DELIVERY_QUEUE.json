@@ -712,7 +712,7 @@
       "order": 29,
       "title": "DailyBonus, Fortune, DailyRewards, Puzzle",
       "workstream": "META",
-      "state": "QUEUED",
+      "state": "BLOCKED_EXTERNAL",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P26"

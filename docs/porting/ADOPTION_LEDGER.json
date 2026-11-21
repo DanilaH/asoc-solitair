@@ -238,7 +238,7 @@
     {
       "id": "azur-daily-bonus",
       "status": "ROADMAPPED",
-      "currentImplementation": "Current daily calendar but no separate card-choice bonus",
+      "currentImplementation": "Current daily calendar but no separate card-choice bonus P29 distinguishes the independent source and preserves the current 28-deal puzzle bank. See docs/porting/P29_DAILY_REWARDS.md.",
       "nextAction": "Prototype optional daily card-choice mini reward; measure friction, scope and locale dates F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
@@ -259,7 +259,7 @@
     {
       "id": "hitapps-daily-rewards",
       "status": "ROADMAPPED",
-      "currentImplementation": "Existing daily completion payout, no login-only claim service",
+      "currentImplementation": "Existing daily completion payout, no login-only claim service P29 distinguishes the independent source and preserves the current 28-deal puzzle bank. See docs/porting/P29_DAILY_REWARDS.md.",
       "nextAction": "Compare separate login reward against existing daily; propose value and dedup if selected F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
@@ -409,7 +409,7 @@
     {
       "id": "hitapps-daily-puzzle",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "Consumer has its own 28-puzzle Daily pool, but no independently verified Hitapps Daily Level reference; S1 only confirms DailyRewards",
+      "currentImplementation": "Consumer has its own 28-puzzle Daily pool, but no independently verified Hitapps Daily Level reference; S1 only confirms DailyRewards P29 distinguishes the independent source and preserves the current 28-deal puzzle bank. See docs/porting/P29_DAILY_REWARDS.md.",
       "nextAction": "Acquire original Hitapps Daily Level actual session or native scene/level data; do not claim this was source-copied F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1",
       "reason": "Original hitapps S1 reference lacks an independently verified daily puzzle scene; prior attribution was unsupported"
@@ -523,7 +523,7 @@
     {
       "id": "unico-daily-fortune",
       "status": "ROADMAPPED",
-      "currentImplementation": "No daily card-choice/second video try",
+      "currentImplementation": "No daily card-choice/second video try P29 distinguishes the independent source and preserves the current 28-deal puzzle bank. See docs/porting/P29_DAILY_REWARDS.md.",
       "nextAction": "Prototype isolated day-keyed reward selection with once-only claim and odds disclosure F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
@@ -561,7 +561,7 @@
     {
       "id": "unico-daily-puzzles",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Daily calendar + 28 fixed pool, distinct from Unico seed and losses",
+      "currentImplementation": "Daily calendar + 28 fixed pool, distinct from Unico seed and losses P29 distinguishes the independent source and preserves the current 28-deal puzzle bank. See docs/porting/P29_DAILY_REWARDS.md.",
       "nextAction": "Compare failure-retry loop and daily award once-per-date on actual Android",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"

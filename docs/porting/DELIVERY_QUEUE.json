@@ -868,7 +868,7 @@
       "order": 35,
       "title": "Remote bank overrides и offline delivery",
       "workstream": "LONGTAIL",
-      "state": "QUEUED",
+      "state": "BLOCKED_EXTERNAL",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P34"

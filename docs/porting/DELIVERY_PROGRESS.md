@@ -52,8 +52,8 @@
 | P31 | NEEDS_OWNER | [PR #122](https://github.com/DanilaH/asoc-solitair/pull/122) | [Пять независимых офлайн-моделей](P31_LIVEOPS_TRIALS.md). Признание оригинальных правил и активация остаются открытыми. |
 | P32 | BLOCKED_EXTERNAL | [PR #124](https://github.com/DanilaH/asoc-solitair/pull/124) | [Регионы и четыре отдельные модели событий](P32_REGION_EVENTS.md). Оригинальные действия, совпадение фаз и вероятности ждут доказательств. |
 | P33 | NEEDS_DEVICE | [PR #126](https://github.com/DanilaH/asoc-solitair/pull/126) | [Новые уровни 81–87](P33_BEYOND80.md). 42 свои темы, семь пар маршрутов и реальный переход на уровне 80. |
-| P34 | NEEDS_DEVICE | [Ветка P34](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p34-frozen-locales-20261121) | [Русская и английская раздачи 81](P34_LOCALE_ART_BUDGET.md). Подтверждения, лимиты и перезапуск проверены в браузере. |
-| P35 | QUEUED | — | Remote bank, immutable rollout |
+| P34 | NEEDS_DEVICE | [PR #129](https://github.com/DanilaH/asoc-solitair/pull/129) | [Русская и английская раздачи 81](P34_LOCALE_ART_BUDGET.md). Подтверждения, лимиты и перезапуск проверены в браузере. |
+| P35 | BLOCKED_EXTERNAL | [Ветка P35](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p35-signed-bank-cache-20261121) | [Подписанный автономный архив](P35_SIGNED_CONTENT_BANK.md). Сеть без доверенного выпуска отключена; оригинальный ответ неизвестен. |
 | P36 | QUEUED | — | Original ARM32/ARM64/Unico actual traces |
 | P37 | QUEUED | — | Full source+game release gate |
 

@@ -1,3 +1,7 @@
+# Content 8 · Q1 campaign decisions
+
+[Campaign decision audit](qa/content-v8/Q1_CAMPAIGN_DECISIONS.md) samples alternative card moves and deck actions on the active 80-level bank. It reports complete winning witnesses, proven budget failures and bounded unknowns separately. Repeat cases for director and bonus-slot variants have their own denominators. The audit identifies positions for a human playtest of 0.20.3.
+
 # Content 8 CORE-5 · 0.20.3 preview
 
 [Loss screen recovery](qa/content-v8/CORE_5_LOSS_RECOVERY.md) returns to the same exhausted attempt after a background video result. Unavailable video becomes a secondary retry and a usable recovery action takes priority. Earned receipts can resume play. The Android bridge cases are reproduced with browser touch. Physical Android and original Unico comparison remain open.

@@ -21,7 +21,7 @@
       "id": "hitapps-level-wave",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Content 8 has 80 authored deals. The 16–31 section matches the verified Hitapps EN counts for cards, stock and columns. The 32–80 product wave has seven five-column peaks.",
-      "nextAction": "Evaluate pacing on physical Android and keep exact Hitapps geometry beyond the verified local EN31 boundary open.",
+      "nextAction": "Play the targeted positions listed in docs/qa/content-v8/Q1_CAMPAIGN_DECISIONS.md on physical Android. Evaluate pacing and keep exact Hitapps geometry beyond the verified local EN31 boundary open.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "C2",
       "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
@@ -579,7 +579,7 @@
       "id": "azur-structured-long-campaign",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 positions 32–80 use seven seven-level chapters with four product-authored geometry and budget profiles. The AZUR observed cadence informs the product structure.",
-      "nextAction": "Test long-play pacing on device. Keep native long-campaign configuration and evidence for exact original behaviour tracked.",
+      "nextAction": "Play the late-campaign positions listed in docs/qa/content-v8/Q1_CAMPAIGN_DECISIONS.md on device. Keep native long-campaign configuration and exact original behaviour tracked.",
       "stage": "G1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
@@ -780,7 +780,7 @@
       "id": "azur-deck-draw-and-recycle",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules 3 uses shift and same-order recycle. CORE-0 verifies observable AZUR draw order with an independent reverse-waste model, removal mid-cycle, face-up state, and Rules 3 move costs.",
-      "nextAction": "Capture original Android reset action costs, cycle UI and any paid restoration gate. Verify draw, reset and Undo on the Content 8 preview APK.",
+      "nextAction": "Play the reverified second-pass witnesses in docs/qa/content-v8/Q1_CAMPAIGN_DECISIONS.md and verify Undo on the preview APK. Capture original Android reset action costs, cycle UI and any paid restoration gate.",
       "stage": "B1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "evidenceRef": "docs/qa/content-v8/CORE_0.md"

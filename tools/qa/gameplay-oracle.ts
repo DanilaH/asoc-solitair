@@ -50,9 +50,18 @@ export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
 }
 export function options(b:Board,d:Deal,prune=false):{action:BoardCommand;board:Board}[]{
   const out:{action:BoardCommand;board:Board}[]=[],sources:Location[]=[...b.tableau.map((_,index)=>({kind:'tableau' as const,index})),{kind:'waste',index:0}],targets:Location[]=[...b.foundations.map((_,index)=>({kind:'foundation' as const,index})),...b.tableau.map((_,index)=>({kind:'tableau' as const,index}))];
-  for(const from of sources)for(const to of targets){
-    if(prune&&from.kind==='tableau'&&to.kind==='tableau'&&!b.tableau[to.index].length&&group(b,from.index,d).length===b.tableau[from.index].length)continue;
-    const action:BoardCommand={type:'transfer',from,to},board=advance(b,action,d);if(board)out.push({action,board});
+  if(b.phase!=='playing')return out;
+  for(const from of sources){
+    const packet=from.kind==='tableau'?group(b,from.index,d):b.waste.slice(-1);
+    if(!packet.length)continue;
+    for(const to of targets){
+      if(prune&&from.kind==='tableau'&&to.kind==='tableau'&&!b.tableau[to.index].length&&packet.length===b.tableau[from.index].length)continue;
+      // Check the category of a nonempty target before cloning a full board.
+      // A Joker supports any category, so its column still goes through advance.
+      const pile=to.kind==='foundation'?b.foundations[to.index]:b.tableau[to.index];
+      if(pile.length&&(to.kind==='foundation'||b.joker?.column!==to.index)&&d.cards[pile.at(-1)!].category!==d.cards[packet[0]].category)continue;
+      const action:BoardCommand={type:'transfer',from,to},board=advance(b,action,d);if(board)out.push({action,board});
+    }
   }
   const action:BoardCommand={type:b.stock.length?'draw':'recycle'},board=advance(b,action,d);if(board)out.push({action,board});return out;
 }

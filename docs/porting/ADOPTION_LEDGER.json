@@ -797,7 +797,7 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "CORE-1 offline AzurDealer shuffles a temporary copy with injected RNG and places the ordinary branch. The active C8 uses frozen Hitapps-derived deals.",
+      "currentImplementation": "CORE-1 offline AzurDealer shuffles a temporary copy with injected RNG and places the ordinary branch. The active C8 uses frozen Hitapps-derived deals. P36 recorded the missing original Android trace in docs/porting/P36_ORIGINAL_RUNTIME.md.",
       "nextAction": "Use the corrected v2 oracle from kit PR #91 to compare actual Unity draws with the temporary permutation, while keeping generated allCards unchanged. Obtain at least two original ARM64 captures with locale/config, actual stock/tableau and correct card conservation. Device output, original RNG initialization and upstream stream sharing remain open.",
       "stage": "B1",
       "reason": "Original source clone, shuffle and placement ARM64 are verified; actual selected Unity random stream/config, original Android stock and tableau still have zero genuine captures. Corrected original trace comparator synthetic fixtures are not live source parity."
@@ -861,7 +861,7 @@
     {
       "id": "unico-magnet-helper",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "P17 isolated PRODUCT_ADAPTED trial models a legal one-move transfer from buried visible waste to an open foundation with its own attempt receipt and Undo. See docs/porting/P17_UNICO_MAGNET.md. The shipped app has no Unico Magnet; the Hitapps starter card and AZUR Joker remain distinct.",
+      "currentImplementation": "P17 isolated PRODUCT_ADAPTED trial models a legal one-move transfer from buried visible waste to an open foundation with its own attempt receipt and Undo. See docs/porting/P17_UNICO_MAGNET.md. The shipped app has no Unico Magnet; the Hitapps starter card and AZUR Joker remain distinct. P36 recorded the missing original Android trace in docs/porting/P36_ORIGINAL_RUNTIME.md.",
       "nextAction": "Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"

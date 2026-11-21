@@ -39,7 +39,8 @@
     "qa:content8": "vite build --ssr tools/qa/audit-reference-slice.ts --outDir .authoring/content8/audit-build && node .authoring/content8/audit-build/audit-reference-slice.js",
     "qa:campaign-decisions": "VITE_CONTENT8_PREVIEW=1 vite build --ssr tools/qa/audit-c8-campaign-decisions.ts --outDir .authoring/content8/decision-build && node .authoring/content8/decision-build/audit-c8-campaign-decisions.js",
     "qa:porting": "node tools/qa/verify-porting-ledger.mjs",
-    "qa:decision-cost": "node tools/qa/c8-decision-cost.mjs"
+    "qa:decision-cost": "node tools/qa/c8-decision-cost.mjs",
+    "qa:decision-deep": "VITE_CONTENT8_PREVIEW=1 vite build --ssr tools/qa/deepen-c8-unknown-transfers.ts --outDir .authoring/content8/deep-build && node .authoring/content8/deep-build/deepen-c8-unknown-transfers.js"
   },
   "dependencies": {
     "@capacitor/android": "8.6.0",

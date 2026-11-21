@@ -61,7 +61,7 @@
       "order": 2,
       "title": "Q2/Q3 физический Android и люди",
       "workstream": "QA",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "PHYSICAL_ANDROID",
       "dependsOn": [
         "P00"

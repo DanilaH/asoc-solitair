@@ -1,3 +1,5 @@
+**Content 8 · E1/E2 recovery and ads audit (21.11):** [source-native AZUR coin/reward moves vs C8 adaptations, all 13 E1 and 5 E2 source IDs, + failed-show cooldown finding](qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md). [Consumer issue #80](https://github.com/DanilaH/asoc-solitair/issues/80) tracks incorrect attempted-vs-shown ad-clock persistence. No SDK/economy/runtime changes.
+
 **Content 8 · D1 special cards and helpers (21.11):** [all 14 D1 mechanisms audited against actual current Rules3/C8 implementation, source phases, unknown native actions, helper/Undo boundaries and staged adoption](qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md). Four implemented-unverified; seven roadmapped; three evidence-gap; none permanently excluded.
 
 **Content 8 · Q1c finite-cost reconciliation (21.11):** [parallel Q1b #74 and #75 methods retained; finite-budget 317 winning transfers, 13 of 18 deeper UNKNOWN resolved](qa/content-v8/Q1C_FINITE_COST_DEEP_RECONCILIATION_2026-11-21.md). Prior source CI PASS; combined-head hosted evidence separately required.

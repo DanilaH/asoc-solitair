@@ -1,3 +1,7 @@
+# Content 8 · B2 director source→product audit (21 November)
+
+[Source-to-product evidence delta](qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md) records Hitapps native ten-result/lifecycle semantics against actual C8 `src/domain/difficulty.ts`, `campaign-v8-director.ts`, first-clear SaveStore paths and R1's five levels/ten variants. Key testable caveats: product records consolidated first clear where source mutates current slot at requests/restarts, ten ExtraSteps have adjustedRate100, native remote config and full source runtime unknown; Equity/Paywall not live issued. Research-only, no runtime edits or acceptance claim.
+
 # Content 8 · Q1b: independently replayed branch cost (research-only)
 
 [Q1b route-cost audit](qa/content-v8/Q1B_ROUTE_COST_2026-11-21.md) extends the Q1 80-level decision sampler with each replayed WIN route's actual action count vs its published witness suffix, exact move-budget settlement, original-position rejoin and separate UNKNOWN; a pure Node aggregator includes strict formulas/80-row contract and infrastructure tests. Runs only on matching research pull_request CI, uploads raw JSON evidence. **No measured Q1b cost distribution is claimed before hosted CI finishes; no gameplay rules/deals/saves/SDK changes.**

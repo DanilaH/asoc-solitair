@@ -7,6 +7,7 @@
   "sourceInventoryRef": "a5c246d9935474d7fe662da95fb657c61c245c0a",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "114 source systems; AZUR original ARM64 source confirms DealCards shuffles a temporary copy of allCards (not persistent GameManager.allCards). Prior v1 trace comparator had a potential false-negative and has been corrected. Still zero Android original executions, so no source runtime/final board parity. No owner exclusions.",
+  "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
   "features": [
     {
       "id": "hitapps-stock-dealer",

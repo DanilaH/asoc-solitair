@@ -22,33 +22,38 @@ async function transferPoints(page: Page, deal: Deal, cmd: Extract<BoardCommand,
 
 test('Next lets the first settled column move while neighboring columns are dealing', async ({ page }) => {
   const first = campaignDeals[0], second = campaignDeals[1];
+  if (!comparisonBaseline) await page.clock.install();
   await seed(page, fixture(0, true));
+  await expect(page.locator('#game-root')).toHaveAttribute('data-dealing', '0');
   await move(page, first, first.winningPath.at(-1)!);
+  await expect.poll(async () => (await read(page)).attempt.board.phase).toBe('won');
   await expect(page.locator('#result')).toBeVisible();
   const command = second.winningPath[0];
   if (command.type !== 'transfer') throw Error('C7-002 starts with a transfer');
   const opening = fixture(1), expected = dispatch(opening, command, second).next.attempt.board;
+  const next = page.locator('#next-level');
   if (!comparisonBaseline) {
     const { source, target } = await transferPoints(page, second, command, opening);
-    await page.exposeBinding('__playDealtColumn', async () => {
-      await page.touchscreen.tap(source.x, source.y);
-      await page.touchscreen.tap(target.x, target.y);
+    const button = (await next.boundingBox())!;
+    const gameRoot = page.locator('#game-root');
+    const time = await page.evaluate(() => Date.now());
+    await page.clock.pauseAt(time + 5000);
+    // Hold the real interaction at an observed animation frame even on a slow runner.
+    await page.touchscreen.tap(button.x + button.width / 2, button.y + button.height / 2);
+    for (let frame = 0; frame < 100 && await gameRoot.getAttribute('data-dealing') !== '4'; frame++) {
+      await page.clock.runFor(16);
+    }
+    expect(await gameRoot.getAttribute('data-dealing')).toBe('4');
+    await gameRoot.evaluate(board => {
+      board.addEventListener('pointerdown', () => {
+        (window as unknown as { __earlyPress?: number }).__earlyPress = Number(board.getAttribute('data-dealing'));
+      }, { once: true });
     });
-    await page.evaluate(() => {
-      const board = document.querySelector<HTMLElement>('#game-root')!;
-      const w = window as unknown as { __playDealtColumn(): Promise<void>; __earlyPress?: number };
-      const observer = new MutationObserver(() => {
-        const remaining = Number(board.dataset.dealing);
-        if (remaining !== 4) return;
-        observer.disconnect();
-        board.addEventListener('pointerdown', () => { w.__earlyPress = Number(board.dataset.dealing); }, { once: true });
-        void w.__playDealtColumn();
-      });
-      observer.observe(board, { attributes: true, attributeFilter: ['data-dealing'] });
-    });
-  }
-  await page.locator('#next-level').tap();
-  if (comparisonBaseline) {
+    await page.touchscreen.tap(source.x, source.y);
+    await page.touchscreen.tap(target.x, target.y);
+    await page.clock.resume();
+  } else {
+    await next.tap();
     await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', second.id);
     await page.waitForTimeout(450);
     await move(page, second, command);

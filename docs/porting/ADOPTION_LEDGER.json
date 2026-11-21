@@ -225,56 +225,56 @@
       "id": "hitapps-puzzle-event",
       "status": "ROADMAPPED",
       "currentImplementation": "No picture reveal; existing 10-level and win-cycle rewards",
-      "nextAction": "Prototype original 6-piece picture reward on actual wins/daily; assess visual payoff",
+      "nextAction": "Prototype original 6-piece picture reward on actual wins/daily; assess visual payoff F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {
       "id": "azur-daily-tasks",
       "status": "ROADMAPPED",
       "currentImplementation": "28 rotating daily puzzles != daily tasks",
-      "nextAction": "Inventory ALL 16 original DailyTask kinds and 9 reward kinds (engagement, helper-use, spend/purchase), with per-kind evidence and trigger; implement in owner-approved stages without silently dropping commercially oriented task types",
+      "nextAction": "Inventory ALL 16 original DailyTask kinds and 9 reward kinds (engagement, helper-use, spend/purchase), with per-kind evidence and trigger; implement in owner-approved stages without silently dropping commercially oriented task types F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {
       "id": "azur-daily-bonus",
       "status": "ROADMAPPED",
       "currentImplementation": "Current daily calendar but no separate card-choice bonus",
-      "nextAction": "Prototype optional daily card-choice mini reward; measure friction, scope and locale dates",
+      "nextAction": "Prototype optional daily card-choice mini reward; measure friction, scope and locale dates F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {
       "id": "hitapps-weekend-race",
       "status": "ROADMAPPED",
       "currentImplementation": "No event competition",
-      "nextAction": "Design offline staged bot-race as distinct mode, with honest presentation and saves",
+      "nextAction": "Design offline staged bot-race as distinct mode, with honest presentation and saves F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },
     {
       "id": "hitapps-lava-quest",
       "status": "ROADMAPPED",
       "currentImplementation": "No Lava Quest first-attempt race",
-      "nextAction": "Specify first-attempt multi-win event and safe simulator presentation/rewards",
+      "nextAction": "Specify first-attempt multi-win event and safe simulator presentation/rewards F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },
     {
       "id": "hitapps-daily-rewards",
       "status": "ROADMAPPED",
       "currentImplementation": "Existing daily completion payout, no login-only claim service",
-      "nextAction": "Compare separate login reward against existing daily; propose value and dedup if selected",
+      "nextAction": "Compare separate login reward against existing daily; propose value and dedup if selected F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {
       "id": "hitapps-win-streak",
       "status": "ROADMAPPED",
       "currentImplementation": "Existing 5-first-win cycle differs from loss-sensitive WinStreak",
-      "nextAction": "Define streak failure/reset milestone and test against current cycle without double credits",
+      "nextAction": "Define streak failure/reset milestone and test against current cycle without double credits F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {
       "id": "hitapps-meta-regions",
       "status": "ROADMAPPED",
       "currentImplementation": "No star/building/region meta",
-      "nextAction": "Estimate asset pipeline and staged owner-visible progression UI for later season",
+      "nextAction": "Estimate asset pipeline and staged owner-visible progression UI for later season F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3"
     },
     {
@@ -289,7 +289,7 @@
       "id": "hitapps-lives",
       "status": "ROADMAPPED",
       "currentImplementation": "No energy/lives",
-      "nextAction": "Determine effect on current unlimited offline play and clear rule+save variation",
+      "nextAction": "Determine effect on current unlimited offline play and clear rule+save variation F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },
     {
@@ -311,7 +311,7 @@
       "id": "unico-win-and-task-streak",
       "status": "ROADMAPPED",
       "currentImplementation": "Existing daily streak/5-win milestone, not two standalone events",
-      "nextAction": "Compare separate reward ledgers; choose distinct milestones without duplicate grants",
+      "nextAction": "Compare separate reward ledgers; choose distinct milestones without duplicate grants F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {
@@ -334,21 +334,21 @@
       "id": "hitapps-gold-rush-event",
       "status": "ROADMAPPED",
       "currentImplementation": "No gold-event lifecycle",
-      "nextAction": "Design prize progress and first-attempt bonus independent from GoldenCards insertion; ensure event grant once",
+      "nextAction": "Design prize progress and first-attempt bonus independent from GoldenCards insertion; ensure event grant once F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },
     {
       "id": "hitapps-puzzle-gallery",
       "status": "ROADMAPPED",
       "currentImplementation": "Current only card back/palette unlocks; no six-picture gallery",
-      "nextAction": "Reconstruct video-based gallery journey and distinguish from time-limited PuzzleEvent",
+      "nextAction": "Reconstruct video-based gallery journey and distinguish from time-limited PuzzleEvent F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {
       "id": "hitapps-cascade-events",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No cascade scheduler; general meta only",
-      "nextAction": "Trace native source config/calls to derive event sequencing before porting a generic event lifecycle",
+      "nextAction": "Trace native source config/calls to derive event sequencing before porting a generic event lifecycle F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -356,7 +356,7 @@
       "id": "hitapps-digging-event",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No digging event",
-      "nextAction": "Inspect original event behavior and schema; define adaptation and authoring cost",
+      "nextAction": "Inspect original event behavior and schema; define adaptation and authoring cost F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -364,7 +364,7 @@
       "id": "hitapps-lucky-wheel",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No wheel rewards",
-      "nextAction": "Find original UI/state/odds evidence, then design own optional reward minigame",
+      "nextAction": "Find original UI/state/odds evidence, then design own optional reward minigame F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -372,7 +372,7 @@
       "id": "hitapps-endless-treasure",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No treasure progression event",
-      "nextAction": "Determine native phases and actual gameplay before creating design spec",
+      "nextAction": "Determine native phases and actual gameplay before creating design spec F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -403,14 +403,14 @@
       "id": "hitapps-meta-prewarm",
       "status": "ROADMAPPED",
       "currentImplementation": "No separate event UI prewarm/unlock service",
-      "nextAction": "Add optional event unlock level and preload timing in meta scheduler after first event exists",
+      "nextAction": "Add optional event unlock level and preload timing in meta scheduler after first event exists F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },
     {
       "id": "hitapps-daily-puzzle",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "Consumer has its own 28-puzzle Daily pool, but no independently verified Hitapps Daily Level reference; S1 only confirms DailyRewards",
-      "nextAction": "Acquire original Hitapps Daily Level actual session or native scene/level data; do not claim this was source-copied",
+      "nextAction": "Acquire original Hitapps Daily Level actual session or native scene/level data; do not claim this was source-copied F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1",
       "reason": "Original hitapps S1 reference lacks an independently verified daily puzzle scene; prior attribution was unsupported"
     },
@@ -472,7 +472,7 @@
       "id": "azur-combo-streak",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "Own transfer streak and first-win cycle differ from AZUR ComboStreak",
-      "nextAction": "Reconstruct reward/counter reset/FTUE and determine whether separate progress necessary",
+      "nextAction": "Reconstruct reward/counter reset/FTUE and determine whether separate progress necessary F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -509,7 +509,7 @@
       "id": "azur-cosmetics",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Two earned existing palette/card-back rewards at levels10/20",
-      "nextAction": "Compare catalog UX/unlocks; extend own assets without copying vendor artwork",
+      "nextAction": "Compare catalog UX/unlocks; extend own assets without copying vendor artwork F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
@@ -524,7 +524,7 @@
       "id": "unico-daily-fortune",
       "status": "ROADMAPPED",
       "currentImplementation": "No daily card-choice/second video try",
-      "nextAction": "Prototype isolated day-keyed reward selection with once-only claim and odds disclosure",
+      "nextAction": "Prototype isolated day-keyed reward selection with once-only claim and odds disclosure F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {
@@ -596,7 +596,7 @@
       "id": "unico-themes-and-skins",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Own palette and card backs exist, no Unico-sized theme gallery",
-      "nextAction": "Audit unlock/reward placement and visual consistency without vendor art",
+      "nextAction": "Audit unlock/reward placement and visual consistency without vendor art F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
@@ -704,7 +704,7 @@
       "id": "hitapps-win-multiresource-payout",
       "status": "ROADMAPPED",
       "currentImplementation": "Win coins and milestones exist, no single payout bundle to keys+piggy bank+picture fragments",
-      "nextAction": "Design separate earned resource identities and settlement when those systems implemented, compare S1 visible example",
+      "nextAction": "Design separate earned resource identities and settlement when those systems implemented, compare S1 visible example F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {

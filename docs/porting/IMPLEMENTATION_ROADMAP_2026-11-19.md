@@ -207,6 +207,8 @@ Starter/Birthday/Decoy, shop bundles, PlayPass/VIP and IAP receipt integrity aft
 | `azur-iap-welcome-offer` | `BLOCKED` | Validate store purchases and first-use entitlement; keep future welcome-bundle ID in roadmap |
 | `azur-iap-unlimited-moves-tiers` | `BLOCKED` | Reconstruct true entitlement/expiry, billing and SaveStore restore before pricing or SDK calls |
 
+**F1–F3 source/consumer checkpoint (21.11.2026):** [complete 23-system matrix](../qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md), [machine-readable source/tier/enum fixture](../qa/content-v8/f-source-event-matrix.json). **2 IMPLEMENTED_UNVERIFIED / 15 ROADMAPPED / 6 EVIDENCE_GAP, 0 ACCEPTED, 0 OWNER_EXCLUDED.** Native AZUR compiled source has **16 actual task types (+Unknown) and 9 reward types**, including purchase/use-helper tasks, *all retained in full roadmap*; local defaults 4/day, 7-day window, unlock level2/day1 are not observed live settings. Current daily 28-content rotation, first-clear five-win cycle and two earned cosmetic styles do NOT substitute for PuzzleEvent, DailyTasks, GoldRush, WeekendRace, Lives or EventScheduler. Historical kit HOLD/REJECT suggestions do not remove owner-approved source feature scope. Source/runtime and human P6 remain distinct.
+
 ### F1. Ежедневные и коллекционные системы (12)
 
 PuzzleEvent/Puzzle Journey, daily tasks, daily bonus, daily reward, streaks, cosmetics and Daily Fortune.

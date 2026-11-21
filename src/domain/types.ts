@@ -1,3 +1,4 @@
+import type { DailyTaskJournal } from './events/daily-tasks';
 import type { PictureState } from './events/picture';
 import type { EventLedger } from './events/ledger';
 import type { CommerceJournal } from './commerce/orders';
@@ -60,6 +61,7 @@ export interface Attempt {
   director?: { restarts: number; previousLosses: number; exhausted?: true };
   jokerUsed?: boolean;
   shuffleUsed?: true;
+  verifiedTaskHints?: number;
   lessonHint?: BoardCommand;
   daily?: { dayId: string; contentVersion: number };
   payout?: RewardGrant[];
@@ -91,6 +93,7 @@ export interface Save {
   commerce?: CommerceJournal;
   events?: EventLedger;
   picture?: PictureState;
+  dailyTasks?: DailyTaskJournal;
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';

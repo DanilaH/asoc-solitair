@@ -690,7 +690,7 @@
       "order": 28,
       "title": "16 AZUR DailyTasks + девять rewards",
       "workstream": "META",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P26"

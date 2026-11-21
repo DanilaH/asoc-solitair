@@ -6,6 +6,7 @@ import { validRewardOffers } from '../domain/reward-offers';
 import { validCommerceJournal } from '../domain/commerce/orders';
 import { validEventLedger } from '../domain/events/ledger';
 import { validPicture } from '../domain/events/picture';
+import { validDailyTasks } from '../domain/events/daily-tasks';
 import { applyBoard, assertBoard, boardRules } from '../domain/engine';
 import { MAX_UNDO_HISTORY } from '../domain/history';
 import { DIFFICULTY_WINDOW } from '../domain/difficulty';
@@ -56,6 +57,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (legacy || previous) save.profile.jokers ??= BALANCE.initialJokers;
   if (migration) { save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
   assertBoard(save.attempt.board, deal);
+  if (save.attempt.verifiedTaskHints !== undefined && !natural(save.attempt.verifiedTaskHints)) throw Error('Повреждён учёт подсказок');
   if (save.attempt.lessonHint !== undefined) {
     const command = save.attempt.lessonHint;
     const location = (loc: { kind: string; index: number }) => loc && ['tableau', 'foundation', 'waste'].includes(loc.kind) && natural(loc.index);
@@ -109,6 +111,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.commerce !== undefined && !validCommerceJournal(save.commerce)) throw Error('Повреждён журнал покупок');
   if (save.events !== undefined && !validEventLedger(save.events)) throw Error('Повреждён журнал событий');
   if (save.picture !== undefined && !validPicture(save)) throw Error('Повреждён альбом');
+  if (save.dailyTasks !== undefined && !validDailyTasks(save.dailyTasks)) throw Error('Повреждён журнал задач');
   if (save.parked) {
     const active = save.attempt.daily ? 'daily' : 'campaign';
     if (save.parked[active]) throw Error('Два активных состояния режима');

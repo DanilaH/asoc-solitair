@@ -20,7 +20,7 @@
     {
       "id": "hitapps-level-wave",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Content 8 has 80 authored deals. The 16–31 section matches the verified Hitapps EN counts for cards, stock and columns. The 32–80 product wave has seven five-column peaks.",
+      "currentImplementation": "Content 8 has 80 authored deals. The 16–31 section matches the verified Hitapps EN counts for cards, stock and columns. The 32–80 product wave has seven five-column peaks. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
       "nextAction": "Play the targeted positions listed in docs/qa/content-v8/Q1_CAMPAIGN_DECISIONS.md on physical Android. Evaluate pacing and keep exact Hitapps geometry beyond the verified local EN31 boundary open.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "C2",
@@ -216,7 +216,7 @@
     {
       "id": "azur-topic-rotation",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 positions 32–80 contain 77 original project topics including 24 new ones. At least three other levels intervene before any topic is reused in the late slice.",
+      "currentImplementation": "C8 positions 32–80 contain 77 original project topics including 24 new ones. At least three other levels intervene before any topic is reused in the late slice. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
       "nextAction": "Playtest topic recognition and compare longer semantic recurrence to reference evidence before planning an endless bank.",
       "stage": "C2",
       "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
@@ -578,7 +578,7 @@
     {
       "id": "azur-structured-long-campaign",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 positions 32–80 use seven seven-level chapters with four product-authored geometry and budget profiles. The AZUR observed cadence informs the product structure.",
+      "currentImplementation": "C8 positions 32–80 use seven seven-level chapters with four product-authored geometry and budget profiles. The AZUR observed cadence informs the product structure. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
       "nextAction": "Play the late-campaign positions listed in docs/qa/content-v8/Q1_CAMPAIGN_DECISIONS.md on device. Keep native long-campaign configuration and exact original behaviour tracked. G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md. Reproduce source-adapted 78 unique topics/80 levels vs original 4539/2000 and review recurrence P2: https://github.com/DanilaH/asoc-solitair/issues/84; do not rewrite published deal IDs without approval.",
       "stage": "G1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
@@ -678,7 +678,7 @@
     {
       "id": "azur-variable-category-sizes",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Late C8 recipes use four to six members per category and vary category count between eight and fifteen per board. Published totals match each product geometry profile.",
+      "currentImplementation": "Late C8 recipes use four to six members per category and vary category count between eight and fifteen per board. Published totals match each product geometry profile. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
       "nextAction": "Check recognition and pacing on Android. The AZUR art-dependent native sizing rule is tracked separately.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
@@ -687,7 +687,7 @@
     {
       "id": "hitapps-mixed-word-image-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Every newly authored CORE-3 layout across 16–80 mixes one whole picture category using original art with word categories.",
+      "currentImplementation": "Every newly authored CORE-3 layout across 16–80 mixes one whole picture category using original art with word categories. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
       "nextAction": "Evaluate card recognition and text fit on physical Android at five-column peaks.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",

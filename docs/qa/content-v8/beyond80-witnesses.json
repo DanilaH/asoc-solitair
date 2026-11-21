@@ -1,0 +1,149 @@
+[
+  {
+    "level": 81,
+    "seed": 810001,
+    "columns": 3,
+    "foundations": 3,
+    "cards": 32,
+    "stock": 9,
+    "budget": 53,
+    "forced": 0,
+    "peak": 0,
+    "slack": 11,
+    "moves": 42,
+    "alternate": {
+      "step": 0,
+      "tested": 1,
+      "forced": 0,
+      "peak": 0,
+      "slack": 11,
+      "moves": 42
+    }
+  },
+  {
+    "level": 82,
+    "seed": 820001,
+    "columns": 4,
+    "foundations": 3,
+    "cards": 33,
+    "stock": 12,
+    "budget": 58,
+    "forced": 4,
+    "peak": 1,
+    "slack": 11,
+    "moves": 47,
+    "alternate": {
+      "step": 0,
+      "tested": 1,
+      "forced": 4,
+      "peak": 1,
+      "slack": 12,
+      "moves": 46
+    }
+  },
+  {
+    "level": 83,
+    "seed": 830001,
+    "columns": 4,
+    "foundations": 4,
+    "cards": 33,
+    "stock": 13,
+    "budget": 57,
+    "forced": 1,
+    "peak": 1,
+    "slack": 11,
+    "moves": 46,
+    "alternate": {
+      "step": 1,
+      "tested": 1,
+      "forced": 1,
+      "peak": 1,
+      "slack": 11,
+      "moves": 46
+    }
+  },
+  {
+    "level": 84,
+    "seed": 840001,
+    "columns": 5,
+    "foundations": 4,
+    "cards": 34,
+    "stock": 15,
+    "budget": 59,
+    "forced": 0,
+    "peak": 0,
+    "slack": 9,
+    "moves": 50,
+    "alternate": {
+      "step": 0,
+      "tested": 1,
+      "forced": 0,
+      "peak": 0,
+      "slack": 9,
+      "moves": 50
+    }
+  },
+  {
+    "level": 85,
+    "seed": 850001,
+    "columns": 4,
+    "foundations": 4,
+    "cards": 33,
+    "stock": 11,
+    "budget": 55,
+    "forced": 1,
+    "peak": 1,
+    "slack": 11,
+    "moves": 44,
+    "alternate": {
+      "step": 0,
+      "tested": 1,
+      "forced": 1,
+      "peak": 1,
+      "slack": 11,
+      "moves": 44
+    }
+  },
+  {
+    "level": 86,
+    "seed": 860001,
+    "columns": 5,
+    "foundations": 5,
+    "cards": 33,
+    "stock": 14,
+    "budget": 59,
+    "forced": 5,
+    "peak": 1,
+    "slack": 10,
+    "moves": 49,
+    "alternate": {
+      "step": 0,
+      "tested": 1,
+      "forced": 9,
+      "peak": 1,
+      "slack": 9,
+      "moves": 50
+    }
+  },
+  {
+    "level": 87,
+    "seed": 870001,
+    "columns": 4,
+    "foundations": 5,
+    "cards": 33,
+    "stock": 15,
+    "budget": 60,
+    "forced": 0,
+    "peak": 0,
+    "slack": 12,
+    "moves": 48,
+    "alternate": {
+      "step": 0,
+      "tested": 1,
+      "forced": 0,
+      "peak": 0,
+      "slack": 11,
+      "moves": 49
+    }
+  }
+]

@@ -18,6 +18,8 @@ import { content7Deals } from './campaign-v7';
 import { content8Dealer, content8Late, content8Wave } from './campaign-v8-dealer';
 import { content8Slice } from './campaign-v8-preview';
 import { content8DirectorDeals, isC8DirectorVariant, otherC8Layout, selectC8Deal } from './campaign-v8-director';
+import { beyond80Deals } from './campaign-v8-beyond';
+import { BEYOND80_PREVIEW } from '../domain/progression';
 import { CONTENT8_PREVIEW } from '../domain/types';
 import type { Attempt, Board, BoardCommand, Deal, Save } from '../domain/types';
 
@@ -48,10 +50,10 @@ const variants = new Map([
   return [deal.campaignLevel, { deal, ids: new Set([base.id, deal.id]) }] as const;
 }));
 export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
-  ? content8Campaign.map(deal => specialByLevel.get(deal.campaignLevel) ?? deal)
+  ? [...content8Campaign.map(deal => specialByLevel.get(deal.campaignLevel) ?? deal), ...(BEYOND80_PREVIEW ? beyond80Deals : [])]
   : content7Deals;
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
-  ...content8Campaign, ...content8DirectorDeals, ...content8Special, ...content8BonusDeals,
+  ...content8Campaign, ...beyond80Deals, ...content8DirectorDeals, ...content8Special, ...content8BonusDeals,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {

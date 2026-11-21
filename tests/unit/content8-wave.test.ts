@@ -122,8 +122,8 @@ it('uses the new wave on fresh C8 starts and retains active and parked archived 
   const { campaignId } = await import('../../src/domain/progression');
   const { decodeSave } = await import('../../src/platform/storage');
   for (const deal of content8) expect(findDeal(deal.id)).toEqual(deal);
-  expect(campaignDeals.map(deal => deal.campaignLevel)).toEqual(Array.from({ length: 80 }, (_, index) => index + 1));
-  expect(new Set(campaignDeals.map(deal => deal.id)).size).toBe(80);
+  expect(campaignDeals.slice(0, 80).map(deal => deal.campaignLevel)).toEqual(Array.from({ length: 80 }, (_, index) => index + 1));
+  expect(new Set(campaignDeals.map(deal => deal.id)).size).toBe(campaignDeals.length);
   const archive = findDeal('campaign-c7-080')!;
   const wave = campaignDeals[79];
   const old = dispatch(freshSave(archive, 'old-c8-fallback'), archive.winningPath[0], archive).next;

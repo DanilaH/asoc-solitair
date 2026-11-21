@@ -306,6 +306,7 @@ for (const level of [26, 31, 80]) test(`level ${level} accepts a touch move thro
 });
 
 test('the final C8 move records level 80 and opens the completed campaign', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_BEYOND80 === '1', 'The post-80 preview has a dedicated continuation test.');
   const deal = content8Late[48], save = freshSave(deal, 'core3-final-move');
   const lastAction = deal.winningPath.at(-1)!;
   for (const action of deal.winningPath.slice(0, -1)) {
@@ -1244,4 +1245,26 @@ test('daily task preview records a real draw and lets the player claim once afte
   await link.tap();
   await expect(task.locator('button')).toHaveText('Получено');
   expect((await read(page)).profile.coins).toBe(save.profile.coins + 10);
+});
+
+test('beyond campaign preview continues from a real level 80 win into a saved new level at 320px', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_BEYOND80 !== '1', 'Requires the post-80 preview.');
+  const last = content8Late.at(-1)!;
+  let save = freshSave(last, 'p33-level80-boundary');
+  for (const move of last.winningPath.slice(0, -1)) save = dispatch(save, move, last).next;
+  await loadWaveFixture(page, save, 79);
+  await openGame(page, last);
+  await touch(page, last, last.winningPath.at(-1)!);
+  await expect(page.locator('#result')).toHaveAttribute('data-won', 'true');
+  await expect(page.locator('#next-level')).toContainText('81');
+  await page.locator('#next-level').tap();
+  if (await page.locator('#difficulty-play').isVisible()) await page.locator('#difficulty-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', 'campaign-c8-beyond-81-r1');
+  const issued = await read(page);
+  expect(issued.attempt.board.movesLeft).toBe(53);
+  expect(issued.platform?.completedCampaign).toContain(campaignId(80));
+  await page.reload();
+  if (await page.locator('#home-play').isVisible()) await page.locator('#home-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', 'campaign-c8-beyond-81-r1');
+  expect((await read(page)).attempt).toEqual(issued.attempt);
 });

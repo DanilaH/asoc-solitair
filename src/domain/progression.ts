@@ -1,5 +1,7 @@
-import type { Deal, Save } from './types';
-export const CAMPAIGN_LENGTH = 80;
+import beyondBank from '../content/campaign-v8-beyond-bank.json' with { type: 'json' };
+import { CONTENT8_PREVIEW, type Deal, type Save } from './types';
+export const BEYOND80_PREVIEW = CONTENT8_PREVIEW && import.meta.env?.VITE_CONTENT8_BEYOND80 === '1';
+export const CAMPAIGN_LENGTH = 80 + (BEYOND80_PREVIEW ? beyondBank.length : 0);
 export const HELPER_UNLOCK = { hint: 3, undo: 4, joker: 8 } as const;
 export const campaignId = (level: number) => `campaign-${String(level).padStart(3, '0')}`;
 export function completedLevels(save: Save): number {

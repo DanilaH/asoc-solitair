@@ -1,0 +1,558 @@
+[
+  {
+    "id": "campaign-c8-beyond-81-r1",
+    "version": 1,
+    "title": "Мастерская света",
+    "campaignLevel": 81,
+    "initial": {
+      "tableau": [
+        [
+          "ru81-1_4",
+          "ru81-2",
+          "ru81-2_5",
+          "ru81-3",
+          "ru81-3_3",
+          "ru81-6",
+          "ru81-6_1"
+        ],
+        [
+          "ru81-1_5",
+          "ru81-2_1",
+          "ru81-2_2",
+          "ru81-3_1",
+          "ru81-3_4",
+          "ru81-5_3",
+          "ru81-6_2",
+          "ru81-6_4"
+        ],
+        [
+          "ru81-2_3",
+          "ru81-4_1",
+          "ru81-4_2",
+          "ru81-4_3",
+          "ru81-4_4",
+          "ru81-5",
+          "ru81-5_1",
+          "ru81-5_2"
+        ]
+      ],
+      "stock": [
+        "ru81-3_2",
+        "ru81-6_3",
+        "ru81-5_4",
+        "ru81-4",
+        "ru81-1_1",
+        "ru81-1_3",
+        "ru81-2_4",
+        "ru81-1",
+        "ru81-1_2"
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "waste": [],
+      "faceUp": [
+        "ru81-6_1",
+        "ru81-6_4",
+        "ru81-5_2"
+      ],
+      "collected": [],
+      "rulesVersion": 3,
+      "movesLeft": 53,
+      "phase": "playing"
+    },
+    "difficultyTier": "normal",
+    "editorialStatus": "ru-original-pilot",
+    "tags": [
+      "content8-beyond80"
+    ],
+    "winningPath": "t0>t1 t0>f0 t1>f0 t1>f0 d d w0>f0 d d w0>f0 t1>t2 t0>t1 t0>f1 t1>f1 t1>f1 t0>t1 t0>f2 t1>f2 t1>f2 w0>t2 w0>f1 d d d w0>f2 d w0>f1 t0>f1 t1>f1 w0>f1 w0>f1 d w0>f1 t2>t0 t2>t0 t2>f1 t0>f1 t2>f0 t2>f0 t2>f0 t2>f0 t2>f2",
+    "recoveryPaths": [
+      "t1>t0 t0>t1 t0>f0 t1>f0 d d w0>f0 d d w0>f0 t1>t2 t0>t1 t0>f1 t1>f1 t1>f1 t0>t1 t0>f2 t1>f2 t1>f2 w0>t2 w0>f1 d d d w0>f2 d w0>f1 t0>f1 t1>f1 w0>f1 w0>f1 d w0>f1 t2>t0 t2>t0 t2>f1 t0>f1 t2>f0 t2>f0 t2>f0 t2>f0 t2>f2"
+    ]
+  },
+  {
+    "id": "campaign-c8-beyond-82-r1",
+    "version": 1,
+    "title": "Навигация у воды",
+    "campaignLevel": 82,
+    "initial": {
+      "tableau": [
+        [
+          "ru82-1",
+          "ru82-1_2",
+          "ru82-2_4",
+          "ru82-3",
+          "ru82-5_1"
+        ],
+        [
+          "ru82-2_2",
+          "ru82-3_1",
+          "ru82-5",
+          "ru82-4",
+          "ru82-5_3"
+        ],
+        [
+          "ru82-2_5",
+          "ru82-3_3",
+          "ru82-4_1",
+          "ru82-4_5",
+          "ru82-6_4"
+        ],
+        [
+          "ru82-2",
+          "ru82-2_3",
+          "ru82-5_2",
+          "ru82-5_4",
+          "ru82-6",
+          "ru82-6_2"
+        ]
+      ],
+      "stock": [
+        "ru82-4_3",
+        "ru82-3_4",
+        "ru82-4_2",
+        "ru82-4_4",
+        "ru82-3_2",
+        "ru82-6_3",
+        "ru82-6_1",
+        "ru82-2_1",
+        "ru82-1_5",
+        "ru82-1_1",
+        "ru82-1_3",
+        "ru82-1_4"
+      ],
+      "foundations": [
+        [],
+        [],
+        []
+      ],
+      "waste": [],
+      "faceUp": [
+        "ru82-5_1",
+        "ru82-5_3",
+        "ru82-6_4",
+        "ru82-6_2"
+      ],
+      "collected": [],
+      "rulesVersion": 3,
+      "movesLeft": 58,
+      "phase": "playing"
+    },
+    "difficultyTier": "normal",
+    "editorialStatus": "ru-original-pilot",
+    "tags": [
+      "content8-beyond80"
+    ],
+    "winningPath": "t1>t0 t1>f0 t1>f1 t0>f1 t0>f2 t1>f2 d w0>f0 d w0>f2 d w0>f0 d w0>f0 d w0>f2 t2>t3 t2>f0 t2>f0 t2>f2 t1>t0 t3>t1 t3>f0 t1>f0 t3>f1 t3>f1 d w0>f0 d w0>f0 t3>t0 t3>f0 t0>f0 t2>f0 d w0>f0 t0>t1 t0>f0 t1>f0 d w0>f0 d w0>f0 d w0>f0 d w0>f0",
+    "recoveryPaths": [
+      "t0>t1 t0>f0 t3>t2 t3>f1 t2>f1 t1>t3 t1>f2 t2>f2 t2>f2 t2>f0 d w0>f2 d w0>f0 d w0>f2 d w0>f2 t1>f2 t3>f2 t1>f0 t3>f2 d w0>f0 d w0>f1 d w0>f1 t3>t0 t3>f0 t0>f0 t1>f0 t2>f0 d w0>f0 t0>t1 t0>f0 t1>f0 d w0>f0 d w0>f0 d w0>f0 d w0>f0"
+    ]
+  },
+  {
+    "id": "campaign-c8-beyond-83-r1",
+    "version": 1,
+    "title": "В печатной мастерской",
+    "campaignLevel": 83,
+    "initial": {
+      "tableau": [
+        [
+          "ru83-1_2",
+          "ru83-2_1",
+          "ru83-4_1",
+          "ru83-4_3",
+          "ru83-6_1"
+        ],
+        [
+          "ru83-1_1",
+          "ru83-1_4",
+          "ru83-3_2",
+          "ru83-3_4",
+          "ru83-6_3"
+        ],
+        [
+          "ru83-1_3",
+          "ru83-2",
+          "ru83-3",
+          "ru83-4",
+          "ru83-5_5"
+        ],
+        [
+          "ru83-2_3",
+          "ru83-3_1",
+          "ru83-4_2",
+          "ru83-5_4",
+          "ru83-6_2"
+        ]
+      ],
+      "stock": [
+        "ru83-6",
+        "ru83-6_4",
+        "ru83-5_1",
+        "ru83-4_4",
+        "ru83-5_2",
+        "ru83-5",
+        "ru83-3_5",
+        "ru83-3_3",
+        "ru83-2_2",
+        "ru83-5_3",
+        "ru83-2_4",
+        "ru83-1",
+        "ru83-1_5"
+      ],
+      "foundations": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "waste": [],
+      "faceUp": [
+        "ru83-6_1",
+        "ru83-6_3",
+        "ru83-5_5",
+        "ru83-6_2"
+      ],
+      "collected": [],
+      "rulesVersion": 3,
+      "movesLeft": 57,
+      "phase": "playing"
+    },
+    "difficultyTier": "normal",
+    "editorialStatus": "ru-original-pilot",
+    "tags": [
+      "content8-beyond80"
+    ],
+    "winningPath": "d w0>f0 t0>f0 t1>f0 t3>f0 d w0>f0 t2>t3 t2>f0 t0>f0 t0>f0 t2>f1 t1>f1 t1>f1 t2>f2 t0>f2 d d w0>f0 d d w0>f3 t3>f3 t3>f0 t3>f1 t3>f2 w0>f3 w0>f3 d w0>f1 d w0>f1 d w0>f2 d w0>f3 d w0>f2 d w0>f0 t0>f0 t2>f0 t1>f0 t1>f0 d w0>f0",
+    "recoveryPaths": [
+      "d t0>t1 w0>f0 t1>f0 t3>f0 d w0>f0 t2>t3 t2>f0 t0>f0 t0>f0 t2>f1 t1>f1 t1>f1 t2>f2 t0>f2 d d w0>f0 d d w0>f3 t3>f3 t3>f0 t3>f1 t3>f2 w0>f3 w0>f3 d w0>f1 d w0>f1 d w0>f2 d w0>f3 d w0>f2 d w0>f0 t0>f0 t2>f0 t1>f0 t1>f0 d w0>f0"
+    ]
+  },
+  {
+    "id": "campaign-c8-beyond-84-r1",
+    "version": 1,
+    "title": "Смотрим на небо",
+    "campaignLevel": 84,
+    "initial": {
+      "tableau": [
+        [
+          "ru84-3_3",
+          "ru84-4_3",
+          "ru84-6_4"
+        ],
+        [
+          "ru84-1_3",
+          "ru84-2",
+          "ru84-2_4",
+          "ru84-4_1"
+        ],
+        [
+          "ru84-5",
+          "ru84-5_3",
+          "ru84-5_5",
+          "ru84-6"
+        ],
+        [
+          "ru84-4_4",
+          "ru84-5_4",
+          "ru84-6_2",
+          "ru84-6_3"
+        ],
+        [
+          "ru84-1_2",
+          "ru84-3_2",
+          "ru84-5_2",
+          "ru84-6_1"
+        ]
+      ],
+      "stock": [
+        "ru84-2_2",
+        "ru84-2_3",
+        "ru84-4",
+        "ru84-2_1",
+        "ru84-1",
+        "ru84-3",
+        "ru84-3_1",
+        "ru84-4_2",
+        "ru84-1_4",
+        "ru84-5_1",
+        "ru84-1_5",
+        "ru84-1_1",
+        "ru84-3_5",
+        "ru84-3_4",
+        "ru84-1_6"
+      ],
+      "foundations": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "waste": [],
+      "faceUp": [
+        "ru84-6_4",
+        "ru84-4_1",
+        "ru84-6",
+        "ru84-6_3",
+        "ru84-6_1"
+      ],
+      "collected": [],
+      "rulesVersion": 3,
+      "movesLeft": 59,
+      "phase": "playing"
+    },
+    "difficultyTier": "hard",
+    "editorialStatus": "ru-original-pilot",
+    "tags": [
+      "content8-beyond80"
+    ],
+    "winningPath": "t2>f0 t0>f0 t3>f0 t3>f0 t4>f0 t2>t4 t2>t3 t2>f0 t3>f0 t4>f0 d d d w0>f1 t3>f1 t0>f1 t1>f1 d d w0>f2 d w0>f3 t0>f3 t4>f3 t4>f2 d w0>f3 d w0>f1 d w0>f2 d w0>f0 d w0>f2 d w0>f2 d w0>f3 d w0>f3 d w0>f2 t1>t0 t1>f0 t0>f0 t1>f2 w0>f0 w0>f0 w0>f0",
+    "recoveryPaths": [
+      "t0>t3 t2>f0 t3>f0 t3>f0 t4>f0 t2>t3 t2>t3 t2>f0 t3>f0 t4>f0 d d d w0>f1 t3>f1 t0>f1 t1>f1 d d w0>f2 d w0>f3 t0>f3 t4>f3 t4>f2 d w0>f3 d w0>f1 d w0>f2 d w0>f0 d w0>f2 d w0>f2 d w0>f3 d w0>f3 d w0>f2 t1>t0 t1>f0 t0>f0 t1>f2 w0>f0 w0>f0 w0>f0"
+    ]
+  },
+  {
+    "id": "campaign-c8-beyond-85-r1",
+    "version": 1,
+    "title": "Ритм и сцена",
+    "campaignLevel": 85,
+    "initial": {
+      "tableau": [
+        [
+          "ru85-3_4",
+          "ru85-4",
+          "ru85-4_3",
+          "ru85-6_2",
+          "ru85-6_3"
+        ],
+        [
+          "ru85-1_4",
+          "ru85-3_1",
+          "ru85-5",
+          "ru85-5_1",
+          "ru85-6_4"
+        ],
+        [
+          "ru85-1_1",
+          "ru85-1_3",
+          "ru85-2_4",
+          "ru85-4_2",
+          "ru85-5_4",
+          "ru85-6"
+        ],
+        [
+          "ru85-1_5",
+          "ru85-2_2",
+          "ru85-3_2",
+          "ru85-3_3",
+          "ru85-4_1",
+          "ru85-4_4"
+        ]
+      ],
+      "stock": [
+        "ru85-6_1",
+        "ru85-4_5",
+        "ru85-5_2",
+        "ru85-3",
+        "ru85-5_5",
+        "ru85-1_2",
+        "ru85-5_3",
+        "ru85-2_1",
+        "ru85-1",
+        "ru85-2",
+        "ru85-2_3"
+      ],
+      "foundations": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "waste": [],
+      "faceUp": [
+        "ru85-6_3",
+        "ru85-6_4",
+        "ru85-6",
+        "ru85-4_4"
+      ],
+      "collected": [],
+      "rulesVersion": 3,
+      "movesLeft": 55,
+      "phase": "playing"
+    },
+    "difficultyTier": "normal",
+    "editorialStatus": "ru-original-pilot",
+    "tags": [
+      "content8-beyond80"
+    ],
+    "winningPath": "t2>f0 t0>f0 t0>f0 t1>f0 d w0>f0 t0>t3 t0>f0 t3>f0 t3>f0 d w0>f0 t1>t2 t1>f1 t2>f1 t2>f0 d w0>f1 d w0>f0 t0>f0 t1>f0 t3>f0 t3>f0 d w0>f1 d d w0>f1 d d w0>f0 t1>f0 d w0>f1 t2>f1 t2>f0 t2>f0 t3>f1 t3>f0 w0>f1 w0>f0 d w0>f1",
+    "recoveryPaths": [
+      "t0>t1 t2>f0 t1>f0 t0>f0 d w0>f0 t1>t2 t1>f0 t2>f0 t0>t2 t0>f1 t2>f1 t3>f1 t3>f1 d w0>f1 d w0>f0 d w0>f1 t0>f1 t1>f1 t3>f1 t3>f1 d w0>f0 d d w0>f0 d d w0>f0 t1>f0 d w0>f1 t2>f1 t2>f0 t2>f0 t3>f1 t3>f0 w0>f1 w0>f0 d w0>f1"
+    ]
+  },
+  {
+    "id": "campaign-c8-beyond-86-r1",
+    "version": 1,
+    "title": "Тропа через перевал",
+    "campaignLevel": 86,
+    "initial": {
+      "tableau": [
+        [
+          "ru86-3_3",
+          "ru86-4_4",
+          "ru86-5_3"
+        ],
+        [
+          "ru86-3_1",
+          "ru86-4_1",
+          "ru86-5",
+          "ru86-6_2"
+        ],
+        [
+          "ru86-3_2",
+          "ru86-5_1",
+          "ru86-6",
+          "ru86-6_5"
+        ],
+        [
+          "ru86-1_5",
+          "ru86-2_3",
+          "ru86-5_2",
+          "ru86-5_4"
+        ],
+        [
+          "ru86-1",
+          "ru86-1_1",
+          "ru86-3",
+          "ru86-3_4"
+        ]
+      ],
+      "stock": [
+        "ru86-6_1",
+        "ru86-4_3",
+        "ru86-6_3",
+        "ru86-4_2",
+        "ru86-4",
+        "ru86-6_4",
+        "ru86-2",
+        "ru86-2_4",
+        "ru86-2_5",
+        "ru86-1_2",
+        "ru86-2_1",
+        "ru86-2_2",
+        "ru86-1_4",
+        "ru86-1_3"
+      ],
+      "foundations": [
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "waste": [],
+      "faceUp": [
+        "ru86-5_3",
+        "ru86-6_2",
+        "ru86-6_5",
+        "ru86-5_4",
+        "ru86-3_4"
+      ],
+      "collected": [],
+      "rulesVersion": 3,
+      "movesLeft": 59,
+      "phase": "playing"
+    },
+    "difficultyTier": "hard",
+    "editorialStatus": "ru-original-pilot",
+    "tags": [
+      "content8-beyond80"
+    ],
+    "winningPath": "t1>t2 t1>f0 t0>f0 t3>f0 t3>f0 t1>t0 t4>t1 t4>f1 t1>f1 t0>t1 t0>f1 t2>t0 t2>f2 t0>f2 t2>f0 t2>f1 d w0>f2 d d w0>f2 d d w0>f0 t1>f0 w0>f0 w0>f0 d w0>f2 d w0>f0 t3>f0 d w0>f0 d w0>f0 t4>t3 t4>f1 t3>f1 d w0>f1 d w0>f0 d w0>f0 d w0>f1 d w0>f1",
+    "recoveryPaths": [
+      "t0>t3 t1>t2 t1>f0 t3>f0 t3>f0 t1>t0 t4>t1 t4>f1 t1>f1 t4>t1 t4>f2 t1>f2 t3>t1 t3>f2 t2>t3 t2>f3 t3>f3 t2>f0 t2>f1 d w0>f3 d d w0>f3 d d w0>f0 t0>f0 t0>f1 w0>f0 w0>f0 d w0>f3 d w0>f0 t1>f0 d w0>f0 d w0>f0 d w0>f2 d w0>f0 d w0>f0 d w0>f2 d w0>f2"
+    ]
+  },
+  {
+    "id": "campaign-c8-beyond-87-r1",
+    "version": 1,
+    "title": "Лаборатория запахов",
+    "campaignLevel": 87,
+    "initial": {
+      "tableau": [
+        [
+          "ru87-1_3",
+          "ru87-2_1",
+          "ru87-2_2",
+          "ru87-6_2"
+        ],
+        [
+          "ru87-2",
+          "ru87-3_2",
+          "ru87-5",
+          "ru87-5_2"
+        ],
+        [
+          "ru87-1",
+          "ru87-1_2",
+          "ru87-1_5",
+          "ru87-2_3",
+          "ru87-5_1"
+        ],
+        [
+          "ru87-1_4",
+          "ru87-4_3",
+          "ru87-4_4",
+          "ru87-6",
+          "ru87-6_3"
+        ]
+      ],
+      "stock": [
+        "ru87-5_4",
+        "ru87-5_3",
+        "ru87-6_5",
+        "ru87-5_5",
+        "ru87-6_1",
+        "ru87-6_4",
+        "ru87-1_1",
+        "ru87-4_1",
+        "ru87-3",
+        "ru87-4",
+        "ru87-2_4",
+        "ru87-4_2",
+        "ru87-3_1",
+        "ru87-3_3",
+        "ru87-3_4"
+      ],
+      "foundations": [
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "waste": [],
+      "faceUp": [
+        "ru87-6_2",
+        "ru87-5_2",
+        "ru87-5_1",
+        "ru87-6_3"
+      ],
+      "collected": [],
+      "rulesVersion": 3,
+      "movesLeft": 60,
+      "phase": "playing"
+    },
+    "difficultyTier": "normal",
+    "editorialStatus": "ru-original-pilot",
+    "tags": [
+      "content8-beyond80"
+    ],
+    "winningPath": "t1>t2 t1>f0 t2>f0 d w0>f0 d w0>f0 t3>t0 t3>f1 t0>f1 d w0>f1 d w0>f0 d w0>f1 d w0>f1 d d d w0>f0 t1>f0 t1>f1 t0>f1 t0>f1 t2>f1 d w0>f2 t3>f2 t3>f2 w0>f2 d w0>f1 d w0>f2 d w0>f0 d w0>f0 d w0>f0 t2>t3 t2>t0 t2>f0 t0>f0 t3>f0 w0>f0",
+    "recoveryPaths": [
+      "t0>t3 t1>t2 t1>f0 t2>f0 d w0>f0 d w0>f0 d d w0>f0 d d d d d w0>f0 t1>f0 t1>f1 t0>f1 t0>f1 t2>f1 d w0>f2 w0>f2 d w0>f1 d w0>f2 d w0>f0 d w0>f0 d w0>f0 t3>t1 t3>f0 t1>f0 t3>f2 t3>f2 w0>t0 w0>f0 w0>f0 w0>f0 t2>t0 t2>t3 t2>f0 t0>f0 t3>f0"
+    ]
+  }
+]

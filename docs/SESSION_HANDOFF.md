@@ -1,3 +1,7 @@
+# Content 8 · Q1b: independently replayed branch cost (research-only)
+
+[Q1b route-cost audit](qa/content-v8/Q1B_ROUTE_COST_2026-11-21.md) extends the Q1 80-level decision sampler with each replayed WIN route's actual action count vs its published witness suffix, exact move-budget settlement, original-position rejoin and separate UNKNOWN; a pure Node aggregator includes strict formulas/80-row contract and infrastructure tests. Runs only on matching research pull_request CI, uploads raw JSON evidence. **No measured Q1b cost distribution is claimed before hosted CI finishes; no gameplay rules/deals/saves/SDK changes.**
+
 # Content 8 · Q5 preserve divergent research and validate C8 preview CI
 
 [Q5 research reconciliation](qa/content-v8/Q5_RESEARCH_BRANCH_RECONCILIATION_2026-11-21.md) tracks #67/#69 diverged from #70/#71: five unique audit files preserved, historical CORE3 choice warnings kept separately from current full-campaign transfer wins, Q1 28/28 search-limit UNKNOWN verified in prior CI, and C8-specific browser/Android flags now enabled for audit/c8-* PR branches. **Research/CI-only; no game runtime change; new hosted build outcome remains pending.** Human physical Android and original-app trace remain separate acceptance gates.

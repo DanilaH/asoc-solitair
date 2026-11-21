@@ -2,9 +2,9 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/dd4a043b2b5a913d48a8dbd85d2fbaa58886682c/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "2e9a91890fbf5f1b3add67ff6a0fa2164c799227",
-  "sourceInventoryRef": "dd4a043b2b5a913d48a8dbd85d2fbaa58886682c",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/adb0657facebf8b5e3ed22369305ba509c988626/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "79a44a8b1c0ec98a6b6bde9b1fbd4071cad1af6d",
+  "sourceInventoryRef": "adb0657facebf8b5e3ed22369305ba509c988626",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "features": [
@@ -789,7 +789,7 @@
       "id": "azur-defeat-vs-no-valid-move",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "CORE-0 verifies last-move win and budget exhaustion in Rules 3. The separate stock-cycle reachability query explicitly ignores the budget, including exhausted positions.",
-      "nextAction": "Capture original Android callbacks for no-valid-move help versus defeat and playtest both states on our APK. Continuation proof from exhausted positions is CORE-5.",
+      "nextAction": "Native source P05 22.11 (kit PR #98): GameManager.CheckAvailableMoves after accepted DrawCardFromDeck/MoveCard invokes optional delegate with NOT victory AND MoveValidator.HasAnyValidMove FALSE AND MovesSystem.HasMovesLeft TRUE, separate from CheckDefeat budget loss. MoveValidator uses independent Joker useless filter with CountJokersOnBoard>1 bypass. Our C8 phase based solely on won/budget is PRODUCT_ADAPTED. Build source-shaped diagnostic, not premature lost/ad. Original +0x70 callback subscriber and Android remain UNKNOWN. Issue #123, docs/qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md.",
       "stage": "B1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "evidenceRef": "docs/qa/content-v8/CORE_0.md"
@@ -900,10 +900,10 @@
       "stage": "D2",
       "status": "ROADMAPPED",
       "currentImplementation": "C8 resolveHint uses independently verified winning continuation/solver, not the original AZUR five-stage first-success greedy MoveHintSystem; this is an intentional PRODUCT_ADAPTED policy.",
-      "nextAction": "P04 additional engineering after prior UX PR #91: isolated native-source-shaped greedy Hint diagnostic/negative truth-table for 5 classes and CheckColumnsToColumns filter (sourceHasHidden OR wouldUncoverHidden OR !targetEmpty), conditional CardType2 IsUselessJoker... with full predicate UNKNOWN, final CanMoveStack. Keep current solver-backed Hint unchanged; do not mark original Android parity. See issue #115 and source https://github.com/DanilaH/mini-games-kit/blob/a88b61a55e1bee1a745f281507ffdbb29897863/research/games/association-solitaire/2026-11-21-azur-shuffle-hint-native/HINT_COLUMN_FILTERS_2026-11-21.md.",
+      "nextAction": "P04 source native upgraded kit PR #98: exact MoveHintSystem Joker useless predicate (wouldUncoverHidden, alternative movable nonJoker, prior foundation) distinct from MoveValidator.HasAnyValidMove Joker predicate (CountJokersOnBoard>1 bypass, hidden previous/source, foundation). Native 5-stage hint class priority unchanged; keep current safe solver-backed Hint PRODUCT_ADAPTED, optional independently tested diagnostic and original Android P36 still needed. Issue #123 and docs/qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md.",
       "evidenceRef": "docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md"
     }
   ],
-  "auditRevision": "2026-11-21-azur-shuffle-native-and-greedy-hint-v15",
+  "auditRevision": "2026-11-22-azur-useful-joker-source-v16-115",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

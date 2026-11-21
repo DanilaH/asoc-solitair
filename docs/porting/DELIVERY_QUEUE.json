@@ -3,8 +3,8 @@
   "asOf": "2026-11-21",
   "sourcePin": {
     "repo": "DanilaH/asoc-solitair",
-    "sourceInventoryRef": "dd4a043b2b5a913d48a8dbd85d2fbaa58886682c",
-    "sourceInventoryBlob": "2e9a91890fbf5f1b3add67ff6a0fa2164c799227",
+    "sourceInventoryRef": "adb0657facebf8b5e3ed22369305ba509c988626",
+    "sourceInventoryBlob": "79a44a8b1c0ec98a6b6bde9b1fbd4071cad1af6d",
     "baselineContent8Head": "e092ba156eebb5ebc703d89e4e98bf657bbd6f14",
     "gameVersion": "0.20.3 Content8 preview",
     "runtimeKitCommit": "a9325265e87583a4872cf6a158e1e881a0d7508e"
@@ -126,7 +126,7 @@
         "azur-greedy-hint-order"
       ],
       "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
-      "acceptanceTarget": "Existing C1/D2 UX remains NEEDS_DEVICE; new 115th source ID needs offline native greedy Hint diagnostic/negative tests per issue #115, without changing solver-backed default",
+      "acceptanceTarget": "Existing D2/FTUE UX P6 pending; diagnostic distinct native Hitapps/ AZUR Hint 5-class and source Hint-specific Joker predicate, no replacing solver-safe player default. Issue #115 + source issue #123.",
       "deliverables": [
         "one scoped PR with actual changed files",
         "replayable tests, exact-head CI and device evidence class",
@@ -154,7 +154,7 @@
         "azur-tutorial-preset-deal"
       ],
       "spec": "docs/porting/specs/01_GENERATION_DIRECTOR.md",
-      "acceptanceTarget": "Separate source-modeled RNG/dealer, game immutable Deals and preset fixtures",
+      "acceptanceTarget": "Independent original-shaped Hitapps/AZUR dealer with verified saved immutable 80; supplemental native GameManager.CheckAvailableMoves useful-move callback and MoveValidator Joker distinct diagnostic remain SOURCE_GAP issue #123.",
       "deliverables": [
         "one scoped PR with actual changed files",
         "replayable tests, exact-head CI and device evidence class",

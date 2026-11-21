@@ -11,6 +11,8 @@
 
 **Current original-source upgrade 21.11, kit PR #96:** new 115th source system AZUR greedy Hint `azur-greedy-hint-order` → P04, and source native Shuffle/animation → P16. P16 existing free stock-only win-certified implementation deliberately differs from native closed tableau+Stock+Waste, Undo.Clear and Spend/refund. [New source/product contract](../qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md); [developer source parity issue #104](https://github.com/DanilaH/asoc-solitair/issues/104). Do not wait for user between packets or claim original Android was executed. Still 38 packets, now 115/115 source IDs.
 
+**22.11 source research #98, existing 115/115 IDs:** [AZUR source no-useful-move and two distinct Joker predicates](../qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md), [diagnostics follow-up #123](https://github.com/DanilaH/asoc-solitair/issues/123). P05 engineering dealer already verified but source no-useful-move callback remains an **independently implementable diagnostic**; P04 source-greedy Hint needs its own predicate and must preserve current winning-route default. No source Android/offer or automatic loss changes. Full 38 packets unaffected; new kit source v16 exact byte pin.
+
 ## 1. Исполнительный цикл — без просьб «продолжай» между пакетами
 
 1. Каждый рабочий заход читать `AGENTS.md`, эту очередь и `DELIVERY_QUEUE.json`, `DELIVERY_PROGRESS.md`, релевантный spec, `ADOPTION_LEDGER.json` и действительную ветку приложения. **Стартовать с P00**. После него брать **первый по номеру `QUEUED`/дорабатываемый, чьи code-dependencies закрыты**. Не ждать пользовательской команды между готовыми независимыми задачами.

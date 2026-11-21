@@ -48,8 +48,8 @@
 | P27 | NEEDS_DEVICE | [PR #118](https://github.com/DanilaH/asoc-solitair/pull/118) | [Оранжерея, альбом и жетоны](P27_PICTURE_GALLERY.md). Реальный финальный ход, фрагмент и сохранённая выдача проверены в браузере. |
 | P28 | NEEDS_DEVICE | [PR #119](https://github.com/DanilaH/asoc-solitair/pull/119) | [16 действий, 9 наград и недельный preview](P28_DAILY_TASKS.md). Добор и получение приза проверены через UI. |
 | P29 | BLOCKED_EXTERNAL | [PR #120](https://github.com/DanilaH/asoc-solitair/pull/120) | [Раздельные дневные модели и два источника пазла](P29_DAILY_REWARDS.md). Оригинальный Hitapps DailyPuzzle и действие Unico ждут записи. |
-| P30 | BLOCKED_EXTERNAL | [Ветка P30](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p30-streak-controls-20261121) | [Четыре отдельные модели серий](P30_STREAK_TRIALS.md). Сбросы и награды проверены офлайн, источники P36. |
-| P31 | QUEUED | — | Race/Lava/Lives/GoldRush/prewarm |
+| P30 | BLOCKED_EXTERNAL | [PR #121](https://github.com/DanilaH/asoc-solitair/pull/121) | [Четыре отдельные модели серий](P30_STREAK_TRIALS.md). Сбросы и награды проверены офлайн, источники P36. |
+| P31 | NEEDS_OWNER | [Ветка P31](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p31-liveops-controls-20261121) | [Пять независимых офлайн-моделей](P31_LIVEOPS_TRIALS.md). Признание оригинальных правил и активация остаются открытыми. |
 | P32 | QUEUED | — | Regions/Cascade/Digging/Wheel/Treasure |
 | P33 | QUEUED | — | Long campaign / original RU novelty |
 | P34 | QUEUED | — | Locale/art/count/language |

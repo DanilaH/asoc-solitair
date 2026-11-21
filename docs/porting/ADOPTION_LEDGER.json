@@ -245,14 +245,14 @@
     {
       "id": "hitapps-weekend-race",
       "status": "ROADMAPPED",
-      "currentImplementation": "No event competition",
+      "currentImplementation": "No event competition P31 tests this feature as an independent offline control. See docs/porting/P31_LIVEOPS_TRIALS.md.",
       "nextAction": "Design offline staged bot-race as distinct mode, with honest presentation and saves F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },
     {
       "id": "hitapps-lava-quest",
       "status": "ROADMAPPED",
-      "currentImplementation": "No Lava Quest first-attempt race",
+      "currentImplementation": "No Lava Quest first-attempt race P31 tests this feature as an independent offline control. See docs/porting/P31_LIVEOPS_TRIALS.md.",
       "nextAction": "Specify first-attempt multi-win event and safe simulator presentation/rewards F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },
@@ -288,7 +288,7 @@
     {
       "id": "hitapps-lives",
       "status": "ROADMAPPED",
-      "currentImplementation": "No energy/lives",
+      "currentImplementation": "No energy/lives P31 tests this feature as an independent offline control. See docs/porting/P31_LIVEOPS_TRIALS.md.",
       "nextAction": "Determine effect on current unlimited offline play and clear rule+save variation F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },
@@ -333,7 +333,7 @@
     {
       "id": "hitapps-gold-rush-event",
       "status": "ROADMAPPED",
-      "currentImplementation": "No gold-event lifecycle",
+      "currentImplementation": "No gold-event lifecycle P31 tests this feature as an independent offline control. See docs/porting/P31_LIVEOPS_TRIALS.md.",
       "nextAction": "Design prize progress and first-attempt bonus independent from GoldenCards insertion; ensure event grant once F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },
@@ -402,7 +402,7 @@
     {
       "id": "hitapps-meta-prewarm",
       "status": "ROADMAPPED",
-      "currentImplementation": "No separate event UI prewarm/unlock service",
+      "currentImplementation": "No separate event UI prewarm/unlock service P31 tests this feature as an independent offline control. See docs/porting/P31_LIVEOPS_TRIALS.md.",
       "nextAction": "Add optional event unlock level and preload timing in meta scheduler after first event exists F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2"
     },

@@ -33,6 +33,7 @@ jobs:
         run: |
           npm run qa:campaign-decisions
           npm run qa:decision-cost
+          npm run qa:decision-deep
       - run: npm run content:azur-preset
       - run: npm run qa:content8
       - run: npm run qa:content7
@@ -59,6 +60,7 @@ jobs:
           path: |
             .authoring/content8/campaign-decisions.json
             .authoring/content8/campaign-decision-cost.json
+            .authoring/content8/campaign-unknown-transfer-deep.json
           retention-days: 7
       - uses: actions/upload-artifact@v4
         if: always()

@@ -56,7 +56,7 @@
     {
       "id": "hitapps-equality-paywall",
       "status": "IN_PROGRESS",
-      "currentImplementation": "P07 records separate Shuffle/Final digests and actual policy paths. It rejects identical paths, early loss, UNKNOWN and WIN. CORE-5 +10 still verifies the actual exhausted board. See docs/porting/P07_EQUALITY_PIPELINE.md.",
+      "currentImplementation": "P07 verifies actual late-loss paths and separate Shuffle/Final digests. P08 verifies disabled-by-default issuance and counters in the same SaveStore write, with a separate product winning route. CORE-5 +10 still verifies the actual exhausted board. See docs/porting/P08_OPTIONAL_ISSUANCE.md.",
       "nextAction": "Verify three-stack initial placement, author/persist immutable Equality variants, and measure the distinct selector and continuation on device. Offline Equality vs issued runtime is separately classified in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; no accidental product activation. B3 source/product trace: existing 80%-late-bot-failure offline selector is NOT wired to campaign issuance; before use require immutable prevalidated special Deal, independent bot policies and separate actual-board +10 fair-recovery gate. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
       "stage": "B3",

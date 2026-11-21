@@ -1,3 +1,5 @@
+**Content 8 · D1 special cards and helpers (21.11):** [all 14 D1 mechanisms audited against actual current Rules3/C8 implementation, source phases, unknown native actions, helper/Undo boundaries and staged adoption](qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md). Four implemented-unverified; seven roadmapped; three evidence-gap; none permanently excluded.
+
 **Content 8 · Q1c finite-cost reconciliation (21.11):** [parallel Q1b #74 and #75 methods retained; finite-budget 317 winning transfers, 13 of 18 deeper UNKNOWN resolved](qa/content-v8/Q1C_FINITE_COST_DEEP_RECONCILIATION_2026-11-21.md). Prior source CI PASS; combined-head hosted evidence separately required.
 
 **Content 8 · B3 Equality/Paywall (21.11):** [native Hitapps four eligibility gates, Equality late bot failures, three-distinct-stack placement → actual missing C8 issuance, immutable Deal/receipt acceptance contract](qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md). **Offline model only; no live special Paywall deals issued.**

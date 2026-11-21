@@ -1,3 +1,7 @@
+# Content 8 · D1 special cards and helpers source→product audit
+
+[D1 14-system evidence and implementation dependency matrix](qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md) separates native Hitapps Shuffle vs Final appliers, original Frozen/Bound/Scissors/Puzzle unknown card effects, GoldenCards vs event reward, separate Hitapps/Unico Magnet and AZUR-created random Joker with original UndoSystem.Clear. Current Rules3 only implements adapted Ordered/Keys and AZUR-style extra slots (4/14 implemented-unverified). Seven D1 roadmapped and three evidence-gap remain, with no source ID excluded. **No game runtime/Deal/SDK/SaveStore edits; no original APK executed, physical-device test or new human acceptance.**
+
 # Content 8 · Q1c reconcile parallel cost and deep-transfer research
 
 [Q1c finite-budget reconciliation](qa/content-v8/Q1C_FINITE_COST_DEEP_RECONCILIATION_2026-11-21.md) preserves all four unique QA files from parallel PR #74 without replacing the Q1b #75 analyzer. Two successful earlier source runs differ only in denominator (8 unlimited tutorial winning transfers must not be counted as finite-budget cost). #74 targeted 18 original UNKNOWN transfers: 13 certified new WIN, 5 bounded UNKNOWN. Source-target tests/CI now compare both and preserve raw artifacts on this research branch; combined-head acceptance pending. This is **not** human acceptance, game rule change or original source runtime parity.

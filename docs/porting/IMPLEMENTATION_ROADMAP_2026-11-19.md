@@ -106,6 +106,9 @@ Finish C8 16–80, 5-column peaks, semantic repetition control, daily quality/va
 
 ### D1. Специальные игровые правила (14)
 
+**Research status (21.11.2026):** [independent D1 source→product report](../qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md) maps **all 14 existing D1 source IDs**: 4 implemented-unverified, 7 roadmapped, 3 evidence-gap, 0 accepted. Hitapps Shuffle gates/flags are not player-visible card rules; Frozen/Bound/Scissors need exact action-state research. GoldenCards and Magnet/Hammer are **separate Final-phase** systems; original AZUR random-created Joker and existing manual C8 buffer-Joker are different algorithms. This evidence checkpoint changes no runtime or feature inclusion decision.
+
+
 Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle each with standalone rule + solver + teaching.
 
 | Source feature ID | Actual status | Next implementation or evidence action |

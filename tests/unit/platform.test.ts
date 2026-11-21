@@ -2,8 +2,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GameplayActivityCoordinator, type StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { introDeal as deal } from '../../src/content/intro';
 import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
+import { dailyForDay } from '../../src/content/daily';
+import { CONTENT8_PREVIEW } from '../../src/domain/types';
 import { recoverable, loadLoss, winningRescue } from '../fixtures/content8-loss';
-import { dispatch, freshSave } from '../../src/domain/engine';
+import { dispatch, freshAttempt, freshSave } from '../../src/domain/engine';
 import { applyReceipt, parseReceipt, purchaseHelper, useContinue, platformState, interstitialEligible, markCampaignWin, type EarnedReceipt } from '../../src/domain/services';
 import { SaveStore, SAVE_KEY, decodeSave } from '../../src/platform/storage';
 import { createAds, type AdsBridge, type AdEvent } from '../../src/platform/ads';
@@ -93,6 +95,37 @@ describe('coordinated save writer and earned effects', () => {
     applyReceipt(save, { ...r, id: 'late', attempt: 'abandoned-attempt' }); expect(save.attempt.board.movesLeft).toBe(32);
     save.attempt.board.movesLeft = 0; save.attempt.board.phase = 'exhausted';
     expect(useContinue(save)).toBe(true); expect(useContinue(save)).toBe(false); expect(save.attempt.board.movesLeft).toBe(10);
+  });
+  it.skipIf(!CONTENT8_PREVIEW)('stores a late campaign continuation once while daily is active and re-proves it after returning', async () => {
+    const campaign = loadLoss(recoverable, 'parked-loss'), daily = dailyForDay('2026-11-21');
+    const current = freshSave(daily, 'active-daily');
+    current.parked = { campaign: campaign.attempt };
+    const resolve = (id: string) => [recoverable, daily].find(value => value.id === id);
+    const memoryStore = memory();
+    const store = new SaveStore(memoryStore.storage, resolve, () => current);
+    await store.open();
+    const earned = { ...receipt, placement: 'continue', attempt: campaign.attempt.id, dealId: recoverable.id } as const;
+    const proof = { attemptId: earned.attempt, deal: recoverable, path: winningRescue };
+
+    await store.mutate(next => applyReceipt(next, earned, { continueProof: proof }));
+    await store.mutate(next => applyReceipt(next, { ...earned, id: 'duplicate-native-delivery' }, { continueProof: proof }));
+    expect(store.state.attempt).toEqual(freshAttempt(daily, 'active-daily'));
+    expect(store.state.parked?.campaign).toEqual(campaign.attempt);
+    expect(store.state.platform?.continueCredits).toBe(1);
+
+    const restored = new SaveStore(memoryStore.storage, resolve, () => current);
+    await restored.open();
+    expect(restored.state.platform?.continueCredits).toBe(1);
+    await restored.mutate(next => {
+      const parked = next.parked!.campaign!;
+      next.parked = { daily: next.attempt };
+      next.attempt = parked;
+    });
+    expect(await restored.mutate(next => useContinue(next, { ...proof, path: proof.path.slice(0, -1) }))).toBe(false);
+    expect(await restored.mutate(next => useContinue(next, proof))).toBe(true);
+    expect(restored.state.attempt.board).toMatchObject({ phase: 'playing', movesLeft: 10 });
+    expect(restored.state.platform?.continueCredits).toBe(0);
+    expect(await restored.mutate(next => applyReceipt(next, earned))).toBe('already-applied');
   });
   it('protects tutorials, daily, first-launch grace, rewarded cooldown and clock rollback', () => {
     const save = fresh();

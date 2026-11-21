@@ -28,6 +28,11 @@ jobs:
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run check
       - run: npm run qa:rules
+      - name: Q1b quantify winning alternatives against witness and preserve UNKNOWN
+        if: startsWith(github.head_ref || github.ref_name, 'audit/c8-q1b-')
+        run: |
+          npm run qa:campaign-decisions
+          npm run qa:decision-cost
       - run: npm run content:azur-preset
       - run: npm run qa:content8
       - run: npm run qa:content7
@@ -47,6 +52,14 @@ jobs:
         run: |
           npm run build
           npx playwright test tests/browser/content8-core.spec.ts --output=test-results/content8-core
+      - uses: actions/upload-artifact@v4
+        if: always() && startsWith(github.head_ref || github.ref_name, 'audit/c8-q1b-')
+        with:
+          name: c8-q1b-evidence
+          path: |
+            .authoring/content8/campaign-decisions.json
+            .authoring/content8/campaign-decision-cost.json
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         if: always()
         with:

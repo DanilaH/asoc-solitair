@@ -37,8 +37,8 @@
 | P16 | NEEDS_DEVICE | [PR #103](https://github.com/DanilaH/asoc-solitair/pull/103), [CI 44935035936](https://github.com/DanilaH/asoc-solitair/actions/runs/44935035936) | [Проверяемое перемешивание и анимация](P16_PROOF_SHUFFLE.md). Физическое устройство и оригинальный алгоритм отсутствуют. |
 | P17 | BLOCKED_EXTERNAL | [PR #105](https://github.com/DanilaH/asoc-solitair/pull/105) | [Доказательства и отдельная офлайн-проба](P17_UNICO_MAGNET.md). Для точного переноса нужны оригинальная сборка или запись действия. |
 | P18 | NEEDS_DEVICE | [PR #106](https://github.com/DanilaH/asoc-solitair/pull/106) | [Матрица продолжения CORE-5](P18_CONTINUATION_ACCEPTANCE.md). Доказательство +10, поздний кредит при daily и 16 touch-проверок. Нужна запись настоящего SDK. |
-| P19 | NEEDS_OWNER | [Ветка P19](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p19-recovery-contract-20261121) | [Три офлайн-контракта](P19_RECOVERY_CONTRACTS.md). Параметры игровой выдачи и оригинальное поведение открыты. |
-| P20 | QUEUED | — | Result bonus/Definition/coins/themes |
+| P19 | NEEDS_OWNER | [PR #107](https://github.com/DanilaH/asoc-solitair/pull/107) | [Три офлайн-контракта](P19_RECOVERY_CONTRACTS.md). Параметры игровой выдачи и оригинальное поведение открыты. |
+| P20 | NEEDS_DEVICE | [Ветка P20](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p20-earned-reward-offers-20261121) | [Раздельные победные и магазинные офферы](P20_REWARD_OFFERS.md). 29 C8 unit и 10 touch; нативный earned ждёт телефона. |
 | P21 | QUEUED | — | AdsBreak/banner/ILRD/Coffee |
 | P22 | QUEUED | — | 41 item-family offline catalog |
 | P23 | QUEUED | — | IAP order/entitlement ledger |

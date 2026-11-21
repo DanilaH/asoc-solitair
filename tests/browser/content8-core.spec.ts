@@ -9,7 +9,7 @@ import { content8StarterDeal } from '../../src/content/campaign-v8-starter';
 import { content8ShuffleDeal } from '../../src/content/campaign-v8-shuffle';
 import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
-import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
+import { applyBoard, dispatch, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import { BALANCE } from '../../src/domain/balance';
 import type { EarnedReceipt } from '../../src/domain/services';
@@ -1014,4 +1014,114 @@ test('a reconciled alternate-deal save presents the committed board exactly once
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', alternate.id);
   expect((await read(page)).attempt).toEqual(committed.attempt);
   expect(committed.attempt.board).toEqual(alternate.initial);
+});
+
+test('reward offer preview keeps the normal victory and grants only a matching earned delta', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_REWARD_OFFERS !== '1', 'Requires the optional reward offer preview.');
+  await installNativeAdTestBridge(page);
+  let save = freshSave(recoverable, 'p20-last-play');
+  for (const move of recoverable.winningPath.slice(0, -1)) save = dispatch(save, move, recoverable).next;
+  await loadWaveFixture(page, save, 15);
+  await openGame(page, recoverable);
+  await touch(page, recoverable, recoverable.winningPath.at(-1)!);
+  const pane = page.locator('#win-video-offers');
+  await expect(page.locator('#result')).toHaveAttribute('data-won', 'true');
+  await expect(pane).toBeVisible();
+  const payout = (await read(page)).attempt.payout!;
+  const baseline = payout.find(entry => entry.reason === 'win')!.coins;
+  await expect(page.locator('#result-total')).toHaveText('+' + payout.reduce((total, entry) => total + entry.coins, 0));
+  await page.locator('#win-video-kind').selectOption('win-triple');
+  const button = page.locator('#win-video-claim');
+  await expect(button).toHaveText(`Получить ещё ${2 * baseline} монет`);
+  const beforeOffer = await read(page);
+  await button.tap();
+  await expect.poll(async () => (await adControls(page)).length).toBe(1);
+  await page.evaluate(() => (window as unknown as { adTestControls: AdTestControls }).adTestControls.finish({ shown: false, outcome: 'unavailable' }));
+  await expect(pane).toBeVisible();
+  expect((await read(page)).profile.coins).toBe(beforeOffer.profile.coins);
+  expect((await read(page)).platform?.lastFullscreenAt).toBe(0);
+
+  await button.tap();
+  await expect.poll(async () => (await adControls(page)).length).toBe(2);
+  const [first, second] = await adControls(page);
+  expect(second).toEqual(first);
+  const receipt: EarnedReceipt = { schema: 1, id: 'p20-earned-win', placement: second.placement,
+    attempt: second.attempt, dealId: second.dealId, mode: 'campaign' };
+  await page.evaluate(value => {
+    const mock = (window as unknown as { adTestControls: AdTestControls }).adTestControls;
+    mock.finish({ shown: true, outcome: 'dismissed' });
+    mock.earn(value);
+  }, receipt);
+  await expect.poll(async () => (await read(page)).profile.coins).toBe(beforeOffer.profile.coins + 2 * baseline);
+  await expect(pane).toBeHidden();
+  await page.reload();
+  await openGame(page, recoverable);
+  await expect(pane).toBeHidden();
+  expect((await read(page)).profile.coins).toBe(beforeOffer.profile.coins + 2 * baseline);
+});
+
+test('reward offer preview keeps the free reader and a distinct related-word charge after reload', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_REWARD_OFFERS !== '1', 'Requires the optional reward offer preview.');
+  let save = freshSave(recoverable, 'p20-definition');
+  for (const move of recoverable.winningPath.slice(0, 20)) save = dispatch(save, move, recoverable).next;
+  await loadWaveFixture(page, save, 15);
+  await openGame(page, recoverable);
+  async function openReader() {
+    const { attempt: { board }, settings } = await read(page);
+    const rect = (await page.locator('#game-root').boundingBox())!;
+    const frame = boardFrame(rect.width, rect.height, settings.deckPosition, recoverable);
+    const geometry = layout(board, recoverable, frame.height, settings.deckSide, settings.deckPosition);
+    const pose = geometry.poses.find(p => p.faceUp && board.tableau.some(col => col.at(-1) === p.id) &&
+      board.faceUp.some(id => id !== p.id && !recoverable.cards[id].leader && recoverable.cards[id].category === recoverable.cards[p.id].category));
+    expect(pose).toBeDefined();
+    await page.locator('#inspect').tap();
+    await page.touchscreen.tap(rect.x + frame.offsetX + pose!.x * frame.unit, rect.y + pose!.y * frame.unit);
+    await expect(page.locator('#inspect-dialog')).toBeVisible();
+    await expect(page.locator('#word-title')).toHaveText(recoverable.cards[pose!.id].text);
+    await expect(page.locator('#word-description')).toBeVisible();
+  }
+  await openReader();
+  await page.locator('#definition-use').tap();
+  await expect(page.locator('#definition-related')).toContainText('Связанное слово · ');
+  await expect(page.locator('#definition-use')).toBeDisabled();
+  expect((await read(page)).attempt.board).toEqual(save.attempt.board);
+  expect((await read(page)).profile).toEqual(save.profile);
+  await page.reload();
+  await openGame(page, recoverable);
+  await openReader();
+  await expect(page.locator('#definition-use')).toHaveText('Связанное слово · 0');
+});
+
+test('reward offer preview renews the shop and theme only with their own receipts', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_REWARD_OFFERS !== '1', 'Requires the optional reward offer preview.');
+  await installNativeAdTestBridge(page);
+  const save = freshSave(recoverable, 'p20-shop-theme');
+  await loadWaveFixture(page, save, 15);
+  await openGame(page, recoverable);
+  async function earn(button: string, placement: EarnedReceipt['placement'], count: number) {
+    await page.locator(button).tap();
+    await expect.poll(async () => (await adControls(page)).length).toBe(count);
+    const request = (await adControls(page)).at(-1)!;
+    expect(request.placement).toBe(placement);
+    await page.evaluate(value => {
+      const mock = (window as unknown as { adTestControls: AdTestControls }).adTestControls;
+      mock.finish({ shown: true, outcome: 'dismissed' });
+      mock.earn(value);
+    }, { schema: 1, id: `p20-earned-${count}`, placement, attempt: request.attempt,
+      dealId: request.dealId, mode: 'campaign' } satisfies EarnedReceipt);
+  }
+  await page.locator('#wallet-open').tap();
+  await earn('#shop-video-claim', 'shop-free-coins', 1);
+  await expect(page.locator('#helpers')).toBeVisible();
+  await expect.poll(async () => (await read(page)).profile.coins).toBe(save.profile.coins + 30);
+  await expect(page.locator('#shop-video-claim')).toBeHidden();
+  await page.locator('#helper-return').tap();
+  await page.locator('#menu').tap();
+  await page.locator('#pause-options summary').tap();
+  await page.locator('#appearance-settings').tap();
+  await earn('#theme-video-claim', 'rewarded-theme', 2);
+  await expect(page.locator('#appearance')).toBeVisible();
+  await expect(page.locator('#app')).toHaveAttribute('data-reward-theme', '');
+  await expect(page.locator('#theme-video-claim')).toBeHidden();
+  expect((await read(page)).profile.coins).toBe(save.profile.coins + 30);
 });

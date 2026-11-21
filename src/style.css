@@ -16,6 +16,9 @@ button:focus-visible{outline:3px solid #e8a968;outline-offset:3px}
 #app[data-screen=home]{background:radial-gradient(ellipse at 50% 50%,#fffdf5,#f2ead8);color:#537278}
 body.platform-native #app{padding:0 12px}
 #app[data-palette=ink][data-screen=game]{background:radial-gradient(ellipse at 40% 15%,#65668a,#414a71 65%,#303a60)}
+#app[data-reward-theme][data-screen=game]{background:radial-gradient(ellipse at 40% 15%,#826641,#5a452f 65%,#463122)}
+#win-video-offers select{width:100%;margin:6px 0 4px;padding:8px;border:1px solid #cbbda9;border-radius:8px;font:inherit;color:inherit;background:transparent}
+#definition-related{font-weight:600}
 
 header{height:58px;flex-shrink:0;display:flex;align-items:center;gap:9px;padding:5px 0;z-index:2}
 .round{width:44px;height:44px;flex-shrink:0;padding:0;display:grid;place-items:center;background:none;border:0}

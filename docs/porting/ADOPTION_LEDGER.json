@@ -122,8 +122,8 @@
     },
     {
       "id": "azur-win-multiplier",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No rewarded win multiplier; baseline earned win payout",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P20 opt-in preview offers distinct x3 and x5 against the baseline win and remaining moves with one grant per balance version/level. See docs/porting/P20_REWARD_OFFERS.md.",
       "nextAction": "Prototype optional post-win earned bonus with separate idempotent receipt and economy model Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
@@ -416,8 +416,8 @@
     },
     {
       "id": "hitapps-win-rewarded-offer",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No win screen rewarded bonus",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P20 opt-in preview has a separate flat +20 offer backed by an exact earned receipt. Source values remain unknown. See docs/porting/P20_REWARD_OFFERS.md.",
       "nextAction": "Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
@@ -529,8 +529,8 @@
     },
     {
       "id": "unico-rewarded-theme",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No rewarded seasonal theme unlock, but two earned cosmetics",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P20 opt-in preview has amber felt for 24 hours after an exact earned receipt, persisted across restart. See docs/porting/P20_REWARD_OFFERS.md.",
       "nextAction": "Design opt-in themed cosmetic offer, entitlement persistence and receipt grants Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
@@ -553,8 +553,8 @@
     },
     {
       "id": "unico-double-reward",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Ordinary win payout only",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P20 opt-in preview has a separate x2 choice on the result; it shares the canonical win dedup key with other choices. See docs/porting/P20_REWARD_OFFERS.md.",
       "nextAction": "Compare Unico post-win CTA to AZUR x3 and develop independent rewarded bonus policy Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
@@ -663,15 +663,15 @@
     },
     {
       "id": "azur-definition-consumable",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Reader exists as info view with free card explanations, no separately stocked Definition charges",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P20 opt-in preview has a distinct related-word charge. The existing explanation remains accessible. See docs/porting/P20_REWARD_OFFERS.md.",
       "nextAction": "Trace Definition usage/intro pricing and define own paid/free resource vs reader UX Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
     {
       "id": "azur-free-shop-coin-claim",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Earned coins from wins/milestones, no exact separate free shop claim",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P20 opt-in preview has +30 earned shop coins with durable receipt and a separate 24-hour cooldown. See docs/porting/P20_REWARD_OFFERS.md.",
       "nextAction": "Prototype source-observed optional 200-coin claim with real receipt/availability/cooldown verification Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1"
     },
@@ -710,7 +710,7 @@
     {
       "id": "azur-remaining-moves-coin-bonus",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/domain/balance.ts coinsPerRemainingMove=2 and src/domain/engine.ts payout; AZUR video suggested 5",
+      "currentImplementation": "P20 verifies the ordinary +2 coins per remaining move and excludes unrelated grants from the bonus multiplier. See docs/porting/P20_REWARD_OFFERS.md.",
       "nextAction": "Check own multiplier/economy and baseline reward integrity; do not label adapted coefficient exact AZUR copy Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"

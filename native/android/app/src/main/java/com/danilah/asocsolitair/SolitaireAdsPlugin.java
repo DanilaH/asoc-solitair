@@ -103,7 +103,10 @@ public class SolitaireAdsPlugin extends Plugin {
         String kind = call.getString("kind", ""), placement = call.getString("placement", "");
         String attempt = call.getString("attempt", ""), mode = call.getString("mode", "");
         String dealId = call.getString("dealId", "");
-        boolean rewardPlacement = placement.equals("hint") || placement.equals("undo") || placement.equals("continue") ||
+        boolean testOffer = BuildConfig.AD_MODE.equals("test") && mode.equals("campaign") &&
+            (placement.equals("win-double") || placement.equals("win-triple") || placement.equals("win-fivefold") ||
+             placement.equals("win-flat") || placement.equals("shop-free-coins") || placement.equals("rewarded-theme"));
+        boolean rewardPlacement = testOffer || placement.equals("hint") || placement.equals("undo") || placement.equals("continue") ||
             (mode.equals("campaign") && (placement.equals("bonus-foundation") || placement.equals("bonus-tableau")));
         if ((!kind.equals("interstitial") && !kind.equals("rewarded")) ||
             !attempt.matches("[a-zA-Z0-9_-]{1,100}") || !dealId.matches("[a-zA-Z0-9_-]{1,100}") || (!mode.equals("campaign") && !mode.equals("daily")) ||

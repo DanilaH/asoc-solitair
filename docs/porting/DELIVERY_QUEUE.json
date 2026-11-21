@@ -466,7 +466,7 @@
       "order": 19,
       "title": "RestoreStock, segmented revive, unlimited",
       "workstream": "REWARD",
-      "state": "QUEUED",
+      "state": "NEEDS_OWNER",
       "entryGate": "OWNER_ACTIVATION_GATE",
       "dependsOn": [
         "P18"

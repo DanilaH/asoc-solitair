@@ -16,12 +16,12 @@ export interface SimulationPolicy {
   id: string;
   choose(board: Board, legal: BoardCommand[], deal: Deal): BoardCommand | undefined;
 }
-type PolicyRun = { policyId: string; status: 'WON' | 'LOST' | 'UNKNOWN'; steps: number };
+type PolicyRun = { policyId: string; status: 'WON' | 'LOST' | 'UNKNOWN'; steps: number; path: BoardCommand[] };
 
 function simulate(deal: Deal, policy: SimulationPolicy): PolicyRun {
   let board = structuredClone(deal.initial);
-  let steps = 0;
-  const result = (status: PolicyRun['status']): PolicyRun => ({ policyId: policy.id, status, steps });
+  const path: BoardCommand[] = [];
+  const result = (status: PolicyRun['status']): PolicyRun => ({ policyId: policy.id, status, steps: path.length, path });
   while (board.phase === 'playing') {
     const commands = legalCommands(board, deal);
     if (!commands.length) return result('LOST');
@@ -31,28 +31,34 @@ function simulate(deal: Deal, policy: SimulationPolicy): PolicyRun {
     const next = applyBoard(board, command, deal);
     if (typeof next === 'string') return result('UNKNOWN');
     board = next.board;
-    steps++;
+    path.push(command);
   }
   return result(board.phase === 'won' ? 'WON' : 'LOST');
 }
 
 /** Offline late non-win predicate; each policy starts from the same prepared deal. */
-export function selectEquality(candidates: Iterable<Deal>, policies: readonly SimulationPolicy[]) {
+export function selectEquality(candidates: Iterable<Deal>, policies: readonly SimulationPolicy[], options?: {
+  distinctPaths?: boolean; onTrial?: (runs: readonly PolicyRun[]) => void;
+}) {
   if (!policies.length || new Set(policies.map(policy => policy.id)).size !== policies.length)
     throw Error('Equality requires distinct configured policies');
   let attempts = 0;
   for (const deal of candidates) {
     attempts++;
     const limit = deal.initial.movesLeft;
+    const runs: PolicyRun[] = [];
+    let accepted = false;
     if (limit !== null && Number.isInteger(limit) && limit > 0 && limit <= 2147483647 && deal.initial.phase === 'playing') {
-      const runs: PolicyRun[] = [];
       for (const policy of policies) {
         const run = simulate(deal, policy);
         runs.push(run);
         if (run.status !== 'LOST' || run.steps * 5 < limit * 4) break;
-        if (runs.length === policies.length) return { deal, attempts, runs };
+        accepted = runs.length === policies.length;
       }
     }
+    options?.onTrial?.(runs);
+    if (accepted && (!options?.distinctPaths ||
+      (runs.length >= 2 && new Set(runs.map(run => JSON.stringify(run.path))).size === runs.length))) return { deal, attempts, runs };
     if (attempts === 100) break;
   }
   return { attempts };

@@ -23,7 +23,7 @@
 | P04 | QUEUED | — | C1/D2 UX и косметика |
 | P05 | IN_PROGRESS | [Ветка P05](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p05-dealer-provenance-20261121) | [Две раздельные модели и пресет](P05_DEALER_PROVENANCE.md). 51 целевой unit-тест; два собственных образца раздач пройдены движком и oracle. Оригиналы в P36. |
 | P06 | QUEUED | — | DynamicDifficulty/EasyDeals 16–80 |
-| P07 | QUEUED | — | Equality source pipeline |
+| P07 | IN_PROGRESS | [Ветка P07](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p07-equality-provenance-20261121) | [Офлайн-фазы и контрольные трассы](P07_EQUALITY_PIPELINE.md). Три индекса, пути, гейты и хэши проверены. Преобразование пар и живые сегменты в P36. |
 | P08 | QUEUED | — | Opt-in special Deal issuance |
 | P09 | QUEUED | — | Ordered/Keys/bonus actual device QA |
 | P10 | QUEUED | — | FrozenCards |

@@ -44,6 +44,12 @@ export function prepareFreshPlan<T>(snapshot: T, appliers: FeatureAppliers<T>) {
   const initial = runPhase('initial', context(snapshot, false), appliers);
   return runPhase('final', runPhase('shuffle', initial, appliers), appliers);
 }
+export function prepareSimulatedShuffle<T>(snapshot: T, appliers: FeatureAppliers<T> = {}) {
+  return runPhase('shuffle', context(snapshot, true), appliers);
+}
+export function completeSimulatedPlan<T>(shuffled: PhaseState<T>, appliers: FeatureAppliers<T> = {}) {
+  return runPhase('final', structuredClone(shuffled), appliers);
+}
 
 export function preparePriorityPlan<T, V>(options: {
   requests: Iterable<number>;
@@ -56,7 +62,7 @@ export function preparePriorityPlan<T, V>(options: {
   appliers?: FeatureAppliers<T>;
 }) {
   const appliers = options.appliers ?? {};
-  const prepare = (seed: number) => runPhase('shuffle', context(options.shuffle(seed), true), appliers);
+  const prepare = (seed: number) => prepareSimulatedShuffle(options.shuffle(seed), appliers);
   const selection = selectPriority(options.requests, requestedSeed => {
     const seed = resolveCandidateSeed(requestedSeed, options.drawSeed);
     const state = prepare(seed);
@@ -74,7 +80,7 @@ export function preparePriorityPlan<T, V>(options: {
     attempts: selection.attempts, reason: selection.reason,
     selected: {
       requestedSeed: best.value.requestedSeed, actualSeed: best.seed, steps: best.steps,
-      evaluation: best.value.evaluation, afterShuffle: restored, final: runPhase('final', structuredClone(restored), appliers),
+      evaluation: best.value.evaluation, afterShuffle: restored, final: completeSimulatedPlan(restored, appliers),
     },
   };
 }

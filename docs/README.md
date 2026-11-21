@@ -1,3 +1,5 @@
+**Content 8 · Q1c finite-cost reconciliation (21.11):** [parallel Q1b #74 and #75 methods retained; finite-budget 317 winning transfers, 13 of 18 deeper UNKNOWN resolved](qa/content-v8/Q1C_FINITE_COST_DEEP_RECONCILIATION_2026-11-21.md). Prior source CI PASS; combined-head hosted evidence separately required.
+
 **Content 8 · B3 Equality/Paywall (21.11):** [native Hitapps four eligibility gates, Equality late bot failures, three-distinct-stack placement → actual missing C8 issuance, immutable Deal/receipt acceptance contract](qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md). **Offline model only; no live special Paywall deals issued.**
 
 **Content 8 · B2 director parity audit (21.11):** [source Hitapps lifecycle → actual C8 R1 11–15, ten-outcome policy, EasyDeals/Equality independence and Android evidence gates](qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md). Source-native static, not original running-app parity; all 114 systems remain tracked.

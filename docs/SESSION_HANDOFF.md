@@ -1,3 +1,7 @@
+# Content 8 · Q1c reconcile parallel cost and deep-transfer research
+
+[Q1c finite-budget reconciliation](qa/content-v8/Q1C_FINITE_COST_DEEP_RECONCILIATION_2026-11-21.md) preserves all four unique QA files from parallel PR #74 without replacing the Q1b #75 analyzer. Two successful earlier source runs differ only in denominator (8 unlimited tutorial winning transfers must not be counted as finite-budget cost). #74 targeted 18 original UNKNOWN transfers: 13 certified new WIN, 5 bounded UNKNOWN. Source-target tests/CI now compare both and preserve raw artifacts on this research branch; combined-head acceptance pending. This is **not** human acceptance, game rule change or original source runtime parity.
+
 # Content 8 · B3 Equality/Paywall independent source-to-product audit
 
 [Full B3 gate-to-runtime report](qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md) compares native Hitapps seed/enable/level/whitelist/counter, 80%-late-bot-failure, Equality-only 3 distinct stacks, candidate and Final phases to actual C8 code. The offline predicate and two-policy simulator exist but there is **no live immutable Equality deal issuance**, no authenticated payer cohort, no native final-board proof. New synthetic boundary tests explicitly confirm unique policy IDs do **not** guarantee independent strategy behavior. No runtime/SaveStore/SDK/content changes; 114 IDs retained.

@@ -236,7 +236,7 @@
       "order": 9,
       "title": "Приёмка Ordered, Keys, верхнего/нижнего слота",
       "workstream": "SPECIAL",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "PHYSICAL_ANDROID",
       "dependsOn": [
         "P00"

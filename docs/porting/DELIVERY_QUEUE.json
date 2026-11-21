@@ -81,7 +81,7 @@
       "order": 3,
       "title": "Проверка альтернатив и разнообразия кампании",
       "workstream": "QUALITY",
-      "state": "QUEUED",
+      "state": "IN_PROGRESS",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"

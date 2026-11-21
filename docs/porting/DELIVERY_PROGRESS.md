@@ -19,7 +19,7 @@
 | P00 | ENGINEERING_VERIFIED | [База #86 `ba44580`](https://github.com/DanilaH/asoc-solitair/pull/86), [CI 44925229086](https://github.com/DanilaH/asoc-solitair/actions/runs/44925229086) | [Сверка веток, подписанного APK и регрессий](P00_C8_BASELINE.md). Все 114 ID сохранены, 0 изменений статусов механик. Физический Android и плейтест в P02. |
 | P01 | QUEUED | — | Исправить ad request≠shown; issue #80 |
 | P02 | NEEDS_DEVICE | [Изолированный APK #73](https://github.com/DanilaH/asoc-solitair/pull/73), [SDK fix #88](https://github.com/DanilaH/asoc-solitair/pull/88) | [Протокол A/B/C и точные позиции](P02_DEVICE_HANDOFF.md). Модель и браузер прошли. Физический Android и новые участники отсутствуют. 0 изменений механик. |
-| P03 | QUEUED | — | Q1c/semantics baseline |
+| P03 | IN_PROGRESS | [Ветка P03](https://github.com/DanilaH/asoc-solitair/tree/audit/c8-q1c-p03-baseline-20261121) | [Маршруты, стоимость и разнообразие](P03_CAMPAIGN_QUALITY.md). Повторены 528 переносов и семантические метрики. Повтор углублённой выборки закреплён в CI. 0 изменений механик. |
 | P04 | QUEUED | — | C1/D2 UX и косметика |
 | P05 | QUEUED | — | Hitapps/AZUR generator and preset |
 | P06 | QUEUED | — | DynamicDifficulty/EasyDeals 16–80 |

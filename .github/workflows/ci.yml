@@ -38,13 +38,36 @@ jobs:
           node tools/qa/summarize-c8-route-cost.mjs
       - name: Research Q1c finite-budget comparison and deeper unknown transfer probes
         if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'audit/c8-q1c-')
+        shell: bash
         env:
           VITE_CONTENT8_PREVIEW: '1'
         run: |
+          evidence="$RUNNER_TEMP/c8-quality"
+          mkdir -p "$evidence"
           npm run qa:campaign-decisions
-          node tools/qa/summarize-c8-route-cost.mjs
+          cp .authoring/content8/campaign-decisions.json "$evidence/"
+          node tools/qa/summarize-c8-route-cost.mjs | tee "$evidence/route-cost.log"
           npm run qa:decision-cost
+          cp .authoring/content8/campaign-decision-cost.json "$evidence/"
           npm run qa:decision-deep
+          cp .authoring/content8/campaign-unknown-transfer-deep.json "$evidence/"
+      - name: Report authored C8 topic reuse and geometry
+        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || startsWith(github.head_ref || github.ref_name, 'docs/c8-')
+        continue-on-error: true
+        shell: bash
+        env:
+          SOURCE_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          evidence="$RUNNER_TEMP/c8-quality"
+          mkdir -p "$evidence"
+          git rev-parse HEAD > "$evidence/checkout-sha.txt"
+          printf '%s\n' "$SOURCE_HEAD" > "$evidence/source-head.txt"
+          node tools/qa/audit-c8-semantic-reuse.mjs | tee "$evidence/semantic-reuse.log"
+      - uses: actions/upload-artifact@v4
+        if: always() && (startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || startsWith(github.head_ref || github.ref_name, 'docs/c8-'))
+        with:
+          name: c8-quality-evidence
+          path: ${{ runner.temp }}/c8-quality/
       - run: npm run qa:rules
       - run: npm run content:azur-preset
       - run: npm run qa:content8

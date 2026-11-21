@@ -41,8 +41,8 @@
 | P20 | NEEDS_DEVICE | [PR #109](https://github.com/DanilaH/asoc-solitair/pull/109) | [Раздельные победные и магазинные офферы](P20_REWARD_OFFERS.md). 29 C8 unit и 10 touch; нативный earned ждёт телефона. |
 | P21 | NEEDS_OWNER | [PR #110](https://github.com/DanilaH/asoc-solitair/pull/110) | [Интеграция P01 и отключённая модель рекламы](P21_AD_PLACEMENTS.md). Частота новых точек, ILRD и Coffee Break открыты. |
 | P22 | IN_PROGRESS | [PR #111](https://github.com/DanilaH/asoc-solitair/pull/111) | [41 офлайн-позиция](P22_OFFLINE_CATALOG.md). Типы и суммы проверены; ожидается точный CI. |
-| P23 | IN_PROGRESS | [Ветка P23](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p23-verified-order-ledger-20261121) | [Офлайн-журнал SaveStore](P23_PURCHASE_ORDERS.md). Диск, повторы, возврат и восстановление проверены; живой провайдер P24. |
-| P24 | QUEUED | — | Merchant legal provider and payout |
+| P23 | IN_PROGRESS | [PR #112](https://github.com/DanilaH/asoc-solitair/pull/112) | [Офлайн-журнал SaveStore](P23_PURCHASE_ORDERS.md). Диск, повторы, возврат и восстановление проверены; живой провайдер P24. |
+| P24 | BLOCKED_EXTERNAL | [Ветка P24](https://github.com/DanilaH/asoc-solitair/tree/docs/c8-p24-merchant-gate-20261121) | [Официальные условия продавцов](P24_MERCHANT_GATE.md). Нет подтверждённого аккаунта, принятого договора и платежей sandbox. |
 | P25 | QUEUED | — | All 15 E3 offers |
 | P26 | QUEUED | — | Shared event identity and claims |
 | P27 | QUEUED | — | PuzzleEvent/gallery/multiresource |

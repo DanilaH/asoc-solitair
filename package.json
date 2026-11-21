@@ -20,6 +20,7 @@
     "content:author": "vite build --ssr tools/content/build-campaign.ts --outDir .authoring && node .authoring/build-campaign.js",
     "content:azur-preset": "vite build --ssr tools/content/build-azur-preset.ts --outDir .authoring/azur-preset-build && node .authoring/azur-preset-build/build-azur-preset.js",
     "qa:azur-ordinary": "vite build --ssr tools/qa/audit-azur-ordinary.ts --outDir .authoring/azur-ordinary-build && node .authoring/azur-ordinary-build/audit-azur-ordinary.js",
+    "qa:adaptive-bank": "VITE_CONTENT8_PREVIEW=1 vite build --ssr tools/qa/audit-c8-adaptive-bank.ts --outDir .authoring/c8-adaptive-build && node .authoring/c8-adaptive-build/audit-c8-adaptive-bank.js",
     "qa:campaign": "npm run build && vite build --ssr tools/record-campaign.ts --outDir .recording/campaign-source && node .recording/campaign-source/record-campaign.js",
     "qa:modifiers": "npm run build && vite build --ssr tools/record-modifiers.ts --outDir .recording/modifiers-source && node .recording/modifiers-source/record-modifiers.js",
     "content:daily": "vite build --ssr tools/content/build-daily.ts --outDir .authoring/daily && node .authoring/daily/build-daily.js",

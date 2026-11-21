@@ -166,7 +166,7 @@
       "order": 6,
       "title": "Расширить DynamicDifficulty/EasyDeals",
       "workstream": "CORE",
-      "state": "QUEUED",
+      "state": "NEEDS_OWNER",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P05"

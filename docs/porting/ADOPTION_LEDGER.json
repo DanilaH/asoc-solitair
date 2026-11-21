@@ -38,7 +38,7 @@
     {
       "id": "hitapps-dynamic-difficulty",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 preview R1 updates the penalty from ten first clears and applies it only at fresh issuance for levels 11–15. Versioned variant IDs resolve the fixed effective budgets on reload and Restart.",
+      "currentImplementation": "C8 R1 updates the penalty from ten first clears and applies it at fresh issuance for levels 11–15. P06 checks the original slot transition separately and certifies 130 inactive budget candidates for levels 16–80. See docs/porting/P06_ADAPTIVE_BANK.md.",
       "nextAction": "Play-test both penalty directions on physical Android and tune product parameters. Capture original active rates, rounding and config before any parity claim. Product-vs-Hitapps event-order and ten-outcome evidence audited in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; do not promote static lifecycle callsite to original runtime parity.",
       "stage": "B2",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md",

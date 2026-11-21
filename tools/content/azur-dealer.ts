@@ -1,6 +1,29 @@
 /** AZUR 1.3.3.8 uses one descending pass and Unity's exclusive upper bound. */
 export type AzurRandomRange = (minInclusive: number, maxExclusive: number) => number;
 
+interface AzurThemeInput { themeId: number; wordCount: number }
+type AzurCardRef = { themeId: number; kind: 'category' } |
+  { themeId: number; kind: 'word'; memberOrdinal: number; wordIndex: number };
+
+/** Positive source count override comes from a successful art load, supplied by the caller. */
+export function generateAzurCards(themes: readonly AzurThemeInput[], loadedCounts?: ReadonlyMap<number, number>): AzurCardRef[] {
+  const ids = new Set<number>();
+  return themes.flatMap<AzurCardRef>(({ themeId, wordCount }) => {
+    if (!Number.isSafeInteger(themeId) || ids.has(themeId) || !Number.isSafeInteger(wordCount) || wordCount < 0) {
+      throw Error('Invalid AZUR theme input');
+    }
+    ids.add(themeId);
+    const loaded = loadedCounts?.get(themeId);
+    if (loaded !== undefined && !Number.isSafeInteger(loaded)) throw Error('Invalid loaded AZUR card count');
+    const count = wordCount === 0 ? 0 : loaded !== undefined && loaded > 0 ? loaded : wordCount;
+    const cards: AzurCardRef[] = [{ themeId, kind: 'category' }];
+    for (let memberOrdinal = 0; memberOrdinal < count; memberOrdinal++) {
+      cards.push({ themeId, kind: 'word', memberOrdinal, wordIndex: memberOrdinal % wordCount });
+    }
+    return cards;
+  });
+}
+
 export function shuffleAzurCards<T>(cards: readonly T[], range: AzurRandomRange): T[] {
   const shuffled = [...cards];
   for (let remaining = shuffled.length; remaining > 1; remaining--) {
@@ -30,4 +53,15 @@ export function dealAzur<T>(cards: readonly T[], columns: number, firstColumnCar
     start = end;
   }
   return { tableau, faceUp, deckInput: shuffled.slice(start) };
+}
+
+export function traceAzurDeal(cards: readonly AzurCardRef[], columns: number, firstColumnCards: number, range: AzurRandomRange) {
+  const managerOrder = [...cards];
+  const draws: { minInclusive: number; maxExclusive: number; result: number }[] = [];
+  const layout = dealAzur(managerOrder, columns, firstColumnCards, (minInclusive, maxExclusive) => {
+    const result = range(minInclusive, maxExclusive);
+    draws.push({ minInclusive, maxExclusive, result });
+    return result;
+  });
+  return { managerOrder, shuffledOrder: [...layout.tableau.flat(), ...layout.deckInput], draws, ...layout };
 }

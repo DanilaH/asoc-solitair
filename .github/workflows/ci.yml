@@ -48,6 +48,15 @@ jobs:
       - run: npm run qa:rules
       - run: npm run content:azur-preset
       - run: npm run qa:azur-ordinary
+      - name: Verify the disabled C8 adaptive authoring bank
+        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-p06-')
+        run: npm run qa:adaptive-bank
+      - uses: actions/upload-artifact@v4
+        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-p06-')
+        with:
+          name: c8-adaptive-authoring-bank
+          path: .authoring/c8-adaptive-bank/
+          include-hidden-files: true
       - run: npm run qa:content8
       - run: npm run qa:content7
       - run: npm run qa:opening

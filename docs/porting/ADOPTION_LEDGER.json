@@ -463,7 +463,7 @@
     {
       "id": "azur-remote-level-overrides",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "Current offline immutable campaign; no remote content overrides",
+      "currentImplementation": "Current offline immutable campaign; no remote content overrides P35 implements an independently signed bank cache with exact snapshot proof and immutable archived IDs. Original remote payload remains unknown. See docs/porting/P35_SIGNED_CONTENT_BANK.md.",
       "nextAction": "Capture original config semantics before proposing optional versioned remote bank rollout G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md.",
       "stage": "G1",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"

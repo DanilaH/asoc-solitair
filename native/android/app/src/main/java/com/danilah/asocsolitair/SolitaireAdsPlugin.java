@@ -32,7 +32,7 @@ public class SolitaireAdsPlugin extends Plugin {
     private RewardedAdLoader rewardLoader;
     private InterstitialAd interstitial;
     private RewardedAd rewarded;
-    private RewardJournal journal;
+    private RewardJournal journal, shownJournal;
     private Session session;
     private final android.view.ViewTreeObserver.OnWindowFocusChangeListener focusListener = focused -> {
         if (focused && session != null && session.invoked && !session.shown) checkUnshown(session);
@@ -48,7 +48,8 @@ public class SolitaireAdsPlugin extends Plugin {
         }
     }
     @Override public void load() {
-        journal = new RewardJournal(getContext());
+        journal = new RewardJournal(getContext(), "solitaire-earned-v1.json");
+        shownJournal = new RewardJournal(getContext(), "solitaire-shown-v1.json");
         getActivity().getWindow().getDecorView().getViewTreeObserver().addOnWindowFocusChangeListener(focusListener);
         if (BuildConfig.AD_MODE.equals("disabled")) return;
         handler.post(() -> {
@@ -110,11 +111,11 @@ public class SolitaireAdsPlugin extends Plugin {
             (mode.equals("campaign") && (placement.equals("bonus-foundation") || placement.equals("bonus-tableau")));
         if ((!kind.equals("interstitial") && !kind.equals("rewarded")) ||
             !attempt.matches("[a-zA-Z0-9_-]{1,100}") || !dealId.matches("[a-zA-Z0-9_-]{1,100}") || (!mode.equals("campaign") && !mode.equals("daily")) ||
-            (kind.equals("rewarded") ? !rewardPlacement : !placement.equals("continue"))) {
+            (kind.equals("rewarded") ? !rewardPlacement : !placement.equals("continue") || !mode.equals("campaign"))) {
             call.reject("Invalid ad request"); return;
         }
         if (!available(kind) || session != null || background || !getActivity().hasWindowFocus()) { resolve(call, false, "unavailable"); return; }
-        try { if (journal.pending() != null) { resolve(call, false, "unavailable"); return; } }
+        try { if (journal.pending() != null || shownJournal.pending() != null) { resolve(call, false, "unavailable"); return; } }
         catch (Exception error) { resolve(call, false, "unavailable"); return; }
         Session s = new Session(call, kind, placement, attempt, mode, dealId); session = s; hide();
         try {
@@ -154,7 +155,24 @@ public class SolitaireAdsPlugin extends Plugin {
         if (remaining > 0) { handler.postDelayed(() -> checkUnshown(s), remaining); return; }
         event(s.kind, "show_error"); finish(s, "error");
     }
-    private void shown(Session s) { if (session == s) { s.shown = true; event(s.kind, "show"); } }
+    private JSONObject sessionIdentity(Session s) throws org.json.JSONException {
+        JSONObject event = new JSONObject();
+        event.put("schema", 1); event.put("id", s.id);
+        event.put("placement", s.placement); event.put("attempt", s.attempt);
+        event.put("mode", s.mode); event.put("dealId", s.dealId);
+        return event;
+    }
+    private void shown(Session s) {
+        if (session != s || !s.invoked || s.shown) return;
+        s.shown = true;
+        try {
+            JSONObject notice = sessionIdentity(s);
+            notice.put("kind", s.kind);
+            notice.put("shownAt", System.currentTimeMillis());
+            shownJournal.record(notice);
+        } catch (Exception ignored) { /* Keep the exact unconfirmed notice for retry. */ }
+        event(s.kind, "show");
+    }
     private void displayRewarded(Session s) {
         rewarded.setAdEventListener(new RewardedAdEventListener() {
             public void onAdShown() { shown(s); }
@@ -166,9 +184,7 @@ public class SolitaireAdsPlugin extends Plugin {
                 if (session != s || s.earned) return;
                 s.earned = true;
                 try {
-                    JSONObject receipt = new JSONObject(); receipt.put("schema", 1); receipt.put("id", s.id);
-                    receipt.put("placement", s.placement); receipt.put("attempt", s.attempt); receipt.put("mode", s.mode); receipt.put("dealId", s.dealId);
-                    journal.record(receipt); event(s.kind, "earned");
+                    journal.record(sessionIdentity(s)); event(s.kind, "earned");
                 } catch (Exception error) { event(s.kind, "receipt_pending"); }
             }
         });
@@ -185,6 +201,18 @@ public class SolitaireAdsPlugin extends Plugin {
     @PluginMethod public void acknowledge(PluginCall call) { handler.post(() -> {
         try { journal.acknowledge(call.getString("id", "")); call.resolve(); }
         catch (Exception error) { call.reject("Earned receipt acknowledgement failed"); }
+    }); }
+    @PluginMethod public void pendingShown(PluginCall call) { handler.post(() -> {
+        try {
+            JSONObject notice = shownJournal.pending();
+            JSObject result = new JSObject();
+            result.put("shown", notice == null ? JSONObject.NULL : notice);
+            call.resolve(result);
+        } catch (Exception error) { call.reject("Fullscreen display storage unavailable"); }
+    }); }
+    @PluginMethod public void acknowledgeShown(PluginCall call) { handler.post(() -> {
+        try { shownJournal.acknowledge(call.getString("id", "")); call.resolve(); }
+        catch (Exception error) { call.reject("Fullscreen display acknowledgement failed"); }
     }); }
     @PluginMethod public void cancelPending(PluginCall call) { handler.post(() -> {
         // Never guess that a displayed SDK screen has closed.

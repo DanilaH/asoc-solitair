@@ -75,6 +75,11 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.platform) {
     const p = save.platform;
     if (![p.receipts, p.continuedAttempts, p.completedCampaign].every(strings) || ![p.continueCredits, p.winsSinceInterstitial, p.lastFullscreenAt].every(natural)) throw Error('Повреждён журнал выдач');
+    const cadence = p.fullscreenCadence;
+    if (cadence !== undefined && (!cadence || cadence.version !== 1 ||
+      typeof cadence.lastShownId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(cadence.lastShownId) || p.lastFullscreenAt === 0)) {
+      throw Error('Повреждена история показов');
+    }
   }
   if (save.difficultyHistory !== undefined && (!Array.isArray(save.difficultyHistory) ||
     save.difficultyHistory.length > DIFFICULTY_WINDOW || save.difficultyHistory.some(entry =>

@@ -1,7 +1,7 @@
 import { Capacitor, registerPlugin, type PluginListenerHandle } from '@capacitor/core';
 import { DurableReceiptQueue, type ReceiptCommitResult, type GameplayActivityCoordinator } from '@danilah/mini-games-kit/platform';
 import type { NativeBannerPlacement, NativeBannerPlacementInput } from '@danilah/mini-games-kit/layout';
-import { parseReceipt, type EarnedReceipt, type RewardPlacement } from '../domain/services';
+import { parseFullscreenShown, parseReceipt, type EarnedReceipt, type FullscreenShown, type RewardPlacement } from '../domain/services';
 
 export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: RewardPlacement; attempt: string; dealId: string; mode: 'campaign' | 'daily' }
 export interface AdOutcome { shown: boolean; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
@@ -13,6 +13,8 @@ export interface AdsBridge {
   show(request: AdRequest): Promise<AdOutcome>;
   pending(): Promise<{ receipts: unknown[] }>;
   acknowledge(options: { id: string }): Promise<void>;
+  pendingShown(): Promise<{ shown: unknown | null }>;
+  acknowledgeShown(options: { id: string }): Promise<void>;
   cancelPending(): Promise<void>;
   measureBanner(options: { viewportWidth: number; slotX: number; slotWidth: number }): Promise<Omit<NativeBannerPlacementInput, 'slot' | 'viewport'> | null>;
   placeBanner(options: { placement: NativeBannerPlacement; generation: number }): Promise<void>;
@@ -26,6 +28,7 @@ const unavailable: AdOutcome = { shown: false, outcome: 'unavailable' };
 export function createAds(options: {
   activity: Pick<GameplayActivityCoordinator, 'setBlocked' | 'isBlocked'>;
   commit(receipt: EarnedReceipt): Promise<ReceiptCommitResult>;
+  commitShown(shown: FullscreenShown): Promise<ReceiptCommitResult>;
   beforeShow(request: AdRequest): Promise<void>;
   onStatus(status: AdStatus): void;
   onEvent(event: AdEvent): void;
@@ -35,17 +38,21 @@ export function createAds(options: {
   let retryDelay = 1000;
   let status = disabledStatus;
   let listener: PluginListenerHandle | undefined;
-  let recoveryFlight: Promise<void> | undefined, prepareFlight: Promise<void> | undefined, statusFlight: Promise<void> | undefined;
+  let recoveryFlight: Promise<void> | undefined, shownFlight: Promise<void> | undefined, prepareFlight: Promise<void> | undefined, statusFlight: Promise<void> | undefined;
   let retry: ReturnType<typeof setTimeout> | undefined;
   const queue = new DurableReceiptQueue<EarnedReceipt>({ commit: async r => {
     if (!alive) throw Error('Disposed receipt receiver');
     return options.commit(r);
   }, acknowledge: async id => { if (!alive) throw Error('Disposed receipt receiver'); await native?.acknowledge({ id }); } });
+  const shownQueue = new DurableReceiptQueue<FullscreenShown>({ commit: async shown => {
+    if (!alive) throw Error('Disposed display receiver');
+    return options.commitShown(shown);
+  }, acknowledge: async id => { if (!alive) throw Error('Disposed display receiver'); await native?.acknowledgeShown({ id }); } });
   function schedule() {
     if (!alive || !native || retry !== undefined) return;
     retry = setTimeout(() => { retry = undefined; void refresh(); void recover(); retryDelay = Math.min(30_000, retryDelay * 2); schedule(); }, status.ready ? 30_000 : retryDelay);
   }
-  function recover(): Promise<void> {
+  function recoverEarned(): Promise<void> {
     if (!alive || !native) return Promise.resolve();
     if (recoveryFlight) return recoveryFlight;
     recoveryFlight = (async () => {
@@ -57,6 +64,18 @@ export function createAds(options: {
       finally { recoveryFlight = undefined; }
     })();
     return recoveryFlight;
+  }
+  function recoverShown(): Promise<void> {
+    if (!alive || !native) return Promise.resolve();
+    if (shownFlight) return shownFlight;
+    shownFlight = (async () => {
+      const { shown } = await native.pendingShown();
+      if (alive && shown !== null) await shownQueue.deliver(parseFullscreenShown(shown));
+    })().catch(() => undefined).finally(() => { shownFlight = undefined; });
+    return shownFlight;
+  }
+  async function recover(): Promise<void> {
+    await Promise.all([recoverEarned(), recoverShown()]);
   }
   function refresh(): Promise<void> {
     if (!alive || !native) return Promise.resolve();
@@ -71,7 +90,8 @@ export function createAds(options: {
     void native.addListener('adEvent', event => {
       if (!alive) return;
       options.onEvent(event);
-      if (['earned', 'receipt_pending', 'dismiss'].includes(event.phase)) void recover();
+      if (['earned', 'receipt_pending', 'dismiss'].includes(event.phase)) void recoverEarned();
+      if (event.phase === 'show') void recoverShown();
     }).then(handle => { if (!alive) void handle.remove().catch(() => undefined); else listener = handle; }).catch(() => undefined);
     void refresh(); void recover(); schedule();
   }
@@ -96,6 +116,11 @@ export function createAds(options: {
         if (!alive) return unavailable;
         const result = await native.show({ ...request });
         if (!result.shown) options.onEvent({ kind: request.kind, phase: result.outcome });
+        if (result.shown) {
+          // The earlier read may have started before the SDK callback.
+          await shownFlight;
+          await recoverShown();
+        }
         return result;
       } catch { return { shown: false, outcome: 'error' }; }
       finally { showing = false; options.activity.setBlocked('ad', false); if (alive) void recover(); }

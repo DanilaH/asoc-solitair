@@ -1,3 +1,4 @@
+import type { CommerceJournal } from './commerce/orders';
 import type { RewardOffers } from './reward-offers';
 
 export const RULES_VERSION = 3;
@@ -85,6 +86,7 @@ export interface Save {
   difficultyHistory?: CampaignOutcome[];
   difficultyPenalty?: number;
   rewardOffers?: RewardOffers;
+  commerce?: CommerceJournal;
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';

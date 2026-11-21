@@ -6,6 +6,7 @@ import { content8BoundDeal } from '../../src/content/campaign-v8-bound';
 import { content8PuzzleDeal } from '../../src/content/campaign-v8-puzzle';
 import { content8GoldenDeal } from '../../src/content/campaign-v8-golden';
 import { content8StarterDeal } from '../../src/content/campaign-v8-starter';
+import { content8ShuffleDeal } from '../../src/content/campaign-v8-shuffle';
 import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
@@ -497,6 +498,61 @@ test('the Starter preview pulls stock with the magnet and reveals a separate car
     if (index === 6) expect((await read(page)).attempt.board.faceUp).toContain('nail');
   }
   expect((await read(page)).attempt.board.phase).toBe('won');
+});
+
+test('the Shuffle preview applies one verified free change and restores stock after Undo', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_SPECIAL !== 'shuffle', 'Requires the separate Shuffle preview.');
+  const deal = content8ShuffleDeal;
+  await loadWaveFixture(page, freshSave(deal, 'shuffle-preview-tap'), 28);
+  await page.locator('#app').evaluate(() => {
+    const key = 'asoc-solitaire.save.v1';
+    const persisted = JSON.parse(localStorage.getItem(key)!);
+    persisted.settings.reducedMotion = false;
+    localStorage.setItem(key, JSON.stringify(persisted));
+  });
+  await page.reload();
+  await openGame(page, deal);
+  const before = await read(page);
+  const action = page.getByRole('button', { name: 'Перемешать колоду' });
+  await expect(action).toBeEnabled();
+  await action.tap();
+  await expect.poll(async () => (await read(page)).attempt.shuffleUsed).toBe(true);
+  await expect(action).toBeDisabled();
+  const shuffled = await read(page);
+  expect(shuffled.attempt.board.stock).not.toEqual(before.attempt.board.stock);
+  expect(shuffled.attempt.board.movesLeft).toBe(before.attempt.board.movesLeft);
+  expect(shuffled.profile).toEqual(before.profile);
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board.stock).toEqual(before.attempt.board.stock);
+  await page.reload();
+  await openGame(page, deal);
+  await expect(action).toBeDisabled();
+  expect((await read(page)).attempt.shuffleUsed).toBe(true);
+});
+
+test('the test App bridge cancels a pending shuffle without changing stock or balance', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_SPECIAL !== 'shuffle', 'Requires the separate Shuffle preview.');
+  await installNativeAdTestBridge(page);
+  await page.addInitScript(() => {
+    const NativeWorker = window.Worker;
+    window.Worker = function (url: string | URL, options?: WorkerOptions) {
+      if (!String(url).includes('shuffle.worker')) return new NativeWorker(url, options);
+      return { postMessage() {}, terminate() {} };
+    } as unknown as typeof Worker;
+  });
+  const deal = content8ShuffleDeal;
+  await loadWaveFixture(page, freshSave(deal, 'shuffle-background'), 28);
+  await openGame(page, deal);
+  const before = await read(page);
+  const action = page.getByRole('button', { name: 'Перемешать колоду' });
+  await action.tap();
+  await expect(action).toHaveAttribute('aria-busy', 'true');
+  await page.evaluate(() => (window as unknown as { adTestControls: AdTestControls }).adTestControls.active(false));
+  await expect(action).toHaveAttribute('aria-busy', 'false');
+  const after = await read(page);
+  expect(after.attempt.board).toEqual(before.attempt.board);
+  expect(after.profile).toEqual(before.profile);
+  expect(after.attempt.shuffleUsed).toBeUndefined();
 });
 
 test('the first lesson gates real touches at 320px and resumes after reload', async ({ page }) => {

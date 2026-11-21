@@ -14,17 +14,19 @@
 
 ## Пакеты и статус
 
+Статусы ниже учитывают проверки в отдельных ветках пакетов. Ссылки ведут на PR и фактический запуск; изменения остаются на своих ветках до интеграции.
+
 | Пакет | State | PR/commit + CI | Доказанная функциональность / остаток |
 | --- | --- | --- | --- |
 | P00 | ENGINEERING_VERIFIED | [База #86 `ba44580`](https://github.com/DanilaH/asoc-solitair/pull/86), [CI 44925229086](https://github.com/DanilaH/asoc-solitair/actions/runs/44925229086) | [Сверка веток, подписанного APK и регрессий](P00_C8_BASELINE.md). Все 114 ID сохранены, 0 изменений статусов механик. Физический Android и плейтест в P02. |
-| P01 | QUEUED | — | Исправить ad request≠shown; issue #80 |
-| P02 | QUEUED | — | Q2/Q3 реальный Android и плейтест |
-| P03 | QUEUED | — | Q1c/semantics baseline |
-| P04 | QUEUED | — | C1/D2 UX и косметика |
-| P05 | QUEUED | — | Hitapps/AZUR generator and preset |
-| P06 | QUEUED | — | DynamicDifficulty/EasyDeals 16–80 |
-| P07 | QUEUED | — | Equality source pipeline |
-| P08 | QUEUED | — | Opt-in special Deal issuance |
+| P01 | NEEDS_DEVICE | [PR #88](https://github.com/DanilaH/asoc-solitair/pull/88), [CI 44928339856](https://github.com/DanilaH/asoc-solitair/actions/runs/44928339856) | Подписанный APK и тесты прошли. Настоящий SDK и lifecycle в Q3. |
+| P02 | NEEDS_DEVICE | [PR #89](https://github.com/DanilaH/asoc-solitair/pull/89) | Подписанные сборки A/B/C и точные сценарии. Нужны телефон и участники. |
+| P03 | ENGINEERING_VERIFIED | [PR #90](https://github.com/DanilaH/asoc-solitair/pull/90), [CI 44928912745](https://github.com/DanilaH/asoc-solitair/actions/runs/44928912745) | 528 переносов, 325 WIN, 203 UNKNOWN. Углублённый CI 13/18, 5 UNKNOWN. |
+| P04 | NEEDS_DEVICE | [PR #91](https://github.com/DanilaH/asoc-solitair/pull/91), [CI 44930638939](https://github.com/DanilaH/asoc-solitair/actions/runs/44930638939) | Попап закрытых помощников и сверка 16 ID. Подписанный APK есть, нужен TalkBack и физический плейтест. |
+| P05 | ENGINEERING_VERIFIED | [PR #92](https://github.com/DanilaH/asoc-solitair/pull/92), [CI 44929964011](https://github.com/DanilaH/asoc-solitair/actions/runs/44929964011) | Две воспроизводимые модели раздачи, обычный AZUR и отдельный preset. P36 остаётся открытым. |
+| P06 | NEEDS_OWNER | [PR #93](https://github.com/DanilaH/asoc-solitair/pull/93) | 130 контрольных вариантов бюджета на 65 уровней. Политика включения открыта. |
+| P07 | ENGINEERING_VERIFIED | [PR #94](https://github.com/DanilaH/asoc-solitair/pull/94), [CI 44930830479](https://github.com/DanilaH/asoc-solitair/actions/runs/44930830479) | Фазы, гейты, отдельные trace и 3 столбца. Преобразование карт оригинала остаётся UNKNOWN. |
+| P08 | NEEDS_OWNER | [PR #95](https://github.com/DanilaH/asoc-solitair/pull/95), [CI 44931235799](https://github.com/DanilaH/asoc-solitair/actions/runs/44931235799) | Контрольная транзакционная выдача. Для включения нужен утверждённый каталог и правила. |
 | P09 | NEEDS_DEVICE | [Ветка P09](https://github.com/DanilaH/asoc-solitair/tree/docs/c8-p09-special-device-20261121) | [34 unit и 12 touch-проверок](P09_SPECIAL_DEVICE.md). Четыре механики готовы к физическим касаниям и проверке настоящего SDK. |
 | P10 | NEEDS_DEVICE | [Ветка P10](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p10-frozen-cards-20261121) | [PRODUCT_ADAPTED лёд и два выигрышных пути](P10_FROZEN_CARDS.md). Правило испытано в отдельном 23-м уровне; оригинальные снятие слоя и взаимодействие с Джокером остаются в P36. |
 | P11 | NEEDS_DEVICE | [Ветка P11](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p11-bound-scissors-20261121) | [Связи и ножницы на пяти столбцах](P11_BOUND_SCISSORS.md). Наша адаптация прошла 38 unit и два touch-профиля; исходная механика остаётся P36. |
@@ -32,7 +34,7 @@
 | P13 | NEEDS_DEVICE | [Ветка P13](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p13-golden-cards-20261121) | [Золотые карты и однократная выплата](P13_GOLDEN_CARDS.md). 40 unit и два touch-профиля. Расписание Gold Rush в P31, исходная выплата открыта. |
 | P14 | NEEDS_DEVICE | [Ветка P14](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p14-starter-boosters-20261121) | [Отдельный Final seed и две адаптированные карты](P14_STARTER_BOOSTERS.md). 24 unit и два touch-прогона. Оригинальная вставка и действия helpers остаются P36. |
 | P15 | NEEDS_OWNER | [Ветка P15](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p15-azur-joker-model-20261121) | [Изолированная модель вставки и Undo.Clear](P15_AZUR_JOKER.md). Подключение к игре требует решения о сбросе истории. |
-| P16 | QUEUED | — | AZUR Shuffle and animation |
+| P16 | NEEDS_DEVICE | [Ветка P16](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p16-proof-shuffle-20261121) | [Проверяемое перемешивание и анимация](P16_PROOF_SHUFFLE.md). Физическое устройство и оригинальный алгоритм отсутствуют. |
 | P17 | QUEUED | — | Unico Magnet |
 | P18 | QUEUED | — | CORE-5 recovery, earned/coin |
 | P19 | QUEUED | — | RestoreStock/Revive/Unlimited |

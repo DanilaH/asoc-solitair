@@ -90,6 +90,8 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (t && (typeof t.started !== 'boolean' || typeof t.finished !== 'boolean' || !natural(t.activeMs))) throw Error('Повреждён счётчик времени');
   if (save.campaign && (save.campaign.version !== 1 || !strings(save.campaign.tutorials))) throw Error('Повреждено обучение');
   if (save.attempt.jokerUsed !== undefined && typeof save.attempt.jokerUsed !== 'boolean') throw Error('Повреждён Джокер');
+  if (save.attempt.shuffleUsed !== undefined && (save.attempt.shuffleUsed !== true || deal.shufflePreview !== 1))
+    throw Error('Повреждено перемешивание');
   if ((save.attempt.board.joker || save.attempt.undo.some(board => board.joker)) && !save.attempt.jokerUsed) throw Error('Джокер без расхода');
   save.attempt.undo = save.attempt.undo.slice(-MAX_UNDO_HISTORY);
   if (save.attempt.daily && (save.attempt.daily.dayId !== deal.daily?.dayId || save.attempt.daily.contentVersion !== deal.daily?.contentVersion)) throw Error('Повреждена дата попытки');

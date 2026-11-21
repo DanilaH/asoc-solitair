@@ -175,8 +175,8 @@
     },
     {
       "id": "azur-shuffle-helper",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No explicit Shuffle helper",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P16 PRODUCT_ADAPTED one free stock shuffle per attempt with current-board proof, atomic SaveStore and Undo. See docs/porting/P16_PROOF_SHUFFLE.md.",
       "nextAction": "Determine re-deal constraints/save/provable solvability and user teaching D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },
@@ -749,8 +749,8 @@
     },
     {
       "id": "azur-shuffle-animation-controller",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No Shuffle helper or center-turn animation in current game",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P16 PRODUCT_ADAPTED stock rotation starts after the confirmed save and respects reduced motion. See docs/porting/P16_PROOF_SHUFFLE.md.",
       "nextAction": "Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },

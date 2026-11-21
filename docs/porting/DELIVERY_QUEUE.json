@@ -39,7 +39,7 @@
       "order": 1,
       "title": "Исправить рекламный cooldown #80",
       "workstream": "ADS",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"
@@ -61,7 +61,7 @@
       "order": 2,
       "title": "Q2/Q3 физический Android и люди",
       "workstream": "QA",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "PHYSICAL_ANDROID",
       "dependsOn": [
         "P00"
@@ -81,7 +81,7 @@
       "order": 3,
       "title": "Проверка альтернатив и разнообразия кампании",
       "workstream": "QUALITY",
-      "state": "QUEUED",
+      "state": "ENGINEERING_VERIFIED",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"
@@ -101,7 +101,7 @@
       "order": 4,
       "title": "FTUE, D2 UX и весь game feel",
       "workstream": "UX",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"
@@ -138,7 +138,7 @@
       "order": 5,
       "title": "Hitapps/AZUR генератор и источник раскладки",
       "workstream": "CORE",
-      "state": "QUEUED",
+      "state": "ENGINEERING_VERIFIED",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"
@@ -166,7 +166,7 @@
       "order": 6,
       "title": "Расширить DynamicDifficulty/EasyDeals",
       "workstream": "CORE",
-      "state": "QUEUED",
+      "state": "NEEDS_OWNER",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P05"
@@ -190,7 +190,7 @@
       "order": 7,
       "title": "Equality/Paywall offline source phases",
       "workstream": "CORE",
-      "state": "QUEUED",
+      "state": "ENGINEERING_VERIFIED",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P05"
@@ -216,7 +216,7 @@
       "order": 8,
       "title": "Сохранённая опциональная выдача Equality",
       "workstream": "CORE",
-      "state": "QUEUED",
+      "state": "NEEDS_OWNER",
       "entryGate": "OWNER_ACTIVATION_GATE",
       "dependsOn": [
         "P07"
@@ -397,7 +397,7 @@
       "order": 16,
       "title": "AZUR Shuffle helper + animation",
       "workstream": "SPECIAL",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P05"

@@ -148,8 +148,9 @@ function run({ bank, deal, slots = [] }: Scenario) {
     const before = replay(pivot.board, candidate.prefix, deal);
     assert.deepEqual(step(before, candidate.action, deal), candidate.board);
     const moved = candidate.action.type === 'transfer' ? sourceCards(before, candidate.action.from, deal) : undefined;
+    const witnessRemainingActions = deal.winningPath.length - pivot.step;
     const evidence = { phase: pivot.phase, step: pivot.step + 1, budget: pivot.board.movesLeft, kind: candidate.kind,
-      witness: encode(pivot.chosen), prefix: encodeRoute(candidate.prefix), action: encode(candidate.action),
+      witnessRemainingActions, witness: encode(pivot.chosen), prefix: encodeRoute(candidate.prefix), action: encode(candidate.action),
       ...(moved?.length ? { moved } : {}), outcome: result.outcome, proof: result.proof };
     if (result.outcome !== 'WIN') return evidence;
     let board = candidate.board;
@@ -160,7 +161,16 @@ function run({ bank, deal, slots = [] }: Scenario) {
       loopsBack ||= boardIdentity(board, deal) === original;
     }
     assert.equal(board.phase, 'won', deal.id + ' alternative proof');
-    return { ...evidence, route: encodeRoute(result.route), movesLeft: board.movesLeft, loopsBack };
+    // A fully replayed alternative continuation, not a minimum-length solution.
+    // Positive delta = this *found route* used more actions than the published
+    // witness suffix; it is never a lower bound on the cost of a player's error.
+    const alternativeActions = candidate.prefix.length + 1 + result.route.length;
+    const actionsVsWitness = alternativeActions - witnessRemainingActions;
+    assert.equal(board.movesLeft, pivot.board.movesLeft === null ? null : pivot.board.movesLeft - alternativeActions,
+      deal.id + ' Q1b budget accounting');
+    return { ...evidence, route: encodeRoute(result.route), movesLeft: board.movesLeft,
+      alternativeActions, actionsVsWitness, witnessMovesLeft: pivot.board.movesLeft === null ? null : pivot.board.movesLeft - witnessRemainingActions,
+      loopsBack };
   }
   const probes = phases.flatMap(phase => kinds.flatMap(kind => {
     const opportunities = pivots.filter(pivot => pivot.phase === phase);

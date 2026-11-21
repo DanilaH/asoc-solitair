@@ -1,3 +1,7 @@
+# Content 8 · Q1b research execution
+
+[Q1b alternative cost + deep unknown probes](qa/content-v8/Q1B_DECISION_COST_AND_DEEP_SEARCH_2026-11-21.md) is research only. The dedicated audit branch uses the current 0.20.3 C8 catalogue; it computes certified route-length deltas relative to authored witness, separately retains 203 previously unknown transfer outcomes, and deep-probes up to 18 varied unknowns. It does not alter gameplay or claim minimum human regret. **Hosted CI's numeric result has not yet been confirmed and must be recorded before Q1b acceptance.** Q5 independent historical probes and all 114 source feature IDs remain preserved.
+
 # Content 8 · Q5 preserve divergent research and validate C8 preview CI
 
 [Q5 research reconciliation](qa/content-v8/Q5_RESEARCH_BRANCH_RECONCILIATION_2026-11-21.md) tracks #67/#69 diverged from #70/#71: five unique audit files preserved, historical CORE3 choice warnings kept separately from current full-campaign transfer wins, Q1 28/28 search-limit UNKNOWN verified in prior CI, and C8-specific browser/Android flags now enabled for audit/c8-* PR branches. **Research/CI-only; no game runtime change; new hosted build outcome remains pending.** Human physical Android and original-app trace remain separate acceptance gates.

@@ -39,7 +39,7 @@
       "id": "hitapps-dynamic-difficulty",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 preview R1 updates the penalty from ten first clears and applies it only at fresh issuance for levels 11–15. Versioned variant IDs resolve the fixed effective budgets on reload and Restart.",
-      "nextAction": "Play-test both penalty directions on physical Android and tune product parameters. Capture original active rates, rounding and config before any parity claim.",
+      "nextAction": "Play-test both penalty directions on physical Android and tune product parameters. Capture original active rates, rounding and config before any parity claim. Product-vs-Hitapps event-order and ten-outcome evidence audited in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; do not promote static lifecycle callsite to original runtime parity.",
       "stage": "B2",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
@@ -48,7 +48,7 @@
       "id": "hitapps-easy-deals",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 preview R1 offers a checked relief variant after three counted losses on fresh same-level issuance for levels 11–15. A regular Restart retains the deal ID. Four relief rows use a second seed and level 11 uses a wider budget on its reference board.",
-      "nextAction": "Capture the native decCoef/two lookups and post-Paywall branch. Observe player relief on Android and certify relief rows for CORE-3 level additions.",
+      "nextAction": "Capture the native decCoef/two lookups and post-Paywall branch. Observe player relief on Android and certify relief rows for CORE-3 level additions. Source gating/decCoef uncertainty and the five-level product bank are compared in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; keep the remaining original gating unknown.",
       "stage": "B2",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
@@ -57,7 +57,7 @@
       "id": "hitapps-equality-paywall",
       "status": "IN_PROGRESS",
       "currentImplementation": "Offline selector simulates Rules 3 across policies and verifies 79/80 percent plus UNKNOWN. The separate CORE-5 product continuation now verifies the actual exhausted C8 board before offering +10.",
-      "nextAction": "Verify three-stack initial placement, author/persist immutable Equality variants, and measure the distinct selector and continuation on device.",
+      "nextAction": "Verify three-stack initial placement, author/persist immutable Equality variants, and measure the distinct selector and continuation on device. Offline Equality vs issued runtime is separately classified in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; no accidental product activation.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
       "stage": "B3",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md"
@@ -66,7 +66,7 @@
       "id": "hitapps-paywall-segmentation",
       "status": "IN_PROGRESS",
       "currentImplementation": "Explicit positive seed, enabled/min-level/limit/segment whitelist enforced in the offline eligibility model.",
-      "nextAction": "Wire product eligibility and issued counters to immutable deals only with known segment or explicit unknown policy; preserve original live cohort UNKNOWN.",
+      "nextAction": "Wire product eligibility and issued counters to immutable deals only with known segment or explicit unknown policy; preserve original live cohort UNKNOWN. Original cohort and remote-config activation remain unknown as detailed in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
       "stage": "B3",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md"

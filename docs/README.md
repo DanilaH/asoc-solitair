@@ -1,3 +1,5 @@
+**Content 8 · B2 director parity audit (21.11):** [source Hitapps lifecycle → actual C8 R1 11–15, ten-outcome policy, EasyDeals/Equality independence and Android evidence gates](qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md). Source-native static, not original running-app parity; all 114 systems remain tracked.
+
 **Content 8 · Q1b (21.11):** [стоимость подтверждённых альтернативных продолжений относительно witness и выборка UNKNOWN](qa/content-v8/Q1B_ROUTE_COST_2026-11-21.md). Числовые результаты добавляются после hosted CI, не являются минимальной ценой ошибки или человеческой сложностью.
 
 **Content 8 · Q5 research reconciliation (21.11):** [пять независимых проверок из разошедшихся PR #67/#69 возвращены в актуальную ветку, CI на audit/c8-* теперь действительно включает Content 8](qa/content-v8/Q5_RESEARCH_BRANCH_RECONCILIATION_2026-11-21.md). Протокол и тесты не доказывают человеческий баланс; итог CI и Android нужно принять отдельно.

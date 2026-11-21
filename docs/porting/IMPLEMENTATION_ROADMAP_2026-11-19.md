@@ -119,7 +119,7 @@ Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle e
 | `hitapps-golden-cards` | `ROADMAPPED` | Restore separate native Final-phase GoldenCards insertion and check gold-marked win receipts; event policy tracked separately under hitapps-gold-rush-event |
 | `hitapps-ordered-category` | `IMPLEMENTED_UNVERIFIED` | Verify first C8 introduction and match rule provenance; device teaching still pending |
 | `hitapps-lockers` | `IMPLEMENTED_UNVERIFIED` | Re-author gated C8 16–80 with independent solver and onboarding/device check |
-| `hitapps-frozen` | `ROADMAPPED` | Reconstruct eligible frozen state and design original mechanic + undo/solver/migration |
+| `hitapps-frozen` | `IMPLEMENTED_UNVERIFIED` | [P10 PRODUCT_ADAPTED preview](P10_FROZEN_CARDS.md), per-card layers, Undo and two proven routes. Original thaw and source configuration remain P36. |
 | `hitapps-bound` | `ROADMAPPED` | Reconstruct bound-card pattern and design original mechanic + undo/solver/migration |
 | `hitapps-magnet-hammer` | `ROADMAPPED` | Prototype one differentiated helper first, preserving post-seed insertion proof boundaries |
 | `azur-shuffle-helper` | `ROADMAPPED` | Determine re-deal constraints/save/provable solvability and user teaching |

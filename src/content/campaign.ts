@@ -4,6 +4,7 @@ import { modifierDeals } from './modifiers';
 import data from './campaign.json' with { type: 'json' };
 import { content8Special } from './campaign-v8-special';
 import { content8BonusDeals } from './campaign-v8-bonus';
+import { content8FrozenDeal } from './campaign-v8-frozen';
 import { cardsFor, type TopicSelection } from './topics';
 import { introDeal } from './intro';
 import { withCurrentRules } from './current-rules';
@@ -29,13 +30,17 @@ export const legacyCampaignDeals: readonly Deal[] = [...campaignRecords.map(reco
 export const content6CampaignDeals: readonly Deal[] = [...openingDeals, ...legacyCampaignDeals.slice(15)];
 const content8Campaign = [...content8Dealer, ...content8Wave, ...content8Late];
 const specialByLevel = new Map([...content8Special, ...content8BonusDeals].map(deal => [deal.campaignLevel, deal]));
+const frozenBaseId = content8Wave.find(deal => deal.campaignLevel === content8FrozenDeal.campaignLevel)!.id;
+if (import.meta.env?.VITE_CONTENT8_FROZEN === '1') specialByLevel.set(content8FrozenDeal.campaignLevel, content8FrozenDeal);
 export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
   ? content8Campaign.map(deal => specialByLevel.get(deal.campaignLevel) ?? deal)
   : content7Deals;
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
-  ...content8Campaign, ...content8DirectorDeals, ...content8Special, ...content8BonusDeals].map(deal => [deal.id, deal]));
+  ...content8Campaign, ...content8DirectorDeals, ...content8Special, ...content8BonusDeals, content8FrozenDeal].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
+  if (CONTENT8_PREVIEW && ((dealId === content8FrozenDeal.id && base.id === frozenBaseId) ||
+    (base.id === content8FrozenDeal.id && dealId === frozenBaseId))) return true;
   return dealId === base.id || (CONTENT8_PREVIEW && isC8DirectorVariant(dealId, base.id));
 }
 export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): Deal {

@@ -261,7 +261,7 @@
       "order": 10,
       "title": "Frozen cards",
       "workstream": "SPECIAL",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P05",

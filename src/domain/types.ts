@@ -30,6 +30,7 @@ export interface Deal {
   campaignLevel?: number;
   tags?: string[];
   lock?: { column: number; requiredKeys: string[] };
+  frozen?: { version: 1; layers: Readonly<Record<string, number>> };
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
   difficultyTier?: DifficultyTier;
   training?: OpeningLesson;

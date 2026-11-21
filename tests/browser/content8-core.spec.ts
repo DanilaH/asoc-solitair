@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { content8Dealer, content8Late, content8Wave } from '../../src/content/campaign-v8-dealer';
 import { content8Special } from '../../src/content/campaign-v8-special';
+import { content8FrozenDeal } from '../../src/content/campaign-v8-frozen';
 import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
@@ -358,6 +359,40 @@ test('level 66 opens and uses the rightmost locked column at 320px', async ({ pa
   }
   expect(usedRightmost).toBe(true);
   expect(board.keys).toHaveLength(3);
+});
+
+test('the Frozen preview thaws with completed groups and restores ice after Undo', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_FROZEN !== '1', 'Requires the separate Frozen preview.');
+  const deal = content8FrozenDeal;
+  const save = freshSave(deal, 'frozen-preview-tap');
+  await loadWaveFixture(page, save, 22);
+  await openGame(page, deal);
+  await expect(page.locator('#lesson-copy')).toHaveText('Соберите тему, чтобы снять один слой льда.');
+  const root = (await page.locator('#game-root').boundingBox())!;
+  const frame = boardFrame(root.width, root.height, save.settings.deckPosition, deal);
+  const geometry = layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
+  const frozen = geometry.poses.find(pose => pose.id === 'space-word')!;
+  const upper = geometry.targets.find(target => target.location.kind === 'foundation')!;
+  for (const point of [frozen, upper]) {
+    await page.touchscreen.tap(root.x + frame.offsetX + point.x * frame.unit, root.y + point.y * frame.unit);
+  }
+  expect((await read(page)).attempt.board).toEqual(deal.initial);
+  for (const [index, action] of deal.winningPath.slice(0, 2).entries()) {
+    await touch(page, deal, action);
+    await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(23 - index);
+  }
+  expect((await read(page)).attempt.board.collected).toHaveLength(2);
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board.collected).toEqual([]);
+  await page.reload();
+  await openGame(page, deal);
+  await expect(page.locator('#lesson-copy')).toBeVisible();
+  expect((await read(page)).attempt.id).toBe(save.attempt.id);
+  for (const [index, action] of deal.winningPath.slice(1).entries()) {
+    await touch(page, deal, action);
+    await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(22 - index);
+  }
+  expect((await read(page)).attempt.board.phase).toBe('won');
 });
 
 test('the first lesson gates real touches at 320px and resumes after reload', async ({ page }) => {

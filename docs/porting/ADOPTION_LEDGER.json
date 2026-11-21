@@ -266,7 +266,7 @@
     {
       "id": "hitapps-win-streak",
       "status": "ROADMAPPED",
-      "currentImplementation": "Existing 5-first-win cycle differs from loss-sensitive WinStreak",
+      "currentImplementation": "Existing 5-first-win cycle differs from loss-sensitive WinStreak An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md.",
       "nextAction": "Define streak failure/reset milestone and test against current cycle without double credits F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
@@ -310,7 +310,7 @@
     {
       "id": "unico-win-and-task-streak",
       "status": "ROADMAPPED",
-      "currentImplementation": "Existing daily streak/5-win milestone, not two standalone events",
+      "currentImplementation": "Existing daily streak/5-win milestone, not two standalone events An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md.",
       "nextAction": "Compare separate reward ledgers; choose distinct milestones without duplicate grants F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
@@ -471,7 +471,7 @@
     {
       "id": "azur-combo-streak",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "Own transfer streak and first-win cycle differ from AZUR ComboStreak",
+      "currentImplementation": "Own transfer streak and first-win cycle differ from AZUR ComboStreak An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md.",
       "nextAction": "Reconstruct reward/counter reset/FTUE and determine whether separate progress necessary F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F2",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"

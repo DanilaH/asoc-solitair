@@ -544,7 +544,7 @@
       "order": 22,
       "title": "Полный E3 офлайн-каталог 41 SKU family",
       "workstream": "COMMERCE",
-      "state": "IN_PROGRESS",
+      "state": "ENGINEERING_VERIFIED",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"
@@ -567,7 +567,7 @@
       "order": 23,
       "title": "Платёжные чеки, энтитлменты, возвраты",
       "workstream": "COMMERCE",
-      "state": "IN_PROGRESS",
+      "state": "ENGINEERING_VERIFIED",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P22"
@@ -646,7 +646,7 @@
       "order": 26,
       "title": "Versioned event scheduler и claim ledger",
       "workstream": "META",
-      "state": "IN_PROGRESS",
+      "state": "ENGINEERING_VERIFIED",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"
@@ -910,7 +910,7 @@
       "order": 37,
       "title": "Full release acceptance и ledger/kit feedback",
       "workstream": "RELEASE",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "RELEASE_GATE",
       "dependsOn": [
         "P00",

@@ -1,0 +1,920 @@
+{
+  "schema": "asoc-release-evidence-v1",
+  "baseline": "ba445805568d22fa62fff5b3527fb97fe5eb7f71",
+  "sourceInventoryBlob": "72efdad46077213e1ce68475b004544fe9dfec75",
+  "features": [
+    {
+      "id": "hitapps-stock-dealer",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P05"
+    },
+    {
+      "id": "hitapps-level-wave",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P33"
+    },
+    {
+      "id": "hitapps-candidate-priority",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P05"
+    },
+    {
+      "id": "hitapps-dynamic-difficulty",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P06"
+    },
+    {
+      "id": "hitapps-easy-deals",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P06"
+    },
+    {
+      "id": "hitapps-equality-paywall",
+      "status": "IN_PROGRESS",
+      "primaryPackage": "P07"
+    },
+    {
+      "id": "hitapps-paywall-segmentation",
+      "status": "IN_PROGRESS",
+      "primaryPackage": "P07"
+    },
+    {
+      "id": "hitapps-adbreak",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P21"
+    },
+    {
+      "id": "hitapps-stock-restore",
+      "status": "DEFERRED",
+      "primaryPackage": "P19"
+    },
+    {
+      "id": "hitapps-revive-offers",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P19"
+    },
+    {
+      "id": "azur-coin-moves",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P18"
+    },
+    {
+      "id": "azur-rewarded-moves",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P18"
+    },
+    {
+      "id": "azur-extra-foundation",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P09"
+    },
+    {
+      "id": "azur-win-multiplier",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P20"
+    },
+    {
+      "id": "hitapps-golden-cards",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P13"
+    },
+    {
+      "id": "hitapps-ordered-category",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P09"
+    },
+    {
+      "id": "hitapps-lockers",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P09"
+    },
+    {
+      "id": "hitapps-frozen",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P10"
+    },
+    {
+      "id": "hitapps-bound",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P11"
+    },
+    {
+      "id": "hitapps-magnet-hammer",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P14"
+    },
+    {
+      "id": "azur-shuffle-helper",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P16"
+    },
+    {
+      "id": "hitapps-joker",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "hitapps-ghost-hint",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-action-ftue",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-difficulty-label",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-topic-rotation",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P33"
+    },
+    {
+      "id": "hitapps-puzzle-event",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P27"
+    },
+    {
+      "id": "azur-daily-tasks",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P28"
+    },
+    {
+      "id": "azur-daily-bonus",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P29"
+    },
+    {
+      "id": "hitapps-weekend-race",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P31"
+    },
+    {
+      "id": "hitapps-lava-quest",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P31"
+    },
+    {
+      "id": "hitapps-daily-rewards",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P29"
+    },
+    {
+      "id": "hitapps-win-streak",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P30"
+    },
+    {
+      "id": "hitapps-meta-regions",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P32"
+    },
+    {
+      "id": "hitapps-piggy-bank",
+      "status": "BLOCKED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "hitapps-lives",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P31"
+    },
+    {
+      "id": "azur-play-pass",
+      "status": "BLOCKED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "hitapps-rotating-offers",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "unico-win-and-task-streak",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P30"
+    },
+    {
+      "id": "ui-motion-audio-coin",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "hitapps-ingame-streak",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "hitapps-gold-rush-event",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P31"
+    },
+    {
+      "id": "hitapps-puzzle-gallery",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P27"
+    },
+    {
+      "id": "hitapps-cascade-events",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P32"
+    },
+    {
+      "id": "hitapps-digging-event",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P32"
+    },
+    {
+      "id": "hitapps-lucky-wheel",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P32"
+    },
+    {
+      "id": "hitapps-endless-treasure",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P32"
+    },
+    {
+      "id": "hitapps-birthday-offer",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "hitapps-decoy-offer",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "hitapps-starter-offer",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "hitapps-meta-prewarm",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P31"
+    },
+    {
+      "id": "hitapps-daily-puzzle",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P29"
+    },
+    {
+      "id": "hitapps-win-rewarded-offer",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P20"
+    },
+    {
+      "id": "hitapps-inapp-shop",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "hitapps-ingame-banner",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P21"
+    },
+    {
+      "id": "azur-card-dictionary",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-localized-move-budget",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P34"
+    },
+    {
+      "id": "azur-stock-side-setting",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-remote-level-overrides",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P35"
+    },
+    {
+      "id": "azur-combo-streak",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P30"
+    },
+    {
+      "id": "azur-unlimited-moves-offer",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P19"
+    },
+    {
+      "id": "azur-offer-campaign",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "azur-fullscreen-ads-clock",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P01"
+    },
+    {
+      "id": "azur-ad-revenue-attribution",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P21"
+    },
+    {
+      "id": "azur-cosmetics",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "unico-coffee-break",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P21"
+    },
+    {
+      "id": "unico-daily-fortune",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P29"
+    },
+    {
+      "id": "unico-rewarded-theme",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P20"
+    },
+    {
+      "id": "unico-vip",
+      "status": "BLOCKED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "unico-redeal-restart",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P06"
+    },
+    {
+      "id": "unico-double-reward",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P20"
+    },
+    {
+      "id": "unico-daily-puzzles",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P29"
+    },
+    {
+      "id": "unico-loss-dialog",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P18"
+    },
+    {
+      "id": "azur-structured-long-campaign",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P33"
+    },
+    {
+      "id": "azur-purchase-receipts",
+      "status": "BLOCKED",
+      "primaryPackage": "P23"
+    },
+    {
+      "id": "unico-themes-and-skins",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-iap-product-catalog",
+      "status": "IN_PROGRESS",
+      "primaryPackage": "P22"
+    },
+    {
+      "id": "azur-iap-helper-ladder",
+      "status": "IN_PROGRESS",
+      "primaryPackage": "P22"
+    },
+    {
+      "id": "azur-iap-no-ads",
+      "status": "BLOCKED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "azur-iap-coin-packs",
+      "status": "BLOCKED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "azur-iap-coin-offer-series",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "azur-iap-premium-bundles",
+      "status": "BLOCKED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "azur-iap-welcome-offer",
+      "status": "BLOCKED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "azur-iap-unlimited-moves-tiers",
+      "status": "BLOCKED",
+      "primaryPackage": "P25"
+    },
+    {
+      "id": "azur-definition-consumable",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P20"
+    },
+    {
+      "id": "azur-free-shop-coin-claim",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P20"
+    },
+    {
+      "id": "azur-variable-category-sizes",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P33"
+    },
+    {
+      "id": "hitapps-mixed-word-image-cards",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P33"
+    },
+    {
+      "id": "hitapps-language-change-restart",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P34"
+    },
+    {
+      "id": "hitapps-win-multiresource-payout",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P27"
+    },
+    {
+      "id": "azur-remaining-moves-coin-bonus",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P20"
+    },
+    {
+      "id": "azur-card-animation-controller",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-coin-flight-animator",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-victory-reward-sequencer",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-button-haptic-feedback",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-shuffle-animation-controller",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P16"
+    },
+    {
+      "id": "hitapps-invalid-transfer-feedback",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-locked-helper-discovery",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P04"
+    },
+    {
+      "id": "azur-localized-definition-packs",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P34"
+    },
+    {
+      "id": "azur-deck-draw-and-recycle",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P05"
+    },
+    {
+      "id": "azur-defeat-vs-no-valid-move",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P05"
+    },
+    {
+      "id": "azur-generate-deal-entrypoints",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P05"
+    },
+    {
+      "id": "azur-bonus-lower-column",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P09"
+    },
+    {
+      "id": "hitapps-equality-three-stack-pair-placement",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P07"
+    },
+    {
+      "id": "hitapps-feature-seed-one-time-reshuffle",
+      "status": "IN_PROGRESS",
+      "primaryPackage": "P07"
+    },
+    {
+      "id": "hitapps-initial-shuffle-final-pipeline",
+      "status": "IN_PROGRESS",
+      "primaryPackage": "P07"
+    },
+    {
+      "id": "hitapps-negative-seed-request-path",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P05"
+    },
+    {
+      "id": "hitapps-puzzle-top-bottom-cards",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P12"
+    },
+    {
+      "id": "hitapps-bound-scissors-pattern",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "primaryPackage": "P11"
+    },
+    {
+      "id": "unico-magnet-helper",
+      "status": "EVIDENCE_GAP",
+      "primaryPackage": "P17"
+    },
+    {
+      "id": "azur-tutorial-preset-deal",
+      "status": "IN_PROGRESS",
+      "primaryPackage": "P05"
+    },
+    {
+      "id": "azur-joker-random-column-insertion",
+      "status": "IN_PROGRESS",
+      "primaryPackage": "P15"
+    },
+    {
+      "id": "azur-art-sprite-wordcount-override",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P34"
+    },
+    {
+      "id": "azur-async-theme-art-preload",
+      "status": "ROADMAPPED",
+      "primaryPackage": "P34"
+    }
+  ],
+  "packages": [
+    {
+      "package": "P00",
+      "pr": 87,
+      "sha": "dad37b84e47e7c9e4be798f747b416dfeb609fa9",
+      "run": 44927751433,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "ENGINEERING_VERIFIED"
+    },
+    {
+      "package": "P01",
+      "pr": 88,
+      "sha": "7ee31bd912069c2cc86d8fa6e96633f850130931",
+      "run": 44928339856,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P02",
+      "pr": 89,
+      "sha": "7c684ce30fb531f3a48176c92f5ad37df0573072",
+      "run": 44928771059,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P03",
+      "pr": 90,
+      "sha": "a729810cdafb89ea54a919642c20f26f004fdfba",
+      "run": 44928912745,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "ENGINEERING_VERIFIED"
+    },
+    {
+      "package": "P04",
+      "pr": 91,
+      "sha": "c6cb91d9686702dcf7c3b217aeeb92eb8debb6ec",
+      "run": 44930638939,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P05",
+      "pr": 92,
+      "sha": "b78af678a1c4f897c33ab755769bc46e16d4de1a",
+      "run": 44929964011,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "ENGINEERING_VERIFIED"
+    },
+    {
+      "package": "P06",
+      "pr": 93,
+      "sha": "5c000edbb1223ca3680908e02e08320384c807cb",
+      "run": 44930264517,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_OWNER"
+    },
+    {
+      "package": "P07",
+      "pr": 94,
+      "sha": "454dec609f513bcd0e38b3f6b3b51b5e6eabff50",
+      "run": 44930830479,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "ENGINEERING_VERIFIED"
+    },
+    {
+      "package": "P08",
+      "pr": 95,
+      "sha": "8353a78198671ab44f507f1748b0f5ae691085e4",
+      "run": 44931235799,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_OWNER"
+    },
+    {
+      "package": "P09",
+      "pr": 96,
+      "sha": "1c8f83e9dbb5726d3aa03fc37eb6dcd137b60a93",
+      "run": 44931357708,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P10",
+      "pr": 97,
+      "sha": "991a59ccf87a2a26b6ac7891332fba5ab445b916",
+      "run": 44931958824,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P11",
+      "pr": 98,
+      "sha": "905d3d7fedab09cace5281286828987c5b0cd83b",
+      "run": 44932347218,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P12",
+      "pr": 99,
+      "sha": "1ec4f7ee3878ba08b1205969fb5721e85afce130",
+      "run": 44932984207,
+      "state": "in_progress",
+      "conclusion": null,
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P13",
+      "pr": 100,
+      "sha": "01f4e0c253728babf56021c72bd03a2f522fdacd",
+      "run": 44933304200,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P14",
+      "pr": 101,
+      "sha": "33a4535abe84df2ccde1ad7bc617140e76014161",
+      "run": 44933776162,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P15",
+      "pr": 102,
+      "sha": "a451c40a7c12256efd452c91885d408a2f89e0fd",
+      "run": 44934077187,
+      "state": "queued",
+      "conclusion": null,
+      "deliveryStatus": "NEEDS_OWNER"
+    },
+    {
+      "package": "P16",
+      "pr": 103,
+      "sha": "2fae9536716ac4dc06f218784694c58f6d1a6082",
+      "run": 44935035936,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P17",
+      "pr": 105,
+      "sha": "3f4e046c2114afd3a205743ff6c8c64fe9aa244d",
+      "run": 44935276238,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "BLOCKED_EXTERNAL"
+    },
+    {
+      "package": "P18",
+      "pr": 106,
+      "sha": "ca70ae6f5f9302f0f9da12dc15172b7d1a68d5ab",
+      "run": 44935496139,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P19",
+      "pr": 107,
+      "sha": "03a72e57021cb68043d9052a071c599ebc9a2631",
+      "run": 44935821964,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_OWNER"
+    },
+    {
+      "package": "P20",
+      "pr": 109,
+      "sha": "92ae63545ec4d8817d96ec84053a9e6493444e6f",
+      "run": 44936533410,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P21",
+      "pr": 110,
+      "sha": "20698145a4efd7e05a8904f07fe9b8e1616ac0ae",
+      "run": 44936830327,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_OWNER"
+    },
+    {
+      "package": "P22",
+      "pr": 111,
+      "sha": "43df0be34444f31d34bcf8c6728c24033f4fdc06",
+      "run": 44937075266,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "ENGINEERING_VERIFIED"
+    },
+    {
+      "package": "P23",
+      "pr": 112,
+      "sha": "f0db783fc08dbe8ec41956a15b610e4c69943fdc",
+      "run": 44937411668,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "ENGINEERING_VERIFIED"
+    },
+    {
+      "package": "P24",
+      "pr": 113,
+      "sha": "9f8e48423c31072f458e1d37c72e22034eab4eca",
+      "run": 44937504474,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "BLOCKED_EXTERNAL"
+    },
+    {
+      "package": "P25",
+      "pr": 114,
+      "sha": "c8cd94fd4876faa16253769de258656b2bcddf47",
+      "run": 44937763183,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_OWNER"
+    },
+    {
+      "package": "P26",
+      "pr": 116,
+      "sha": "99ac10aab2ab60ff6fe3a3257cb92c849f26521f",
+      "run": 44938160066,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "ENGINEERING_VERIFIED"
+    },
+    {
+      "package": "P27",
+      "pr": 118,
+      "sha": "40a38b4fd679d0f278bd7cb5d6554e38d69b95f4",
+      "run": 44938539055,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P28",
+      "pr": 119,
+      "sha": "4481fd85d4ced1144601d43900b9b76a29efb33e",
+      "run": 44939108754,
+      "state": "in_progress",
+      "conclusion": null,
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P29",
+      "pr": 120,
+      "sha": "277912513ea98379feaa998252a52c67c0ce3f1a",
+      "run": 44939289098,
+      "state": "completed",
+      "conclusion": "success",
+      "deliveryStatus": "BLOCKED_EXTERNAL"
+    },
+    {
+      "package": "P30",
+      "pr": 121,
+      "sha": "2011e245594e761d2091d1430dcb9ba034879b95",
+      "run": 44939481653,
+      "state": "in_progress",
+      "conclusion": null,
+      "deliveryStatus": "BLOCKED_EXTERNAL"
+    },
+    {
+      "package": "P31",
+      "pr": 122,
+      "sha": "fe63e5548a24a055404eea80453a8d3b004d3860",
+      "run": 44939741228,
+      "state": "in_progress",
+      "conclusion": null,
+      "deliveryStatus": "NEEDS_OWNER"
+    },
+    {
+      "package": "P32",
+      "pr": 124,
+      "sha": "e0548ed5210be9bb76c2980473a6ba26efab852c",
+      "run": 44940025648,
+      "state": "queued",
+      "conclusion": null,
+      "deliveryStatus": "BLOCKED_EXTERNAL"
+    },
+    {
+      "package": "P33",
+      "pr": 126,
+      "sha": "42a916e4452200623c76b14dd0af5b53087669b4",
+      "run": 44940574512,
+      "state": "queued",
+      "conclusion": null,
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P34",
+      "pr": 129,
+      "sha": "37a66e9417b0eae255596922df7b9896cf4abe86",
+      "run": 44941016274,
+      "state": "queued",
+      "conclusion": null,
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P35",
+      "pr": 130,
+      "sha": "7383c905c432bcd837caf751d0520db2b0f6c5b2",
+      "run": 44941475621,
+      "state": "queued",
+      "conclusion": null,
+      "deliveryStatus": "BLOCKED_EXTERNAL"
+    },
+    {
+      "package": "P36",
+      "pr": 131,
+      "sha": "13f412a529365bf1f3b846e1c1cb51979cf3df17",
+      "run": 44941844519,
+      "state": "queued",
+      "conclusion": null,
+      "deliveryStatus": "NEEDS_DEVICE"
+    },
+    {
+      "package": "P37",
+      "branch": "audit/c8-q1c-p37-release-20261121",
+      "deliveryStatus": "NEEDS_DEVICE"
+    }
+  ],
+  "physicalAndroid": "NEEDS_DEVICE",
+  "originalExecutions": 0,
+  "liveCommerce": "BLOCKED_EXTERNAL"
+}

@@ -70,6 +70,8 @@ test('fifth-win receipt remains visible and cannot grant twice after reload or p
   await expect(page.locator('#result-bonus')).toBeVisible();await expect(page.locator('#result-bonus')).toContainText('5 / 5');await expect(page.locator('#result-bonus-copy')).toHaveText('Получено: +20 монет и +1 подсказка');
   const paid=await read(page);expect(paid.profile.hints).toBe(4);
   await page.reload();await page.locator('#app[data-ready=true]').waitFor();await page.locator('#home-play').tap();await expect(page.locator('#result-bonus')).toBeVisible();expect((await read(page)).profile).toEqual(paid.profile);
+  // The geometry probe checks ancestor opacity, including the result dialog's opening fade.
+  await expect(page.locator('#result[open]')).toHaveCSS('opacity', '1');
   const next=await action(page,'#next-level');await page.touchscreen.tap(next.x,next.y);await expect(page.locator('#result')).toBeHidden();await page.waitForTimeout(1000);
   expect(await page.locator('.flying-coin:visible').count()).toBe(0);expect((await read(page)).profile).toEqual(paid.profile);
 });

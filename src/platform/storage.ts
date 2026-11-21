@@ -5,6 +5,7 @@ import { BALANCE } from '../domain/balance';
 import { validRewardOffers } from '../domain/reward-offers';
 import { validCommerceJournal } from '../domain/commerce/orders';
 import { validEventLedger } from '../domain/events/ledger';
+import { validPicture } from '../domain/events/picture';
 import { applyBoard, assertBoard, boardRules } from '../domain/engine';
 import { MAX_UNDO_HISTORY } from '../domain/history';
 import { DIFFICULTY_WINDOW } from '../domain/difficulty';
@@ -107,6 +108,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.rewardOffers !== undefined && !validRewardOffers(save.rewardOffers)) throw Error('Повреждены бонусные предложения');
   if (save.commerce !== undefined && !validCommerceJournal(save.commerce)) throw Error('Повреждён журнал покупок');
   if (save.events !== undefined && !validEventLedger(save.events)) throw Error('Повреждён журнал событий');
+  if (save.picture !== undefined && !validPicture(save)) throw Error('Повреждён альбом');
   if (save.parked) {
     const active = save.attempt.daily ? 'daily' : 'campaign';
     if (save.parked[active]) throw Error('Два активных состояния режима');

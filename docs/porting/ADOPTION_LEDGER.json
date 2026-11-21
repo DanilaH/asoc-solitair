@@ -223,8 +223,8 @@
     },
     {
       "id": "hitapps-puzzle-event",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No picture reveal; existing 10-level and win-cycle rewards Shared P26 event clocks and serialized milestone claims are available; product-specific implementation is tracked separately in the delivery queue.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P27 opt-in seven-day event credits two tokens after each unique campaign win, with separate prices for six own picture fragments. See docs/porting/P27_PICTURE_GALLERY.md.",
       "nextAction": "Prototype original 6-piece picture reward on actual wins/daily; assess visual payoff F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
@@ -339,8 +339,8 @@
     },
     {
       "id": "hitapps-puzzle-gallery",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Current only card back/palette unlocks; no six-picture gallery",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P27 permanently saves the authored orangery after all six fragments and a one-time claim. Earned tokens remain spendable after earning expires. See docs/porting/P27_PICTURE_GALLERY.md.",
       "nextAction": "Reconstruct video-based gallery journey and distinguish from time-limited PuzzleEvent F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
@@ -702,8 +702,8 @@
     },
     {
       "id": "hitapps-win-multiresource-payout",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Win coins and milestones exist, no single payout bundle to keys+piggy bank+picture fragments",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P27 has separate two-token and three-coin win bonuses next to the baseline, plus a one-time gallery grant of coins and a hint. See docs/porting/P27_PICTURE_GALLERY.md.",
       "nextAction": "Design separate earned resource identities and settlement when those systems implemented, compare S1 visible example F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },

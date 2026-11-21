@@ -36,7 +36,7 @@
 | P15 | NEEDS_OWNER | [Ветка P15](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p15-azur-joker-model-20261121) | [Изолированная модель вставки и Undo.Clear](P15_AZUR_JOKER.md). Подключение к игре требует решения о сбросе истории. |
 | P16 | NEEDS_DEVICE | [PR #103](https://github.com/DanilaH/asoc-solitair/pull/103), [CI 44935035936](https://github.com/DanilaH/asoc-solitair/actions/runs/44935035936) | [Проверяемое перемешивание и анимация](P16_PROOF_SHUFFLE.md). Физическое устройство и оригинальный алгоритм отсутствуют. |
 | P17 | BLOCKED_EXTERNAL | [PR #105](https://github.com/DanilaH/asoc-solitair/pull/105) | [Доказательства и отдельная офлайн-проба](P17_UNICO_MAGNET.md). Для точного переноса нужны оригинальная сборка или запись действия. |
-| P18 | NEEDS_DEVICE | [PR #106](https://github.com/DanilaH/asoc-solitair/pull/106) | [Матрица продолжения CORE-5](P18_CONTINUATION_ACCEPTANCE.md). Доказательство +10, поздний кредит при daily и 16 touch-проверок. Нужна запись настоящего SDK. |
+| P18 | NEEDS_DEVICE | [PR #106](https://github.com/DanilaH/asoc-solitair/pull/106), [CI 44935496139](https://github.com/DanilaH/asoc-solitair/actions/runs/44935496139) | [Матрица продолжения CORE-5](P18_CONTINUATION_ACCEPTANCE.md). Доказательство +10, поздний кредит при daily и 16 touch-проверок. Нужна запись настоящего SDK. |
 | P19 | NEEDS_OWNER | [PR #107](https://github.com/DanilaH/asoc-solitair/pull/107) | [Три офлайн-контракта](P19_RECOVERY_CONTRACTS.md). Параметры игровой выдачи и оригинальное поведение открыты. |
 | P20 | NEEDS_DEVICE | [PR #109](https://github.com/DanilaH/asoc-solitair/pull/109) | [Раздельные победные и магазинные офферы](P20_REWARD_OFFERS.md). 29 C8 unit и 10 touch; нативный earned ждёт телефона. |
 | P21 | NEEDS_OWNER | [PR #110](https://github.com/DanilaH/asoc-solitair/pull/110) | [Интеграция P01 и отключённая модель рекламы](P21_AD_PLACEMENTS.md). Частота новых точек, ILRD и Coffee Break открыты. |
@@ -44,8 +44,8 @@
 | P23 | IN_PROGRESS | [PR #112](https://github.com/DanilaH/asoc-solitair/pull/112) | [Офлайн-журнал SaveStore](P23_PURCHASE_ORDERS.md). Диск, повторы, возврат и восстановление проверены; живой провайдер P24. |
 | P24 | BLOCKED_EXTERNAL | [PR #113](https://github.com/DanilaH/asoc-solitair/pull/113) | [Официальные условия продавцов](P24_MERCHANT_GATE.md). Нет подтверждённого аккаунта, принятого договора и платежей sandbox. |
 | P25 | NEEDS_OWNER | [PR #114](https://github.com/DanilaH/asoc-solitair/pull/114) | [Все 15 офлайн-семейств](P25_COMMERCIAL_FAMILIES.md). Платный запуск зависит от P24, условия не активированы. |
-| P26 | IN_PROGRESS | [Ветка P26](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p26-event-ledger-20261121) | [Версионные часы и призы событий](P26_EVENT_LEDGER.md). Проверены прогресс, истечение окна и атомарное получение. |
-| P27 | QUEUED | — | PuzzleEvent/gallery/multiresource |
+| P26 | IN_PROGRESS | [PR #116](https://github.com/DanilaH/asoc-solitair/pull/116) | [Версионные часы и призы событий](P26_EVENT_LEDGER.md). Проверены прогресс, истечение окна и атомарное получение. |
+| P27 | NEEDS_DEVICE | [Ветка P27](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p27-picture-gallery-20261121) | [Оранжерея, альбом и жетоны](P27_PICTURE_GALLERY.md). Реальный финальный ход, фрагмент и сохранённая выдача проверены в браузере. |
 | P28 | QUEUED | — | All 16 AZUR tasks + 9 rewards |
 | P29 | QUEUED | — | DailyBonus/Rewards/Fortune/Puzzle |
 | P30 | QUEUED | — | Win/Task/Combo streaks |

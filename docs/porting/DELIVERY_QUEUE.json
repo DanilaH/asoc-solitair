@@ -666,7 +666,7 @@
       "order": 27,
       "title": "PuzzleEvent/gallery/multiresource wins",
       "workstream": "META",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P26"

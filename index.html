@@ -17,6 +17,7 @@
     </div>
     <button id="daily-resume-old" class="calendar-link" hidden></button>
     <button id="appearance-open" class="milestone-card"><span class="milestone-gem" aria-hidden="true">✦</span><span class="milestone-details"><strong id="milestone-title">Веха 10</strong><span class="milestone-track"><i id="milestone-fill"></i></span><small id="milestone-copy">Стол «Чернила»</small></span><small id="milestone-progress">0 / 10</small></button>
+    <button id="picture-home" class="secondary" hidden>Альбом</button>
     </div><div class="home-actions"><div class="campaign-context"><strong>Кампания</strong><span id="home-progress"></span></div><button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
     <button id="level-picker-open" class="levels-link">Выбрать уровень</button></div>
   </section>
@@ -50,7 +51,7 @@
 <dialog id="result" class="sheet"><div class="sheet-heading"><span class="result-star" aria-hidden="true"><img src="art/generated/cycle.webp" alt=""></span><h2 id="result-title">Всё сошлось!</h2></div><div class="sheet-body"><p id="result-copy"></p><p id="result-continue-note" role="status" hidden></p><p id="result-continue-error" role="status" hidden></p>
 <div id="result-earnings"><span>Награда</span><strong id="result-total"></strong></div>
 <section id="result-bonus" hidden><strong>Пять побед · 5 / 5</strong><span id="result-bonus-copy"></span></section>
-<div id="result-meta" class="result-meta"></div><div id="win-video-offers" hidden><label for="win-video-kind">Бонус за видео</label><select id="win-video-kind"></select><button id="win-video-claim" class="secondary"></button></div>
+<div id="result-meta" class="result-meta"></div><button id="picture-result" class="secondary" hidden>Альбом</button><div id="win-video-offers" hidden><label for="win-video-kind">Бонус за видео</label><select id="win-video-kind"></select><button id="win-video-claim" class="secondary"></button></div>
 <section id="unlock-reward" hidden><div id="unlock-preview" class="appearance-preview unlock-preview" aria-hidden="true"><span class="preview-back"></span><span class="preview-face"><b>✦</b></span></div><div><strong id="unlock-title"></strong><button id="apply-unlock" class="secondary">Примерить</button></div></section>
 </div><div class="sheet-actions"><button id="next-level" class="primary" hidden>Следующий уровень</button>
 <button id="result-continue-coins" class="primary" hidden></button><button id="result-continue" class="primary" hidden>+10 ходов · видео</button>
@@ -70,5 +71,10 @@
 <dialog id="cycle-info"><button class="close" data-close aria-label="Закрыть">×</button><h2>Пять побед</h2><p>За пять впервые пройденных уровней кампании — 20 монет и подсказка. Затем начинается новый цикл.</p><p class="small">Перезапуск и смена незавершённого уровня сбрасывают отметки. Отмена хода, продолжение, пауза и задание дня их сохраняют.</p><button class="primary" data-close>Понятно</button></dialog>
 <dialog id="restart-confirm"><h2>Начать заново?</h2><p id="restart-confirm-copy">Карты вернутся на исходные места. Потраченные помощники не восстановятся, текущие отметки пяти побед сбросятся.</p><button id="restart-confirm-yes" class="primary">Начать заново</button><button class="secondary" data-close>Продолжить партию</button></dialog>
 <dialog id="replace-daily"><h2>Начать новый день?</h2><p>Новое задание дня заменит незавершённое. Старую партию можно пока доиграть как тренировку. Кампания сохранится.</p><button id="replace-daily-yes" class="primary">Открыть новую раздачу</button><button class="secondary" data-close>Оставить старую</button></dialog>
+<dialog id="picture-dialog" class="sheet" aria-labelledby="picture-title">
+  <div class="sheet-heading"><button id="picture-close" class="close" aria-label="Закрыть">×</button><h2 id="picture-title">Апельсиновая оранжерея</h2></div>
+  <div class="sheet-body"><p id="picture-status" role="status"></p><div id="picture-grid" role="group" aria-label="Фрагменты иллюстрации"></div><p id="picture-prize"></p></div>
+  <div class="sheet-actions"><button id="picture-claim" class="primary" hidden>Забрать 20 монет и подсказку</button><button id="picture-done" class="secondary">Готово</button></div>
+</dialog>
 <script type="module" src="/src/main.ts"></script>
 </body></html>

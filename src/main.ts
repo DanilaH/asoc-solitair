@@ -17,6 +17,7 @@ import { BALANCE } from './domain/balance';
 import { frozenLayers } from './domain/frozen-cards';
 import { isBoundCard } from './domain/bound-cards';
 import { collectedGold, goldenRewardKey } from './domain/golden-cards';
+import { PICTURE_PREVIEW, PICTURE_PRICES, PICTURE_TITLE, claimPicture, observePictureClock, openPictureEvent, pictureClosed, pictureTokens, recordPictureWin, revealPicturePart } from './domain/events/picture';
 import { REWARD_OFFER_PREVIEW, isOfferPlacement, offerLabels, offerQuote, prepareRewardOffer, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
 import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-shuffle';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
@@ -179,6 +180,7 @@ try {
   let rewardedResultAttempt: string | undefined;
   let rewardOfferReturn: { attempt: string; selector: '#result'|'#helpers'|'#appearance' } | undefined;
   let definitionCardId: string | undefined;
+  let pictureReturnToResult = false;
   let themeExpiry: ReturnType<typeof setTimeout> | undefined;
   // A backing-store resize clears the canvas even when the model is static.
   // Keep a bounded repaint tail instead of sleeping in that POST_RENDER turn.
@@ -470,6 +472,7 @@ try {
     $<HTMLButtonElement>('#apply-unlock').disabled = !unlockChoice || applied || saving || serviceBusy;
     $('#save-retry').hidden = !store.needsRecovery;
     if (REWARD_OFFER_PREVIEW) renderRewardOffers();
+    if (PICTURE_PREVIEW || save.picture) renderPicture();
   }
   function outcome(collectionDeadline = Infinity) {
     if (save.attempt.board.phase === 'playing') return;
@@ -538,6 +541,9 @@ try {
       await write(next => {
         const beforeBoard = next.attempt.board;
         result = dispatch(next, cmd, deal, localDay());
+        if (PICTURE_PREVIEW && result.accepted && result.next.attempt.board.phase === 'won') {
+          recordPictureWin(next, result.next, deal, Date.now());
+        }
         Object.assign(next, result.next);
         if (result.accepted) {
           if (cmd.type === 'transfer' || cmd.type === 'draw' || cmd.type === 'recycle') {
@@ -626,6 +632,47 @@ try {
     rewardedResultAttempt = undefined;
     outcome();
     return true;
+  }
+  const showPicture = () => PICTURE_PREVIEW || Boolean(save.picture);
+  function renderPicture() {
+    const picture = save.picture, tokens = pictureTokens(save), parts = picture?.parts ?? [];
+    const gallery = Boolean(picture?.gallery), complete = parts.length === PICTURE_PRICES.length;
+    const home = $('#picture-home'), result = $('#picture-result');
+    home.hidden = !showPicture();
+    home.textContent = parts.length ? `Альбом · ${parts.length}/${PICTURE_PRICES.length}` : 'Альбом';
+    result.hidden = !showPicture() || save.attempt.board.phase !== 'won' || Boolean(save.attempt.daily);
+    result.textContent = picture?.lastWinAttempt === save.attempt.id ? 'Альбом · +2 жетона и 3 монеты' : 'Альбом';
+    if (!$<HTMLDialogElement>('#picture-dialog').open) return;
+    $('#picture-title').textContent = PICTURE_TITLE;
+    $('#picture-status').textContent = gallery ? 'Иллюстрация сохранена в альбоме.' : `Жетоны · ${tokens}  •  Открыто ${parts.length} из ${PICTURE_PRICES.length}`;
+    $('#picture-prize').textContent = gallery ? '' : pictureClosed(save, Date.now())
+      ? 'Событие завершилось. Заработанные жетоны можно потратить.'
+      : 'За первую победу на каждом уровне — 2 жетона и 3 монеты.';
+    const claim = $<HTMLButtonElement>('#picture-claim');
+    claim.hidden = !complete || gallery;
+    claim.disabled = saving || serviceBusy;
+    for (const button of document.querySelectorAll<HTMLButtonElement>('#picture-grid button')) {
+      const part = Number(button.dataset.part);
+      const open = parts.includes(part);
+      button.toggleAttribute('data-open', open);
+      button.setAttribute('aria-label', open ? `Фрагмент ${part + 1} открыт` : `Открыть фрагмент ${part + 1} за ${PICTURE_PRICES[part]} жетона`);
+      button.textContent = open ? '' : `${PICTURE_PRICES[part]} жет.`;
+      button.disabled = open || saving || serviceBusy || tokens < PICTURE_PRICES[part];
+    }
+  }
+  async function showPictureDialog() {
+    if (!showPicture() || saving || serviceBusy) return;
+    pictureReturnToResult = $<HTMLDialogElement>('#result').open;
+    try {
+      await write(next => {
+        const now = Date.now();
+        if (PICTURE_PREVIEW && !next.picture) openPictureEvent(next, now);
+        else observePictureClock(next, now);
+      });
+      if (!save.picture || !alive) return;
+      openDialog('#picture-dialog');
+      renderPicture();
+    } catch { message('Не удалось открыть альбом. Попробуйте ещё раз.', true); }
   }
   function renderRewardOffers() {
     const now = Date.now(), available = screen === 'game' && ads.status.mode === 'test' && ads.status.rewarded;
@@ -1026,6 +1073,29 @@ try {
     if (button && !button.disabled) void openLevel(Number(button.dataset.level));
   }, domOptions);
   $('#next-level').addEventListener('click', () => { if (save.attempt.daily || deal.campaignLevel === CAMPAIGN_LENGTH) goHome(); else void openLevel((deal.campaignLevel ?? 0) + 1); }, domOptions);
+  if (showPicture()) {
+    for (const [part] of PICTURE_PRICES.entries()) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.part = String(part);
+      $('#picture-grid').append(button);
+      button.addEventListener('click', () => {
+        if (saving || serviceBusy) return;
+        void write(next => revealPicturePart(next, part)).catch(() => message('Не удалось сохранить фрагмент.', true));
+      }, domOptions);
+    }
+    for (const selector of ['#picture-home', '#picture-result']) $(selector).addEventListener('click', () => { void showPictureDialog(); }, domOptions);
+    $('#picture-dialog').addEventListener('close', () => {
+      if (!pictureReturnToResult) return;
+      pictureReturnToResult = false;
+      if (screen === 'game' && save.attempt.board.phase === 'won' && !dialogs.some(dialog => dialog.open)) outcome();
+    }, domOptions);
+    for (const selector of ['#picture-close', '#picture-done']) $(selector).addEventListener('click', () => closeDialogs(), domOptions);
+    $('#picture-claim').addEventListener('click', () => {
+      if (saving || serviceBusy) return;
+      void write(next => claimPicture(next, Date.now())).catch(() => message('Не удалось сохранить награду.', true));
+    }, domOptions);
+  }
   if (REWARD_OFFER_PREVIEW) {
     const select = $<HTMLSelectElement>('#win-video-kind');
     for (const [kind, label] of Object.entries(offerLabels)) select.add(new Option(label, kind));

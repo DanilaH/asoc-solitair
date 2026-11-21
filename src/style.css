@@ -551,3 +551,9 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 .board-bonus:active{background:#2b7372}
 .board-bonus:focus-visible{outline:2px solid #fff0af;outline-offset:2px}
 #bonus-error{color:#8c2924}
+
+#picture-grid{width:min(100%,360px);margin:0 auto;display:grid;grid-template:repeat(2,1fr)/repeat(3,1fr);aspect-ratio:1;border-radius:14px;overflow:hidden;background:center/cover url('/art/gallery/orangery.webp')}
+#picture-grid button{min-width:0;min-height:44px;margin:0;padding:4px;border-radius:0;border:1px solid #f4e6c9;background:#28645a;color:#fff9e9;font-size:.9rem}
+#picture-grid button:disabled:not([data-open]){opacity:1;background:#405b55;color:#f5eddb}
+#picture-grid button[data-open]{background:transparent;border-color:transparent;opacity:1}
+#picture-status,#picture-prize{margin:.5rem 0}

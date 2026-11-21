@@ -39,7 +39,7 @@
       "order": 1,
       "title": "Исправить рекламный cooldown #80",
       "workstream": "ADS",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"

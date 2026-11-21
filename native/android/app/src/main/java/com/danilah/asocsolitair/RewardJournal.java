@@ -7,25 +7,34 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
-/** One pending externally earned receipt. AtomicFile avoids SharedPreferences' failed-commit memory ambiguity. */
+/** One pending SDK event per file, accessed on the Android main thread. */
 final class RewardJournal {
-    private static JSONObject unconfirmed;
+    private static final Map<String, JSONObject> unconfirmed = new HashMap<>();
     private final AtomicFile file;
-    RewardJournal(Context context) { file = new AtomicFile(new File(context.getNoBackupFilesDir(), "solitaire-earned-v1.json")); }
-    synchronized JSONObject pending() throws Exception {
-        if (unconfirmed != null) persist(unconfirmed);
+    private final String path;
+
+    RewardJournal(Context context, String filename) {
+        File base = new File(context.getNoBackupFilesDir(), filename);
+        file = new AtomicFile(base);
+        path = base.getAbsolutePath();
+    }
+    JSONObject pending() throws Exception {
+        JSONObject retry = unconfirmed.get(path);
+        if (retry != null) persist(retry);
         try { return new JSONObject(new String(file.readFully(), StandardCharsets.UTF_8)); }
         catch (FileNotFoundException absent) {
             if (file.getBaseFile().exists() || new File(file.getBaseFile() + ".bak").exists()) throw absent;
             return null;
         }
     }
-    synchronized void record(JSONObject receipt) throws Exception {
+    void record(JSONObject receipt) throws Exception {
         JSONObject existing = pending();
-        if (existing != null) throw new IllegalStateException("Previous earned receipt still pending");
+        if (existing != null) throw new IllegalStateException("Previous SDK event still pending");
         // Keep exact receipt process-wide across Activity destruction if the disk is temporarily unavailable.
-        unconfirmed = receipt;
+        unconfirmed.put(path, receipt);
         persist(receipt);
     }
     private void persist(JSONObject receipt) throws Exception {
@@ -34,10 +43,10 @@ final class RewardJournal {
             out = file.startWrite(); out.write(receipt.toString().getBytes(StandardCharsets.UTF_8));
             file.finishWrite(out); out = null;
             if (!new String(file.readFully(), StandardCharsets.UTF_8).equals(receipt.toString())) throw new java.io.IOException("Receipt verification failed");
-            unconfirmed = null;
+            unconfirmed.remove(path);
         } catch (Exception error) { if (out != null) file.failWrite(out); throw error; }
     }
-    synchronized void acknowledge(String id) throws Exception {
+    void acknowledge(String id) throws Exception {
         JSONObject receipt = pending();
         if (receipt == null) return;
         if (!receipt.getString("id").equals(id)) throw new IllegalArgumentException("Receipt mismatch");

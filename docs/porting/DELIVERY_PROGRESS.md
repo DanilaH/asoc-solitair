@@ -17,7 +17,7 @@
 | Пакет | State | PR/commit + CI | Доказанная функциональность / остаток |
 | --- | --- | --- | --- |
 | P00 | ENGINEERING_VERIFIED | [База #86 `ba44580`](https://github.com/DanilaH/asoc-solitair/pull/86), [CI 44925229086](https://github.com/DanilaH/asoc-solitair/actions/runs/44925229086) | [Сверка веток, подписанного APK и регрессий](P00_C8_BASELINE.md). Все 114 ID сохранены, 0 изменений статусов механик. Физический Android и плейтест в P02. |
-| P01 | QUEUED | — | Исправить ad request≠shown; issue #80 |
+| P01 | NEEDS_DEVICE | [Ветка P01](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p01-fullscreen-shown-20261121), [issue #80](https://github.com/DanilaH/asoc-solitair/issues/80) | [Учёт SDK show и проверка прежних сохранений](P01_FULLSCREEN_CADENCE.md). `azur-fullscreen-ads-clock` остаётся IMPLEMENTED_UNVERIFIED. Тест реального показа и lifecycle в P02/Q3. |
 | P02 | QUEUED | — | Q2/Q3 реальный Android и плейтест |
 | P03 | QUEUED | — | Q1c/semantics baseline |
 | P04 | QUEUED | — | C1/D2 UX и косметика |

@@ -115,7 +115,7 @@
       "id": "azur-extra-foundation",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Content 8 preview 0.19.9 offers a separate fourth/fifth upper foundation at levels 22/40 with coin or earned video, legal category moves, persistent opening, Hint and post-transfer practice.",
-      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings.",
+      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/60",
       "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
       "stage": "D1"
@@ -131,14 +131,14 @@
       "id": "hitapps-golden-cards",
       "status": "ROADMAPPED",
       "currentImplementation": "No GoldenCardsFeatureApplier-equivalent modifier of individual cards in final shuffle phase; no Gold Rush lifecycle",
-      "nextAction": "Restore separate native Final-phase GoldenCards insertion and check gold-marked win receipts; event policy tracked separately under hitapps-gold-rush-event",
+      "nextAction": "Restore separate native Final-phase GoldenCards insertion and check gold-marked win receipts; event policy tracked separately under hitapps-gold-rush-event D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },
     {
       "id": "hitapps-ordered-category",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Existing rank and contiguous-prefix rules now apply in Content 8 at levels 17 and 45. Level 17 teaches the first ordered move through a resumable exercise.",
-      "nextAction": "Verify on physical Android, then evaluate placement and difficulty before extending the ordered schedule. Original live activation remains open.",
+      "nextAction": "Verify on physical Android, then evaluate placement and difficulty before extending the ordered schedule. Original live activation remains open. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "D1",
       "evidenceRef": "docs/qa/content-v8/CORE_4_SPECIAL_DEALS.md"
@@ -147,7 +147,7 @@
       "id": "hitapps-lockers",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Authored Content 8 deals at levels 18, 26 and 66 close a tableau column until three distinct key cards are revealed. Level 18 teaches actual unlocking. Saved state and Undo retain the column and key state.",
-      "nextAction": "Confirm Android touch, feedback and pacing. Source Shuffle pattern implementation and product positions are documented independently of the live original.",
+      "nextAction": "Confirm Android touch, feedback and pacing. Source Shuffle pattern implementation and product positions are documented independently of the live original. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "D1",
       "evidenceRef": "docs/qa/content-v8/CORE_4_SPECIAL_DEALS.md"
@@ -156,28 +156,28 @@
       "id": "hitapps-frozen",
       "status": "ROADMAPPED",
       "currentImplementation": "Not implemented",
-      "nextAction": "Reconstruct eligible frozen state and design original mechanic + undo/solver/migration",
+      "nextAction": "Reconstruct eligible frozen state and design original mechanic + undo/solver/migration D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },
     {
       "id": "hitapps-bound",
       "status": "ROADMAPPED",
       "currentImplementation": "Not implemented",
-      "nextAction": "Reconstruct bound-card pattern and design original mechanic + undo/solver/migration",
+      "nextAction": "Reconstruct bound-card pattern and design original mechanic + undo/solver/migration D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },
     {
       "id": "hitapps-magnet-hammer",
       "status": "ROADMAPPED",
       "currentImplementation": "Joker only; no Hitapps starter Magnet/Hammer in stock",
-      "nextAction": "Prototype one differentiated helper first, preserving post-seed insertion proof boundaries",
+      "nextAction": "Prototype one differentiated helper first, preserving post-seed insertion proof boundaries D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },
     {
       "id": "azur-shuffle-helper",
       "status": "ROADMAPPED",
       "currentImplementation": "No explicit Shuffle helper",
-      "nextAction": "Determine re-deal constraints/save/provable solvability and user teaching",
+      "nextAction": "Determine re-deal constraints/save/provable solvability and user teaching D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },
     {
@@ -751,7 +751,7 @@
       "id": "azur-shuffle-animation-controller",
       "status": "ROADMAPPED",
       "currentImplementation": "No Shuffle helper or center-turn animation in current game",
-      "nextAction": "Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees",
+      "nextAction": "Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },
     {
@@ -806,7 +806,7 @@
       "id": "azur-bonus-lower-column",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Content 8 preview 0.19.9 offers a separate fifth lower tableau at levels 30/40 with coin or earned video, legal temporary storage, verified Hint continuation, persistent opening and post-transfer practice.",
-      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings.",
+      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/60",
       "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
       "stage": "D1"
@@ -846,7 +846,7 @@
       "id": "hitapps-puzzle-top-bottom-cards",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "C8 leader and ordinary word types only; no native puzzle top/bottom special card types",
-      "nextAction": "Trace PuzzleTop/PuzzleBottom distribution, stock placements, move legality and interactions; then implement clean-room additional card types with verifier",
+      "nextAction": "Trace PuzzleTop/PuzzleBottom distribution, stock placements, move legality and interactions; then implement clean-room additional card types with verifier D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
     },
@@ -854,7 +854,7 @@
       "id": "hitapps-bound-scissors-pattern",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No BoundCard/Scissors in current game; only plain/ordered/lock/Joker",
-      "nextAction": "Recover actual native scissors reveal/remove, layer and move-cost rules for BoundPattern; create specified Rules/Undo/Solver/teaching test upon proof",
+      "nextAction": "Recover actual native scissors reveal/remove, layer and move-cost rules for BoundPattern; create specified Rules/Undo/Solver/teaching test upon proof D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
     },
@@ -862,7 +862,7 @@
       "id": "unico-magnet-helper",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No Unico Magnet, and Hitapps Magnet starter booster is independent reference",
-      "nextAction": "Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action",
+      "nextAction": "Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
     },
@@ -878,7 +878,7 @@
       "id": "azur-joker-random-column-insertion",
       "status": "ROADMAPPED",
       "currentImplementation": "C8 implements a separate Hitapps-inspired Joker foundation/tableau lesson, but not original AZUR's randomly selected lower tableau insertion, card creation and UndoSystem.Clear source branch.",
-      "nextAction": "Research kit PR #84 original AZUR GameManager.AddJokerCard: shared Unity Random.Range(0,min(configured limit,current tableau columns)) chooses GetColumn, adds revealed card using PlaceCardForced, conditionally clears UndoSystem and TryAddJokerCard emits RaiseJokerUsed only on nonnull. Define versioned separate optional AZUR helper with source-derived/random-column tests and explicit Undo reset policy; actual positive/zero bounds, UI unlocking, coin/SDK receipts, original Android/restart/save states and global RNG state remain UNKNOWN.",
+      "nextAction": "Research kit PR #84 original AZUR GameManager.AddJokerCard: shared Unity Random.Range(0,min(configured limit,current tableau columns)) chooses GetColumn, adds revealed card using PlaceCardForced, conditionally clears UndoSystem and TryAddJokerCard emits RaiseJokerUsed only on nonnull. Define versioned separate optional AZUR helper with source-derived/random-column tests and explicit Undo reset policy; actual positive/zero bounds, UI unlocking, coin/SDK receipts, original Android/restart/save states and global RNG state remain UNKNOWN. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },
     {

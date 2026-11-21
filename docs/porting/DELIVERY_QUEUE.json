@@ -21,7 +21,7 @@
       "order": 0,
       "title": "Интеграция C8, QA и CI",
       "workstream": "FOUNDATION",
-      "state": "QUEUED",
+      "state": "ENGINEERING_VERIFIED",
       "entryGate": "READY_LOCAL",
       "dependsOn": [],
       "sourceFeatureIds": [],

@@ -16,7 +16,7 @@
 
 | Пакет | State | PR/commit + CI | Доказанная функциональность / остаток |
 | --- | --- | --- | --- |
-| P00 | QUEUED | — | Сверить runtime CORE-5 + research #85 |
+| P00 | ENGINEERING_VERIFIED | [База #86 `ba44580`](https://github.com/DanilaH/asoc-solitair/pull/86), [CI 44925229086](https://github.com/DanilaH/asoc-solitair/actions/runs/44925229086) | [Сверка веток, подписанного APK и регрессий](P00_C8_BASELINE.md). Все 114 ID сохранены, 0 изменений статусов механик. Физический Android и плейтест в P02. |
 | P01 | QUEUED | — | Исправить ad request≠shown; issue #80 |
 | P02 | QUEUED | — | Q2/Q3 реальный Android и плейтест |
 | P03 | QUEUED | — | Q1c/semantics baseline |

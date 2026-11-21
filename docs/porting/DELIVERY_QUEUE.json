@@ -738,7 +738,7 @@
       "order": 30,
       "title": "Streaks Hitapps/Unico и AZUR Combo",
       "workstream": "META",
-      "state": "QUEUED",
+      "state": "BLOCKED_EXTERNAL",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P26"

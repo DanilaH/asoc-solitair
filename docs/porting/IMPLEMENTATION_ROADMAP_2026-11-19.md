@@ -116,7 +116,7 @@ Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle e
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
 | `azur-extra-foundation` | `IMPLEMENTED_UNVERIFIED` | C8 levels 22/40 open an upper slot by coin debit or its earned receipt. Authored eligibility, real transfers, Hint, save and Undo are tested. Physical taps, production ad behavior and original runtime parity remain open. [Verification](../qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md) |
-| `hitapps-golden-cards` | `ROADMAPPED` | Restore separate native Final-phase GoldenCards insertion and check gold-marked win receipts; event policy tracked separately under hitapps-gold-rush-event |
+| `hitapps-golden-cards` | `IMPLEMENTED_UNVERIFIED` | [P13 PRODUCT_ADAPTED preparation and award](P13_GOLDEN_CARDS.md). Source payout and event schedule remain P31/P36. |
 | `hitapps-ordered-category` | `IMPLEMENTED_UNVERIFIED` | Verify first C8 introduction and match rule provenance; device teaching still pending |
 | `hitapps-lockers` | `IMPLEMENTED_UNVERIFIED` | Re-author gated C8 16–80 with independent solver and onboarding/device check |
 | `hitapps-frozen` | `IMPLEMENTED_UNVERIFIED` | [P10 PRODUCT_ADAPTED preview](P10_FROZEN_CARDS.md), per-card layers, Undo and two proven routes. Original thaw and source configuration remain P36. |

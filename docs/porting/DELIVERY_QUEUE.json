@@ -1,0 +1,1079 @@
+{
+  "schema": "asoc-autonomous-delivery-queue-v1",
+  "asOf": "2026-11-21",
+  "sourcePin": {
+    "repo": "DanilaH/asoc-solitair",
+    "sourceInventoryRef": "a5c246d9935474d7fe662da95fb657c61c245c0a",
+    "sourceInventoryBlob": "72efdad46077213e1ce68475b004544fe9dfec75",
+    "baselineContent8Head": "e092ba156eebb5ebc703d89e4e98bf657bbd6f14",
+    "gameVersion": "0.20.3 Content8 preview",
+    "runtimeKitCommit": "a9325265e87583a4872cf6a158e1e881a0d7508e"
+  },
+  "governance": {
+    "ownerDirection": "Full reference-system porting. Do not exclude or permanently reject any researched system unless the owner expressly decides.",
+    "selection": "After each engineering-accepted package, take the next lowest-numbered independently buildable QUEUED packet. If device, original runtime, merchant, source or owner policy blocks a specific gate, implement independent work, log BLOCKED_EXTERNAL or NEEDS_OWNER, and continue to the next package automatically without a prompt.",
+    "statusRecord": "docs/porting/DELIVERY_PROGRESS.md",
+    "rules": "Do not silently modify existing immutable Deals, legacy saves, Undo/Hint, receipt ownership, source status. Own adapted mechanics must be identified as such and independently tested. No actual store payments without legally supported verified provider."
+  },
+  "packets": [
+    {
+      "id": "P00",
+      "order": 0,
+      "title": "Интеграция C8, QA и CI",
+      "workstream": "FOUNDATION",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [],
+      "sourceFeatureIds": [],
+      "spec": "docs/porting/specs/00_FOUNDATION_QA.md",
+      "acceptanceTarget": "Full PR ancestry, signed preview, existing SaveStore/Rules3 regression",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P01",
+      "order": 1,
+      "title": "Исправить рекламный cooldown #80",
+      "workstream": "ADS",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P00"
+      ],
+      "sourceFeatureIds": [
+        "azur-fullscreen-ads-clock"
+      ],
+      "spec": "docs/porting/specs/03_REWARDS_ADS_COMMERCE.md",
+      "acceptanceTarget": "Only SDK shown changes win cadence/timestamp, not no-fill",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P02",
+      "order": 2,
+      "title": "Q2/Q3 физический Android и люди",
+      "workstream": "QA",
+      "state": "QUEUED",
+      "entryGate": "PHYSICAL_ANDROID",
+      "dependsOn": [
+        "P00"
+      ],
+      "sourceFeatureIds": [],
+      "spec": "docs/porting/specs/05_SOURCE_DEVICE_ACCEPTANCE.md",
+      "acceptanceTarget": "Blind 1–6 session + separate directed pivots and native SDK earned/no-fill",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P03",
+      "order": 3,
+      "title": "Проверка альтернатив и разнообразия кампании",
+      "workstream": "QUALITY",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P00"
+      ],
+      "sourceFeatureIds": [],
+      "spec": "docs/porting/specs/00_FOUNDATION_QA.md",
+      "acceptanceTarget": "Q1b 889/528/325/203, Q1c 13/18, finite-budget and semantic tests",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P04",
+      "order": 4,
+      "title": "FTUE, D2 UX и весь game feel",
+      "workstream": "UX",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P00"
+      ],
+      "sourceFeatureIds": [
+        "azur-action-ftue",
+        "azur-difficulty-label",
+        "azur-locked-helper-discovery",
+        "hitapps-joker",
+        "hitapps-ghost-hint",
+        "ui-motion-audio-coin",
+        "hitapps-ingame-streak",
+        "azur-card-dictionary",
+        "azur-stock-side-setting",
+        "azur-card-animation-controller",
+        "azur-coin-flight-animator",
+        "azur-victory-reward-sequencer",
+        "azur-button-haptic-feedback",
+        "hitapps-invalid-transfer-feedback",
+        "azur-cosmetics",
+        "unico-themes-and-skins"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "11 D2 components, three C1 intros and two cosmetics verified through UI",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P05",
+      "order": 5,
+      "title": "Hitapps/AZUR генератор и источник раскладки",
+      "workstream": "CORE",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P00"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-stock-dealer",
+        "hitapps-candidate-priority",
+        "azur-deck-draw-and-recycle",
+        "azur-defeat-vs-no-valid-move",
+        "azur-generate-deal-entrypoints",
+        "hitapps-negative-seed-request-path",
+        "azur-tutorial-preset-deal"
+      ],
+      "spec": "docs/porting/specs/01_GENERATION_DIRECTOR.md",
+      "acceptanceTarget": "Separate source-modeled RNG/dealer, game immutable Deals and preset fixtures",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P06",
+      "order": 6,
+      "title": "Расширить DynamicDifficulty/EasyDeals",
+      "workstream": "CORE",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P05"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-dynamic-difficulty",
+        "hitapps-easy-deals",
+        "unico-redeal-restart"
+      ],
+      "spec": "docs/porting/specs/01_GENERATION_DIRECTOR.md",
+      "acceptanceTarget": "Native ten-outcome semantics and new certified immutable variants beyond 11–15",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P07",
+      "order": 7,
+      "title": "Equality/Paywall offline source phases",
+      "workstream": "CORE",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P05"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-equality-paywall",
+        "hitapps-paywall-segmentation",
+        "hitapps-equality-three-stack-pair-placement",
+        "hitapps-feature-seed-one-time-reshuffle",
+        "hitapps-initial-shuffle-final-pipeline"
+      ],
+      "spec": "docs/porting/specs/01_GENERATION_DIRECTOR.md",
+      "acceptanceTarget": "Candidate seed/segment, three stacks, bot outcomes and phase flag model",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P08",
+      "order": 8,
+      "title": "Сохранённая опциональная выдача Equality",
+      "workstream": "CORE",
+      "state": "QUEUED",
+      "entryGate": "OWNER_ACTIVATION_GATE",
+      "dependsOn": [
+        "P07"
+      ],
+      "sourceFeatureIds": [],
+      "spec": "docs/porting/specs/01_GENERATION_DIRECTOR.md",
+      "acceptanceTarget": "Feature-flagged special issuance disabled by default; proof-aware grant/save",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P09",
+      "order": 9,
+      "title": "Приёмка Ordered, Keys, верхнего/нижнего слота",
+      "workstream": "SPECIAL",
+      "state": "QUEUED",
+      "entryGate": "PHYSICAL_ANDROID",
+      "dependsOn": [
+        "P00"
+      ],
+      "sourceFeatureIds": [
+        "azur-extra-foundation",
+        "hitapps-ordered-category",
+        "hitapps-lockers",
+        "azur-bonus-lower-column"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "levels17/18/22/26/30/40/45/66 real touch+Undo+SDK",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P10",
+      "order": 10,
+      "title": "Frozen cards",
+      "workstream": "SPECIAL",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P05",
+        "P09"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-frozen"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "Source-gated layered states, honest adapted proof, solver+Undo migration",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P11",
+      "order": 11,
+      "title": "Bound + Scissors",
+      "workstream": "SPECIAL",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P05",
+        "P09"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-bound",
+        "hitapps-bound-scissors-pattern"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "Pattern/scissors action, source-vs-adapted rule, independent QA",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P12",
+      "order": 12,
+      "title": "PuzzleTop / PuzzleBottom",
+      "workstream": "SPECIAL",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P05"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-puzzle-top-bottom-cards"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "New separately named card types with legality/stock/solver tests",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P13",
+      "order": 13,
+      "title": "GoldenCards in Final phase",
+      "workstream": "SPECIAL",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P05"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-golden-cards"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "Separate gold card placement and claim, event lifecycle P26/P31",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P14",
+      "order": 14,
+      "title": "Hitapps Magnet/Hammer starter boosters",
+      "workstream": "SPECIAL",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P05"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-magnet-hammer"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "Post-seed separate Unity RNG, valid stocked boosters, independent helper rules",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P15",
+      "order": 15,
+      "title": "AZUR random-column Joker",
+      "workstream": "SPECIAL",
+      "state": "QUEUED",
+      "entryGate": "OWNER_ACTIVATION_GATE",
+      "dependsOn": [
+        "P05",
+        "P09"
+      ],
+      "sourceFeatureIds": [
+        "azur-joker-random-column-insertion"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "Generated card and source Undo.Clear only with approved versioned policy",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P16",
+      "order": 16,
+      "title": "AZUR Shuffle helper + animation",
+      "workstream": "SPECIAL",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P05"
+      ],
+      "sourceFeatureIds": [
+        "azur-shuffle-helper",
+        "azur-shuffle-animation-controller"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "Certified solver-positive reshuffle+Undo/save, animate after commit",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P17",
+      "order": 17,
+      "title": "Unico Magnet separate helper",
+      "workstream": "SPECIAL",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P05"
+      ],
+      "sourceFeatureIds": [
+        "unico-magnet-helper"
+      ],
+      "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
+      "acceptanceTarget": "Obtain original action beyond tooltip, no fake source parity",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P18",
+      "order": 18,
+      "title": "CORE-5 coin/rewarded +10, loss recovery",
+      "workstream": "REWARD",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P00"
+      ],
+      "sourceFeatureIds": [
+        "azur-coin-moves",
+        "azur-rewarded-moves",
+        "unico-loss-dialog"
+      ],
+      "spec": "docs/porting/specs/03_REWARDS_ADS_COMMERCE.md",
+      "acceptanceTarget": "Actual-board proof, duplicate/stale/no-fill/reopen, coin spend once",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P19",
+      "order": 19,
+      "title": "RestoreStock, segmented revive, unlimited",
+      "workstream": "REWARD",
+      "state": "QUEUED",
+      "entryGate": "OWNER_ACTIVATION_GATE",
+      "dependsOn": [
+        "P18"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-stock-restore",
+        "hitapps-revive-offers",
+        "azur-unlimited-moves-offer"
+      ],
+      "spec": "docs/porting/specs/03_REWARDS_ADS_COMMERCE.md",
+      "acceptanceTarget": "Distinct stock rule, offer choice/entitlement, versioned saves",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P20",
+      "order": 20,
+      "title": "Победные бонусы, Definition, free coins/themes",
+      "workstream": "REWARD",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P18"
+      ],
+      "sourceFeatureIds": [
+        "azur-win-multiplier",
+        "hitapps-win-rewarded-offer",
+        "unico-rewarded-theme",
+        "unico-double-reward",
+        "azur-definition-consumable",
+        "azur-free-shop-coin-claim",
+        "azur-remaining-moves-coin-bonus"
+      ],
+      "spec": "docs/porting/specs/03_REWARDS_ADS_COMMERCE.md",
+      "acceptanceTarget": "Separate opt-in x2/x3/x5, free claim and one-earned grant",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P21",
+      "order": 21,
+      "title": "AdsBreak, banner, ILRD, Coffee Break",
+      "workstream": "ADS",
+      "state": "QUEUED",
+      "entryGate": "OWNER_ACTIVATION_GATE",
+      "dependsOn": [
+        "P01",
+        "P18"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-adbreak",
+        "hitapps-ingame-banner",
+        "azur-ad-revenue-attribution",
+        "unico-coffee-break"
+      ],
+      "spec": "docs/porting/specs/03_REWARDS_ADS_COMMERCE.md",
+      "acceptanceTarget": "Per-difficulty gates, actual shown/impression/revenue, opt-in UX",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P22",
+      "order": 22,
+      "title": "Полный E3 офлайн-каталог 41 SKU family",
+      "workstream": "COMMERCE",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P00"
+      ],
+      "sourceFeatureIds": [
+        "azur-iap-product-catalog",
+        "azur-iap-helper-ladder"
+      ],
+      "spec": "docs/porting/specs/03_REWARDS_ADS_COMMERCE.md",
+      "acceptanceTarget": "Non-proprietary family/types and source-aware catalog, provider disabled",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P23",
+      "order": 23,
+      "title": "Платёжные чеки, энтитлменты, возвраты",
+      "workstream": "COMMERCE",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P22"
+      ],
+      "sourceFeatureIds": [
+        "azur-purchase-receipts"
+      ],
+      "spec": "docs/porting/specs/03_REWARDS_ADS_COMMERCE.md",
+      "acceptanceTarget": "Separate verified purchase orders and exactly-once grants/revoke",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P24",
+      "order": 24,
+      "title": "Разрешённый магазин и выплаты",
+      "workstream": "COMMERCE",
+      "state": "QUEUED",
+      "entryGate": "MERCHANT_ELIGIBILITY",
+      "dependsOn": [
+        "P23"
+      ],
+      "sourceFeatureIds": [],
+      "spec": "docs/porting/specs/03_REWARDS_ADS_COMMERCE.md",
+      "acceptanceTarget": "Official eligible provider, actual merchant onboarding/sandbox/receipts",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P25",
+      "order": 25,
+      "title": "Piggy/Pass/VIP/NoAds/offers/bundles",
+      "workstream": "COMMERCE",
+      "state": "QUEUED",
+      "entryGate": "OWNER_ACTIVATION_GATE",
+      "dependsOn": [
+        "P22",
+        "P23"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-piggy-bank",
+        "azur-play-pass",
+        "hitapps-rotating-offers",
+        "hitapps-birthday-offer",
+        "hitapps-decoy-offer",
+        "hitapps-starter-offer",
+        "hitapps-inapp-shop",
+        "azur-offer-campaign",
+        "unico-vip",
+        "azur-iap-no-ads",
+        "azur-iap-coin-packs",
+        "azur-iap-coin-offer-series",
+        "azur-iap-premium-bundles",
+        "azur-iap-welcome-offer",
+        "azur-iap-unlimited-moves-tiers"
+      ],
+      "spec": "docs/porting/specs/03_REWARDS_ADS_COMMERCE.md",
+      "acceptanceTarget": "All 15 source offer families, entitlement and truthful expiry, live after P24",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P26",
+      "order": 26,
+      "title": "Versioned event scheduler и claim ledger",
+      "workstream": "META",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P00"
+      ],
+      "sourceFeatureIds": [],
+      "spec": "docs/porting/specs/04_RETENTION_LIVEOPS.md",
+      "acceptanceTarget": "Atomic grants, event expiry, rollbacks and active/parked saves",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P27",
+      "order": 27,
+      "title": "PuzzleEvent/gallery/multiresource wins",
+      "workstream": "META",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P26"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-puzzle-event",
+        "hitapps-puzzle-gallery",
+        "hitapps-win-multiresource-payout"
+      ],
+      "spec": "docs/porting/specs/04_RETENTION_LIVEOPS.md",
+      "acceptanceTarget": "Own art reveal with source lifecycle, claim and return instrumentation",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P28",
+      "order": 28,
+      "title": "16 AZUR DailyTasks + девять rewards",
+      "workstream": "META",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P26"
+      ],
+      "sourceFeatureIds": [
+        "azur-daily-tasks"
+      ],
+      "spec": "docs/porting/specs/04_RETENTION_LIVEOPS.md",
+      "acceptanceTarget": "All source types preserved including commercial; only real earned transitions",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P29",
+      "order": 29,
+      "title": "DailyBonus, Fortune, DailyRewards, Puzzle",
+      "workstream": "META",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P26"
+      ],
+      "sourceFeatureIds": [
+        "azur-daily-bonus",
+        "hitapps-daily-rewards",
+        "unico-daily-fortune",
+        "hitapps-daily-puzzle",
+        "unico-daily-puzzles"
+      ],
+      "spec": "docs/porting/specs/04_RETENTION_LIVEOPS.md",
+      "acceptanceTarget": "Distinct dated bonus/card selection and evidence-gap source DailyPuzzle",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P30",
+      "order": 30,
+      "title": "Streaks Hitapps/Unico и AZUR Combo",
+      "workstream": "META",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P26"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-win-streak",
+        "unico-win-and-task-streak",
+        "azur-combo-streak"
+      ],
+      "spec": "docs/porting/specs/04_RETENTION_LIVEOPS.md",
+      "acceptanceTarget": "Distinct loss/reset/milestones and source Combo status",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P31",
+      "order": 31,
+      "title": "WeekendRace/Lava/Lives/GoldRush/prewarm",
+      "workstream": "META",
+      "state": "QUEUED",
+      "entryGate": "OWNER_ACTIVATION_GATE",
+      "dependsOn": [
+        "P26"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-weekend-race",
+        "hitapps-lava-quest",
+        "hitapps-lives",
+        "hitapps-gold-rush-event",
+        "hitapps-meta-prewarm"
+      ],
+      "spec": "docs/porting/specs/04_RETENTION_LIVEOPS.md",
+      "acceptanceTarget": "Honest bots, stage clocks, Gold card integration and opt-in lives",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P32",
+      "order": 32,
+      "title": "Regions/Cascade/Digging/Wheel/Treasure",
+      "workstream": "META",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P26"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-meta-regions",
+        "hitapps-cascade-events",
+        "hitapps-digging-event",
+        "hitapps-lucky-wheel",
+        "hitapps-endless-treasure"
+      ],
+      "spec": "docs/porting/specs/04_RETENTION_LIVEOPS.md",
+      "acceptanceTarget": "Each separate state, random odds/claim, labelled source unknown",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P33",
+      "order": 33,
+      "title": "80+ long campaign и semantic authoring",
+      "workstream": "LONGTAIL",
+      "state": "QUEUED",
+      "entryGate": "READY_LOCAL",
+      "dependsOn": [
+        "P03",
+        "P05"
+      ],
+      "sourceFeatureIds": [
+        "hitapps-level-wave",
+        "azur-topic-rotation",
+        "azur-variable-category-sizes",
+        "hitapps-mixed-word-image-cards",
+        "azur-structured-long-campaign"
+      ],
+      "spec": "docs/porting/specs/01_GENERATION_DIRECTOR.md",
+      "acceptanceTarget": "Fresh immutable themes, reference cadence and measured novelty QA",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P34",
+      "order": 34,
+      "title": "Locale, art-count, source budget и language",
+      "workstream": "LONGTAIL",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P05",
+        "P33"
+      ],
+      "sourceFeatureIds": [
+        "azur-art-sprite-wordcount-override",
+        "azur-async-theme-art-preload",
+        "azur-localized-move-budget",
+        "hitapps-language-change-restart",
+        "azur-localized-definition-packs"
+      ],
+      "spec": "docs/porting/specs/01_GENERATION_DIRECTOR.md",
+      "acceptanceTarget": "33 theme vs 36 definition banks, locale count formula, save migration",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P35",
+      "order": 35,
+      "title": "Remote bank overrides и offline delivery",
+      "workstream": "LONGTAIL",
+      "state": "QUEUED",
+      "entryGate": "SOURCE_EVIDENCE",
+      "dependsOn": [
+        "P34"
+      ],
+      "sourceFeatureIds": [
+        "azur-remote-level-overrides"
+      ],
+      "spec": "docs/porting/specs/01_GENERATION_DIRECTOR.md",
+      "acceptanceTarget": "Versioned remote cache/fallback; never redeal active attempt",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P36",
+      "order": 36,
+      "title": "Оригинальные runtime captures",
+      "workstream": "RESEARCH",
+      "state": "QUEUED",
+      "entryGate": "PHYSICAL_ANDROID",
+      "dependsOn": [
+        "P05"
+      ],
+      "sourceFeatureIds": [],
+      "spec": "docs/porting/specs/05_SOURCE_DEVICE_ACCEPTANCE.md",
+      "acceptanceTarget": "Two genuine AZUR/Hitapps executions with matched original build/board; Unico original",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    },
+    {
+      "id": "P37",
+      "order": 37,
+      "title": "Full release acceptance и ledger/kit feedback",
+      "workstream": "RELEASE",
+      "state": "QUEUED",
+      "entryGate": "RELEASE_GATE",
+      "dependsOn": [
+        "P00",
+        "P01",
+        "P03",
+        "P09",
+        "P18"
+      ],
+      "sourceFeatureIds": [],
+      "spec": "docs/porting/specs/05_SOURCE_DEVICE_ACCEPTANCE.md",
+      "acceptanceTarget": "Truthful exact-head CI/APK/human+SDK results, status ledger and remaining gaps",
+      "deliverables": [
+        "one scoped PR with actual changed files",
+        "replayable tests, exact-head CI and device evidence class",
+        "114-feature ledger evidence update and remaining gaps",
+        "real APK + inline GIF for visible changes; no unverified original parity"
+      ]
+    }
+  ],
+  "sourceFeatureOwner": {
+    "azur-action-ftue": "P04",
+    "azur-ad-revenue-attribution": "P21",
+    "azur-art-sprite-wordcount-override": "P34",
+    "azur-async-theme-art-preload": "P34",
+    "azur-bonus-lower-column": "P09",
+    "azur-button-haptic-feedback": "P04",
+    "azur-card-animation-controller": "P04",
+    "azur-card-dictionary": "P04",
+    "azur-coin-flight-animator": "P04",
+    "azur-coin-moves": "P18",
+    "azur-combo-streak": "P30",
+    "azur-cosmetics": "P04",
+    "azur-daily-bonus": "P29",
+    "azur-daily-tasks": "P28",
+    "azur-deck-draw-and-recycle": "P05",
+    "azur-defeat-vs-no-valid-move": "P05",
+    "azur-definition-consumable": "P20",
+    "azur-difficulty-label": "P04",
+    "azur-extra-foundation": "P09",
+    "azur-free-shop-coin-claim": "P20",
+    "azur-fullscreen-ads-clock": "P01",
+    "azur-generate-deal-entrypoints": "P05",
+    "azur-iap-coin-offer-series": "P25",
+    "azur-iap-coin-packs": "P25",
+    "azur-iap-helper-ladder": "P22",
+    "azur-iap-no-ads": "P25",
+    "azur-iap-premium-bundles": "P25",
+    "azur-iap-product-catalog": "P22",
+    "azur-iap-unlimited-moves-tiers": "P25",
+    "azur-iap-welcome-offer": "P25",
+    "azur-joker-random-column-insertion": "P15",
+    "azur-localized-definition-packs": "P34",
+    "azur-localized-move-budget": "P34",
+    "azur-locked-helper-discovery": "P04",
+    "azur-offer-campaign": "P25",
+    "azur-play-pass": "P25",
+    "azur-purchase-receipts": "P23",
+    "azur-remaining-moves-coin-bonus": "P20",
+    "azur-remote-level-overrides": "P35",
+    "azur-rewarded-moves": "P18",
+    "azur-shuffle-animation-controller": "P16",
+    "azur-shuffle-helper": "P16",
+    "azur-stock-side-setting": "P04",
+    "azur-structured-long-campaign": "P33",
+    "azur-topic-rotation": "P33",
+    "azur-tutorial-preset-deal": "P05",
+    "azur-unlimited-moves-offer": "P19",
+    "azur-variable-category-sizes": "P33",
+    "azur-victory-reward-sequencer": "P04",
+    "azur-win-multiplier": "P20",
+    "hitapps-adbreak": "P21",
+    "hitapps-birthday-offer": "P25",
+    "hitapps-bound": "P11",
+    "hitapps-bound-scissors-pattern": "P11",
+    "hitapps-candidate-priority": "P05",
+    "hitapps-cascade-events": "P32",
+    "hitapps-daily-puzzle": "P29",
+    "hitapps-daily-rewards": "P29",
+    "hitapps-decoy-offer": "P25",
+    "hitapps-digging-event": "P32",
+    "hitapps-dynamic-difficulty": "P06",
+    "hitapps-easy-deals": "P06",
+    "hitapps-endless-treasure": "P32",
+    "hitapps-equality-paywall": "P07",
+    "hitapps-equality-three-stack-pair-placement": "P07",
+    "hitapps-feature-seed-one-time-reshuffle": "P07",
+    "hitapps-frozen": "P10",
+    "hitapps-ghost-hint": "P04",
+    "hitapps-gold-rush-event": "P31",
+    "hitapps-golden-cards": "P13",
+    "hitapps-inapp-shop": "P25",
+    "hitapps-ingame-banner": "P21",
+    "hitapps-ingame-streak": "P04",
+    "hitapps-initial-shuffle-final-pipeline": "P07",
+    "hitapps-invalid-transfer-feedback": "P04",
+    "hitapps-joker": "P04",
+    "hitapps-language-change-restart": "P34",
+    "hitapps-lava-quest": "P31",
+    "hitapps-level-wave": "P33",
+    "hitapps-lives": "P31",
+    "hitapps-lockers": "P09",
+    "hitapps-lucky-wheel": "P32",
+    "hitapps-magnet-hammer": "P14",
+    "hitapps-meta-prewarm": "P31",
+    "hitapps-meta-regions": "P32",
+    "hitapps-mixed-word-image-cards": "P33",
+    "hitapps-negative-seed-request-path": "P05",
+    "hitapps-ordered-category": "P09",
+    "hitapps-paywall-segmentation": "P07",
+    "hitapps-piggy-bank": "P25",
+    "hitapps-puzzle-event": "P27",
+    "hitapps-puzzle-gallery": "P27",
+    "hitapps-puzzle-top-bottom-cards": "P12",
+    "hitapps-revive-offers": "P19",
+    "hitapps-rotating-offers": "P25",
+    "hitapps-starter-offer": "P25",
+    "hitapps-stock-dealer": "P05",
+    "hitapps-stock-restore": "P19",
+    "hitapps-weekend-race": "P31",
+    "hitapps-win-multiresource-payout": "P27",
+    "hitapps-win-rewarded-offer": "P20",
+    "hitapps-win-streak": "P30",
+    "ui-motion-audio-coin": "P04",
+    "unico-coffee-break": "P21",
+    "unico-daily-fortune": "P29",
+    "unico-daily-puzzles": "P29",
+    "unico-double-reward": "P20",
+    "unico-loss-dialog": "P18",
+    "unico-magnet-helper": "P17",
+    "unico-redeal-restart": "P06",
+    "unico-rewarded-theme": "P20",
+    "unico-themes-and-skins": "P04",
+    "unico-vip": "P25",
+    "unico-win-and-task-streak": "P30"
+  },
+  "coverage": {
+    "sourceIds": 114,
+    "assignedSourceIds": 114,
+    "packets": 38,
+    "excludedSourceIds": 0,
+    "sourceStages": {
+      "B1": 8,
+      "C2": 5,
+      "B2": 3,
+      "B3": 5,
+      "E2": 5,
+      "E1": 13,
+      "D1": 14,
+      "D2": 11,
+      "C1": 4,
+      "F1": 12,
+      "F2": 6,
+      "F3": 5,
+      "E3": 18,
+      "G1": 5
+    },
+    "currentStatuses": {
+      "IMPLEMENTED_UNVERIFIED": 39,
+      "IN_PROGRESS": 5,
+      "ROADMAPPED": 47,
+      "DEFERRED": 1,
+      "BLOCKED": 9,
+      "EVIDENCE_GAP": 13
+    }
+  }
+}

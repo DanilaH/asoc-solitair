@@ -1,0 +1,71 @@
+# Technical Spec 02 — special cards, assisted play and core game feel
+
+**P04, P09–P17.** Reference [D1 14-system audit](../../qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md), [CORE-4 specials](../../qa/content-v8/CORE_4_SPECIAL_DEALS.md), [AZUR upper/lower slots](../../qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md), [original Hitapps Shuffle/Final study](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-17-hitapps-final-phase/README.md), [AZUR original Joker](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-20-azur-shared-rng-joker/README.md). **Independent source mechanic IDs are not interchangeable**. Preserve full roadmap, separate source exactness and user comprehension.
+
+## Shared Rules and SaveStore invariant
+
+- New rule beyond `Card {leader,rank,ordered,keyId}`, `Board {joker,keys,...}` must have a **versioned `Card/Board/Deal` representation**, cost semantics, valid/invalid transitions, persisted Undo snapshots, alternate actions, independent solver/hint model, native user input and archived C1–C8 decode compatibility. Never add special display-only badges that lack real gameplay effect. Old save must not migrate into a new Rules version during Undo/restart or silently gain/spend helper stock.
+- A source applier **being compiled** is not proof its remote enable flag, first public level, actual pattern or original result is known. Art/card text are independently authored. Patterns/stock/Final-phase changes modify **final Deal identity**; maintain immutable published wave/special/bonus IDs and fresh versioned alternates.
+- Native Hitapps `Initial` / `Shuffle` / `Final` are separate. Shuffle `Lockers=20, Frozen=25, Bound=27` gates use enable/pattern/positive FeatureLevelSeed, once-per-context reshuffle, separate Applied/Failed bits; **a failed feature may have already reshuffled the board**. Final `GoldenCards=30, StarterBooster=45` execute after simulation, with event state/fresh Unity RNG, not ordinary Candidate EmbeddedRandom. Numbers are **phase priorities**, not unlock levels.
+- Each packet requires a **positive route** (the action actually changes rule state), **negative route** (illegal action doesn't charge or mutate), Undo/restart/park/save replay, keyboard/touch/cancel/portrait phone, model/QA code and recorded evidence. Exercise last move of 80-level bank and source 5-column geometry. Source-unknown card effect must remain `SOURCE_GAP`, not `ORIGINAL_PARITY`.
+
+## P04 · Existing C1 introductions, all 11 D2 UX/feel systems and two cosmetic tracks
+
+Primary features: `azur-action-ftue`, `azur-difficulty-label`, `azur-locked-helper-discovery`; `hitapps-joker`, `hitapps-ghost-hint`, `ui-motion-audio-coin`, `hitapps-ingame-streak`, `azur-card-dictionary`, `azur-stock-side-setting`, `azur-card-animation-controller`, `azur-coin-flight-animator`, `azur-victory-reward-sequencer`, `azur-button-haptic-feedback`, `hitapps-invalid-transfer-feedback`; plus `azur-cosmetics` and `unico-themes-and-skins`.
+
+**Task:** reconcile the already implemented experience against actual 0.20.3 code and reference evidence; do not rebuild the board UI unnecessarily. First 1–6 blind onboarding must teach exact legal transfer, category leader, stock and waste, hint3, Undo4 and Joker8 **without spending or moving on behalf of the user**. Locked helper discovery exposes why and when a new action opens. Explicit source level difficulty badges must not lie about model-estimated win rate or limited sample. Card dictionary button shows legible explanation with cancellation and no hidden paid Definition consumption. Stock-side/position settings must work at both edges, tall stock and native banner safe area. Winner coin flights, native haptics, click/release/error motion, streak and invalid drop sound obey source/target event ordering, reduced-motion setting and one-time paid settlement.
+
+**Tests:** 320×568 and 360/large system font; pointer drag start/move/cancel/end and rapid repeat; invalid sorted/locked target consumes **zero move/inventory**; Undo after event/hint; screen sleep, background and result skip. Browser GIF records **real input**, not mocked success or post-processed still. Product will keep simple responsive UI; compare actual original when source video available but do not assert asset-parity.
+
+**Exit:** all 16 primary IDs assessed and actual differences implemented/tested or explicitly remaining UNKNOWN; 320px all essential actions, no phantom reward, exact source-declared portions labelled adapted.
+
+## P09 · Existing Ordered/Keys/AZUR bonus space acceptance
+
+Primary features: `hitapps-ordered-category`, `hitapps-lockers`, `azur-extra-foundation`, `azur-bonus-lower-column`. Current source-inspired baseline:
+- **Ordered** L17/L45: rank prefix starts at №1, contiguous group only; invalid skip names missing rank, no move charge; independently complete via witness. This is a Russian product adaptation, not source original day-list or first unlock.
+- **Keys** L18/L26/L66: one blocked tableau, exactly **three distinct keys**, third reveal unlocks and reveals top card within **same transition**; two-to-three key Undo restores prior state; closed column cannot be source or target; level18 first lesson.
+- **Bonus upper** L22/L40 and **bonus lower** L30/L40: separate premium/earned offers; initially reserved empty target, authored level eligibility, upper = category foundation, lower = temporary tableau. Product prices **100 coins upper / 60 lower**; source live values UNKNOWN. Coin debit/open append in one SaveStore commit; earned receipt match exact attempt and deal, including parked campaign; idempotent duplicate/late/no-fill doesn't open a different player's/level's slot. Opening entitles across Undo snapshots, but restart resets current board offers under chosen policy.
+
+**QA:** real physical Android taps through levels17/18/22/26/30/40/45/66 (5 columns, 320 CSS width, banner); both coin and earned path with true SDK once; upper+lower simultaneously on L40; declined offer still solvable; older wave deal still resolves for saved attempt; both layouts responsive; void taps/failed spend do not charge. Repro exact `Deal.id` and attempts before/after. If phone unavailable, mark `NEEDS_DEVICE`, preserve current proven unit/browser status and immediately continue another ready package.
+
+## P10 · Hitapps FrozenCards (source layer state not yet gameplay rule)
+
+Native evidence: `FrozenCardConfig{enable,placeOnJokerPositive,patterns}`, `FrozenCardPattern{id,frozenCards}`, `FrozenCardData{layers,column,position}`. Native Shuffle gate/FeatureLevelSeed/apply status and fail bit **are known**; **exact player-visible clearing, ice layer decrement, price and Joker interaction are not decoded**. Do not write “tap card three times” and call it a reproduction.
+
+**Engineering task:** first record `SOURCE_KNOWN` vs `UNKNOWN` for original rule and gather original native action/reveal/drop/Undo call sites. In parallel a labelled `PRODUCT_ADAPTED` Frozen variant may define its own layer transition table and versioned card state/feedback/solver; keep source-exact parity OPEN. Test 0/1/2/n layers, no negative layer, card reveal while locked, stock/recycle, ordered group and lock interactions, Joker positive source flag conditional, aborted gesture, snapshot/recovery, orphan old saves. Freeze variant ID and test winning alternative independent of helper.
+
+**Exit:** original source rule either independently verified or explicitly gap, product frozen state fully playable under declared adapted spec, nonalias to Lockers.
+
+## P11 · Hitapps BoundCards and Scissors
+
+Native source schema: `BoundCardConfig{enable,patterns}`, `BoundCardPattern{id,boundCards,scissors}`, each entry coordinates column/position. Bound status/failure bit separate from Frozen and Lockers. **No confirmed scissors removal/target, tap cost, multi-card group move, reveal, draw or undo behavior**.
+
+**Task:** source call chain for Scissors reveal/use/binding release, source stock/topology, which card is consumed, if action costs move/help resource; record in exact test fixtures. If original still unavailable, build distinctly named own Bound/Scissors mechanic as `PRODUCT_ADAPTED` with actual instructions and independent solvability, not “three keys reskinned.” Tests: scissors before/after bound, invalid target, double-use/duplicate grant, combined Frozen/Ordered/Keys, one-time resource transaction, all Undo states, 5-col screen.
+
+## P12 · PuzzleTop / PuzzleBottom original card identities
+
+Metadata proves distinct card kind registrations, **not** card behavior. Do not infer that these act as extra foundations, Joker or ordered cards. Research original move validator, source dest/card rank/clear/stock transitions; build optional versioned `cardKind` and product adapter only with source/explicit own contract. Negative cases: illegal top-bottom order, hidden/revealed variant, waste transfer, group packet, endgame, Undo; no contamination of legacy ordinary cards.
+
+## P13 · GoldenCards separate from GoldRush event
+
+Hitapps Final applier applies only when `CascadeEventsHook.TryGetGoldRushGoldenCardAmount` succeeds; first-gold state and ordinary generation path distinct. Source observed `LevelType|=8` and `GoldenCardLevel.TotalGoldenCards/FirstGoldenCardAmount` and `OnFirstGoldenCardLevelStarted`, **not** real user win payout nor currently active event. Implement separate versioned card gold marker/collection, first-gold intro, source-informed Final modifier gate, only grant **actual collected source-defined/product-declared reward** once. Event start/end/currency/P2 progression belongs to P31; golden card modifier must support disabled event with **no injection**. Test partially collected stage, failed modifier, end-of-game reward, duplicate/late claim, audio, recovery, legacy saves, independent oracle. Do not call arbitrary gold coin flight native parity.
+
+## P14 · Hitapps starter Magnet and Hammer (not Unico Magnet)
+
+Native source `StarterBoosterFeatureApplier` resolves selected IDs **3/4** and maps to `CardType.Magnet=5` / `Hammer=6`, then draws a **new Unity Random.Range(0,INT_MAX)** seed and modifies stock **after simulator/final candidate choice**. It must **not** consume the Hitapps `EmbeddedRandom` candidate PRNG or the AZUR random Joker stream. Actual booster action, placement index and original grant/purchase gates remain unknown. First source test maps *injection sequencing* and stock conservation; subsequent independent variant defines actual helper gameplay only with original rule evidence or explicit PRODUCT_ADAPTED classification. Verify card does not appear for empty selected booster set, no duplicate reward/stock card, saved preview old IDs and Undo, negative placement, solver, UI first-use. All references remain in registry; Unico P17 distinct.
+
+## P15 · Original AZUR random-created lower Joker, NOT our buffer Joker
+
+Original AZUR `GameManager.AddJokerCard` chooses random lower tableau index `Random.Range(0,min(configuredBound,currentColumns))`, constructs an actually **new revealed Card**, `Column.PlaceCardForced`, and clears `UndoSystem` history; `TryAddJokerCard` emits event on **non-null success only**. Our current Joker selects an existing unlocked nonempty tableau column, inserts an abstract **boundary/buffer**, does **not** create a card, and intentionally preserves Undo history. Preserve both as separate source identities; **do not mutate current Joker** to approximate AZUR.
+
+Create new versioned AZUR-Joker ability with injected target stream and positive/zero/invalid bounds + new card ID conservation; source-exact branch includes explicit Undo history clear, but this destructive behavior requires owner policy, explanatory UX and migration plan. If owner choice pending, implement/test isolated original-shaped model and leave real user activation OFF; continue unrelated work. Pay/earned grants require existing durable receipts and no phantom success if no valid column.
+
+## P16 · AZUR Shuffle action and animation as separate systems
+
+Source `azur-shuffle-helper` is **VIDEO_OBSERVED**, `azur-shuffle-animation-controller` metadata only. Actual shuffle eligibility, cards included, move costs, reset and server offer UNKNOWN. Research before copying, then implement honest PRODUCT_ADAPTED Shuffle if original unavailable: user-visible eligibility, deterministic helper seed, keep immutable published base Deal revision, ensure at least one independently replayed winning continuation in current remaining budget **or fail with no charge**, separate save/Undo/reload; animation occurs only after full state committed. Test UI double tap, cancel, background, duplicate reward, source stock order, reduced motion. The animation controller is not evidence of an exact RNG.
+
+## P17 · Unico Magnet independent source request
+
+Original Unico level4 tooltip is VIDEO_OBSERVED; a **recorded action** and verified original APK are missing. Keep `unico-magnet-helper` evidence gap and original acquisition in P36. Do not reuse Hitapps starter Magnet or AZUR Joker function and announce source parity. A separate optional, fully documented product-adapted magnet can be built with isolated versioned rule/receipt/hint/Undo, clearly stated as such; actual source mechanism remains OPEN. Player-facing label/target/price should never claim native-source exactness.
+
+**KIT IMPACT: REUSE** source→product evidence framework and original mobile touch guidance. Do not promote one of these to shared kit export until independently proven reusable across games.

@@ -1,0 +1,97 @@
+{
+  "schema": "c8-g1-source-structure-locale-crosswalk-v1",
+  "date": "2026-11-21",
+  "source": {
+    "originalAzurXapkSha256": "4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4",
+    "sourceLevelEvidenceBlob": "6f07fca6f040da990805a9cb11aa4dacd3dc2f57",
+    "sourceArtEvidenceBlob": "e63f3275bcd0684e59c84e3d4ab1c6d07ee77902",
+    "sourceInventoryBlob": "72efdad46077213e1ce68475b004544fe9dfec75",
+    "tier": "ORIGINAL_PACKAGED_ASSET_AND_NATIVE_STATIC_NOT_EXECUTED_ANDROID"
+  },
+  "original": {
+    "levelCount": 2000,
+    "distinctThemeIds": 4539,
+    "themeReferences": 16062,
+    "minTopicReuseGap": 162,
+    "adjacentOverlap": 0,
+    "sevenCycleStartsAt": 551,
+    "sevenCycleMatchingLatePairs": 1443,
+    "lateCycleFourStructuralTuples": true,
+    "localThemeBanks": 33,
+    "themeIdsPerBank": 4539,
+    "enVsRuThemesWithMemberCountDifferences": 1357,
+    "enVsRuPotentialLevelCardCountDifferences": 1687,
+    "packagedSpriteSets": 90,
+    "matchingSpriteCountsWithWords": 89,
+    "conditionalSpriteExtraThemeId": 385,
+    "conditionalAffectedOriginalLevels": [
+      44,
+      884,
+      1290,
+      1974
+    ],
+    "addressablesDefinitionLocales": 36,
+    "addressablesDefinitionBundles": 468,
+    "localeMovePositiveFormula": "min(INT32_MAX, 5*ceil(M*L/(5*E)))",
+    "originalLiveLocaleBudgetVerified": false,
+    "originalLiveRemoteOverrideCaptured": false
+  },
+  "product": {
+    "freshCampaignLevels": 80,
+    "uniqueThemeIds": 78,
+    "themeReferences": 862,
+    "minTopicReuseGap": 1,
+    "adjacentLevelPairsWithOverlap": 3,
+    "adjacentThemeOccurrences": 8,
+    "lateLevelRange": [
+      32,
+      80
+    ],
+    "lateLevels": 49,
+    "lateUniqueThemeIds": 78,
+    "lateThemeReferences": 574,
+    "lateMinTopicReuseGap": 6,
+    "lateEqualSevenStepStructuralPairs": 42,
+    "lateComparedSevenStepPairs": 42,
+    "lateProfileCountsByCards": {
+      "44": 7,
+      "64": 21,
+      "78": 14,
+      "96": 7
+    },
+    "sourceParityNotClaimed": true,
+    "humanNoveltyEvidence": "NOT_EXECUTED"
+  },
+  "featureCoverage": [
+    {
+      "id": "azur-localized-move-budget",
+      "statusAtAudit": "ROADMAPPED",
+      "sourceEvidenceTier": "NATIVE_STATIC",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/e07817bddbd393bb709413a1d55b765998fdf83f/research/games/association-solitaire/2026-11-20-core-source-proof/README.md"
+    },
+    {
+      "id": "azur-remote-level-overrides",
+      "statusAtAudit": "EVIDENCE_GAP",
+      "sourceEvidenceTier": "METADATA",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md"
+    },
+    {
+      "id": "azur-structured-long-campaign",
+      "statusAtAudit": "IMPLEMENTED_UNVERIFIED",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/BUDGET_MODEL.md"
+    },
+    {
+      "id": "hitapps-language-change-restart",
+      "statusAtAudit": "ROADMAPPED",
+      "sourceEvidenceTier": "VIDEO_OBSERVED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md"
+    },
+    {
+      "id": "azur-localized-definition-packs",
+      "statusAtAudit": "ROADMAPPED",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/README.md"
+    }
+  ]
+}

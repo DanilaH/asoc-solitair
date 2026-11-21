@@ -1,5 +1,7 @@
 # Content8+ · фактический журнал автономной разработки
 
+**Source synchronization 21.11.2026:** mini-games-kit [PR #96](https://github.com/DanilaH/mini-games-kit/pull/96) original AZUR native Shuffle/Hint expands **114→115** via `azur-greedy-hint-order` D2/P04, upgrades Shuffle+animation evidence NATIVE_STATIC. [Full delta](../qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md) and [P16 follow-up issue #104](https://github.com/DanilaH/asoc-solitair/issues/104). Product P16 remains stock-only PRODUCT_ADAPTED, no source Android accepted. The initial 114 paragraph below is a historical snapshot of first delivery queue.
+
 **Инициализирован 21.11.2026.** Это рабочая таблица разработчика, а не свидетельство, что задачи уже выполнены. Основа — [очередь из 38 пакетов](DELIVERY_QUEUE.md) и её [машинный манифест](DELIVERY_QUEUE.json). При каждой успешной инженерной приёмке обновлять соответствующий `state` в JSON, эту таблицу и source IDs в [ADOPTION_LEDGER.json](ADOPTION_LEDGER.json) **вместе с фактическими доказательствами**.
 
 **Стартовый статус:** 38 пакетов `QUEUED`, 0 пакетов с инженерной приёмкой по этой новой очереди; ранее сделанные CORE0–5 и исследования **не нужно переписывать**. При P00 их существующие PR/тесты анализируются и признаются фактом ровно в той области, которую доказывают. Source-feature snapshots 114/114: 39 IMPLEMENTED_UNVERIFIED, 5 IN_PROGRESS, 47 ROADMAPPED, 13 EVIDENCE_GAP, 9 BLOCKED, 1 DEFERRED, 0 ACCEPTED, 0 OWNER_EXCLUDED.
@@ -34,7 +36,7 @@
 | P13 | NEEDS_DEVICE | [Ветка P13](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p13-golden-cards-20261121) | [Золотые карты и однократная выплата](P13_GOLDEN_CARDS.md). 40 unit и два touch-профиля. Расписание Gold Rush в P31, исходная выплата открыта. |
 | P14 | NEEDS_DEVICE | [Ветка P14](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p14-starter-boosters-20261121) | [Отдельный Final seed и две адаптированные карты](P14_STARTER_BOOSTERS.md). 24 unit и два touch-прогона. Оригинальная вставка и действия helpers остаются P36. |
 | P15 | NEEDS_OWNER | [Ветка P15](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p15-azur-joker-model-20261121) | [Изолированная модель вставки и Undo.Clear](P15_AZUR_JOKER.md). Подключение к игре требует решения о сбросе истории. |
-| P16 | NEEDS_DEVICE | [Ветка P16](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p16-proof-shuffle-20261121) | [Проверяемое перемешивание и анимация](P16_PROOF_SHUFFLE.md). Физическое устройство и оригинальный алгоритм отсутствуют. |
+| P16 | NEEDS_DEVICE | [Ветка P16](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p16-proof-shuffle-20261121) | [Проверяемое перемешивание и анимация](P16_PROOF_SHUFFLE.md). Физическое устройство ещё требуется; исходный AZUR native Shuffle алгоритм восстановлен в kit #96, но stock-only продуктовая адаптация намеренно отличается (issue #104). |
 | P17 | QUEUED | — | Unico Magnet |
 | P18 | QUEUED | — | CORE-5 recovery, earned/coin |
 | P19 | QUEUED | — | RestoreStock/Revive/Unlimited |

@@ -129,7 +129,7 @@ Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle e
 | `hitapps-bound-scissors-pattern` | `IMPLEMENTED_UNVERIFIED` | [P11 PRODUCT_ADAPTED scissors transfer](P11_BOUND_SCISSORS.md). Native reveal, cost and target remain open. |
 | `unico-magnet-helper` | `EVIDENCE_GAP` | Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action |
 
-### D2. Качество взаимодействия (11)
+### D2. Качество взаимодействия (12)
 
 Joker, Hint, info/dictionary, lower-buffer/stock side, feedback, sound, cross-device validation.
 
@@ -138,6 +138,7 @@ Joker, Hint, info/dictionary, lower-buffer/stock side, feedback, sound, cross-de
 | `hitapps-joker` | `IMPLEMENTED_UNVERIFIED` | Native playtest Joker, costs, save, cancel, reduced motion |
 | `azur-joker-random-column-insertion` | `IN_PROGRESS` | [P15 isolated insertion model](P15_AZUR_JOKER.md). Android execution and explicit decision on Undo reset are pending. |
 | `hitapps-ghost-hint` | `IMPLEMENTED_UNVERIFIED` | Validate Hint after off-witness choice on Android and strict no-charge failure |
+| `azur-greedy-hint-order` | `ROADMAPPED` | [Original native five-stage hint priority](../qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md), distinct from current solver-backed hint; optional P04 source-shaped diagnostic and P36 original Android. |
 | `ui-motion-audio-coin` | `IMPLEMENTED_UNVERIFIED` | Compare actual 1× device footage to game; track child IDs for CardAnimator/coin flights/victory/buttons/shuffle separately |
 | `hitapps-ingame-streak` | `IMPLEMENTED_UNVERIFIED` | Replay negative invalid-drop/recycle/Undo against original video and Android coin UX |
 | `azur-card-dictionary` | `IMPLEMENTED_UNVERIFIED` | Compare on-device card readability, foreign/ambiguous semantics and text visibility |
@@ -276,6 +277,8 @@ Every PR in this implementation program must report feature IDs, original refere
 **Commercial:** Original hidden server rates and ad activation are unknown. Measure real eligible/offered/SDK shown/impression/earned +10/apply/recovered/won/return, never infer earnings from request. Paid IAP remains BLOCKED for missing authorized store billing and payout proof, not OWNER_EXCLUDED. Do not make the PR34/35 feel candidates a blanket reason to omit monetization or meta.
 
 **Backlog governance:** change `SOURCE_FEATURES.json` in kit and `ADOPTION_LEDGER.json` in game together for every discovered system. After implementation, update both roadmap and ledger to `IMPLEMENTED_UNVERIFIED` or `ACCEPTED` with evidence. Owner alone can exclude a roadmap entry. Previous `HOLD/REJECT` archived notes remain historical, not controlling policy.
+
+**Current 21.11 source upgrade: kit PR #96** increases exact coverage to **115 source IDs**, adds D2 AZUR greedy Hint and raises D1 Shuffle source evidence to NATIVE_STATIC. C8 P16 remains stock-only PRODUCT_ADAPTED pending source-shaped model/activation [issue #104](https://github.com/DanilaH/asoc-solitair/issues/104). 38 developer packets retained, no owner exclusions; source Android still unexecuted.
 
 **Next developer command:** Read `AGENTS.md`, `docs/porting/PORTING_POLICY.md`, this roadmap, both ref inventories, C8 PR #41/42 and current active code. Generate the full source→product matrix, verify 114/114, and implement the next unblocked package with exact SDK/save/Android evidence.
 

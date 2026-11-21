@@ -189,11 +189,11 @@
     {
       "id": "azur-shuffle-helper",
       "name": "AZUR later unlockable Shuffle helper",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/aa8340cfdec50d66502fbf9234f358ca15ee5921/research/games/association-solitaire/2026-11-21-azur-shuffle-hint-native/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "help",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "S2 shows level10 unlock indication, actual Shuffle action/redeal and native logic NOT observed"
+      "knownLimit": "Original SHA-verified ARM64 GameManager.ShuffleClosedCards: pool = hidden tableau + stock after direct waste Reset, shared Unity Random list shuffle, retain revealed, set residual stock, clear Undo on nonempty pool; UseHint spends 1 Shuffle charge and refunds if ShuffleBoard false. One-card/identity permutation may return true without changed board. Live unlock/entitlement/Android behavior UNKNOWN."
     },
     {
       "id": "hitapps-joker",
@@ -864,11 +864,11 @@
     {
       "id": "azur-shuffle-animation-controller",
       "name": "AZUR center rotation/hold animation for Shuffle helper",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-ui-feel-native/README.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/aa8340cfdec50d66502fbf9234f358ca15ee5921/research/games/association-solitaire/2026-11-21-azur-shuffle-hint-native/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "feel",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
-      "knownLimit": "ShuffleAnimationController timing fields verified; helper's actual redeal algorithm and visuals not replayed"
+      "knownLimit": "GameController gate/source Shuffle result precedes UI ShuffleAnimationController.Play; cancels previous coroutine and restores alpha or refresh fallback. Actual frame timings, visual capture and live original client not executed."
     },
     {
       "id": "hitapps-invalid-transfer-feedback",
@@ -1031,7 +1031,16 @@
       "surface": "core",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244, exact ARM64 original XAPK",
       "knownLimit": "LoadAndStartLevel directly dispatches CardSpriteLoader.PreloadThemes (nonempty collection starts PreloadThemesCoroutine, empty invokes callback); later InitializeGameLogic builds per-theme positive loaded CardSpriteData counts for GenerateCards. Native GetLocalizedWordCount also calls TryGetLoadedSpriteCount so effective count can enter gated locale move budgeting. Original 90 packaged art bundles contain 490 verified Sprite refs; 89/90 art-set member counts equal EN/RU word refs, exceptional set385 contributes +1 card conditionally on levels44/884/1290/1974. UNKNOWN actual Android preload success/cache/remote state, callback ordering on failure, live localization gates, original seed/deal and visible art content. A read-only original Android probe for PreloadThemes and positive/out loaded Sprite counts is authored but never run on source: 0 original runtime observations, fail/retry callbacks and live asset manifests remain UNKNOWN. Tool: https://github.com/DanilaH/mini-games-kit/blob/82499604c157f957074c65380b0ef47e06a4c92e/research/games/association-solitaire/2026-11-20-azur-runtime-oracle/README.md."
+    },
+    {
+      "id": "azur-greedy-hint-order",
+      "name": "AZUR native MoveHintSystem five-stage local action priority with stock/recycle fallback",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/aa8340cfdec50d66502fbf9234f358ca15ee5921/research/games/association-solitaire/2026-11-21-azur-shuffle-hint-native/README.md",
+      "evidenceTier": "NATIVE_STATIC",
+      "surface": "help",
+      "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
+      "knownLimit": "Original FindAvailableMove checks waste→foundation, column→foundation, waste→column, column→column, then draw/recycle via HasNextCard/CanReset, returns first found. Column candidate filters and live hints/solver optimality not fully recovered; consumer solver-backed winning route is separate PRODUCT_ADAPTED."
     }
   ],
-  "auditRevision": "2026-11-20-azur-tutorial-preset-struct-native-v14"
+  "auditRevision": "2026-11-21-azur-shuffle-hint-native-v15"
 }

@@ -18,8 +18,8 @@ const sha = value => /^[0-9a-f]{40}$/.test(String(value||''));
 
 export function validateDeliveryQueue(queue, pinned, ledger) {
   assert.equal(queue?.schema,'asoc-autonomous-delivery-queue-v1');
-  assert.equal(pinned?.features?.length,114,'Pinned source feature inventory missing 114');
-  assert.equal(ledger?.features?.length,114,'Consumer source feature ledger missing 114');
+  assert.equal(pinned?.features?.length,115,'Pinned source feature inventory missing 115');
+  assert.equal(ledger?.features?.length,115,'Consumer source feature ledger missing 115');
   assert.equal(queue?.sourcePin?.sourceInventoryRef,ledger.sourceInventoryRef);
   assert.equal(queue?.sourcePin?.sourceInventoryBlob,ledger.sourceInventoryBlob);
   assert(sha(queue?.sourcePin?.sourceInventoryBlob),'Missing immutable source Git blob pin');
@@ -28,8 +28,8 @@ export function validateDeliveryQueue(queue, pinned, ledger) {
   assert(Array.isArray(queue.packets) && queue.packets.length===38,'P00..P37 full delivery queue missing');
   const source=new Map(pinned.features.map(x=>[x.id,x]));
   const current=new Map(ledger.features.map(x=>[x.id,x]));
-  assert.equal(source.size,114,'Duplicate source ID');
-  assert.equal(current.size,114,'Duplicate consumer ledger ID');
+  assert.equal(source.size,115,'Duplicate source ID');
+  assert.equal(current.size,115,'Duplicate consumer ledger ID');
   assert.deepEqual([...current.keys()].sort(),[...source.keys()].sort(),'Missing/unregistered source ID');
   const seen=new Set(),owner=new Map(),statusCounts={},gatesCounts={};
   queue.packets.forEach((p,index)=>{
@@ -54,11 +54,11 @@ export function validateDeliveryQueue(queue, pinned, ledger) {
     gatesCounts[p.entryGate]=(gatesCounts[p.entryGate]||0)+1;
   });
   assert.equal(owner.size,source.size,'Source feature left without an owning package');
-  assert.equal(Object.keys(queue.sourceFeatureOwner||{}).length,114,'Owner crosswalk should cover all 114');
+  assert.equal(Object.keys(queue.sourceFeatureOwner||{}).length,115,'Owner crosswalk should cover all 115');
   for(const [id,packet] of owner)assert.equal(queue.sourceFeatureOwner[id],packet,'Primary owner crosswalk mismatch for '+id);
   assert.equal(queue.coverage?.totalSourceFeatures,undefined,'Do not duplicate a drift-prone legacy sourceTotal field');
-  assert.equal(queue.coverage?.sourceIds,114);
-  assert.equal(queue.coverage?.assignedSourceIds,114);
+  assert.equal(queue.coverage?.sourceIds,115);
+  assert.equal(queue.coverage?.assignedSourceIds,115);
   assert.equal(queue.coverage?.packets,38);
   assert.equal(queue.coverage?.excludedSourceIds,0,'A source system may not be excluded by researcher');
   assert.equal(ledger.features.filter(x=>x.status==='OWNER_EXCLUDED').length,0,

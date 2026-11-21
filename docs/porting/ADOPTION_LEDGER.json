@@ -900,7 +900,7 @@
       "stage": "D2",
       "status": "ROADMAPPED",
       "currentImplementation": "C8 resolveHint uses independently verified winning continuation/solver, not the original AZUR five-stage first-success greedy MoveHintSystem; this is an intentional PRODUCT_ADAPTED policy.",
-      "nextAction": "P04/P36: optional separately tested source-shaped diagnostic policy waste→foundation, tableau→foundation, waste→tableau, tableau→tableau, draw/recycle last; preserve win-safe solver-backed production Hint; original internal column ranking and Android source runtime UNKNOWN. See kit PR #96, docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md.",
+      "nextAction": "P04 additional engineering after prior UX PR #91: isolated native-source-shaped greedy Hint diagnostic/negative truth-table for 5 classes and CheckColumnsToColumns filter (sourceHasHidden OR wouldUncoverHidden OR !targetEmpty), conditional CardType2 IsUselessJoker... with full predicate UNKNOWN, final CanMoveStack. Keep current solver-backed Hint unchanged; do not mark original Android parity. See issue #115 and source https://github.com/DanilaH/mini-games-kit/blob/a88b61a55e1bee1a745f281507ffdbb29897863/research/games/association-solitaire/2026-11-21-azur-shuffle-hint-native/HINT_COLUMN_FILTERS_2026-11-21.md.",
       "evidenceRef": "docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md"
     }
   ],

@@ -101,7 +101,7 @@
       "order": 4,
       "title": "FTUE, D2 UX и весь game feel",
       "workstream": "UX",
-      "state": "NEEDS_DEVICE",
+      "state": "IN_PROGRESS",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"
@@ -126,7 +126,7 @@
         "azur-greedy-hint-order"
       ],
       "spec": "docs/porting/specs/02_SPECIALS_FEEL.md",
-      "acceptanceTarget": "11 D2 components, three C1 intros and two cosmetics verified through UI",
+      "acceptanceTarget": "Existing C1/D2 UX remains NEEDS_DEVICE; new 115th source ID needs offline native greedy Hint diagnostic/negative tests per issue #115, without changing solver-backed default",
       "deliverables": [
         "one scoped PR with actual changed files",
         "replayable tests, exact-head CI and device evidence class",

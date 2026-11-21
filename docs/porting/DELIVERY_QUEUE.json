@@ -190,7 +190,7 @@
       "order": 7,
       "title": "Equality/Paywall offline source phases",
       "workstream": "CORE",
-      "state": "QUEUED",
+      "state": "IN_PROGRESS",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P05"

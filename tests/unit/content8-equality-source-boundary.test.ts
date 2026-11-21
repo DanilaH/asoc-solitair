@@ -1,5 +1,7 @@
 import { expect, it } from 'vitest';
 import { eligibleForEquality, selectEquality, type PlayerSegment, type SimulationPolicy } from '../../tools/content/difficulty-selection';
+import { prepareEqualityPlan, sampleEqualityStacks } from '../../tools/content/equality-provenance';
+import { dealOrdinary, EmbeddedRandom } from '../../tools/content/plain-dealer';
 import type { Board, BoardCommand, Deal } from '../../src/domain/types';
 
 /**
@@ -101,4 +103,49 @@ it('B3 only requires distinct policy IDs, not independent move strategies', () =
       { policyId: 'same-B', status: 'LOST', steps: 80 },
     ],
   });
+  expect(selectEquality([deal], duplicateBehavior, { distinctPaths: true })).toEqual({ attempts: 1 });
+});
+
+it('samples three unique stacks from the same advanced source stream only for Equality', () => {
+  for (const columns of [3, 4, 5]) {
+    const rng = new EmbeddedRandom(42), mirror = new EmbeddedRandom(42);
+    const sizes = Array(columns).fill(1);
+    const source = Array.from({ length: columns + 2 }, (_, i) => i);
+    dealOrdinary(source, 2, sizes, rng);
+    dealOrdinary(source, 2, sizes, mirror);
+    expect(sampleEqualityStacks(columns, rng, 'Priority')).toEqual([]);
+    expect(sampleEqualityStacks(columns, rng, 'None')).toEqual([]);
+    const expected = new Set<number>();
+    while (expected.size < 3) expected.add(mirror.next(columns));
+    expect(sampleEqualityStacks(columns, rng, 'Equality')).toEqual([...expected]);
+    expect(rng.next()).toBe(mirror.next());
+  }
+});
+
+it('records an isolated late-loss plan and excludes synthetic unknown cohorts from the handoff', () => {
+  const deal = candidate();
+  deal.initial.tableau = [['a'], ['a1'], ['b', 'b1']];
+  deal.initial.faceUp = ['a', 'a1', 'b1'];
+  const stock: SimulationPolicy = { id: 'stock', choose: (board, moves) => moves.find(move => move.type === (board.stock.length ? 'draw' : 'recycle')) };
+  const foundation: SimulationPolicy = { id: 'first-foundation', choose: (board, moves, deal) =>
+    (board.movesLeft === 100 && moves.find(move => move.type === 'transfer' && move.to.kind === 'foundation')) || stock.choose(board, moves, deal) };
+  const options: Parameters<typeof prepareEqualityPlan>[0] = {
+    request, config: { ...config, version: 'fixture-1', segments: [...config.segments, 'unknown'] },
+    requests: [-1, 42], cohortEvidence: 'controlled-fixture', drawSeed: () => 43, deal: () => deal,
+    policies: [stock, foundation],
+    appliers: { golden: state => ({ ...state, appliedFlags: state.appliedFlags | 8 }) },
+  };
+  const outcome = prepareEqualityPlan(options);
+  expect(outcome).toMatchObject({
+    result: 'SELECTED_CONTROLLED_CANDIDATE', pairTransform: 'PAIR_TRANSFORM_UNKNOWN',
+    selected: { candidateIndex: 1, candidateSeed: 43, appliedFlags: 8 },
+  });
+  const [trial] = outcome.trials;
+  expect(trial).toMatchObject({ requestedSeed: -1, candidateSeed: 43, pairStacks: expect.any(Array), appliedFlags: 0 });
+  expect(trial.runs.map(run => [run.policyId, run.status, run.steps])).toEqual([
+    ['stock', 'LOST', 100], ['first-foundation', 'LOST', 100],
+  ]);
+  expect(new Set(trial.runs.map(run => run.traceDigest)).size).toBe(2);
+  expect(prepareEqualityPlan({ ...options, request: { ...request, segment: 'unknown' } }).trials).toEqual([]);
+  expect(prepareEqualityPlan({ ...options, cohortEvidence: 'unknown' }).result).toBe('INELIGIBLE');
 });

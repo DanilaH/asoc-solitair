@@ -43,14 +43,14 @@ export function swapDestinations(destinations: number[], next: (bound: number) =
   }
 }
 
-export function dealOrdinary<T>(cards: readonly T[], stockSize: number, columnSizes: readonly number[], seed: number) {
+export function dealOrdinary<T>(cards: readonly T[], stockSize: number, columnSizes: readonly number[], seed: number | EmbeddedRandom) {
   if (!Number.isInteger(stockSize) || stockSize < 0 || stockSize > 256 || columnSizes.length > 256 ||
     columnSizes.some(n => !Number.isInteger(n) || n < 0) || stockSize + columnSizes.reduce((n, size) => n + size, 0) !== cards.length) {
     throw new Error('Invalid card and destination dimensions');
   }
   const labels = Array.from({ length: stockSize }, (_, i) => i << 8);
   columnSizes.forEach((size, i) => { for (let n = 0; n < size; n++) labels.push((i << 8) | 2); });
-  const rng = new EmbeddedRandom(seed);
+  const rng = typeof seed === 'number' ? new EmbeddedRandom(seed) : seed;
   swapDestinations(labels, bound => rng.next(bound));
   const stock = Array<T>(stockSize), tableau = columnSizes.map(() => [] as T[]);
   labels.forEach((label, i) => {

@@ -79,7 +79,7 @@ Source-based gating and late simulator failure vs our mathematically certified +
 | --- | --- | --- |
 | `hitapps-equality-paywall` | `ROADMAPPED` | Verify and issue source-bound Equality candidates. The product has a separate actual-board +10 check in CORE-5. |
 | `hitapps-paywall-segmentation` | `ROADMAPPED` | Implement eligible profile/attempt gates with explicit source/runtime uncertainty |
-| `hitapps-equality-three-stack-pair-placement` | `ROADMAPPED` | Implement exactly flagged placeCategoryPairsOnTop for Equality only with same advanced RNG stream; compare selected stack indices and new candidate stock/cols in offline tests |
+| `hitapps-equality-three-stack-pair-placement` | `IN_PROGRESS` | [P07 verifies three distinct indices from the advanced stream](P07_EQUALITY_PIPELINE.md). Pair transformation and original final boards remain P36 evidence. |
 | `hitapps-feature-seed-one-time-reshuffle` | `ROADMAPPED` | Model shared LevelShuffled flag and precisely one FeatureLevelSeed shuffle across valid Lockers/Frozen/Bound; test invalid pattern flags without assuming unchanged board |
 | `hitapps-initial-shuffle-final-pipeline` | `ROADMAPPED` | Implement source-ordered phases 10/40,20/25/27,30/45 around candidate simulation, with independent source/adapter distinctions |
 

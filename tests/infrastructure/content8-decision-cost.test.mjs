@@ -51,6 +51,7 @@ test('rejects duplicate scenarios and incomplete main catalog',()=>{
   testCase.rows[1].dealId=testCase.rows[0].dealId;
   testCase.rows[1].level=testCase.rows[0].level;
   assert.throws(()=>analyzeQ1Decisions(testCase),/duplicate scenario/);
-  testCase.rows.pop();
-  assert.throws(()=>analyzeQ1Decisions(testCase),/full active 1-80 campaign/);
+  const missing=make();
+  missing.rows.pop();
+  assert.throws(()=>analyzeQ1Decisions(missing),/full active 1-80 campaign/);
 });

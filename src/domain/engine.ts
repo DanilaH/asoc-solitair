@@ -2,6 +2,7 @@ import { BALANCE_VERSION, CONTENT8_PREVIEW, CONTENT_VERSION, RULES_VERSION } fro
 import { BALANCE } from './balance';
 import { carryCampaignRestart, recordCampaignExhaustion } from './difficulty';
 import { freeHintDemo, freeJokerPractice, freeUndoPractice, helperUnlocked, markTutorial, seenTutorial } from './progression';
+import { carryEqualityRestart, recordEqualityOutcome } from './equality-issuance';
 import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, Result, Save } from './types';
 
 import { abandonCampaign, dailyRewardEligible, finishDaily } from './meta';
@@ -149,6 +150,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     if (cmd.attemptId === attempt.id) return refuse('Для повтора нужен новый номер попытки');
     abandonCampaign(next);
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
+    carryEqualityRestart(next, attempt);
     if (trackDifficulty && attempt.board.phase !== 'won') carryCampaignRestart(attempt, next.attempt);
   } else if (cmd.type === 'undo') {
     if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || (next.profile.undos <= 0 && !freeUndoPractice(input, deal))) return refuse('Нет доступной отмены');
@@ -175,6 +177,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     if (deal.training === 'joker' && cmd.type === 'transfer' && cmd.to.kind === 'tableau' && cmd.to.index === attempt.board.joker?.column)
       markTutorial(next, 'joker-buffer');
     recordUndo(attempt); attempt.board = result.board; events = result.events;
+    recordEqualityOutcome(next, attempt);
     if (trackDifficulty && attempt.board.phase === 'exhausted') recordCampaignExhaustion(attempt);
     if (cmd.type === 'transfer') {
       // Route identity excludes the budget/economy and survives Undo. Reversing the same group is the same edge.

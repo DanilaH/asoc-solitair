@@ -17,6 +17,7 @@ import { BALANCE } from './domain/balance';
 import { frozenLayers } from './domain/frozen-cards';
 import { isBoundCard } from './domain/bound-cards';
 import { collectedGold, goldenRewardKey } from './domain/golden-cards';
+import { TASKS_PREVIEW, acceptedTaskSignals, claimTask, claimTaskMilestone, currentTasks, recordTaskSignal, updatePreviewTasks, type TaskSignal } from './domain/events/daily-tasks';
 import { PICTURE_PREVIEW, PICTURE_PRICES, PICTURE_TITLE, claimPicture, observePictureClock, openPictureEvent, pictureClosed, pictureTokens, recordPictureWin, revealPicturePart } from './domain/events/picture';
 import { REWARD_OFFER_PREVIEW, isOfferPlacement, offerLabels, offerQuote, prepareRewardOffer, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
 import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-shuffle';
@@ -233,12 +234,13 @@ try {
       let openedBonus = false, earnedContinue = false, grantedOfferCoins = 0;
       const result = await store.mutate(next => {
         const hadContinue = next.platform?.continuedAttempts.includes(receipt.attempt);
-        const beforeCoins = next.profile.coins;
+        const beforeCoins = next.profile.coins, hadExtra = next.attempt.continued;
         const applied = applyReceipt(next, receipt, {
           offerNow: Date.now(),
           deal: findDeal(receipt.dealId), onBonusUnlocked: () => { openedBonus = true; }, continueProof: continueCheck.proof,
         });
         grantedOfferCoins = next.profile.coins - beforeCoins;
+        if (placement === 'continue' && !hadExtra && next.attempt.continued) logTaskAction(next, 'BuyExtraMoves', 'continue');
         earnedContinue = placement === 'continue' && !hadContinue && Boolean(next.platform?.continuedAttempts.includes(receipt.attempt));
         return applied;
       });
@@ -473,6 +475,7 @@ try {
     $('#save-retry').hidden = !store.needsRecovery;
     if (REWARD_OFFER_PREVIEW) renderRewardOffers();
     if (PICTURE_PREVIEW || save.picture) renderPicture();
+    if (TASKS_PREVIEW) renderTasks();
   }
   function outcome(collectionDeadline = Infinity) {
     if (save.attempt.board.phase === 'playing') return;
@@ -543,6 +546,15 @@ try {
         result = dispatch(next, cmd, deal, localDay());
         if (PICTURE_PREVIEW && result.accepted && result.next.attempt.board.phase === 'won') {
           recordPictureWin(next, result.next, deal, Date.now());
+        }
+        if (result.next.dailyTasks && result.accepted) {
+          const now = Date.now();
+          if (TASKS_PREVIEW) updatePreviewTasks(result.next, now);
+          if (cmd.type === 'restart') result.next.attempt.verifiedTaskHints = 0;
+          if (cmd.type === 'hint' && typeof next.attempt.verifiedTaskHints === 'number') {
+            result.next.attempt.verifiedTaskHints = next.attempt.verifiedTaskHints + 1;
+          }
+          for (const signal of acceptedTaskSignals(next, result, cmd, deal)) recordTaskSignal(result.next, now, signal);
         }
         Object.assign(next, result.next);
         if (result.accepted) {
@@ -633,6 +645,47 @@ try {
     outcome();
     return true;
   }
+  function logTaskAction(next: Save, kind: TaskSignal['kind'], channel: TaskSignal['channel']) {
+    if (!next.dailyTasks) return;
+    const now = Date.now();
+    if (TASKS_PREVIEW) updatePreviewTasks(next, now);
+    recordTaskSignal(next, now, { id: `game:${next.attempt.id}:${next.revision}:${kind}`, kind, channel, amount: 1 });
+  }
+  function logTaskContinue(next: Save, moved: boolean) {
+    if (moved) logTaskAction(next, 'BuyExtraMoves', 'continue');
+    return moved;
+  }
+  function buyTaskHelper(next: Save, helper: 'hint'|'undo'|'joker') {
+    const bought = purchaseHelper(next, helper);
+    if (bought) logTaskAction(next, 'BuyBoosters', 'wallet');
+    return bought;
+  }
+  function renderTasks() {
+    $('#daily-tasks-open').hidden = false;
+    if (!$<HTMLDialogElement>('#daily-tasks-dialog').open) return;
+    const current = currentTasks(save);
+    if (!current) return;
+    const taskNames: Record<string, string> = {
+      DailyLogin: 'Зайти в игру', DrawCards: 'Взять карту из колоды', ExecuteMoves: 'Сделать 4 хода',
+      CollectThemes: 'Собрать тему', CompleteLevels: 'Впервые пройти уровень',
+    };
+    const prizeNames: Record<string, string> = { Coins: 'монет', MoveHint: 'подсказка', Undo: 'отмена', Medals: 'мед.' };
+    $('#daily-tasks-medals').textContent = `Медали недели · ${current.week.totalMedals}/5`;
+    const list = $('#daily-tasks-list');
+    list.replaceChildren(...current.day.tasks.map(task => {
+      const row = document.createElement('section'), label = document.createElement('strong'), button = document.createElement('button');
+      label.textContent = `${taskNames[task.kind] ?? task.kind} · ${task.progress}/${task.target}`;
+      button.className = 'secondary';
+      button.textContent = task.claimed ? 'Получено' : `Получить · ${task.prize.quantity} ${prizeNames[task.prize.kind] ?? ''}`;
+      button.disabled = saving || Boolean(task.claimed) || task.progress < task.target;
+      button.addEventListener('click', () => { void write(next => claimTask(next, current.day.utc, task.id)).catch(() => message('Не удалось сохранить награду.', true)); }, { once: true });
+      row.append(label, button);
+      return row;
+    }));
+    const weekly = $<HTMLButtonElement>('#daily-tasks-weekly');
+    weekly.disabled = saving || current.week.totalMedals < 5 || current.week.claimedMilestones.includes('week');
+  }
+
   const showPicture = () => PICTURE_PREVIEW || Boolean(save.picture);
   function renderPicture() {
     const picture = save.picture, tokens = pictureTokens(save), parts = picture?.parts ?? [];
@@ -1073,6 +1126,24 @@ try {
     if (button && !button.disabled) void openLevel(Number(button.dataset.level));
   }, domOptions);
   $('#next-level').addEventListener('click', () => { if (save.attempt.daily || deal.campaignLevel === CAMPAIGN_LENGTH) goHome(); else void openLevel((deal.campaignLevel ?? 0) + 1); }, domOptions);
+  if (TASKS_PREVIEW) {
+    $('#daily-tasks-open').addEventListener('click', async () => {
+      if (saving || serviceBusy) return;
+      try {
+        await write(next => {
+          const now = Date.now();
+          updatePreviewTasks(next, now);
+          logTaskAction(next, 'DailyLogin', 'login');
+        });
+        openDialog('#daily-tasks-dialog');
+        renderTasks();
+      } catch { message('Не удалось открыть задачи.', true); }
+    }, domOptions);
+    $('#daily-tasks-weekly').addEventListener('click', () => {
+      const current = currentTasks(save);
+      if (current && !saving) void write(next => claimTaskMilestone(next, current.week.startUtc, 'week')).catch(() => message('Не удалось сохранить награду.', true));
+    }, domOptions);
+  }
   if (showPicture()) {
     for (const [part] of PICTURE_PRICES.entries()) {
       const button = document.createElement('button');
@@ -1107,7 +1178,11 @@ try {
       const id = definitionCardId;
       if (!id || saving || serviceBusy) return;
       try {
-        const word = await write(next => revealRelatedWord(next, deal, id));
+        const word = await write(next => {
+          const related = revealRelatedWord(next, deal, id);
+          if (related) logTaskAction(next, 'UseDefinitions', 'helper');
+          return related;
+        });
         if (definitionCardId !== id || !$<HTMLDialogElement>('#inspect-dialog').open) return;
         const hint = $('#definition-related');
         hint.textContent = word ? `Связанное слово · ${word}` : 'Откройте ещё одну карту этой темы.';
@@ -1136,7 +1211,7 @@ try {
   }, domOptions);
   $('#buy-joker').addEventListener('click', async () => {
     if (serviceBusy || saving || !helperUnlocked(save, 'joker', deal)) return;
-    try { if (await write(next => purchaseHelper(next, 'joker'))) { telemetry.track('helper_purchase', { helper: 'joker', cost: BALANCE.helperPrices.joker }); helperBought('joker'); } }
+    try { if (await write(next => buyTaskHelper(next, 'joker'))) { telemetry.track('helper_purchase', { helper: 'joker', cost: BALANCE.helperPrices.joker }); helperBought('joker'); } }
     catch { message('Не удалось сохранить покупку. Попробуйте ещё раз.', true); }
     renderHud();
   }, domOptions);
@@ -1225,7 +1300,11 @@ try {
       });
       if (!alive || screen !== 'game' || runtime.activity.getBlockReasons().some(reason => reason !== 'shuffle')) return;
       if (!proof) { message('Не удалось найти выигрышный порядок колоды.', true); return; }
-      if (!await write(next => commitShuffle(next, deal, request, proof))) return;
+      if (!await write(next => {
+        const accepted = commitShuffle(next, deal, request, proof);
+        if (accepted) logTaskAction(next, 'UseShuffles', 'helper');
+        return accepted;
+      })) return;
       scene?.sync();
       if (!runtime.activity.getBlockReasons().some(reason => reason !== 'shuffle')) {
         renderer.loop.wake();
@@ -1271,7 +1350,7 @@ try {
     $(`#buy-${helper}`).addEventListener('click', async () => {
       if (serviceBusy || saving) return;
       try {
-        const bought = await write(next => purchaseHelper(next, helper));
+        const bought = await write(next => buyTaskHelper(next, helper));
         if (bought) { telemetry.track('helper_purchase', { helper, cost: BALANCE.helperPrices[helper] }); runtime.pulse('button'); helperBought(helper); }
       } catch { message('Не удалось сохранить покупку. Попробуйте ещё раз.', true); }
       renderHud();
@@ -1284,13 +1363,13 @@ try {
     const proof = continueCheck.proof;
     if (requiresContinueProof(save.attempt) && (!proof || !verifiesContinue(save.attempt, proof))) return;
     if ((save.platform?.continueCredits ?? 0) > 0) {
-      await continueFromResult(next => useContinue(next, proof));
+      await continueFromResult(next => logTaskContinue(next, useContinue(next, proof)));
     } else void rewarded('continue');
   }, domOptions);
   $('#result-continue-coins').addEventListener('click', async () => {
     const button = $<HTMLButtonElement>('#result-continue-coins'), proof = continueCheck.proof;
     if (button.hidden || button.disabled || saving || serviceBusy || !proof) return;
-    await continueFromResult(next => buyContinue(next, proof), BALANCE.continueCoinPrice);
+    await continueFromResult(next => logTaskContinue(next, buyContinue(next, proof)), BALANCE.continueCoinPrice);
   }, domOptions);
   async function continueFromResult(change: (next: Save) => boolean, cost = 0) {
     $('#result-continue-error').hidden = true;

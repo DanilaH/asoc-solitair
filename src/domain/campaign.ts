@@ -12,6 +12,7 @@ export function beginDeal(save: Save, deal: Deal, attemptId: string, previousDea
   const previous = save.attempt;
   abandonCampaign(save);
   save.attempt = freshAttempt(deal, attemptId);
+  if (save.dailyTasks) save.attempt.verifiedTaskHints = 0;
   if (CONTENT8_PREVIEW && previous.board.phase === 'exhausted' && previousDeal?.id === previous.dealId &&
     previousDeal.campaignLevel === deal.campaignLevel) carryCampaignRestart(previous, save.attempt);
   save.campaign ??= { version: 1, tutorials: [] };

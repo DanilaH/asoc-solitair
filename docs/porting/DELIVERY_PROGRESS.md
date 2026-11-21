@@ -45,8 +45,8 @@
 | P24 | BLOCKED_EXTERNAL | [PR #113](https://github.com/DanilaH/asoc-solitair/pull/113) | [Официальные условия продавцов](P24_MERCHANT_GATE.md). Нет подтверждённого аккаунта, принятого договора и платежей sandbox. |
 | P25 | NEEDS_OWNER | [PR #114](https://github.com/DanilaH/asoc-solitair/pull/114) | [Все 15 офлайн-семейств](P25_COMMERCIAL_FAMILIES.md). Платный запуск зависит от P24, условия не активированы. |
 | P26 | IN_PROGRESS | [PR #116](https://github.com/DanilaH/asoc-solitair/pull/116) | [Версионные часы и призы событий](P26_EVENT_LEDGER.md). Проверены прогресс, истечение окна и атомарное получение. |
-| P27 | NEEDS_DEVICE | [Ветка P27](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p27-picture-gallery-20261121) | [Оранжерея, альбом и жетоны](P27_PICTURE_GALLERY.md). Реальный финальный ход, фрагмент и сохранённая выдача проверены в браузере. |
-| P28 | QUEUED | — | All 16 AZUR tasks + 9 rewards |
+| P27 | NEEDS_DEVICE | [PR #118](https://github.com/DanilaH/asoc-solitair/pull/118) | [Оранжерея, альбом и жетоны](P27_PICTURE_GALLERY.md). Реальный финальный ход, фрагмент и сохранённая выдача проверены в браузере. |
+| P28 | NEEDS_DEVICE | [Ветка P28](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p28-daily-task-model-20261121) | [16 действий, 9 наград и недельный preview](P28_DAILY_TASKS.md). Добор и получение приза проверены через UI. |
 | P29 | QUEUED | — | DailyBonus/Rewards/Fortune/Puzzle |
 | P30 | QUEUED | — | Win/Task/Combo streaks |
 | P31 | QUEUED | — | Race/Lava/Lives/GoldRush/prewarm |

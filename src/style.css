@@ -557,3 +557,7 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 #picture-grid button:disabled:not([data-open]){opacity:1;background:#405b55;color:#f5eddb}
 #picture-grid button[data-open]{background:transparent;border-color:transparent;opacity:1}
 #picture-status,#picture-prize{margin:.5rem 0}
+
+#daily-tasks-list section{padding:.4rem 0;border-bottom:1px solid #dcd0b9}
+#daily-tasks-list section strong{display:block}
+#daily-tasks-list section button{width:100%;margin:.3rem 0 0}

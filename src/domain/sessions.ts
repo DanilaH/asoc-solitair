@@ -9,5 +9,6 @@ export function switchMode(save: Save, mode: 'campaign' | 'daily', deal: Deal, a
   if (active !== mode) parked[active] = save.attempt;
   const target = parked[mode];
   save.attempt = target && (mode === 'campaign' || target.dealId === deal.id) ? target : freshAttempt(deal, attemptId);
+  if (save.dailyTasks && save.attempt.id === attemptId) save.attempt.verifiedTaskHints = 0;
   delete parked[mode]; save.revision++;
 }

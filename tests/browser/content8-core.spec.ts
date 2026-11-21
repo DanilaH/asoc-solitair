@@ -1219,3 +1219,29 @@ test('picture gallery preview can be opened without granting progress or blockin
   await openGame(page, recoverable);
   expect((await read(page)).attempt.board).toEqual(save.attempt.board);
 });
+
+test('daily task preview records a real draw and lets the player claim once after returning home', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_DAILY_TASKS !== '1', 'Requires the daily task preview.');
+  const save = freshSave(recoverable, 'p28-task-draw');
+  await loadWaveFixture(page, save, 15);
+  const link = page.locator('#daily-tasks-open'), task = page.locator('#daily-tasks-list section').filter({ hasText: 'Взять карту из колоды' });
+  await link.tap();
+  await expect(task).toContainText('0/1');
+  await expect(task.locator('button')).toBeDisabled();
+  expect((await read(page)).profile.coins).toBe(save.profile.coins);
+  await page.locator('#daily-tasks-dialog .sheet-actions button').tap();
+  await openGame(page, recoverable);
+  await touch(page, recoverable, { type: 'draw' });
+  await expect.poll(async () => (await read(page)).attempt.board.stock.length).toBe(save.attempt.board.stock.length - 1);
+  await page.locator('#menu').tap();
+  await page.locator('#levels-open').tap();
+  await link.tap();
+  await expect(task).toContainText('1/1');
+  await task.locator('button').tap();
+  await expect(task.locator('button')).toHaveText('Получено');
+  expect((await read(page)).profile.coins).toBe(save.profile.coins + 10);
+  await page.reload();
+  await link.tap();
+  await expect(task.locator('button')).toHaveText('Получено');
+  expect((await read(page)).profile.coins).toBe(save.profile.coins + 10);
+});

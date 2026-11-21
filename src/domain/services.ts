@@ -1,4 +1,5 @@
 import { campaignRewards } from './meta';
+import { isOfferPlacement, settleRewardOffer, type OfferPlacement } from './reward-offers';
 import { BALANCE } from './balance';
 import { campaignId } from './progression';
 import { CONTENT8_PREVIEW, type Deal, type PlatformState, type Save } from './types';
@@ -6,7 +7,7 @@ import { recordCampaignOutcome } from './difficulty';
 import { bonusKindFor, bonusPlacements, openBonusSlot, type BonusPlacement } from './bonus-slots';
 import { requiresContinueProof, verifiesContinue, type ContinueProof } from './continuation';
 
-export type RewardPlacement = 'hint' | 'undo' | 'continue' | BonusPlacement;
+export type RewardPlacement = 'hint' | 'undo' | 'continue' | BonusPlacement | OfferPlacement;
 export interface EarnedReceipt { schema: 1; id: string; attempt: string; dealId: string; mode: 'campaign' | 'daily'; placement: RewardPlacement }
 export function platformState(save: Save): PlatformState {
   return save.platform ??= { receipts: [], continuedAttempts: [], continueCredits: 0, completedCampaign: [], winsSinceInterstitial: 0, lastFullscreenAt: 0 };
@@ -17,14 +18,14 @@ export function parseReceipt(value: unknown): EarnedReceipt {
   if (r.schema !== 1 || typeof r.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.id) ||
     typeof r.attempt !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.attempt) ||
     typeof r.dealId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.dealId) ||
-    !['hint', 'undo', 'continue', ...Object.values(bonusPlacements)].includes(String(r.placement)) ||
+    (!['hint', 'undo', 'continue', ...Object.values(bonusPlacements)].includes(String(r.placement)) && !isOfferPlacement(String(r.placement))) ||
     !['campaign', 'daily'].includes(String(r.mode)) ||
-    (bonusKindFor(String(r.placement)) && r.mode !== 'campaign')) throw Error('Invalid receipt');
+    ((bonusKindFor(String(r.placement)) || isOfferPlacement(String(r.placement))) && r.mode !== 'campaign')) throw Error('Invalid receipt');
   return { schema: 1, id: r.id, attempt: r.attempt, dealId: r.dealId, placement: r.placement as RewardPlacement, mode: r.mode as EarnedReceipt['mode'] };
 }
 /** All effects and identities enter the same coordinated snapshot; Undo never owns these fields. */
 export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
-  deal?: Deal; onBonusUnlocked?: () => void; continueProof?: ContinueProof;
+  deal?: Deal; onBonusUnlocked?: () => void; continueProof?: ContinueProof; offerNow?: number;
 }): 'applied' | 'already-applied' {
   const state = platformState(save);
   if (state.receipts.includes(receipt.id)) return 'already-applied';
@@ -37,6 +38,8 @@ export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
     }
   } else if (receipt.placement === 'hint' || receipt.placement === 'undo') {
     save.profile[receipt.placement === 'hint' ? 'hints' : 'undos'] += BALANCE.rewardedCharges[receipt.placement];
+  } else if (isOfferPlacement(receipt.placement)) {
+    if (options?.offerNow !== undefined) settleRewardOffer(save, { ...receipt, placement: receipt.placement }, options.offerNow);
   } else {
     const kind = bonusKindFor(receipt.placement);
     const attempt = save.attempt.daily ? save.parked?.campaign : save.attempt;

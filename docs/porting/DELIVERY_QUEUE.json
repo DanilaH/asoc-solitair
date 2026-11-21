@@ -490,7 +490,7 @@
       "order": 20,
       "title": "Победные бонусы, Definition, free coins/themes",
       "workstream": "REWARD",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P18"

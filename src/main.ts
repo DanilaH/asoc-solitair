@@ -17,6 +17,7 @@ import { BALANCE } from './domain/balance';
 import { frozenLayers } from './domain/frozen-cards';
 import { isBoundCard } from './domain/bound-cards';
 import { collectedGold, goldenRewardKey } from './domain/golden-cards';
+import { REWARD_OFFER_PREVIEW, isOfferPlacement, offerLabels, offerQuote, prepareRewardOffer, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
 import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-shuffle';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
@@ -176,6 +177,9 @@ try {
   const continueCheck = new ContinueCheck(() => { if (alive) renderHud(); });
   let continueVideoFailed: string | undefined;
   let rewardedResultAttempt: string | undefined;
+  let rewardOfferReturn: { attempt: string; selector: '#result'|'#helpers'|'#appearance' } | undefined;
+  let definitionCardId: string | undefined;
+  let themeExpiry: ReturnType<typeof setTimeout> | undefined;
   // A backing-store resize clears the canvas even when the model is static.
   // Keep a bounded repaint tail instead of sleeping in that POST_RENDER turn.
   let repaintFrames = 0;
@@ -203,6 +207,7 @@ try {
           if (!proof || request.attempt !== proof.attemptId || request.dealId !== proof.deal.id ||
             next.attempt.continued || !verifiesContinue(next.attempt, proof)) throw Error('Продолжение недоступно');
         }
+        if (isOfferPlacement(request.placement)) return;
         const state = platformState(next);
         state.lastFullscreenAt = Date.now();
         if (request.kind === 'interstitial') state.winsSinceInterstitial = 0;
@@ -210,17 +215,20 @@ try {
     },
     async commit(receipt) {
       const placement = receipt.placement;
-      let openedBonus = false, earnedContinue = false;
+      let openedBonus = false, earnedContinue = false, grantedOfferCoins = 0;
       const result = await store.mutate(next => {
         const hadContinue = next.platform?.continuedAttempts.includes(receipt.attempt);
+        const beforeCoins = next.profile.coins;
         const applied = applyReceipt(next, receipt, {
+          offerNow: Date.now(),
           deal: findDeal(receipt.dealId), onBonusUnlocked: () => { openedBonus = true; }, continueProof: continueCheck.proof,
         });
+        grantedOfferCoins = next.profile.coins - beforeCoins;
         earnedContinue = placement === 'continue' && !hadContinue && Boolean(next.platform?.continuedAttempts.includes(receipt.attempt));
         return applied;
       });
       const amount = placement === 'continue' ? Number(earnedContinue) * BALANCE.continueMoves : placement === 'hint' || placement === 'undo'
-        ? BALANCE.rewardedCharges[placement] : Number(openedBonus);
+        ? BALANCE.rewardedCharges[placement] : isOfferPlacement(placement) ? grantedOfferCoins : Number(openedBonus);
       if (result === 'applied' && amount) telemetry.track('reward_granted', { attemptId: receipt.attempt, dealId: receipt.dealId, mode: receipt.mode, reason: `rewarded_${placement}`, amount });
       // Ack failure must not freeze spending/restart or replay the already durable grant.
       if (runtime.activity.getBlockReasons().every(r => r === 'modal')) { scene?.sync(); if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs(); }
@@ -448,6 +456,7 @@ try {
     $('#apply-unlock').textContent = applied ? 'Применено' : 'Примерить';
     $<HTMLButtonElement>('#apply-unlock').disabled = !unlockChoice || applied || saving || serviceBusy;
     $('#save-retry').hidden = !store.needsRecovery;
+    if (REWARD_OFFER_PREVIEW) renderRewardOffers();
   }
   function outcome(collectionDeadline = Infinity) {
     if (save.attempt.board.phase === 'playing') return;
@@ -604,6 +613,52 @@ try {
     rewardedResultAttempt = undefined;
     outcome();
     return true;
+  }
+  function renderRewardOffers() {
+    const now = Date.now(), available = screen === 'game' && ads.status.mode === 'test' && ads.status.rewarded;
+    const busy = saving || serviceBusy || store.needsRecovery;
+    const kind = $<HTMLSelectElement>('#win-video-kind').value as WinOffer;
+    const quote = offerQuote(save, deal, kind, now);
+    $('#win-video-offers').hidden = !available || !quote;
+    const win = $<HTMLButtonElement>('#win-video-claim');
+    win.textContent = quote ? `Получить ещё ${quote.amount} монет` : '';
+    win.disabled = busy;
+    for (const [selector, placement] of [['#shop-video-claim', 'shop-free-coins'], ['#theme-video-claim', 'rewarded-theme']] as const) {
+      const button = $<HTMLButtonElement>(selector);
+      button.hidden = !available || !offerQuote(save, deal, placement, now);
+      button.disabled = busy;
+    }
+    const expires = save.rewardOffers?.themeUntil ?? 0;
+    $('#app').toggleAttribute('data-reward-theme', expires > now);
+    clearTimeout(themeExpiry);
+    if (expires > now) themeExpiry = setTimeout(renderRewardOffers, Math.min(expires - now, 86_400_000));
+  }
+  function restoreOfferDialog() {
+    if (!rewardOfferReturn || runtime.activity.isBlocked()) return false;
+    const { selector, attempt } = rewardOfferReturn;
+    rewardOfferReturn = undefined;
+    if (screen !== 'game' || save.attempt.id !== attempt) return false;
+    if (selector === '#result') outcome();
+    else openDialog(selector);
+    return true;
+  }
+  async function requestRewardOffer(kind: OfferPlacement, selector: '#result'|'#helpers'|'#appearance') {
+    if (!REWARD_OFFER_PREVIEW || saving || serviceBusy || screen !== 'game' || ads.status.mode !== 'test' || !ads.status.rewarded) return;
+    const attempt = save.attempt.id;
+    serviceBusy = true;
+    try {
+      const offer = await write(next => prepareRewardOffer(next, deal, kind, Date.now(), crypto.randomUUID()));
+      if (!offer || !alive || save.attempt.id !== attempt) return;
+      closeDialogs();
+      const result = await ads.show({ kind: 'rewarded', placement: kind, attempt: offer.id, dealId: offer.dealId, mode: 'campaign' });
+      if (!alive) return;
+      rewardOfferReturn = { attempt, selector };
+      if (!result.shown) message('Сейчас видео недоступно. Попробуйте позже.', true);
+    } catch { message('Не удалось сохранить предложение. Попробуйте ещё раз.', true); }
+    finally {
+      serviceBusy = false;
+      if (alive) { restoreOfferDialog(); renderHud(); }
+    }
   }
   async function rewarded(placement: RewardPlacement) {
     if (serviceBusy || saving) return;
@@ -833,6 +888,12 @@ try {
         width: (rect.width || Math.min(innerWidth, 520) - 24) / zoom, height: (rect.height || Math.max(280, innerHeight - 260)) / zoom }; },
     inspect(id) {
       const card = deal.cards[id];
+      definitionCardId = id;
+      const definition = $<HTMLButtonElement>('#definition-use');
+      definition.hidden = !REWARD_OFFER_PREVIEW;
+      definition.disabled = (save.rewardOffers?.definitions ?? 1) === 0;
+      definition.textContent = `Связанное слово · ${save.rewardOffers?.definitions ?? 1}`;
+      $('#definition-related').hidden = true;
       setInspect(false);
       const image = $<HTMLImageElement>('#word-image'), artwork = cardArtwork(card, deal); image.hidden = !artwork;
       if (artwork) { image.src = artwork; image.alt = card.text; }
@@ -893,7 +954,7 @@ try {
       if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs();
       if (!blocked) {
         void ads.refresh(); void ads.recover();
-        if (restoreRewardedResult()) return;
+        if (restoreRewardedResult() || restoreOfferDialog()) return;
         playDealSound(); showGuidance();
       }
     }
@@ -952,6 +1013,30 @@ try {
     if (button && !button.disabled) void openLevel(Number(button.dataset.level));
   }, domOptions);
   $('#next-level').addEventListener('click', () => { if (save.attempt.daily || deal.campaignLevel === CAMPAIGN_LENGTH) goHome(); else void openLevel((deal.campaignLevel ?? 0) + 1); }, domOptions);
+  if (REWARD_OFFER_PREVIEW) {
+    const select = $<HTMLSelectElement>('#win-video-kind');
+    for (const [kind, label] of Object.entries(offerLabels)) select.add(new Option(label, kind));
+    select.addEventListener('change', renderRewardOffers, domOptions);
+    $('#win-video-claim').addEventListener('click', () => { void requestRewardOffer(select.value as WinOffer, '#result'); }, domOptions);
+    $('#shop-video-claim').addEventListener('click', () => { void requestRewardOffer('shop-free-coins', '#helpers'); }, domOptions);
+    $('#theme-video-claim').addEventListener('click', () => { void requestRewardOffer('rewarded-theme', '#appearance'); }, domOptions);
+    $('#definition-use').addEventListener('click', async () => {
+      const id = definitionCardId;
+      if (!id || saving || serviceBusy) return;
+      try {
+        const word = await write(next => revealRelatedWord(next, deal, id));
+        if (definitionCardId !== id || !$<HTMLDialogElement>('#inspect-dialog').open) return;
+        const hint = $('#definition-related');
+        hint.textContent = word ? `Связанное слово · ${word}` : 'Откройте ещё одну карту этой темы.';
+        hint.hidden = false;
+        if (word) {
+          const button = $<HTMLButtonElement>('#definition-use');
+          button.textContent = `Связанное слово · ${save.rewardOffers?.definitions ?? 0}`;
+          button.disabled = (save.rewardOffers?.definitions ?? 0) === 0;
+        }
+      } catch { message('Не удалось сохранить расход заряда.', true); }
+    }, domOptions);
+  }
   $('#result-home').addEventListener('click', goHome, domOptions);
   $('#levels-open').addEventListener('click', goHome, domOptions);
   $('#switch-confirm').addEventListener('click', () => { const level = requestedLevel; requestedLevel = undefined; if (level) void openLevel(level, true); }, domOptions);
@@ -1173,7 +1258,7 @@ try {
     if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
-    worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
+    clearTimeout(themeExpiry); worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };
   window.addEventListener('pagehide', event => { if (!event.persisted) cleanup(); }, domOptions);
   window.addEventListener('pageshow', () => { if (alive) renderer.loop.wake(); }, domOptions);

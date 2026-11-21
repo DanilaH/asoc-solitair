@@ -2,6 +2,7 @@ import { Capacitor, registerPlugin } from '@capacitor/core';
 import { JsonStorageRepository, type StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { dayNumber, metaState, milestoneRewards } from '../domain/meta';
 import { BALANCE } from '../domain/balance';
+import { validRewardOffers } from '../domain/reward-offers';
 import { applyBoard, assertBoard, boardRules } from '../domain/engine';
 import { MAX_UNDO_HISTORY } from '../domain/history';
 import { DIFFICULTY_WINDOW } from '../domain/difficulty';
@@ -96,6 +97,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
   save.attempt.undo = save.attempt.undo.slice(-MAX_UNDO_HISTORY);
   if (save.attempt.daily && (save.attempt.daily.dayId !== deal.daily?.dayId || save.attempt.daily.contentVersion !== deal.daily?.contentVersion)) throw Error('Повреждена дата попытки');
   if (Boolean(save.attempt.daily) !== Boolean(deal.daily)) throw Error('Повреждён режим');
+  if (save.rewardOffers !== undefined && !validRewardOffers(save.rewardOffers)) throw Error('Повреждены бонусные предложения');
   if (save.parked) {
     const active = save.attempt.daily ? 'daily' : 'campaign';
     if (save.parked[active]) throw Error('Два активных состояния режима');

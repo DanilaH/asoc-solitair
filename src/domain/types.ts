@@ -1,3 +1,5 @@
+import type { RewardOffers } from './reward-offers';
+
 export const RULES_VERSION = 3;
 export const CONTENT8_PREVIEW = import.meta.env?.VITE_CONTENT8_PREVIEW === '1';
 export const CONTENT_VERSION = CONTENT8_PREVIEW ? 8 : 7;
@@ -81,6 +83,7 @@ export interface Save {
   campaign?: { version: 1; tutorials: string[] };
   difficultyHistory?: CampaignOutcome[];
   difficultyPenalty?: number;
+  rewardOffers?: RewardOffers;
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';

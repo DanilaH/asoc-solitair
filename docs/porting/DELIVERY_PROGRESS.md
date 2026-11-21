@@ -50,8 +50,8 @@
 | P29 | BLOCKED_EXTERNAL | [PR #120](https://github.com/DanilaH/asoc-solitair/pull/120) | [Раздельные дневные модели и два источника пазла](P29_DAILY_REWARDS.md). Оригинальный Hitapps DailyPuzzle и действие Unico ждут записи. |
 | P30 | BLOCKED_EXTERNAL | [PR #121](https://github.com/DanilaH/asoc-solitair/pull/121) | [Четыре отдельные модели серий](P30_STREAK_TRIALS.md). Сбросы и награды проверены офлайн, источники P36. |
 | P31 | NEEDS_OWNER | [PR #122](https://github.com/DanilaH/asoc-solitair/pull/122) | [Пять независимых офлайн-моделей](P31_LIVEOPS_TRIALS.md). Признание оригинальных правил и активация остаются открытыми. |
-| P32 | BLOCKED_EXTERNAL | [Ветка P32](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p32-regions-event-trials-20261121) | [Регионы и четыре отдельные модели событий](P32_REGION_EVENTS.md). Оригинальные действия, совпадение фаз и вероятности ждут доказательств. |
-| P33 | QUEUED | — | Long campaign / original RU novelty |
+| P32 | BLOCKED_EXTERNAL | [PR #124](https://github.com/DanilaH/asoc-solitair/pull/124) | [Регионы и четыре отдельные модели событий](P32_REGION_EVENTS.md). Оригинальные действия, совпадение фаз и вероятности ждут доказательств. |
+| P33 | NEEDS_DEVICE | [Ветка P33](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p33-beyond80-20261121) | [Новые уровни 81–87](P33_BEYOND80.md). 42 свои темы, семь пар маршрутов и реальный переход на уровне 80. |
 | P34 | QUEUED | — | Locale/art/count/language |
 | P35 | QUEUED | — | Remote bank, immutable rollout |
 | P36 | QUEUED | — | Original ARM32/ARM64/Unico actual traces |

@@ -809,6 +809,7 @@ try {
     $('#campaign-progress').textContent = `${completed} / ${CAMPAIGN_LENGTH}`;
     $('#home-progress').textContent = `Пройдено ${completed} из ${CAMPAIGN_LENGTH}`;
     $('#campaign-done').hidden = completed < CAMPAIGN_LENGTH;
+    $('#campaign-done').textContent = `Все ${CAMPAIGN_LENGTH} уровней пройдены. Любую раздачу можно сыграть ещё раз.`;
     const label = current ? (campaignDeal?.campaignLevel ? `${campaign?.telemetry?.started ? 'Продолжить' : 'Играть'} · уровень ${campaignDeal.campaignLevel}` : 'Продолжить пробную раздачу')
       : campaign && (!outcomeViewed || save.attempt.daily) ? (campaignDeal?.campaignLevel ? `Результат · уровень ${campaignDeal.campaignLevel}` : 'Результат пробной раздачи') : completed === CAMPAIGN_LENGTH ? 'Выбрать уровень' : `Играть · уровень ${unlocked}`;
     const parts = label.split(' · ');
@@ -819,9 +820,12 @@ try {
       { textContent: (parts[1] ?? 'Кампания') + (homeDifficulty ? ' · ' + homeDifficulty : '') }));
     $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy;
     const focusId = campaign?.id ?? 'new';
-    if (chapterAttemptId !== focusId) { chapterAttemptId = focusId; chapterPage = Math.floor(((campaignDeal?.campaignLevel ?? unlocked) - 1) / 20); }
+    if (chapterAttemptId !== focusId) {
+      chapterAttemptId = focusId;
+      chapterPage = Math.min(Math.floor(((campaignDeal?.campaignLevel ?? unlocked) - 1) / 20), Math.ceil(CAMPAIGN_LENGTH / 20) - 1);
+    }
     $('#chapter-label').textContent = `Уровни ${chapterPage * 20 + 1}–${Math.min(CAMPAIGN_LENGTH, chapterPage * 20 + 20)}`;
-    $('#chapter-name').textContent = ['Первые связи', 'Правила и новые темы', 'По своим местам', 'Последние ключи'][chapterPage];
+    $('#chapter-name').textContent = ['Первые связи', 'Правила и новые темы', 'По своим местам', 'Последние ключи', 'Новые мастерские'][chapterPage] ?? 'Продолжение кампании';
     $<HTMLButtonElement>('#chapter-prev').disabled = chapterPage === 0 || saving;
     $<HTMLButtonElement>('#chapter-next').disabled = chapterPage === Math.ceil(CAMPAIGN_LENGTH / 20) - 1 || saving;
     const grid = $('#level-grid');

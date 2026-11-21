@@ -17,6 +17,7 @@ export function illustrationUrl(original: string): string {
 const categoryArt = new WeakMap<Deal, Map<string, string>>();
 /** Frozen memberships retain their original image metadata; the view is homogeneous. */
 export function cardArtwork(card: Card, deal: Deal): string | undefined {
+  if (deal.tags?.includes('content8-beyond80')) return !card.leader && card.image ? illustrationUrl(card.image) : undefined;
   let art = categoryArt.get(deal);
   if (!art) {
     art = new Map();

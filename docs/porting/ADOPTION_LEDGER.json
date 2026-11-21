@@ -797,7 +797,7 @@
     {
       "id": "azur-generate-deal-entrypoints",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "CORE-1 offline AzurDealer shuffles a temporary copy with injected RNG and places the ordinary branch. The active C8 uses frozen Hitapps-derived deals.",
+      "currentImplementation": "P05 offline AZUR generates separate category/member references, traces the injected draws and preserves generated manager order when dealing from the shuffled copy. A versioned Rules 3 sample has a dual-engine witness and two stock cycles. The active C8 uses frozen deals. See docs/porting/P05_DEALER_PROVENANCE.md.",
       "nextAction": "Use the corrected v2 oracle from kit PR #91 to compare actual Unity draws with the temporary permutation, while keeping generated allCards unchanged. Obtain at least two original ARM64 captures with locale/config, actual stock/tableau and correct card conservation. Device output, original RNG initialization and upstream stream sharing remain open.",
       "stage": "B1",
       "reason": "Original source clone, shuffle and placement ARM64 are verified; actual selected Unity random stream/config, original Android stock and tableau still have zero genuine captures. Corrected original trace comparator synthetic fixtures are not live source parity."

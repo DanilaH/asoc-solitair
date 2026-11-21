@@ -138,7 +138,7 @@
       "order": 5,
       "title": "Hitapps/AZUR генератор и источник раскладки",
       "workstream": "CORE",
-      "state": "QUEUED",
+      "state": "IN_PROGRESS",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"

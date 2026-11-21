@@ -47,6 +47,7 @@ jobs:
           npm run qa:decision-deep
       - run: npm run qa:rules
       - run: npm run content:azur-preset
+      - run: npm run qa:azur-ordinary
       - run: npm run qa:content8
       - run: npm run qa:content7
       - run: npm run qa:opening

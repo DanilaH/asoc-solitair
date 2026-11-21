@@ -788,7 +788,7 @@
       "order": 32,
       "title": "Regions/Cascade/Digging/Wheel/Treasure",
       "workstream": "META",
-      "state": "QUEUED",
+      "state": "BLOCKED_EXTERNAL",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P26"

@@ -273,7 +273,7 @@
     {
       "id": "hitapps-meta-regions",
       "status": "ROADMAPPED",
-      "currentImplementation": "No star/building/region meta",
+      "currentImplementation": "No star/building/region meta P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
       "nextAction": "Estimate asset pipeline and staged owner-visible progression UI for later season F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3"
     },
@@ -347,7 +347,7 @@
     {
       "id": "hitapps-cascade-events",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No cascade scheduler; general meta only",
+      "currentImplementation": "No cascade scheduler; general meta only P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
       "nextAction": "Trace native source config/calls to derive event sequencing before porting a generic event lifecycle F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
@@ -355,7 +355,7 @@
     {
       "id": "hitapps-digging-event",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No digging event",
+      "currentImplementation": "No digging event P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
       "nextAction": "Inspect original event behavior and schema; define adaptation and authoring cost F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
@@ -363,7 +363,7 @@
     {
       "id": "hitapps-lucky-wheel",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No wheel rewards",
+      "currentImplementation": "No wheel rewards P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
       "nextAction": "Find original UI/state/odds evidence, then design own optional reward minigame F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
@@ -371,7 +371,7 @@
     {
       "id": "hitapps-endless-treasure",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No treasure progression event",
+      "currentImplementation": "No treasure progression event P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
       "nextAction": "Determine native phases and actual gameplay before creating design spec F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"

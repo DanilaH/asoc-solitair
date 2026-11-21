@@ -27,7 +27,7 @@ jobs:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run check
-      - name: Research Q1b: full C8 decision continuations and witness-relative route cost
+      - name: Research Q1b full C8 decision continuations and witness-relative route cost
         if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'audit/c8-q1b-')
         env:
           VITE_CONTENT8_PREVIEW: '1'

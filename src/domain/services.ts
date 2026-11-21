@@ -8,6 +8,10 @@ import { requiresContinueProof, verifiesContinue, type ContinueProof } from './c
 
 export type RewardPlacement = 'hint' | 'undo' | 'continue' | BonusPlacement;
 export interface EarnedReceipt { schema: 1; id: string; attempt: string; dealId: string; mode: 'campaign' | 'daily'; placement: RewardPlacement }
+export interface FullscreenShown extends EarnedReceipt {
+  kind: 'rewarded' | 'interstitial';
+  shownAt: number;
+}
 export function platformState(save: Save): PlatformState {
   return save.platform ??= { receipts: [], continuedAttempts: [], continueCredits: 0, completedCampaign: [], winsSinceInterstitial: 0, lastFullscreenAt: 0 };
 }
@@ -21,6 +25,33 @@ export function parseReceipt(value: unknown): EarnedReceipt {
     !['campaign', 'daily'].includes(String(r.mode)) ||
     (bonusKindFor(String(r.placement)) && r.mode !== 'campaign')) throw Error('Invalid receipt');
   return { schema: 1, id: r.id, attempt: r.attempt, dealId: r.dealId, placement: r.placement as RewardPlacement, mode: r.mode as EarnedReceipt['mode'] };
+}
+export function parseFullscreenShown(value: unknown): FullscreenShown {
+  const receipt = parseReceipt(value);
+  const { kind, shownAt } = value as Partial<FullscreenShown>;
+  if (typeof shownAt !== 'number' || !Number.isSafeInteger(shownAt) || shownAt <= 0 ||
+    (kind !== 'rewarded' && (kind !== 'interstitial' || receipt.mode !== 'campaign' || receipt.placement !== 'continue'))) {
+    throw Error('Invalid fullscreen display');
+  }
+  return { ...receipt, kind, shownAt };
+}
+
+/** The native journal owns one verified show until this independent effect is durable. */
+export function applyFullscreenShown(save: Save, shown: FullscreenShown): 'applied' | 'already-applied' {
+  const attempt = save.attempt;
+  if (shown.attempt !== attempt.id || shown.dealId !== attempt.dealId || shown.mode !== (attempt.daily ? 'daily' : 'campaign')) {
+    return 'already-applied';
+  }
+  const state = platformState(save);
+  if (state.fullscreenCadence &&
+    (shown.id === state.fullscreenCadence.lastShownId || shown.shownAt <= state.lastFullscreenAt)) {
+    return 'already-applied';
+  }
+  // Before the first verified show, the historical attempt time remains a conservative floor.
+  state.lastFullscreenAt = shown.shownAt;
+  state.fullscreenCadence = { version: 1, lastShownId: shown.id };
+  if (shown.kind === 'interstitial') state.winsSinceInterstitial = 0;
+  return 'applied';
 }
 /** All effects and identities enter the same coordinated snapshot; Undo never owns these fields. */
 export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {

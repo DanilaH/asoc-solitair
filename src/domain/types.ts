@@ -60,6 +60,7 @@ export interface PlatformState {
   completedCampaign: string[];
   winsSinceInterstitial: number;
   lastFullscreenAt: number;
+  fullscreenCadence?: { version: 1; lastShownId: string };
 }
 export interface RewardGrant { key: string; reason: 'win' | 'campaign_milestone' | 'campaign_win_cycle' | 'daily_completion' | 'daily_streak_milestone'; label: string; coins: number; hints?: number; undos?: number }
 export interface MetaState { version: 1; winCycle: number; cycles: number; dailyDates: string[]; dailyStreak: number; lastDaily?: string }

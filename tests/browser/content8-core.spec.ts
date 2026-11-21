@@ -6,7 +6,7 @@ import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import { BALANCE } from '../../src/domain/balance';
-import type { EarnedReceipt } from '../../src/domain/services';
+import type { EarnedReceipt, FullscreenShown } from '../../src/domain/services';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 import { boardFrame, layout } from '../../src/game/layout';
 import type { AdOutcome, AdRequest } from '../../src/platform/ads';
@@ -119,11 +119,11 @@ test('starting the exhausted level again from Home uses the certified relief dea
   expect(issued.director).toEqual({ restarts: 3, previousLosses: 3 });
 });
 
-async function loadWaveFixture(page: Page, save: Save, completed: number, continueCredits = 0) {
+async function loadWaveFixture(page: Page, save: Save, completed: number, continueCredits = 0, initialCadence?: Pick<NonNullable<Save['platform']>, 'lastFullscreenAt' | 'winsSinceInterstitial'>) {
   save.contentVersion = 8;
   save.settings.reducedMotion = true;
   save.platform = { receipts: [], continuedAttempts: [], continueCredits, lastFullscreenAt: 0,
-    winsSinceInterstitial: 0, completedCampaign: Array.from({ length: completed }, (_, i) => campaignId(i + 1)) };
+    winsSinceInterstitial: 0, completedCampaign: Array.from({ length: completed }, (_, i) => campaignId(i + 1)), ...initialCadence };
   await page.setViewportSize({ width: 320, height: 568 });
   await page.addInitScript(({ key, value }) => {
     if (!localStorage.getItem(key)) localStorage.setItem(key, value);
@@ -137,14 +137,16 @@ interface AdTestControls {
   active(isActive: boolean): void;
   finish(outcome: AdOutcome): void;
   earn(receipt: EarnedReceipt): void;
+  confirmDisplay(shown: FullscreenShown): void;
 }
 
-async function installNativeAdTestBridge(page: Page) {
-  await page.addInitScript(() => {
+async function installNativeAdTestBridge(page: Page, interstitialReady = false) {
+  await page.addInitScript(interstitialReady => {
     const listeners = new Map<string, (event: object) => void>();
     const requests: AdRequest[] = [];
     const acknowledged: string[] = [];
     const receipts: EarnedReceipt[] = [];
+    let fullscreenDisplay: FullscreenShown | null = null;
     let finish: (outcome: AdOutcome) => void;
     const controls: AdTestControls = {
       requests, acknowledged,
@@ -153,6 +155,10 @@ async function installNativeAdTestBridge(page: Page) {
       earn(receipt) {
         receipts.push(receipt);
         listeners.get('SolitaireAds.adEvent')?.({ kind: 'rewarded', phase: 'earned' });
+      },
+      confirmDisplay(shown) {
+        fullscreenDisplay = shown;
+        listeners.get('SolitaireAds.adEvent')?.({ kind: shown.kind, phase: 'show' });
       },
     };
     const methods = (name: string, promises: string[], events = false) => ({
@@ -166,7 +172,7 @@ async function installNativeAdTestBridge(page: Page) {
       Capacitor: {
         PluginHeaders: [
           methods('App', ['getState'], true), methods('SolitaireStorage', ['get', 'set', 'remove']),
-          methods('SolitaireAds', ['status', 'show', 'pending', 'acknowledge', 'hideBanner', 'dispose'], true),
+          methods('SolitaireAds', ['status', 'prepareInterstitial', 'show', 'pending', 'acknowledge', 'pendingShown', 'acknowledgeShown', 'hideBanner', 'dispose'], true),
           methods('SolitaireAudio', ['configure'], true), methods('SolitaireFeedback', ['configure', 'pulse']),
         ],
         async nativeCallback(plugin: string, method: string, options: { eventName: string }, callback: (event: object) => void) {
@@ -184,12 +190,14 @@ async function installNativeAdTestBridge(page: Page) {
             else localStorage.removeItem(options.key);
           }
           if (plugin === 'SolitaireAds') {
-            if (method === 'status') return { rewarded: true, interstitial: false, banner: false, ready: true, mode: 'test' };
+            if (method === 'status') return { rewarded: true, interstitial: interstitialReady, banner: false, ready: true, mode: 'test' };
             if (method === 'show') {
               requests.push(options as unknown as AdRequest);
               return new Promise<AdOutcome>(resolve => { finish = resolve; });
             }
             if (method === 'pending') return { receipts: [...receipts] };
+            if (method === 'pendingShown') return { shown: fullscreenDisplay };
+            if (method === 'acknowledgeShown' && fullscreenDisplay?.id === options.id) fullscreenDisplay = null;
             if (method === 'acknowledge') {
               acknowledged.push(options.id);
               const index = receipts.findIndex(receipt => receipt.id === options.id);
@@ -200,11 +208,48 @@ async function installNativeAdTestBridge(page: Page) {
         },
       },
     });
-  });
+  }, interstitialReady);
 }
 
 const adControls = (page: Page) => page.evaluate(() =>
   (window as unknown as { adTestControls: AdTestControls }).adTestControls.requests);
+
+for (const shown of [false, true]) {
+  test(`post-win transition preserves cadence until the SDK confirms display (shown=${shown})`, async ({ page }) => {
+    const before = content8Dealer[6], after = content8Dealer[7];
+    const save = freshSave(before, 'cadence-post-win');
+    for (const action of before.winningPath) {
+      const result = applyBoard(save.attempt.board, action, before);
+      if (typeof result === 'string') throw Error(result);
+      save.attempt.board = result.board;
+    }
+    const previous = 1_700_000_000_000, displayed = previous + 240_001;
+    await page.clock.setFixedTime(previous + 120_000);
+    await installNativeAdTestBridge(page, true);
+    await loadWaveFixture(page, save, before.campaignLevel!, 0, { lastFullscreenAt: previous, winsSinceInterstitial: 3 });
+    await openGame(page, before);
+    await page.clock.setFixedTime(displayed);
+    await page.locator('#next-level').tap();
+    const request: AdRequest = { kind: 'interstitial', placement: 'continue', attempt: save.attempt.id, dealId: before.id, mode: 'campaign' };
+    await expect.poll(() => adControls(page)).toEqual([request]);
+    const waiting = await read(page);
+    expect(waiting.platform).toMatchObject({ lastFullscreenAt: previous, winsSinceInterstitial: 3 });
+    expect(waiting.attempt.id).toBe(save.attempt.id);
+    if (shown) {
+      await page.evaluate(value => (window as unknown as { adTestControls: AdTestControls }).adTestControls.confirmDisplay(value),
+        { ...request, schema: 1 as const, id: 'recorded-display', shownAt: displayed });
+      await expect.poll(async () => (await read(page)).platform?.lastFullscreenAt).toBe(displayed);
+      expect((await read(page)).attempt.id).toBe(save.attempt.id);
+    }
+    await page.evaluate(shown => (window as unknown as { adTestControls: AdTestControls }).adTestControls.finish({
+      shown, outcome: shown ? 'dismissed' : 'unavailable',
+    }), shown);
+    await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', after.id);
+    const advanced = await read(page);
+    expect(advanced.platform).toMatchObject({ lastFullscreenAt: shown ? displayed : previous, winsSinceInterstitial: shown ? 0 : 3, receipts: [] });
+    expect(advanced.profile).toEqual(waiting.profile);
+  });
+}
 
 for (const [previous, next] of [[content8Dealer[14], content8Wave[0]], [content8Wave[15], content8Late[0]]]) {
   test(`Next from C8 level ${previous.campaignLevel} opens the authored level ${next.campaignLevel}`, async ({ page }) => {

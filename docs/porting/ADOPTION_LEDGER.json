@@ -57,7 +57,7 @@
       "id": "hitapps-equality-paywall",
       "status": "IN_PROGRESS",
       "currentImplementation": "Offline selector simulates Rules 3 across policies and verifies 79/80 percent plus UNKNOWN. The separate CORE-5 product continuation now verifies the actual exhausted C8 board before offering +10.",
-      "nextAction": "Verify three-stack initial placement, author/persist immutable Equality variants, and measure the distinct selector and continuation on device. Offline Equality vs issued runtime is separately classified in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; no accidental product activation.",
+      "nextAction": "Verify three-stack initial placement, author/persist immutable Equality variants, and measure the distinct selector and continuation on device. Offline Equality vs issued runtime is separately classified in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; no accidental product activation. B3 source/product trace: existing 80%-late-bot-failure offline selector is NOT wired to campaign issuance; before use require immutable prevalidated special Deal, independent bot policies and separate actual-board +10 fair-recovery gate. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
       "stage": "B3",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md"
@@ -66,7 +66,7 @@
       "id": "hitapps-paywall-segmentation",
       "status": "IN_PROGRESS",
       "currentImplementation": "Explicit positive seed, enabled/min-level/limit/segment whitelist enforced in the offline eligibility model.",
-      "nextAction": "Wire product eligibility and issued counters to immutable deals only with known segment or explicit unknown policy; preserve original live cohort UNKNOWN. Original cohort and remote-config activation remain unknown as detailed in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md.",
+      "nextAction": "Wire product eligibility and issued counters to immutable deals only with known segment or explicit unknown policy; preserve original live cohort UNKNOWN. Original cohort and remote-config activation remain unknown as detailed in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md. B3 source/product trace: native four cohorts and eligibility cannot be inferred from the synthetic segment input; original reset/increment lifecycle and durable product issued counter remain independent and UNIMPLEMENTED. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
       "stage": "B3",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md"
@@ -815,14 +815,14 @@
       "id": "hitapps-equality-three-stack-pair-placement",
       "status": "ROADMAPPED",
       "currentImplementation": "C8 ordinary Priority dealer skips Equality-specific unique 3-stack pairing",
-      "nextAction": "Implement exactly flagged placeCategoryPairsOnTop for Equality only with same advanced RNG stream; compare selected stack indices and new candidate stock/cols in offline tests",
+      "nextAction": "Implement exactly flagged placeCategoryPairsOnTop for Equality only with same advanced RNG stream; compare selected stack indices and new candidate stock/cols in offline tests B3 exact known boundary: flag only in Equality simulation and exactly three unique indices drawn via the same advanced EmbeddedRandom; final pair transform, RNG state and live original board remain unverified. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "B3"
     },
     {
       "id": "hitapps-feature-seed-one-time-reshuffle",
       "status": "IN_PROGRESS",
       "currentImplementation": "Source-ordered phase adapter performs a single fresh reseed before pattern application, skips it on pre-shuffled simulation and preserves explicit failure flags.",
-      "nextAction": "Connect the concrete Lockers/Frozen/Bound pattern appliers in CORE-4 and compare controlled original traces.",
+      "nextAction": "Connect the concrete Lockers/Frozen/Bound pattern appliers in CORE-4 and compare controlled original traces. B3 carry-over: one-time reseed model exists, concrete Shuffle modifier behaviors and final selected source/runtime board still require independent evidence. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "B3",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md"
     },

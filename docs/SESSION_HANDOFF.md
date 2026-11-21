@@ -1,3 +1,11 @@
+# Content 8 · B3 Equality/Paywall independent source-to-product audit
+
+[Full B3 gate-to-runtime report](qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md) compares native Hitapps seed/enable/level/whitelist/counter, 80%-late-bot-failure, Equality-only 3 distinct stacks, candidate and Final phases to actual C8 code. The offline predicate and two-policy simulator exist but there is **no live immutable Equality deal issuance**, no authenticated payer cohort, no native final-board proof. New synthetic boundary tests explicitly confirm unique policy IDs do **not** guarantee independent strategy behavior. No runtime/SaveStore/SDK/content changes; 114 IDs retained.
+
+# Content 8 · Q1b full hosted cost evidence verified
+
+[Q1b report](qa/content-v8/Q1B_ROUTE_COST_2026-11-21.md) now includes exact SUCCESS run 44899121169 and JSON SHA 666db9ad4878fc164f7387359716a22b776c3cf4afdefc1cd0f61f00dcf5b573: main 889 probes/505 WIN/384 UNKNOWN; among 528 alternative transfers 325 WIN (157 found paths longer than witness), 203 UNKNOWN; 47 WIN recycle routes each longer than witness, four with 0–2 moves left. Length is not minimal regret. Parent PR #74 handles a separate deep-search sample; reconcile before release.
+
 # Content 8 · B2 director source→product audit (21 November)
 
 [Source-to-product evidence delta](qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md) records Hitapps native ten-result/lifecycle semantics against actual C8 `src/domain/difficulty.ts`, `campaign-v8-director.ts`, first-clear SaveStore paths and R1's five levels/ten variants. Key testable caveats: product records consolidated first clear where source mutates current slot at requests/restarts, ten ExtraSteps have adjustedRate100, native remote config and full source runtime unknown; Equity/Paywall not live issued. Research-only, no runtime edits or acceptance claim.

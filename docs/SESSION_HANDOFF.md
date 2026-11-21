@@ -1,3 +1,7 @@
+# Content 8 · Q5 preserve divergent research and validate C8 preview CI
+
+[Q5 research reconciliation](qa/content-v8/Q5_RESEARCH_BRANCH_RECONCILIATION_2026-11-21.md) tracks #67/#69 diverged from #70/#71: five unique audit files preserved, historical CORE3 choice warnings kept separately from current full-campaign transfer wins, Q1 28/28 search-limit UNKNOWN verified in prior CI, and C8-specific browser/Android flags now enabled for audit/c8-* PR branches. **Research/CI-only; no game runtime change; new hosted build outcome remains pending.** Human physical Android and original-app trace remain separate acceptance gates.
+
 # Content 8 · Q2 acceptance protocol (not executed)
 
 [Human/Android and Q1 follow-up protocol](qa/content-v8/Q2_HUMAN_ACCEPTANCE_AND_Q1_FOLLOWUP_2026-11-21.md) sets source-grounded novice FTUE 1–6, Q1 pivot positions 15/21/45/70, five-column checks 26/31/80 and CORE-5 real SDK/SaveStore checks. It distinguishes unscripted player choice, QA-directed alternative continuation, browser mocks and genuine phone evidence. No phone/human/original execution happened in this documentation update; 114/114 source IDs remain mapped and 0 are ACCEPTED. Research continuation sits on Q1 PR #70, runtime 0.20.3 PR #68; both are unmerged.

@@ -589,7 +589,7 @@
       "order": 24,
       "title": "Разрешённый магазин и выплаты",
       "workstream": "COMMERCE",
-      "state": "QUEUED",
+      "state": "BLOCKED_EXTERNAL",
       "entryGate": "MERCHANT_ELIGIBILITY",
       "dependsOn": [
         "P23"

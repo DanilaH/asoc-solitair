@@ -31,7 +31,7 @@
 | P12 | NEEDS_DEVICE | [Ветка P12](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p12-puzzle-pairs-20261121) | [Собственные парные карты, 31 unit и два touch-прогона](P12_PUZZLE_PAIRS.md). Точная логика оригинала остаётся открыта. |
 | P13 | NEEDS_DEVICE | [Ветка P13](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p13-golden-cards-20261121) | [Золотые карты и однократная выплата](P13_GOLDEN_CARDS.md). 40 unit и два touch-профиля. Расписание Gold Rush в P31, исходная выплата открыта. |
 | P14 | NEEDS_DEVICE | [Ветка P14](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p14-starter-boosters-20261121) | [Отдельный Final seed и две адаптированные карты](P14_STARTER_BOOSTERS.md). 24 unit и два touch-прогона. Оригинальная вставка и действия helpers остаются P36. |
-| P15 | QUEUED | — | AZUR random Joker |
+| P15 | NEEDS_OWNER | [Ветка P15](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p15-azur-joker-model-20261121) | [Изолированная модель вставки и Undo.Clear](P15_AZUR_JOKER.md). Подключение к игре требует решения о сбросе истории. |
 | P16 | QUEUED | — | AZUR Shuffle and animation |
 | P17 | QUEUED | — | Unico Magnet |
 | P18 | QUEUED | — | CORE-5 recovery, earned/coin |

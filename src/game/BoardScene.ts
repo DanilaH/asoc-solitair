@@ -4,6 +4,7 @@ import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
 import { frozenLayers } from '../domain/frozen-cards';
 import { isBoundCard } from '../domain/bound-cards';
+import { puzzleHalf } from '../domain/puzzle-pairs';
 import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
 import { boardFrame, cardMetrics, dragTarget, dropTarget, layout, slotCount, tableauPresentation } from './layout';
 import { bonusKinds } from '../domain/bonus-slots';
@@ -250,6 +251,11 @@ export class BoardScene extends Phaser.Scene {
       backgroundColor: '#f3dcef', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0).setVisible(false) : undefined;
     if (binding) face.add(binding);
+    const half = puzzleHalf(this.options.deal, id);
+    if (half) face.add(this.add.text(0, -this.cardH / 2 + 8, half === 'top' ? 'Верх' : 'Низ', {
+      fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#2d532d',
+      backgroundColor: '#ddf1ce', padding: { x: 4, y: 2 },
+    }).setOrigin(.5, 0));
     const b = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
     this.paintBack(b);
     const shade = this.add.image(0, 0, shadeKey).setAlpha(0);

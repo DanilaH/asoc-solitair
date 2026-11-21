@@ -28,7 +28,7 @@
 | P09 | NEEDS_DEVICE | [Ветка P09](https://github.com/DanilaH/asoc-solitair/tree/docs/c8-p09-special-device-20261121) | [34 unit и 12 touch-проверок](P09_SPECIAL_DEVICE.md). Четыре механики готовы к физическим касаниям и проверке настоящего SDK. |
 | P10 | NEEDS_DEVICE | [Ветка P10](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p10-frozen-cards-20261121) | [PRODUCT_ADAPTED лёд и два выигрышных пути](P10_FROZEN_CARDS.md). Правило испытано в отдельном 23-м уровне; оригинальные снятие слоя и взаимодействие с Джокером остаются в P36. |
 | P11 | NEEDS_DEVICE | [Ветка P11](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p11-bound-scissors-20261121) | [Связи и ножницы на пяти столбцах](P11_BOUND_SCISSORS.md). Наша адаптация прошла 38 unit и два touch-профиля; исходная механика остаётся P36. |
-| P12 | QUEUED | — | PuzzleTop/PuzzleBottom |
+| P12 | NEEDS_DEVICE | [Ветка P12](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p12-puzzle-pairs-20261121) | [Собственные парные карты, 31 unit и два touch-прогона](P12_PUZZLE_PAIRS.md). Точная логика оригинала остаётся открыта. |
 | P13 | QUEUED | — | GoldenCards |
 | P14 | QUEUED | — | Hitapps Magnet/Hammer |
 | P15 | QUEUED | — | AZUR random Joker |

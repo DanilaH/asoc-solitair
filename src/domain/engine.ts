@@ -10,6 +10,7 @@ import { recordUndo } from './history';
 import { bonusKinds, bonusOffer, pilesFor } from './bonus-slots';
 import { frozenLayers } from './frozen-cards';
 import { isBoundCard } from './bound-cards';
+import { puzzleError } from './puzzle-pairs';
 
 export const STREAK = BALANCE.streak;
 export const boardRules = (board: Board): 2 | 3 => board.rulesVersion ?? RULES_VERSION;
@@ -30,7 +31,8 @@ export function packet(board: Board, index: number, deal: Deal): string[] {
   if (!board.faceUp.includes(last) || frozenLayers(board, deal, last) || isBoundCard(board, deal, last)) return [];
   let start = col.length - 1;
   while (start > boundary && board.faceUp.includes(col[start - 1]) && !frozenLayers(board, deal, col[start - 1]) && !isBoundCard(board, deal, col[start - 1]) &&
-    deal.cards[col[start - 1]].category === deal.cards[last].category && !orderError(col.slice(start - 1), deal)) start--;
+    deal.cards[col[start - 1]].category === deal.cards[last].category && !orderError(col.slice(start - 1), deal) &&
+    !puzzleError(deal, col.slice(start - 1), true)) start--;
   return col.slice(start);
 }
 export function sourceCards(board: Board, loc: Location, deal: Deal): string[] {
@@ -94,7 +96,8 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
       if (!target) return 'Здесь нет слота';
       if (!target.length && !hasLeader) return 'Сначала нужна карта категории';
       if (target.length && (deal.cards[target[0]].category !== category || hasLeader)) return 'Это другая категория';
-      const error = orderError([...target, ...moving], deal); if (error) return error;
+      const error = orderError([...target, ...moving], deal) ?? puzzleError(deal, [...target, ...moving], false);
+      if (error) return error;
       board.foundations[cmd.to.index] = normalize([...target, ...moving], deal);
     } else if (cmd.to.kind === 'tableau') {
       const target = board.tableau[cmd.to.index];
@@ -107,7 +110,8 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
       if (support && target.length > board.joker!.boundary) return 'Джокер держит только одну группу';
       if (!support && target.length && (!available.length || deal.cards[available[0]].category !== category)) return 'Это другая категория';
       if (boardRules(board) >= 3 && available.some(id => deal.cards[id].leader)) return 'Сначала перенесите тему в верхний слот';
-      const error = orderError([...available, ...moving], deal); if (error) return error;
+      const error = orderError([...available, ...moving], deal) ?? puzzleError(deal, [...available, ...moving], !support);
+      if (error) return error;
       board.tableau[cmd.to.index] = [...target.slice(0, target.length - available.length), ...normalize([...available, ...moving], deal)];
     } else return 'В сброс переносить нельзя';
     if (cmd.from.kind === 'tableau') {
@@ -278,6 +282,16 @@ export function assertBoard(board: Board, deal: Deal): void {
       throw Error('Некорректная связь карт');
     }
   }
+  if (deal.puzzle) {
+    const pairs = deal.puzzle.pairs;
+    if (deal.puzzle.version !== 1 || boardRules(board) !== 3 ||
+      new Set(pairs.flatMap(pair => [pair.top, pair.bottom])).size !== pairs.length * 2 ||
+      pairs.some(({ top, bottom }) => {
+        const upper = deal.cards[top], lower = deal.cards[bottom];
+        return !upper || !lower || upper.leader || lower.leader || upper.rank !== undefined ||
+          lower.rank !== undefined || upper.category !== lower.category;
+      })) throw Error('Некорректные половины');
+  }
   for (const kind of bonusKinds) {
     const count = pilesFor(board, kind).length, regular = pilesFor(deal.initial, kind).length;
     if (count !== regular && !(count === regular + 1 && bonusOffer(deal, kind))) throw Error('Неверное число столбцов');
@@ -314,7 +328,7 @@ export function assertBoard(board: Board, deal: Deal): void {
   for (const target of board.foundations) {
     if (!target.length) continue;
     const category = deal.cards[target[0]].category;
-    if (target.some(id => deal.cards[id].category !== category) || target.filter(id => deal.cards[id].leader).length !== 1 || !deal.cards[target.at(-1)!].leader || orderError(target, deal)) throw Error('Некорректная верхняя категория');
+    if (target.some(id => deal.cards[id].category !== category) || target.filter(id => deal.cards[id].leader).length !== 1 || !deal.cards[target.at(-1)!].leader || orderError(target, deal) || puzzleError(deal, target, false)) throw Error('Некорректная верхняя категория');
     if (target.length === Object.values(deal.cards).filter(c => c.category === category).length) throw Error('Полная категория не завершена');
   }
   for (const id of board.collected) {

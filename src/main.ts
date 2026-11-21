@@ -299,7 +299,7 @@ try {
     if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
     $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;
     $('#app').dataset.practice = String(training());
-    $('#app').dataset.lesson = String(Boolean(deal.training));
+    $('#app').dataset.lesson = String(Boolean(deal.training || deal.frozen || deal.bound || deal.puzzle));
     $('#level-number').textContent = deal.daily ? `${training() ? 'ТРЕНИРОВКА' : 'ЗАДАНИЕ'} · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
     $('.level h1').textContent = deal.title;
     const hintUnlocked = helperUnlocked(save, 'hint', deal), undoUnlocked = helperUnlocked(save, 'undo', deal);
@@ -327,10 +327,13 @@ try {
       Object.keys(deal.frozen?.layers ?? {}).some(id => frozenLayers(board, deal, id));
     const binding = screen === 'game' && board.phase === 'playing' &&
       Object.keys(deal.bound?.scissorsByCard ?? {}).some(id => isBoundCard(board, deal, id));
+    const puzzle = screen === 'game' && board.phase === 'playing' &&
+      deal.puzzle?.pairs.some(({ top }) => !board.collected.includes(top));
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
       ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.'
       : instruction?.copy ?? (binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
-        : ice ? 'Соберите тему, чтобы снять один слой льда.' : undefined);
+        : ice ? 'Соберите тему, чтобы снять один слой льда.'
+        : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : undefined);
     if ($('#lesson-copy').textContent !== (note ?? '')) $('#lesson-copy').textContent = note ?? '';
     $('#lesson-note').hidden = !note;
     $<HTMLButtonElement>('#joker').disabled = board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving ||

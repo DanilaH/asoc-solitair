@@ -161,8 +161,8 @@
     },
     {
       "id": "hitapps-bound",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Not implemented",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P11 PRODUCT_ADAPTED per-card binding with a matching scissors transfer, two solved routes, browser Undo and reload. See docs/porting/P11_BOUND_SCISSORS.md.",
       "nextAction": "Reconstruct bound-card pattern and design original mechanic + undo/solver/migration D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },
@@ -852,8 +852,8 @@
     },
     {
       "id": "hitapps-bound-scissors-pattern",
-      "status": "EVIDENCE_GAP",
-      "currentImplementation": "No BoundCard/Scissors in current game; only plain/ordered/lock/Joker",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P11 PRODUCT_ADAPTED scissors release a separately bound card on a legal move into the foundation. Native reveal/cost/target remain unknown. See docs/porting/P11_BOUND_SCISSORS.md.",
       "nextAction": "Recover actual native scissors reveal/remove, layer and move-cost rules for BoundPattern; create specified Rules/Undo/Solver/teaching test upon proof D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"

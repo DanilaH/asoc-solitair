@@ -3,13 +3,14 @@ import { installSceneTextSharpness } from '@danilah/mini-games-kit/phaser';
 import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
 import { frozenLayers } from '../domain/frozen-cards';
+import { isBoundCard } from '../domain/bound-cards';
 import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
 import { boardFrame, cardMetrics, dragTarget, dropTarget, layout, slotCount, tableauPresentation } from './layout';
 import { bonusKinds } from '../domain/bonus-slots';
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text }
 interface Options {
   deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void; allows?(command: BoardCommand): boolean;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene, newDeal: boolean): void;
@@ -242,11 +243,18 @@ export class BoardScene extends Phaser.Scene {
         color: '#154560', backgroundColor: '#c7ebf6', padding: { x: 5, y: 2 } }).setOrigin(.5, 0).setVisible(false)
       : undefined;
     if (ice) face.add(ice);
+    const links = this.options.deal.bound?.scissorsByCard;
+    const bindingName = links?.[id] ? 'Связь' : Object.values(links ?? {}).includes(id) ? 'Ножницы' : '';
+    const binding = bindingName ? this.add.text(0, -this.cardH / 2 + 8, bindingName, {
+      fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#572954',
+      backgroundColor: '#f3dcef', padding: { x: 4, y: 2 },
+    }).setOrigin(.5, 0).setVisible(false) : undefined;
+    if (binding) face.add(binding);
     const b = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
     this.paintBack(b);
     const shade = this.add.image(0, 0, shadeKey).setAlpha(0);
     back.add(b); node.add([shadow, face, back, shade]); this.world.add(node);
-    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice };
+    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice, binding };
   }
   private paintBack(b: Phaser.GameObjects.Image) {
     const diamonds = this.options.getSave().settings.cardBack === 'diamonds';
@@ -260,6 +268,7 @@ export class BoardScene extends Phaser.Scene {
     copy.content.setVisible(source.content.visible); copy.caption?.setVisible(source.caption?.visible ?? true);
     copy.badge.setText(source.badge.text).setY(source.badge.y).setVisible(source.badge.visible);
     if (source.ice) copy.ice?.setText(source.ice.text).setVisible(source.ice.visible);
+    if (source.binding) copy.binding?.setY(source.binding.y).setVisible(source.binding.visible);
     copy.shade.setAlpha(source.shade.alpha);
     copy.strip?.setVisible(source.strip?.visible ?? false);
     if (copy.strip && source.strip) copy.strip.setPosition(source.strip.x, source.strip.y).setScale(source.strip.scaleX, source.strip.scaleY).setAngle(source.strip.angle);
@@ -504,6 +513,11 @@ export class BoardScene extends Phaser.Scene {
       if (view.ice) {
         const layers = frozenLayers(board, this.options.deal, pose.id);
         view.ice.setText(`Лёд ${layers}`).setVisible(pose.faceUp && layers > 0);
+      }
+      if (view.binding) {
+        const linked = Object.entries(this.options.deal.bound!.scissorsByCard).find(([, scissors]) => scissors === pose.id)?.[0];
+        const active = isBoundCard(board, this.options.deal, pose.id) || isBoundCard(board, this.options.deal, linked);
+        view.binding.setY(-this.cardH / 2 + (view.ice?.visible ? 32 : 8)).setVisible(pose.faceUp && active);
       }
       const def = this.options.deal.cards[pose.id];
       if (previousCollected.has(pose.id) && events.some(e => e.type === 'undo')) {

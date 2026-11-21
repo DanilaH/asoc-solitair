@@ -31,6 +31,7 @@ export interface Deal {
   tags?: string[];
   lock?: { column: number; requiredKeys: string[] };
   frozen?: { version: 1; layers: Readonly<Record<string, number>> };
+  bound?: { version: 1; scissorsByCard: Readonly<Record<string, string>> };
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
   difficultyTier?: DifficultyTier;
   training?: OpeningLesson;

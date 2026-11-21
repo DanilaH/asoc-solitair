@@ -120,13 +120,13 @@ Ordered, keys, Frozen/Bound, Golden, new upper slot, Magnet/Hammer and Shuffle e
 | `hitapps-ordered-category` | `IMPLEMENTED_UNVERIFIED` | Verify first C8 introduction and match rule provenance; device teaching still pending |
 | `hitapps-lockers` | `IMPLEMENTED_UNVERIFIED` | Re-author gated C8 16–80 with independent solver and onboarding/device check |
 | `hitapps-frozen` | `IMPLEMENTED_UNVERIFIED` | [P10 PRODUCT_ADAPTED preview](P10_FROZEN_CARDS.md), per-card layers, Undo and two proven routes. Original thaw and source configuration remain P36. |
-| `hitapps-bound` | `ROADMAPPED` | Reconstruct bound-card pattern and design original mechanic + undo/solver/migration |
+| `hitapps-bound` | `IMPLEMENTED_UNVERIFIED` | [P11 PRODUCT_ADAPTED binding](P11_BOUND_SCISSORS.md), separately replayed with ice and Undo. Original remains P36. |
 | `hitapps-magnet-hammer` | `ROADMAPPED` | Prototype one differentiated helper first, preserving post-seed insertion proof boundaries |
 | `azur-shuffle-helper` | `ROADMAPPED` | Determine re-deal constraints/save/provable solvability and user teaching |
 | `azur-shuffle-animation-controller` | `ROADMAPPED` | Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees |
 | `azur-bonus-lower-column` | `IMPLEMENTED_UNVERIFIED` | C8 levels 30/40 open a separate lower column by coin debit or its earned receipt. Temporary card storage, Hint, save and Undo are tested with up to five columns. Physical taps, production ad behavior and original runtime parity remain open. [Verification](../qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md) |
 | `hitapps-puzzle-top-bottom-cards` | `EVIDENCE_GAP` | Trace PuzzleTop/PuzzleBottom distribution, stock placements, move legality and interactions; then implement clean-room additional card types with verifier |
-| `hitapps-bound-scissors-pattern` | `EVIDENCE_GAP` | Recover actual native scissors reveal/remove, layer and move-cost rules for BoundPattern; create specified Rules/Undo/Solver/teaching test upon proof |
+| `hitapps-bound-scissors-pattern` | `IMPLEMENTED_UNVERIFIED` | [P11 PRODUCT_ADAPTED scissors transfer](P11_BOUND_SCISSORS.md). Native reveal, cost and target remain open. |
 | `unico-magnet-helper` | `EVIDENCE_GAP` | Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action |
 
 ### D2. Качество взаимодействия (11)

@@ -15,6 +15,7 @@ import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, type Rul
 import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import { frozenLayers } from './domain/frozen-cards';
+import { isBoundCard } from './domain/bound-cards';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
@@ -324,9 +325,12 @@ try {
     const instruction = screen === 'game' ? currentLesson() : undefined;
     const ice = screen === 'game' && board.phase === 'playing' &&
       Object.keys(deal.frozen?.layers ?? {}).some(id => frozenLayers(board, deal, id));
+    const binding = screen === 'game' && board.phase === 'playing' &&
+      Object.keys(deal.bound?.scissorsByCard ?? {}).some(id => isBoundCard(board, deal, id));
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
       ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.'
-      : instruction?.copy ?? (ice ? 'Соберите тему, чтобы снять один слой льда.' : undefined);
+      : instruction?.copy ?? (binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
+        : ice ? 'Соберите тему, чтобы снять один слой льда.' : undefined);
     if ($('#lesson-copy').textContent !== (note ?? '')) $('#lesson-copy').textContent = note ?? '';
     $('#lesson-note').hidden = !note;
     $<HTMLButtonElement>('#joker').disabled = board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving ||

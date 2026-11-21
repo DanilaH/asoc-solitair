@@ -374,7 +374,7 @@
       "order": 15,
       "title": "AZUR random-column Joker",
       "workstream": "SPECIAL",
-      "state": "QUEUED",
+      "state": "NEEDS_OWNER",
       "entryGate": "OWNER_ACTIVATION_GATE",
       "dependsOn": [
         "P05",

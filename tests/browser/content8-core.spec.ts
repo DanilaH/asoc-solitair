@@ -360,6 +360,38 @@ test('level 66 opens and uses the rightmost locked column at 320px', async ({ pa
   expect(board.keys).toHaveLength(3);
 });
 
+test('locked helpers explain their unlock without spending or changing the lesson', async ({ page }) => {
+  const deal = content8Dealer[0];
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  await openGame(page, deal);
+  const before = await read(page);
+  const lessonCopy = await page.locator('#lesson-copy').textContent();
+  for (const [id, name, level] of [['hint', 'Подсказка', 3], ['undo', 'Отмена', 4], ['joker', 'Джокер', 8]] as const) {
+    const button = page.getByRole('button', { name: `${name}. Откроется на уровне ${level}` });
+    await expect(button).toBeEnabled();
+    await expect(page.locator(`#${id}-count`)).toHaveText(`Ур. ${level}`);
+    const box = await button.boundingBox();
+    expect(box).toMatchObject({ width: expect.any(Number), height: expect.any(Number) });
+    expect(Math.min(box!.width, box!.height)).toBeGreaterThanOrEqual(44);
+    await button.tap();
+    await expect(page.getByRole('dialog', { name })).toBeVisible();
+    await expect(page.locator('#helper-wallet')).toBeHidden();
+    await expect(page.locator('#helper-locked')).toContainText(`Откроется на уровне ${level}.`);
+    for (const offer of ['hint', 'undo', 'joker']) await expect(page.locator(`#${offer}-offer`)).toBeHidden();
+    await page.locator('#helper-return').tap();
+    await expect(page.locator('#helpers')).toBeHidden();
+    await expect(page.locator('#lesson-copy')).toHaveText(lessonCopy!);
+  }
+  const after = await read(page);
+  expect(after.attempt.board).toEqual(before.attempt.board);
+  expect(after.attempt.undo).toEqual(before.attempt.undo);
+  expect(after.profile).toEqual(before.profile);
+  expect(after.campaign).toEqual(before.campaign);
+  await touch(page, deal, deal.winningPath[0]);
+  await expect.poll(async () => (await read(page)).attempt.board).not.toEqual(before.attempt.board);
+});
+
 test('the first lesson gates real touches at 320px and resumes after reload', async ({ page }) => {
   const deal = content8Dealer[0];
   await page.setViewportSize({ width: 320, height: 568 });

@@ -20,7 +20,7 @@
 | P01 | QUEUED | — | Исправить ad request≠shown; issue #80 |
 | P02 | QUEUED | — | Q2/Q3 реальный Android и плейтест |
 | P03 | QUEUED | — | Q1c/semantics baseline |
-| P04 | QUEUED | — | C1/D2 UX и косметика |
+| P04 | NEEDS_DEVICE | [Ветка P04](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p04-helper-discovery-20261121) | [Аудит 16 ID и доступность помощников](P04_ONBOARDING_AND_FEEL.md). `azur-locked-helper-discovery` ROADMAPPED → IMPLEMENTED_UNVERIFIED. Крупный системный текст, TalkBack, физический звук/вибрация и слепой плейтест в P02. |
 | P05 | QUEUED | — | Hitapps/AZUR generator and preset |
 | P06 | QUEUED | — | DynamicDifficulty/EasyDeals 16–80 |
 | P07 | QUEUED | — | Equality source pipeline |

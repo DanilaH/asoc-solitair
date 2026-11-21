@@ -154,9 +154,9 @@
     },
     {
       "id": "hitapps-frozen",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Not implemented",
-      "nextAction": "Reconstruct eligible frozen state and design original mechanic + undo/solver/migration D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P10 PRODUCT_ADAPTED preview uses per-card starting layers and thaws one layer per completed category. Immutable Deal ID, two dual-engine winning routes and browser Undo/relaunch. Evidence: docs/porting/P10_FROZEN_CARDS.md.",
+      "nextAction": "Play the preview on physical Android. P36 still needs original runtime thaw/cost/Joker behavior and active patterns.",
       "stage": "D1"
     },
     {

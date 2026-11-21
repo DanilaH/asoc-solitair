@@ -1,6 +1,11 @@
 /** Audit-only second implementation. No production transition/packet/legal helpers. */
 import type { Board, BoardCommand, Deal, Location } from '../../src/domain/types';
 export function locked(b: Board, i: number, d: Deal) { return d.lock?.column === i && !d.lock.requiredKeys.every(k => b.keys?.includes(k)); }
+function frozen(b: Board, d: Deal, id?: string) {
+  if (id === undefined || !d.frozen?.layers[id]) return false;
+  const collected = new Set(b.collected.map(card => d.cards[card].category));
+  return d.frozen.layers[id] > collected.size;
+}
 function validGroup(ids: string[], d: Deal) {
   const c=d.cards[ids[0]]?.category;
   if(!ids.every(id=>d.cards[id].category===c))return false;
@@ -11,7 +16,7 @@ function validGroup(ids: string[], d: Deal) {
 export function group(b:Board,i:number,d:Deal):string[]{
   const col=b.tableau[i]; if(!col||locked(b,i,d))return[];
   const edge=b.joker?.column===i?b.joker.boundary:0;
-  let j=col.length; while(j>edge&&b.faceUp.includes(col[j-1])&&validGroup(col.slice(j-1),d))j--;
+  let j=col.length; while(j>edge&&b.faceUp.includes(col[j-1])&&!frozen(b,d,col[j-1])&&validGroup(col.slice(j-1),d))j--;
   return col.slice(j);
 }
 export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
@@ -31,7 +36,7 @@ export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
       if(!target.length&&!lead||target.length&&(d.cards[target[0]].category!==cat||lead))return null;
       available=target;
     }else{
-      if(locked(b,a.to.index,d))return null;
+      if(locked(b,a.to.index,d)||frozen(b,d,target.at(-1)))return null;
       available=group(b,a.to.index,d);
       if(b.joker?.column===a.to.index){if(target.length>b.joker.boundary)return null;}
       else if(target.length&&(!available.length||d.cards[available[0]].category!==cat))return null;

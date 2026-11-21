@@ -890,7 +890,7 @@
       "order": 36,
       "title": "Оригинальные runtime captures",
       "workstream": "RESEARCH",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "PHYSICAL_ANDROID",
       "dependsOn": [
         "P05"

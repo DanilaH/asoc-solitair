@@ -3,6 +3,7 @@ import { content8Dealer, content8Late, content8Wave } from '../../src/content/ca
 import { content8Special } from '../../src/content/campaign-v8-special';
 import { content8FrozenDeal } from '../../src/content/campaign-v8-frozen';
 import { content8BoundDeal } from '../../src/content/campaign-v8-bound';
+import { content8PuzzleDeal } from '../../src/content/campaign-v8-puzzle';
 import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
@@ -420,6 +421,33 @@ test('the five-column Scissors preview releases the bond on transfer and restore
   for (const [index, action] of deal.winningPath.slice(3).entries()) {
     await touch(page, deal, action);
     await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(22 - index);
+  }
+  expect((await read(page)).attempt.board.phase).toBe('won');
+});
+
+test('the Puzzle preview joins both halves before accepting the pair in a foundation', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_SPECIAL !== 'puzzle', 'Requires the separate Puzzle preview.');
+  const deal = content8PuzzleDeal;
+  const save = freshSave(deal, 'puzzle-preview-tap');
+  await loadWaveFixture(page, save, 24);
+  await openGame(page, deal);
+  await expectLegibleLesson(page);
+  for (const [index, action] of deal.winningPath.slice(0, 2).entries()) {
+    await touch(page, deal, action);
+    await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(21 - index);
+  }
+  await touch(page, deal, { type: 'transfer', from: { kind: 'waste', index: 0 }, to: { kind: 'foundation', index: 0 } });
+  expect((await read(page)).attempt.board.movesLeft).toBe(20);
+  await touch(page, deal, deal.winningPath[2]);
+  await expect.poll(async () => (await read(page)).attempt.board.tableau[1]).toEqual(['kite-bottom', 'kite-top']);
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board.waste).toEqual(['kite-top']);
+  await page.reload();
+  await openGame(page, deal);
+  expect((await read(page)).attempt.id).toBe(save.attempt.id);
+  for (const [index, action] of deal.winningPath.slice(2).entries()) {
+    await touch(page, deal, action);
+    await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(19 - index);
   }
   expect((await read(page)).attempt.board.phase).toBe('won');
 });

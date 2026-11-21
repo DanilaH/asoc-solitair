@@ -64,6 +64,7 @@ jobs:
           VITE_CONTENT8_PREVIEW: '1'
           VITE_CONTENT8_FROZEN: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p10-') && '1' || '0' }}
           VITE_CONTENT8_BOUND: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p11-') && '1' || '0' }}
+          VITE_CONTENT8_SPECIAL: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p12-') && 'puzzle' || '' }}
         run: |
           npm run build
           npx playwright test tests/browser/content8-core.spec.ts --output=test-results/content8-core
@@ -111,6 +112,7 @@ jobs:
           VITE_CONTENT8_PREVIEW: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || startsWith(github.head_ref || github.ref_name, 'docs/c8-') || github.ref_name == 'feat/content8-reference-slice-20261119' || github.head_ref == 'feat/content8-reference-slice-20261119' || github.base_ref == 'feat/c8-onboarding-dealer-20261119') && '1' || '0' }}
           VITE_CONTENT8_FROZEN: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p10-') && '1' || '0' }}
           VITE_CONTENT8_BOUND: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p11-') && '1' || '0' }}
+          VITE_CONTENT8_SPECIAL: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p12-') && 'puzzle' || '' }}
       - uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/asoc-debug-signing/debug.keystore

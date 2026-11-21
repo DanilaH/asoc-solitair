@@ -10,6 +10,11 @@ function bound(b: Board, d: Deal, id?: string) {
   const scissors = id === undefined ? undefined : d.bound?.scissorsByCard[id];
   return scissors !== undefined && ![...b.collected, ...b.foundations.flat()].includes(scissors);
 }
+function correctPairs(ids: readonly string[], d: Deal, singleton: boolean) {
+  if (singleton && ids.length === 1) return true;
+  return (d.puzzle?.pairs ?? []).every(({ top, bottom }) =>
+    (!ids.includes(top) && !ids.includes(bottom)) || (ids.includes(bottom) && ids[ids.indexOf(bottom) + 1] === top));
+}
 function validGroup(ids: string[], d: Deal) {
   const c=d.cards[ids[0]]?.category;
   if(!ids.every(id=>d.cards[id].category===c))return false;
@@ -20,7 +25,7 @@ function validGroup(ids: string[], d: Deal) {
 export function group(b:Board,i:number,d:Deal):string[]{
   const col=b.tableau[i]; if(!col||locked(b,i,d))return[];
   const edge=b.joker?.column===i?b.joker.boundary:0;
-  let j=col.length; while(j>edge&&b.faceUp.includes(col[j-1])&&!frozen(b,d,col[j-1])&&!bound(b,d,col[j-1])&&validGroup(col.slice(j-1),d))j--;
+  let j=col.length; while(j>edge&&b.faceUp.includes(col[j-1])&&!frozen(b,d,col[j-1])&&!bound(b,d,col[j-1])&&validGroup(col.slice(j-1),d)&&correctPairs(col.slice(j-1),d,true))j--;
   return col.slice(j);
 }
 export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
@@ -46,7 +51,7 @@ export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
       else if(target.length&&(!available.length||d.cards[available[0]].category!==cat))return null;
       if((b.rulesVersion??3)>=3&&available.some(id=>d.cards[id].leader))return null;
     }
-    const merged=[...available,...ids];if(!validGroup(merged,d))return null;
+    const merged=[...available,...ids];if(!validGroup(merged,d)||!correctPairs(merged,d,a.to.kind==='tableau'&&b.joker?.column!==a.to.index))return null;
     const normalized=[...merged.filter(id=>!d.cards[id].leader).sort((a,b)=>(d.cards[a].rank??0)-(d.cards[b].rank??0)),...merged.filter(id=>d.cards[id].leader)];
     if(a.to.kind==='foundation')b.foundations[a.to.index]=normalized;
     else b.tableau[a.to.index]=[...target.slice(0,target.length-available.length),...normalized];

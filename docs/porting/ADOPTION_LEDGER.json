@@ -844,8 +844,8 @@
     },
     {
       "id": "hitapps-puzzle-top-bottom-cards",
-      "status": "EVIDENCE_GAP",
-      "currentImplementation": "C8 leader and ordinary word types only; no native puzzle top/bottom special card types",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P12 PRODUCT_ADAPTED top/bottom pairs join in tableau before entering the foundation together. Old deals remain unchanged. See docs/porting/P12_PUZZLE_PAIRS.md.",
       "nextAction": "Trace PuzzleTop/PuzzleBottom distribution, stock placements, move legality and interactions; then implement clean-room additional card types with verifier D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"

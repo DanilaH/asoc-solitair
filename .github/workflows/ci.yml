@@ -20,6 +20,8 @@ jobs:
       - name: Verify all referenced source systems are represented in the real consumer roadmap
         run: node tools/qa/verify-porting-ledger.mjs
       - run: node --test tests/infrastructure/*.test.mjs
+      - name: Report legacy published-passport choice evidence (non-blocking quality warning)
+        run: node tools/qa/audit-c8-decision-evidence.mjs
       - run: node tools/install-dependencies.mjs
         env:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
@@ -39,7 +41,7 @@ jobs:
         env:
           C7_REQUIRE_UI: '1'
       - name: Verify the Content 8 preview with actual touch input
-        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-') || github.base_ref == 'feat/c8-onboarding-dealer-20261119'
+        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || github.base_ref == 'feat/c8-onboarding-dealer-20261119'
         env:
           VITE_CONTENT8_PREVIEW: '1'
         run: |
@@ -83,7 +85,7 @@ jobs:
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run android:sync
         env:
-          VITE_CONTENT8_PREVIEW: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-') || github.ref_name == 'feat/content8-reference-slice-20261119' || github.head_ref == 'feat/content8-reference-slice-20261119' || github.base_ref == 'feat/c8-onboarding-dealer-20261119') && '1' || '0' }}
+          VITE_CONTENT8_PREVIEW: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || github.ref_name == 'feat/content8-reference-slice-20261119' || github.head_ref == 'feat/content8-reference-slice-20261119' || github.base_ref == 'feat/c8-onboarding-dealer-20261119') && '1' || '0' }}
       - uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/asoc-debug-signing/debug.keystore

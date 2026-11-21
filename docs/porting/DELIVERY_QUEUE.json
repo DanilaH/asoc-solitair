@@ -420,7 +420,7 @@
       "order": 17,
       "title": "Unico Magnet separate helper",
       "workstream": "SPECIAL",
-      "state": "QUEUED",
+      "state": "BLOCKED_EXTERNAL",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P05"

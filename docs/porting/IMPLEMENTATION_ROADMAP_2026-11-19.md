@@ -92,7 +92,7 @@ User onboarding Hint/Undo/Joker, stock/waste/recycle, visible Hard/SuperHard, fi
 | `azur-action-ftue` | `IMPLEMENTED_UNVERIFIED` | Owner plays 1–8 continuously on real phone; keep achievement markers action-based |
 | `azur-tutorial-preset-deal` | `IN_PROGRESS` | [Original dispatcher PR #82](https://github.com/DanilaH/mini-games-kit/pull/82) and [preset schema and placement PR #93](https://github.com/DanilaH/mini-games-kit/pull/93) support the [offline authoring tool](../qa/content-v8/AZUR_PRESET_AUTHORING.md). The tool resolves ordered columns, negative category references and separate stock with last authored card drawn first. Invalid or unavailable presets route to the ordinary dealer. Product checks require an exact card partition. The independently authored Russian example has a verified Rules 3 witness. Native validation, original first-level board and live activation remain open. Campaign activation is an owner decision. |
 | `azur-difficulty-label` | `IMPLEMENTED_UNVERIFIED` | Human/device check 320px, accessibility and perceived actual challenge |
-| `azur-locked-helper-discovery` | `ROADMAPPED` | Design previewable locked helper icon + level requirement without accidental spending; test screen reader and FTUE progression |
+| `azur-locked-helper-discovery` | `IMPLEMENTED_UNVERIFIED` | [Locked Hint/Undo/Joker preview in C8](P04_ONBOARDING_AND_FEEL.md). Touch tests verify unlock labels and show zero board or wallet changes; TalkBack and device FTUE in P02. |
 
 ### C2. Полная кампания и тематический контент (5)
 

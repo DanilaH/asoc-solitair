@@ -3,7 +3,7 @@ import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-ki
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
 import { campaignDeals, campaignRedeal, findDeal, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
-import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
+import { CAMPAIGN_LENGTH, HELPER_UNLOCK, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { dailyForDay } from './content/daily';
 import { switchMode } from './domain/sessions';
@@ -16,7 +16,7 @@ import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } f
 import { BALANCE } from './domain/balance';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
-import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
+import { CONTENT8_PREVIEW, type BoardCommand, type BonusKind, type Command, type Deal } from './domain/types';
 import { WIDTH, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
@@ -229,6 +229,13 @@ try {
   telemetry.track('session_start');
   if (save.attempt.telemetry?.started && save.attempt.board.phase === 'playing') telemetry.track('level_resume');
   let helperFocus: 'hint' | 'undo' | 'joker' | undefined;
+  const helperNames = { hint: 'Подсказка', undo: 'Отмена', joker: 'Джокер' };
+  const helperDescriptions = {
+    hint: 'Покажет следующий ход. Карты переносите сами.',
+    undo: 'Вернёт карты в положение перед последним ходом.',
+    joker: 'Добавит опору для группы карт в непустой столбец.',
+  };
+  const previewLockedHelpers = () => CONTENT8_PREVIEW && deal.campaignLevel !== undefined;
   let bonusSelection: { kind: BonusKind; attemptId: string } | undefined;
   function selectedBonus() {
     if (!bonusSelection || bonusSelection.attemptId !== save.attempt.id || save.attempt.board.phase !== 'playing') return;
@@ -248,6 +255,11 @@ try {
       ? `Не хватает ${offer.coins - save.profile.coins} монет.` : `В кошельке ${save.profile.coins} монет.`;
   }
   function openHelpers(focus?: typeof helperFocus) { helperFocus = focus; renderHud(); openDialog('#helpers'); }
+  function showHelperRequirement(helper: keyof typeof HELPER_UNLOCK): boolean {
+    if (helperUnlocked(save, helper, deal)) return false;
+    if (previewLockedHelpers() && !saving && !serviceBusy && !runtime.activity.isBlocked()) openHelpers(helper);
+    return true;
+  }
   function helperBought(helper: NonNullable<typeof helperFocus>) {
     if (helperFocus !== helper || screen !== 'game') return;
     closeDialogs();
@@ -301,16 +313,22 @@ try {
     $('#level-number').textContent = deal.daily ? `${training() ? 'ТРЕНИРОВКА' : 'ЗАДАНИЕ'} · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
     $('.level h1').textContent = deal.title;
     const hintUnlocked = helperUnlocked(save, 'hint', deal), undoUnlocked = helperUnlocked(save, 'undo', deal);
-    $('#hint').hidden = !hintUnlocked; $('#undo').hidden = !undoUnlocked;
     $('#hint-offer').hidden = !hintUnlocked || Boolean(helperFocus && helperFocus !== 'hint'); $('#undo-offer').hidden = !undoUnlocked || Boolean(helperFocus && helperFocus !== 'undo');
     const jokerUnlocked = helperUnlocked(save, 'joker', deal);
-    $('#joker').hidden = !jokerUnlocked; $('#joker-offer').hidden = !jokerUnlocked || Boolean(helperFocus && helperFocus !== 'joker');
-    $('#joker-count').textContent = String(save.profile.jokers); $('#joker-stock').textContent = String(save.profile.jokers);
+    $('#joker-offer').hidden = !jokerUnlocked || Boolean(helperFocus && helperFocus !== 'joker');
+    const helperAccess = { hint: hintUnlocked, undo: undoUnlocked, joker: jokerUnlocked };
+    const anyHelper = hintUnlocked || undoUnlocked || jokerUnlocked;
+    $('#joker-stock').textContent = String(save.profile.jokers);
     $<HTMLButtonElement>('#buy-joker').disabled = serviceBusy || saving || save.profile.coins < BALANCE.helperPrices.joker;
-    $<HTMLButtonElement>('#wallet-open').disabled = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
-    $('.wallet-plus').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
-    $('#helpers-open').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
-    $('#helper-locked').hidden = hintUnlocked || undoUnlocked || jokerUnlocked;
+    $<HTMLButtonElement>('#wallet-open').disabled = !anyHelper;
+    $('.wallet-plus').hidden = !anyHelper;
+    $('#helpers-open').hidden = !anyHelper;
+    const lockedFocus = helperFocus && !helperAccess[helperFocus] ? helperFocus : undefined;
+    $('#helper-wallet').hidden = Boolean(lockedFocus);
+    $('#helper-locked').hidden = !lockedFocus && anyHelper;
+    $('#helper-locked').textContent = lockedFocus
+      ? `Откроется на уровне ${HELPER_UNLOCK[lockedFocus]}. ${helperDescriptions[lockedFocus]}`
+      : 'Помощники откроются на следующих уровнях.';
     $('#restart').hidden = screen === 'home'; $('#levels-open').hidden = screen === 'home';
     $('#settings-done').textContent = screen === 'home' ? 'Готово' : 'Продолжить игру';
     $('#pause-title').textContent = screen === 'home' || $<HTMLDetailsElement>('#pause-options').open ? 'Настройки' : 'Пауза';
@@ -341,9 +359,20 @@ try {
     $('#hint-count').hidden = replayHint;
     $('#hint').setAttribute('aria-busy', String(searching));
     $('#hint').setAttribute('aria-label', searching ? 'Ищу подсказку' : replayHint ? 'Повторить подсказку бесплатно' : 'Подсказка');
-    $('#hint-count').textContent = String(save.profile.hints); $('#undo-count').textContent = String(save.profile.undos);
     $<HTMLButtonElement>('#hint').disabled = board.phase !== 'playing' || Boolean(workerDeadline) || saving || Boolean(instruction?.accepts && instruction.attention !== 'hint' && !replayHint);
     $<HTMLButtonElement>('#undo').disabled = board.phase === 'won' || !save.attempt.undo.length || saving || Boolean(instruction?.accepts && instruction.attention !== 'undo');
+    const helperCounts = { hint: save.profile.hints, undo: save.profile.undos, joker: save.profile.jokers };
+    for (const helper of ['hint', 'undo', 'joker'] as const) {
+      const button = $<HTMLButtonElement>(`#${helper}`);
+      const previewLocked = !helperAccess[helper] && previewLockedHelpers();
+      button.hidden = !helperAccess[helper] && !previewLocked;
+      button.dataset.locked = String(previewLocked);
+      if (previewLocked) {
+        button.disabled = saving || serviceBusy || board.phase !== 'playing';
+        button.setAttribute('aria-label', `${helperNames[helper]}. Откроется на уровне ${HELPER_UNLOCK[helper]}`);
+      } else if (helper !== 'hint') button.removeAttribute('aria-label');
+      $(`#${helper}-count`).textContent = previewLocked ? `Ур. ${HELPER_UNLOCK[helper]}` : String(helperCounts[helper]);
+    }
     const tier = STREAK[save.attempt.streak.tier];
     const streak = $('#streak');
     if (streak.children.length !== tier.count) streak.replaceChildren(...Array.from({ length: tier.count }, () => document.createElement('i')));
@@ -357,7 +386,7 @@ try {
     $<HTMLInputElement>('#sfx').checked = save.settings.sfx;
     $<HTMLInputElement>('#reduced').checked = save.settings.reducedMotion;
     $<HTMLInputElement>('#haptics').checked = save.settings.haptics;
-    $('#helper-title').textContent = helperFocus ? { hint: 'Подсказка', undo: 'Отмена', joker: 'Джокер' }[helperFocus] : 'Помощники';
+    $('#helper-title').textContent = helperFocus ? helperNames[helperFocus] : 'Помощники';
     $('#helpers').dataset.focus = helperFocus ?? 'all';
     for (const helper of ['hint', 'undo', 'joker']) $(`#buy-${helper}`).className = helperFocus === helper ? 'primary' : 'secondary';
     $('#helper-return').textContent = screen === 'home' ? 'Готово' : 'К игре';
@@ -576,6 +605,7 @@ try {
   }
   async function rewarded(placement: RewardPlacement) {
     if (serviceBusy || saving) return;
+    if ((placement === 'hint' || placement === 'undo') && !helperUnlocked(save, placement, deal)) return;
     const requestAttempt = save.attempt.id;
     const fromLoss = save.attempt.board.phase === 'exhausted';
     serviceBusy = true; closeDialogs(); renderHud();
@@ -929,6 +959,7 @@ try {
     $('#pause-title').textContent = expanded ? 'Настройки' : screen === 'home' ? 'Настройки' : 'Пауза';
   }, domOptions);
   $('#joker').addEventListener('click', () => {
+    if (showHelperRequirement('joker')) return;
     if (deal.training !== 'joker' && deal.campaignLevel !== undefined && !seenTutorial(save,'joker-used') && !seenTutorial(save,'intro:joker') && maybeIntroduceRule('joker')) return;
     if (!save.profile.jokers && !freeJokerPractice(save, deal)) { openHelpers('joker'); return; }
     const active = $('#joker').getAttribute('aria-pressed') !== 'true'; setInspect(false); scene?.setJoker(active); renderHud();
@@ -940,7 +971,11 @@ try {
     catch { message('Не удалось сохранить покупку. Попробуйте ещё раз.', true); }
     renderHud();
   }, domOptions);
-  $('#undo').addEventListener('click', () => { if (!save.profile.undos && !freeUndoPractice(save, deal)) openHelpers('undo'); else void execute({ type: 'undo' }); }, domOptions);
+  $('#undo').addEventListener('click', () => {
+    if (showHelperRequirement('undo')) return;
+    if (!save.profile.undos && !freeUndoPractice(save, deal)) openHelpers('undo');
+    else void execute({ type: 'undo' });
+  }, domOptions);
   $('#inspect').addEventListener('click', () => { setInspect(!inspectMode); if (!inspectMode) showGuidance(); }, domOptions);
   $('#restart').addEventListener('click', () => {
     const hasBonus = bonusKinds.some(kind => pilesFor(save.attempt.board, kind).length > pilesFor(deal.initial, kind).length);
@@ -968,6 +1003,7 @@ try {
   }
   $('#hint').addEventListener('click', () => {
     if (workerDeadline || saving || runtime.activity.isBlocked()) return;
+    if (showHelperRequirement('hint')) return;
     if (inspectMode) setInspect(false);
     const repeat = repeatHint();
     if (save.profile.hints === 0 && !freeHintDemo(save, deal) && !repeat) { openHelpers('hint'); return; }
@@ -1035,7 +1071,7 @@ try {
   }, domOptions);
   for (const helper of ['hint', 'undo'] as const) {
     $(`#buy-${helper}`).addEventListener('click', async () => {
-      if (serviceBusy || saving) return;
+      if (serviceBusy || saving || !helperUnlocked(save, helper, deal)) return;
       try {
         const bought = await write(next => purchaseHelper(next, helper));
         if (bought) { telemetry.track('helper_purchase', { helper, cost: BALANCE.helperPrices[helper] }); runtime.pulse('button'); helperBought(helper); }

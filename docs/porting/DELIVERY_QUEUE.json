@@ -101,7 +101,7 @@
       "order": 4,
       "title": "FTUE, D2 UX и весь game feel",
       "workstream": "UX",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"

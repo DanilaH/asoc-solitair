@@ -78,6 +78,8 @@ footer svg{width:37px;height:37px}
 .undo-icon{color:#8a87ba!important;font-size:50px!important;line-height:1}
 .joker-icon{background:linear-gradient(#fff5d9,#f5deb1)!important;color:#edc77b!important;border-color:#fff1cd!important;box-shadow:0 4px 0 #bda779,inset 0 -3px 0 #e6ca98!important}
 footer b{position:absolute;top:-8px;right:3px;background:#f4c49f;color:#a27050;border:2px solid #fbe1bc;border-radius:50%;min-width:22px;height:22px;display:grid;place-items:center;font-size:11px}
+#dock button[data-locked=true] .helper-icon{filter:saturate(.3)}
+#dock button[data-locked=true] b{padding:0 5px;border-radius:7px;background:#edece0;color:#47574d;border-color:#fffcf1;white-space:nowrap}
 footer button[aria-pressed=true] .helper-icon{outline:3px solid #f7d69e}
 #dock .attention .helper-icon{animation:helper-attention 1.2s ease-in-out 3}
 @keyframes helper-attention{50%{transform:translateY(-3px);box-shadow:0 0 0 5px #f7d69e66}

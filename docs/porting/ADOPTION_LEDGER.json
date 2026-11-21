@@ -764,9 +764,9 @@
     },
     {
       "id": "azur-locked-helper-discovery",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Helpers currently hidden or inaccessible until unlock; S2 allows tapping early to show required level",
-      "nextAction": "Design previewable locked helper icon + level requirement without accidental spending; test screen reader and FTUE progression",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "C8 campaign buttons show locked Hint, Undo and Joker unlock levels 3/4/8. The existing information sheet explains the ability without spend, movement or advancing the lesson. Product browser evidence and 16-feature audit: docs/porting/P04_ONBOARDING_AND_FEEL.md.",
+      "nextAction": "P02: check TalkBack, large system font and unprompted level 1–6 play. The reference shows pre-unlock access; exact shipped schedule for other helpers remains outside this product model.",
       "stage": "C1"
     },
     {

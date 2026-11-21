@@ -39,8 +39,8 @@
 | P18 | NEEDS_DEVICE | [PR #106](https://github.com/DanilaH/asoc-solitair/pull/106) | [Матрица продолжения CORE-5](P18_CONTINUATION_ACCEPTANCE.md). Доказательство +10, поздний кредит при daily и 16 touch-проверок. Нужна запись настоящего SDK. |
 | P19 | NEEDS_OWNER | [PR #107](https://github.com/DanilaH/asoc-solitair/pull/107) | [Три офлайн-контракта](P19_RECOVERY_CONTRACTS.md). Параметры игровой выдачи и оригинальное поведение открыты. |
 | P20 | NEEDS_DEVICE | [PR #109](https://github.com/DanilaH/asoc-solitair/pull/109) | [Раздельные победные и магазинные офферы](P20_REWARD_OFFERS.md). 29 C8 unit и 10 touch; нативный earned ждёт телефона. |
-| P21 | NEEDS_OWNER | [Ветка P21](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p21-ad-placement-contract-20261121) | [Интеграция P01 и отключённая модель рекламы](P21_AD_PLACEMENTS.md). Частота новых точек, ILRD и Coffee Break открыты. |
-| P22 | QUEUED | — | 41 item-family offline catalog |
+| P21 | NEEDS_OWNER | [PR #110](https://github.com/DanilaH/asoc-solitair/pull/110) | [Интеграция P01 и отключённая модель рекламы](P21_AD_PLACEMENTS.md). Частота новых точек, ILRD и Coffee Break открыты. |
+| P22 | IN_PROGRESS | [Ветка P22](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p22-offline-catalog-20261121) | [41 офлайн-позиция](P22_OFFLINE_CATALOG.md). Типы и суммы проверены; ожидается точный CI. |
 | P23 | QUEUED | — | IAP order/entitlement ledger |
 | P24 | QUEUED | — | Merchant legal provider and payout |
 | P25 | QUEUED | — | All 15 E3 offers |

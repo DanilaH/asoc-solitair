@@ -121,7 +121,7 @@ export function auditSemanticPacing(rows) {
     schema:'c8-semantic-reuse-v1',
     evidence:'OUR_IMMUTABLE_DEALS_ONLY_NOT_VENDOR_NATIVE_OR_HUMAN_DIFFICULTY',
     caution:'Observed level-topic reuse is not proof of player boredom. Never auto-modify existing Deal IDs or infer original live RNG/locale from this audit.',
-    full:profile(sorted),late:profile(late),latePeriod7:period7
+    full:profile(sorted),onboarding:profile(sorted.filter(x=>x.level<=3)),late:profile(late),latePeriod7:period7
   };
 }
 

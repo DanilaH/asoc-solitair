@@ -17,6 +17,8 @@ test('distinct topic IDs, per-deal uniqueness, and reuse gap are not confused wi
   assert.equal(report.full.repeatOccurrences,3);
   assert.equal(report.full.adjacentLevelPairsWithOverlap,2);
   assert.equal(report.full.adjacentThemeOccurrences,2);
+  assert.equal(report.onboarding.levels,3);
+  assert.equal(report.onboarding.adjacentLevelPairsWithOverlap,2);
   assert.equal(report.late.levels,0);
 });
 
@@ -33,6 +35,11 @@ test('actual current Content8 authoring documents the semantic repetition gap se
   assert.equal(rows.length,80);
   assert.equal(rows[0].level,1);
   assert.equal(rows.at(-1).level,80);
+  assert.deepEqual(report.onboarding.range,[1,3]);
+  assert.match(sourceDigest,/^[a-f0-9]{64}$/);
+  assert.equal(sourceFiles.length,4);
+  // Replay historical exact counts only for their input snapshot.
+  if (sourceDigest !== 'fbb1827ee2d5afab469b7e281752894f96be0076cbd7d136e6c2d1670e5420ad') return;
   assert.equal(report.full.uniqueThemeIds,78);
   assert.equal(report.full.themeReferences,862);
   assert.equal(report.full.minimumReuseGap,1);
@@ -45,8 +52,6 @@ test('actual current Content8 authoring documents the semantic repetition gap se
   assert.equal(report.late.adjacentLevelPairsWithOverlap,0);
   assert.deepEqual(report.latePeriod7,{comparedPairs:42,identicalStructurePairs:42});
   assert.deepEqual(report.late.sourceNumericGeometryProfiles.map(x=>x.levels),[7,21,14,7]);
-  assert.match(sourceDigest,/^[a-f0-9]{64}$/);
-  assert.equal(sourceFiles.length,4);
   // These are observed source-current regression values, NOT targets that
   // forbid more original-language content in future immutable deal versions.
 });

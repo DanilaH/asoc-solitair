@@ -602,15 +602,15 @@
     },
     {
       "id": "azur-iap-product-catalog",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Current soft-currency helper shop has no 41-SKU product catalog",
+      "status": "IN_PROGRESS",
+      "currentImplementation": "P22 offline catalog defines all 41 own product concepts, typed benefits, revision and disabled merchant availability. See docs/porting/P22_OFFLINE_CATALOG.md.",
       "nextAction": "Design source-backed own offer catalog and lawful supported store-product mapping; never treat AZUR local prices as live E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
     {
       "id": "azur-iap-helper-ladder",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Current Hint/Undo/Joker use fixed coin prices; no SKU-based five-tier assistance offers",
+      "status": "IN_PROGRESS",
+      "currentImplementation": "P22 retains four independent five-product ladders with own amounts, explicit ad scope and no activated prices. See docs/porting/P22_OFFLINE_CATALOG.md.",
       "nextAction": "Specify original 4×5 multi-offer schema and separately approved own pricing/entitlements E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },

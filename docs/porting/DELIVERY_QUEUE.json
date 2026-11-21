@@ -544,7 +544,7 @@
       "order": 22,
       "title": "Полный E3 офлайн-каталог 41 SKU family",
       "workstream": "COMMERCE",
-      "state": "QUEUED",
+      "state": "IN_PROGRESS",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"

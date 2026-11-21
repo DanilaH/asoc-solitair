@@ -587,7 +587,7 @@
     {
       "id": "azur-purchase-receipts",
       "status": "BLOCKED",
-      "currentImplementation": "Native rewarded receipt journal exists, but no IAP transaction ledger",
+      "currentImplementation": "P23 SaveStore has a versioned and separately verified offline order journal with atomic grant/ack order, replay protection, restore and revoke. See docs/porting/P23_PURCHASE_ORDERS.md. Live provider verification is still blocked in P24.",
       "nextAction": "Verify supported store billing provider and test pending/duplicate purchase recovery E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."

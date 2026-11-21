@@ -567,7 +567,7 @@
       "order": 23,
       "title": "Платёжные чеки, энтитлменты, возвраты",
       "workstream": "COMMERCE",
-      "state": "QUEUED",
+      "state": "IN_PROGRESS",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P22"

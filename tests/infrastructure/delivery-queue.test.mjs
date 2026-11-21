@@ -10,11 +10,11 @@ const snapshot=()=>({
   ledger:read('docs/porting/ADOPTION_LEDGER.json')
 });
 
-test('all 114 discovered systems have exactly one responsible packet across P00..P37',()=>{
+test('all 115 discovered systems have exactly one responsible packet across P00..P37',()=>{
   const {queue,source,ledger}=snapshot();
   const report=validateDeliveryQueue(queue,source,ledger);
   assert.equal(report.packages,38);
-  assert.equal(report.assignedSourceIds,114);
+  assert.equal(report.assignedSourceIds,115);
   const progress=readFileSync(new URL('../../docs/porting/DELIVERY_PROGRESS.md',import.meta.url),'utf8');
   checkDeliveryFiles(queue,progress);
 });

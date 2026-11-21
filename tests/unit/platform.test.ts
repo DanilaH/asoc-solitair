@@ -6,9 +6,9 @@ import { dailyForDay } from '../../src/content/daily';
 import { CONTENT8_PREVIEW } from '../../src/domain/types';
 import { recoverable, loadLoss, winningRescue } from '../fixtures/content8-loss';
 import { dispatch, freshAttempt, freshSave } from '../../src/domain/engine';
-import { applyReceipt, parseReceipt, purchaseHelper, useContinue, platformState, interstitialEligible, markCampaignWin, type EarnedReceipt } from '../../src/domain/services';
+import { applyFullscreenShown, applyReceipt, parseReceipt, purchaseHelper, useContinue, platformState, interstitialEligible, markCampaignWin, type EarnedReceipt, type FullscreenShown } from '../../src/domain/services';
 import { SaveStore, SAVE_KEY, decodeSave } from '../../src/platform/storage';
-import { createAds, type AdsBridge, type AdEvent } from '../../src/platform/ads';
+import { createAds, type AdsBridge, type AdEvent, type AdRequest } from '../../src/platform/ads';
 import { createHaptics } from '../../src/platform/haptics';
 import { createTelemetry } from '../../src/platform/telemetry';
 import { validEvent, createAnalytics } from '../../src/platform/analytics';
@@ -26,12 +26,14 @@ function bridge() {
   const api: AdsBridge = {
     status: vi.fn(async () => ({ rewarded: true, interstitial: true, banner: true, mode: 'test', ready: true })),
     pending: vi.fn(async () => ({ receipts: [] })), acknowledge: vi.fn(async () => undefined),
+    pendingShown: vi.fn(async () => ({ shown: null })), acknowledgeShown: vi.fn(async () => undefined),
     prepareInterstitial: vi.fn(async () => undefined), show: vi.fn(async () => ({ shown: true, outcome: 'dismissed' as const })),
     measureBanner: vi.fn(async () => null), placeBanner: vi.fn(async () => undefined), hideBanner: vi.fn(async () => undefined), cancelPending: vi.fn(async () => undefined), dispose: vi.fn(async () => undefined),
     addListener: vi.fn(async (_name, cb) => { event = cb; return { remove: vi.fn(async () => undefined) }; }),
   };
   return { api, emit: (value: AdEvent) => event(value) };
 }
+const ignoreShown = async () => 'already-applied' as const;
 afterEach(() => { vi.useRealTimers(); });
 
 describe('coordinated save writer and earned effects', () => {
@@ -151,6 +153,108 @@ describe('coordinated save writer and earned effects', () => {
   });
 });
 
+describe('durable native fullscreen cadence', () => {
+  const interstitial: AdRequest = { kind: 'interstitial', placement: 'continue', attempt: receipt.attempt, dealId: receipt.dealId, mode: receipt.mode };
+  const rewarded: AdRequest = { ...interstitial, kind: 'rewarded', placement: 'hint' };
+  const displayed: FullscreenShown = { ...interstitial, schema: 1, id: 'sdk-display', shownAt: 500_000 };
+  const withLegacyCadence = () => {
+    const save = fresh();
+    Object.assign(platformState(save), { lastFullscreenAt: 280_000, winsSinceInterstitial: 3 });
+    return save;
+  };
+  function receiver(store: SaveStore, b: ReturnType<typeof bridge>) {
+    return createAds({
+      activity: new GameplayActivityCoordinator(() => undefined, () => undefined),
+      commit: value => store.mutate(save => applyReceipt(save, value)),
+      commitShown: value => store.mutate(save => applyFullscreenShown(save, value)),
+      beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
+    }, b.api);
+  }
+
+  it('preserves legacy cadence across all no-show outcomes, including an impression-only event', async () => {
+    const m = memory(), store = new SaveStore(m.storage, deal, withLegacyCadence);
+    const original = await store.open(), b = bridge(), ads = receiver(store, b);
+    try {
+      await ads.refresh();
+      expect(interstitialEligible(original, 6, 'campaign', 399_999, 100_000)).toBe(false);
+      expect(interstitialEligible(original, 6, 'campaign', 400_000, 100_000)).toBe(true);
+      for (const [request, outcome] of [[interstitial, 'unavailable'], [rewarded, 'unavailable'], [rewarded, 'cancelled']] as const) {
+        vi.mocked(b.api.show).mockResolvedValueOnce({ shown: false, outcome });
+        expect(await ads.show(request)).toEqual({ shown: false, outcome });
+      }
+      vi.mocked(b.api.show).mockImplementationOnce(() => { throw Error('SDK throw'); });
+      expect((await ads.show(interstitial)).outcome).toBe('error');
+      b.emit({ kind: 'interstitial', phase: 'impression' });
+      const reopened = new SaveStore(m.storage, deal, fresh);
+      expect(await reopened.open()).toEqual(original);
+      expect(b.api.acknowledgeShown).not.toHaveBeenCalled();
+    } finally { ads.destroy(); }
+  });
+
+  it('persists an actual show before dismissal and ignores repeated or differently bound SDK notices', async () => {
+    const m = memory(), store = new SaveStore(m.storage, deal, withLegacyCadence);
+    const original = await store.open(), b = bridge(), ads = receiver(store, b);
+    let pending: FullscreenShown | null = null;
+    b.api.pendingShown = vi.fn(async () => ({ shown: pending }));
+    b.api.acknowledgeShown = vi.fn(async () => { pending = null; });
+    const outcome = deferred<Awaited<ReturnType<AdsBridge['show']>>>();
+    vi.mocked(b.api.show).mockImplementationOnce(() => outcome.promise);
+    try {
+      await ads.refresh(); await ads.recover();
+      const showing = ads.show(interstitial);
+      await vi.waitFor(() => expect(b.api.show).toHaveBeenCalledWith(interstitial));
+      pending = displayed;
+      b.emit({ kind: 'interstitial', phase: 'show' });
+      await ads.recover();
+      expect(ads.showing).toBe(true);
+      const first = JSON.parse(m.raw()!);
+      expect(first.platform).toMatchObject({
+        lastFullscreenAt: 500_000, winsSinceInterstitial: 0,
+        fullscreenCadence: { version: 1, lastShownId: displayed.id },
+      });
+      expect(first.profile).toEqual(original.profile);
+      outcome.resolve({ shown: true, outcome: 'dismissed' });
+      await showing;
+      await store.mutate(save => { save.attempt.id = 'next-attempt'; platformState(save).winsSinceInterstitial = 1; });
+      const progressed = store.state;
+      for (const value of [displayed, { ...displayed, id: 'late-sdk-display', shownAt: 510_000 }]) {
+        pending = value; b.emit({ kind: 'interstitial', phase: 'show' }); await ads.recover();
+      }
+      expect(JSON.parse(m.raw()!)).toEqual(progressed);
+      expect(b.api.acknowledgeShown).toHaveBeenCalledTimes(3);
+    } finally { ads.destroy(); }
+  });
+
+  it('replays a pending rewarded display after a failed write and only credits a later earned receipt', async () => {
+    const m = memory(), store = new SaveStore(m.storage, deal, withLegacyCadence);
+    const original = await store.open(), b = bridge(), ads = receiver(store, b);
+    const display = { ...displayed, kind: 'rewarded', placement: 'hint' } as const;
+    await ads.recover();
+    b.api.pendingShown = vi.fn(async () => ({ shown: display }));
+    const write = m.storage.setItem;
+    m.storage.setItem = async () => { throw Error('storage offline'); };
+    await ads.recover(); ads.destroy();
+    expect(b.api.acknowledgeShown).not.toHaveBeenCalled();
+    expect(JSON.parse(m.raw()!)).toEqual(original);
+    m.storage.setItem = write;
+    const reopened = new SaveStore(m.storage, deal, fresh); await reopened.open();
+    const restarted = receiver(reopened, b);
+    try {
+      await restarted.recover();
+      const persisted = reopened.state;
+      expect(persisted.platform).toMatchObject({ lastFullscreenAt: 500_000, winsSinceInterstitial: 3 });
+      expect(persisted.profile).toEqual(original.profile);
+      await restarted.recover();
+      expect(reopened.state.revision).toBe(persisted.revision);
+      b.api.pending = vi.fn(async () => ({ receipts: [{ ...receipt, id: display.id }] }));
+      b.emit({ kind: 'rewarded', phase: 'earned' }); await restarted.recover(); await restarted.recover();
+      expect(reopened.state.profile.hints).toBe(original.profile.hints + 2);
+      expect(reopened.state.platform?.receipts).toEqual([display.id]);
+      expect(reopened.state.platform?.lastFullscreenAt).toBe(display.shownAt);
+    } finally { restarted.destroy(); }
+  });
+});
+
 describe('optional native services', () => {
   it('continues a proven C8 loss only after an earned native receipt', async () => {
     const b = bridge(), save = loadLoss(recoverable, 'attempt-1');
@@ -159,7 +263,7 @@ describe('optional native services', () => {
     const ads = createAds({
       activity: new GameplayActivityCoordinator(() => undefined, () => undefined),
       commit: async value => applyReceipt(save, value, { continueProof: proof }),
-      beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
+      commitShown: ignoreShown, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
     }, b.api);
     try {
       await ads.refresh();
@@ -185,7 +289,7 @@ describe('optional native services', () => {
     const ads = createAds({
       activity: new GameplayActivityCoordinator(() => undefined, () => undefined),
       commit: earned => store.mutate(next => applyReceipt(next, earned, { deal: bonus })),
-      beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
+      commitShown: ignoreShown, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
     }, b.api);
     try {
       await ads.refresh();
@@ -209,7 +313,7 @@ describe('optional native services', () => {
     const b = bridge(), m = memory(), store = new SaveStore(m.storage, deal, fresh); await store.open();
     b.api.pending = vi.fn(async () => ({ receipts: [receipt] })); b.api.acknowledge = vi.fn(async () => { throw Error('ack failed'); });
     const activity = new GameplayActivityCoordinator(() => undefined, () => undefined);
-    const ads = createAds({ activity, commit: r => store.mutate(next => applyReceipt(next, r)), beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined }, b.api);
+    const ads = createAds({ activity, commit: r => store.mutate(next => applyReceipt(next, r)), commitShown: ignoreShown, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined }, b.api);
     await ads.recover(); expect(store.state.profile.hints).toBe(5);
     await store.mutate(next => { next.profile.hints--; });
     await ads.recover(); expect(store.state.profile.hints).toBe(4); expect(b.api.acknowledge).toHaveBeenCalledTimes(2); ads.destroy();
@@ -217,7 +321,7 @@ describe('optional native services', () => {
   it('never grants on dismissal and does not clear independent native-background blockers', async () => {
     const b = bridge(), shown = deferred<Awaited<ReturnType<AdsBridge['show']>>>(); b.api.show = vi.fn(() => shown.promise);
     const activity = new GameplayActivityCoordinator(() => undefined, () => undefined), commit = vi.fn(async () => 'applied' as const);
-    const ads = createAds({ activity, commit, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined }, b.api);
+    const ads = createAds({ activity, commit, commitShown: ignoreShown, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined }, b.api);
     await ads.refresh(); const display = ads.show({ kind: 'rewarded', placement: 'hint', attempt: 'attempt-1', dealId: deal.id, mode: 'campaign' });
     await Promise.resolve(); expect(activity.getBlockReasons()).toContain('ad'); activity.setBlocked('native-background', true);
     shown.resolve({ shown: true, outcome: 'dismissed' }); await display; await ads.recover();
@@ -227,14 +331,14 @@ describe('optional native services', () => {
     vi.useFakeTimers(); const b = bridge(), pending = deferred<{ receipts: unknown[] }>(), status = deferred<Awaited<ReturnType<AdsBridge['status']>>>();
     b.api.pending = vi.fn(() => pending.promise); b.api.status = vi.fn(() => status.promise);
     const activity = new GameplayActivityCoordinator(() => undefined, () => undefined), commit = vi.fn(async () => 'applied' as const);
-    const ads = createAds({ activity, commit, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined }, b.api);
+    const ads = createAds({ activity, commit, commitShown: ignoreShown, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined }, b.api);
     await vi.advanceTimersByTimeAsync(60_000); expect(b.api.pending).toHaveBeenCalledTimes(1); expect(b.api.status).toHaveBeenCalledTimes(1); expect(activity.isBlocked()).toBe(false);
     pending.resolve({ receipts: [receipt] }); await ads.recover(); expect(commit).toHaveBeenCalledTimes(1); ads.destroy();
   });
   it('removes listeners arriving after disposal and ignores late results', async () => {
     const b = bridge(), listener = deferred<{ remove(): Promise<void> }>(), remove = vi.fn(async () => undefined), onStatus = vi.fn();
     b.api.addListener = vi.fn(() => listener.promise);
-    const ads = createAds({ activity: new GameplayActivityCoordinator(() => undefined, () => undefined), commit: vi.fn(), beforeShow: async () => undefined, onStatus, onEvent: () => undefined }, b.api);
+    const ads = createAds({ activity: new GameplayActivityCoordinator(() => undefined, () => undefined), commit: vi.fn(), commitShown: ignoreShown, beforeShow: async () => undefined, onStatus, onEvent: () => undefined }, b.api);
     ads.destroy(); listener.resolve({ remove }); await Promise.resolve(); await Promise.resolve(); expect(remove).toHaveBeenCalledTimes(1); expect(onStatus).not.toHaveBeenCalled();
   });
   it('cancels haptic generations on ad/background and independently saved mute', () => {

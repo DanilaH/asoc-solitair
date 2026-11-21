@@ -33,7 +33,7 @@ import { SaveStore, createStorage } from './platform/storage';
 import { createTelemetry } from './platform/telemetry';
 import { createAds } from './platform/ads';
 import { NativeBanner } from './platform/banner';
-import { applyReceipt, buyContinue, platformState, purchaseHelper, interstitialEligible, useContinue, type RewardPlacement } from './domain/services';
+import { applyFullscreenShown, applyReceipt, buyContinue, purchaseHelper, interstitialEligible, useContinue, type RewardPlacement } from './domain/services';
 import type { Save, Result } from './domain/types';
 import './style.css';
 import './art.css';
@@ -202,17 +202,30 @@ try {
     activity: runtime.activity,
     async beforeShow(request) {
       await store.mutate(next => {
+        if (isOfferPlacement(request.placement)) {
+          const pending = next.rewardOffers?.pending.find(entry => entry.id === request.attempt);
+          if (!REWARD_OFFER_PREVIEW || request.kind !== 'rewarded' || request.mode !== 'campaign' ||
+            !pending || pending.dealId !== request.dealId || pending.kind !== request.placement) {
+            throw Error('Предложение изменилось');
+          }
+          return;
+        }
+        const attempt = next.attempt;
+        if (request.attempt !== attempt.id || request.dealId !== attempt.dealId ||
+          request.mode !== (attempt.daily ? 'daily' : 'campaign')) throw Error('Партия изменилась');
+        if (request.kind === 'interstitial') {
+          const level = findDeal(request.dealId)?.campaignLevel;
+          if (attempt.board.phase !== 'won' || level === undefined ||
+            !interstitialEligible(next, level, request.mode, Date.now(), launchedAt)) throw Error('Показ недоступен');
+        }
         if (request.kind === 'rewarded' && request.placement === 'continue' && requiresContinueProof(next.attempt)) {
           const proof = continueCheck.proof;
           if (!proof || request.attempt !== proof.attemptId || request.dealId !== proof.deal.id ||
             next.attempt.continued || !verifiesContinue(next.attempt, proof)) throw Error('Продолжение недоступно');
         }
-        if (isOfferPlacement(request.placement)) return;
-        const state = platformState(next);
-        state.lastFullscreenAt = Date.now();
-        if (request.kind === 'interstitial') state.winsSinceInterstitial = 0;
       });
     },
+    commitShown: shown => store.mutate(next => applyFullscreenShown(next, shown)),
     async commit(receipt) {
       const placement = receipt.placement;
       let openedBonus = false, earnedContinue = false, grantedOfferCoins = 0;

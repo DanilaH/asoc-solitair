@@ -96,7 +96,7 @@
     {
       "id": "azur-coin-moves",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 preview 0.20.1 offers +10 for 120 internal coins on a verified exhausted board. SaveStore commits the debit and continuation together and preserves late earned credit without repeating the allowance.",
+      "currentImplementation": "C8 preview 0.20.1 offers +10 for 120 internal coins on a verified exhausted board. SaveStore commits the debit and continuation together and preserves late earned credit without repeating the allowance. P18 acceptance reran exact C8 loss positions in two touch profiles and checked the retained credit through SaveStore when daily is active. See docs/porting/P18_CONTINUATION_ACCEPTANCE.md.",
       "nextAction": "Verify the coin/video choice and price balance on physical Android. Compare native AZUR live price and original continuation. Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/63",
       "evidenceRef": "docs/qa/content-v8/CORE_5_COIN_CONTINUE.md",
@@ -105,7 +105,7 @@
     {
       "id": "azur-rewarded-moves",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 preview 0.20.0 uses a bounded actual-board proof for the product's +10 continuation, with one earned receipt per attempt and the same proof for saved credits.",
+      "currentImplementation": "C8 preview 0.20.0 uses a bounded actual-board proof for the product's +10 continuation, with one earned receipt per attempt and the same proof for saved credits. P18 acceptance reran exact C8 loss positions in two touch profiles and checked the retained credit through SaveStore when daily is active. See docs/porting/P18_CONTINUATION_ACCEPTANCE.md.",
       "nextAction": "Test physical Android SDK earned/no-fill/relaunch and the original AZUR continuation. The product's +10 policy is separately specified. Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/62",
       "stage": "E1",
@@ -569,7 +569,7 @@
     {
       "id": "unico-loss-dialog",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 preview 0.20.3 promotes a usable alternative when rewarded video is unavailable. A callback received in background restores the result on foreground for the same exhausted attempt. An earned receipt can resume that attempt. Browser coverage exercises both branches through the Android bridge contract.",
+      "currentImplementation": "C8 preview 0.20.3 promotes a usable alternative when rewarded video is unavailable. A callback received in background restores the result on foreground for the same exhausted attempt. An earned receipt can resume that attempt. Browser coverage exercises both branches through the Android bridge contract. P18 acceptance reran exact C8 loss positions in two touch profiles and checked the retained credit through SaveStore when daily is active. See docs/porting/P18_CONTINUATION_ACCEPTANCE.md.",
       "nextAction": "Compare on a physical Android phone with live no-fill, actual earned callbacks and the original Unico loss dialog. Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/62",

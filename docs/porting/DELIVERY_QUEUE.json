@@ -442,7 +442,7 @@
       "order": 18,
       "title": "CORE-5 coin/rewarded +10, loss recovery",
       "workstream": "REWARD",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P00"

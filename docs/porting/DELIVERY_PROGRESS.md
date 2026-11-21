@@ -35,8 +35,8 @@
 | P14 | NEEDS_DEVICE | [Ветка P14](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p14-starter-boosters-20261121) | [Отдельный Final seed и две адаптированные карты](P14_STARTER_BOOSTERS.md). 24 unit и два touch-прогона. Оригинальная вставка и действия helpers остаются P36. |
 | P15 | NEEDS_OWNER | [Ветка P15](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p15-azur-joker-model-20261121) | [Изолированная модель вставки и Undo.Clear](P15_AZUR_JOKER.md). Подключение к игре требует решения о сбросе истории. |
 | P16 | NEEDS_DEVICE | [PR #103](https://github.com/DanilaH/asoc-solitair/pull/103), [CI 44935035936](https://github.com/DanilaH/asoc-solitair/actions/runs/44935035936) | [Проверяемое перемешивание и анимация](P16_PROOF_SHUFFLE.md). Физическое устройство и оригинальный алгоритм отсутствуют. |
-| P17 | BLOCKED_EXTERNAL | [Ветка P17](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p17-unico-magnet-evidence-20261121) | [Доказательства и отдельная офлайн-проба](P17_UNICO_MAGNET.md). Для точного переноса нужны оригинальная сборка или запись действия. |
-| P18 | QUEUED | — | CORE-5 recovery, earned/coin |
+| P17 | BLOCKED_EXTERNAL | [PR #105](https://github.com/DanilaH/asoc-solitair/pull/105) | [Доказательства и отдельная офлайн-проба](P17_UNICO_MAGNET.md). Для точного переноса нужны оригинальная сборка или запись действия. |
+| P18 | NEEDS_DEVICE | [Ветка P18](https://github.com/DanilaH/asoc-solitair/tree/docs/c8-p18-continue-acceptance-20261121) | [Матрица продолжения CORE-5](P18_CONTINUATION_ACCEPTANCE.md). Доказательство +10, поздний кредит при daily и 16 touch-проверок. Нужна запись настоящего SDK. |
 | P19 | QUEUED | — | RestoreStock/Revive/Unlimited |
 | P20 | QUEUED | — | Result bonus/Definition/coins/themes |
 | P21 | QUEUED | — | AdsBreak/banner/ILRD/Coffee |

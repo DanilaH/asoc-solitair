@@ -1,6 +1,6 @@
 # Q1b · цена доказанного продолжения после альтернативного хода
 
-**21.11.2026; STATUS: REPORTING PIPELINE IMPLEMENTED — FULL HOSTED RUN PENDING.** Код продукта не меняем. База — действительный runtime Content 8 0.20.3 в PR #68, последовательно восстановленные исследования в PR #70 → #71 → #72. Методика mini-games-kit [Playability Choice Evidence Ladder](https://github.com/DanilaH/mini-games-kit/blob/da551cc2f6108af5f9818a9947f570221c8f8763/docs/agent-workflows/PLAYABILITY_CHOICE_EVIDENCE_LADDER.md).
+**21.11.2026; STATUS: FULL HOSTED MODEL RUN VERIFIED (Q1b CI PASS), HUMAN / ORIGINAL RUNTIME STILL OPEN.** Код продукта не меняем. База — действительный runtime Content 8 0.20.3 в PR #68, последовательно восстановленные исследования в PR #70 → #71 → #72. Методика mini-games-kit [Playability Choice Evidence Ladder](https://github.com/DanilaH/mini-games-kit/blob/da551cc2f6108af5f9818a9947f570221c8f8763/docs/agent-workflows/PLAYABILITY_CHOICE_EVIDENCE_LADDER.md).
 
 ## Проверяемый исходный диагноз
 
@@ -31,7 +31,20 @@ node --test tests/infrastructure/content8-route-cost.test.mjs
 
 `qa:campaign-decisions` компилирует Rules3 и независимый оракул с `VITE_CONTENT8_PREVIEW=1`, сохраняет `.authoring/content8/campaign-decisions.json`. Агрегатор жёстко сверяет 80 уникальных активных уровней, каждый WIN маршрут и каждую формулу бюджета/длины; выводит одну строку `Q1B_ROUTE_COST {...}` с SHA256 raw evidence. Research PR CI исполняет полную команду и прикладывает JSON как краткоживущий артефакт. Внешние признаки original Hitapps/AZUR и реальный Android P6 не подменяются этим запуском.
 
-**До успешного hosted CI:** наличие исходного кода агрегатора и unit-тестов не даёт права публиковать новые цифры распределения `actionsVsWitness`. Данные будут дописаны в этот отчёт **после** чтения лога и SHA, не задним числом.
+### Измеренный результат после завершения hosted CI
+
+Запуск [44899121169](https://github.com/DanilaH/asoc-solitair/actions/runs/44899121169), точный PR #75 HEAD `acaa12299d7aea9ed880e3bd2311152c531e3f50`, web **SUCCESS**, Android **SUCCESS**. В web job log зафиксирована запись `Q1B_ROUTE_COST`; SHA256 полного сгенерированного отчёта `.authoring/content8/campaign-decisions.json`: **`666db9ad4878fc164f7387359716a22b776c3cf4afdefc1cd0f61f00dcf5b573`**. Архивный JSON записан CI как артефакт, а не вручную изобретённая выборка.
+
+| Популяция | Проб | WIN | UNKNOWN | NO_WIN | Найденный WIN: длиннее / равно / короче witness |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Вся выборка (80 активных + 8 архивных + 10 director + 5 bonus-open) | 1166 | 670 | 496 | 0 | 288 / 360 / 22 |
+| Активные 80 кампаний | 889 | 505 | 384 | 0 | 214 / 272 / 19 |
+| Только **альтернативные переносы** активных 80 | 528 | 325 | 203 | 0 | **157 / 159 / 9** |
+| Только `recycle` активных 80 | 82 | 47 | 35 | 0 | **47 / 0 / 0** |
+
+Для найденных выигрышных переносов разница `actionsVsWitness` от **−18 до +5**; ни один из этих 325 найденных маршрутов не финишировал с остатком 0–2 хода. Это **отобранные ветки вдоль witness**, а не вероятность ошибки/прохода на всей игре. Для `recycle` разница **+2…+15**, четыре WIN закончились с 0–2 ходами. Уровень **75**, 85-й ход: `r` вместо `w0>f2`, найденная победа **+15 действий**, остаток **0**; другие узкие контрольные позиции — **14/15/65**. Медиана разницы всех WIN активной кампании — **0**, но сравнение относительно конкретного авторского маршрута **не является** минимальным штрафом или реальной человеческой сложностью.
+
+**Далее:** углублённые UNKNOWN из [параллельного Q1b PR #74](https://github.com/DanilaH/asoc-solitair/pull/74) сверять отдельно; не смешивать или слепо перезаписывать два разных агрегатора и их SHA. В Q2 на устройстве игроку не показывать заранее победный witness, если измеряется свободный выбор.
 
 ## Очередь Q1b после первой статистики
 

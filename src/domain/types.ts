@@ -33,6 +33,7 @@ export interface Deal {
   frozen?: { version: 1; layers: Readonly<Record<string, number>> };
   bound?: { version: 1; scissorsByCard: Readonly<Record<string, string>> };
   puzzle?: { version: 1; pairs: readonly { top: string; bottom: string }[] };
+  golden?: { version: 1; ids: readonly string[]; coinsPerCard: number };
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
   difficultyTier?: DifficultyTier;
   training?: OpeningLesson;
@@ -64,7 +65,7 @@ export interface PlatformState {
   winsSinceInterstitial: number;
   lastFullscreenAt: number;
 }
-export interface RewardGrant { key: string; reason: 'win' | 'campaign_milestone' | 'campaign_win_cycle' | 'daily_completion' | 'daily_streak_milestone'; label: string; coins: number; hints?: number; undos?: number }
+export interface RewardGrant { key: string; reason: 'win' | 'campaign_milestone' | 'campaign_win_cycle' | 'daily_completion' | 'daily_streak_milestone' | 'golden_cards'; label: string; coins: number; hints?: number; undos?: number }
 export interface MetaState { version: 1; winCycle: number; cycles: number; dailyDates: string[]; dailyStreak: number; lastDaily?: string }
 export interface Save {
   schema: 1; rulesVersion: number; contentVersion: number; balanceVersion: number; revision: number;

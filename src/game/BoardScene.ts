@@ -256,6 +256,10 @@ export class BoardScene extends Phaser.Scene {
       fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#2d532d',
       backgroundColor: '#ddf1ce', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0));
+    if (this.options.deal.golden?.ids.includes(id)) face.add(this.add.text(0, -this.cardH / 2 + 8, 'Золото', {
+      fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#533408',
+      backgroundColor: '#f9dfa4', padding: { x: 4, y: 2 },
+    }).setOrigin(.5, 0));
     const b = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
     this.paintBack(b);
     const shade = this.add.image(0, 0, shadeKey).setAlpha(0);

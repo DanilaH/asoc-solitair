@@ -16,6 +16,7 @@ import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } f
 import { BALANCE } from './domain/balance';
 import { frozenLayers } from './domain/frozen-cards';
 import { isBoundCard } from './domain/bound-cards';
+import { collectedGold, goldenRewardKey } from './domain/golden-cards';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
@@ -299,7 +300,7 @@ try {
     if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
     $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;
     $('#app').dataset.practice = String(training());
-    $('#app').dataset.lesson = String(Boolean(deal.training || deal.frozen || deal.bound || deal.puzzle));
+    $('#app').dataset.lesson = String(Boolean(deal.training || deal.frozen || deal.bound || deal.puzzle || deal.golden));
     $('#level-number').textContent = deal.daily ? `${training() ? 'ТРЕНИРОВКА' : 'ЗАДАНИЕ'} · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
     $('.level h1').textContent = deal.title;
     const hintUnlocked = helperUnlocked(save, 'hint', deal), undoUnlocked = helperUnlocked(save, 'undo', deal);
@@ -329,11 +330,15 @@ try {
       Object.keys(deal.bound?.scissorsByCard ?? {}).some(id => isBoundCard(board, deal, id));
     const puzzle = screen === 'game' && board.phase === 'playing' &&
       deal.puzzle?.pairs.some(({ top }) => !board.collected.includes(top));
+    const golden = screen === 'game' && board.phase === 'playing' ? deal.golden : undefined;
+    const goldNote = golden && (save.profile.rewards.includes(goldenRewardKey(deal))
+      ? 'Награда за золотые карты уже получена.'
+      : `Золотые карты: ${collectedGold(board, deal)} из ${golden.ids.length}. Награда за победу.`);
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
       ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.'
       : instruction?.copy ?? (binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
         : ice ? 'Соберите тему, чтобы снять один слой льда.'
-        : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : undefined);
+        : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : goldNote);
     if ($('#lesson-copy').textContent !== (note ?? '')) $('#lesson-copy').textContent = note ?? '';
     $('#lesson-note').hidden = !note;
     $<HTMLButtonElement>('#joker').disabled = board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving ||
@@ -447,6 +452,8 @@ try {
     $('#result-title').textContent = won ? 'Всё сошлось!' : 'Ходы закончились';
     const daily = Boolean(save.attempt.daily), payout = save.attempt.payout;
     $('#result-copy').textContent = won ? daily ? payout?.length ? 'Задание дня выполнено. Награда уже на вашем счёте.' : 'Тренировка завершена. Награда за эту дату уже получена или её день закончился.' : (deal.campaignLevel === CAMPAIGN_LENGTH ? `Все ${CAMPAIGN_LENGTH} уровней пройдены. Любую раздачу можно сыграть ещё раз.` : '') : '';
+    const goldenReward = won && payout?.find(reward => reward.reason === 'golden_cards');
+    if (goldenReward) $('#result-copy').textContent = `За золотые карты начислено ${goldenReward.coins} монет.`;
     const cycleReward = payout?.find(r => r.reason === 'campaign_win_cycle');
     $('#result-bonus').hidden = !won || !cycleReward;
     $('#result-bonus-copy').textContent = cycleReward ? `Получено: +${cycleReward.coins} монет${cycleReward.hints ? ` и +${cycleReward.hints} подсказка` : ''}` : '';

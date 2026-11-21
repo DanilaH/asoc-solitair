@@ -129,8 +129,8 @@
     },
     {
       "id": "hitapps-golden-cards",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No GoldenCardsFeatureApplier-equivalent modifier of individual cards in final shuffle phase; no Gold Rush lifecycle",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P13 PRODUCT_ADAPTED conditioned mark placement and actual collection. A separate atomic award is granted once per immutable deal version. Calendar and source payout remain open. See docs/porting/P13_GOLDEN_CARDS.md.",
       "nextAction": "Restore separate native Final-phase GoldenCards insertion and check gold-marked win receipts; event policy tracked separately under hitapps-gold-rush-event D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "stage": "D1"
     },

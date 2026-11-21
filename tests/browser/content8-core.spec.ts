@@ -4,6 +4,7 @@ import { content8Special } from '../../src/content/campaign-v8-special';
 import { content8FrozenDeal } from '../../src/content/campaign-v8-frozen';
 import { content8BoundDeal } from '../../src/content/campaign-v8-bound';
 import { content8PuzzleDeal } from '../../src/content/campaign-v8-puzzle';
+import { content8GoldenDeal } from '../../src/content/campaign-v8-golden';
 import { content8BonusDeals } from '../../src/content/campaign-v8-bonus';
 import { content8DirectorDeals } from '../../src/content/campaign-v8-director';
 import { applyBoard, freshSave, legalCommands, sourceCards } from '../../src/domain/engine';
@@ -450,6 +451,31 @@ test('the Puzzle preview joins both halves before accepting the pair in a founda
     await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(19 - index);
   }
   expect((await read(page)).attempt.board.phase).toBe('won');
+});
+
+test('the Golden preview shows partial collection and grants its separate bonus once', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_SPECIAL !== 'gold', 'Requires the separate Golden preview.');
+  const deal = content8GoldenDeal;
+  const save = freshSave(deal, 'golden-preview-tap');
+  await loadWaveFixture(page, save, 26);
+  await openGame(page, deal);
+  await expectLegibleLesson(page);
+  await expect(page.locator('#lesson-copy')).toContainText('0 из 2');
+  for (const [index, action] of deal.winningPath.entries()) {
+    await touch(page, deal, action);
+    await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(19 - index);
+    if (index === 1) {
+      await expect(page.locator('#lesson-copy')).toContainText('1 из 2');
+      expect((await read(page)).profile.coins).toBe(save.profile.coins);
+    }
+  }
+  await expect(page.locator('#result-copy')).toHaveText('За золотые карты начислено 10 монет.');
+  const settled = await read(page);
+  expect(settled.attempt.payout?.find(grant => grant.reason === 'golden_cards')?.coins).toBe(10);
+  await page.reload();
+  await openGame(page, deal);
+  await expect(page.locator('#result-copy')).toHaveText('За золотые карты начислено 10 монет.');
+  expect((await read(page)).profile).toEqual(settled.profile);
 });
 
 test('the first lesson gates real touches at 320px and resumes after reload', async ({ page }) => {

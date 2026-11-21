@@ -112,7 +112,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
     const value = save.settings[key as keyof Save['settings']];
     if (value !== undefined && !values.includes(String(value))) throw Error('Повреждено оформление');
   }
-  if (save.attempt.payout && (!Array.isArray(save.attempt.payout) || save.attempt.payout.some(r => !strings([r.key]) || !natural(r.coins) || !['win', 'campaign_milestone', 'campaign_win_cycle', 'daily_completion', 'daily_streak_milestone'].includes(r.reason) || typeof r.label !== 'string' || r.label.length > 200 || (r.hints !== undefined && !natural(r.hints)) || (r.undos !== undefined && !natural(r.undos))))) throw Error('Повреждён результат');
+  if (save.attempt.payout && (!Array.isArray(save.attempt.payout) || save.attempt.payout.some(r => !strings([r.key]) || !natural(r.coins) || !['win', 'campaign_milestone', 'campaign_win_cycle', 'daily_completion', 'daily_streak_milestone', 'golden_cards'].includes(r.reason) || typeof r.label !== 'string' || r.label.length > 200 || (r.hints !== undefined && !natural(r.hints)) || (r.undos !== undefined && !natural(r.undos))))) throw Error('Повреждён результат');
   return save;
 }
 

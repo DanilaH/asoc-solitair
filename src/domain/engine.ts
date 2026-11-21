@@ -11,6 +11,7 @@ import { bonusKinds, bonusOffer, pilesFor } from './bonus-slots';
 import { frozenLayers } from './frozen-cards';
 import { isBoundCard } from './bound-cards';
 import { puzzleError } from './puzzle-pairs';
+import { claimGoldenCards } from './golden-cards';
 
 export const STREAK = BALANCE.streak;
 export const boardRules = (board: Board): 2 | 3 => board.rulesVersion ?? RULES_VERSION;
@@ -219,6 +220,8 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
           const amount = BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (attempt.board.movesLeft ?? 0);
           next.profile.coins += amount; next.profile.wins++; next.profile.rewards.push(rewardKey);
           attempt.payout = [{ key: rewardKey, reason: 'win', label: 'За победу и оставшиеся ходы', coins: amount }, ...markCampaignWin(next, deal.id, deal.campaignLevel)];
+          const goldenReward = claimGoldenCards(next, deal);
+          if (goldenReward) attempt.payout.push(goldenReward);
           events.push({ type: 'win', amount });
           events.push(...attempt.payout.filter(r => r.reason !== 'win').map(r => ({ type: 'meta-reward' as const, amount: r.coins, reason: r.reason })));
         }
@@ -291,6 +294,12 @@ export function assertBoard(board: Board, deal: Deal): void {
         return !upper || !lower || upper.leader || lower.leader || upper.rank !== undefined ||
           lower.rank !== undefined || upper.category !== lower.category;
       })) throw Error('Некорректные половины');
+  }
+  if (deal.golden) {
+    const { version, ids, coinsPerCard } = deal.golden;
+    if (version !== 1 || boardRules(board) !== 3 || !ids.length || new Set(ids).size !== ids.length ||
+      ids.some(id => !Object.hasOwn(deal.cards, id)) || !Number.isSafeInteger(coinsPerCard) || coinsPerCard < 1 ||
+      !Number.isSafeInteger(coinsPerCard * ids.length)) throw Error('Некорректные золотые карты');
   }
   for (const kind of bonusKinds) {
     const count = pilesFor(board, kind).length, regular = pilesFor(deal.initial, kind).length;

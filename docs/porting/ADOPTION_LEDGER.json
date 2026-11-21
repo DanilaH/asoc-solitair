@@ -448,7 +448,7 @@
       "id": "azur-localized-move-budget",
       "status": "ROADMAPPED",
       "currentImplementation": "Russian-only content has fixed author budgets; no AZUR locale word-count scaling in our RulesV3. Original AZUR positive-input branch proven static native at RVA0x262e4a8",
-      "nextAction": "Original XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: ABI-verified hook points for GetEnglishWordCount/GetLocalizedWordCount/GetAdjustedMovesForCurrentLocale; 0 live original Android samples. Recover actual EN/RU and remote localization flag with source loaded-art counts and numeric M/E/L, compare compiled 5*ceil(M*L/(5E)) positive branch; preserve existing immutable RU C8 budget and migration until separately approved.",
+      "nextAction": "Original XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: ABI-verified hook points for GetEnglishWordCount/GetLocalizedWordCount/GetAdjustedMovesForCurrentLocale; 0 live original Android samples. Recover actual EN/RU and remote localization flag with source loaded-art counts and numeric M/E/L, compare compiled 5*ceil(M*L/(5E)) positive branch; preserve existing immutable RU C8 budget and migration until separately approved. G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md.",
       "stage": "G1",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -464,7 +464,7 @@
       "id": "azur-remote-level-overrides",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "Current offline immutable campaign; no remote content overrides",
-      "nextAction": "Capture original config semantics before proposing optional versioned remote bank rollout",
+      "nextAction": "Capture original config semantics before proposing optional versioned remote bank rollout G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md.",
       "stage": "G1",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -579,7 +579,7 @@
       "id": "azur-structured-long-campaign",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 positions 32–80 use seven seven-level chapters with four product-authored geometry and budget profiles. The AZUR observed cadence informs the product structure.",
-      "nextAction": "Play the late-campaign positions listed in docs/qa/content-v8/Q1_CAMPAIGN_DECISIONS.md on device. Keep native long-campaign configuration and exact original behaviour tracked.",
+      "nextAction": "Play the late-campaign positions listed in docs/qa/content-v8/Q1_CAMPAIGN_DECISIONS.md on device. Keep native long-campaign configuration and exact original behaviour tracked. G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md. Reproduce source-adapted 78 unique topics/80 levels vs original 4539/2000 and review recurrence P2: https://github.com/DanilaH/asoc-solitair/issues/84; do not rewrite published deal IDs without approval.",
       "stage": "G1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
@@ -697,7 +697,7 @@
       "id": "hitapps-language-change-restart",
       "status": "ROADMAPPED",
       "currentImplementation": "Current only Russian bank/settings; no language-switch with level regeneration",
-      "nextAction": "Design explicit locale/content compatibility, preserve spent wallet and attempt history, test forced restart notifications",
+      "nextAction": "Design explicit locale/content compatibility, preserve spent wallet and attempt history, test forced restart notifications G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md.",
       "stage": "G1"
     },
     {
@@ -773,7 +773,7 @@
       "id": "azur-localized-definition-packs",
       "status": "ROADMAPPED",
       "currentImplementation": "Own Russian-only semantic bank; no 36-locale Addressables/catalog delivery",
-      "nextAction": "Kit PR #88 confirms distinct 33 local theme/word banks with 4539 identical IDs, EN/RU member counts different in 1357 themes and potentially different total cards in 1687/2000 source levels. Existing 36-locale/468 definition bundles are a different source asset family. Plan language-specific content, missing/malformed Num handling, semantic review and save migration before localization; actual native runtime content loading not yet captured.",
+      "nextAction": "Kit PR #88 confirms distinct 33 local theme/word banks with 4539 identical IDs, EN/RU member counts different in 1357 themes and potentially different total cards in 1687/2000 source levels. Existing 36-locale/468 definition bundles are a different source asset family. Plan language-specific content, missing/malformed Num handling, semantic review and save migration before localization; actual native runtime content loading not yet captured. G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md.",
       "stage": "G1"
     },
     {

@@ -253,6 +253,8 @@ Region progression, LuckyWheel, Digging, EndlessTreasure, CascadeEvents; origina
 | `hitapps-lucky-wheel` | `EVIDENCE_GAP` | Find original UI/state/odds evidence, then design own optional reward minigame |
 | `hitapps-endless-treasure` | `EVIDENCE_GAP` | Determine native phases and actual gameplay before creating design spec |
 
+**G1 source/content checkpoint (21.11.2026):** [full five-feature source→product audit](../qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md), [numeric source/product coverage fixture](../qa/content-v8/g1-structure-locale-matrix.json), [semantic repetition P2 issue #84](https://github.com/DanilaH/asoc-solitair/issues/84). **1 IMPLEMENTED_UNVERIFIED, 3 ROADMAPPED, 1 EVIDENCE_GAP; 0 ACCEPTED/OWNER_EXCLUDED.** Original AZUR packaged LevelConfig has 2000 rows, 4539 theme IDs, 162-level minimum recurrence, 0 adjacent overlap and 551+ 7-period structural signatures. Current C8 fresh 80 has 78 distinct category IDs in 862 usages, minimum recurrence 1 (levels4→5,5→6,10→11), while levels32–80 use 78 topics in 574 usages and minimum gap6. Current seven-profile ordering is an *adaptation*, not exact original 1/2/2/2 structural cadence. Original 33 theme/word banks and **separate** 36-locale/468 definition bundles plus art-loaded count and gated M/E/L budget formula remain not original-runtime verified. No existing Deal IDs, source systems or saved attempts were rewritten. Extended content diversity is a planned research/product gate, not a basis to delete features.
+
 ### G1. Долгосрочное масштабирование и адаптация (5)
 
 Locale move budgets, remote content settings, late-campaign structural cadence from AZUR after localizing.

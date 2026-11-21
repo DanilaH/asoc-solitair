@@ -8,6 +8,7 @@ import { content8FrozenDeal } from './campaign-v8-frozen';
 import { content8BoundDeal } from './campaign-v8-bound';
 import { content8PuzzleDeal } from './campaign-v8-puzzle';
 import { content8GoldenDeal } from './campaign-v8-golden';
+import { content8StarterDeal } from './campaign-v8-starter';
 import { cardsFor, type TopicSelection } from './topics';
 import { introDeal } from './intro';
 import { withCurrentRules } from './current-rules';
@@ -38,6 +39,7 @@ const variants = new Map([
   { deal: content8BoundDeal, enabled: import.meta.env?.VITE_CONTENT8_BOUND === '1' },
   { deal: content8PuzzleDeal, enabled: import.meta.env?.VITE_CONTENT8_SPECIAL === 'puzzle' },
   { deal: content8GoldenDeal, enabled: import.meta.env?.VITE_CONTENT8_SPECIAL === 'gold' },
+  { deal: content8StarterDeal, enabled: import.meta.env?.VITE_CONTENT8_SPECIAL === 'starter' },
 ].map(({ deal, enabled }) => {
   const base = content8Wave.find(candidate => candidate.campaignLevel === deal.campaignLevel)!;
   if (enabled) specialByLevel.set(deal.campaignLevel, deal);

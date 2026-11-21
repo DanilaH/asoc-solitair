@@ -34,6 +34,7 @@ export interface Deal {
   bound?: { version: 1; scissorsByCard: Readonly<Record<string, string>> };
   puzzle?: { version: 1; pairs: readonly { top: string; bottom: string }[] };
   golden?: { version: 1; ids: readonly string[]; coinsPerCard: number };
+  starter?: { version: 1; cards: Readonly<Record<string, 'magnet' | 'hammer'>> };
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
   difficultyTier?: DifficultyTier;
   training?: OpeningLesson;

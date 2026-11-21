@@ -168,9 +168,9 @@
     },
     {
       "id": "hitapps-magnet-hammer",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Joker only; no Hitapps starter Magnet/Hammer in stock",
-      "nextAction": "Prototype one differentiated helper first, preserving post-seed insertion proof boundaries D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "P14 verifies the post-candidate Unity-seed gate and separately previews a matching-stock magnet and tableau-reveal hammer. See docs/porting/P14_STARTER_BOOSTERS.md.",
+      "nextAction": "P02 physical preview and P36 original stock placement, actual actions and purchase gates.",
       "stage": "D1"
     },
     {

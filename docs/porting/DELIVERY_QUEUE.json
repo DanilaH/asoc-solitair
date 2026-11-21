@@ -352,7 +352,7 @@
       "order": 14,
       "title": "Hitapps Magnet/Hammer starter boosters",
       "workstream": "SPECIAL",
-      "state": "QUEUED",
+      "state": "NEEDS_DEVICE",
       "entryGate": "SOURCE_EVIDENCE",
       "dependsOn": [
         "P05"

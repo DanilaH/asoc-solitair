@@ -57,6 +57,18 @@ export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
     else b.tableau[a.to.index]=[...target.slice(0,target.length-available.length),...normalized];
     if(a.from.kind==='waste')b.waste.pop();
     else{const col=b.tableau[a.from.index];col.splice(col.length-ids.length,ids.length);if(b.joker?.column===a.from.index&&col.length===b.joker.boundary)delete b.joker;expose(col.at(-1));}
+    if(a.to.kind==='foundation'){
+      for(const id of ids){
+        if(d.starter?.cards[id]==='magnet'){
+          const found=b.stock.find(x=>d.cards[x].category===cat);
+          if(found){b.stock=b.stock.filter(x=>x!==found);b.waste.push(found);b.faceUp.push(found);}
+        }
+        if(d.starter?.cards[id]==='hammer'){
+          const target=b.tableau.flatMap((col,index)=>locked(b,index,d)?[]:col.filter(x=>!b.faceUp.includes(x)).slice(-1))[0];
+          expose(target);
+        }
+      }
+    }
     if(a.to.kind==='foundation'&&normalized.length===Object.values(d.cards).filter(c=>c.category===cat).length){b.collected.push(...normalized);b.foundations[a.to.index]=[];}
   }
   if(b.movesLeft!==null)b.movesLeft--;

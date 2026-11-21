@@ -300,7 +300,7 @@ try {
     if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
     $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;
     $('#app').dataset.practice = String(training());
-    $('#app').dataset.lesson = String(Boolean(deal.training || deal.frozen || deal.bound || deal.puzzle || deal.golden));
+    $('#app').dataset.lesson = String(Boolean(deal.training || deal.frozen || deal.bound || deal.puzzle || deal.golden || deal.starter));
     $('#level-number').textContent = deal.daily ? `${training() ? 'ТРЕНИРОВКА' : 'ЗАДАНИЕ'} · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
     $('.level h1').textContent = deal.title;
     const hintUnlocked = helperUnlocked(save, 'hint', deal), undoUnlocked = helperUnlocked(save, 'undo', deal);
@@ -334,11 +334,16 @@ try {
     const goldNote = golden && (save.profile.rewards.includes(goldenRewardKey(deal))
       ? 'Награда за золотые карты уже получена.'
       : `Золотые карты: ${collectedGold(board, deal)} из ${golden.ids.length}. Награда за победу.`);
+    const nextBooster = screen === 'game' && board.phase === 'playing'
+      ? Object.entries(deal.starter?.cards ?? {}).find(([id]) => !board.collected.includes(id) && !board.foundations.some(pile => pile.includes(id)))?.[1]
+      : undefined;
+    const boosterNote = nextBooster === 'magnet' ? 'Магнит в слоте темы подтянет карту из колоды.'
+      : nextBooster === 'hammer' ? 'Молоток в слоте темы откроет карту в столбце.' : undefined;
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
       ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.'
       : instruction?.copy ?? (binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
         : ice ? 'Соберите тему, чтобы снять один слой льда.'
-        : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : goldNote);
+        : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : goldNote ?? boosterNote);
     if ($('#lesson-copy').textContent !== (note ?? '')) $('#lesson-copy').textContent = note ?? '';
     $('#lesson-note').hidden = !note;
     $<HTMLButtonElement>('#joker').disabled = board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving ||

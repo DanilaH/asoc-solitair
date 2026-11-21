@@ -12,6 +12,7 @@ import { frozenLayers } from './frozen-cards';
 import { isBoundCard } from './bound-cards';
 import { puzzleError } from './puzzle-pairs';
 import { claimGoldenCards } from './golden-cards';
+import { hammerCard, matchingStock } from './starter-boosters';
 
 export const STREAK = BALANCE.streak;
 export const boardRules = (board: Board): 2 | 3 => board.rulesVersion ?? RULES_VERSION;
@@ -124,6 +125,19 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
     } else board.waste.pop();
     events.unshift({ type: 'transfer', cards: moving, category });
     if (cmd.to.kind === 'foundation') {
+      for (const id of moving) {
+        const booster = deal.starter?.cards[id];
+        if (booster === 'magnet') {
+          const index = matchingStock(board, deal, category);
+          if (index >= 0) {
+            const [pulled] = board.stock.splice(index, 1);
+            board.waste.push(pulled);
+            board.faceUp.push(pulled);
+            events.push({ type: 'draw', cards: [pulled] });
+          }
+        }
+        if (booster === 'hammer') reveal(board, hammerCard(board, deal), deal, events);
+      }
       const members = Object.values(deal.cards).filter(c => c.category === category);
       const target = board.foundations[cmd.to.index];
       if (target.length === members.length) {
@@ -301,6 +315,9 @@ export function assertBoard(board: Board, deal: Deal): void {
       ids.some(id => !Object.hasOwn(deal.cards, id)) || !Number.isSafeInteger(coinsPerCard) || coinsPerCard < 1 ||
       !Number.isSafeInteger(coinsPerCard * ids.length)) throw Error('Некорректные золотые карты');
   }
+  if (deal.starter && (deal.starter.version !== 1 || boardRules(board) !== 3 ||
+    Object.entries(deal.starter.cards).some(([id, booster]) => !deal.initial.stock.includes(id) ||
+      !Object.hasOwn(deal.cards, id) || !['magnet', 'hammer'].includes(booster)))) throw Error('Некорректный стартовый усилитель');
   for (const kind of bonusKinds) {
     const count = pilesFor(board, kind).length, regular = pilesFor(deal.initial, kind).length;
     if (count !== regular && !(count === regular + 1 && bonusOffer(deal, kind))) throw Error('Неверное число столбцов');

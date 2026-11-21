@@ -5,6 +5,7 @@ import { installTouchActivation } from '@danilah/mini-games-kit/feel';
 import { campaignDeals, campaignRedeal, findDeal, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
 import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
+import { canSwitchCardLanguage, localizedCampaignDeal, LOCALE_PREVIEW } from './content/campaign-v8-locale';
 import { dailyForDay } from './content/daily';
 import { switchMode } from './domain/sessions';
 import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } from './domain/meta';
@@ -170,6 +171,7 @@ try {
 
   let activeRule: RuleIntro | undefined;
   let unlockChoice: 'palette' | 'cardBack' | undefined;
+  let localeRestartAttempt: string | undefined;
   const dismissedRules = new Set<RuleIntro>();
   let outcomeViewed = false;
   let chapterPage = 0, chapterAttemptId = '';
@@ -408,6 +410,14 @@ try {
     });
     $('#streak').setAttribute('aria-label', `${save.attempt.streak.progress} из ${tier.count}`);
     $('#streak-reward').firstChild!.textContent = save.attempt.daily && !dailyRewardEligible(save, localDay()) ? '— ' : `+${tier.coins} `;
+    $('#card-language-controls').hidden = !LOCALE_PREVIEW;
+    if (LOCALE_PREVIEW) {
+      $<HTMLSelectElement>('#card-language').value = save.settings.contentLanguage ?? 'ru';
+      const target = canSwitchCardLanguage(deal) ? campaignDeals[80] : undefined;
+      const restart = $<HTMLButtonElement>('#locale-restart');
+      restart.hidden = !target || screen !== 'game' || localizedCampaignDeal(save, target).id === deal.id;
+      restart.disabled = saving || serviceBusy;
+    }
     $<HTMLInputElement>('#sfx').checked = save.settings.sfx;
     $<HTMLInputElement>('#reduced').checked = save.settings.reducedMotion;
     $<HTMLInputElement>('#haptics').checked = save.settings.haptics;
@@ -1222,6 +1232,7 @@ try {
   $('#undo').addEventListener('click', () => { if (!save.profile.undos && !freeUndoPractice(save, deal)) openHelpers('undo'); else void execute({ type: 'undo' }); }, domOptions);
   $('#inspect').addEventListener('click', () => { setInspect(!inspectMode); if (!inspectMode) showGuidance(); }, domOptions);
   $('#restart').addEventListener('click', () => {
+    localeRestartAttempt = undefined;
     const hasBonus = bonusKinds.some(kind => pilesFor(save.attempt.board, kind).length > pilesFor(deal.initial, kind).length);
     if (save.attempt.board.phase !== 'won' && (save.attempt.telemetry?.started || hasBonus)) {
       $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${hasBonus ? ' Дополнительные места закроются.' : ''}${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`;
@@ -1229,7 +1240,42 @@ try {
     }
     else void replay();
   }, domOptions);
-  $('#restart-confirm-yes').addEventListener('click', () => { void replay(); }, domOptions);
+  if (LOCALE_PREVIEW) {
+    $('#card-language').addEventListener('change', event => {
+      const language = (event.target as HTMLSelectElement).value;
+      if (language !== 'ru' && language !== 'en' || saving || serviceBusy) return;
+      void write(next => { next.settings.contentLanguage = language; }).catch(() => message('Не удалось сохранить язык.', true));
+    }, domOptions);
+    $('#locale-restart').addEventListener('click', () => {
+      if (saving || serviceBusy || !canSwitchCardLanguage(deal)) return;
+      localeRestartAttempt = save.attempt.id;
+      $('#restart-confirm-copy').textContent = 'Начнётся новая раздача с выбранным языком. Поле и история ходов этой попытки будут заменены.';
+      openDialog('#restart-confirm');
+    }, domOptions);
+    $('#restart-confirm').addEventListener('close', () => { localeRestartAttempt = undefined; }, domOptions);
+  }
+  $('#restart-confirm-yes').addEventListener('click', async () => {
+    const expected = localeRestartAttempt;
+    localeRestartAttempt = undefined;
+    if (!expected) { void replay(); return; }
+    if (!LOCALE_PREVIEW || saving || serviceBusy || expected !== save.attempt.id || !canSwitchCardLanguage(deal) || !campaignDeals[80]) return;
+    const oldDeal = deal, target = campaignDeals[80];
+    closeDialogs();
+    serviceBusy = true;
+    runtime.activity.setBlocked('level-transition', true);
+    let started = false;
+    try {
+      started = await write(next => {
+        if (next.attempt.id !== expected || next.attempt.dealId !== oldDeal.id) return false;
+        const selected = localizedCampaignDeal(next, target);
+        if (selected.id === oldDeal.id) return false;
+        beginDeal(next, selected, crypto.randomUUID(), oldDeal);
+        return true;
+      });
+      if (started) presentLevelStart();
+    } catch { message('Не удалось сохранить новую раздачу.', true); }
+    finally { serviceBusy = false; if (!started) runtime.activity.setBlocked('level-transition', false); }
+  }, domOptions);
   $('#replace-daily-yes').addEventListener('click', () => { void activateMode('daily', false, true); }, domOptions);
   $('#replay').addEventListener('click', () => { void replay(); }, domOptions);
   $('#result-redeal').addEventListener('click', () => {

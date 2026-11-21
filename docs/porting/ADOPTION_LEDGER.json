@@ -447,7 +447,7 @@
     {
       "id": "azur-localized-move-budget",
       "status": "ROADMAPPED",
-      "currentImplementation": "Russian-only content has fixed author budgets; no AZUR locale word-count scaling in our RulesV3. Original AZUR positive-input branch proven static native at RVA0x262e4a8",
+      "currentImplementation": "Russian-only content has fixed author budgets; no AZUR locale word-count scaling in our RulesV3. Original AZUR positive-input branch proven static native at RVA0x262e4a8 P34 has a versioned RU/EN preview and separate art count, negative tests and locale budget evidence. See docs/porting/P34_LOCALE_ART_BUDGET.md.",
       "nextAction": "Original XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: ABI-verified hook points for GetEnglishWordCount/GetLocalizedWordCount/GetAdjustedMovesForCurrentLocale; 0 live original Android samples. Recover actual EN/RU and remote localization flag with source loaded-art counts and numeric M/E/L, compare compiled 5*ceil(M*L/(5E)) positive branch; preserve existing immutable RU C8 budget and migration until separately approved. G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md.",
       "stage": "G1",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
@@ -696,7 +696,7 @@
     {
       "id": "hitapps-language-change-restart",
       "status": "ROADMAPPED",
-      "currentImplementation": "Current only Russian bank/settings; no language-switch with level regeneration",
+      "currentImplementation": "Current only Russian bank/settings; no language-switch with level regeneration P34 has a versioned RU/EN preview and separate art count, negative tests and locale budget evidence. See docs/porting/P34_LOCALE_ART_BUDGET.md.",
       "nextAction": "Design explicit locale/content compatibility, preserve spent wallet and attempt history, test forced restart notifications G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md.",
       "stage": "G1"
     },
@@ -772,7 +772,7 @@
     {
       "id": "azur-localized-definition-packs",
       "status": "ROADMAPPED",
-      "currentImplementation": "Own Russian-only semantic bank; no 36-locale Addressables/catalog delivery",
+      "currentImplementation": "Own Russian-only semantic bank; no 36-locale Addressables/catalog delivery P34 has a versioned RU/EN preview and separate art count, negative tests and locale budget evidence. See docs/porting/P34_LOCALE_ART_BUDGET.md.",
       "nextAction": "Kit PR #88 confirms distinct 33 local theme/word banks with 4539 identical IDs, EN/RU member counts different in 1357 themes and potentially different total cards in 1687/2000 source levels. Existing 36-locale/468 definition bundles are a different source asset family. Plan language-specific content, missing/malformed Num handling, semantic review and save migration before localization; actual native runtime content loading not yet captured. G1 source/product stage evidence and original runtime gaps: docs/qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md.",
       "stage": "G1"
     },
@@ -885,14 +885,14 @@
       "id": "azur-art-sprite-wordcount-override",
       "status": "ROADMAPPED",
       "stage": "B1",
-      "currentImplementation": "Active C8 uses the Hitapps seeded source-shaped offline dealer; category/member counts are authored in immutable deal JSON. There is no distinct AZUR CardSpriteLoader-driven per-theme member-card count override or modulo word-ref authoring pass.",
+      "currentImplementation": "Active C8 uses the Hitapps seeded source-shaped offline dealer; category/member counts are authored in immutable deal JSON. There is no distinct AZUR CardSpriteLoader-driven per-theme member-card count override or modulo word-ref authoring pass. P34 has a versioned RU/EN preview and separate art count, negative tests and locale budget evidence. See docs/porting/P34_LOCALE_ART_BUDGET.md.",
       "nextAction": "Kit PR #86 original source: positive loaded CardSpriteData S overrides W native word count and loops i%W. Kit PR #88 proves concrete packaged 90 sets/490 sprites with 89/90 count parity EN/RU; set385 has S6/W5, conditionally +1 on original levels44/884/1290/1974 only if actually loaded. Author optional isolated AZUR content branch with preload state and immutable manifest; actual Android art load/visible text and exact final board UNKNOWN."
     },
     {
       "id": "azur-async-theme-art-preload",
       "status": "ROADMAPPED",
       "stage": "B1",
-      "currentImplementation": "Our published C8 levels use offline immutable Hitapps-derived Deals and bundled own game art. There is no AZUR-specific level-scoped CardSpriteLoader asynchronous asset preload, loaded-count fallback or source-aware locale word-count bridge.",
+      "currentImplementation": "Our published C8 levels use offline immutable Hitapps-derived Deals and bundled own game art. There is no AZUR-specific level-scoped CardSpriteLoader asynchronous asset preload, loaded-count fallback or source-aware locale word-count bridge. P34 has a versioned RU/EN preview and separate art count, negative tests and locale budget evidence. See docs/porting/P34_LOCALE_ART_BUDGET.md.",
       "nextAction": "Original XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: capture-ready hooks for PreloadThemes + TryGetLoadedSpriteCount, recording requested/loaded theme counts without protected image data; static 90 art packs/490 Sprite counts verified by kit PR #88, but original Android preload and error/late/remote behavior NOT observed. Need actual authorized device trace with success/missing art, content count and immutable Save/Undo path before product source-runtime parity."
     }
   ],

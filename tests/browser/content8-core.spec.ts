@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { beyond80Deals } from '../../src/content/campaign-v8-beyond';
 import { content8Dealer, content8Late, content8Wave } from '../../src/content/campaign-v8-dealer';
 import { content8Special } from '../../src/content/campaign-v8-special';
 import { content8FrozenDeal } from '../../src/content/campaign-v8-frozen';
@@ -1267,4 +1268,32 @@ test('beyond campaign preview continues from a real level 80 win into a saved ne
   if (await page.locator('#home-play').isVisible()) await page.locator('#home-play').tap();
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', 'campaign-c8-beyond-81-r1');
   expect((await read(page)).attempt).toEqual(issued.attempt);
+});
+
+test('locale preview preserves a Russian attempt until the player confirms starting over in English', async ({ page }) => {
+  test.skip(process.env.VITE_CONTENT8_LOCALE !== '1', 'Requires the locale preview.');
+  const ru = beyond80Deals[0], save = freshSave(ru, 'p34-russian-pinned');
+  await loadWaveFixture(page, save, 80);
+  await openGame(page, ru);
+  await touch(page, ru, { type: 'draw' });
+  await expect.poll(async () => (await read(page)).attempt.board.movesLeft).toBe(52);
+  const pinned = (await read(page)).attempt;
+  await page.locator('#menu').tap();
+  await page.locator('#pause-options summary').tap();
+  await page.locator('#card-language').selectOption('en');
+  await expect.poll(async () => (await read(page)).settings.contentLanguage).toBe('en');
+  expect((await read(page)).attempt).toEqual(pinned);
+  const restart = page.locator('#locale-restart');
+  await restart.tap();
+  await expect(page.locator('#restart-confirm-copy')).toContainText('история ходов этой попытки');
+  await page.locator('#restart-confirm-yes').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', 'campaign-c8-beyond-81-en-r1');
+  const started = await read(page);
+  expect(started.attempt.undo).toEqual([]);
+  expect(started.attempt.board.movesLeft).toBe(55);
+  expect(started.profile.coins).toBe(save.profile.coins);
+  await page.reload();
+  if (await page.locator('#home-play').isVisible()) await page.locator('#home-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', 'campaign-c8-beyond-81-en-r1');
+  expect((await read(page)).attempt.id).toBe(started.attempt.id);
 });

@@ -18,6 +18,7 @@ import { content7Deals } from './campaign-v7';
 import { content8Dealer, content8Late, content8Wave } from './campaign-v8-dealer';
 import { content8Slice } from './campaign-v8-preview';
 import { content8DirectorDeals, isC8DirectorVariant, otherC8Layout, selectC8Deal } from './campaign-v8-director';
+import { englishBeyondDeal, localizedCampaignDeal, sameLocalizedLevel } from './campaign-v8-locale';
 import { beyond80Deals } from './campaign-v8-beyond';
 import { BEYOND80_PREVIEW } from '../domain/progression';
 import { CONTENT8_PREVIEW } from '../domain/types';
@@ -53,16 +54,16 @@ export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
   ? [...content8Campaign.map(deal => specialByLevel.get(deal.campaignLevel) ?? deal), ...(BEYOND80_PREVIEW ? beyond80Deals : [])]
   : content7Deals;
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
-  ...content8Campaign, ...beyond80Deals, ...content8DirectorDeals, ...content8Special, ...content8BonusDeals,
+  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...content8Special, ...content8BonusDeals,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
   const previewIds = CONTENT8_PREVIEW ? variants.get(base.campaignLevel)?.ids : undefined;
   if (previewIds?.has(base.id) && previewIds.has(dealId)) return true;
-  return dealId === base.id || (CONTENT8_PREVIEW && isC8DirectorVariant(dealId, base.id));
+  return dealId === base.id || sameLocalizedLevel(dealId, base) || (CONTENT8_PREVIEW && isC8DirectorVariant(dealId, base.id));
 }
 export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): Deal {
-  return CONTENT8_PREVIEW ? selectC8Deal(save, base, previous) : base;
+  return CONTENT8_PREVIEW ? localizedCampaignDeal(save, selectC8Deal(save, base, previous)) : base;
 }
 
 export function campaignRedeal(attempt: Attempt): Deal | undefined {

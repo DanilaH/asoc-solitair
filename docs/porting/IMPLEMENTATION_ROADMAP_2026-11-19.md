@@ -182,6 +182,8 @@ In-game interstitial gates/caps, Coffee Break offer, banner, exact impression-le
 
 ### E3. Коммерческая витрина и предложения (18)
 
+**E3 research checkpoint · 21.11.2026:** [all 18 tracked E3 mechanisms, original 41-SKU AZUR local catalog and legally verified payment constraints](../qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md); [non-proprietary machine-readable evidence](../qa/content-v8/e3-source-commerce-matrix.json). **9 BLOCKED / 7 ROADMAPPED / 2 EVIDENCE_GAP**, 0 ACCEPTED, 0 owner exclusions. AZUR source 41 = 28 consumable, 13 nonconsumable, zero subscription *in packaged asset*, four separate 5-tier helper families, all 41 local storeIDs/payouts arrays empty; actual paid grants, currencies and seller receipts UNKNOWN. **RuStore own payment SDK for an individual self-employed without IP has been unavailable since 01.02.2026** under current official terms; publication/ads remain separately available. [RuStore official policy](https://www.rustore.ru/developer/blog/self-employed) documents IP on NPD + qualified signature as eligible; [NashStore official developer offer](https://nashstore.ru/doc/developer_agreement) allows self-employed sellers but does not prove live in-app SDK/payout for a given account. Preserve all E3 products in future product scope, but separate offline catalog/receipt architecture from provider-specific real checkout approval.
+
 Starter/Birthday/Decoy, shop bundles, PlayPass/VIP and IAP receipt integrity after store/legal verification.
 
 | Source feature ID | Actual status | Next implementation or evidence action |

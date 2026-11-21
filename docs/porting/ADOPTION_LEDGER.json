@@ -281,8 +281,8 @@
       "id": "hitapps-piggy-bank",
       "status": "BLOCKED",
       "currentImplementation": "No purchase-backed bank and store IAP policy not validated",
-      "nextAction": "Verify legal supported Android store purchase/receipts/payout before feature spec",
-      "reason": "Unverified available IAP/provider integration and legal payout for current target stores",
+      "nextAction": "Verify legal supported Android store purchase/receipts/payout before feature spec E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "reason": "Unverified available IAP/provider integration and legal payout for current target stores. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
       "stage": "E3"
     },
     {
@@ -296,15 +296,15 @@
       "id": "azur-play-pass",
       "status": "BLOCKED",
       "currentImplementation": "No native premium/free pass or authorized purchase path",
-      "nextAction": "Verify store IAP/entitlements and payments then spec free/premium claims",
-      "reason": "Unverified available IAP/provider integration and legal payout for current target stores",
+      "nextAction": "Verify store IAP/entitlements and payments then spec free/premium claims E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "reason": "Unverified available IAP/provider integration and legal payout for current target stores. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
       "stage": "E3"
     },
     {
       "id": "hitapps-rotating-offers",
       "status": "ROADMAPPED",
       "currentImplementation": "No event-specific commercial offers",
-      "nextAction": "Inventory eligible offers and verify store purchase capability before implementing any",
+      "nextAction": "Inventory eligible offers and verify store purchase capability before implementing any E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
     {
@@ -380,7 +380,7 @@
       "id": "hitapps-birthday-offer",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No birthday offers",
-      "nextAction": "Verify actual trigger/privacy/eligibility and legal storefront payments before implementing",
+      "nextAction": "Verify actual trigger/privacy/eligibility and legal storefront payments before implementing E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -388,7 +388,7 @@
       "id": "hitapps-decoy-offer",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No decoy offers",
-      "nextAction": "Inspect concrete source display/eligibility and product semantics; avoid guessing from class name",
+      "nextAction": "Inspect concrete source display/eligibility and product semantics; avoid guessing from class name E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
@@ -396,7 +396,7 @@
       "id": "hitapps-starter-offer",
       "status": "ROADMAPPED",
       "currentImplementation": "Basic coin wallet and helper shop; no IAP starter bundle",
-      "nextAction": "Define owner-approved first-play offer and legal store purchase contract",
+      "nextAction": "Define owner-approved first-play offer and legal store purchase contract E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
     {
@@ -425,7 +425,7 @@
       "id": "hitapps-inapp-shop",
       "status": "ROADMAPPED",
       "currentImplementation": "Coin-priced hints/Undo/Joker; no original-style IAP/shop tiers",
-      "nextAction": "Separate soft-currency helper store vs IAP; verify actual store capabilities and payouts",
+      "nextAction": "Separate soft-currency helper store vs IAP; verify actual store capabilities and payouts E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
     {
@@ -487,7 +487,7 @@
       "id": "azur-offer-campaign",
       "status": "ROADMAPPED",
       "currentImplementation": "No activated commercial campaigns other than fixed helper shop",
-      "nextAction": "Build separable offer schedule + owner-verified store provider after event state",
+      "nextAction": "Build separable offer schedule + owner-verified store provider after event state E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
     {
@@ -538,9 +538,9 @@
       "id": "unico-vip",
       "status": "BLOCKED",
       "currentImplementation": "No subscribed VIP entitlement/IAP flow verified",
-      "nextAction": "Confirm legal IAP + Russian self-employed payout/provider before building premium policy",
+      "nextAction": "Confirm legal IAP + Russian self-employed payout/provider before building premium policy E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
-      "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion"
+      "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
     },
     {
       "id": "unico-redeal-restart",
@@ -588,9 +588,9 @@
       "id": "azur-purchase-receipts",
       "status": "BLOCKED",
       "currentImplementation": "Native rewarded receipt journal exists, but no IAP transaction ledger",
-      "nextAction": "Verify supported store billing provider and test pending/duplicate purchase recovery",
+      "nextAction": "Verify supported store billing provider and test pending/duplicate purchase recovery E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
-      "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion"
+      "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
     },
     {
       "id": "unico-themes-and-skins",
@@ -604,62 +604,62 @@
       "id": "azur-iap-product-catalog",
       "status": "ROADMAPPED",
       "currentImplementation": "Current soft-currency helper shop has no 41-SKU product catalog",
-      "nextAction": "Design source-backed own offer catalog and lawful supported store-product mapping; never treat AZUR local prices as live",
+      "nextAction": "Design source-backed own offer catalog and lawful supported store-product mapping; never treat AZUR local prices as live E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
     {
       "id": "azur-iap-helper-ladder",
       "status": "ROADMAPPED",
       "currentImplementation": "Current Hint/Undo/Joker use fixed coin prices; no SKU-based five-tier assistance offers",
-      "nextAction": "Specify original 4×5 multi-offer schema and separately approved own pricing/entitlements",
+      "nextAction": "Specify original 4×5 multi-offer schema and separately approved own pricing/entitlements E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
     {
       "id": "azur-iap-no-ads",
       "status": "BLOCKED",
       "currentImplementation": "Native banners/interstitials exist, but no purchased disable-ads entitlement",
-      "nextAction": "Verify target store billing + no-ads policy and persistence before paid offer/reward receipt",
+      "nextAction": "Verify target store billing + no-ads policy and persistence before paid offer/reward receipt E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
-      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
     },
     {
       "id": "azur-iap-coin-packs",
       "status": "BLOCKED",
       "currentImplementation": "Coins earned in game; no fiat-purchased coin bundles or legal billing confirmation",
-      "nextAction": "Check supported store IAP and payout, then model eight source tiers against own currency supply",
+      "nextAction": "Check supported store IAP and payout, then model eight source tiers against own currency supply E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
-      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
     },
     {
       "id": "azur-iap-coin-offer-series",
       "status": "ROADMAPPED",
       "currentImplementation": "No Coins Offer 1 Time/Next1/Next2 SKU/eligibility sequence",
-      "nextAction": "Recover live trigger sequence or author a declared own offer sequence; source titles are not logic",
+      "nextAction": "Recover live trigger sequence or author a declared own offer sequence; source titles are not logic E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
     {
       "id": "azur-iap-premium-bundles",
       "status": "BLOCKED",
       "currentImplementation": "No silver/gold/diamond premium SKU entitlement",
-      "nextAction": "Verify IAP provider, settlement, refund and specific benefit contents before shipping",
+      "nextAction": "Verify IAP provider, settlement, refund and specific benefit contents before shipping E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
-      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
     },
     {
       "id": "azur-iap-welcome-offer",
       "status": "BLOCKED",
       "currentImplementation": "No store-backed welcome purchase or original paid entry offer",
-      "nextAction": "Validate store purchases and first-use entitlement; keep future welcome-bundle ID in roadmap",
+      "nextAction": "Validate store purchases and first-use entitlement; keep future welcome-bundle ID in roadmap E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
-      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
     },
     {
       "id": "azur-iap-unlimited-moves-tiers",
       "status": "BLOCKED",
       "currentImplementation": "No purchasable Unlimited Moves/+ /++ tiers",
-      "nextAction": "Reconstruct true entitlement/expiry, billing and SaveStore restore before pricing or SDK calls",
+      "nextAction": "Reconstruct true entitlement/expiry, billing and SaveStore restore before pricing or SDK calls E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
-      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer"
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
     },
     {
       "id": "azur-definition-consumable",

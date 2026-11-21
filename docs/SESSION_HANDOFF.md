@@ -1,3 +1,7 @@
+# Content 8 · Q2 control positions
+
+[Q2 control positions](qa/content-v8/Q2_CONTROL_POSITIONS.md) open five fixtures across levels 15, 21, 45 and 70 in an isolated Android package. The original Rules 3 witness seeds a reloadable board, budget and Undo history. Physical player sessions and live ads remain separate evidence.
+
 # Content 8 · Q2 acceptance protocol (not executed)
 
 [Human/Android and Q1 follow-up protocol](qa/content-v8/Q2_HUMAN_ACCEPTANCE_AND_Q1_FOLLOWUP_2026-11-21.md) sets source-grounded novice FTUE 1–6, Q1 pivot positions 15/21/45/70, five-column checks 26/31/80 and CORE-5 real SDK/SaveStore checks. It distinguishes unscripted player choice, QA-directed alternative continuation, browser mocks and genuine phone evidence. No phone/human/original execution happened in this documentation update; 114/114 source IDs remain mapped and 0 are ACCEPTED. Research continuation sits on Q1 PR #70, runtime 0.20.3 PR #68; both are unmerged.

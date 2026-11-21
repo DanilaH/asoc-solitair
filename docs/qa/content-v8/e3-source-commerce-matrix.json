@@ -1,0 +1,204 @@
+{
+  "schema": "c8-e3-source-commerce-coverage-v1",
+  "date": "2026-11-21",
+  "source": {
+    "xapk": "AZUR 1.3.3.8/code244",
+    "originalXapkSha256": "4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4",
+    "researchCatalogGitBlob": "391f1ec3f4e9400177f7172d81f98613f61efb1d",
+    "sourceFeatureInventoryGitBlob": "72efdad46077213e1ce68475b004544fe9dfec75",
+    "evidence": "ORIGINAL_ASSET_VERIFIED_IN_MINI_GAMES_KIT_REPORT_NOT_EXECUTED_THIS_TURN",
+    "merchantCodesCopied": false
+  },
+  "catalogAggregate": {
+    "productsTotal": 41,
+    "uniqueProductIds": 41,
+    "types": {
+      "consumable": 28,
+      "nonConsumable": 13,
+      "subscription": 0
+    },
+    "emptyStoreIdArrays": 41,
+    "emptyPayoutArrays": 41,
+    "buckets": {
+      "coin_packs": 8,
+      "coins_offers": 3,
+      "hints_offers": 5,
+      "undo_offers": 5,
+      "definition_offers": 5,
+      "boosters_offers": 5,
+      "standalone_noads": 2,
+      "welcome_offer": 1,
+      "unlimited_moves_variants": 3,
+      "silver_gold_diamond_offers": 3,
+      "gold_pass": 1
+    },
+    "helperFamilies": [
+      "Hints",
+      "Undo",
+      "Definition",
+      "Boosters"
+    ],
+    "helperPriceLadderNumericDefaultsNoCurrency": [
+      "0.99",
+      "2.99",
+      "6.99",
+      "7.99",
+      "9.99"
+    ],
+    "goldPassTypeCode": 0,
+    "originalStoreCurrencyVerified": false,
+    "liveBillingValidated": false,
+    "originalReceiptsValidated": false
+  },
+  "platformEvidence": {
+    "rustoreSelfEmployedPaySdk": {
+      "status": "UNAVAILABLE",
+      "effectiveDate": "2026-02-01",
+      "official": "https://www.rustore.ru/developer/blog/self-employed"
+    },
+    "rustoreLegalIpNpD": {
+      "status": "DOCUMENTED_ELIGIBLE_REQUIRES_QUALIFIED_SIGNATURE",
+      "official": "https://www.rustore.ru/developer/blog/self-employed"
+    },
+    "rustoreThirdPartyProcessor": {
+      "status": "UNVERIFIED",
+      "official": "https://www.rustore.ru/help/developers/publishing-and-verifying-apps/requirement-apps"
+    },
+    "nashstoreSellerSelfEmployed": {
+      "status": "CONTRACT_ELIGIBLE",
+      "official": "https://nashstore.ru/doc/developer_agreement"
+    },
+    "nashstoreInAppPayments": {
+      "status": "UNVERIFIED",
+      "official": "https://help.nashstore.ru/"
+    }
+  },
+  "featureCoverage": [
+    {
+      "id": "hitapps-piggy-bank",
+      "sourceEvidenceTier": "VIDEO_OBSERVED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "BLOCKED"
+    },
+    {
+      "id": "azur-play-pass",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "BLOCKED"
+    },
+    {
+      "id": "hitapps-rotating-offers",
+      "sourceEvidenceTier": "METADATA",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-birthday-offer",
+      "sourceEvidenceTier": "METADATA",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "EVIDENCE_GAP"
+    },
+    {
+      "id": "hitapps-decoy-offer",
+      "sourceEvidenceTier": "METADATA",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "EVIDENCE_GAP"
+    },
+    {
+      "id": "hitapps-starter-offer",
+      "sourceEvidenceTier": "METADATA",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "ROADMAPPED"
+    },
+    {
+      "id": "hitapps-inapp-shop",
+      "sourceEvidenceTier": "METADATA",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "ROADMAPPED"
+    },
+    {
+      "id": "azur-offer-campaign",
+      "sourceEvidenceTier": "METADATA",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "ROADMAPPED"
+    },
+    {
+      "id": "unico-vip",
+      "sourceEvidenceTier": "VIDEO_OBSERVED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "BLOCKED"
+    },
+    {
+      "id": "azur-purchase-receipts",
+      "sourceEvidenceTier": "METADATA",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "BLOCKED"
+    },
+    {
+      "id": "azur-iap-product-catalog",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "ROADMAPPED"
+    },
+    {
+      "id": "azur-iap-helper-ladder",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "ROADMAPPED"
+    },
+    {
+      "id": "azur-iap-no-ads",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "BLOCKED"
+    },
+    {
+      "id": "azur-iap-coin-packs",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "BLOCKED"
+    },
+    {
+      "id": "azur-iap-coin-offer-series",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "ROADMAPPED"
+    },
+    {
+      "id": "azur-iap-premium-bundles",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "BLOCKED"
+    },
+    {
+      "id": "azur-iap-welcome-offer",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "BLOCKED"
+    },
+    {
+      "id": "azur-iap-unlimited-moves-tiers",
+      "sourceEvidenceTier": "ASSET_VERIFIED",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "consumerStage": "E3",
+      "observedConsumerStatusAtAudit": "BLOCKED"
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 # Project contract
 
+## Native source research update (22.11.2026): useful moves, two Joker predicates
+
+- [kit PR #98](https://github.com/DanilaH/mini-games-kit/pull/98) source-original native `MoveHintSystem` and `MoveValidator` have independently different `IsUselessJokerColumnToColumnMove` predicates; `GameManager.CheckAvailableMoves` after draw/transfer can invoke an opaque callback **with positive moves left** when no validator-useful move exists. This is **not** the same as the game's move-budget loss and NOT proof of a paywall. [Exact source/product report](docs/qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md) and [issue #123](https://github.com/DanilaH/asoc-solitair/issues/123). P05 source diagnostic + P04 offline hint policy are independent and do not authorize changing currently frozen Deal IDs, Rules3, production safe Hint, wallet or no-fill/coin recovery. Source pin v16 115/115, 38 packages; original Android missing.
+
 ## Native source research update (21.11.2026): 115 systems, AZUR Shuffle and greedy Hint
 
 - Original authenticated AZUR XAPK native [kit PR #96](https://github.com/DanilaH/mini-games-kit/pull/96) proved hidden tableau+stock+resetWaste Shuffle (Undo.Clear success, separate spend/refund) and native five-group greedy hint. New source D2 `azur-greedy-hint-order` belongs P04; P16 Shuffle/animation source tiers NATIVE_STATIC but game P16 PR #103 stock-only proof-first and current winning-route Hint are PRODUCT_ADAPTED. [Consumer evidence and acceptance](docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md) and [issue #104](https://github.com/DanilaH/asoc-solitair/issues/104). 115 source IDs in 38 developer packets, no owner exclusion; do not claim original Android execution, don't silently replace published game rules/Undo.

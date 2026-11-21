@@ -42,8 +42,8 @@
 | P21 | NEEDS_OWNER | [PR #110](https://github.com/DanilaH/asoc-solitair/pull/110) | [Интеграция P01 и отключённая модель рекламы](P21_AD_PLACEMENTS.md). Частота новых точек, ILRD и Coffee Break открыты. |
 | P22 | IN_PROGRESS | [PR #111](https://github.com/DanilaH/asoc-solitair/pull/111) | [41 офлайн-позиция](P22_OFFLINE_CATALOG.md). Типы и суммы проверены; ожидается точный CI. |
 | P23 | IN_PROGRESS | [PR #112](https://github.com/DanilaH/asoc-solitair/pull/112) | [Офлайн-журнал SaveStore](P23_PURCHASE_ORDERS.md). Диск, повторы, возврат и восстановление проверены; живой провайдер P24. |
-| P24 | BLOCKED_EXTERNAL | [Ветка P24](https://github.com/DanilaH/asoc-solitair/tree/docs/c8-p24-merchant-gate-20261121) | [Официальные условия продавцов](P24_MERCHANT_GATE.md). Нет подтверждённого аккаунта, принятого договора и платежей sandbox. |
-| P25 | QUEUED | — | All 15 E3 offers |
+| P24 | BLOCKED_EXTERNAL | [PR #113](https://github.com/DanilaH/asoc-solitair/pull/113) | [Официальные условия продавцов](P24_MERCHANT_GATE.md). Нет подтверждённого аккаунта, принятого договора и платежей sandbox. |
+| P25 | NEEDS_OWNER | [Ветка P25](https://github.com/DanilaH/asoc-solitair/tree/feat/c8-p25-commercial-families-20261121) | [Все 15 офлайн-семейств](P25_COMMERCIAL_FAMILIES.md). Платный запуск зависит от P24, условия не активированы. |
 | P26 | QUEUED | — | Shared event identity and claims |
 | P27 | QUEUED | — | PuzzleEvent/gallery/multiresource |
 | P28 | QUEUED | — | All 16 AZUR tasks + 9 rewards |

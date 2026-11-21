@@ -609,7 +609,7 @@
       "order": 25,
       "title": "Piggy/Pass/VIP/NoAds/offers/bundles",
       "workstream": "COMMERCE",
-      "state": "QUEUED",
+      "state": "NEEDS_OWNER",
       "entryGate": "OWNER_ACTIVATION_GATE",
       "dependsOn": [
         "P22",

@@ -1,3 +1,4 @@
+import type { EventLedger } from './events/ledger';
 import type { CommerceJournal } from './commerce/orders';
 import type { RewardOffers } from './reward-offers';
 
@@ -87,6 +88,7 @@ export interface Save {
   difficultyPenalty?: number;
   rewardOffers?: RewardOffers;
   commerce?: CommerceJournal;
+  events?: EventLedger;
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';

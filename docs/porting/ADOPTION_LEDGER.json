@@ -224,14 +224,14 @@
     {
       "id": "hitapps-puzzle-event",
       "status": "ROADMAPPED",
-      "currentImplementation": "No picture reveal; existing 10-level and win-cycle rewards",
+      "currentImplementation": "No picture reveal; existing 10-level and win-cycle rewards Shared P26 event clocks and serialized milestone claims are available; product-specific implementation is tracked separately in the delivery queue.",
       "nextAction": "Prototype original 6-piece picture reward on actual wins/daily; assess visual payoff F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
     {
       "id": "azur-daily-tasks",
       "status": "ROADMAPPED",
-      "currentImplementation": "28 rotating daily puzzles != daily tasks",
+      "currentImplementation": "28 rotating daily puzzles != daily tasks Shared P26 event clocks and serialized milestone claims are available; product-specific implementation is tracked separately in the delivery queue.",
       "nextAction": "Inventory ALL 16 original DailyTask kinds and 9 reward kinds (engagement, helper-use, spend/purchase), with per-kind evidence and trigger; implement in owner-approved stages without silently dropping commercially oriented task types F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },

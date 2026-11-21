@@ -16,7 +16,7 @@ import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } f
 import { BALANCE } from './domain/balance';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
-import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
+import { CONTENT8_PREVIEW, type BoardCommand, type BonusKind, type Command, type Deal } from './domain/types';
 import { WIDTH, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
@@ -146,8 +146,10 @@ function setDifficulty(element: HTMLElement, item?: Deal) {
 async function start() {
 try {
   runtime.activity.setBlocked('screen', true);
+  const q2 = CONTENT8_PREVIEW && import.meta.env.VITE_CONTENT8_Q2 === '1' ? await import('./platform/q2-profile') : undefined;
+  const q2Storage = await q2?.createQ2Storage();
   let firstLaunch = false;
-  const store = new SaveStore(createStorage(), findDeal, () => {
+  const store = new SaveStore(q2Storage ?? createStorage(), findDeal, () => {
     firstLaunch = true;
     const initial = freshSave(deal, crypto.randomUUID());
     initial.settings.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -815,7 +817,7 @@ try {
       scene = active;
       active.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
         ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true'; $('#app').dataset.presentedDeal = deal.id;
-        if (firstLaunch) { firstLaunch = false; showGame(); active.presentDeal(); announceDeal(); }
+        if (firstLaunch) { firstLaunch = false; if (!q2Storage) { showGame(); active.presentDeal(); announceDeal(); } }
         else if (screen === 'game') { if (newDeal) announceDeal(); showGuidance(); }
         if (screen === 'game' && save.attempt.board.phase !== 'playing') outcome();
       });
@@ -885,6 +887,57 @@ try {
   document.addEventListener('keydown', event => { if (event.key === 'Escape') { scene?.cancel(); setInspect(false); } }, domOptions);
   dialogs.forEach(dialog => dialog.addEventListener('cancel', event => { event.preventDefault(); if (dialog.id === 'learn-rule') dismissRule?.(); else if (dialog.id === 'difficulty-entry') dismissDifficulty?.(); else closeDialogs(); }, domOptions));
   document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach(button => button.addEventListener('click', () => closeDialogs(), domOptions));
+  if (q2Storage && q2) {
+    const picker = $<HTMLDialogElement>('#q2-picker');
+    const error = $('#q2-error');
+    const buttons = q2.q2Positions.map(position => {
+      const button = document.createElement('button');
+      button.className = 'secondary';
+      button.dataset.position = position.id;
+      button.textContent = `Уровень ${position.level} · перед ходом ${position.move}`;
+      button.addEventListener('click', async () => {
+        if (!picker.open || !ready || saving || serviceBusy ||
+          runtime.activity.getBlockReasons().some(reason => reason !== 'screen' && reason !== 'modal')) return;
+        error.hidden = true;
+        serviceBusy = true;
+        for (const item of buttons) item.disabled = true;
+        runtime.activity.setBlocked('level-transition', true);
+        try {
+          clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined;
+          activeHint = undefined;
+          await write(next => {
+            const snapshot = q2.buildQ2Save(position, campaignDeals[position.level - 1], crypto.randomUUID(), next.settings);
+            Object.assign(next, snapshot);
+            next.campaign = snapshot.campaign;
+            delete next.parked;
+            delete next.difficultyHistory;
+            delete next.difficultyPenalty;
+          });
+          if (!alive) return;
+          dismissedRules.clear();
+          closeDialogs();
+          presentLevelStart();
+        } catch {
+          error.textContent = 'Не удалось открыть позицию. Попробуйте ещё раз.';
+          error.hidden = false;
+        } finally {
+          serviceBusy = false;
+          for (const item of buttons) item.disabled = false;
+          if (ready) runtime.activity.setBlocked('level-transition', false);
+          renderHud(); renderHome();
+        }
+      }, domOptions);
+      return button;
+    });
+    $('#q2-positions').replaceChildren(...buttons);
+    const entry = $<HTMLButtonElement>('#q2-open');
+    entry.hidden = false;
+    entry.addEventListener('click', () => {
+      if (!ready || saving || serviceBusy) return;
+      error.hidden = true;
+      openDialog('#q2-picker');
+    }, domOptions);
+  }
   $('#home-play').addEventListener('click', () => {
     if (save.attempt.daily) { void activateMode('campaign'); return; }
     if (save.attempt.board.phase === 'playing' || !outcomeViewed) showGame();

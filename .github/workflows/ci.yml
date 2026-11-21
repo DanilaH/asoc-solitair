@@ -45,6 +45,14 @@ jobs:
         run: |
           npm run build
           npx playwright test tests/browser/content8-core.spec.ts --output=test-results/content8-core
+      - name: Verify the isolated Q2 position picker with touch input
+        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-q2-')
+        env:
+          VITE_CONTENT8_PREVIEW: '1'
+          VITE_CONTENT8_Q2: '1'
+        run: |
+          npm run build
+          npx playwright test tests/browser/q2-positions.spec.ts --output=test-results/q2-positions
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -57,6 +65,8 @@ jobs:
           retention-days: 7
   android:
     runs-on: ubuntu-24.04
+    env:
+      ASOC_Q2_PROFILE: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-q2-') && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -83,6 +93,7 @@ jobs:
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run android:sync
         env:
+          VITE_CONTENT8_Q2: ${{ env.ASOC_Q2_PROFILE }}
           VITE_CONTENT8_PREVIEW: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-') || github.ref_name == 'feat/content8-reference-slice-20261119' || github.head_ref == 'feat/content8-reference-slice-20261119' || github.base_ref == 'feat/c8-onboarding-dealer-20261119') && '1' || '0' }}
       - uses: actions/cache@v4
         with:
@@ -113,10 +124,21 @@ jobs:
         run: |
           $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk
           $ANDROID_HOME/build-tools/36.0.0/apksigner verify --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk | grep -F '0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e'
-          $ANDROID_HOME/build-tools/36.0.0/aapt dump badging native/android/app/build/outputs/apk/debug/app-debug.apk | head -1
+          badging=$($ANDROID_HOME/build-tools/36.0.0/aapt dump badging native/android/app/build/outputs/apk/debug/app-debug.apk)
+          if [ "$ASOC_Q2_PROFILE" = 1 ]; then
+            grep -F "package: name='com.danilah.asocsolitair.debug.q2'" <<< "$badging"
+          else
+            grep -F "package: name='com.danilah.asocsolitair.debug'" <<< "$badging"
+          fi
+      - name: Restore the regular web build for the release compile
+        if: env.ASOC_Q2_PROFILE == '1'
+        run: npm run android:sync
+        env:
+          VITE_CONTENT8_PREVIEW: '1'
       - run: ./gradlew --no-daemon assembleRelease
         working-directory: native/android
         env:
+          ASOC_Q2_PROFILE: '0'
           ASOC_AD_MODE: disabled
           ASOC_UNSIGNED_CHECK: '1'
       - uses: actions/upload-artifact@v4

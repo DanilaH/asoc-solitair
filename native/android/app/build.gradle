@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def q2Profile = System.getenv('ASOC_Q2_PROFILE') == '1'
+
 android {
     namespace = "com.danilah.asocsolitair"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -37,8 +39,9 @@ android {
     }
     buildTypes {
         debug {
-            applicationIdSuffix '.debug'
-            manifestPlaceholders.asocAppLabel = 'Ассоциации · тест'
+            applicationIdSuffix(q2Profile ? '.debug.q2' : '.debug')
+            manifestPlaceholders.asocAppLabel = q2Profile ? 'Ассоциации · Q2' : 'Ассоциации · тест'
+            if (q2Profile) versionNameSuffix '-q2'
         }
         release {
             minifyEnabled true
@@ -46,6 +49,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (System.getenv('ASOC_STORE_FILE')) signingConfig signingConfigs.release
         }
+    }
+}
+
+tasks.configureEach { task ->
+    if (q2Profile && task.name == 'preReleaseBuild') task.doFirst {
+        throw new GradleException('The Q2 profile is a debug-only package')
     }
 }
 

@@ -18,7 +18,7 @@
     <button id="daily-resume-old" class="calendar-link" hidden></button>
     <button id="appearance-open" class="milestone-card"><span class="milestone-gem" aria-hidden="true">✦</span><span class="milestone-details"><strong id="milestone-title">Веха 10</strong><span class="milestone-track"><i id="milestone-fill"></i></span><small id="milestone-copy">Стол «Чернила»</small></span><small id="milestone-progress">0 / 10</small></button>
     </div><div class="home-actions"><div class="campaign-context"><strong>Кампания</strong><span id="home-progress"></span></div><button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
-    <button id="level-picker-open" class="levels-link">Выбрать уровень</button></div>
+    <button id="level-picker-open" class="levels-link">Выбрать уровень</button><button id="q2-open" class="levels-link" hidden>Контрольные позиции</button></div>
   </section>
   <div id="play-screen" hidden>
   <div class="level"><span id="level-number">УРОВЕНЬ 1</span><h1>Найдите общее</h1></div>
@@ -33,6 +33,11 @@
   </div>
 </div>
 <div id="coin-layer" aria-hidden="true"></div>
+<dialog id="q2-picker" class="sheet" aria-labelledby="q2-title">
+  <div class="sheet-heading"><h2 id="q2-title">Контрольные позиции</h2></div>
+  <div class="sheet-body"><p class="small">Выбор заменит текущую тестовую партию.</p><div id="q2-positions" class="sheet-actions"></div><p id="q2-error" role="status" hidden></p></div>
+  <div class="sheet-actions"><button class="text-button" data-close>Назад</button></div>
+</dialog>
 <dialog id="learn-rule" aria-labelledby="learn-title"><button class="close" data-lesson-close aria-label="Закрыть">×</button><h2 id="learn-title"></h2>
   <div class="rule-example ordered-example" aria-hidden="true"><span class="rule-card">1</span><span class="rule-arrow">→</span><span class="rule-card">2</span><span class="rule-arrow">→</span><span class="rule-card">3</span></div>
   <div class="rule-example keys-example" aria-hidden="true"><img src="art/generated/key.webp" alt=""><img src="art/generated/key.webp" alt=""><img src="art/generated/key.webp" alt=""><span class="rule-arrow">→</span><img class="demo-lock" src="art/generated/lock.webp" alt=""></div>

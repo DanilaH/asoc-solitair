@@ -1,3 +1,7 @@
+# Content 8 · Q2 acceptance protocol (not executed)
+
+[Human/Android and Q1 follow-up protocol](qa/content-v8/Q2_HUMAN_ACCEPTANCE_AND_Q1_FOLLOWUP_2026-11-21.md) sets source-grounded novice FTUE 1–6, Q1 pivot positions 15/21/45/70, five-column checks 26/31/80 and CORE-5 real SDK/SaveStore checks. It distinguishes unscripted player choice, QA-directed alternative continuation, browser mocks and genuine phone evidence. No phone/human/original execution happened in this documentation update; 114/114 source IDs remain mapped and 0 are ACCEPTED. Research continuation sits on Q1 PR #70, runtime 0.20.3 PR #68; both are unmerged.
+
 # Content 8 · Q1 campaign decisions
 
 [Campaign decision audit](qa/content-v8/Q1_CAMPAIGN_DECISIONS.md) samples alternative card moves and deck actions on the active 80-level bank. It reports complete winning witnesses, proven budget failures and bounded unknowns separately. Repeat cases for director and bonus-slot variants have their own denominators. The audit identifies positions for a human playtest of 0.20.3.

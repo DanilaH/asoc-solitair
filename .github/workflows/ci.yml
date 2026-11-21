@@ -34,6 +34,15 @@ jobs:
         run: |
           npm run qa:campaign-decisions
           node tools/qa/summarize-c8-route-cost.mjs
+      - name: Research Q1c finite-budget comparison and deeper unknown transfer probes
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'audit/c8-q1c-')
+        env:
+          VITE_CONTENT8_PREVIEW: '1'
+        run: |
+          npm run qa:campaign-decisions
+          node tools/qa/summarize-c8-route-cost.mjs
+          npm run qa:decision-cost
+          npm run qa:decision-deep
       - run: npm run qa:rules
       - run: npm run content:azur-preset
       - run: npm run qa:content8
@@ -64,6 +73,8 @@ jobs:
             .recording/content7-ui/
             .recording/content7-recordings/
             .authoring/content8/campaign-decisions.json
+            .authoring/content8/campaign-decision-cost.json
+            .authoring/content8/campaign-unknown-transfer-deep.json
           retention-days: 7
   android:
     runs-on: ubuntu-24.04

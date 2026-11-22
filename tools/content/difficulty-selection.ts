@@ -14,18 +14,44 @@ export function eligibleForEquality(input: { level: number; seed: number; issued
 
 export interface SimulationPolicy {
   id: string;
+  version?: number;
+  start?(deal: Deal): SimulationPolicy['choose'];
+  detectCycles?: true;
   choose(board: Board, legal: BoardCommand[], deal: Deal): BoardCommand | undefined;
 }
-type PolicyRun = { policyId: string; status: 'WON' | 'LOST' | 'UNKNOWN'; steps: number; path: BoardCommand[] };
+export type LossReason = 'budget' | 'no-legal-action' | 'repeated-position';
+export type PolicyRun = {
+  policyId: string; status: 'WON' | 'LOST' | 'UNKNOWN'; steps: number; path: BoardCommand[];
+  lossReason?: LossReason;
+};
 
-function simulate(deal: Deal, policy: SimulationPolicy): PolicyRun {
+export function simulationPosition(board: Board) {
+  const { movesLeft: _budget, retainedMoves: _retained, ...position } = board;
+  return JSON.stringify({ ...position, faceUp: [...position.faceUp].sort() });
+}
+
+export function isLateLoss(run: Pick<PolicyRun, 'status' | 'steps'>, limit: number): boolean {
+  return run.status === 'LOST' && Math.fround(run.steps) >= Math.fround(Math.fround(limit) * Math.fround(0.8));
+}
+
+
+export function simulatePolicy(deal: Deal, policy: SimulationPolicy): PolicyRun {
   let board = structuredClone(deal.initial);
   const path: BoardCommand[] = [];
-  const result = (status: PolicyRun['status']): PolicyRun => ({ policyId: policy.id, status, steps: path.length, path });
+  const choose = policy.start?.(deal) ?? policy.choose;
+  const seen = new Set<string>();
+  const result = (status: PolicyRun['status'], lossReason?: LossReason): PolicyRun => ({
+    policyId: policy.id, status, steps: path.length, path, ...(lossReason ? { lossReason } : {}),
+  });
   while (board.phase === 'playing') {
+    if (policy.detectCycles) {
+      const key = simulationPosition(board);
+      if (seen.has(key)) return result('LOST', 'repeated-position');
+      seen.add(key);
+    }
     const commands = legalCommands(board, deal);
-    if (!commands.length) return result('LOST');
-    const action = policy.choose(board, commands, deal);
+    if (!commands.length) return result('LOST', 'no-legal-action');
+    const action = choose(board, commands, deal);
     const command = action && commands.find(candidate => sameBoardCommand(candidate, action));
     if (!command) return result('UNKNOWN');
     const next = applyBoard(board, command, deal);
@@ -33,7 +59,7 @@ function simulate(deal: Deal, policy: SimulationPolicy): PolicyRun {
     board = next.board;
     path.push(command);
   }
-  return result(board.phase === 'won' ? 'WON' : 'LOST');
+  return board.phase === 'won' ? result('WON') : result('LOST', 'budget');
 }
 
 /** Offline late non-win predicate; each policy starts from the same prepared deal. */
@@ -50,9 +76,9 @@ export function selectEquality(candidates: Iterable<Deal>, policies: readonly Si
     let accepted = false;
     if (limit !== null && Number.isInteger(limit) && limit > 0 && limit <= 2147483647 && deal.initial.phase === 'playing') {
       for (const policy of policies) {
-        const run = simulate(deal, policy);
+        const run = simulatePolicy(deal, policy);
         runs.push(run);
-        if (run.status !== 'LOST' || run.steps * 5 < limit * 4) break;
+        if (!isLateLoss(run, limit)) break;
         accepted = runs.length === policies.length;
       }
     }

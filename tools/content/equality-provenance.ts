@@ -3,7 +3,7 @@ import { assertBoard } from '../../src/domain/engine';
 import type { BoardCommand, Deal } from '../../src/domain/types';
 import { advance } from '../qa/gameplay-oracle';
 import { completeSimulatedPlan, prepareSimulatedShuffle, resolveCandidateSeed } from './candidate-pipeline';
-import { eligibleForEquality, selectEquality, type PlayerSegment, type SimulationPolicy } from './difficulty-selection';
+import { eligibleForEquality, selectEquality, type PlayerSegment, type PolicyRun, type SimulationPolicy } from './difficulty-selection';
 import { EmbeddedRandom } from './plain-dealer';
 
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -19,14 +19,17 @@ export function sampleEqualityStacks(columns: number, rng: EmbeddedRandom, strat
 export function prepareEqualityPlan(options: {
   request: { level: number; seed: number; featureSeed?: number; issued: number; segment: PlayerSegment };
   cohortEvidence: 'controlled-fixture' | 'unknown';
-  config: Parameters<typeof eligibleForEquality>[1] & { version: string };
+  config: Parameters<typeof eligibleForEquality>[1] & { version: string; maxCandidates?: number };
   requests: Iterable<number>;
   drawSeed(maxExclusive: number): number;
   deal(seed: number, rng: EmbeddedRandom): Deal;
   policies: readonly SimulationPolicy[];
   appliers?: Parameters<typeof prepareSimulatedShuffle<Deal>>[1];
+  acceptFinal?: (candidate: Deal, runs: readonly PolicyRun[], seed: number) => boolean;
 }) {
   const { request, config, cohortEvidence } = options;
+  const cap = config.maxCandidates ?? 100;
+  if (!Number.isSafeInteger(cap) || cap < 1 || cap > 100) throw Error('Expected one to 100 simulation candidates');
   const trials: {
     candidateIndex: number; requestedSeed: number; candidateSeed: number; pairStacks: number[]; budget: number | null;
     afterShuffle: string; appliedFlags: number; failedFlags: number;
@@ -42,6 +45,7 @@ export function prepareEqualityPlan(options: {
   }
 
   for (const requestedSeed of options.requests) {
+    if (trials.length === cap) break;
     const candidateSeed = resolveCandidateSeed(requestedSeed, options.drawSeed);
     const rng = new EmbeddedRandom(candidateSeed);
     const deal = options.deal(candidateSeed, rng);
@@ -72,6 +76,9 @@ export function prepareEqualityPlan(options: {
       }
       const final = completeSimulatedPlan(prepared, options.appliers);
       assertBoard(final.snapshot.initial, final.snapshot);
+      if (options.acceptFinal && !options.acceptFinal(final.snapshot, selected.runs, candidateSeed)) {
+        continue;
+      }
       return { ...evidence, result: 'SELECTED_CONTROLLED_CANDIDATE',
         selected: {
           candidateIndex: trials.length, candidateSeed, dealId: final.snapshot.id, afterShuffle,
@@ -79,7 +86,6 @@ export function prepareEqualityPlan(options: {
         },
       } as const;
     }
-    if (trials.length >= 100) break;
   }
   return { ...evidence, result: 'NO_QUALIFYING_CANDIDATE' } as const;
 }

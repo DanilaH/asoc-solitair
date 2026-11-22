@@ -1,3 +1,4 @@
+import { recordAdBreakShown, settleCoffee } from './campaign-advertising';
 import { campaignRewards } from './meta';
 import { isOfferPlacement, settleRewardOffer, type OfferPlacement } from './reward-offers';
 import { BALANCE } from './balance';
@@ -7,7 +8,7 @@ import { recordCampaignOutcome } from './difficulty';
 import { bonusKindFor, bonusPlacements, openBonusSlot, type BonusPlacement } from './bonus-slots';
 import { requiresContinueProof, verifiesContinue, type ContinueProof } from './continuation';
 
-export type RewardPlacement = 'hint' | 'undo' | 'continue' | BonusPlacement | OfferPlacement;
+export type RewardPlacement = 'hint' | 'undo' | 'continue' | 'ads-break' | 'coffee-break' | BonusPlacement | OfferPlacement;
 export interface EarnedReceipt { schema: 1; id: string; attempt: string; dealId: string; mode: 'campaign' | 'daily'; placement: RewardPlacement }
 export interface FullscreenShown extends EarnedReceipt {
   kind: 'rewarded' | 'interstitial';
@@ -22,23 +23,23 @@ export function parseReceipt(value: unknown): EarnedReceipt {
   if (r.schema !== 1 || typeof r.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.id) ||
     typeof r.attempt !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.attempt) ||
     typeof r.dealId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.dealId) ||
-    (!['hint', 'undo', 'continue', ...Object.values(bonusPlacements)].includes(String(r.placement)) && !isOfferPlacement(String(r.placement))) ||
+    (!['hint', 'undo', 'continue', 'ads-break', 'coffee-break', ...Object.values(bonusPlacements)].includes(String(r.placement)) && !isOfferPlacement(String(r.placement))) ||
     !['campaign', 'daily'].includes(String(r.mode)) ||
-    ((bonusKindFor(String(r.placement)) || isOfferPlacement(String(r.placement))) && r.mode !== 'campaign')) throw Error('Invalid receipt');
+    ((r.placement === 'ads-break' || r.placement === 'coffee-break' || bonusKindFor(String(r.placement)) || isOfferPlacement(String(r.placement))) && r.mode !== 'campaign')) throw Error('Invalid receipt');
   return { schema: 1, id: r.id, attempt: r.attempt, dealId: r.dealId, placement: r.placement as RewardPlacement, mode: r.mode as EarnedReceipt['mode'] };
 }
 export function parseFullscreenShown(value: unknown): FullscreenShown {
   const receipt = parseReceipt(value);
   const { kind, shownAt } = value as Partial<FullscreenShown>;
   if (typeof shownAt !== 'number' || !Number.isSafeInteger(shownAt) || shownAt <= 0 ||
-    (kind !== 'rewarded' && (kind !== 'interstitial' || receipt.mode !== 'campaign' || receipt.placement !== 'continue'))) {
+    (kind !== 'rewarded' && (kind !== 'interstitial' || receipt.mode !== 'campaign' || !['continue', 'ads-break'].includes(receipt.placement)))) {
     throw Error('Invalid fullscreen display');
   }
   return { ...receipt, kind, shownAt };
 }
 
 /** The native journal owns one verified show until this independent effect is durable. */
-export function applyFullscreenShown(save: Save, shown: FullscreenShown): 'applied' | 'already-applied' {
+export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?: number): 'applied' | 'already-applied' {
   const attempt = save.attempt;
   if (shown.attempt !== attempt.id || shown.dealId !== attempt.dealId || shown.mode !== (attempt.daily ? 'daily' : 'campaign')) {
     return 'already-applied';
@@ -52,6 +53,7 @@ export function applyFullscreenShown(save: Save, shown: FullscreenShown): 'appli
   state.lastFullscreenAt = shown.shownAt;
   state.fullscreenCadence = { version: 1, lastShownId: shown.id };
   if (shown.kind === 'interstitial') state.winsSinceInterstitial = 0;
+  if (shown.placement === 'ads-break' && level !== undefined) recordAdBreakShown(save, level);
   return 'applied';
 }
 /** All effects and identities enter the same coordinated snapshot; Undo never owns these fields. */
@@ -60,7 +62,9 @@ export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
 }): 'applied' | 'already-applied' {
   const state = platformState(save);
   if (state.receipts.includes(receipt.id)) return 'already-applied';
-  if (receipt.placement === 'continue') {
+  if (receipt.placement === 'ads-break') return 'already-applied';
+  if (receipt.placement === 'coffee-break') settleCoffee(save, receipt.attempt, receipt.dealId);
+  else if (receipt.placement === 'continue') {
     if (!state.continuedAttempts.includes(receipt.attempt)) {
       state.continuedAttempts.push(receipt.attempt); state.continueCredits++;
       // A late receipt must not mutate a different attempt. Its earned credit remains available.

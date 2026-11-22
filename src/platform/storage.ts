@@ -1,3 +1,4 @@
+import { validCampaignAds } from '../domain/campaign-advertising';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import { JsonStorageRepository, type StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { dayNumber, metaState, milestoneRewards } from '../domain/meta';
@@ -150,6 +151,9 @@ export function decodeSave(raw: string, source: DealSource): Save {
   save.attempt.undo = save.attempt.undo.slice(-MAX_UNDO_HISTORY);
   if (save.attempt.daily && (save.attempt.daily.dayId !== deal.daily?.dayId || save.attempt.daily.contentVersion !== deal.daily?.contentVersion)) throw Error('Повреждена дата попытки');
   if (Boolean(save.attempt.daily) !== Boolean(deal.daily)) throw Error('Повреждён режим');
+  if ((save.campaignAds !== undefined && !validCampaignAds(save.campaignAds)) ||
+      [save.attempt.adBreakShown, save.attempt.coffeeRequested].some(value => value !== undefined && (value !== true || deal.daily || !deal.campaignLevel)))
+    throw Error('Повреждена история рекламы');
   if (save.rewardOffers !== undefined && !validRewardOffers(save.rewardOffers)) throw Error('Повреждены бонусные предложения');
   if (save.commerce !== undefined && !validCommerceJournal(save.commerce)) throw Error('Повреждён журнал покупок');
   if (save.events !== undefined && !validEventLedger(save.events)) throw Error('Повреждён журнал событий');

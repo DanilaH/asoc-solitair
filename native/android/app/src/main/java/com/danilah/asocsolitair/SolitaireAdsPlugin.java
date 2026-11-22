@@ -16,6 +16,8 @@ import com.yandex.mobile.ads.interstitial.*;
 import com.yandex.mobile.ads.rewarded.*;
 import org.json.JSONObject;
 import java.util.UUID;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /** Adapted from Road Lines 180d5b1. All SDK operations and session transitions belong to the main thread. */
 @CapacitorPlugin(name = "SolitaireAds")
@@ -41,7 +43,7 @@ public class SolitaireAdsPlugin extends Plugin {
         final PluginCall call;
         final String kind, placement, attempt, mode, dealId;
         final String id = UUID.randomUUID().toString();
-        boolean invoked, shown, earned;
+        boolean invoked, shown, earned, impressed;
         long invokedAt;
         Session(PluginCall call, String kind, String placement, String attempt, String mode, String dealId) {
             this.call = call; this.kind = kind; this.placement = placement; this.attempt = attempt; this.mode = mode; this.dealId = dealId;
@@ -71,8 +73,32 @@ public class SolitaireAdsPlugin extends Plugin {
         if (destroyed) return;
         JSObject e = new JSObject(); e.put("kind", kind); e.put("phase", phase); notifyListeners("adEvent", e);
     }
+    private void impression(Session s, @Nullable ImpressionData data) {
+        if (session != s || s.impressed) return;
+        s.impressed = true;
+        recordImpression(s.kind, s.id, data);
+    }
+    private void recordImpression(String kind, String id, @Nullable ImpressionData data) {
+        event(kind, "impression");
+        if (!BuildConfig.CAMPAIGN_ADS_APPROVED || destroyed || data == null) return;
+        try {
+            JSONObject raw = new JSONObject(data.getRawData());
+            String currency = raw.optString("currency");
+            BigDecimal revenue = new BigDecimal(raw.getString("revenue"));
+            if (revenue.signum() < 0) return;
+            long micros = revenue.movePointRight(6)
+                .setScale(0, RoundingMode.HALF_UP).longValueExact();
+            if (!currency.matches("[A-Z]{3}") || micros < 0 || micros > 9007199254740991L) return;
+            JSObject value = new JSObject();
+            value.put("id", id); value.put("kind", kind);
+            value.put("micros", micros); value.put("currency", currency);
+            JSObject notice = new JSObject();
+            notice.put("kind", kind); notice.put("phase", "revenue"); notice.put("revenue", value);
+            notifyListeners("adEvent", notice);
+        } catch (Exception ignored) { /* The SDK did not provide a usable paid impression. */ }
+    }
     @PluginMethod public void status(PluginCall call) { handler.post(() -> {
-        JSObject result = new JSObject(); result.put("ready", ready); result.put("mode", BuildConfig.AD_MODE);
+        JSObject result = new JSObject(); result.put("ready", ready); result.put("mode", BuildConfig.AD_MODE); result.put("campaignApproved", BuildConfig.CAMPAIGN_ADS_APPROVED);
         result.put("banner", available("banner")); result.put("rewarded", available("rewarded")); result.put("interstitial", available("interstitial")); call.resolve(result);
     }); }
     @PluginMethod public void prepareInterstitial(PluginCall call) { handler.post(() -> {
@@ -107,11 +133,12 @@ public class SolitaireAdsPlugin extends Plugin {
         boolean testOffer = BuildConfig.AD_MODE.equals("test") && mode.equals("campaign") &&
             (placement.equals("win-double") || placement.equals("win-triple") || placement.equals("win-fivefold") ||
              placement.equals("win-flat") || placement.equals("shop-free-coins") || placement.equals("rewarded-theme"));
-        boolean rewardPlacement = testOffer || placement.equals("hint") || placement.equals("undo") || placement.equals("continue") ||
+        boolean campaignExtra = BuildConfig.CAMPAIGN_ADS_APPROVED && mode.equals("campaign");
+        boolean rewardPlacement = (campaignExtra && placement.equals("coffee-break")) || testOffer || placement.equals("hint") || placement.equals("undo") || placement.equals("continue") ||
             (mode.equals("campaign") && (placement.equals("bonus-foundation") || placement.equals("bonus-tableau")));
         if ((!kind.equals("interstitial") && !kind.equals("rewarded")) ||
             !attempt.matches("[a-zA-Z0-9_-]{1,100}") || !dealId.matches("[a-zA-Z0-9_-]{1,100}") || (!mode.equals("campaign") && !mode.equals("daily")) ||
-            (kind.equals("rewarded") ? !rewardPlacement : !placement.equals("continue") || !mode.equals("campaign"))) {
+            (kind.equals("rewarded") ? !rewardPlacement : (!placement.equals("continue") && !(campaignExtra && placement.equals("ads-break"))) || !mode.equals("campaign"))) {
             call.reject("Invalid ad request"); return;
         }
         if (!available(kind) || session != null || background || !getActivity().hasWindowFocus()) { resolve(call, false, "unavailable"); return; }
@@ -126,7 +153,7 @@ public class SolitaireAdsPlugin extends Plugin {
                     public void onAdFailedToShow(@NonNull AdError error) { if (session == s) { event(kind, "show_error"); finish(s, "error"); } }
                     public void onAdDismissed() { if (session == s) { event(kind, "dismiss"); finish(s, "dismissed"); } }
                     public void onAdClicked() {}
-                    public void onAdImpression(@Nullable ImpressionData data) { if (session == s) event(kind, "impression"); }
+                    public void onAdImpression(@Nullable ImpressionData data) { impression(s, data); }
                 });
                 beforeShow(s); interstitial.show(getActivity());
             } else {
@@ -179,7 +206,7 @@ public class SolitaireAdsPlugin extends Plugin {
             public void onAdFailedToShow(@NonNull AdError error) { if (session == s) { event(s.kind, "show_error"); finish(s, "error"); } }
             public void onAdDismissed() { if (session == s) { event(s.kind, "dismiss"); finish(s, "dismissed"); } }
             public void onAdClicked() {}
-            public void onAdImpression(@Nullable ImpressionData data) { if (session == s) event(s.kind, "impression"); }
+            public void onAdImpression(@Nullable ImpressionData data) { impression(s, data); }
             public void onRewarded(@NonNull Reward reward) {
                 if (session != s || s.earned) return;
                 s.earned = true;
@@ -280,7 +307,7 @@ public class SolitaireAdsPlugin extends Plugin {
                     public void onAdLoaded() { if (banner!=target || destroyed) return; bannerLoaded=true;target.setVisibility(bannerWanted && !background && session==null?View.VISIBLE:View.INVISIBLE);event("banner","loaded"); }
                     public void onAdFailedToLoad(@NonNull AdRequestError error) { if (banner!=target || destroyed) return;bannerRetryAt=android.os.SystemClock.elapsedRealtime()+60000;event("banner","load_error"); }
                     public void onAdClicked() {}
-                    public void onImpression(@Nullable ImpressionData data) { if (banner==target) event("banner","impression"); }
+                    public void onImpression(@Nullable ImpressionData data) { if (banner==target) recordImpression("banner", UUID.randomUUID().toString(), data); }
                 });
                 event("banner","request");target.loadAd(new AdRequest.Builder(unit("banner")).build());
             }

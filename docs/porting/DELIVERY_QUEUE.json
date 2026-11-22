@@ -519,7 +519,7 @@
       "order": 21,
       "title": "AdsBreak, banner, ILRD, Coffee Break",
       "workstream": "ADS",
-      "state": "NEEDS_OWNER",
+      "state": "NEEDS_DEVICE",
       "entryGate": "OWNER_ACTIVATION_GATE",
       "dependsOn": [
         "P01",

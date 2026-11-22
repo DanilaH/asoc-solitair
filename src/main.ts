@@ -1,3 +1,4 @@
+import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee, recordAdRevenue } from './domain/campaign-advertising';
 import { beginUnlimited, expireUnlimited, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote } from './domain/campaign-recovery';
 import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { equalityPreviewPolicy } from './content/campaign-v8-equality';
@@ -193,12 +194,14 @@ try {
   // Keep a bounded repaint tail instead of sleeping in that POST_RENDER turn.
   let repaintFrames = 0;
   let pendingWrites = 0;
+  let adBreakTimer: ReturnType<typeof setTimeout> | undefined;
+  const campaignAdsApproved = () => ads.status.mode === 'live' && ads.status.campaignApproved === true;
   let recoveryClock: ReturnType<typeof setTimeout> | undefined;
   let banner: NativeBanner | undefined;
   const launchedAt = Date.now();
   const telemetry = createTelemetry(() => save, runtime.activity);
   const setInput = () => scene?.setEnabled(screen === 'game' && ready && !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
-  const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
+  const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && !adFree(save, Date.now(), 'banner') && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
   store.onChange = value => { save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); scheduleRecoveryClock(); };
   function scheduleRecoveryClock() {
     clearTimeout(recoveryClock);
@@ -235,6 +238,15 @@ try {
         const attempt = next.attempt;
         if (request.attempt !== attempt.id || request.dealId !== attempt.dealId ||
           request.mode !== (attempt.daily ? 'daily' : 'campaign')) throw Error('Партия изменилась');
+        if (request.placement === 'coffee-break') {
+          if (!campaignAdsApproved() || request.kind !== 'rewarded' || !matchesCoffee(next, request.attempt, request.dealId))
+            throw Error('Кофе-пауза недоступна');
+          return;
+        }
+        if (request.placement === 'ads-break') {
+          if (!eligibleAdBreak(next, deal, Date.now(), launchedAt, campaignAdsApproved(), true)) throw Error('Пауза недоступна');
+          return;
+        }
         if (request.kind === 'interstitial') {
           const level = findDeal(request.dealId)?.campaignLevel;
           if (attempt.board.phase !== 'won' || level === undefined ||
@@ -247,7 +259,7 @@ try {
         }
       });
     },
-    commitShown: shown => store.mutate(next => applyFullscreenShown(next, shown)),
+    commitShown: shown => store.mutate(next => applyFullscreenShown(next, shown, findDeal(shown.dealId)?.campaignLevel)),
     async commit(receipt) {
       const placement = receipt.placement;
       let openedBonus = false, earnedContinue = false, grantedOfferCoins = 0;
@@ -264,14 +276,18 @@ try {
         return applied;
       });
       const amount = placement === 'continue' ? Number(earnedContinue) * BALANCE.continueMoves : placement === 'hint' || placement === 'undo'
-        ? BALANCE.rewardedCharges[placement] : isOfferPlacement(placement) ? grantedOfferCoins : Number(openedBonus);
+        ? BALANCE.rewardedCharges[placement] : isOfferPlacement(placement) || placement === 'coffee-break' ? grantedOfferCoins : Number(openedBonus);
       if (result === 'applied' && amount) telemetry.track('reward_granted', { attemptId: receipt.attempt, dealId: receipt.dealId, mode: receipt.mode, reason: `rewarded_${placement}`, amount });
       // Ack failure must not freeze spending/restart or replay the already durable grant.
       if (runtime.activity.getBlockReasons().every(r => r === 'modal')) { scene?.sync(); if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs(); }
       return result;
     },
     onStatus() { renderHud(); updateBanner(); if ((deal.campaignLevel ?? 0) > BALANCE.ads.interstitialAfterLevel) void ads.prepareInterstitial(); },
-    onEvent(event) { telemetry.track('ad_event', { format: event.kind, phase: event.phase }); },
+    onEvent(event) {
+      telemetry.track('ad_event', { format: event.kind, phase: event.phase });
+      if (event.phase === 'revenue' && campaignAdsApproved())
+        void store.mutate(next => recordAdRevenue(next, event.revenue)).catch(() => undefined);
+    },
   });
   if (ads.bridge) banner = new NativeBanner(ads.bridge, $('#banner-slot'));
   telemetry.track('session_start');
@@ -338,6 +354,7 @@ try {
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   const hasTransfer = new WeakMap<Save['attempt']['board'], boolean>();
   function renderHud() {
+    $('#coffee-open').hidden = !(ADS_CONTROLS_PREVIEW || campaignAdsApproved()) || (deal.campaignLevel ?? 0) < 16 || save.attempt.board.phase !== 'playing';
     const restore = $<HTMLButtonElement>('#restore-stock'), price = restoreQuote(save.attempt, deal);
     restore.hidden = !RECOVERY_PREVIEW || price === undefined;
     restore.disabled = price === undefined || save.profile.coins < price || saving;
@@ -639,6 +656,16 @@ try {
       };
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
+      if (boardCommand && campaignAdsApproved()) {
+        const attempt = save.attempt.id, revision = save.revision;
+        clearTimeout(adBreakTimer);
+        adBreakTimer = setTimeout(() => {
+          if (!alive || saving || serviceBusy || screen !== 'game' || runtime.activity.isBlocked() ||
+              save.attempt.id !== attempt || save.revision !== revision ||
+              !eligibleAdBreak(save, deal, Date.now(), launchedAt, campaignAdsApproved(), Boolean(scene?.idleForAd()))) return;
+          void ads.show({ kind: 'interstitial', placement: 'ads-break', mode: 'campaign', attempt, dealId: deal.id });
+        }, 1800);
+      }
       if (coveredWaste)
         message('Подходящая карта теперь под верхней картой сброса. Её можно вернуть на новом круге.');
       if (save.attempt.board.phase !== 'playing') {
@@ -827,7 +854,7 @@ try {
   async function replay() {
     if (serviceBusy || saving) return;
     serviceBusy = true; closeDialogs();
-    if (save.attempt.board.phase === 'won' && deal.campaignLevel !== undefined && interstitialEligible(save, deal.campaignLevel, 'campaign', Date.now(), launchedAt))
+    if (save.attempt.board.phase === 'won' && deal.campaignLevel !== undefined && !adFree(save, Date.now()) && interstitialEligible(save, deal.campaignLevel, 'campaign', Date.now(), launchedAt))
       await ads.show({ kind: 'interstitial', placement: 'continue', attempt: save.attempt.id, dealId: deal.id, mode: save.attempt.daily ? 'daily' : 'campaign' });
     serviceBusy = false;
     if (!alive) return;
@@ -986,7 +1013,7 @@ try {
     }
     closeDialogs(); serviceBusy = true; renderHome();
     // Only the deliberate transition from a won level can request an interstitial.
-    if (screen === 'game' && save.attempt.board.phase === 'won' && deal.campaignLevel !== undefined && interstitialEligible(save, deal.campaignLevel, 'campaign', Date.now(), launchedAt))
+    if (screen === 'game' && save.attempt.board.phase === 'won' && deal.campaignLevel !== undefined && !adFree(save, Date.now()) && interstitialEligible(save, deal.campaignLevel, 'campaign', Date.now(), launchedAt))
       await ads.show({ kind: 'interstitial', placement: 'continue', attempt: save.attempt.id, dealId: deal.id, mode: save.attempt.daily ? 'daily' : 'campaign' });
     const enter = async () => {
       removeForeground?.(); removeForeground = undefined;
@@ -1434,6 +1461,26 @@ try {
     $(`#video-${helper}`).addEventListener('click', () => { void rewarded(helper); }, domOptions);
   }
   scheduleRecoveryClock();
+  $('#coffee-open').addEventListener('click', () => {
+    if (!(ADS_CONTROLS_PREVIEW || campaignAdsApproved()) || saving || serviceBusy) return;
+    $('#coffee-copy').textContent = campaignAdsApproved() ? 'Добровольное видео. После просмотра получите 10 монет.' : 'Показы для кофе-паузы ждут проверки рекламного SDK.';
+    $<HTMLButtonElement>('#coffee-watch').disabled = !campaignAdsApproved() || !ads.status.rewarded || Boolean(save.attempt.coffeeRequested);
+    openDialog('#coffee-break');
+  }, domOptions);
+  $('#coffee-watch').addEventListener('click', async () => {
+    if (!campaignAdsApproved() || !ads.status.rewarded || saving || serviceBusy) return;
+    const source = deal, attempt = save.attempt.id;
+    serviceBusy = true;
+    try {
+      if (!await write(next => next.attempt.id === attempt && authorizeCoffee(next, source, campaignAdsApproved()))) return;
+      closeDialogs();
+      const result = await ads.show({ kind: 'rewarded', placement: 'coffee-break', mode: 'campaign', attempt, dealId: source.id });
+      await ads.recover();
+      await write(next => cancelCoffee(next, attempt, source.id));
+      if (!result.shown) message('Сейчас видео недоступно.', true);
+    } catch { message('Проверьте сохранение перед новым запросом.', true); }
+    finally { serviceBusy = false; renderHud(); }
+  }, domOptions);
   $('#restore-stock').addEventListener('click', async () => {
     if (!RECOVERY_PREVIEW || saving || serviceBusy) return;
     const source = deal, cost = restoreQuote(save.attempt, source);
@@ -1544,7 +1591,7 @@ try {
   renderHud(); renderHome();
   const cleanup = () => {
     if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
-    telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
+    telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
     clearTimeout(themeExpiry); worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };

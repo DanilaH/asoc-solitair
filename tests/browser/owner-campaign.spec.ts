@@ -108,3 +108,24 @@ test('restores a finite stock and applies a separate timed Unlimited grant throu
   await page.locator('#home-play').tap();
   await expect(page.locator('#moves')).toHaveText('∞');
 });
+
+test('shows the optional Coffee Break with ads gated and preserves the accepted moves', async ({ page }) => {
+  test.skip(preview !== 'ad-controls', 'Requires the gated P21 gameplay build.');
+  await page.setViewportSize({ width: 320, height: 568 });
+  const base = content8Wave[0];
+  const save = { ...fixture(15), attempt: freshSave(base, 'ad-controls').attempt, contentVersion: 8 };
+  save.settings.reducedMotion = true;
+  await seed(page, save);
+  await move(page, base, base.winningPath[0]);
+  const before = await read(page);
+  await page.locator('#wallet-open').tap();
+  await page.locator('#coffee-open').tap();
+  await expect(page.locator('#coffee-watch')).toBeDisabled();
+  await expect(page.locator('#coffee-copy')).toContainText('проверки рекламного SDK');
+  await page.waitForTimeout(550);
+  await page.locator('#coffee-break [data-close]').tap();
+  await page.reload();
+  await page.locator('#home-play').tap();
+  expect((await read(page)).attempt.board).toEqual(before.attempt.board);
+  expect((await read(page)).profile.coins).toEqual(before.profile.coins);
+});

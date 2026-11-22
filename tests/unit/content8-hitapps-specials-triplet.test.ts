@@ -6,6 +6,8 @@ import { packet } from '../../src/domain/engine';
 import { decodeRoute } from '../../src/content/campaign-v8-dealer';
 import { advance } from '../../tools/qa/gameplay-oracle';
 import { decodeSave } from '../../src/platform/storage';
+import { platformState } from '../../src/domain/services';
+import { campaignId } from '../../src/domain/progression';
 import type { Board, BoardCommand, Card, Deal } from '../../src/domain/types';
 
 /**
@@ -82,6 +84,9 @@ it('P10+P11+P12: source-like geometry, own rules, independent complete replay', 
 
 it('P10+P11+P12: invalid gesture, Undo and reload do not create phantom thaw/unbind', () => {
   let save = freshSave(deal, 'triplet-start');
+  // The fixture opens at campaign level 26; normal helper entitlement must
+  // reflect completed earlier lessons, as in the existing P10/P11 unit tests.
+  platformState(save).completedCampaign = Array.from({ length: 25 }, (_, i) => campaignId(i + 1));
   const invalid = { type: 'transfer', from: { kind: 'tableau', index: 4 }, to: { kind: 'foundation', index: 0 } } as const;
   const before = structuredClone(save);
   const refused = dispatch(save, invalid, deal);

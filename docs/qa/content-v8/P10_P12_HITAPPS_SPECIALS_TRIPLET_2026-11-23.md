@@ -23,6 +23,19 @@ Product P10 thaws one layer per completed category, P11 cuts a link when the nam
 
 Two independent *third-party walkthrough domains* label special original pictures as physically **two pieces across two cards**: GameAnswer.net November-2026 entries describe "(2-piece picture)" and SolitaireAssociations.net uses paired labels `YolkPuzzle1/YolkPuzzle2`, `SunPuzzle1/SunPuzzle2`. They are **THIRD_PARTY_WEB_UNVERIFIED**; this is evidence for a **visual research hypothesis** that the original puzzle halves are image fragments, not proof of native pair validation, packet direction or join animation. Our current P12 example uses **textual "Купол"/"Хвост"**, even though the game author's own labels call them halves; the original *art presentation* is not yet reproduced. Test the visual hypothesis against an original source frame before claiming parity or swapping product content. Other web pages call ordinary leaders "Puzzle Cards" and conflict with IL2CPP PuzzleTop/Bottom; do not promote them to a source rule.
 
+
+## Additional authenticated structural co-occurrence: Puzzle + Ordered
+
+The original Hitapps [AllCards/LevelBundle source audit](https://github.com/DanilaH/mini-games-kit/blob/research/hitapps-p08-bot-counterfactual-20261122/research/games/association-solitaire/2026-11-17-hitapps-allcards/README.md) establishes **4** packaged LevelBundle inputs with a separate `PuzzleCards` list, **19** with ordered word metadata, **2** containing *both*, across 226 authenticated map→bundle pairs. This proves that the original **content schema permits both modifier families in the same level**, not that they apply to the same category or that a particular remote player saw both.
+
+The added product test certifies a composite Deal with one ordered category and a separate paired-picture category alongside Frozen and Bound. It does **not** invent how native rank and picture adjacency interact within the *same* category. Reconstruct source type3/4 move semantics and exact ordered/puzzle interlocks only after original body/capture.
+
+## Original official marketing screenshot: variable lock denominator hypothesis
+
+The official Apple screenshot for *Solitaire Associations Journey* shows a red locked card visibly labelled **`0/1`** and several separate key-icon cues, in contrast with our existing **exactly three-key** lesson. Source IL2CPP `LockerData` and `PatternElement.keyCount` are already verified; the screenshot is **OFFICIAL_STORE_ASSET_OBSERVED**, showing at least a one-unit UI lock progress example, **not** native proof of unlock event, whether the numerator counts keys/cards, or current Android cohort. [Official Apple image](https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/3c/53/2d/3c532de2-1e34-2658-52b4-54e80925d3ca/2048x2732_US_4.png/640x0w.webp).
+
+Keep our three-key lesson as PRODUCT_ADAPTED; schedule versioned variable key-count and multiple-locker fixture/visual validation under P09 rather than treating three keys as universal source policy. Do not infer first unlock level or active server pattern from a screenshot.
+
 ## Source→product next work
 
 Preserve all inventory systems and approved scope. Capture real source native `ApplyFrozenCards`, `ApplyBoundCards`, on-action/reveal/Undo/cost and `DistributePuzzleCards`/type3/type4 move validation when authentic split ARM32+metadata are available. Compare old adapted P10/P11/P12 against original only after captures. Keep current adapted tests, versioned Deal IDs, old active/parked saves intact. If source still blocked, design independent original-art *two-piece* preview as `PRODUCT_ADAPTED` and measure player recognition, not semantic source exactness.

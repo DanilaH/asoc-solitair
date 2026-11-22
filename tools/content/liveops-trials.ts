@@ -77,13 +77,13 @@ export type GoldConfig = TrialEventWindow & { markerLimit: number; goal: number;
 
 export function goldFinalPlan(state: GoldTrial, config: GoldConfig, plan: Omit<GoldPlan, 'markerLimit'>, level: number): GoldTrial {
   if (!inWindow(config, plan.at, level) || !plan.attemptId || !plan.dealId || !positive(config.markerLimit) ||
-    plan.cardIds.length > config.markerLimit || plan.cardIds.some(id => !id) || new Set(plan.cardIds).size !== plan.cardIds.length ||
+    !plan.cardIds.length || plan.cardIds.length > config.markerLimit || plan.cardIds.some(id => !id) || new Set(plan.cardIds).size !== plan.cardIds.length ||
     state.plans.some(previous => previous.attemptId === plan.attemptId)) return state;
   return { ...state, plans: [...state.plans, { ...plan, markerLimit: config.markerLimit }] };
 }
 export function scoreGoldWin(state: GoldTrial, win: { attemptId: string; dealId: string; won: boolean; collected: readonly string[] }): GoldTrial {
   const plan = state.plans.find(entry => entry.attemptId === win.attemptId && entry.dealId === win.dealId);
-  if (!plan || !win.won || state.wins.includes(win.attemptId) || new Set(win.collected).size !== win.collected.length ||
+  if (!plan || !win.won || !win.collected.length || state.wins.includes(win.attemptId) || new Set(win.collected).size !== win.collected.length ||
     win.collected.some(item => !plan.cardIds.includes(item)) || win.collected.length > plan.markerLimit) return state;
   return { ...state, wins: [...state.wins, win.attemptId], progress: state.progress + win.collected.length };
 }

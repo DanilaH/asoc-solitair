@@ -1,3 +1,4 @@
+import { LIVES_PREVIEW } from '../domain/campaign-lives';
 import { RECOVERY_PREVIEW } from '../domain/campaign-recovery';
 import { RANDOM_JOKER_PREVIEW } from '../domain/random-joker';
 import { equalityPreviewDeal, isEqualityVariant } from './campaign-v8-equality';
@@ -46,7 +47,7 @@ const variants = new Map([
   { deal: content8FrozenDeal, enabled: import.meta.env?.VITE_CONTENT8_FROZEN === '1' },
   { deal: content8BoundDeal, enabled: import.meta.env?.VITE_CONTENT8_BOUND === '1' },
   { deal: content8PuzzleDeal, enabled: import.meta.env?.VITE_CONTENT8_SPECIAL === 'puzzle' },
-  { deal: content8GoldenDeal, enabled: import.meta.env?.VITE_CONTENT8_SPECIAL === 'gold' },
+  { deal: content8GoldenDeal, enabled: LIVES_PREVIEW || import.meta.env?.VITE_CONTENT8_SPECIAL === 'gold' },
   { deal: content8StarterDeal, enabled: import.meta.env?.VITE_CONTENT8_SPECIAL === 'starter' },
   { deal: content8ShuffleDeal, enabled: import.meta.env?.VITE_CONTENT8_SPECIAL === 'shuffle' },
 ].map(({ deal, enabled }) => {

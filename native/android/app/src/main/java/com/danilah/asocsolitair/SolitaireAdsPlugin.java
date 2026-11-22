@@ -98,7 +98,7 @@ public class SolitaireAdsPlugin extends Plugin {
         } catch (Exception ignored) { /* The SDK did not provide a usable paid impression. */ }
     }
     @PluginMethod public void status(PluginCall call) { handler.post(() -> {
-        JSObject result = new JSObject(); result.put("ready", ready); result.put("mode", BuildConfig.AD_MODE); result.put("campaignApproved", BuildConfig.CAMPAIGN_ADS_APPROVED);
+        JSObject result = new JSObject(); result.put("ready", ready); result.put("mode", BuildConfig.AD_MODE); result.put("campaignApproved", BuildConfig.CAMPAIGN_ADS_APPROVED); result.put("livesApproved", BuildConfig.CAMPAIGN_LIVES_ADS_APPROVED);
         result.put("banner", available("banner")); result.put("rewarded", available("rewarded")); result.put("interstitial", available("interstitial")); call.resolve(result);
     }); }
     @PluginMethod public void prepareInterstitial(PluginCall call) { handler.post(() -> {
@@ -134,7 +134,7 @@ public class SolitaireAdsPlugin extends Plugin {
             (placement.equals("win-double") || placement.equals("win-triple") || placement.equals("win-fivefold") ||
              placement.equals("win-flat") || placement.equals("shop-free-coins") || placement.equals("rewarded-theme"));
         boolean campaignExtra = BuildConfig.CAMPAIGN_ADS_APPROVED && mode.equals("campaign");
-        boolean rewardPlacement = (campaignExtra && placement.equals("coffee-break")) || testOffer || placement.equals("hint") || placement.equals("undo") || placement.equals("continue") ||
+        boolean rewardPlacement = (BuildConfig.CAMPAIGN_LIVES_ADS_APPROVED && mode.equals("campaign") && placement.equals("life-refill")) || (campaignExtra && placement.equals("coffee-break")) || testOffer || placement.equals("hint") || placement.equals("undo") || placement.equals("continue") ||
             (mode.equals("campaign") && (placement.equals("bonus-foundation") || placement.equals("bonus-tableau")));
         if ((!kind.equals("interstitial") && !kind.equals("rewarded")) ||
             !attempt.matches("[a-zA-Z0-9_-]{1,100}") || !dealId.matches("[a-zA-Z0-9_-]{1,100}") || (!mode.equals("campaign") && !mode.equals("daily")) ||

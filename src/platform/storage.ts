@@ -1,3 +1,5 @@
+import { validLavaRun } from '../domain/events/campaign-liveops';
+import { validCampaignLives } from '../domain/campaign-lives';
 import { validStoreProgress } from '../domain/commerce/storefront';
 import { validCampaignAds } from '../domain/campaign-advertising';
 import { Capacitor, registerPlugin } from '@capacitor/core';
@@ -152,6 +154,10 @@ export function decodeSave(raw: string, source: DealSource): Save {
   save.attempt.undo = save.attempt.undo.slice(-MAX_UNDO_HISTORY);
   if (save.attempt.daily && (save.attempt.daily.dayId !== deal.daily?.dayId || save.attempt.daily.contentVersion !== deal.daily?.contentVersion)) throw Error('Повреждена дата попытки');
   if (Boolean(save.attempt.daily) !== Boolean(deal.daily)) throw Error('Повреждён режим');
+  if (save.lavaRun !== undefined && !validLavaRun(save.lavaRun)) throw Error('Повреждена серия события');
+  if ((save.campaignLives !== undefined && !validCampaignLives(save.campaignLives)) ||
+      (save.attempt.lostLife !== undefined && (save.attempt.lostLife !== true || deal.daily || !deal.campaignLevel ||
+        !save.campaignLives))) throw Error('Повреждены жизни кампании');
   if ((save.campaignAds !== undefined && !validCampaignAds(save.campaignAds)) ||
       [save.attempt.adBreakShown, save.attempt.coffeeRequested].some(value => value !== undefined && (value !== true || deal.daily || !deal.campaignLevel)))
     throw Error('Повреждена история рекламы');

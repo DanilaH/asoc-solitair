@@ -763,7 +763,7 @@
       "order": 31,
       "title": "WeekendRace/Lava/Lives/GoldRush/prewarm",
       "workstream": "META",
-      "state": "NEEDS_OWNER",
+      "state": "NEEDS_DEVICE",
       "entryGate": "OWNER_ACTIVATION_GATE",
       "dependsOn": [
         "P26"

@@ -1,3 +1,4 @@
+import { matchesLifeShow, settleLifeVideo } from './campaign-lives';
 import { recordAdBreakShown, settleCoffee } from './campaign-advertising';
 import { campaignRewards } from './meta';
 import { isOfferPlacement, settleRewardOffer, type OfferPlacement } from './reward-offers';
@@ -8,7 +9,7 @@ import { recordCampaignOutcome } from './difficulty';
 import { bonusKindFor, bonusPlacements, openBonusSlot, type BonusPlacement } from './bonus-slots';
 import { requiresContinueProof, verifiesContinue, type ContinueProof } from './continuation';
 
-export type RewardPlacement = 'hint' | 'undo' | 'continue' | 'ads-break' | 'coffee-break' | BonusPlacement | OfferPlacement;
+export type RewardPlacement = 'hint' | 'undo' | 'continue' | 'ads-break' | 'coffee-break' | 'life-refill' | BonusPlacement | OfferPlacement;
 export interface EarnedReceipt { schema: 1; id: string; attempt: string; dealId: string; mode: 'campaign' | 'daily'; placement: RewardPlacement }
 export interface FullscreenShown extends EarnedReceipt {
   kind: 'rewarded' | 'interstitial';
@@ -23,9 +24,9 @@ export function parseReceipt(value: unknown): EarnedReceipt {
   if (r.schema !== 1 || typeof r.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.id) ||
     typeof r.attempt !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.attempt) ||
     typeof r.dealId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.dealId) ||
-    (!['hint', 'undo', 'continue', 'ads-break', 'coffee-break', ...Object.values(bonusPlacements)].includes(String(r.placement)) && !isOfferPlacement(String(r.placement))) ||
+    (!['hint', 'undo', 'continue', 'ads-break', 'coffee-break', 'life-refill', ...Object.values(bonusPlacements)].includes(String(r.placement)) && !isOfferPlacement(String(r.placement))) ||
     !['campaign', 'daily'].includes(String(r.mode)) ||
-    ((r.placement === 'ads-break' || r.placement === 'coffee-break' || bonusKindFor(String(r.placement)) || isOfferPlacement(String(r.placement))) && r.mode !== 'campaign')) throw Error('Invalid receipt');
+    ((r.placement === 'ads-break' || r.placement === 'coffee-break' || r.placement === 'life-refill' || bonusKindFor(String(r.placement)) || isOfferPlacement(String(r.placement))) && r.mode !== 'campaign')) throw Error('Invalid receipt');
   return { schema: 1, id: r.id, attempt: r.attempt, dealId: r.dealId, placement: r.placement as RewardPlacement, mode: r.mode as EarnedReceipt['mode'] };
 }
 export function parseFullscreenShown(value: unknown): FullscreenShown {
@@ -41,7 +42,8 @@ export function parseFullscreenShown(value: unknown): FullscreenShown {
 /** The native journal owns one verified show until this independent effect is durable. */
 export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?: number): 'applied' | 'already-applied' {
   const attempt = save.attempt;
-  if (shown.attempt !== attempt.id || shown.dealId !== attempt.dealId || shown.mode !== (attempt.daily ? 'daily' : 'campaign')) {
+  const verifiedLife = shown.placement === 'life-refill' && matchesLifeShow(save, shown.attempt, shown.dealId);
+  if (!verifiedLife && (shown.attempt !== attempt.id || shown.dealId !== attempt.dealId || shown.mode !== (attempt.daily ? 'daily' : 'campaign'))) {
     return 'already-applied';
   }
   const state = platformState(save);
@@ -60,6 +62,10 @@ export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?:
 export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
   deal?: Deal; onBonusUnlocked?: () => void; continueProof?: ContinueProof; offerNow?: number;
 }): 'applied' | 'already-applied' {
+  if (receipt.placement === 'life-refill') {
+    // The consumed request nonce is the durable exact-once authority, even if a late receipt is restamped.
+    return settleLifeVideo(save, receipt.attempt, receipt.dealId) ? 'applied' : 'already-applied';
+  }
   const state = platformState(save);
   if (state.receipts.includes(receipt.id)) return 'already-applied';
   if (receipt.placement === 'ads-break') return 'already-applied';

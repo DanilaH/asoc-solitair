@@ -1,3 +1,6 @@
+import { authorizeLifeVideo, cancelLifeVideo, LIVES_PREVIEW, LIVES_RULES, matchesLifeVideo, mayStartCampaignAttempt, refillCampaignLife, refreshCampaignLives } from './domain/campaign-lives';
+import { liveOpsDefinitions, liveOpsTitles, recordLiveOpsWin, type LiveOpsSource } from './domain/events/campaign-liveops';
+import { availableEvents, claimMilestone, eventKey } from './domain/events/ledger';
 import { createStorefront } from './platform/storefront';
 import { claimShopProgress, PASS_GOAL, PIGGY_LIMIT, productLabels, recordStoreClear, showProductGoods, storefrontView, STOREFRONT_PREVIEW } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
@@ -197,6 +200,10 @@ try {
   // Keep a bounded repaint tail instead of sleeping in that POST_RENDER turn.
   let repaintFrames = 0;
   let pendingWrites = 0;
+  let prewarmedLiveOps = '';
+  let blockedLifeLevel: number | undefined;
+  let retryLifeRestart = false;
+  const livesVideoApproved = () => ads.status.mode === 'live' && ads.status.livesApproved === true;
   let adBreakTimer: ReturnType<typeof setTimeout> | undefined;
   const campaignAdsApproved = () => ads.status.mode === 'live' && ads.status.campaignApproved === true;
   let recoveryClock: ReturnType<typeof setTimeout> | undefined;
@@ -232,6 +239,11 @@ try {
     activity: runtime.activity,
     async beforeShow(request) {
       await store.mutate(next => {
+        if (request.placement === 'life-refill') {
+          if (!LIVES_PREVIEW || !livesVideoApproved() || request.kind !== 'rewarded' || request.mode !== 'campaign' ||
+              !matchesLifeVideo(next, request.attempt, request.dealId)) throw Error('Восстановление жизни недоступно');
+          return;
+        }
         if (isOfferPlacement(request.placement)) {
           const pending = next.rewardOffers?.pending.find(entry => entry.id === request.attempt);
           if (!REWARD_OFFER_PREVIEW || request.kind !== 'rewarded' || request.mode !== 'campaign' ||
@@ -287,7 +299,7 @@ try {
       if (runtime.activity.getBlockReasons().every(r => r === 'modal')) { scene?.sync(); if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs(); }
       return result;
     },
-    onStatus() { renderHud(); updateBanner(); if ((deal.campaignLevel ?? 0) > BALANCE.ads.interstitialAfterLevel) void ads.prepareInterstitial(); },
+    onStatus() { renderLives(); renderHud(); updateBanner(); if ((deal.campaignLevel ?? 0) > BALANCE.ads.interstitialAfterLevel) void ads.prepareInterstitial(); },
     onEvent(event) {
       telemetry.track('ad_event', { format: event.kind, phase: event.phase });
       if (event.phase === 'revenue' && campaignAdsApproved())
@@ -596,17 +608,22 @@ try {
     }
     const progressBefore = save.attempt.streak.progress, movesBefore = save.attempt.board.movesLeft;
     let result: Result | undefined;
-    let started = false, finished = false, coveredWaste = false;
+    let started = false, finished = false, coveredWaste = false, blockedLives = false;
     try {
       presentingCommand = true;
       await write(next => {
         expireUnlimited(next, Date.now());
+        if (LIVES_PREVIEW && !next.attempt.daily && deal.campaignLevel &&
+            (cmd.type === 'restart' ? !mayStartCampaignAttempt(next, next.attempt, Date.now()) : Boolean(next.attempt.lostLife && next.attempt.board.phase === 'exhausted'))) {
+          blockedLives = true; return;
+        }
         const beforeBoard = next.attempt.board;
         result = dispatch(next, cmd, deal, localDay());
         if (STOREFRONT_PREVIEW && result.accepted && !result.next.attempt.daily &&
             (result.next.platform?.completedCampaign.length ?? 0) > (next.platform?.completedCampaign.length ?? 0)) {
           recordStoreClear(result.next, Date.now());
         }
+        if (LIVES_PREVIEW && result.accepted) recordLiveOpsWin(next, result.next, deal, Date.now());
         if (PICTURE_PREVIEW && result.accepted && result.next.attempt.board.phase === 'won') {
           recordPictureWin(next, result.next, deal, Date.now());
         }
@@ -638,6 +655,7 @@ try {
       message(store.needsRecovery ? 'Проверяем сохранение. Нажмите «Повторить сохранение».' : 'Не удалось сохранить ход. Попробуйте ещё раз.', true);
       scene?.cancel(); renderHud(); return false;
     } finally { presentingCommand = false; }
+    if (blockedLives) { retryLifeRestart = true; blockedLifeLevel = undefined; openLives(); return false; }
     if (!result) return false;
     if (result.accepted) {
       if (started) { telemetry.track('level_start'); if (save.attempt.daily) telemetry.track('daily_start'); }
@@ -874,6 +892,8 @@ try {
     } else await execute({ type: 'restart', attemptId: crypto.randomUUID() });
   }
   function renderHome() {
+    renderLives();
+    if (LIVES_PREVIEW && unlockedLevel(save) >= 16) prewarmLiveOps();
     $('#app').dataset.palette = cosmeticUnlocked(save, 'palette') ? save.settings.palette ?? 'green' : 'green';
     $('#app').dataset.back = cosmeticUnlocked(save, 'cardBack') ? save.settings.cardBack ?? 'classic' : 'classic';
     if (screen !== 'home' && !['#appearance','#calendar','#level-picker'].some(id => $<HTMLDialogElement>(id).open)) return;
@@ -1028,7 +1048,7 @@ try {
     const enter = async () => {
       removeForeground?.(); removeForeground = undefined;
       runtime.activity.setBlocked('level-transition', true);
-      let started = false, failed = false;
+      let started = false, failed = false, blockedLives = false;
       try {
         clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined;
         clearTimeout(outcomeTimer); clearTimeout(guideTimer); activeHint = undefined; setInspect(false);
@@ -1037,6 +1057,9 @@ try {
           const previousDeal = previous && findDeal(previous.dealId);
           const selected = redeal ? campaignRedeal(next.attempt) : selectCampaignDeal(next, target, previous);
           if (!selected || (redeal && (next.attempt.id !== redeal.attemptId || selected.id !== redeal.dealId))) return false;
+          if (LIVES_PREVIEW && !mayStartCampaignAttempt(next, previous, Date.now())) {
+            blockedLives = true; return false;
+          }
           if (next.attempt.daily) switchMode(next, 'campaign', previousDeal ?? selected, crypto.randomUUID());
           beginDeal(next, selected, crypto.randomUUID(), previousDeal, redeal ? undefined : equalityPreviewPolicy);
           return true;
@@ -1047,6 +1070,7 @@ try {
         }
       } catch { failed = true; if (!redeal) message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
       finally { serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome(); }
+      if (blockedLives) { blockedLifeLevel = level; retryLifeRestart = false; openLives(); return; }
       if (redeal && !started) {
         if (save.attempt.board.phase === 'playing') showGame();
         else {
@@ -1471,6 +1495,110 @@ try {
     $(`#video-${helper}`).addEventListener('click', () => { void rewarded(helper); }, domOptions);
   }
   scheduleRecoveryClock();
+  function renderLives() {
+    const data = save.campaignLives;
+    const count = data?.remaining ?? LIVES_RULES.max;
+    const home = $('#campaign-lives-open');
+    home.hidden = !LIVES_PREVIEW;
+    $('#campaign-liveops-open').hidden = !LIVES_PREVIEW;
+    home.textContent = `Жизни · ${count} из ${LIVES_RULES.max}`;
+    $('#campaign-lives-status').textContent = count ? `Жизни · ${count} из ${LIVES_RULES.max}` : 'Для новой партии нужна жизнь.';
+    const seconds = data?.refillAt !== undefined ? Math.max(0, Math.ceil((data.refillAt - Date.now()) / 1000)) : undefined;
+    $('#campaign-lives-timer').textContent = seconds === undefined ? 'Жизни восстановлены' :
+      `Следующая через ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+    $<HTMLButtonElement>('#campaign-life-coin').disabled = saving || serviceBusy || count >= LIVES_RULES.max || save.profile.coins < LIVES_RULES.coinPrice;
+    const credit = $<HTMLButtonElement>('#campaign-life-credit');
+    credit.hidden = !data?.earnedCredits;
+    credit.disabled = count >= LIVES_RULES.max || saving || serviceBusy;
+    $<HTMLButtonElement>('#campaign-life-video').disabled = !livesVideoApproved() || !ads.status.rewarded || count >= LIVES_RULES.max ||
+      Boolean(data?.pending) || saving || serviceBusy || Boolean(save.attempt.daily);
+    $('#campaign-life-retry').hidden = !count || (!retryLifeRestart && blockedLifeLevel === undefined);
+  }
+  function openLives() {
+    if (!LIVES_PREVIEW) return;
+    renderLives(); openDialog('#campaign-lives');
+  }
+  const lifeTick = LIVES_PREVIEW ? setInterval(() => {
+    if (!alive) return;
+    const at = save.campaignLives?.refillAt;
+    if (!saving && at !== undefined && Date.now() >= at) {
+      void write(next => refreshCampaignLives(next, Date.now())).catch(() => undefined);
+    } else if ($<HTMLDialogElement>('#campaign-lives').open) renderLives();
+  }, 1000) : undefined;
+  $('#campaign-lives-open').addEventListener('click', openLives, domOptions);
+  for (const [selector, method] of [['#campaign-life-coin', 'coins'], ['#campaign-life-credit', 'credit']] as const) {
+    $(selector).addEventListener('click', async () => {
+      if (!LIVES_PREVIEW || saving || serviceBusy) return;
+      const revision = save.revision;
+      try { await write(next => refillCampaignLife(next, { revision, method, now: Date.now() })); renderLives(); }
+      catch { message('Не удалось сохранить жизнь.', true); }
+    }, domOptions);
+  }
+  $('#campaign-life-retry').addEventListener('click', () => {
+    if (!LIVES_PREVIEW || saving || serviceBusy) return;
+    const level = blockedLifeLevel, restart = retryLifeRestart;
+    blockedLifeLevel = undefined; retryLifeRestart = false;
+    closeDialogs();
+    if (restart) void replay(); else if (level !== undefined) void openLevel(level, true);
+  }, domOptions);
+  $('#campaign-life-video').addEventListener('click', async () => {
+    if (!LIVES_PREVIEW || !livesVideoApproved() || saving || serviceBusy) return;
+    const id = crypto.randomUUID(), source = deal.id;
+    serviceBusy = true;
+    try {
+      if (!await write(next => authorizeLifeVideo(next, Date.now(), id, livesVideoApproved()))) return;
+      closeDialogs();
+      await ads.show({ kind: 'rewarded', mode: 'campaign', placement: 'life-refill', attempt: id, dealId: source });
+      await ads.recover();
+      await write(next => cancelLifeVideo(next, id));
+    } catch { message('Не удалось подтвердить восстановление жизни.', true); }
+    finally { serviceBusy = false; if (alive) openLives(); }
+  }, domOptions);
+  function paintLiveOps() {
+    const progress = availableEvents(save), list = $('#campaign-liveops-list');
+    list.replaceChildren();
+    const definitions = new Map(liveOpsDefinitions(Date.now()).map(def => [eventKey(def), def]));
+    for (const record of save.events?.events ?? []) {
+      if (!Object.hasOwn(liveOpsTitles, record.definition.sourceFeatureId)) continue;
+      const key = eventKey(record.definition);
+      if (progress.some(item => item.key === key && item.ready.length)) definitions.set(key, record.definition);
+    }
+    for (const [key, def] of definitions) {
+      const row = document.createElement('section'), title = document.createElement('h3'), detail = document.createElement('p');
+      const state = progress.find(item => item.key === key);
+      row.className = 'helper-offer'; row.dataset.event = def.sourceFeatureId;
+      title.textContent = liveOpsTitles[def.sourceFeatureId as LiveOpsSource];
+      detail.textContent = `${state?.progress ?? 0} / ${def.milestones.at(-1)!.threshold}`;
+      row.append(title, detail);
+      for (const target of state?.ready ?? []) {
+        const claim = document.createElement('button'); claim.className = 'secondary';
+        claim.dataset.claim = target.id; claim.dataset.eventKey = key;
+        claim.textContent = `Забрать +${target.reward.coins} монет`; row.append(claim);
+      }
+      list.append(row);
+    }
+  }
+  function prewarmLiveOps() {
+    const now = Date.now();
+    const occurrence = liveOpsDefinitions(now).find(def => def.schedule.start <= now && now < def.schedule.end)?.id;
+    if (!occurrence || prewarmedLiveOps === occurrence) return;
+    prewarmedLiveOps = occurrence;
+    for (const path of ['art/generated/cycle.webp', 'art/generated/coin.webp']) {
+      const image = new Image(); image.src = path;
+    }
+  }
+  $('#campaign-liveops-open').addEventListener('click', () => {
+    if (!LIVES_PREVIEW) return;
+    prewarmLiveOps();
+    paintLiveOps(); openDialog('#campaign-liveops');
+  }, domOptions);
+  $('#campaign-liveops-list').addEventListener('click', async event => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button');
+    if (!LIVES_PREVIEW || !button?.dataset.claim || !button.dataset.eventKey || saving || serviceBusy) return;
+    const { claim, eventKey: key } = button.dataset;
+    try { await write(next => claimMilestone(next, key, claim)); paintLiveOps(); }
+    catch { message('Не удалось сохранить награду события.', true); }
+  }, domOptions);
   function renderCampaignShop() {
     const layout = storefrontView(save, Date.now(), storefront.accountId, storefront.context);
     const list = $('#campaign-shop-catalog');
@@ -1680,7 +1808,7 @@ try {
   renderHud(); renderHome();
   const cleanup = () => {
     if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
-    telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
+    telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearInterval(lifeTick); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
     clearTimeout(themeExpiry); worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };

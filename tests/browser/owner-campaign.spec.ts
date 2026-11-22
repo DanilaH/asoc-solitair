@@ -151,3 +151,28 @@ test('updates the gallery of shop families and progress from a real first win wi
   await page.waitForTimeout(700);
   expect((await read(page)).commerce).toBeUndefined();
 });
+
+test('blocks an ordinary replay at zero lives and resumes after a saved coin refill', async ({ page }) => {
+  test.skip(preview !== 'lives', 'Requires the gated P31 gameplay build.');
+  await page.setViewportSize({ width: 320, height: 568 });
+  const base = content8Wave[0], now = Date.now();
+  const save = { ...fixture(15), attempt: freshSave(base, 'final-loss').attempt, contentVersion: 8,
+    campaignLives: { version: 1 as const, remaining: 1, observedAt: now, refillAt: now + 300_000, earnedCredits: 0 } };
+  save.profile.coins = 150;
+  save.attempt.board = { ...save.attempt.board, phase: 'exhausted', movesLeft: 0 };
+  save.settings.reducedMotion = true;
+  await seed(page, save);
+  await page.locator('#replay').tap();
+  await expect(page.locator('#campaign-lives-status')).toHaveText('Для новой партии нужна жизнь.');
+  expect((await read(page)).attempt.id).toBe('final-loss');
+  expect((await read(page)).attempt.lostLife).toBe(true);
+  await expect(page.locator('#campaign-life-video')).toBeDisabled();
+  await page.waitForTimeout(650);
+  await page.locator('#campaign-life-coin').tap();
+  await expect(page.locator('#campaign-lives-status')).toHaveText('Жизни · 1 из 3');
+  expect((await read(page)).profile.coins).toBe(100);
+  await page.locator('#campaign-life-retry').tap();
+  await expect.poll(async () => (await read(page)).attempt.board.phase).toBe('playing');
+  expect((await read(page)).attempt.id).not.toBe('final-loss');
+  expect((await read(page)).campaignLives?.remaining).toBe(1);
+});

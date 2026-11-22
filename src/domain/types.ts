@@ -1,3 +1,5 @@
+import type { LavaRun } from './events/campaign-liveops';
+import type { CampaignLives } from './campaign-lives';
 import type { StoreProgress } from './commerce/storefront';
 import type { CampaignAdsState } from './campaign-advertising';
 import type { DailyTaskJournal } from './events/daily-tasks';
@@ -69,6 +71,7 @@ export interface Attempt {
   sourceDifficulty?: CampaignOutcome;
   jokerUsed?: boolean;
   randomJokerUsed?: true;
+  lostLife?: true;
   adBreakShown?: true;
   coffeeRequested?: true;
   stockRestores?: number;
@@ -112,6 +115,8 @@ export interface Save {
   sourceDifficultyHistory?: CampaignOutcome[];
   rewardOffers?: RewardOffers;
   campaignAds?: CampaignAdsState;
+  campaignLives?: CampaignLives;
+  lavaRun?: LavaRun;
   commerce?: CommerceJournal;
   commerceAccount?: string;
   storeProgress?: StoreProgress;

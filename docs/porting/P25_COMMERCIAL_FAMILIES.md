@@ -1,5 +1,7 @@
 # P25 · Все 15 семейств коммерческих предложений
 
+**22.11.2026 · OWNER_APPROVED, вариант А:** [единое ТЗ по семи решениям](OWNER_SEVEN_DECISIONS_IMPLEMENTATION_TZ_2026-11-22.md) · [дословное решение владельца](OWNER_DECISIONS_2026-11-22.md). Полностью реализовать **все 15 original source-family**, 41 AZUR assortment concept и отдельно зарегистрировать 10 публичных Unico iOS названий (Hard/Very Hard, четыре Fail Offer, Advantage, Starter, No Ads, Coins), не объявляя названия самостоятельными нативно доказанными системами. **Платные предложения включать ПОЭТАПНО** после legal provider/KYC/payout P24, цены/выплаты и P23 verified receipt, возвратов/revoke/restore, баланса и UX. Полнота внедрения не урезается до магазина и No Ads. Никаких фактических покупок сейчас нет; mock SKU/offline trial не означает активный checkout. Релизная цена, длительность права, живые сегменты/триггеры пока SOURCE_UNKNOWN и/или OWNER_NUMERIC_GAP; политику полного охвата повторно не обсуждать.
+
 `tools/content/commercial-offer-trial.ts` сверяет 15 независимых семейств [с E3](../qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md) и использует офлайн-каталог P22. Ни одно предложение не доступно для оплаты.
 
 | Семейство | Офлайн-контракт |

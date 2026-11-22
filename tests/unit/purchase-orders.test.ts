@@ -1,8 +1,10 @@
 import { expect, it, vi } from 'vitest';
 import type { StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { introDeal } from '../../src/content/intro';
-import { freshSave } from '../../src/domain/engine';
+import { recoveryDeal } from '../../src/content/campaign';
+import { applyBoard, freshSave } from '../../src/domain/engine';
 import { PRODUCTS } from '../../src/domain/commerce/catalog';
+import { expireUnlimited, quotePurchasedUnlimited, usePurchasedUnlimited } from '../../src/domain/campaign-recovery';
 import { activePurchaseGoods, PurchaseReconciler, type PurchaseAuthority, type PurchaseQuery,
   type VerifiedPurchase } from '../../src/domain/commerce/orders';
 import { SaveStore, decodeSave } from '../../src/platform/storage';
@@ -20,17 +22,57 @@ const proof: VerifiedPurchase = {
   proofRef: 'verified-event-1', purchaseId: 'purchase-1',
 };
 
-function fixture() {
+function fixture(deal = introDeal) {
   let value: string | null = null;
   const disk: StorageAdapter = { getItem: async () => value, setItem: async (_key, json) => { value = json; }, removeItem: async () => { value = null; } };
   const open = async () => {
-    const store = new SaveStore(disk, introDeal, () => freshSave(introDeal, 'existing-game'));
+    const store = new SaveStore(disk, deal, () => freshSave(deal, 'existing-game'));
     await store.open();
     return store;
   };
   const api = { verify: vi.fn<PurchaseAuthority['verify']>(async () => proof), acknowledge: vi.fn<PurchaseAuthority['acknowledge']>(async () => {}) };
   return { disk, open, api, raw: () => value! };
 }
+
+it('applies only an acknowledged timed purchase to the same campaign attempt and restores spent budget on refund', async () => {
+  const deal = { ...recoveryDeal, id: 'purchase-recovery-fixture' };
+  const fx = fixture(deal), store = await fx.open();
+  const product = PRODUCTS.find(item => item.family === 'unlimited_moves_variants')!;
+  const binding = { ...base, sku: product.sku, storeProductId: 'timed' };
+  const order = { ...proof, storeProductId: binding.storeProductId };
+  const purchase = { invoiceId: input.invoiceId, sku: product.sku };
+  const app = new PurchaseReconciler(store, fx.api, { ...session, bindingFor: sku => sku === product.sku ? binding : undefined });
+  const now = 300, account = session.accountId;
+  await store.mutate(save => { save.commerceAccount = account; });
+  fx.api.verify.mockResolvedValue(order);
+  fx.api.acknowledge.mockRejectedValueOnce(Error('network interrupted'));
+  expect(await app.check(purchase)).toBe('recorded');
+  expect(quotePurchasedUnlimited(store.state, deal, account, now)).toBeUndefined();
+  expect(await app.check(purchase)).toBe('acknowledged');
+  expect(quotePurchasedUnlimited(store.state, deal, 'another-account', now)).toBeUndefined();
+  const quote = quotePurchasedUnlimited(store.state, deal, account, now)!;
+  expect(quote.until).toBe(order.effectiveAt + 20 * 60_000);
+  const grant = { ...quote, id: 'verified-order-unlimited' };
+  const finiteBudget = store.state.attempt.board.movesLeft!;
+  expect(await store.mutate(save => usePurchasedUnlimited(save, deal, { ...grant, attemptId: 'stale' }, account, now))).toBe(false);
+  expect(await store.mutate(save => usePurchasedUnlimited(save, deal, grant, account, now))).toBe(true);
+  expect(await store.mutate(save => usePurchasedUnlimited(save, deal, grant, account, now))).toBe(false);
+  await store.mutate(save => {
+    save.attempt.undo.push(structuredClone(save.attempt.board));
+    const moved = applyBoard(save.attempt.board, deal.winningPath[0], deal);
+    if (typeof moved === 'string') throw Error(moved);
+    save.attempt.board = moved.board;
+  });
+  expect((await fx.open()).state.attempt.board).toMatchObject({ movesLeft: null, retainedMoves: finiteBudget - 1 });
+  fx.api.verify.mockResolvedValue({ ...order, sequence: order.sequence + 1, proofRef: 'verified-refund', status: 'refunded' });
+  await app.check(purchase);
+  expect(await store.mutate(save => expireUnlimited(save, now + 1))).toBe(true);
+  const reopened = await fx.open();
+  expect(reopened.state.attempt.board.movesLeft).toBe(finiteBudget - 1);
+  expect(reopened.state.attempt.undo[0].movesLeft).toBe(finiteBudget);
+  expect(reopened.state.attempt.unlimited).toMatchObject({ expired: true, purchaseRef: quote.purchaseRef });
+  expect(quotePurchasedUnlimited(reopened.state, deal, account, now + 1)).toBeUndefined();
+});
 
 it('writes an exact paid order and a single grant to SaveStore before provider acknowledgement', async () => {
   const fx = fixture(), store = await fx.open();

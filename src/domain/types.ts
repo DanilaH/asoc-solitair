@@ -10,6 +10,7 @@ import type { RewardOffers } from './reward-offers';
 
 export const RULES_VERSION = 3;
 export const CONTENT8_PREVIEW = import.meta.env?.VITE_CONTENT8_PREVIEW === '1';
+export const OWNER_ACCEPTANCE_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'acceptance';
 export const CONTENT_VERSION = CONTENT8_PREVIEW ? 8 : 7;
 export const BALANCE_VERSION = 3;
 export interface Card {
@@ -76,7 +77,7 @@ export interface Attempt {
   coffeeRequested?: true;
   stockRestores?: number;
   revive?: { version: 1; channel: 'coins' | 'earned'; moves: number; price: number };
-  unlimited?: { version: 1; id: string; issuedAt: number; until?: number; expired?: true };
+  unlimited?: { version: 1; id: string; issuedAt: number; until?: number; expired?: true; purchaseRef?: string };
   shuffleUsed?: true;
   verifiedTaskHints?: number;
   lessonHint?: BoardCommand;

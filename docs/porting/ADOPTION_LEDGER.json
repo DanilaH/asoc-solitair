@@ -661,8 +661,8 @@
     {
       "id": "azur-iap-unlimited-moves-tiers",
       "status": "BLOCKED",
-      "currentImplementation": "No purchasable Unlimited Moves/+ /++ tiers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Reconstruct true entitlement/expiry, billing and SaveStore restore before pricing or SDK calls E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "Три собственных срока показаны в витрине C8. Совместная приёмка P19/P25/P31 связывает подтверждённое право текущего аккаунта с лимитом сертифицированной попытки. SaveStore восстанавливает оставшийся конечный бюджет и Undo после истечения срока или подтверждённого возврата. Оплата отключена до авторизации продавца и SKU с ценой. См. docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "nextAction": "Подтвердить условия оригинальных Unlimited Moves/+ /++, допустимый SDK и мерчанта. Проверить платёж, возврат и восстановление на физическом устройстве. См. docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
     },

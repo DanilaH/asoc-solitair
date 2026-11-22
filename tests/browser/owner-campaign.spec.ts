@@ -176,3 +176,35 @@ test('blocks an ordinary replay at zero lives and resumes after a saved coin ref
   expect((await read(page)).attempt.id).not.toBe('final-loss');
   expect((await read(page)).campaignLives?.remaining).toBe(1);
 });
+
+test('keeps life refill, finite recovery and a closed storefront in the same ordinary campaign', async ({ page }) => {
+  test.skip(preview !== 'acceptance', 'Requires the combined P19/P25/P31 acceptance build.');
+  await page.setViewportSize({ width: 320, height: 568 });
+  const { recoveryDeal } = await import('../../src/content/campaign');
+  const now = Date.now();
+  const save = { ...fixture(15), attempt: freshSave(recoveryDeal, 'acceptance-loss').attempt, contentVersion: 8,
+    campaignLives: { version: 1 as const, remaining: 1, observedAt: now, refillAt: now + 300_000, earnedCredits: 0 } };
+  save.profile.coins = 150;
+  save.settings.reducedMotion = true;
+  save.attempt.board = { ...save.attempt.board, phase: 'exhausted', movesLeft: 0 };
+  await seed(page, save);
+  await page.locator('#replay').tap();
+  await expect(page.locator('#campaign-lives-status')).toHaveText('Для новой партии нужна жизнь.');
+  await page.waitForTimeout(550);
+  await page.locator('#campaign-life-coin').tap();
+  await page.locator('#campaign-life-retry').tap();
+  await expect.poll(async () => (await read(page)).attempt.board.phase).toBe('playing');
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', recoveryDeal.id);
+  await page.locator('#wallet-open').tap();
+  await expect(page.locator('#unlimited-preview')).toBeHidden();
+  await page.locator('#campaign-store-open').tap();
+  await expect(page.locator('#campaign-shop-status')).toHaveText('Покупки пока недоступны.');
+  await expect(page.locator('#campaign-shop-restore')).toBeDisabled();
+  await page.waitForTimeout(750);
+  const resumed = await read(page);
+  expect(resumed.campaignLives?.remaining).toBe(1);
+  expect(resumed.profile.coins).toBe(100);
+  expect(resumed.attempt.board.recyclesLeft).toBe(recoveryDeal.initial.recyclesLeft);
+  expect(resumed.attempt.board.movesLeft).toBe(recoveryDeal.initial.movesLeft);
+  expect(resumed.commerce).toBeUndefined();
+});

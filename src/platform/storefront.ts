@@ -3,7 +3,9 @@ import { CHECKOUT_PRODUCT_INDEX } from '../domain/commerce/catalog';
 import { PurchaseReconciler, type CheckoutBinding, type PurchaseAuthority, type PurchaseOrder } from '../domain/commerce/orders';
 import { rewardOfferState } from '../domain/reward-offers';
 import { purchaseTaskSignal, recordTaskSignal } from '../domain/events/daily-tasks';
+import { expireUnlimited } from '../domain/campaign-recovery';
 import type { CommercialContext } from '../domain/commerce/offer-policy';
+import type { Save } from '../domain/types';
 import type { SaveStore } from './storage';
 
 interface MerchantStatus { authorized: boolean; provider: string; appId: string; accountId: string; products: CheckoutBinding[]; context?: Partial<Pick<CommercialContext,'firstPlayedAt'|'birthdayOptInWindow'|'scheduledCampaign'|'rotation'>> }
@@ -23,7 +25,17 @@ export function createStorefront(store: SaveStore) {
   const bindingFor = (sku: string) => merchant?.products.find(binding => binding.sku === sku &&
     binding.provider === merchant?.provider && binding.appId === merchant.appId && CHECKOUT_PRODUCT_INDEX.has(sku) &&
     /^[A-Z]{3}$/.test(binding.price?.currency ?? '') && Number.isSafeInteger(binding.price.minorUnits) && binding.price.minorUnits > 0);
-  const reconciler = () => bridge && merchant ? new PurchaseReconciler(store, { verify: query => bridge.verify(query), acknowledge: (order, purchaseType) => bridge.acknowledge({ order, purchaseType }) }, { accountId: merchant.accountId, bindingFor }) : undefined;
+  const commerceStore = {
+    get state() { return store.state; },
+    mutate<T>(change: (next: Save) => T) {
+      return store.mutate(next => {
+        const result = change(next);
+        expireUnlimited(next, Date.now());
+        return result;
+      });
+    },
+  };
+  const reconciler = () => bridge && merchant ? new PurchaseReconciler(commerceStore, { verify: query => bridge.verify(query), acknowledge: (order, purchaseType) => bridge.acknowledge({ order, purchaseType }) }, { accountId: merchant.accountId, bindingFor }) : undefined;
   async function credit() {
     if (!merchant) return;
     const { provider, accountId } = merchant;
@@ -43,7 +55,10 @@ export function createStorefront(store: SaveStore) {
     async refresh() {
       const status = await bridge?.status().catch(() => undefined);
       merchant = status?.authorized === true && Array.isArray(status.products) && status.accountId && status.provider && status.appId ? status : undefined;
-      await store.mutate(next => { if (merchant) next.commerceAccount = merchant.accountId; else delete next.commerceAccount; });
+      await commerceStore.mutate(next => {
+        if (merchant) next.commerceAccount = merchant.accountId;
+        else delete next.commerceAccount;
+      });
       await reconciler()?.recover();
       await credit();
     },

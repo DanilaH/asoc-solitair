@@ -63,7 +63,7 @@ test('painted tutorial follows accepted moves, yields to reading and returns aft
   await page.locator('#menu').tap(); await page.locator('#settings-done').tap();
   await visibleHand(page, reference);
   const rect = (await page.locator('#game-root').boundingBox())!, f = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
-  const g = layout(before.attempt.board, deal, f.height, before.settings.deckSide, before.settings.deckPosition);
+  const g = layout(before.attempt.board, deal, f, before.settings.deckSide, before.settings.deckPosition);
   const cmd = deal.winningPath[0]; if (cmd.type !== 'transfer') throw Error('First teaching action changed');
   const id = cmd.from.kind === 'waste' ? before.attempt.board.waste.at(-1) : packet(before.attempt.board, cmd.from.index, deal).at(-1);
   const from = g.poses.find(p => p.id === id)!, to = g.targets.find(t => t.location.kind === cmd.to.kind && t.location.index === cmd.to.index)!;

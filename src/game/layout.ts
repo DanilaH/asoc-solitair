@@ -17,7 +17,7 @@ export function cardMetrics(deal: Deal) {
 export function boardFrame(width: number, height: number, deckPosition: 'top' | 'bottom' = 'top', deal?: Deal) {
   const hasDeck = !deal || Boolean(deal.initial.stock.length || deal.initial.waste.length);
   const unit = Math.min(width / WIDTH, height / (deckPosition === 'bottom' && hasDeck ? 680 : 650));
-  return { unit, offsetX: 0, height: height / unit };
+  return { unit, offsetX: 0, width: width / unit, height: height / unit };
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
 export interface Target { location: Location; x: number; y: number; width: number; height: number }
@@ -50,37 +50,39 @@ export function dragTarget(targets: Target[], finger: { x: number; y: number }, 
   const near = dropTarget(targets, finger.x, finger.y, tolerance);
   return near && valid(near) ? near : directCard ?? directFinger ?? near;
 }
-export function layout(board: Board, deal: Deal, height: number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; offers: BonusTarget[]; stock: { x: number; y: number; thickness: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
+export function layout(board: Board, deal: Deal, frame: Pick<ReturnType<typeof boardFrame>, 'width' | 'height'> | number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; offers: BonusTarget[]; stock: { x: number; y: number; thickness: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
   const poses: Pose[] = [], targets: Target[] = [], offers: BonusTarget[] = [];
   let joker: { x: number; y: number; depth: number } | undefined;
   const { width: cardW, height: cardH } = cardMetrics(deal);
-  // A short row stays together at the left edge rather than stretching to fill
-  // the table. The dense four-column row retains its established safe spacing.
+  const { width, height } = typeof frame === 'number' ? { width: WIDTH, height: frame } : frame;
   const columns = columnCount(deal);
-  const gap = columns >= 4 ? (WIDTH - cardW * columns) / (columns - 1) : 14;
-  const center = (index: number) => cardW / 2 + index * (cardW + gap);
+  const deckGap = columns >= 4 ? (WIDTH - cardW * columns) / (columns - 1) : 14;
+  const center = (kind: BonusKind, index: number) => {
+    const last = slotCount(deal, kind) - 1;
+    return last > 0 ? cardW / 2 + index * (width - cardW) / last : width / 2;
+  };
   const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
   const bottom = deckPosition === 'bottom' && hasDeck;
   const left = deckSide === 'left' && hasDeck;
   const deckY = bottom ? height - cardH / 2 - BOTTOM_DECK_MARGIN : cardH / 2 + 20;
   const originalStock = deal.initial.stock.length + deal.initial.waste.length;
   const thickness = board.stock.length > 1 ? 3 + 15 * Math.min(1, (board.stock.length - 1) / Math.max(1, originalStock - 1)) : 0;
-  const stock = { x: left ? cardW / 2 : WIDTH - cardW / 2, y: deckY - thickness, thickness };
+  const stock = { x: left ? cardW / 2 : width - cardW / 2, y: deckY - thickness, thickness };
   const fanStep = 32;
   // The first card lands beside the stock; further draws open away from it.
   // Preserve earlier positions while the initial three-card fan is opening.
   const fanWidth = Math.max(0, Math.min(3, board.waste.length) - 1) * fanStep;
-  const waste = { x: stock.x + (left ? 1 : -1) * (cardW + gap + fanWidth), y: deckY };
+  const waste = { x: stock.x + (left ? 1 : -1) * (cardW + deckGap + fanWidth), y: deckY };
   const top = cardH / 2 + (bottom ? 30 : hasDeck ? cardH + 54 : 185);
   board.foundations.forEach((ids, index) => {
-    const x = center(index);
+    const x = center('foundation', index);
     targets.push({ location: { kind: 'foundation', index }, x, y: top, width: cardW + 8, height: cardH + 8 });
     ids.forEach((id, i) => poses.push({ id, x, y: top, depth: 20 + i, faceUp: true }));
   });
   const tableauBottom = bottom ? stock.y - cardH / 2 - 28 : height - 12;
   const tableauY = Math.min(top + cardH + (bottom ? 30 : 44), tableauBottom - cardH / 2);
   board.tableau.forEach((_, index) => {
-    const x = center(index);
+    const x = center('tableau', index);
     let y = tableauY;
     const entries: (string | null)[] = [...tableauPresentation(board, deal, index)];
     if (board.joker?.column === index) entries.splice(board.joker.boundary, 0, null);
@@ -103,7 +105,7 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
   for (const kind of bonusKinds) {
     const offer = bonusOffer(deal, kind);
     if (offer && pilesFor(board, kind).length === offer.index) offers.push({
-      kind, x: center(offer.index), y: kind === 'foundation' ? top : tableauY, width: cardW,
+      kind, x: center(kind, offer.index), y: kind === 'foundation' ? top : tableauY, width: cardW,
     });
   }
   return { poses, targets, offers, stock, waste, joker };

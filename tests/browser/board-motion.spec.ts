@@ -29,7 +29,7 @@ async function seed(page: Page, reduced = false) {
   await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), save);
   await page.reload(); await page.locator('#app[data-ready=true]').waitFor(); await page.locator('#home-play').tap(); await page.waitForTimeout(350);
   const r = (await page.locator('#game-root').boundingBox())!, f = boardFrame(r.width, r.height, save.settings.deckPosition, deal);
-  const g = layout(save.attempt.board, deal, f.height, save.settings.deckSide, save.settings.deckPosition);
+  const g = layout(save.attempt.board, deal, f, save.settings.deckSide, save.settings.deckPosition);
   const point = (p: { x: number; y: number }) => ({ x: r.x + f.offsetX + p.x * f.unit, y: r.y + p.y * f.unit });
   const hint = resolveHint(save.attempt.board, deal); if (hint.status !== 'SOLVED' || hint.action.type !== 'transfer') throw Error('Expected a verified transfer hint');
   const action = hint.action;

@@ -14,7 +14,7 @@ async function enter(page: Page, reduced: boolean) {
 }
 async function move(page: Page, cmd: BoardCommand) {
   const save = await read(page), rect = (await page.locator('#game-root').boundingBox())!, frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, deal);
-  const g = layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
+  const g = layout(save.attempt.board, deal, frame, save.settings.deckSide, save.settings.deckPosition);
   const tap = (p: { x: number; y: number }) => page.touchscreen.tap(rect.x + frame.offsetX + p.x * frame.unit, rect.y + p.y * frame.unit);
   if (cmd.type === 'transfer') {
     const id = cmd.from.kind === 'waste' ? save.attempt.board.waste.at(-1) : packet(save.attempt.board, cmd.from.index, deal).at(-1);
@@ -54,7 +54,7 @@ test('touch drag survives entry and unchanged backing-size notifications', async
   for (const [index, cmd] of deal.winningPath.slice(0, 2).entries()) {
     if (cmd.type !== 'transfer') throw Error('Expected teaching transfers');
     const before = await read(page), rect = (await page.locator('#game-root').boundingBox())!, f = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
-    const g = layout(before.attempt.board, deal, f.height, before.settings.deckSide, before.settings.deckPosition);
+    const g = layout(before.attempt.board, deal, f, before.settings.deckSide, before.settings.deckPosition);
     const source = g.poses.find(p => p.id === packet(before.attempt.board, cmd.from.index, deal).at(-1))!, target = g.targets.find(t => t.location.kind === cmd.to.kind && t.location.index === cmd.to.index)!;
     const point = (p: { x: number; y: number }) => ({ x: rect.x + f.offsetX + p.x * f.unit, y: rect.y + p.y * f.unit });
     const a = point(source), b = point(target);

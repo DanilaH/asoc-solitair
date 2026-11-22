@@ -16,7 +16,7 @@ async function seed(p: Page, d = campaignDeals[16], change?: (s: Save) => void) 
   await p.reload(); await p.locator('#app[data-ready=true]').waitFor(); await p.locator('#home-play').tap(); await p.waitForTimeout(400); return read(p);
 }
 async function geometry(p: Page, d: Deal) {
-  const s = await read(p), r = (await p.locator('#game-root').boundingBox())!, f = boardFrame(r.width, r.height, s.settings.deckPosition, d), g = layout(s.attempt.board, d, f.height, s.settings.deckSide, s.settings.deckPosition);
+  const s = await read(p), r = (await p.locator('#game-root').boundingBox())!, f = boardFrame(r.width, r.height, s.settings.deckPosition, d), g = layout(s.attempt.board, d, f, s.settings.deckSide, s.settings.deckPosition);
   return { s, r, f, g, point: (v: { x: number; y: number }) => ({ x: r.x + f.offsetX + v.x * f.unit, y: r.y + v.y * f.unit }) };
 }
 async function moveTouch(c: CDPSession, from: { x: number; y: number }, to: { x: number; y: number }) {

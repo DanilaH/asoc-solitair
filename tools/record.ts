@@ -3,7 +3,7 @@ import { chromium } from '@playwright/test';
 import { preview } from 'vite';
 import { introDeal as deal } from '../src/content/intro';
 import { packet } from '../src/domain/engine';
-import { layout } from '../src/game/layout';
+import { boardFrame, layout } from '../src/game/layout';
 import type { Save } from '../src/domain/types';
 
 await mkdir('docs/qa', { recursive: true });
@@ -20,8 +20,9 @@ try {
   for (const [index, cmd] of deal.winningPath.entries()) {
     const save: Save = await page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!));
     const rect = (await page.locator('#game-root').boundingBox())!;
-    const metrics = layout(save.attempt.board, deal, rect.height * 540 / rect.width);
-    const tap = async (p: { x: number; y: number }) => page.touchscreen.tap(rect.x + p.x * rect.width / 540, rect.y + p.y * rect.width / 540);
+    const frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, deal);
+    const metrics = layout(save.attempt.board, deal, frame, save.settings.deckSide, save.settings.deckPosition);
+    const tap = async (p: { x: number; y: number }) => page.touchscreen.tap(rect.x + frame.offsetX + p.x * frame.unit, rect.y + p.y * frame.unit);
     if (cmd.type === 'transfer') {
       const id = cmd.from.kind === 'waste' ? save.attempt.board.waste.at(-1) : packet(save.attempt.board, cmd.from.index, deal).at(-1);
       await tap(metrics.poses.find(p => p.id === id)!);

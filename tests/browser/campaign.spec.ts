@@ -18,7 +18,7 @@ async function ready(page: Page, deal: Deal) {
 }
 export async function move(page: Page, deal: Deal, cmd: BoardCommand) {
   const before=await read(page), rect=(await page.locator('#game-root').boundingBox())!;
-  const frame=boardFrame(rect.width,rect.height,before.settings.deckPosition,deal), geometry=layout(before.attempt.board,deal,frame.height,before.settings.deckSide,before.settings.deckPosition);
+  const frame=boardFrame(rect.width,rect.height,before.settings.deckPosition,deal), geometry=layout(before.attempt.board,deal,frame,before.settings.deckSide,before.settings.deckPosition);
   const tap=(p:{x:number;y:number})=>page.touchscreen.tap(rect.x+frame.offsetX+p.x*frame.unit,rect.y+p.y*frame.unit);
   if(cmd.type==='transfer'){
     const id=cmd.from.kind==='waste'?before.attempt.board.waste.at(-1):packet(before.attempt.board,cmd.from.index,deal).at(-1);
@@ -76,7 +76,7 @@ test('the level-three Hint demonstration is free, replayable and survives reload
 
 test('compact dense four-column layout stays inside the board and confirms abandonment of an unfinished attempt',async({page})=>{
   await fixture(page,16);const rect=(await page.locator('#game-root').boundingBox())!;const deal=campaignDeals[16];
-  const geo=layout((await read(page)).attempt.board,deal,rect.height*540/rect.width);
+  const frame=boardFrame(rect.width,rect.height,'top',deal),geo=layout((await read(page)).attempt.board,deal,frame);
   expect(geo.targets.filter(t=>t.location.kind==='tableau')).toHaveLength(4);
   await page.screenshot({path:`test-results/${test.info().project.name}-dense-campaign.png`});
   await move(page,deal,deal.winningPath[0]);const before=await read(page);

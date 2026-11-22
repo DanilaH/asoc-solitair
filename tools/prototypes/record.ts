@@ -16,7 +16,7 @@ try{for(const width of [360,320]){
  for(const [index,d]of deals.entries()){
   await p.locator('#choose').selectOption(String(index));await p.waitForTimeout(500);let s=freshSave(d,'record');await p.screenshot({path:`${dir}/${width}-${index+1}-start.png`});
   for(const [i,a]of d.winningPath.entries()){
-   const r=(await p.locator('canvas').boundingBox())!,f=boardFrame(r.width,r.height,undefined,d),g=layout(s.attempt.board,d,f.height),tap=(q:{x:number;y:number})=>p.touchscreen.tap(r.x+f.offsetX+q.x*f.unit,r.y+q.y*f.unit);
+   const r=(await p.locator('canvas').boundingBox())!,f=boardFrame(r.width,r.height,undefined,d),g=layout(s.attempt.board,d,f),tap=(q:{x:number;y:number})=>p.touchscreen.tap(r.x+f.offsetX+q.x*f.unit,r.y+q.y*f.unit);
    if(a.type==='transfer'){const id=a.from.kind==='waste'?s.attempt.board.waste.at(-1):packet(s.attempt.board,a.from.index,d).at(-1);await tap(g.poses.find(q=>q.id===id)!);await tap(g.targets.find(q=>q.location.kind===a.to.kind&&q.location.index===a.to.index)!);}else await tap(g.stock);
    s=dispatch(s,a,d).next;await p.waitForTimeout(260);await p.locator('#lab').evaluate((el,revision)=>{if(el.getAttribute('data-revision')!==String(revision))throw Error('Input was not accepted')},s.revision);
    if(i===2)await p.screenshot({path:`${dir}/${width}-${index+1}-middle.png`});

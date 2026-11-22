@@ -47,7 +47,7 @@ const tap = (page: Page, selector: string) => page.locator(selector).tap();
 async function enter(page: Page) { await tap(page,'#home-play'); await page.waitForTimeout(350); }
 async function cardTap(page: Page) {
   const s=await page.evaluate(()=>JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save), deal=campaignDeals.find(d=>d.id===s.attempt.dealId)!;
-  const r=(await page.locator('#game-root').boundingBox())!, f=boardFrame(r.width,r.height,s.settings.deckPosition,deal),g=layout(s.attempt.board,deal,f.height,s.settings.deckSide,s.settings.deckPosition);
+  const r=(await page.locator('#game-root').boundingBox())!, f=boardFrame(r.width,r.height,s.settings.deckPosition,deal),g=layout(s.attempt.board,deal,f,s.settings.deckSide,s.settings.deckPosition);
   const id=sourceCards(s.attempt.board,{kind:'tableau',index:0},deal).at(-1),p=g.poses.find(p=>p.id===id)!;
   await page.touchscreen.tap(r.x+p.x*f.unit,r.y+p.y*f.unit);
 }

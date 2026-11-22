@@ -14,6 +14,7 @@ button:focus-visible{outline:3px solid #e8a968;outline-offset:3px}
 
 #app{width:min(100%,520px);height:100dvh;margin:auto;position:relative;overflow:hidden;display:flex;flex-direction:column;background:radial-gradient(ellipse at 35% 10%,#267d7d,#1c676b 60%,#15515d);padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom);box-shadow:0 0 90px #082b37}
 #app[data-screen=home]{background:radial-gradient(ellipse at 50% 50%,#fffdf5,#f2ead8);color:#537278}
+#app[data-screen=game]{width:100%}
 body.platform-native #app{padding:0 12px}
 #app[data-palette=ink][data-screen=game]{background:radial-gradient(ellipse at 40% 15%,#65668a,#414a71 65%,#303a60)}
 #app[data-reward-theme][data-screen=game]{background:radial-gradient(ellipse at 40% 15%,#826641,#5a452f 65%,#463122)}

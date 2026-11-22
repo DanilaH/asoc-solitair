@@ -11,7 +11,7 @@ const comparisonBaseline = process.env.ASOC_COMPARISON_BASELINE === '1';
 async function transferPoints(page: Page, deal: Deal, cmd: Extract<BoardCommand, {type: 'transfer'}>, save: Save) {
   const box = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(box.width, box.height, save.settings.deckPosition, deal);
-  const board = layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
+  const board = layout(save.attempt.board, deal, frame, save.settings.deckSide, save.settings.deckPosition);
   const point = (p: {x: number; y: number}) => ({ x: box.x + frame.offsetX + p.x * frame.unit, y: box.y + p.y * frame.unit });
   const from = sourceCards(save.attempt.board, cmd.from, deal).at(-1);
   return {

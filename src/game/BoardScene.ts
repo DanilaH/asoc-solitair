@@ -376,7 +376,7 @@ export class BoardScene extends Phaser.Scene {
     this.frameKey = frameKey;
     const frame = boardFrame(bounds.width, bounds.height, save.settings.deckPosition, this.options.deal);
     this.unit = frame.unit; this.world.setScale(this.unit).setPosition(bounds.x + frame.offsetX, bounds.y);
-    this.metrics = layout(board, this.options.deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
+    this.metrics = layout(board, this.options.deal, frame, save.settings.deckSide, save.settings.deckPosition);
     if (this.backStyle !== (save.settings.cardBack ?? 'classic')) { this.backStyle = save.settings.cardBack ?? 'classic'; for (const view of this.views.values()) this.paintBack(view.backArt); }
     const duration = save.settings.reducedMotion ? 0 : 215;
     const effects = new URLSearchParams(location.search);

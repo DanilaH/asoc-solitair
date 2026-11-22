@@ -43,7 +43,7 @@ it('checks two distinct complete paths plus portrait geometry on every new board
     for (const position of ['top', 'bottom'] as const) {
       const frame = boardFrame(296, 372, position, deal);
       for (const side of ['left', 'right'] as const) {
-        const { targets } = layout(deal.initial, deal, frame.height, side, position);
+        const { targets } = layout(deal.initial, deal, frame, side, position);
         expect(targets).toHaveLength(deal.initial.tableau.length + deal.initial.foundations.length);
         expect(targets.every(target => target.x * frame.unit >= 0 && target.x * frame.unit <= 296 &&
           target.y * frame.unit >= 0 && target.y * frame.unit <= 372)).toBe(true);

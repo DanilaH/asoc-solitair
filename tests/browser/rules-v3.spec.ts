@@ -18,7 +18,7 @@ async function open(p:Page,s:Save) {
 async function resume(p:Page) {await p.reload();await p.locator('#app[data-ready=true]').waitFor();await p.locator('#home-play').tap();await p.waitForTimeout(100);}
 async function move(p:Page,context:BrowserContext,d:Deal,a:BoardCommand,drag=false) {
   if(a.type!=='transfer')throw Error('Transfer expected');
-  const s=await read(p),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,s.settings.deckPosition,d),g=layout(s.attempt.board,d,f.height,s.settings.deckSide,s.settings.deckPosition);
+  const s=await read(p),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,s.settings.deckPosition,d),g=layout(s.attempt.board,d,f,s.settings.deckSide,s.settings.deckPosition);
   const id=a.from.kind==='waste'?s.attempt.board.waste.at(-1):packet(s.attempt.board,a.from.index,d).at(-1);
   const pt=(v:{x:number;y:number})=>({x:r.x+f.offsetX+v.x*f.unit,y:r.y+v.y*f.unit});
   const from=pt(g.poses.find(v=>v.id===id)!),to=pt(g.targets.find(t=>t.location.kind===a.to.kind&&t.location.index===a.to.index)!);

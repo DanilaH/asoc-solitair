@@ -37,7 +37,7 @@ async function touch(page: Page, deal: Deal, action: BoardCommand) {
   const { attempt: { board }, settings } = await read(page);
   const rect = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(rect.width, rect.height, settings.deckPosition, deal);
-  const geometry = layout(board, deal, frame.height, settings.deckSide, settings.deckPosition);
+  const geometry = layout(board, deal, frame, settings.deckSide, settings.deckPosition);
   const tap = (point: { x: number; y: number }) =>
     page.touchscreen.tap(rect.x + frame.offsetX + point.x * frame.unit, rect.y + point.y * frame.unit);
   if (action.type !== 'transfer') return tap(geometry.stock);
@@ -424,7 +424,7 @@ test('the Frozen preview thaws with completed groups and restores ice after Undo
   await expect(page.locator('#lesson-copy')).toHaveText('Соберите тему, чтобы снять один слой льда.');
   const root = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(root.width, root.height, save.settings.deckPosition, deal);
-  const geometry = layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
+  const geometry = layout(save.attempt.board, deal, frame, save.settings.deckSide, save.settings.deckPosition);
   const frozen = geometry.poses.find(pose => pose.id === 'space-word')!;
   const upper = geometry.targets.find(target => target.location.kind === 'foundation')!;
   for (const point of [frozen, upper]) {
@@ -790,6 +790,57 @@ for (const side of ['left', 'right'] as const) {
     expect(covered).toBeLessThan(20);
     await page.locator('#inspect').tap();
     await expect(page.locator('#inspect')).toHaveAttribute('aria-pressed', 'true');
+  });
+}
+
+for (const [side, row] of [['right', 'top'], ['left', 'bottom']] as const) {
+  test(`wide ${row}-${side} board paints at both edges and draws at the edge after resize`, async ({ page }) => {
+    const deal = content8Wave.find(deal => deal.campaignLevel === 31)!;
+    let save = freshSave(deal, 'board-full-width');
+    for (const command of deal.winningPath) {
+      save = dispatch(save, command, deal).next;
+      if (save.attempt.board.foundations.every(group => group.length)) break;
+    }
+    expect(save.attempt.board.stock.length).toBeGreaterThan(1);
+    save.settings.deckPosition = row;
+    save.settings.deckSide = side;
+    await loadWaveFixture(page, save, 30);
+    await page.setViewportSize({ width: 520, height: 700 });
+    await openGame(page, deal);
+    const field = page.locator('#game-root');
+
+    for (const width of [520, 768, 320]) {
+      await page.setViewportSize({ width, height: width === 520 ? 700 : 568 });
+      const area = (await field.boundingBox())!;
+      expect(area.x).toBeCloseTo(12);
+      expect(area.x + area.width).toBeCloseTo(width - 12);
+      const frame = boardFrame(area.width, area.height, row, deal);
+      const geometry = layout(save.attempt.board, deal, frame, side, row);
+      const foundationY = geometry.targets.find(slot => slot.location.kind === 'foundation')!.y * frame.unit;
+      const tableauY = geometry.targets.filter(slot => slot.location.kind === 'tableau').at(-1)!.y * frame.unit;
+      const stockY = (geometry.stock.y + geometry.stock.thickness / 2) * frame.unit;
+      const edgePixels = async () => {
+        const { data, info } = await sharp(await field.screenshot({ scale: 'css' })).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+        const cream = (r: number, g: number, b: number) => r > 240 && g > 220 && b > 168;
+        const back = (r: number, g: number, b: number) => b > 140 && b > r + 20 && b > g + 14;
+        const count = (xStart: number, y: number, matches: (r: number, g: number, b: number) => boolean) => {
+          let pixels = 0;
+          for (let line = Math.round(y) - 6; line < Math.round(y) + 6; line++) for (let x = xStart; x < xStart + 7; x++) {
+            const offset = (line * info.width + x) * info.channels;
+            if (matches(data[offset], data[offset + 1], data[offset + 2])) pixels++;
+          }
+          return pixels;
+        };
+        return [count(5, foundationY, cream), count(info.width - 12, foundationY, cream),
+          count(info.width - 12, tableauY, cream), count(side === 'left' ? 5 : info.width - 12, stockY, back)];
+      };
+      await expect.poll(async () => Math.min(...await edgePixels())).toBeGreaterThan(10);
+      const before = await read(page);
+      await page.touchscreen.tap(side === 'left' ? area.x + 8 : area.x + area.width - 8, area.y + stockY);
+      await expect.poll(async () => (await read(page)).attempt.board.stock.length).toBe(before.attempt.board.stock.length - 1);
+      await page.locator('#undo').tap();
+      await expect.poll(async () => (await read(page)).attempt.board).toEqual(before.attempt.board);
+    }
   });
 }
 
@@ -1180,7 +1231,7 @@ test('reward offer preview keeps the free reader and a distinct related-word cha
     const { attempt: { board }, settings } = await read(page);
     const rect = (await page.locator('#game-root').boundingBox())!;
     const frame = boardFrame(rect.width, rect.height, settings.deckPosition, recoverable);
-    const geometry = layout(board, recoverable, frame.height, settings.deckSide, settings.deckPosition);
+    const geometry = layout(board, recoverable, frame, settings.deckSide, settings.deckPosition);
     const pose = geometry.poses.find(p => p.faceUp && board.tableau.some(col => col.at(-1) === p.id) &&
       board.faceUp.some(id => id !== p.id && !recoverable.cards[id].leader && recoverable.cards[id].category === recoverable.cards[p.id].category));
     expect(pose).toBeDefined();

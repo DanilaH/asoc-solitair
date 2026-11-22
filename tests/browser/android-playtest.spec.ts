@@ -21,7 +21,7 @@ test('L4 shows the category in front before and after a transfer, and explains a
   await seed(page, save);
   const box = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(box.width, box.height, save.settings.deckPosition, level);
-  const poses = layout(save.attempt.board, level, frame.height).poses;
+  const poses = layout(save.attempt.board, level, frame).poses;
   const tulip = poses.find(p => p.id === 'flowers_2')!, category = poses.find(p => p.id === 'flowers')!;
   expect(category.depth).toBeGreaterThan(tulip.depth);
   await page.screenshot({ path: test.info().outputPath('flowers-before.png') });
@@ -43,7 +43,7 @@ test('dragging an inactive card only previews it and leaves the save untouched',
   await seed(page, save);
   const box = (await page.locator('#game-root').boundingBox())!;
   const f = boardFrame(box.width, box.height, save.settings.deckPosition, level);
-  const pose = layout(save.attempt.board, level, f.height).poses.find(p => p.id === 'flowers')!;
+  const pose = layout(save.attempt.board, level, f).poses.find(p => p.id === 'flowers')!;
   const point = { x: box.x + pose.x * f.unit, y: box.y + (pose.y - cardMetrics(level).height / 2 + 19) * f.unit };
   const reader = (await page.locator('#inspect').boundingBox())!;
   const end = { x: reader.x + reader.width / 2, y: reader.y + reader.height / 2 };
@@ -64,7 +64,7 @@ test('lifting a playable card exposes the full face below it until the card retu
   await seed(page, save);
   const box = (await page.locator('#game-root').boundingBox())!;
   const f = boardFrame(box.width, box.height, save.settings.deckPosition, level);
-  const rose = layout(save.attempt.board, level, f.height).poses.find(p => p.id === 'flowers_1')!;
+  const rose = layout(save.attempt.board, level, f).poses.find(p => p.id === 'flowers_1')!;
   const from = { x: box.x + rose.x * f.unit, y: box.y + rose.y * f.unit };
   const before = await read(page), c = await context.newCDPSession(page);
   await page.screenshot({ path: test.info().outputPath('lift-resting.png') });

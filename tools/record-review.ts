@@ -34,7 +34,7 @@ try {
   const cmd = deal.winningPath[index];
   if (cmd.type !== 'transfer') throw Error('Missing recording transfer');
   const rect = (await page.locator('#game-root').boundingBox())!, frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
-  const g = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
+  const g = layout(before.attempt.board, deal, frame, before.settings.deckSide, before.settings.deckPosition);
   const id = cmd.from.kind === 'waste' ? before.attempt.board.waste.at(-1) : packet(before.attempt.board, cmd.from.index, deal).at(-1);
   const source = g.poses.find(p => p.id === id)!, target = g.targets.find(t => t.location.kind === cmd.to.kind && t.location.index === cmd.to.index)!;
   const point = (p: {x: number; y: number}) => ({ x: rect.x + frame.offsetX + p.x * frame.unit, y: rect.y + p.y * frame.unit });

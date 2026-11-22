@@ -87,8 +87,8 @@ it.each(batches)('reproduces the Content 8 boards and winning branches starting 
         if (pathIndex === 0 && row.columns === 5) {
           const frame = boardFrame(296, 368, 'top', deal);
           const { width, height } = cardMetrics(deal);
-          const { poses } = layout(board, deal, frame.height);
-          expect(poses.every(pose => pose.x >= width / 2 && pose.x <= 540 - width / 2 &&
+          const { poses } = layout(board, deal, frame);
+          expect(poses.every(pose => pose.x >= width / 2 - .01 && pose.x <= frame.width - width / 2 + .01 &&
             pose.y >= height / 2 && pose.y <= frame.height - height / 2 + .01), label).toBe(true);
         }
       }

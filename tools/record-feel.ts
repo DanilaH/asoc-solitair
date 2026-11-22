@@ -15,7 +15,7 @@ const server = await preview({ preview: { host: '127.0.0.1', port: 4186, strictP
 async function move(page: Page, context: BrowserContext, deal: Deal, cmd: BoardCommand) {
   console.info('touch', deal.id, JSON.stringify(cmd));
   const before = await read(page), rect = (await page.locator('#game-root').boundingBox())!, frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
-  const g = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
+  const g = layout(before.attempt.board, deal, frame, before.settings.deckSide, before.settings.deckPosition);
   const point = (p: { x: number; y: number }) => ({ x: rect.x + frame.offsetX + p.x * frame.unit, y: rect.y + p.y * frame.unit });
   if (cmd.type === 'transfer') {
     const id = cmd.from.kind === 'waste' ? before.attempt.board.waste.at(-1) : packet(before.attempt.board, cmd.from.index, deal).at(-1);

@@ -12,8 +12,8 @@
     {
       "id": "hitapps-stock-dealer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "CORE-1 verifies the four published numeric hashes and exact stock/tableau for all 15 frozen Content 8 deals from recorded seeds.",
-      "nextAction": "Obtain numeric geometry export for the source-bound 752-candidate replay and original-device final-board parity. Have the owner play the frozen Content 8 catalog.",
+      "currentImplementation": "CORE-1 replays 15 frozen C8 deals. P05 binds structural input, card order and budget before preparing a fixed or seeded board and gates the fresh and simulated feature paths explicitly.",
+      "nextAction": "Kit #118 reports 752 conditional model comparisons. P36 still needs authenticated original inputs, executed post-Shuffle/post-Final snapshots and live feature settings.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "B1",
       "evidenceRef": "docs/qa/content-v8/CORE_1.md"

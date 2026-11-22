@@ -328,6 +328,8 @@ export function assertBoard(board: Board, deal: Deal): void {
   if (board.joker) {
     const j = board.joker;
     if (!Number.isInteger(j.column) || !Number.isInteger(j.boundary) || j.boundary < 1 || !board.tableau[j.column] || j.boundary > board.tableau[j.column].length || isLocked(board, j.column, deal)) throw Error('Некорректный Джокер');
+    if (j.card && (deal.randomJokerPreview !== 1 || j.card.version !== 1 || j.card.nativeType !== 2 || j.card.faceUp !== true ||
+      !/^azj-[A-Za-z0-9_-]{1,60}$/.test(j.card.id) || Object.hasOwn(deal.cards, j.card.id))) throw Error('Повреждена карта случайного Джокера');
     const held = board.tableau[j.column].slice(j.boundary);
     if (held.some(id => !board.faceUp.includes(id)) || new Set(held.map(id => deal.cards[id]?.category)).size > 1 || orderError(held, deal)) throw Error('Некорректная группа Джокера');
   }

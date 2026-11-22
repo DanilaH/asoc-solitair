@@ -1,3 +1,4 @@
+import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { equalityPreviewPolicy } from './content/campaign-v8-equality';
 import { recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
 import Phaser from 'phaser';
@@ -323,6 +324,7 @@ try {
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   const hasTransfer = new WeakMap<Save['attempt']['board'], boolean>();
   function renderHud() {
+    $('#random-joker-open').hidden = !(RANDOM_JOKER_PREVIEW && allowsRandomJoker(save.attempt, deal));
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
     document.documentElement.dataset.reduced = String(save.settings.reducedMotion);
@@ -1409,6 +1411,27 @@ try {
     }, domOptions);
     $(`#video-${helper}`).addEventListener('click', () => { void rewarded(helper); }, domOptions);
   }
+  $('#random-joker-open').addEventListener('click', () => {
+    if (RANDOM_JOKER_PREVIEW && !saving && !serviceBusy && allowsRandomJoker(save.attempt, deal)) openDialog('#random-joker-warning');
+  }, domOptions);
+  $('#random-joker-confirm').addEventListener('click', async () => {
+    if (!RANDOM_JOKER_PREVIEW || saving || serviceBusy || !$<HTMLDialogElement>('#random-joker-warning').open) return;
+    const source = deal, attemptId = save.attempt.id, revision = save.revision;
+    const id = 'azj-' + crypto.randomUUID();
+    const candidate = placeRandomJoker(save.attempt, source, randomJokerColumn, () => id);
+    const path = candidate && proveRandomJoker(candidate, source, performance.now() + 220);
+    if (!candidate?.joker || !path) {
+      closeDialogs();
+      message('В этом столбце нет проверенного продолжения. Джокер сохранён.', true);
+      return;
+    }
+    try {
+      const column = candidate.joker.column;
+      if (await write(next => settleRandomJoker(next, source, { attemptId, revision, column, id, path }))) {
+        closeDialogs(); scene?.sync();
+      }
+    } catch { message('Проверьте сохранение перед повторной попыткой.', true); }
+  }, domOptions);
   $('#result-continue').addEventListener('click', async () => {
     const button = $<HTMLButtonElement>('#result-continue');
     if (button.hidden || button.disabled || serviceBusy || saving) return;

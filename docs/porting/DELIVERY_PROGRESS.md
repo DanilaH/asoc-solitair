@@ -11,7 +11,9 @@
 
 **#164 · [P37](https://github.com/DanilaH/asoc-solitair/pull/170).** Из 195 профилей генерации для уровней 16–80 отобраны 116 новых вариантов на 53 уровнях. Изолированный director соединяет банк с игровой выдачей. Остальные профили используют предыдущие раздачи R2. [Проверки баланса, Equality и источника](../qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md).
 
-**Проверка ревизии 75fc920.** [Android и веб-проверки](https://github.com/DanilaH/asoc-solitair/actions/runs/45057643740) на точной ревизии. Подпись тестового APK и 212 файлов сборки подтверждены. Расширенный поиск по 400 seed на четырёх уровнях оставил каталог Equality пустым. [Закрепление потребителя в kit #120](https://github.com/DanilaH/mini-games-kit/pull/120).
+**Проверка ревизии 75fc920.** [Android и веб-проверки](https://github.com/DanilaH/asoc-solitair/actions/runs/45057643740) на точной ревизии. Подпись тестового APK и 212 файлов сборки подтверждены. Расширенный поиск по 400 seed при базовых лимитах не дал аттестованной Equality раздачи. [Закрепление потребителя в kit #120](https://github.com/DanilaH/mini-games-kit/pull/120).
+
+**P08 · проверочный кандидат с изменённым лимитом.** На уровне 31 прошёл seed 38 с коэффициентом +10%, лимитом 219 и победой за 213 ходов. Поиск рассматривал 339 seed при отличном от базового лимите. На 320 px проверены выдача совпадающей аттестации, восстановление после перезагрузки и Undo. Обычная выдача выключена.
 
 **22.11 SOURCE UPDATE kit #98:** [17 original methods, 19 ARM opcodes, 14 BL](../qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md) prove distinct `MoveHintSystem` and `MoveValidator` Joker useless checks and source positive-budget `GameManager.CheckAvailableMoves` callback. **115/115, 38 packets preserved**, new source inventory pin `79a44a8b1c0ec98a6b6bde9b1fbd4071cad1af6d`. P04 diagnostics IN_PROGRESS and P05 engineering dealer remains ENGINEERING_VERIFIED with separate SOURCE_GAP/diagnostics [issue #123](https://github.com/DanilaH/asoc-solitair/issues/123). No native source original Android execution, no change to game rules.
 

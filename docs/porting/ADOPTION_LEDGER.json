@@ -57,8 +57,8 @@
     {
       "id": "hitapps-equality-paywall",
       "status": "IN_PROGRESS",
-      "currentImplementation": "Seed 47 is archived for SaveStore. Both new bots win it and the ordinary control. New issuance requires a pinned v2 catalog with independently replayed traces and a winning route. Four 100-seed runs produced no certified entries.",
-      "nextAction": "Author an independently solvable Equality candidate with adequate reserve, validate it with human/device play and preserve P36 pair transform and native bot capture as source gates.",
+      "currentImplementation": "Seed 47 is archived for SaveStore. The isolated QA profile can issue level 31 seed 38 only with its attested +10% budget and verified fixture cohort. Two replayed late policy losses and a winning route of 213/219 are bound to the final board. Public issuance remains off.",
+      "nextAction": "Run blind human/device play on the QA candidate, verify alternate and Undo-aided paths, and capture P36 pair transform, native StrategySystems and original cohort settings.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/169",
       "stage": "B3",
       "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"

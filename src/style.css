@@ -547,8 +547,8 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 .tier-dot{position:absolute;left:3px;top:3px;font-size:9px;line-height:14px;min-width:14px;border-radius:7px;background:var(--tier-bg);color:var(--tier-fg);font-weight:900}
 
 .board-bonus{position:absolute;z-index:1;transform:translateY(-50%);display:grid;place-content:center;place-items:center;
-  height:52px;min-width:44px;padding:0 1px;gap:2px;border:1px dashed #e4ce91;border-radius:12px;background:#195b5c;color:#fff3d6;
-  font-size:clamp(10px,3.4vw,13px);font-weight:850;line-height:1;touch-action:manipulation}
+  height:52px;width:var(--bonus-width,44px);min-width:44px;padding:0 1px;gap:2px;border:1px dashed #e4ce91;border-radius:12px;background:#195b5c;color:#fff3d6;
+  font-size:clamp(10px,calc(var(--bonus-width,44px) / 4.4),13px);font-weight:850;line-height:1;touch-action:manipulation}
 .board-bonus span{font-size:25px;line-height:20px;pointer-events:none}
 .board-bonus:active{background:#2b7372}
 .board-bonus:focus-visible{outline:2px solid #fff0af;outline-offset:2px}

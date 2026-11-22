@@ -746,6 +746,13 @@ test('a bonus slot preview tap cannot also confirm a purchase on the wider layou
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   await page.locator('#home-play').tap();
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
+  await page.setViewportSize({ width: 600, height: 450 });
+  await page.locator('#banner-slot').evaluate(slot => { slot.removeAttribute('hidden'); slot.style.height = '60px'; });
+  const bonus = page.locator('#bonus-tableau');
+  await expect.poll(() => bonus.evaluate(button => button.getBoundingClientRect().width)).toBe(44);
+  expect(await bonus.evaluate(button => button.scrollWidth <= button.clientWidth + 1)).toBe(true);
+  await page.locator('#banner-slot').evaluate(slot => { slot.setAttribute('hidden', ''); slot.style.removeProperty('height'); });
+  await page.setViewportSize({ width: 520, height: 700 });
   await tapBonus(page, 'tableau');
   const pending = await read(page);
   expect(pending.profile.coins).toBe(200);

@@ -154,7 +154,7 @@ function positionDeckTools(save: Save) {
       const left = frame.offsetX + (offer.x - offer.width / 2) * frame.unit;
       button.style.left = `${Math.min(left, rect.width - touchWidth)}px`;
       button.style.top = `${offer.y * frame.unit}px`;
-      button.style.width = `${touchWidth}px`;
+      button.style.setProperty('--bonus-width', `${touchWidth}px`);
     }
   }
 }

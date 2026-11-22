@@ -610,7 +610,7 @@
       "order": 25,
       "title": "Piggy/Pass/VIP/NoAds/offers/bundles",
       "workstream": "COMMERCE",
-      "state": "NEEDS_OWNER",
+      "state": "BLOCKED_EXTERNAL",
       "entryGate": "OWNER_ACTIVATION_GATE",
       "dependsOn": [
         "P22",

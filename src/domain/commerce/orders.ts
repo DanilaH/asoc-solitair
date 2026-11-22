@@ -33,6 +33,7 @@ export interface PurchaseOrder extends VerifiedPurchase {
   sku: string;
   grant?: { id: string; issuedAt: number };
   acknowledged?: true;
+  walletApplied?: true;
 }
 export interface CommerceJournal {
   version: 1;
@@ -87,7 +88,8 @@ export function validCommerceJournal(value: CommerceJournal): boolean {
     if (order.purchaseId) purchases.add(purchase);
     return (order.grant === undefined || (order.grant?.id === purchase && natural(order.grant.issuedAt) && order.purchaseId &&
       ['paid', 'refunded'].includes(order.status))) &&
-      (order.acknowledged === undefined || order.acknowledged === true && order.grant !== undefined);
+      (order.acknowledged === undefined || order.acknowledged === true && order.grant !== undefined) &&
+      (order.walletApplied === undefined || order.walletApplied === true && order.acknowledged === true);
   });
 }
 
@@ -106,7 +108,7 @@ function applyObservation(save: Save, proof: VerifiedPurchase, query: PurchaseQu
 
   const order: PurchaseOrder = {
     ...proof, schema: 1, sku: item.sku, ...(previous?.purchaseId ? { purchaseId: previous.purchaseId } : {}),
-    ...(previous?.grant ? { grant: previous.grant } : {}), ...(previous?.acknowledged ? { acknowledged: true } : {}),
+    ...(previous?.grant ? { grant: previous.grant } : {}), ...(previous?.acknowledged ? { acknowledged: true } : {}), ...(previous?.walletApplied ? { walletApplied: true } : {}),
   };
   const alreadyEntitled = item.eligibility !== 'repeatable' && state.orders.some(other => other.accountId === order.accountId &&
     other.sku === item.sku && other.seasonId === order.seasonId && other.status === 'paid' && other.grant !== undefined);
@@ -124,10 +126,10 @@ export function activePurchaseGoods(journal: CommerceJournal | undefined, accoun
   for (const order of journal.orders) {
     if (order.status !== 'paid' || !order.grant || order.accountId !== accountId || order.grant.issuedAt > now) continue;
     for (const good of PRODUCT_INDEX.get(order.sku)?.benefits ?? []) {
-      const expiresAt = good.type === 'unlimited' ? order.grant.issuedAt + good.durationMs : undefined;
+      const expiresAt = good.type === 'unlimited' || good.type === 'vip' ? order.grant.issuedAt + good.durationMs : undefined;
       if (expiresAt !== undefined && (!natural(expiresAt) || now >= expiresAt)) continue;
-      if (good.type === 'pass' && order.seasonId !== seasonId) continue;
-      result.push({ grantId: order.grant.id, sku: order.sku, good, ...(good.type === 'pass' ? { seasonId } : {}),
+      if ((good.type === 'pass' || good.type === 'piggy') && order.seasonId !== seasonId) continue;
+      result.push({ grantId: order.grant.id, sku: order.sku, good, ...((good.type === 'pass' || good.type === 'piggy') ? { seasonId } : {}),
         ...(expiresAt === undefined ? {} : { expiresAt }) });
     }
   }

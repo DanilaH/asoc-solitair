@@ -283,7 +283,7 @@
     {
       "id": "hitapps-piggy-bank",
       "status": "BLOCKED",
-      "currentImplementation": "No purchase-backed bank and store IAP policy not validated P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No purchase-backed bank and store IAP policy not validated P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Verify legal supported Android store purchase/receipts/payout before feature spec E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "reason": "Unverified available IAP/provider integration and legal payout for current target stores. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
       "stage": "E3"
@@ -298,7 +298,7 @@
     {
       "id": "azur-play-pass",
       "status": "BLOCKED",
-      "currentImplementation": "No native premium/free pass or authorized purchase path P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No native premium/free pass or authorized purchase path P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Verify store IAP/entitlements and payments then spec free/premium claims E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "reason": "Unverified available IAP/provider integration and legal payout for current target stores. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
       "stage": "E3"
@@ -306,7 +306,7 @@
     {
       "id": "hitapps-rotating-offers",
       "status": "ROADMAPPED",
-      "currentImplementation": "No event-specific commercial offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No event-specific commercial offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Inventory eligible offers and verify store purchase capability before implementing any E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
@@ -382,7 +382,7 @@
     {
       "id": "hitapps-birthday-offer",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No birthday offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No birthday offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Verify actual trigger/privacy/eligibility and legal storefront payments before implementing E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
@@ -390,7 +390,7 @@
     {
       "id": "hitapps-decoy-offer",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No decoy offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No decoy offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Inspect concrete source display/eligibility and product semantics; avoid guessing from class name E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
@@ -398,7 +398,7 @@
     {
       "id": "hitapps-starter-offer",
       "status": "ROADMAPPED",
-      "currentImplementation": "Basic coin wallet and helper shop; no IAP starter bundle P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "Basic coin wallet and helper shop; no IAP starter bundle P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Define owner-approved first-play offer and legal store purchase contract E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
@@ -427,7 +427,7 @@
     {
       "id": "hitapps-inapp-shop",
       "status": "ROADMAPPED",
-      "currentImplementation": "Coin-priced hints/Undo/Joker; no original-style IAP/shop tiers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "Coin-priced hints/Undo/Joker; no original-style IAP/shop tiers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Separate soft-currency helper store vs IAP; verify actual store capabilities and payouts E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
@@ -490,7 +490,7 @@
     {
       "id": "azur-offer-campaign",
       "status": "ROADMAPPED",
-      "currentImplementation": "No activated commercial campaigns other than fixed helper shop P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No activated commercial campaigns other than fixed helper shop P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Build separable offer schedule + owner-verified store provider after event state E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
@@ -541,7 +541,7 @@
     {
       "id": "unico-vip",
       "status": "BLOCKED",
-      "currentImplementation": "No subscribed VIP entitlement/IAP flow verified P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No subscribed VIP entitlement/IAP flow verified P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Confirm legal IAP + Russian self-employed payout/provider before building premium policy E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
@@ -621,7 +621,7 @@
     {
       "id": "azur-iap-no-ads",
       "status": "BLOCKED",
-      "currentImplementation": "Native banners/interstitials exist, but no purchased disable-ads entitlement P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "Native banners/interstitials exist, but no purchased disable-ads entitlement P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Verify target store billing + no-ads policy and persistence before paid offer/reward receipt E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
@@ -629,7 +629,7 @@
     {
       "id": "azur-iap-coin-packs",
       "status": "BLOCKED",
-      "currentImplementation": "Coins earned in game; no fiat-purchased coin bundles or legal billing confirmation P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "Coins earned in game; no fiat-purchased coin bundles or legal billing confirmation P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Check supported store IAP and payout, then model eight source tiers against own currency supply E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
@@ -637,14 +637,14 @@
     {
       "id": "azur-iap-coin-offer-series",
       "status": "ROADMAPPED",
-      "currentImplementation": "No Coins Offer 1 Time/Next1/Next2 SKU/eligibility sequence P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No Coins Offer 1 Time/Next1/Next2 SKU/eligibility sequence P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Recover live trigger sequence or author a declared own offer sequence; source titles are not logic E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3"
     },
     {
       "id": "azur-iap-premium-bundles",
       "status": "BLOCKED",
-      "currentImplementation": "No silver/gold/diamond premium SKU entitlement P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No silver/gold/diamond premium SKU entitlement P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Verify IAP provider, settlement, refund and specific benefit contents before shipping E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
@@ -652,7 +652,7 @@
     {
       "id": "azur-iap-welcome-offer",
       "status": "BLOCKED",
-      "currentImplementation": "No store-backed welcome purchase or original paid entry offer P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No store-backed welcome purchase or original paid entry offer P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Validate store purchases and first-use entitlement; keep future welcome-bundle ID in roadmap E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
@@ -660,7 +660,7 @@
     {
       "id": "azur-iap-unlimited-moves-tiers",
       "status": "BLOCKED",
-      "currentImplementation": "No purchasable Unlimited Moves/+ /++ tiers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md.",
+      "currentImplementation": "No purchasable Unlimited Moves/+ /++ tiers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
       "nextAction": "Reconstruct true entitlement/expiry, billing and SaveStore restore before pricing or SDK calls E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "E3",
       "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."

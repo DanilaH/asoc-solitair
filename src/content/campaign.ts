@@ -1,5 +1,5 @@
 import { LIVES_PREVIEW } from '../domain/campaign-lives';
-import { RECOVERY_PREVIEW } from '../domain/campaign-recovery';
+import { RECOVERY_GAMEPLAY } from '../domain/campaign-recovery';
 import { RANDOM_JOKER_PREVIEW } from '../domain/random-joker';
 import { equalityPreviewDeal, isEqualityVariant } from './campaign-v8-equality';
 import { expansionDeals } from './expansion';
@@ -86,7 +86,7 @@ export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
 }
 export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): Deal {
   if (!CONTENT8_PREVIEW) return base;
-  if (RECOVERY_PREVIEW && base.id === recoveryBase.id) return recoveryDeal;
+  if (RECOVERY_GAMEPLAY && base.id === recoveryBase.id) return recoveryDeal;
   if (RANDOM_JOKER_PREVIEW && base.id === jokerBase.id) return randomJokerDeal;
   const selected = localizedCampaignDeal(save, selectC8Deal(save, base, previous));
   return selectAdaptiveDeal(save, selected, lateAdaptive, previous);

@@ -1,7 +1,8 @@
 import { recordLiveOpsLoss } from './events/campaign-liveops';
+import { OWNER_ACCEPTANCE_PREVIEW } from './types';
 import type { Attempt, Save } from './types';
 
-export const LIVES_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'lives';
+export const LIVES_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'lives' || OWNER_ACCEPTANCE_PREVIEW;
 export const LIVES_RULES = { max: 3, refillMs: 5 * 60_000, coinPrice: 50 } as const;
 const natural = (n: unknown): n is number => Number.isSafeInteger(n) && (n as number) >= 0;
 const token = (value: unknown): value is string => typeof value === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(value);

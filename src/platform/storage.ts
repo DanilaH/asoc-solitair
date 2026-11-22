@@ -143,6 +143,8 @@ export function decodeSave(raw: string, source: DealSource): Save {
       (unlimited !== undefined && (!deal.recovery || !unlimited || unlimited.version !== 1 ||
         !/^[A-Za-z0-9_-]{1,100}$/.test(unlimited.id) || !natural(unlimited.issuedAt) ||
         (unlimited.until !== undefined && (!natural(unlimited.until) || unlimited.until <= unlimited.issuedAt)) ||
+        (unlimited.purchaseRef !== undefined && (typeof unlimited.purchaseRef !== 'string' ||
+          !unlimited.purchaseRef || unlimited.purchaseRef.length > 400 || unlimited.until === undefined)) ||
         (unlimited.expired !== undefined && (unlimited.expired !== true || unlimited.until === undefined)))) ||
       ([save.attempt.board, ...save.attempt.undo].some(board => board.retainedMoves !== undefined) && (!unlimited || unlimited.expired))) {
     throw Error('Повреждён договор восстановления');

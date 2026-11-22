@@ -5,7 +5,7 @@ import { createStorefront } from './platform/storefront';
 import { claimShopProgress, PASS_GOAL, PIGGY_LIMIT, productLabels, recordStoreClear, showProductGoods, storefrontView, STOREFRONT_PREVIEW } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
 import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee, recordAdRevenue } from './domain/campaign-advertising';
-import { beginUnlimited, expireUnlimited, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote } from './domain/campaign-recovery';
+import { beginUnlimited, expireUnlimited, quotePurchasedUnlimited, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, usePurchasedUnlimited } from './domain/campaign-recovery';
 import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { equalityPreviewPolicy } from './content/campaign-v8-equality';
 import { recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
@@ -374,10 +374,14 @@ try {
     $('#campaign-store-open').hidden = !STOREFRONT_PREVIEW;
     $('#coffee-open').hidden = !(ADS_CONTROLS_PREVIEW || campaignAdsApproved()) || (deal.campaignLevel ?? 0) < 16 || save.attempt.board.phase !== 'playing';
     const restore = $<HTMLButtonElement>('#restore-stock'), price = restoreQuote(save.attempt, deal);
-    restore.hidden = !RECOVERY_PREVIEW || price === undefined;
+    restore.hidden = !RECOVERY_GAMEPLAY || price === undefined;
     restore.disabled = price === undefined || save.profile.coins < price || saving;
     restore.textContent = price ? `Восстановить колоду · ${price} монет` : 'Восстановить колоду · бесплатно';
-    $('#unlimited-preview').hidden = !(RECOVERY_PREVIEW && deal.recovery && save.attempt.board.phase === 'playing' && !save.attempt.unlimited);
+    const unlimited = $('#unlimited-preview');
+    const purchase = RECOVERY_GAMEPLAY && STOREFRONT_PREVIEW && quotePurchasedUnlimited(save, deal, storefront.accountId, Date.now());
+    const trial = RECOVERY_PREVIEW && deal.recovery && save.attempt.board.phase === 'playing' && !save.attempt.unlimited;
+    unlimited.hidden = !(purchase || trial);
+    unlimited.textContent = purchase ? 'Применить купленные ходы без лимита' : 'Ходы без лимита · 2 мин';
     $('#random-joker-open').hidden = !(RANDOM_JOKER_PREVIEW && allowsRandomJoker(save.attempt, deal));
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
@@ -504,11 +508,11 @@ try {
     const canBuyContinue = showCoinOffer && save.profile.coins >= BALANCE.continueCoinPrice;
     const continueBusy = saving || serviceBusy || store.needsRecovery;
     const coinButton = $<HTMLButtonElement>('#result-continue-coins');
-    const recoveryLabel = RECOVERY_PREVIEW && deal.recovery ? 'Возродить партию' : 'Продолжить';
+    const recoveryLabel = RECOVERY_GAMEPLAY && deal.recovery ? 'Возродить партию' : 'Продолжить';
     coinButton.hidden = !showCoinOffer;
     coinButton.disabled = !canBuyContinue || continueBusy;
     coinButton.textContent = `+${BALANCE.continueMoves} ходов за ${BALANCE.continueCoinPrice} монет`;
-    if (RECOVERY_PREVIEW && deal.recovery && !coinButton.hidden) coinButton.textContent = `${recoveryLabel} · +${BALANCE.continueMoves} ходов за ${BALANCE.continueCoinPrice}`;
+    if (RECOVERY_GAMEPLAY && deal.recovery && !coinButton.hidden) coinButton.textContent = `${recoveryLabel} · +${BALANCE.continueMoves} ходов за ${BALANCE.continueCoinPrice}`;
     const continueButton = $<HTMLButtonElement>('#result-continue');
     continueButton.hidden = !canContinue;
     continueButton.disabled = !canContinue || continueBusy;
@@ -1640,6 +1644,8 @@ try {
         const binding = storefront.bindingFor(product.sku), item = document.createElement('button');
         item.className = 'secondary'; item.type = 'button'; item.dataset.sku = product.sku;
         item.disabled = !binding || (!offer.eligible && offer.sourceId !== 'unico-vip' && offer.sourceId !== 'hitapps-piggy-bank') ||
+          (product.benefits.some(good => good.type === 'unlimited') &&
+            !(RECOVERY_GAMEPLAY && deal.recovery && save.attempt.board.phase === 'playing')) ||
           (offer.sourceId === 'hitapps-piggy-bank' && layout.data?.piggy !== PIGGY_LIMIT);
         item.textContent = showProductGoods(product.sku);
         if (binding) {
@@ -1699,7 +1705,7 @@ try {
     finally { serviceBusy = false; renderHud(); }
   }, domOptions);
   $('#restore-stock').addEventListener('click', async () => {
-    if (!RECOVERY_PREVIEW || saving || serviceBusy) return;
+    if (!RECOVERY_GAMEPLAY || saving || serviceBusy) return;
     const source = deal, cost = restoreQuote(save.attempt, source);
     if (cost === undefined) return;
     const quote = { attemptId: save.attempt.id, revision: save.revision, cost };
@@ -1711,11 +1717,19 @@ try {
     } catch { message('Не удалось сохранить восстановление колоды.', true); }
   }, domOptions);
   $('#unlimited-preview').addEventListener('click', async () => {
-    if (!RECOVERY_PREVIEW || !deal.recovery || saving || serviceBusy) return;
-    const source = deal, now = Date.now();
-    const grant = { id: crypto.randomUUID(), attemptId: save.attempt.id, until: now + 120_000 };
+    if (!RECOVERY_GAMEPLAY || !deal.recovery || saving || serviceBusy) return;
+    const source = deal, now = Date.now(), accountId = storefront.accountId;
+    const purchase = STOREFRONT_PREVIEW && quotePurchasedUnlimited(save, source, accountId, now);
+    if (!purchase && !RECOVERY_PREVIEW) return;
+    const id = crypto.randomUUID(), attemptId = save.attempt.id;
     try {
-      if (await write(next => beginUnlimited(next, source, grant, now))) { closeDialogs(); scene?.sync(); }
+      const applied = await write(next => {
+        const at = Date.now();
+        return purchase
+          ? usePurchasedUnlimited(next, source, { ...purchase, id }, accountId, at)
+          : beginUnlimited(next, source, { id, attemptId, until: at + 120_000 }, at);
+      });
+      if (applied) { closeDialogs(); scene?.sync(); }
     } catch { message('Не удалось сохранить ходы без лимита.', true); }
   }, domOptions);
   $('#random-joker-open').addEventListener('click', () => {

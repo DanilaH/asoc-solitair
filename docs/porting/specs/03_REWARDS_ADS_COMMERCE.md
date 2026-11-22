@@ -24,13 +24,15 @@ Primary IDs: `azur-coin-moves`, `azur-rewarded-moves`, `unico-loss-dialog`. Actu
 
 ## P19 · Distinct Hitapps stock restore, contextual revive, AZUR Unlimited
 
+**OWNER DIRECTION 22.11.2026 — вариант А:** полная реализация и **условная активация в ОБЫЧНОЙ кампании** всех трёх систем (`RestoreStock`, `Revive`, `Unlimited Moves`) после исследования исходных правил, тестов баланса и совместимости сохранений. Новые кампании получают собственное **реальное ограничение** на бесплатные `recycle`, иначе платное `RestoreStock` не имеет смысла; старые раздачи и saves сохраняют прежние правила и не мигрируют молча. Revive/Unlimited не являются одним и тем же ресурсом и отдельно от P31 Lives. Исторические неизвестные ограничения, цены/сроки и штатные SDK/платежи по-прежнему требуют evidence/owner numeric profile. [Полный owner record](../OWNER_DECISIONS_2026-11-22.md). Повторно спрашивать, включать ли саму систему в обычную кампанию, не надо; текущая offline P19 не равна shipped feature.
+
 Primary IDs: `hitapps-stock-restore`, `hitapps-revive-offers`, `azur-unlimited-moves-offer`.
 
 - Original Hitapps PaidRestoreStock getter: **first cost 0**, subsequently `base + (count−1)*increment`; actual base/increment, reset and eligibility unknown. Our Rules3 currently allows **unbounded recycle for one move**, so a *paid stock restore* cannot be created by charging for the exact same free action. Specify **a separate meaningful rules capability** (e.g. different finite stock rights), versioned in `Deal/Board`, with a saved count and independent legal/invalid actions; do not break archived v3 games.
 - Original RevivesMovesOffer fields distinguish payer/nonpayer and minLevel, coins/reward amount coefficient, cooldown, daily cap; active cohort/values unknown. Design configurable, **transparent** chosen product policy with separate coins/rewarded/other offer; persist attempt and offer identity, don't infer an actual payer from absent IAP ledger. Do not create artificial deterministic unwinnable board to force paid rescue.
 - AZUR unlimited OutOfMovesPanel has compiled 3s optional restart reveal but no proven original entitlement lifespan/price. Define our own `unlimitedForAttempt / untilTime / paidLifetime` semantics **explicitly**, handle timer and `movesLeft=null`, hint/solver/Undo/win receipts, restart/replay/park, and old save. Paid eligibility depends P23/P24. Never call +10 `Unlimited`.
 
-**Exit:** separate rule and offer contracts, native/source UNKNOWN documented, versioned cleanup/disable, no forced spending; owner sign-off required for live paid/finite-stock mechanics.
+**Exit:** separate finite-stock, Revive and Unlimited rules/entitlements, verified source-or-adapted parameters, versioned migration and clean negative tests; the owner has approved inclusion and QA-gated activation, but numeric amounts / actual provider billing and Android device remain separate release gates; no forced spending.
 
 ## P20 · Win rewards, free claim, Definition and theme offers
 

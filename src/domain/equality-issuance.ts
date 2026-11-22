@@ -1,4 +1,5 @@
 import { equalityAttestation, type EqualityCandidate } from './equality-attestation';
+import { futureDifficultyPenalty } from './difficulty';
 import { campaignId } from './progression';
 import type { Attempt, Deal, Save } from './types';
 
@@ -31,8 +32,10 @@ export function issueEqualityDeal(save: Save, base: Deal, attemptId: string, pol
 
   const stats = save.equality ??= { version: 1, eligible: 0, attempted: 0, selected: 0, issued: 0, lost: 0, completed: 0 };
   stats.eligible++; stats.attempted++;
+  const penalty = futureDifficultyPenalty(save);
   const candidate = policy.candidates.map(equalityAttestation).find(entry => entry &&
-    entry.baseId === base.id && entry.paywallSeed === seed && entry.deal.id !== base.id && entry.deal.campaignLevel === level);
+    entry.baseId === base.id && entry.paywallSeed === seed && entry.historyPenalty === penalty &&
+    entry.baseBudget === base.initial.movesLeft && entry.deal.id !== base.id && entry.deal.campaignLevel === level);
   if (!candidate) return base;
 
   stats.selected++; stats.issued++;

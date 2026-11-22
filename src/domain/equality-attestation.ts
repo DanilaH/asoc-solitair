@@ -1,3 +1,4 @@
+import { adjustedMoveBudget } from './difficulty';
 import type { BoardCommand, Deal } from './types';
 
 export interface EqualityBotTrace {
@@ -20,6 +21,9 @@ export interface EqualityManifest {
   finalBoardHash: string;
   sourceSeed: number;
   paywallSeed: number;
+  baseBudget: number;
+  historyPenalty: number;
+  levelInputHash: string;
   budget: number;
   featureConfig: { revision: string; enabled: readonly string[]; pairTransform: 'UNKNOWN' };
   runId: string;
@@ -38,7 +42,7 @@ export interface EqualityCandidate {
   manifest: EqualityManifest;
 }
 
-type AttestedCandidate = { baseId: string; deal: Deal; paywallSeed: number; attestation: string };
+type AttestedCandidate = { baseId: string; deal: Deal; paywallSeed: number; historyPenalty: number; baseBudget: number; attestation: string };
 const attested = new WeakMap<EqualityCandidate, AttestedCandidate>();
 export const equalityAttestation = (candidate: EqualityCandidate) => attested.get(candidate);
 
@@ -66,6 +70,10 @@ export async function registerBundledEquality(candidate: EqualityCandidate, expe
         manifest.rulesVersion !== 3 || (deal.initial.rulesVersion ?? 3) !== manifest.rulesVersion ||
         deal.id !== manifest.dealId || deal.version !== manifest.dealVersion || deal.daily || deal.initial.phase !== 'playing' ||
         deal.initial.movesLeft !== manifest.budget || !Number.isSafeInteger(manifest.budget) ||
+        !Number.isSafeInteger(manifest.baseBudget) || manifest.baseBudget <= 0 ||
+        !Number.isSafeInteger(manifest.historyPenalty) ||
+        manifest.budget !== adjustedMoveBudget(manifest.baseBudget, manifest.historyPenalty, true) ||
+        !/^[a-f0-9]{64}$/.test(manifest.levelInputHash) ||
         deal.winningPath.length === 0 || deal.winningPath.length >= manifest.budget ||
         await sha256(equalityBoardBinding(deal)) !== manifest.finalBoardHash ||
         await sha256(deal.winningPath) !== manifest.independentlyVerifiedWinningRouteHash) return;
@@ -81,7 +89,7 @@ export async function registerBundledEquality(candidate: EqualityCandidate, expe
           !['budget', 'no-legal-action', 'repeated-position'].includes(trace.lossReason))) return;
     if (!(await Promise.all(traces.map(async trace => await sha256(trace.traceActions) === trace.traceDigest))).every(Boolean)) return;
     freeze(owned);
-    attested.set(owned, freeze({ baseId: manifest.baseId, deal, paywallSeed: manifest.paywallSeed, attestation: expectedManifestHash }));
+    attested.set(owned, freeze({ baseId: manifest.baseId, deal, paywallSeed: manifest.paywallSeed, historyPenalty: manifest.historyPenalty, baseBudget: manifest.baseBudget, attestation: expectedManifestHash }));
     return owned;
   } catch {
     return undefined;

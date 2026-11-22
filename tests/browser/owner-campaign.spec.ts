@@ -47,7 +47,7 @@ test('gates new Equality issuance and resumes the archived deal and Undo exactly
   await page.locator('#next-level').tap();
   if (await page.locator('#difficulty-play').isVisible()) await page.locator('#difficulty-play').tap();
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', base.id);
-  expect((await read(page)).equality).toBeUndefined();
+  expect((await read(page)).equality?.issued ?? 0).toBe(0);
 
   const archived = { ...fixture(15), ...freshSave(equalityPreviewDeal, 'archived-equality'), contentVersion: 8 };
   const moved = dispatch(archived, equalityPreviewDeal.winningPath[0], equalityPreviewDeal).next;
@@ -64,6 +64,43 @@ test('gates new Equality issuance and resumes the archived deal and Undo exactly
   await enter();
   expect((await read(page)).attempt.board).toEqual(moved.attempt.board);
   expect((await read(page)).attempt.undo).toEqual(moved.attempt.undo);
+});
+
+test('issues the attested Equality deal only for the matching future budget and preserves Undo', async ({ page }) => {
+  test.skip(preview !== 'equality', 'Requires the isolated Equality build.');
+  await page.setViewportSize({ width: 320, height: 568 });
+  const previous = content8Wave.find(deal => deal.campaignLevel === 30)!;
+  const { equalityAttestedDeals } = await import('../../src/content/campaign-v8-equality');
+  const candidate = equalityAttestedDeals.find(deal => deal.campaignLevel === 31)!;
+  let save = { ...fixture(29), attempt: freshSave(previous, 'owner-equality-attested').attempt, contentVersion: 8 };
+  save.settings.reducedMotion = true;
+  save.difficultyHistory = Array.from({ length: 10 }, () => ({ outcome: 'Restart', restarts: 1 }));
+  save.difficultyPenalty = 10;
+  for (const cmd of previous.winningPath.slice(0, -1)) save = dispatch(save, cmd, previous).next;
+  await seed(page, save);
+  await move(page, previous, previous.winningPath.at(-1)!);
+  await page.locator('#next-level').tap();
+  if (await page.locator('#difficulty-play').isVisible()) await page.locator('#difficulty-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', candidate.id);
+  const started = await read(page);
+  expect(started.attempt.board).toEqual(candidate.initial);
+  expect(started.attempt.board.movesLeft).toBe(219);
+  expect(started.equality?.last).toMatchObject({ dealId: candidate.id, segment: 'NonPayer', cohortEvidence: 'controlled-fixture' });
+  expect(started.equality?.last?.attestation).toMatch(/^[a-f0-9]{64}$/);
+  if (process.env.ASOC_OWNER_GIF === '1') await page.waitForTimeout(1400);
+  await move(page, candidate, candidate.winningPath[0]);
+  const stepped = await read(page);
+  expect(stepped.attempt.undo).toEqual([started.attempt.board]);
+  await page.reload();
+  await page.locator('#home-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', candidate.id);
+  const restored = await read(page);
+  expect(restored.attempt.board).toEqual(stepped.attempt.board);
+  expect(restored.attempt.undo).toEqual(stepped.attempt.undo);
+  expect(restored.equality?.last).toEqual(started.equality?.last);
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board).toEqual(started.attempt.board);
+  if (process.env.ASOC_OWNER_GIF === '1') await page.waitForTimeout(1200);
 });
 
 test('warns before the separate random Joker and clears Undo only after confirm', async ({ page }) => {

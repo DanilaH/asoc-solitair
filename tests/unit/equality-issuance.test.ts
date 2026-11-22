@@ -46,7 +46,7 @@ it('leaves default and unverified cohorts unchanged and atomically issues a cert
     deal, manifest: {
       version: 2, provenanceTier: 'PRODUCT_ADAPTED', originalRuntime: 'UNOBSERVED', rulesVersion: 3,
       baseId: base.id, dealId: deal.id, dealVersion: deal.version, finalBoardHash: authoringHash(equalityBoardBinding(deal)),
-      sourceSeed: 42, paywallSeed: 42, budget: deal.initial.movesLeft!, featureConfig: { revision: 'test', enabled: [], pairTransform: 'UNKNOWN' },
+      sourceSeed: 42, paywallSeed: 42, historyPenalty: 0, baseBudget: base.initial.movesLeft!, levelInputHash: authoringHash(base.initial), budget: deal.initial.movesLeft!, featureConfig: { revision: 'test', enabled: [], pairTransform: 'UNKNOWN' },
       engineAndOracle: 'rules3-gameplay-oracle-v1', runId: authoringHash(control),
       independentlyVerifiedWinningRouteHash: authoringHash(deal.winningPath),
       botTraces: control.trials[0].runs.map(run => ({ botStrategyId: run.policyId, version: 1, traceActions: run.path,
@@ -63,6 +63,8 @@ it('leaves default and unverified cohorts unchanged and atomically issues a cert
   } } }, pin)).toBeUndefined();
   expect(await registerBundledEquality({ ...tested, deal: { ...deal, winningPath: deal.winningPath.slice(1) } }, pin)).toBeUndefined();
   expect(await registerBundledEquality({ ...tested, manifest: { ...tested.manifest, runId: 'altered' } }, pin)).toBeUndefined();
+  const wrongBudget = { ...tested, manifest: { ...tested.manifest, historyPenalty: 10 } };
+  expect(await registerBundledEquality(wrongBudget, authoringHash(wrongBudget.manifest))).toBeUndefined();
   const policy: EqualityPreviewPolicy = {
     enabled: true, cohortEvidence: 'controlled-fixture', version: 'controlled-attested-test', maxIssued: 1,
     seed: 42, segment: 'NonPayer', enabledSegments: ['NonPayer'], candidates: [candidate!],
@@ -86,6 +88,12 @@ it('leaves default and unverified cohorts unchanged and atomically issues a cert
     expect(save.attempt.dealId).toBe(base.id);
     expect(save.equality?.issued ?? 0).toBe(0);
   }
+
+  const changedDifficulty = fresh();
+  changedDifficulty.difficultyPenalty = -5;
+  beginDeal(changedDifficulty, base, 'different-difficulty', base, policy);
+  expect(changedDifficulty.attempt.dealId).toBe(base.id);
+  expect(changedDifficulty.equality?.issued ?? 0).toBe(0);
 
   let stored: string | null = null, fail = false;
   const storage = {

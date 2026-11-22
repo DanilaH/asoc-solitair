@@ -4,6 +4,7 @@ import { bonusKinds, bonusOffer, pilesFor } from '../domain/bonus-slots';
 export const WIDTH = 540;
 export const CARD_W = 138;
 export const CARD_H = 166;
+export const BOTTOM_DECK_MARGIN = 12;
 export const slotCount = (deal: Deal, kind: BonusKind) =>
   pilesFor(deal.initial, kind).length + Number(Boolean(bonusOffer(deal, kind)));
 const columnCount = (deal: Deal) => Math.max(slotCount(deal, 'tableau'), slotCount(deal, 'foundation'));
@@ -15,8 +16,7 @@ export function cardMetrics(deal: Deal) {
 /** Reserve enough logical height even when a real native banner shortens the canvas. */
 export function boardFrame(width: number, height: number, deckPosition: 'top' | 'bottom' = 'top', deal?: Deal) {
   const hasDeck = !deal || Boolean(deal.initial.stock.length || deal.initial.waste.length);
-  const deepUpperRow = deal && bonusOffer(deal, 'foundation');
-  const unit = Math.min(width / WIDTH, height / (deckPosition === 'bottom' && hasDeck ? deepUpperRow ? 760 : 680 : 650));
+  const unit = Math.min(width / WIDTH, height / (deckPosition === 'bottom' && hasDeck ? 680 : 650));
   return { unit, offsetX: 0, height: height / unit };
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
@@ -62,7 +62,7 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
   const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
   const bottom = deckPosition === 'bottom' && hasDeck;
   const left = deckSide === 'left' && hasDeck;
-  const deckY = bottom ? height - cardH / 2 - 12 : cardH / 2 + 20;
+  const deckY = bottom ? height - cardH / 2 - BOTTOM_DECK_MARGIN : cardH / 2 + 20;
   const originalStock = deal.initial.stock.length + deal.initial.waste.length;
   const thickness = board.stock.length > 1 ? 3 + 15 * Math.min(1, (board.stock.length - 1) / Math.max(1, originalStock - 1)) : 0;
   const stock = { x: left ? cardW / 2 : WIDTH - cardW / 2, y: deckY - thickness, thickness };
@@ -71,8 +71,7 @@ export function layout(board: Board, deal: Deal, height: number, deckSide: 'left
   // Preserve earlier positions while the initial three-card fan is opening.
   const fanWidth = Math.max(0, Math.min(3, board.waste.length) - 1) * fanStep;
   const waste = { x: stock.x + (left ? 1 : -1) * (cardW + gap + fanWidth), y: deckY };
-  // The inspect/remaining-moves badge owns the far right at the top with a bottom deck.
-  const top = cardH / 2 + (bottom ? bonusOffer(deal, 'foundation') ? 154 : 30 : hasDeck ? cardH + 54 : 185);
+  const top = cardH / 2 + (bottom ? 30 : hasDeck ? cardH + 54 : 185);
   board.foundations.forEach((ids, index) => {
     const x = center(index);
     targets.push({ location: { kind: 'foundation', index }, x, y: top, width: cardW + 8, height: cardH + 8 });

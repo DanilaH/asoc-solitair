@@ -26,7 +26,7 @@ try {
       await p.evaluate(s=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(s)),s);await p.reload();await p.locator('#app[data-ready=true]').waitFor();await p.locator('#home-play').tap();await p.waitForTimeout(250);
     }
     async function geometry(d:Deal) {
-      const s=await read(),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,s.settings.deckPosition,d),g=layout(s.attempt.board,d,f.height,s.settings.deckSide,s.settings.deckPosition);
+      const s=await read(),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,s.settings.deckPosition,d),g=layout(s.attempt.board,d,f,s.settings.deckSide,s.settings.deckPosition);
       return {s,g,point:(v:{x:number;y:number})=>({x:r.x+f.offsetX+v.x*f.unit,y:r.y+v.y*f.unit})};
     }
     async function action(d:Deal,id:string,to:Location,drag=false) {

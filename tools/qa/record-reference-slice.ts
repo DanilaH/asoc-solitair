@@ -44,7 +44,7 @@ const evidence = [];
 async function perform(d: Deal, cmd: BoardCommand, before: Save) {
   const root = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(root.width, root.height, before.settings.deckPosition, d);
-  const g = layout(before.attempt.board, d, frame.height, before.settings.deckSide, before.settings.deckPosition);
+  const g = layout(before.attempt.board, d, frame, before.settings.deckSide, before.settings.deckPosition);
   const position = ({ x, y }: { x: number; y: number }) => ({ x: root.x + frame.offsetX + x * frame.unit, y: root.y + y * frame.unit });
   const tap = async (pt: { x: number; y: number }) => {
     assert(pt.x >= 0 && pt.x < width && pt.y >= 0 && pt.y < height);
@@ -153,7 +153,7 @@ try {
           if (typeof release === 'string' || boardKey(release.board) !== boardKey(after.board)) continue;
           const root = (await page.locator('#game-root').boundingBox())!;
           const frame = boardFrame(root.width, root.height, before.settings.deckPosition, d);
-          const target = layout(board, d, frame.height, before.settings.deckSide, before.settings.deckPosition).targets
+          const target = layout(board, d, frame, before.settings.deckSide, before.settings.deckPosition).targets
             .find(t => t.location.kind === 'tableau' && t.location.index === column)!;
           await page.locator('#joker').tap();
           await expect(page.locator('#joker')).toHaveAttribute('aria-pressed', 'true');

@@ -16,7 +16,7 @@ test('a drag away from a tapped target cancels the pending transfer', async ({ p
   const before = await read(page);
   const root = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(root.width, root.height, before.settings.deckPosition, deal);
-  const board = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
+  const board = layout(before.attempt.board, deal, frame, before.settings.deckSide, before.settings.deckPosition);
   const point = ({ x, y }: { x: number; y: number }) => ({ x: root.x + frame.offsetX + x * frame.unit, y: root.y + y * frame.unit });
   const source = point(board.poses.find(p => p.id === sourceCards(before.attempt.board, command.from, deal).at(-1))!);
   const target = point(board.targets.find(t => t.location.kind === command.to.kind && t.location.index === command.to.index)!);

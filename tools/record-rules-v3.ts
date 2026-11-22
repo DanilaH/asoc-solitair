@@ -25,7 +25,7 @@ try {
   await p.evaluate(s=>localStorage.setItem('asoc-solitaire.save.v1',JSON.stringify(s)),s);await p.reload();await p.locator('#app[data-ready=true]').waitFor();await p.locator('#home-play').tap();await p.waitForTimeout(350);
   const start=(Date.now()-born)/1000;await p.screenshot({path:`${dir}/${width}-before.png`});await p.waitForTimeout(500);
   async function drag(id:string,to:Location) {
-   const s=await read(),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,s.settings.deckPosition,d),g=layout(s.attempt.board,d,f.height,s.settings.deckSide,s.settings.deckPosition);
+   const s=await read(),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,s.settings.deckPosition,d),g=layout(s.attempt.board,d,f,s.settings.deckSide,s.settings.deckPosition);
    const point=(q:{x:number;y:number})=>({x:r.x+f.offsetX+q.x*f.unit,y:r.y+q.y*f.unit}),a=point(g.poses.find(q=>q.id===id)!),b=point(g.targets.find(t=>t.location.kind===to.kind&&t.location.index===to.index)!);
    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[a]});
    for(let i=1;i<=16;i++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:a.x+(b.x-a.x)*i/16,y:a.y+(b.y-a.y)*i/16}]});await p.waitForTimeout(20);}

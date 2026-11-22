@@ -12,7 +12,7 @@ async function action(page: Page, cmd: BoardCommand, settle = true) {
   const save = await readSave(page);
   const rect = await page.locator('#game-root').boundingBox(); if (!rect) throw Error('No canvas');
   const frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, deal);
-  const metrics = layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
+  const metrics = layout(save.attempt.board, deal, frame, save.settings.deckSide, save.settings.deckPosition);
   const tap = async (point: { x: number; y: number }) => page.touchscreen.tap(rect.x + frame.offsetX + point.x * frame.unit, rect.y + point.y * frame.unit);
   if (cmd.type === 'transfer') {
     const id = cmd.from.kind === 'waste' ? save.attempt.board.waste.at(-1) : packet(save.attempt.board, cmd.from.index, deal).at(-1);
@@ -92,10 +92,11 @@ test('dragging a whole packet performs one move and Undo restores its members', 
   const before = await readSave(page), rect = await page.locator('#game-root').boundingBox(); if (!rect) throw Error('No canvas');
   expect(before.attempt.board).toEqual(prepared.attempt.board);
   expect(packet(before.attempt.board, 2, deal)).toEqual(['tool2', 'tool1', 'tool']);
-  const metrics = layout(before.attempt.board, deal, rect.height * 540 / rect.width);
+  const frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
+  const metrics = layout(before.attempt.board, deal, frame, before.settings.deckSide, before.settings.deckPosition);
   const from = metrics.poses.find(p => p.id === packet(before.attempt.board, 2, deal).at(-1))!;
   const to = metrics.targets.find(t => t.location.kind === 'foundation' && t.location.index === 0)!;
-  const x = (v: number) => rect.x + v * rect.width / 540, y = (v: number) => rect.y + v * rect.width / 540;
+  const x = (v: number) => rect.x + frame.offsetX + v * frame.unit, y = (v: number) => rect.y + v * frame.unit;
   await page.mouse.move(x(from.x), y(from.y)); await page.mouse.down();
   await page.mouse.move(x(to.x), y(to.y), { steps: 12 }); await page.mouse.up();
   await expect.poll(async () => (await readSave(page)).revision).toBeGreaterThan(before.revision);

@@ -126,7 +126,7 @@ try {
       const read = () => page.evaluate(() => JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!) as Save);
       const before = await read(); assert.equal(before.attempt.dealId, deal.id);
       const r = (await page.locator('#game-root').boundingBox())!, f = boardFrame(r.width, r.height, before.settings.deckPosition, deal);
-      const g = layout(before.attempt.board, deal, f.height, before.settings.deckSide, before.settings.deckPosition);
+      const g = layout(before.attempt.board, deal, f, before.settings.deckSide, before.settings.deckPosition);
       const point = (p: { x: number; y: number }) => ({ x: r.x + f.offsetX + p.x * f.unit, y: r.y + p.y * f.unit });
       await page.screenshot({ path: dir + '/before.png', scale: 'css' });
       const cdp = await context.newCDPSession(page), frames: object[] = [], writes: Promise<void>[] = [];

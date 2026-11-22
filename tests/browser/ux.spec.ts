@@ -18,7 +18,7 @@ async function seed(page: Page, index: number) {
 }
 async function move(page: Page, deal: Deal, cmd: BoardCommand) {
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal',deal.id);
-  const s=await read(page), r=(await page.locator('#game-root').boundingBox())!, f=boardFrame(r.width,r.height,s.settings.deckPosition,deal), g=layout(s.attempt.board,deal,f.height,s.settings.deckSide,s.settings.deckPosition);
+  const s=await read(page), r=(await page.locator('#game-root').boundingBox())!, f=boardFrame(r.width,r.height,s.settings.deckPosition,deal), g=layout(s.attempt.board,deal,f,s.settings.deckSide,s.settings.deckPosition);
   const tap=(p:{x:number;y:number})=>page.touchscreen.tap(r.x+f.offsetX+p.x*f.unit,r.y+p.y*f.unit);
   if(cmd.type==='transfer') {const id=cmd.from.kind==='waste'?s.attempt.board.waste.at(-1):packet(s.attempt.board,cmd.from.index,deal).at(-1);await tap(g.poses.find(p=>p.id===id)!);await tap(g.targets.find(t=>t.location.kind===cmd.to.kind&&t.location.index===cmd.to.index)!);}else await tap(g.stock);
   await expect.poll(async()=>(await read(page)).revision).toBeGreaterThan(s.revision);
@@ -65,7 +65,7 @@ test('card reading stays finger-sized on a short field and never spends a move',
   await page.locator('#inspect').tap();
   const rect = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(rect.width, rect.height, before.settings.deckPosition, deal);
-  const g = layout(before.attempt.board, deal, frame.height, before.settings.deckSide, before.settings.deckPosition);
+  const g = layout(before.attempt.board, deal, frame, before.settings.deckSide, before.settings.deckPosition);
   const pose = g.poses.find(p => p.faceUp && before.attempt.board.tableau.some(col => col.at(-1) === p.id))!;
   await page.touchscreen.tap(rect.x + frame.offsetX + pose.x * frame.unit, rect.y + pose.y * frame.unit);
   await expect(page.locator('#inspect-dialog')).toBeVisible();

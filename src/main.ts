@@ -36,7 +36,7 @@ import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-s
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
-import { BOTTOM_DECK_MARGIN, CARD_H, WIDTH, boardFrame, layout } from './game/layout';
+import { BOTTOM_DECK_MARGIN, CARD_H, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
 import { cardReader } from './game/card-reader';
@@ -140,21 +140,21 @@ function positionDeckTools(save: Save) {
   tools.style.transformOrigin = right ? 'top right' : 'top left';
   tools.style.transform = `scale(${frame.unit})`;
   tools.style.top = `${top}px`;
-  tools.style.left = right ? 'auto' : `${frame.offsetX}px`; tools.style.right = right ? `${rect.width - frame.offsetX - WIDTH * frame.unit}px` : 'auto';
+  tools.style.left = right ? 'auto' : '0'; tools.style.right = right ? '0' : 'auto';
   const offers = deal.bonusSlots && ready && screen === 'game' && save.attempt.board.phase === 'playing'
-    ? layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition).offers : [];
+    ? layout(save.attempt.board, deal, frame, save.settings.deckSide, save.settings.deckPosition).offers : [];
   for (const kind of bonusKinds) {
     const button = $(`#bonus-${kind}`), offer = offers.find(target => target.kind === kind);
     button.hidden = !offer;
     if (offer) {
       const slotWidth = offer.width * frame.unit;
-      // A bonus is the last slot of its row. Any extra touch width can extend
-      // into the unused space beyond the slot instead of covering its neighbour.
+      // Keep the bonus hit area inside the field; the gap to the preceding
+      // slot leaves room for the minimum touch width on short screens.
       const touchWidth = Math.max(44, slotWidth);
       const left = frame.offsetX + (offer.x - offer.width / 2) * frame.unit;
       button.style.left = `${Math.min(left, rect.width - touchWidth)}px`;
       button.style.top = `${offer.y * frame.unit}px`;
-      button.style.width = `${touchWidth}px`;
+      button.style.setProperty('--bonus-width', `${touchWidth}px`);
     }
   }
 }
@@ -1114,8 +1114,8 @@ try {
   scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, command: execute, allows: allowsLesson, praise: showPraise, sound: name => runtime.play(name),
     inputRoot: () => root, readerZone: () => $('#inspect').getBoundingClientRect(), peek: peekCard,
     boardBounds() { const rect = root.getBoundingClientRect(), zoom = game?.scale.zoom ?? initial.rect.width / initial.backing.width;
-      return { x: (rect.width ? rect.x : Math.max(0, (innerWidth - 520) / 2) + 12) / zoom, y: (rect.height ? rect.y : 76) / zoom,
-        width: (rect.width || Math.min(innerWidth, 520) - 24) / zoom, height: (rect.height || Math.max(280, innerHeight - 260)) / zoom }; },
+      return { x: (rect.width ? rect.x : 12) / zoom, y: (rect.height ? rect.y : 76) / zoom,
+        width: (rect.width || innerWidth - 24) / zoom, height: (rect.height || Math.max(280, innerHeight - 260)) / zoom }; },
     inspect(id) {
       const card = deal.cards[id];
       definitionCardId = id;

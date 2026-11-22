@@ -33,7 +33,7 @@ const cueCount = (page: Page, length: number) => page.evaluate(length =>
 async function input(page: Page, deal: Deal, command: BoardCommand) {
   const save = await read(page), root = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(root.width, root.height, save.settings.deckPosition, deal);
-  const geometry = layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition);
+  const geometry = layout(save.attempt.board, deal, frame, save.settings.deckSide, save.settings.deckPosition);
   const tap = ({ x, y }: { x: number; y: number }) => page.touchscreen.tap(root.x + frame.offsetX + x * frame.unit, root.y + y * frame.unit);
   if (command.type !== 'transfer') return tap(geometry.stock);
   const id = sourceCards(save.attempt.board, command.from, deal).at(-1);

@@ -14,6 +14,7 @@ button:focus-visible{outline:3px solid #e8a968;outline-offset:3px}
 
 #app{width:min(100%,520px);height:100dvh;margin:auto;position:relative;overflow:hidden;display:flex;flex-direction:column;background:radial-gradient(ellipse at 35% 10%,#267d7d,#1c676b 60%,#15515d);padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom);box-shadow:0 0 90px #082b37}
 #app[data-screen=home]{background:radial-gradient(ellipse at 50% 50%,#fffdf5,#f2ead8);color:#537278}
+#app[data-screen=game]{width:100%}
 body.platform-native #app{padding:0 12px}
 #app[data-palette=ink][data-screen=game]{background:radial-gradient(ellipse at 40% 15%,#65668a,#414a71 65%,#303a60)}
 #app[data-reward-theme][data-screen=game]{background:radial-gradient(ellipse at 40% 15%,#826641,#5a452f 65%,#463122)}
@@ -546,8 +547,8 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 .tier-dot{position:absolute;left:3px;top:3px;font-size:9px;line-height:14px;min-width:14px;border-radius:7px;background:var(--tier-bg);color:var(--tier-fg);font-weight:900}
 
 .board-bonus{position:absolute;z-index:1;transform:translateY(-50%);display:grid;place-content:center;place-items:center;
-  height:52px;min-width:44px;padding:0 1px;gap:2px;border:1px dashed #e4ce91;border-radius:12px;background:#195b5c;color:#fff3d6;
-  font-size:clamp(10px,3.4vw,13px);font-weight:850;line-height:1;touch-action:manipulation}
+  height:52px;width:var(--bonus-width,44px);min-width:44px;padding:0 1px;gap:2px;border:1px dashed #e4ce91;border-radius:12px;background:#195b5c;color:#fff3d6;
+  font-size:clamp(10px,calc(var(--bonus-width,44px) / 4.4),13px);font-weight:850;line-height:1;touch-action:manipulation}
 .board-bonus span{font-size:25px;line-height:20px;pointer-events:none}
 .board-bonus:active{background:#2b7372}
 .board-bonus:focus-visible{outline:2px solid #fff0af;outline-offset:2px}

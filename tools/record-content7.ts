@@ -11,7 +11,7 @@ import {boardFrame,layout} from '../src/game/layout';
 import type {Save,Deal,BoardCommand} from '../src/domain/types';
 const root=process.env.C7_RECORD_OUTPUT??'.recording/content7-recordings',read=(p:Page)=>p.evaluate(()=>JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!)as Save);
 await mkdir(root,{recursive:true});
-async function move(p:Page,d:Deal,a:BoardCommand,drag:boolean){const before=await read(p),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,before.settings.deckPosition,d),g=layout(before.attempt.board,d,f.height,before.settings.deckSide,before.settings.deckPosition),point=(x:{x:number;y:number})=>({x:r.x+f.offsetX+x.x*f.unit,y:r.y+x.y*f.unit});
+async function move(p:Page,d:Deal,a:BoardCommand,drag:boolean){const before=await read(p),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,before.settings.deckPosition,d),g=layout(before.attempt.board,d,f,before.settings.deckSide,before.settings.deckPosition),point=(x:{x:number;y:number})=>({x:r.x+f.offsetX+x.x*f.unit,y:r.y+x.y*f.unit});
  if(a.type==='transfer'){const id=sourceCards(before.attempt.board,a.from,d).at(-1),from=point(g.poses.find(x=>x.id===id)!),to=point(g.targets.find(x=>x.location.kind===a.to.kind&&x.location.index===a.to.index)!);
   if(drag){await p.mouse.move(from.x,from.y);await p.mouse.down();await p.mouse.move(to.x,to.y,{steps:18});await p.waitForTimeout(120);await p.mouse.up();}else{await p.touchscreen.tap(from.x,from.y);await p.touchscreen.tap(to.x,to.y);}
  }else{const t=point(g.stock);await p.touchscreen.tap(t.x,t.y);}

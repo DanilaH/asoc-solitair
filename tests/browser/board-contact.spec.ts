@@ -43,7 +43,7 @@ async function seed(page: Page, deal: Deal, save: Save) {
 }
 async function geometry(page: Page, deal: Deal) {
   const save = await read(page), r = (await page.locator('#game-root').boundingBox())!, f = boardFrame(r.width, r.height, save.settings.deckPosition, deal);
-  const g = layout(save.attempt.board, deal, f.height, save.settings.deckSide, save.settings.deckPosition);
+  const g = layout(save.attempt.board, deal, f, save.settings.deckSide, save.settings.deckPosition);
   return { save, r, f, g, point: (p: { x: number; y: number }) => ({ x: r.x + f.offsetX + p.x * f.unit, y: r.y + p.y * f.unit }) };
 }
 async function tapCommand(page: Page, deal: Deal, cmd: BoardCommand) {

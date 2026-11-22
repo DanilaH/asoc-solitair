@@ -25,7 +25,7 @@ try {
    // A QA touch marker follows actual native pointer events; it cannot move cards.
    await p.evaluate(()=>{const dot=document.createElement('div');dot.id='qa-touch';dot.style.cssText='position:fixed;width:20px;height:20px;border:2px solid #fff8;box-shadow:0 0 0 2px #163f4566;border-radius:50%;pointer-events:none;z-index:50;display:none;transform:translate(-50%,-50%)';document.body.append(dot);for(const type of ['pointerdown','pointermove','pointerup','pointercancel'])document.addEventListener(type,e=>{const q=e as PointerEvent;dot.style.left=q.clientX+'px';dot.style.top=q.clientY+'px';dot.style.display=q.buttons?'block':'none'},{capture:true});});
   }
-  async function geometry(deal: Deal) { const s=await read(),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,s.settings.deckPosition,deal),g=layout(s.attempt.board,deal,f.height,s.settings.deckSide,s.settings.deckPosition);return {s,r,f,g,pt:(v:{x:number;y:number})=>({x:r.x+f.offsetX+v.x*f.unit,y:r.y+v.y*f.unit})}; }
+  async function geometry(deal: Deal) { const s=await read(),r=(await p.locator('#game-root').boundingBox())!,f=boardFrame(r.width,r.height,s.settings.deckPosition,deal),g=layout(s.attempt.board,deal,f,s.settings.deckSide,s.settings.deckPosition);return {s,r,f,g,pt:(v:{x:number;y:number})=>({x:r.x+f.offsetX+v.x*f.unit,y:r.y+v.y*f.unit})}; }
   const tap = async (v:{x:number;y:number})=>{await p.touchscreen.tap(v.x,v.y);await p.waitForTimeout(390)};
   const start = (v:{x:number;y:number})=>c.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[v]});
   const end = ()=>c.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});

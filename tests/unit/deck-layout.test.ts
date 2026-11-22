@@ -53,7 +53,7 @@ it('three-card waste and the full stock stack stay clear of an occupied foundati
   }
 });
 
-it('fits five aligned, individually tappable columns and foundations in the compact banner frame', () => {
+it('fits five individually tappable columns and spans the field with either foundation count', () => {
   const source = content8Dealer.find(d => d.initial.tableau.length === 4 && d.initial.stock.length >= 28)!;
   const initial = structuredClone(source.initial);
   initial.tableau.push(initial.stock.splice(0, 23));
@@ -67,11 +67,16 @@ it('fits five aligned, individually tappable columns and foundations in the comp
     const metrics = cardMetrics(deal);
     for (const side of ['left', 'right'] as const) for (const row of ['top', 'bottom'] as const) {
       const frame = boardFrame(screen.width, screen.height, row, deal);
-      const { poses, targets, stock } = layout(initial, deal, frame.height, side, row);
+      const { poses, targets, stock } = layout(initial, deal, frame, side, row);
       const tableau = targets.filter(t => t.location.kind === 'tableau');
       const foundations = targets.filter(t => t.location.kind === 'foundation');
       expect(tableau).toHaveLength(5);
-      expect(foundations.map(t => t.x)).toEqual(tableau.slice(0, count).map(t => t.x));
+      for (const slots of [tableau, foundations]) {
+        expect(slots[0].x).toBeCloseTo(metrics.width / 2);
+        expect(slots.at(-1)!.x).toBeCloseTo(frame.width - metrics.width / 2);
+        const pitch = (frame.width - metrics.width) / (slots.length - 1);
+        slots.forEach((slot, i) => expect(slot.x).toBeCloseTo(slots[0].x + i * pitch));
+      }
       for (const t of targets) {
         expect(dropTarget(targets, t.x, t.y, 0)).toEqual(t);
         const hitWidth = Math.min(screen.width, (t.x + t.width / 2) * frame.unit) - Math.max(0, (t.x - t.width / 2) * frame.unit);
@@ -84,5 +89,19 @@ it('fits five aligned, individually tappable columns and foundations in the comp
         if (!initial.waste.includes(pose.id)) expect(pose.y + metrics.height / 2).toBeLessThanOrEqual(floor + .01);
       }
     }
+  }
+});
+
+it('keeps either deck flush to its edge without spreading the waste fan on a short wide screen', () => {
+  const board = withFan(introDeal), { width: cardWidth } = cardMetrics(introDeal);
+  for (const row of ['top', 'bottom'] as const) {
+    const frame = boardFrame(752, 350, row, introDeal);
+    const left = layout(board, introDeal, frame, 'left', row);
+    const right = layout(board, introDeal, frame, 'right', row);
+    expect((left.stock.x - cardWidth / 2) * frame.unit).toBeCloseTo(0);
+    expect((right.stock.x + cardWidth / 2) * frame.unit).toBeCloseTo(752);
+    const fan = left.poses.filter(pose => board.waste.includes(pose.id));
+    expect(fan.map(pose => pose.x - left.stock.x)).toEqual([cardWidth + 14, cardWidth + 46, cardWidth + 78]);
+    for (const pose of fan) expect(right.poses.find(card => card.id === pose.id)!.x + pose.x).toBeCloseTo(frame.width);
   }
 });

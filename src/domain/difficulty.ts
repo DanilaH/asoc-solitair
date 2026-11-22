@@ -17,10 +17,11 @@ export function recordCampaignOutcome(save: Save) {
   save.difficultyHistory = [...(save.difficultyHistory ?? []), { outcome, restarts }].slice(-DIFFICULTY_WINDOW);
   save.difficultyPenalty = nextPenalty(save.difficultyHistory, previous, C8_DIFFICULTY);
   if (SOURCE_DIFFICULTY_PREVIEW) {
+    const previousSource = save.sourceDifficultyPenalty ?? nextPenalty(save.sourceDifficultyHistory ?? [], 0, C8_DIFFICULTY);
     const entry = updateSourceDifficultySlot(save.attempt.sourceDifficulty, 'LevelWon').slot;
     save.sourceDifficultyHistory = [...(save.sourceDifficultyHistory ?? []), entry].slice(-DIFFICULTY_WINDOW);
     if (save.sourceDifficultyHistory.length === DIFFICULTY_WINDOW) {
-      save.sourceDifficultyPenalty = nextPenalty(save.sourceDifficultyHistory, save.sourceDifficultyPenalty ?? 0, C8_DIFFICULTY);
+      save.sourceDifficultyPenalty = nextPenalty(save.sourceDifficultyHistory, previousSource, C8_DIFFICULTY);
     }
   }
 }

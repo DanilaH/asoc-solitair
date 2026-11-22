@@ -24,6 +24,7 @@ function ordinaryWitness(deal: Deal) {
 
 export function authorHitappsCandidate(base: Deal, settings: {
   structure: HitappsStructure;
+  trustedInputHash?: string;
   features: HitappsFeatureConfig;
   difficulty: Pick<DifficultyInput, 'historyPenalty' | 'previousLosses' | 'special'>;
   easy: Parameters<typeof planFutureDifficulty>[1];
@@ -33,7 +34,7 @@ export function authorHitappsCandidate(base: Deal, settings: {
   findWitness?: (deal: Deal) => BoardCommand[] | undefined;
 }) {
   const { strategy, difficulty, structure, features, drawSeed } = settings;
-  const input = prepareHitappsInput(base, structure, difficulty.historyPenalty);
+  const input = prepareHitappsInput(base, structure, difficulty.historyPenalty, settings.trustedInputHash);
   const plan = planFutureDifficulty({
     ...difficulty, baseBudget: input.baseBudget, levelPenalty: structure.levelPenalty,
     stable: structure.stableMoves, random: structure.layout === 'random',

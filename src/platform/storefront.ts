@@ -1,5 +1,5 @@
 import { Capacitor, registerPlugin } from '@capacitor/core';
-import { PRODUCT_INDEX } from '../domain/commerce/catalog';
+import { CHECKOUT_PRODUCT_INDEX } from '../domain/commerce/catalog';
 import { PurchaseReconciler, type CheckoutBinding, type PurchaseAuthority, type PurchaseOrder } from '../domain/commerce/orders';
 import { rewardOfferState } from '../domain/reward-offers';
 import { purchaseTaskSignal, recordTaskSignal } from '../domain/events/daily-tasks';
@@ -21,7 +21,7 @@ export function createStorefront(store: SaveStore) {
     ? registerPlugin<MerchantBridge>('SolitaireCheckout') : undefined;
   let merchant: MerchantStatus | undefined;
   const bindingFor = (sku: string) => merchant?.products.find(binding => binding.sku === sku &&
-    binding.provider === merchant?.provider && binding.appId === merchant.appId && PRODUCT_INDEX.has(sku) &&
+    binding.provider === merchant?.provider && binding.appId === merchant.appId && CHECKOUT_PRODUCT_INDEX.has(sku) &&
     /^[A-Z]{3}$/.test(binding.price?.currency ?? '') && Number.isSafeInteger(binding.price.minorUnits) && binding.price.minorUnits > 0);
   const reconciler = () => bridge && merchant ? new PurchaseReconciler(store, { verify: query => bridge.verify(query), acknowledge: (order, purchaseType) => bridge.acknowledge({ order, purchaseType }) }, { accountId: merchant.accountId, bindingFor }) : undefined;
   async function credit() {
@@ -68,7 +68,7 @@ export function createStorefront(store: SaveStore) {
 
 function creditWallet(save: SaveStore['state'], order: PurchaseOrder) {
   if (order.walletApplied) return;
-  const goods = PRODUCT_INDEX.get(order.sku)?.benefits;
+  const goods = CHECKOUT_PRODUCT_INDEX.get(order.sku)?.benefits;
   if (!goods) return;
   const increments = { coins: 0, hints: 0, undos: 0, jokers: 0 };
   let definitions = 0;

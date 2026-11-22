@@ -100,6 +100,25 @@ export function decodeSave(raw: string, source: DealSource): Save {
       (deal.daily || deal.campaignLevel === undefined || !validOutcome(save.attempt.sourceDifficulty)))) {
     throw Error('Повреждены исходные события сложности');
   }
+  if (save.equality !== undefined) {
+    const state = save.equality;
+    if (!state || state.version !== 1 || ![state.eligible, state.attempted, state.selected, state.issued, state.lost, state.completed].every(natural) ||
+      state.attempted > state.eligible || state.selected > state.attempted || state.issued !== state.selected ||
+      state.completed > state.issued || state.lost > state.issued || Boolean(state.last) !== (state.issued > 0)) {
+      throw Error('Повреждена история выдачи особой раздачи');
+    }
+    const last = state.last;
+    if (last !== undefined && (!last || typeof last.attemptId !== 'string' || typeof last.dealId !== 'string' ||
+      !/^[a-zA-Z0-9_-]{1,100}$/.test(last.attemptId) || !/^[a-zA-Z0-9_-]{1,100}$/.test(last.dealId) ||
+      !natural(last.dealVersion) || last.dealVersion === 0 || typeof last.policyVersion !== 'string' || !last.policyVersion ||
+      (last.segment !== undefined && !['NonPayer', 'Payer', 'PotentialPayer', 'SleepPayer'].includes(last.segment)) ||
+      (last.cohortEvidence !== undefined && !['controlled-fixture', 'verified-provider'].includes(last.cohortEvidence)) ||
+      (last.seed !== undefined && (!Number.isSafeInteger(last.seed) || last.seed <= 0 || last.seed > 2147483647)) ||
+      typeof last.lost !== 'boolean' || typeof last.completed !== 'boolean' ||
+      (last.attemptId === save.attempt.id && (deal.daily || last.dealId !== deal.id || last.dealVersion !== deal.version)))) {
+      throw Error('Повреждена особая попытка');
+    }
+  }
   const director = save.attempt.director;
   if (director !== undefined && (!director || deal.daily || deal.campaignLevel === undefined ||
     !natural(director.restarts) || !natural(director.previousLosses) || director.previousLosses > director.restarts ||

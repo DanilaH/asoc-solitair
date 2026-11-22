@@ -1,3 +1,4 @@
+import { equalityPreviewDeal, isEqualityVariant } from './campaign-v8-equality';
 import { expansionDeals } from './expansion';
 import { findDaily } from './daily';
 import { modifierDeals } from './modifiers';
@@ -57,11 +58,12 @@ export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
 const lateAdaptive = adaptiveBank([...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8Special, ...content8BonusDeals]);
 export const lateAdaptiveDeals = [...lateAdaptive.values()].flatMap(({ tight, relief }) => tight ? [tight, relief] : [relief]);
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
-  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...lateAdaptiveDeals, ...content8Special, ...content8BonusDeals,
+  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...lateAdaptiveDeals, equalityPreviewDeal, ...content8Special, ...content8BonusDeals,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
   const previewIds = CONTENT8_PREVIEW ? variants.get(base.campaignLevel)?.ids : undefined;
+  if (CONTENT8_PREVIEW && isEqualityVariant(dealId, base.id)) return true;
   if (previewIds?.has(base.id) && previewIds.has(dealId)) return true;
   const adaptiveBase = CONTENT8_PREVIEW ? all.get(dealId)?.adaptive?.baseId : undefined;
   if (adaptiveBase && (adaptiveBase === base.id || sameLocalizedLevel(adaptiveBase, base))) return true;

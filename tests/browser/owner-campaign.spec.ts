@@ -29,3 +29,26 @@ test('wins level 15 and starts the certified tighter level 16 with its saved bud
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', id);
   expect((await read(page)).attempt.board).toEqual(started.board);
 });
+
+test('starts the recorded Equality layout through Next and resumes its unchanged save', async ({ page }) => {
+  test.skip(preview !== 'equality', 'Requires the gated P08 gameplay build.');
+  await page.setViewportSize({ width: 320, height: 568 });
+  const previous = content8Dealer[14];
+  const { equalityPreviewDeal } = await import('../../src/content/campaign-v8-equality');
+  let save = { ...fixture(14), attempt: freshSave(previous, 'owner-equality').attempt, contentVersion: 8 };
+  save.settings.reducedMotion = true;
+  for (const cmd of previous.winningPath.slice(0, -1)) save = dispatch(save, cmd, previous).next;
+  await seed(page, save);
+  await move(page, previous, previous.winningPath.at(-1)!);
+  await page.locator('#next-level').tap();
+  if (await page.locator('#difficulty-play').isVisible()) await page.locator('#difficulty-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', equalityPreviewDeal.id);
+  const started = await read(page);
+  expect(started.equality?.last).toMatchObject({ dealId: equalityPreviewDeal.id, segment: 'NonPayer', cohortEvidence: 'controlled-fixture' });
+  expect(started.attempt.board).toEqual(equalityPreviewDeal.initial);
+  await page.waitForTimeout(650);
+  await page.reload();
+  await page.locator('#home-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', equalityPreviewDeal.id);
+  expect((await read(page)).attempt.board).toEqual(started.attempt.board);
+});

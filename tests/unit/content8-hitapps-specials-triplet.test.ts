@@ -12,15 +12,17 @@ import type { Board, BoardCommand, Card, Deal } from '../../src/domain/types';
  * RESEARCH QA ONLY: exercises all 3 currently PRODUCT_ADAPTED P10/P11/P12
  * semantics together. This is not an original Hitapps runtime witness.
  */
-const cards: Record<string, Card> = Object.fromEntries(
-  (['a', 'b', 'c', 'd'] as const).flatMap(group => [
-    [group, { id: group, category: group, leader: true, text: group.toUpperCase(), explanation: '' }],
-    ...(group === 'b'
-      ? [['b-bottom', { id: 'b-bottom', category: group, text: 'Picture lower', explanation: '' }],
-         ['b-top', { id: 'b-top', category: group, text: 'Picture upper', explanation: '' }]]
-      : [[group + '1', { id: group + '1', category: group, text: group + ' member', explanation: '' }]]),
-  ]),
-) as [string, Card][]);
+const cards: Record<string, Card> = {
+  a: { id: 'a', category: 'a', leader: true, text: 'A', explanation: '' },
+  a1: { id: 'a1', category: 'a', text: 'A member', explanation: '' },
+  b: { id: 'b', category: 'b', leader: true, text: 'B', explanation: '' },
+  'b-bottom': { id: 'b-bottom', category: 'b', text: 'Picture lower', explanation: '' },
+  'b-top': { id: 'b-top', category: 'b', text: 'Picture upper', explanation: '' },
+  c: { id: 'c', category: 'c', leader: true, text: 'C', explanation: '' },
+  c1: { id: 'c1', category: 'c', text: 'C member', explanation: '' },
+  d: { id: 'd', category: 'd', leader: true, text: 'D', explanation: '' },
+  d1: { id: 'd1', category: 'd', text: 'D member', explanation: '' },
+};
 
 const path = decodeRoute(
   't0>f0 t1>f0 t2>f1 d w0>f1 d w0>t5 d w0>f2 t5>f2 t3>f3 t4>f3'

@@ -1,4 +1,4 @@
-import { adjustedMoveBudget, C8_DIFFICULTY, difficultyPenalty } from '../domain/difficulty';
+import { adjustedMoveBudget, C8_DIFFICULTY, futureDifficultyPenalty } from '../domain/difficulty';
 import { campaignId } from '../domain/progression';
 import type { Attempt, Deal, Save } from '../domain/types';
 
@@ -30,7 +30,7 @@ export function selectAdaptiveDeal(save: Save, base: Deal, bank: AdaptiveBank, p
   if (!enabled || !pool || level === undefined || save.platform?.completedCampaign.includes(campaignId(level))) return base;
   if (previous?.board.phase === 'exhausted' && [base.id, pool.tight?.id, pool.relief.id].includes(previous.dealId) &&
       (previous.director?.previousLosses ?? 0) + 1 >= C8_DIFFICULTY.lossThreshold) return pool.relief;
-  const penalty = difficultyPenalty(save);
+  const penalty = futureDifficultyPenalty(save);
   if (penalty === C8_DIFFICULTY.hardPenalty) return pool.tight ?? base;
   if (penalty === C8_DIFFICULTY.easyPenalty) return pool.relief;
   return base;

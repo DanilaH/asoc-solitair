@@ -114,6 +114,7 @@ export interface Save {
   equality?: EqualityIssuanceState;
   difficultyPenalty?: number;
   sourceDifficultyHistory?: CampaignOutcome[];
+  sourceDifficultyPenalty?: number;
   rewardOffers?: RewardOffers;
   campaignAds?: CampaignAdsState;
   campaignLives?: CampaignLives;

@@ -1,3 +1,4 @@
+import { equalityPreviewPolicy } from './content/campaign-v8-equality';
 import { recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
 import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
@@ -976,7 +977,7 @@ try {
           const selected = redeal ? campaignRedeal(next.attempt) : selectCampaignDeal(next, target, previous);
           if (!selected || (redeal && (next.attempt.id !== redeal.attemptId || selected.id !== redeal.dealId))) return false;
           if (next.attempt.daily) switchMode(next, 'campaign', previousDeal ?? selected, crypto.randomUUID());
-          beginDeal(next, selected, crypto.randomUUID(), previousDeal);
+          beginDeal(next, selected, crypto.randomUUID(), previousDeal, redeal ? undefined : equalityPreviewPolicy);
           return true;
         });
         if (started) {

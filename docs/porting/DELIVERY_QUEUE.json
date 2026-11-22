@@ -217,7 +217,7 @@
       "order": 8,
       "title": "Сохранённая опциональная выдача Equality",
       "workstream": "CORE",
-      "state": "NEEDS_OWNER",
+      "state": "NEEDS_DEVICE",
       "entryGate": "OWNER_ACTIVATION_GATE",
       "dependsOn": [
         "P07"

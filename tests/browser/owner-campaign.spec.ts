@@ -52,3 +52,31 @@ test('starts the recorded Equality layout through Next and resumes its unchanged
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', equalityPreviewDeal.id);
   expect((await read(page)).attempt.board).toEqual(started.attempt.board);
 });
+
+test('warns before the separate random Joker and clears Undo only after confirm', async ({ page }) => {
+  test.skip(preview !== 'random-joker', 'Requires the gated P15 gameplay build.');
+  await page.setViewportSize({ width: 320, height: 568 });
+  const { randomJokerFixture } = await import('../fixtures/owner-random-joker');
+  const { save, column } = randomJokerFixture();
+  await page.addInitScript(i => {
+    const original = crypto.getRandomValues.bind(crypto);
+    crypto.getRandomValues = array => {
+      if (array instanceof Uint32Array && array.length === 1) { array[0] = i; return array; }
+      return original(array);
+    };
+  }, column);
+  await seed(page, save);
+  const open = async () => { await page.locator('#wallet-open').tap(); await page.locator('#random-joker-open').tap(); };
+  await open();
+  await expect(page.locator('#random-joker-warning')).toContainText('история отмены очистится');
+  await page.locator('#random-joker-warning [data-close]').tap();
+  expect((await read(page)).attempt).toMatchObject({ board: save.attempt.board, undo: save.attempt.undo });
+  await open();
+  await page.locator('#random-joker-confirm').tap();
+  await expect.poll(async () => (await read(page)).attempt.randomJokerUsed).toBe(true);
+  expect((await read(page)).attempt.undo).toEqual([]);
+  await page.waitForTimeout(650);
+  await page.reload();
+  await page.locator('#home-play').tap();
+  await expect.poll(async () => (await read(page)).attempt.board.joker?.card?.nativeType).toBe(2);
+});

@@ -877,10 +877,11 @@
     },
     {
       "id": "azur-joker-random-column-insertion",
-      "status": "IN_PROGRESS",
-      "currentImplementation": "P15 isolated native-static model draws a bounded lower-column index, creates one revealed card and clears a supplied Undo queue on success. Existing C8 manual Joker remains independent. See docs/porting/P15_AZUR_JOKER.md.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "В C8 QA действует отдельная открытая карта с собственным ID в слое столбца. Успешная выдача очищает Undo в одной записи. Продолжение проверяется перед расходом тестового права.",
       "nextAction": "Research kit PR #84 original AZUR GameManager.AddJokerCard: shared Unity Random.Range(0,min(configured limit,current tableau columns)) chooses GetColumn, adds revealed card using PlaceCardForced, conditionally clears UndoSystem and TryAddJokerCard emits RaiseJokerUsed only on nonnull. Define versioned separate optional AZUR helper with source-derived/random-column tests and explicit Undo reset policy; actual positive/zero bounds, UI unlocking, coin/SDK receipts, original Android/restart/save states and global RNG state remain UNKNOWN. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
-      "stage": "D1"
+      "stage": "D1",
+      "evidenceRef": "docs/porting/P15_AZUR_JOKER.md"
     },
     {
       "id": "azur-art-sprite-wordcount-override",

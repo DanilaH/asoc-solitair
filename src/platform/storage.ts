@@ -130,7 +130,10 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.attempt.jokerUsed !== undefined && typeof save.attempt.jokerUsed !== 'boolean') throw Error('Повреждён Джокер');
   if (save.attempt.shuffleUsed !== undefined && (save.attempt.shuffleUsed !== true || deal.shufflePreview !== 1))
     throw Error('Повреждено перемешивание');
-  if ((save.attempt.board.joker || save.attempt.undo.some(board => board.joker)) && !save.attempt.jokerUsed) throw Error('Джокер без расхода');
+  if (save.attempt.randomJokerUsed !== undefined && (save.attempt.randomJokerUsed !== true || deal.randomJokerPreview !== 1))
+    throw Error('Повреждён расход случайного Джокера');
+  if ([save.attempt.board, ...save.attempt.undo].some(board => board.joker &&
+      (board.joker.card ? !save.attempt.randomJokerUsed : !save.attempt.jokerUsed))) throw Error('Джокер без расхода');
   save.attempt.undo = save.attempt.undo.slice(-MAX_UNDO_HISTORY);
   if (save.attempt.daily && (save.attempt.daily.dayId !== deal.daily?.dayId || save.attempt.daily.contentVersion !== deal.daily?.contentVersion)) throw Error('Повреждена дата попытки');
   if (Boolean(save.attempt.daily) !== Boolean(deal.daily)) throw Error('Повреждён режим');

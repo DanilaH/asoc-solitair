@@ -17,7 +17,7 @@ export interface Board {
   tableau: string[][]; foundations: string[][]; stock: string[]; waste: string[];
   faceUp: string[]; collected: string[]; movesLeft: number | null;
   phase: 'playing' | 'exhausted' | 'won';
-  joker?: { column: number; boundary: number };
+  joker?: { column: number; boundary: number; card?: { version: 1; id: string; nativeType: 2; faceUp: true } };
   keys?: string[];
 }
 export interface Location { kind: 'tableau' | 'waste' | 'foundation'; index: number }
@@ -42,6 +42,7 @@ export interface Deal {
   golden?: { version: 1; ids: readonly string[]; coinsPerCard: number };
   starter?: { version: 1; cards: Readonly<Record<string, 'magnet' | 'hammer'>> };
   shufflePreview?: 1;
+  randomJokerPreview?: 1;
   adaptive?: { version: 1; profile: string; baseId: string; direction: 'tight' | 'relief'; scope: 'PRODUCT_ADAPTED'; proof: string };
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
   difficultyTier?: DifficultyTier;
@@ -62,6 +63,7 @@ export interface Attempt {
   director?: { restarts: number; previousLosses: number; exhausted?: true };
   sourceDifficulty?: CampaignOutcome;
   jokerUsed?: boolean;
+  randomJokerUsed?: true;
   shuffleUsed?: true;
   verifiedTaskHints?: number;
   lessonHint?: BoardCommand;

@@ -208,3 +208,28 @@ test('keeps life refill, finite recovery and a closed storefront in the same ord
   expect(resumed.attempt.board.movesLeft).toBe(recoveryDeal.initial.movesLeft);
   expect(resumed.commerce).toBeUndefined();
 });
+
+test('keeps campaign dialog headings clear of their close buttons', async ({ page }) => {
+  test.skip(preview !== 'acceptance', 'Requires the combined P19/P25/P31 acceptance build.');
+  await page.setViewportSize({ width: 393, height: 851 });
+  const deal = content8Wave[0];
+  const save = { ...fixture(15), attempt: freshSave(deal, 'dialog-heading-layout').attempt, contentVersion: 8 };
+  await seed(page, save);
+  const expectClearTitle = async (selector: string) => {
+    const dialog = page.locator(`${selector}[open]`);
+    await expect(dialog).toBeVisible();
+    expect(await dialog.evaluate(sheet => {
+      const close = sheet.querySelector('.close')!.getBoundingClientRect();
+      const text = document.createRange();
+      text.selectNodeContents(sheet.querySelector('h2')!);
+      return [...text.getClientRects()].every(line => line.right <= close.left || line.top >= close.bottom);
+    })).toBe(true);
+    await dialog.locator('.close').tap();
+  };
+  await page.locator('#wallet-open').tap();
+  await page.locator('#campaign-store-open').tap();
+  await expectClearTitle('#campaign-store');
+  await page.reload();
+  await page.locator('#campaign-liveops-open').tap();
+  await expectClearTitle('#campaign-liveops');
+});

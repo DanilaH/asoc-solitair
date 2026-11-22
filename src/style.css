@@ -401,7 +401,8 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 .sheet[open]{display:flex;flex-direction:column;overflow:hidden;padding:20px;max-height:calc(100dvh - 32px)}
 .sheet-heading,.sheet-actions{flex-shrink:0;min-width:0}
 .sheet-heading{padding-right:24px}
-.sheet-heading h2{margin:9px 0 16px}
+.sheet-heading:has(> .close){padding-inline-end:44px}
+.sheet-heading h2{margin:9px 0 16px;overflow-wrap:anywhere}
 .sheet-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 3px 7px;scrollbar-width:thin;scroll-padding:8px}
 .sheet-actions{display:grid;gap:10px;padding-top:14px}
 .sheet-actions>.primary,.sheet-actions>.secondary,.sheet-actions>.text-button{margin:0;min-height:44px}
@@ -544,12 +545,13 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 .level-button:is([data-tier=hard],[data-tier=superhard]){border-color:var(--tier-edge)}
 .tier-dot{position:absolute;left:3px;top:3px;font-size:9px;line-height:14px;min-width:14px;border-radius:7px;background:var(--tier-bg);color:var(--tier-fg);font-weight:900}
 
-.board-bonus{position:absolute;z-index:1;transform:translate(-50%,-50%);display:grid;place-content:center;place-items:center;
+.board-bonus{position:absolute;z-index:1;transform:translateY(-50%);display:grid;place-content:center;place-items:center;
   height:52px;min-width:44px;padding:0 1px;gap:2px;border:1px dashed #e4ce91;border-radius:12px;background:#195b5c;color:#fff3d6;
   font-size:clamp(10px,3.4vw,13px);font-weight:850;line-height:1;touch-action:manipulation}
 .board-bonus span{font-size:25px;line-height:20px;pointer-events:none}
 .board-bonus:active{background:#2b7372}
 .board-bonus:focus-visible{outline:2px solid #fff0af;outline-offset:2px}
+#bonus-title{font-size:clamp(21px,6.8vw,28px)}
 #bonus-error{color:#8c2924}
 
 #picture-grid{width:min(100%,360px);margin:0 auto;display:grid;grid-template:repeat(2,1fr)/repeat(3,1fr);aspect-ratio:1;border-radius:14px;overflow:hidden;background:center/cover url('/art/gallery/orangery.webp')}

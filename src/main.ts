@@ -36,7 +36,7 @@ import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-s
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
-import { WIDTH, boardFrame, layout } from './game/layout';
+import { BOTTOM_DECK_MARGIN, CARD_H, WIDTH, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
 import { cardReader } from './game/card-reader';
@@ -131,8 +131,15 @@ function positionDeckTools(save: Save) {
   const rect = $('#game-root').getBoundingClientRect(); if (!rect.width || !rect.height) return;
   const tools = $('.deck-tools'), app = $('#app');
   const frame = boardFrame(rect.width, rect.height, app.dataset.deckRow as 'top' | 'bottom', deal);
-  const right = app.dataset.deckRow === 'bottom' || app.dataset.deckEdge === 'left';
-  tools.style.transform = `scale(${frame.unit})`; tools.style.top = `${20 * frame.unit}px`;
+  const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
+  const bottom = app.dataset.deckRow === 'bottom' && hasDeck;
+  const right = app.dataset.deckEdge === 'left' || (!hasDeck && app.dataset.deckRow === 'bottom');
+  // The moves counter shares the deck row, on the side free of stock and the waste fan.
+  // A full foundation row needs its entire width when the deck is at the bottom.
+  const top = bottom ? rect.height - (CARD_H + BOTTOM_DECK_MARGIN) * frame.unit : 20 * frame.unit;
+  tools.style.transformOrigin = right ? 'top right' : 'top left';
+  tools.style.transform = `scale(${frame.unit})`;
+  tools.style.top = `${top}px`;
   tools.style.left = right ? 'auto' : `${frame.offsetX}px`; tools.style.right = right ? `${rect.width - frame.offsetX - WIDTH * frame.unit}px` : 'auto';
   const offers = deal.bonusSlots && ready && screen === 'game' && save.attempt.board.phase === 'playing'
     ? layout(save.attempt.board, deal, frame.height, save.settings.deckSide, save.settings.deckPosition).offers : [];
@@ -140,9 +147,14 @@ function positionDeckTools(save: Save) {
     const button = $(`#bonus-${kind}`), offer = offers.find(target => target.kind === kind);
     button.hidden = !offer;
     if (offer) {
-      button.style.left = `${frame.offsetX + offer.x * frame.unit}px`;
+      const slotWidth = offer.width * frame.unit;
+      // A bonus is the last slot of its row. Any extra touch width can extend
+      // into the unused space beyond the slot instead of covering its neighbour.
+      const touchWidth = Math.max(44, slotWidth);
+      const left = frame.offsetX + (offer.x - offer.width / 2) * frame.unit;
+      button.style.left = `${Math.min(left, rect.width - touchWidth)}px`;
       button.style.top = `${offer.y * frame.unit}px`;
-      button.style.width = `${offer.width * frame.unit}px`;
+      button.style.width = `${touchWidth}px`;
     }
   }
 }
@@ -1457,6 +1469,23 @@ try {
       if (alive) renderHud();
     }
   }, domOptions);
+  const bonusDialog = $<HTMLDialogElement>('#bonus-offer');
+  let bonusPressedButton: HTMLButtonElement | null = null;
+  const bonusControl = (event: Event) => (event.target as Element).closest<HTMLButtonElement>('button');
+  bonusDialog.addEventListener('pointerdown', event => {
+    if (event.isPrimary) bonusPressedButton = bonusControl(event);
+  }, domOptions);
+  bonusDialog.addEventListener('pointercancel', () => { bonusPressedButton = null; }, domOptions);
+  bonusDialog.addEventListener('click', event => {
+    const control = bonusControl(event);
+    // The opener may be activated on pointerup for touch. Its compatibility
+    // click can hit the newly opened modal without a press in that modal.
+    if (event.detail > 0 && control && control !== bonusPressedButton) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+    bonusPressedButton = null;
+  }, { ...domOptions, capture: true });
   for (const kind of bonusKinds) {
     $(`#bonus-${kind}`).addEventListener('click', () => {
       if (!ready || saving || serviceBusy || store.needsRecovery || runtime.activity.isBlocked()) return;
@@ -1468,6 +1497,7 @@ try {
         : 'Перекладывайте сюда карты и группы. Столбец открыт до конца этой попытки.';
       $('#bonus-error').hidden = true;
       renderBonusSheet();
+      bonusPressedButton = null;
       openDialog('#bonus-offer');
     }, domOptions);
   }

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import sharp from 'sharp';
 import { beyond80Deals } from '../../src/content/campaign-v8-beyond';
 import { content8Dealer, content8Late, content8Wave } from '../../src/content/campaign-v8-dealer';
 import { content8Special } from '../../src/content/campaign-v8-special';
@@ -721,6 +722,12 @@ test('the lower offer can be declined and regular play works without coins or vi
   await expect(page.locator('#bonus-foundation')).toBeHidden();
   await tapBonus(page, 'tableau');
   await expect(page.locator('#bonus-title')).toHaveText('Дополнительный столбец');
+  expect(await page.locator('#bonus-title').evaluate(title => {
+    const close = title.parentElement!.querySelector('.close')!.getBoundingClientRect();
+    const text = document.createRange();
+    text.selectNodeContents(title);
+    return [...text.getClientRects()].every(line => line.right <= close.left || line.top >= close.bottom);
+  })).toBe(true);
   await expect(page.locator('#bonus-buy')).toBeDisabled();
   await expect(page.locator('#bonus-balance')).toHaveText('Не хватает 40 монет.');
   await expect(page.locator('#bonus-video')).toBeHidden();
@@ -730,6 +737,61 @@ test('the lower offer can be declined and regular play works without coins or vi
   expect((await read(page)).attempt.board.tableau).toHaveLength(4);
   expect((await read(page)).profile.coins).toBe(20);
 });
+
+test('a bonus slot preview tap cannot also confirm a purchase on the wider layout', async ({ page }) => {
+  const deal = content8BonusDeals[2], save = freshSave(deal, 'bonus-separate-confirmation');
+  save.profile.coins = 200;
+  await loadWaveFixture(page, save, 39);
+  await page.setViewportSize({ width: 520, height: 700 });
+  await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await page.locator('#home-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
+  await tapBonus(page, 'tableau');
+  const pending = await read(page);
+  expect(pending.profile.coins).toBe(200);
+  expect(pending.attempt.board.tableau).toEqual(deal.initial.tableau);
+  await page.locator('#bonus-buy').tap();
+  await expect.poll(async () => (await read(page)).profile.coins).toBe(140);
+  expect((await read(page)).attempt.board.tableau).toHaveLength(5);
+  await expect(page.locator('#bonus-offer')).toBeHidden();
+});
+
+for (const side of ['left', 'right'] as const) {
+  test(`the moves badge clears rendered cards with the bottom stock at ${side}`, async ({ page }) => {
+    const deal = content8Wave.find(deal => deal.campaignLevel === 31)!;
+    let save = freshSave(deal, 'full-foundation-layout');
+    for (const command of deal.winningPath) {
+      save = dispatch(save, command, deal).next;
+      if (save.attempt.board.foundations.every(group => group.length)) break;
+    }
+    expect(save.attempt.board.foundations.every(group => group.length)).toBe(true);
+    save.settings.deckSide = side;
+    save.settings.deckPosition = 'bottom';
+    await loadWaveFixture(page, save, 30);
+    await openGame(page, deal);
+
+    const field = page.locator('#game-root');
+    const area = (await field.boundingBox())!;
+    const badge = (await page.locator('#inspect').boundingBox())!;
+    const overlay = await page.addStyleTag({ content: '.deck-tools { visibility: hidden !important; }' });
+    const screenshot = await field.screenshot({ scale: 'css' });
+    await overlay.evaluate(style => style.parentNode?.removeChild(style));
+    const { data, info } = await sharp(screenshot).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+    const pixelWidth = info.width, pixelHeight = info.height;
+    let cards = 0, covered = 0;
+    for (let y = 0; y < pixelHeight; y++) for (let x = 0; x < pixelWidth; x++) {
+      const offset = (y * pixelWidth + x) * info.channels;
+      if (data[offset] <= 240 || data[offset + 1] <= 220 || data[offset + 2] <= 168) continue;
+      cards++;
+      if (x + area.x >= badge.x + 3 && x + area.x < badge.x + badge.width - 3 &&
+          y + area.y >= badge.y + 3 && y + area.y < badge.y + badge.height - 3) covered++;
+    }
+    expect(cards).toBeGreaterThan(500);
+    expect(covered).toBeLessThan(20);
+    await page.locator('#inspect').tap();
+    await expect(page.locator('#inspect')).toHaveAttribute('aria-pressed', 'true');
+  });
+}
 
 test('level 40 opens both fifth slots separately with the deck below and keeps each through Undo', async ({ page }) => {
   const deal = content8BonusDeals[2], save = freshSave(deal, 'both-bonuses');

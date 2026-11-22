@@ -56,9 +56,11 @@ Native source `StarterBoosterFeatureApplier` resolves selected IDs **3/4** and m
 
 ## P15 · Original AZUR random-created lower Joker, NOT our buffer Joker
 
+**OWNER DIRECTION 22.11.2026 · вариант А:** максимальная репликация AZUR random insertion, при **успешной** вставке новой открытой карты история `Undo` **очищается**; игрок получает **заранее предупреждение**, а existing manual/buffer Joker сохраняет собственные старые правила. Сама механика и поведение Undo **уже согласованы** — повторно запрашивать их нельзя. Платёжная/рекламная стоимость, наличие фактического права и source runtime по-прежнему открыты, live activation требует честного UI, versioned save, атомарности и Android. [Нормативное решение](../OWNER_DECISIONS_2026-11-22.md).
+
 Original AZUR `GameManager.AddJokerCard` chooses random lower tableau index `Random.Range(0,min(configuredBound,currentColumns))`, constructs an actually **new revealed Card**, `Column.PlaceCardForced`, and clears `UndoSystem` history; `TryAddJokerCard` emits event on **non-null success only**. Our current Joker selects an existing unlocked nonempty tableau column, inserts an abstract **boundary/buffer**, does **not** create a card, and intentionally preserves Undo history. Preserve both as separate source identities; **do not mutate current Joker** to approximate AZUR.
 
-Create new versioned AZUR-Joker ability with injected target stream and positive/zero/invalid bounds + new card ID conservation; source-exact branch includes explicit Undo history clear, but this destructive behavior requires owner policy, explanatory UX and migration plan. If owner choice pending, implement/test isolated original-shaped model and leave real user activation OFF; continue unrelated work. Pay/earned grants require existing durable receipts and no phantom success if no valid column.
+Create new versioned AZUR-Joker ability with injected target stream and positive/zero/invalid bounds + new card ID conservation; source-exact branch includes explicit Undo history clear; **owner policy is now approved for this AZUR variant**. Explanatory UX and migration plan remain mandatory acceptance gates, not reasons to silently drop the mechanic. If owner choice pending, implement/test isolated original-shaped model and leave real user activation OFF; continue unrelated work. Pay/earned grants require existing durable receipts and no phantom success if no valid column.
 
 ## P16 · AZUR Shuffle action and animation as separate systems
 

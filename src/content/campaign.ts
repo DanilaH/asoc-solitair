@@ -1,3 +1,4 @@
+import { RECOVERY_PREVIEW } from '../domain/campaign-recovery';
 import { RANDOM_JOKER_PREVIEW } from '../domain/random-joker';
 import { equalityPreviewDeal, isEqualityVariant } from './campaign-v8-equality';
 import { expansionDeals } from './expansion';
@@ -60,12 +61,21 @@ const lateAdaptive = adaptiveBank([...content8Campaign, ...beyond80Deals, englis
 export const lateAdaptiveDeals = [...lateAdaptive.values()].flatMap(({ tight, relief }) => tight ? [tight, relief] : [relief]);
 const jokerBase = content8Wave[0];
 export const randomJokerDeal: Deal = { ...jokerBase, id: jokerBase.id + '-random-joker-r1', randomJokerPreview: 1 };
+const recoveryBase = content8Wave[0];
+const freeRecycles = Math.max(1, recoveryBase.winningPath.filter(move => move.type === 'recycle').length);
+export const recoveryDeal: Deal = {
+  ...recoveryBase, id: recoveryBase.id + '-finite-recovery-r1',
+  recovery: { version: 1, freeRecycles, restoreBase: 60, restoreIncrement: 30 },
+  initial: { ...recoveryBase.initial, recyclesLeft: freeRecycles },
+  recoveryPaths: undefined,
+};
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
-  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...lateAdaptiveDeals, equalityPreviewDeal, randomJokerDeal, ...content8Special, ...content8BonusDeals,
+  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...lateAdaptiveDeals, equalityPreviewDeal, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
   const previewIds = CONTENT8_PREVIEW ? variants.get(base.campaignLevel)?.ids : undefined;
+  if (CONTENT8_PREVIEW && dealId === recoveryDeal.id && base.id === recoveryBase.id) return true;
   if (CONTENT8_PREVIEW && dealId === randomJokerDeal.id && base.id === jokerBase.id) return true;
   if (CONTENT8_PREVIEW && isEqualityVariant(dealId, base.id)) return true;
   if (previewIds?.has(base.id) && previewIds.has(dealId)) return true;
@@ -75,6 +85,7 @@ export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
 }
 export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): Deal {
   if (!CONTENT8_PREVIEW) return base;
+  if (RECOVERY_PREVIEW && base.id === recoveryBase.id) return recoveryDeal;
   if (RANDOM_JOKER_PREVIEW && base.id === jokerBase.id) return randomJokerDeal;
   const selected = localizedCampaignDeal(save, selectC8Deal(save, base, previous));
   return selectAdaptiveDeal(save, selected, lateAdaptive, previous);

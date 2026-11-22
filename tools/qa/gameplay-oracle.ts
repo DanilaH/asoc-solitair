@@ -33,7 +33,7 @@ export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
   const b=structuredClone(input);
   const expose=(id:string|undefined)=>{if(!id||b.faceUp.includes(id))return;b.faceUp.push(id);const key=d.cards[id].keyId;if(key&&!(b.keys??=[]).includes(key)){b.keys.push(key);if(d.lock&&!locked(b,d.lock.column,d))expose(b.tableau[d.lock.column].at(-1));}};
   if(a.type==='draw'){const id=b.stock.shift();if(!id)return null;b.waste.push(id);b.faceUp.push(id);}
-  else if(a.type==='recycle'){if(b.stock.length||!b.waste.length)return null;const closed=new Set(b.waste);b.stock=[...b.waste];b.waste=[];b.faceUp=b.faceUp.filter(id=>!closed.has(id));}
+  else if(a.type==='recycle'){if(b.stock.length||!b.waste.length||b.recyclesLeft===0)return null;if(b.recyclesLeft!==undefined)b.recyclesLeft--;const closed=new Set(b.waste);b.stock=[...b.waste];b.waste=[];b.faceUp=b.faceUp.filter(id=>!closed.has(id));}
   else{
     if(a.from.kind===a.to.kind&&a.from.index===a.to.index)return null;
     const ids=a.from.kind==='tableau'?group(b,a.from.index,d):a.from.kind==='waste'?b.waste.slice(-1):[];
@@ -72,6 +72,7 @@ export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
     if(a.to.kind==='foundation'&&normalized.length===Object.values(d.cards).filter(c=>c.category===cat).length){b.collected.push(...normalized);b.foundations[a.to.index]=[];}
   }
   if(b.movesLeft!==null)b.movesLeft--;
+  if(b.retainedMoves!==undefined)b.retainedMoves=Math.max(0,b.retainedMoves-1);
   b.phase=b.collected.length===Object.keys(d.cards).length?'won':b.movesLeft===0?'exhausted':'playing';return b;
 }
 export function options(b:Board,d:Deal,prune=false):{action:BoardCommand;board:Board}[]{

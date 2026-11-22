@@ -19,6 +19,8 @@ export interface Board {
   phase: 'playing' | 'exhausted' | 'won';
   joker?: { column: number; boundary: number; card?: { version: 1; id: string; nativeType: 2; faceUp: true } };
   keys?: string[];
+  recyclesLeft?: number;
+  retainedMoves?: number;
 }
 export interface Location { kind: 'tableau' | 'waste' | 'foundation'; index: number }
 export type BonusKind = 'foundation' | 'tableau';
@@ -43,6 +45,7 @@ export interface Deal {
   starter?: { version: 1; cards: Readonly<Record<string, 'magnet' | 'hammer'>> };
   shufflePreview?: 1;
   randomJokerPreview?: 1;
+  recovery?: { version: 1; freeRecycles: number; restoreBase: number; restoreIncrement: number };
   adaptive?: { version: 1; profile: string; baseId: string; direction: 'tight' | 'relief'; scope: 'PRODUCT_ADAPTED'; proof: string };
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
   difficultyTier?: DifficultyTier;
@@ -64,6 +67,9 @@ export interface Attempt {
   sourceDifficulty?: CampaignOutcome;
   jokerUsed?: boolean;
   randomJokerUsed?: true;
+  stockRestores?: number;
+  revive?: { version: 1; channel: 'coins' | 'earned'; moves: number; price: number };
+  unlimited?: { version: 1; id: string; issuedAt: number; until?: number; expired?: true };
   shuffleUsed?: true;
   verifiedTaskHints?: number;
   lessonHint?: BoardCommand;

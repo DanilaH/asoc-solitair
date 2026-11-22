@@ -1,3 +1,4 @@
+import { beginUnlimited, expireUnlimited, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote } from './domain/campaign-recovery';
 import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { equalityPreviewPolicy } from './content/campaign-v8-equality';
 import { recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
@@ -192,12 +193,25 @@ try {
   // Keep a bounded repaint tail instead of sleeping in that POST_RENDER turn.
   let repaintFrames = 0;
   let pendingWrites = 0;
+  let recoveryClock: ReturnType<typeof setTimeout> | undefined;
   let banner: NativeBanner | undefined;
   const launchedAt = Date.now();
   const telemetry = createTelemetry(() => save, runtime.activity);
   const setInput = () => scene?.setEnabled(screen === 'game' && ready && !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
   const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
-  store.onChange = value => { save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); };
+  store.onChange = value => { save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); scheduleRecoveryClock(); };
+  function scheduleRecoveryClock() {
+    clearTimeout(recoveryClock);
+    const times = [save.attempt, save.parked?.campaign].flatMap(attempt =>
+      attempt?.unlimited?.until !== undefined && !attempt.unlimited.expired ? [attempt.unlimited.until] : []);
+    if (!times.length) return;
+    recoveryClock = setTimeout(() => {
+      if (!alive) return;
+      void write(next => expireUnlimited(next, Date.now())).then(changed => {
+        if (changed && alive) { scene?.sync(); if (screen === 'game' && save.attempt.board.phase === 'exhausted') outcome(); }
+      }).catch(() => message('Не удалось восстановить лимит ходов.', true));
+    }, Math.min(2_147_483_647, Math.max(0, Math.min(...times) - Date.now())));
+  }
   async function write<T>(change: (next: Save) => T): Promise<T> {
     pendingWrites++; saving = true; setInput();
     try { return await store.mutate(change); }
@@ -324,6 +338,11 @@ try {
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   const hasTransfer = new WeakMap<Save['attempt']['board'], boolean>();
   function renderHud() {
+    const restore = $<HTMLButtonElement>('#restore-stock'), price = restoreQuote(save.attempt, deal);
+    restore.hidden = !RECOVERY_PREVIEW || price === undefined;
+    restore.disabled = price === undefined || save.profile.coins < price || saving;
+    restore.textContent = price ? `Восстановить колоду · ${price} монет` : 'Восстановить колоду · бесплатно';
+    $('#unlimited-preview').hidden = !(RECOVERY_PREVIEW && deal.recovery && save.attempt.board.phase === 'playing' && !save.attempt.unlimited);
     $('#random-joker-open').hidden = !(RANDOM_JOKER_PREVIEW && allowsRandomJoker(save.attempt, deal));
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
@@ -450,9 +469,11 @@ try {
     const canBuyContinue = showCoinOffer && save.profile.coins >= BALANCE.continueCoinPrice;
     const continueBusy = saving || serviceBusy || store.needsRecovery;
     const coinButton = $<HTMLButtonElement>('#result-continue-coins');
+    const recoveryLabel = RECOVERY_PREVIEW && deal.recovery ? 'Возродить партию' : 'Продолжить';
     coinButton.hidden = !showCoinOffer;
     coinButton.disabled = !canBuyContinue || continueBusy;
     coinButton.textContent = `+${BALANCE.continueMoves} ходов за ${BALANCE.continueCoinPrice} монет`;
+    if (RECOVERY_PREVIEW && deal.recovery && !coinButton.hidden) coinButton.textContent = `${recoveryLabel} · +${BALANCE.continueMoves} ходов за ${BALANCE.continueCoinPrice}`;
     const continueButton = $<HTMLButtonElement>('#result-continue');
     continueButton.hidden = !canContinue;
     continueButton.disabled = !canContinue || continueBusy;
@@ -556,6 +577,7 @@ try {
     try {
       presentingCommand = true;
       await write(next => {
+        expireUnlimited(next, Date.now());
         const beforeBoard = next.attempt.board;
         result = dispatch(next, cmd, deal, localDay());
         if (PICTURE_PREVIEW && result.accepted && result.next.attempt.board.phase === 'won') {
@@ -1411,6 +1433,27 @@ try {
     }, domOptions);
     $(`#video-${helper}`).addEventListener('click', () => { void rewarded(helper); }, domOptions);
   }
+  scheduleRecoveryClock();
+  $('#restore-stock').addEventListener('click', async () => {
+    if (!RECOVERY_PREVIEW || saving || serviceBusy) return;
+    const source = deal, cost = restoreQuote(save.attempt, source);
+    if (cost === undefined) return;
+    const quote = { attemptId: save.attempt.id, revision: save.revision, cost };
+    try {
+      if (await write(next => restoreCampaignStock(next, source, quote))) {
+        closeDialogs(); scene?.sync();
+        if (save.attempt.board.phase === 'exhausted') outcome();
+      }
+    } catch { message('Не удалось сохранить восстановление колоды.', true); }
+  }, domOptions);
+  $('#unlimited-preview').addEventListener('click', async () => {
+    if (!RECOVERY_PREVIEW || !deal.recovery || saving || serviceBusy) return;
+    const source = deal, now = Date.now();
+    const grant = { id: crypto.randomUUID(), attemptId: save.attempt.id, until: now + 120_000 };
+    try {
+      if (await write(next => beginUnlimited(next, source, grant, now))) { closeDialogs(); scene?.sync(); }
+    } catch { message('Не удалось сохранить ходы без лимита.', true); }
+  }, domOptions);
   $('#random-joker-open').addEventListener('click', () => {
     if (RANDOM_JOKER_PREVIEW && !saving && !serviceBusy && allowsRandomJoker(save.attempt, deal)) openDialog('#random-joker-warning');
   }, domOptions);

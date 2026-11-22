@@ -5,8 +5,8 @@ import { parseFullscreenShown, parseReceipt, type EarnedReceipt, type Fullscreen
 
 export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: RewardPlacement; attempt: string; dealId: string; mode: 'campaign' | 'daily' }
 export interface AdOutcome { shown: boolean; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
-export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean }
-export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string }
+export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean; campaignApproved?: boolean }
+export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string; revenue?: unknown }
 export interface AdsBridge {
   status(): Promise<AdStatus>;
   prepareInterstitial(): Promise<void>;

@@ -1,3 +1,4 @@
+import type { CampaignAdsState } from './campaign-advertising';
 import type { DailyTaskJournal } from './events/daily-tasks';
 import type { PictureState } from './events/picture';
 import type { EventLedger } from './events/ledger';
@@ -67,6 +68,8 @@ export interface Attempt {
   sourceDifficulty?: CampaignOutcome;
   jokerUsed?: boolean;
   randomJokerUsed?: true;
+  adBreakShown?: true;
+  coffeeRequested?: true;
   stockRestores?: number;
   revive?: { version: 1; channel: 'coins' | 'earned'; moves: number; price: number };
   unlimited?: { version: 1; id: string; issuedAt: number; until?: number; expired?: true };
@@ -107,6 +110,7 @@ export interface Save {
   difficultyPenalty?: number;
   sourceDifficultyHistory?: CampaignOutcome[];
   rewardOffers?: RewardOffers;
+  campaignAds?: CampaignAdsState;
   commerce?: CommerceJournal;
   events?: EventLedger;
   picture?: PictureState;

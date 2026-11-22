@@ -75,7 +75,7 @@
     {
       "id": "hitapps-adbreak",
       "status": "ROADMAPPED",
-      "currentImplementation": "P21 offline disabled placement model binds request/show to the current level and caps real show events by difficulty and attempt. See docs/porting/P21_AD_PLACEMENTS.md.",
+      "currentImplementation": "P21 offline disabled placement model binds request/show to the current level and caps real show events by difficulty and attempt. See docs/porting/P21_AD_PLACEMENTS.md. Игровой runtime и native callback подключены под отдельным разрешением. Новый показ и фактический ILRD ещё не приняты на телефоне.",
       "nextAction": "Prototype in-level configurable opportunities/cooldowns with valid SDK impression attribution Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Current source does not prove the in-level live placement; issue #80 prevents treating attempted show as actual display.",
       "stage": "E2"
     },
@@ -434,7 +434,7 @@
     {
       "id": "hitapps-ingame-banner",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Campaign banner remains eligible at level 3. P21 tests a separate banner impression path that never consumes fullscreen cooldown. See docs/porting/P21_AD_PLACEMENTS.md.",
+      "currentImplementation": "Campaign banner remains eligible at level 3. P21 tests a separate banner impression path that never consumes fullscreen cooldown. See docs/porting/P21_AD_PLACEMENTS.md. Игровой runtime и native callback подключены под отдельным разрешением. Новый показ и фактический ILRD ещё не приняты на телефоне.",
       "nextAction": "Phone/RuStore safe-area+SDK ready/impression test; compare original placement and day mode Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -505,7 +505,7 @@
     {
       "id": "azur-ad-revenue-attribution",
       "status": "ROADMAPPED",
-      "currentImplementation": "P21 offline model tracks explicit provider impression, currency, integer amount and idempotent event identity. No real ILRD has been verified. See docs/porting/P21_AD_PLACEMENTS.md.",
+      "currentImplementation": "P21 offline model tracks explicit provider impression, currency, integer amount and idempotent event identity. No real ILRD has been verified. See docs/porting/P21_AD_PLACEMENTS.md. Игровой runtime и native callback подключены под отдельным разрешением. Новый показ и фактический ILRD ещё не приняты на телефоне.",
       "nextAction": "Verify ILRD/currency+placements in target ad provider, not revenue from click Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E2"
     },
@@ -520,7 +520,7 @@
     {
       "id": "unico-coffee-break",
       "status": "ROADMAPPED",
-      "currentImplementation": "P21 offline optional 3-coin Coffee Break uses a distinct exactly-once earned receipt; no new in-game placement is active. See docs/porting/P21_AD_PLACEMENTS.md.",
+      "currentImplementation": "P21 offline optional 3-coin Coffee Break uses a distinct exactly-once earned receipt; no new in-game placement is active. See docs/porting/P21_AD_PLACEMENTS.md. Игровой runtime и native callback подключены под отдельным разрешением. Новый показ и фактический ILRD ещё не приняты на телефоне.",
       "nextAction": "Study exact observed break context; design separate optional break/reward and native ad return preservation Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E2"
     },

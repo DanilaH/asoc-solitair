@@ -1056,6 +1056,11 @@ export class BoardScene extends Phaser.Scene {
     if (this.world) { this.sync([], false, undefined, undefined, press?.poses.map(p => p.id)); if (returning) { this.returningWells.set(index, returning); this.drawSlots(); } }
   }
   public back(): boolean { if (!this.jokerSelecting && !this.press && !this.selected && !this.hintObjects.length) return false; this.clearHint(); this.cancel(); return true; }
+  public idleForAd(): boolean {
+    return !this.press && !this.selected && !this.pendingReturn && !this.dragPointer && !this.jokerSelecting &&
+      !this.inspectMode && !this.enteringCards.size && !this.collections.size && !this.keyFlights.length &&
+      ![...this.views.values()].some(view => this.tweens.isTweening(view.node));
+  }
   public setEnabled(value: boolean): void { this.enabled = value; if (!value) { this.clearHint(); this.options.peek?.(null); if (this.press || this.selected || this.jokerSelecting) this.cancel(); } }
   public setInspect(value: boolean): void { this.inspectMode = value; this.clearHint(); this.cancel(); }
   public clearHint(): void { this.hintTweens.forEach(t => t.stop()); this.hintTweens = []; this.hintObjects.forEach(o => o.destroy()); this.hintObjects = []; }

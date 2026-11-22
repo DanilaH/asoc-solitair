@@ -42,6 +42,7 @@ export interface Deal {
   golden?: { version: 1; ids: readonly string[]; coinsPerCard: number };
   starter?: { version: 1; cards: Readonly<Record<string, 'magnet' | 'hammer'>> };
   shufflePreview?: 1;
+  adaptive?: { version: 1; profile: string; baseId: string; direction: 'tight' | 'relief'; scope: 'PRODUCT_ADAPTED'; proof: string };
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
   difficultyTier?: DifficultyTier;
   training?: OpeningLesson;
@@ -59,6 +60,7 @@ export interface Attempt {
   streak: { tier: number; progress: number; coins: number; counted: string[] };
   continued?: boolean;
   director?: { restarts: number; previousLosses: number; exhausted?: true };
+  sourceDifficulty?: CampaignOutcome;
   jokerUsed?: boolean;
   shuffleUsed?: true;
   verifiedTaskHints?: number;
@@ -89,6 +91,7 @@ export interface Save {
   campaign?: { version: 1; tutorials: string[] };
   difficultyHistory?: CampaignOutcome[];
   difficultyPenalty?: number;
+  sourceDifficultyHistory?: CampaignOutcome[];
   rewardOffers?: RewardOffers;
   commerce?: CommerceJournal;
   events?: EventLedger;

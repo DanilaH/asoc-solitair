@@ -16,6 +16,10 @@ export function recordCampaignOutcome(save: Save) {
   const outcome: CampaignOutcome['outcome'] = restarts ? 'Restart' : save.attempt.continued ? 'ExtraSteps' : 'Clean';
   save.difficultyHistory = [...(save.difficultyHistory ?? []), { outcome, restarts }].slice(-DIFFICULTY_WINDOW);
   save.difficultyPenalty = nextPenalty(save.difficultyHistory, previous, C8_DIFFICULTY);
+  if (SOURCE_DIFFICULTY_PREVIEW) {
+    const entry = updateSourceDifficultySlot(save.attempt.sourceDifficulty, 'LevelWon').slot;
+    save.sourceDifficultyHistory = [...(save.sourceDifficultyHistory ?? []), entry].slice(-DIFFICULTY_WINDOW);
+  }
 }
 
 export function difficultyPenalty(save: Save): number {
@@ -44,6 +48,7 @@ export function recordCampaignExhaustion(attempt: Attempt) {
 
 export function carryCampaignRestart(previous: Attempt, next: Attempt) {
   const { restarts = 0, previousLosses = 0, exhausted = previous.board.phase === 'exhausted' } = previous.director ?? {};
+  if (SOURCE_DIFFICULTY_PREVIEW) next.sourceDifficulty = updateSourceDifficultySlot(previous.sourceDifficulty, 'RestartedLevelBegin').slot;
   next.director = { restarts: restarts + 1, previousLosses: previousLosses + Number(exhausted) };
 }
 
@@ -75,4 +80,29 @@ export function adjustedMoveBudget(base: number, penalty: number, stableMoves: b
   if (!stableMoves || penalty === 0) return base;
   const delta = Math.fround(Math.fround(Math.imul(base, penalty)) / 100);
   return (base + (delta < 0 ? -Math.round(-delta) : Math.round(delta))) | 0;
+}
+
+type SourceProgressEvent = 'ContinueRequested' | 'RestartedLevelBegin' | 'LevelWon';
+
+/** Native-static transition of the current slot. Original timing/config remains device evidence. */
+export function updateSourceDifficultySlot(slot: CampaignOutcome | undefined, event: SourceProgressEvent) {
+  if (event === 'RestartedLevelBegin') return {
+    slot: { outcome: 'Restart', restarts: (slot?.restarts ?? 0) + 1 } satisfies CampaignOutcome, advance: false,
+  };
+  if (event === 'ContinueRequested') return {
+    slot: slot?.outcome === 'Restart' ? slot : { outcome: 'ExtraSteps', restarts: 0 } satisfies CampaignOutcome,
+    advance: false,
+  };
+  return { slot: slot ?? { outcome: 'Clean', restarts: 0 } satisfies CampaignOutcome, advance: true };
+}
+
+export const SOURCE_DIFFICULTY_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'director';
+
+export function recordSourceContinue(save: Save, deal: { campaignLevel?: number }) {
+  const attempt = save.attempt;
+  if (!SOURCE_DIFFICULTY_PREVIEW || attempt.daily || deal.campaignLevel === undefined ||
+      attempt.board.phase !== 'exhausted' || attempt.sourceDifficulty?.outcome === 'Restart' ||
+      attempt.sourceDifficulty?.outcome === 'ExtraSteps') return;
+  attempt.sourceDifficulty = updateSourceDifficultySlot(attempt.sourceDifficulty, 'ContinueRequested').slot;
+  save.revision++;
 }

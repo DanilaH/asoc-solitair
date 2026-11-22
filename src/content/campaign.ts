@@ -20,6 +20,7 @@ import { content8Slice } from './campaign-v8-preview';
 import { content8DirectorDeals, isC8DirectorVariant, otherC8Layout, selectC8Deal } from './campaign-v8-director';
 import { englishBeyondDeal, localizedCampaignDeal, sameLocalizedLevel } from './campaign-v8-locale';
 import { beyond80Deals } from './campaign-v8-beyond';
+import { adaptiveBank, selectAdaptiveDeal } from './campaign-v8-adaptive';
 import { BEYOND80_PREVIEW } from '../domain/progression';
 import { CONTENT8_PREVIEW } from '../domain/types';
 import type { Attempt, Board, BoardCommand, Deal, Save } from '../domain/types';
@@ -53,17 +54,23 @@ const variants = new Map([
 export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
   ? [...content8Campaign.map(deal => specialByLevel.get(deal.campaignLevel) ?? deal), ...(BEYOND80_PREVIEW ? beyond80Deals : [])]
   : content7Deals;
+const lateAdaptive = adaptiveBank([...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8Special, ...content8BonusDeals]);
+export const lateAdaptiveDeals = [...lateAdaptive.values()].flatMap(({ tight, relief }) => tight ? [tight, relief] : [relief]);
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
-  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...content8Special, ...content8BonusDeals,
+  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...lateAdaptiveDeals, ...content8Special, ...content8BonusDeals,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
   const previewIds = CONTENT8_PREVIEW ? variants.get(base.campaignLevel)?.ids : undefined;
   if (previewIds?.has(base.id) && previewIds.has(dealId)) return true;
+  const adaptiveBase = CONTENT8_PREVIEW ? all.get(dealId)?.adaptive?.baseId : undefined;
+  if (adaptiveBase && (adaptiveBase === base.id || sameLocalizedLevel(adaptiveBase, base))) return true;
   return dealId === base.id || sameLocalizedLevel(dealId, base) || (CONTENT8_PREVIEW && isC8DirectorVariant(dealId, base.id));
 }
 export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): Deal {
-  return CONTENT8_PREVIEW ? localizedCampaignDeal(save, selectC8Deal(save, base, previous)) : base;
+  if (!CONTENT8_PREVIEW) return base;
+  const selected = localizedCampaignDeal(save, selectC8Deal(save, base, previous));
+  return selectAdaptiveDeal(save, selected, lateAdaptive, previous);
 }
 
 export function campaignRedeal(attempt: Attempt): Deal | undefined {

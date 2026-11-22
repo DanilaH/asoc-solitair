@@ -74,7 +74,10 @@ export const CAMPAIGN_PRODUCTS = [
   product('campaign_piggy', 'piggy', 1, 'once-per-season', [{ type: 'piggy', term: 'season' }]),
   product('campaign_vip', 'vip', 1, 'once-per-account', [{ type: 'vip', durationMs: 30 * 86_400_000 }]),
 ];
-export const PRODUCT_INDEX: ReadonlyMap<string, ProductDefinition> = new Map([...PRODUCTS, ...CAMPAIGN_PRODUCTS].map(item => [item.sku, item]));
+export const PRODUCT_INDEX: ReadonlyMap<string, ProductDefinition> = new Map(PRODUCTS.map(item => [item.sku, item]));
+export const CHECKOUT_PRODUCT_INDEX: ReadonlyMap<string, ProductDefinition> = new Map(
+  [...PRODUCTS, ...CAMPAIGN_PRODUCTS].map(item => [item.sku, item]),
+);
 
 export function catalogErrors(items: readonly ProductDefinition[]): string[] {
   const errors: string[] = [], keys = new Set<string>(), slots = new Set<string>();

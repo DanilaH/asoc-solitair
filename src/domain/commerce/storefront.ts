@@ -1,5 +1,5 @@
 import { activePurchaseGoods } from './orders';
-import { PRODUCTS, PRODUCT_INDEX, type ProductGood } from './catalog';
+import { PRODUCTS, CHECKOUT_PRODUCT_INDEX, type ProductGood } from './catalog';
 import { reviewOffers, type CommercialContext, type OfferFamily } from './offer-policy';
 import type { Save } from '../types';
 
@@ -90,5 +90,5 @@ export function showProductGoods(sku: string) {
       case 'vip': return `VIP на ${good.durationMs / 86_400_000} дн.`;
     }
   };
-  return PRODUCT_INDEX.get(sku)?.benefits.map(label).join(' · ') ?? '';
+  return CHECKOUT_PRODUCT_INDEX.get(sku)?.benefits.map(label).join(' · ') ?? '';
 }

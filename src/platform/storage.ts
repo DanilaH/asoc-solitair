@@ -10,7 +10,7 @@ import { validDailyTasks } from '../domain/events/daily-tasks';
 import { applyBoard, assertBoard, boardRules } from '../domain/engine';
 import { MAX_UNDO_HISTORY } from '../domain/history';
 import { DIFFICULTY_WINDOW } from '../domain/difficulty';
-import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION, type Deal, type Save } from '../domain/types';
+import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION, type CampaignOutcome, type Deal, type Save } from '../domain/types';
 
 export const SAVE_KEY = 'asoc-solitaire.save.v1';
 interface StorageBridge {
@@ -92,6 +92,14 @@ export function decodeSave(raw: string, source: DealSource): Save {
       (entry.outcome === 'Restart') !== (entry.restarts > 0)))) throw Error('Повреждена история сложности');
   if (save.difficultyPenalty !== undefined && (!Number.isSafeInteger(save.difficultyPenalty) ||
     Math.abs(save.difficultyPenalty) > 100)) throw Error('Повреждён коэффициент сложности');
+  const validOutcome = (entry: CampaignOutcome) => entry && natural(entry.restarts) &&
+    ['Clean', 'ExtraSteps', 'Restart'].includes(entry.outcome) && (entry.restarts > 0) === (entry.outcome === 'Restart');
+  const sourceHistory = save.sourceDifficultyHistory;
+  if ((sourceHistory !== undefined && (!Array.isArray(sourceHistory) || sourceHistory.length > DIFFICULTY_WINDOW ||
+      !sourceHistory.every(validOutcome))) || (save.attempt.sourceDifficulty !== undefined &&
+      (deal.daily || deal.campaignLevel === undefined || !validOutcome(save.attempt.sourceDifficulty)))) {
+    throw Error('Повреждены исходные события сложности');
+  }
   const director = save.attempt.director;
   if (director !== undefined && (!director || deal.daily || deal.campaignLevel === undefined ||
     !natural(director.restarts) || !natural(director.previousLosses) || director.previousLosses > director.restarts ||

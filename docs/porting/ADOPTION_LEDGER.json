@@ -39,19 +39,19 @@
     {
       "id": "hitapps-dynamic-difficulty",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 preview R1 updates the penalty from ten first clears and applies it only at fresh issuance for levels 11–15. Versioned variant IDs resolve the fixed effective budgets on reload and Restart.",
-      "nextAction": "Play-test both penalty directions on physical Android and tune product parameters. Capture original active rates, rounding and config before any parity claim. Product-vs-Hitapps event-order and ten-outcome evidence audited in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; do not promote static lifecycle callsite to original runtime parity.",
+      "currentImplementation": "У отдельной сборки C8 есть двусторонняя выдача версионированных R2 раздач с 16-го уровня, включая главу 81–87. Бюджет и ID закреплены до первого хода.",
+      "nextAction": "Физическая проверка сложности, исходный decCoef, активные условия Hitapps и оценка помощи после проигрышей. R2 — PRODUCT_ADAPTED по бюджету, старые раздачи и обычная выдача сохранены.",
       "stage": "B2",
-      "evidenceRef": "docs/qa/content-v8/CORE_2.md",
+      "evidenceRef": "docs/porting/P06_ADAPTIVE_BANK.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
     },
     {
       "id": "hitapps-easy-deals",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 preview R1 offers a checked relief variant after three counted losses on fresh same-level issuance for levels 11–15. A regular Restart retains the deal ID. Four relief rows use a second seed and level 11 uses a wider budget on its reference board.",
-      "nextAction": "Capture the native decCoef/two lookups and post-Paywall branch. Observe player relief on Android and certify relief rows for CORE-3 level additions. Source gating/decCoef uncertainty and the five-level product bank are compared in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; keep the remaining original gating unknown.",
+      "currentImplementation": "У отдельной сборки C8 есть двусторонняя выдача версионированных R2 раздач с 16-го уровня, включая главу 81–87. Бюджет и ID закреплены до первого хода.",
+      "nextAction": "Физическая проверка сложности, исходный decCoef, активные условия Hitapps и оценка помощи после проигрышей. R2 — PRODUCT_ADAPTED по бюджету, старые раздачи и обычная выдача сохранены.",
       "stage": "B2",
-      "evidenceRef": "docs/qa/content-v8/CORE_2.md",
+      "evidenceRef": "docs/porting/P06_ADAPTIVE_BANK.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
     },
     {

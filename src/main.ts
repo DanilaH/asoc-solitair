@@ -1,3 +1,4 @@
+import { recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
 import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
@@ -1414,7 +1415,12 @@ try {
     if (requiresContinueProof(save.attempt) && (!proof || !verifiesContinue(save.attempt, proof))) return;
     if ((save.platform?.continueCredits ?? 0) > 0) {
       await continueFromResult(next => logTaskContinue(next, useContinue(next, proof)));
-    } else void rewarded('continue');
+    } else {
+      try {
+        if (SOURCE_DIFFICULTY_PREVIEW) await write(next => recordSourceContinue(next, deal));
+        void rewarded('continue');
+      } catch { message('Не удалось сохранить запрос продолжения.', true); }
+    }
   }, domOptions);
   $('#result-continue-coins').addEventListener('click', async () => {
     const button = $<HTMLButtonElement>('#result-continue-coins'), proof = continueCheck.proof;
@@ -1424,7 +1430,10 @@ try {
   async function continueFromResult(change: (next: Save) => boolean, cost = 0) {
     $('#result-continue-error').hidden = true;
     try {
-      if (!await write(change)) return;
+      if (!await write(next => {
+        recordSourceContinue(next, deal);
+        return change(next);
+      })) return;
       if (cost) telemetry.track('helper_purchase', { helper: 'continue-coins', cost });
       closeDialogs(); scene?.sync(); telemetry.sync();
     } catch {

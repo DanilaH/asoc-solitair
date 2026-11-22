@@ -14,9 +14,9 @@
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "CORE-1 replays 15 frozen C8 deals. P05 binds structural input, card order and budget before preparing a fixed or seeded board and gates the fresh and simulated feature paths explicitly.",
       "nextAction": "Kit #118 reports 752 conditional model comparisons. P36 still needs authenticated original inputs, executed post-Shuffle/post-Final snapshots and live feature settings.",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/166",
       "stage": "B1",
-      "evidenceRef": "docs/qa/content-v8/CORE_1.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
     },
     {
       "id": "hitapps-level-wave",
@@ -31,46 +31,46 @@
       "id": "hitapps-candidate-priority",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P05/P07 share an authoring pipeline for None, Priority and Equality with effective budget, recorded seeds, feature phases and certification on the final board. Bot heuristics and search are PRODUCT_ADAPTED.",
-      "nextAction": "Measure actual original strategy/config on device. Connect selected immutable variants to new attempts in later CORE packages.",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "nextAction": "Compare authentic original strategy, seed and final layout against the model in P36. Evaluate the generated QA catalog on physical Android.",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170",
       "stage": "B1",
-      "evidenceRef": "docs/qa/content-v8/CORE_1.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
     },
     {
       "id": "hitapps-dynamic-difficulty",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Изолированный C8 director выбирает 116 новых seeded Priority/EasyDeals вариантов на 53 уровнях в диапазоне 16–80. Для остальных случаев доступны архивные R2 варианты, включая 81–87. Десятислотовая история обновляет будущий коэффициент. Бюджет и Deal ID закреплены до первого хода.",
-      "nextAction": "Физическая проверка сложности, исходный decCoef, активные условия Hitapps и оценка помощи после проигрышей. R2 — PRODUCT_ADAPTED по бюджету, старые раздачи и обычная выдача сохранены.",
+      "nextAction": "Verify balance and continuation on physical Android, starting with the 11 tight levels with at most five spare moves. Capture original event rounding and active rates separately.",
       "stage": "B2",
-      "evidenceRef": "docs/porting/P06_ADAPTIVE_BANK.md",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170"
     },
     {
       "id": "hitapps-easy-deals",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Изолированный C8 director выбирает 116 новых seeded Priority/EasyDeals вариантов на 53 уровнях в диапазоне 16–80. Для остальных случаев доступны архивные R2 варианты, включая 81–87. Десятислотовая история обновляет будущий коэффициент. Бюджет и Deal ID закреплены до первого хода.",
-      "nextAction": "Физическая проверка сложности, исходный decCoef, активные условия Hitapps и оценка помощи после проигрышей. R2 — PRODUCT_ADAPTED по бюджету, старые раздачи и обычная выдача сохранены.",
+      "nextAction": "Measure the loss-triggered layouts on physical Android and capture the original decCoef, tier thresholds, target and active seed routing.",
       "stage": "B2",
-      "evidenceRef": "docs/porting/P06_ADAPTIVE_BANK.md",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/51"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170"
     },
     {
       "id": "hitapps-equality-paywall",
       "status": "IN_PROGRESS",
-      "currentImplementation": "Seed 47 is archived for SaveStore. Both new bots win it and the ordinary control. New issuance requires a pinned v2 catalog record with seed, board, replayed traces and a Rules3/oracle win. The level 16 run had no certified candidate among 100 seeds. P08 issuance stays off.",
-      "nextAction": "Verify three-stack initial placement, author/persist immutable Equality variants, and measure the distinct selector and continuation on device. QA issuance is separate from the unknown verified live segment assignment; the pair transform remains unknown. Offline Equality vs issued runtime is separately classified in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; no accidental product activation. B3 source/product trace: existing 80%-late-bot-failure offline selector is NOT wired to campaign issuance; before use require immutable prevalidated special Deal, independent bot policies and separate actual-board +10 fair-recovery gate. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
+      "currentImplementation": "Seed 47 is archived for SaveStore. Both new bots win it and the ordinary control. New issuance requires a pinned v2 catalog with independently replayed traces and a winning route. Four 100-seed runs produced no certified entries.",
+      "nextAction": "Author an independently solvable Equality candidate with adequate reserve, validate it with human/device play and preserve P36 pair transform and native bot capture as source gates.",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/169",
       "stage": "B3",
-      "evidenceRef": "docs/qa/content-v8/CORE_2.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
     },
     {
       "id": "hitapps-paywall-segmentation",
       "status": "IN_PROGRESS",
       "currentImplementation": "Offline and QA issuance require an explicit positive paywall seed, level, attempt cap, one of the four cohorts and a whitelist. Provider provenance also requires a declared provider revision. Actual segment assignment remains unknown.",
-      "nextAction": "Wire product eligibility and issued counters to immutable deals only with known segment or explicit unknown policy; preserve original live cohort UNKNOWN. Original cohort and remote-config activation remain unknown as detailed in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md. B3 source/product trace: native four cohorts and eligibility cannot be inferred from the synthetic segment input; original reset/increment lifecycle and durable product issued counter remain independent and UNIMPLEMENTED. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
+      "nextAction": "Verify the actual cohort assignment, provider revision, privacy boundary and device acceptance before supplying any live cohort to the draft policy. Keep unknown profiles on ordinary deals.",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/169",
       "stage": "B3",
-      "evidenceRef": "docs/qa/content-v8/CORE_2.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
     },
     {
       "id": "hitapps-adbreak",
@@ -819,9 +819,11 @@
     {
       "id": "hitapps-equality-three-stack-pair-placement",
       "status": "ROADMAPPED",
-      "currentImplementation": "C8 ordinary Priority dealer skips Equality-specific unique 3-stack pairing",
-      "nextAction": "Implement exactly flagged placeCategoryPairsOnTop for Equality only with same advanced RNG stream; compare selected stack indices and new candidate stock/cols in offline tests B3 exact known boundary: flag only in Equality simulation and exactly three unique indices drawn via the same advanced EmbeddedRandom; final pair transform, RNG state and live original board remain unverified. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "stage": "B3"
+      "currentImplementation": "P07 samples three distinct tableau indices from the candidate RNG after the dealer consumes its draws. The original placement transform is pending.",
+      "nextAction": "Capture original pre/post placement, selected indices, RNG consumption and pair-card identities. Check the completed original transform against the independent source model.",
+      "stage": "B3",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/168",
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
     },
     {
       "id": "hitapps-feature-seed-one-time-reshuffle",
@@ -845,7 +847,8 @@
       "currentImplementation": "CORE-1 authoring handles negative requests with an injected [0, INT32_MAX) seed source and records both requested and actual seed.",
       "nextAction": "Capture original entropy behavior and selected seed on Android. Product authoring uses its own entropy, and saves resume fixed variants.",
       "stage": "B1",
-      "evidenceRef": "docs/qa/content-v8/CORE_1.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/166"
     },
     {
       "id": "hitapps-puzzle-top-bottom-cards",

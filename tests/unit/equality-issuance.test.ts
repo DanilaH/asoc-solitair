@@ -16,6 +16,9 @@ it('leaves default and unverified cohorts unchanged and atomically issues a cert
   const { SaveStore } = await import('../../src/platform/storage');
   const { prepareEqualityPlan } = await import('../../tools/content/equality-provenance');
   const { advance } = await import('../../tools/qa/gameplay-oracle');
+  const { equalityBoardBinding, registerBundledEquality } = await import('../../src/domain/equality-attestation');
+  const { authoringHash } = await import('../../tools/content/hitapps-authoring');
+  const { verifyEqualityBankEntry } = await import('../../tools/content/hitapps-equality-bank');
   const base = campaignDeals[15], daily = dailyForDay('2026-11-21');
   const deal = { ...base, id: base.id + '-equality-r1' } satisfies Deal;
   const config = { enabled: true, minLevel: 16, limit: 1, version: 'controlled-r1', segments: ['NonPayer' as const] };
@@ -37,12 +40,32 @@ it('leaves default and unverified cohorts unchanged and atomically issues a cert
     board = next!;
   }
   expect(board.phase).toBe('won');
+  // The isolated transaction fixture supplies a test pin. The real authoring verifier
+  // must reject these weak traces even if their bytes and metadata are consistent.
+  const tested = {
+    deal, manifest: {
+      version: 2, provenanceTier: 'PRODUCT_ADAPTED', originalRuntime: 'UNOBSERVED', rulesVersion: 3,
+      baseId: base.id, dealId: deal.id, dealVersion: deal.version, finalBoardHash: authoringHash(equalityBoardBinding(deal)),
+      sourceSeed: 42, paywallSeed: 42, budget: deal.initial.movesLeft!, featureConfig: { revision: 'test', enabled: [], pairTransform: 'UNKNOWN' },
+      engineAndOracle: 'rules3-gameplay-oracle-v1', runId: authoringHash(control),
+      independentlyVerifiedWinningRouteHash: authoringHash(deal.winningPath),
+      botTraces: control.trials[0].runs.map(run => ({ botStrategyId: run.policyId, version: 1, traceActions: run.path,
+        traceDigest: run.traceDigest, stepCount: run.steps, lossReason: 'budget' as const })),
+    },
+  } as const;
+  const pin = authoringHash(tested.manifest);
+  expect(verifyEqualityBankEntry(base, tested, pin)).toBe(false);
+  const candidate = await registerBundledEquality(tested, pin);
+  expect(candidate).toBeDefined();
+  expect(Object.isFrozen(candidate?.deal.initial.stock)).toBe(true);
+  expect(await registerBundledEquality({ ...tested, deal: { ...deal, initial: {
+    ...deal.initial, stock: [...deal.initial.stock].reverse(),
+  } } }, pin)).toBeUndefined();
+  expect(await registerBundledEquality({ ...tested, deal: { ...deal, winningPath: deal.winningPath.slice(1) } }, pin)).toBeUndefined();
+  expect(await registerBundledEquality({ ...tested, manifest: { ...tested.manifest, runId: 'altered' } }, pin)).toBeUndefined();
   const policy: EqualityPreviewPolicy = {
-    enabled: true, cohortEvidence: 'controlled-fixture', version: 'controlled-r1', maxIssued: 1,
-    candidates: [{ baseId: base.id, deal, proof: {
-      version: 1, scope: 'PRODUCT_ADAPTED', winningSteps: deal.winningPath.length,
-      lateLossPaths: control.trials[0].runs.map(run => run.traceDigest),
-    } }],
+    enabled: true, cohortEvidence: 'controlled-fixture', version: 'controlled-attested-test', maxIssued: 1,
+    seed: 42, segment: 'NonPayer', enabledSegments: ['NonPayer'], candidates: [candidate!],
   };
   const fresh = () => {
     const save = freshSave(base, 'prior-attempt');
@@ -54,6 +77,14 @@ it('leaves default and unverified cohorts unchanged and atomically issues a cert
     beginDeal(save, base, 'next-attempt', base, inactive);
     expect(save.attempt.dealId).toBe(base.id);
     expect(save.equality).toBeUndefined();
+  }
+
+  for (const blocked of [{ ...policy, candidates: [tested] }, { ...policy, seed: 43 },
+    { ...policy, enabledSegments: ['Payer' as const] }, { ...policy, cohortEvidence: 'verified-provider' as const }]) {
+    const save = fresh();
+    beginDeal(save, base, 'gate-refusal', base, blocked);
+    expect(save.attempt.dealId).toBe(base.id);
+    expect(save.equality?.issued ?? 0).toBe(0);
   }
 
   let stored: string | null = null, fail = false;
@@ -74,8 +105,13 @@ it('leaves default and unverified cohorts unchanged and atomically issues a cert
   expect(writer.state.profile).toEqual(original.profile);
   expect(writer.state.equality).toMatchObject({
     version: 1, eligible: 1, attempted: 1, selected: 1, issued: 1, lost: 0, completed: 0,
-    last: { attemptId: 'tested-issue', dealId: deal.id, policyVersion: policy.version, dealVersion: deal.version },
+    last: { attemptId: 'tested-issue', dealId: deal.id, policyVersion: policy.version, dealVersion: deal.version, attestation: pin },
   });
+  for (const segment of ['NonPayer', 'Payer', 'PotentialPayer', 'SleepPayer'] as const) {
+    const save = fresh();
+    beginDeal(save, base, 'cohort-gate', base, { ...policy, segment, enabledSegments: [segment] });
+    expect(save.equality?.last?.segment).toBe(segment);
+  }
   await writer.mutate(save => switchMode(save, 'daily', daily, 'parked-issue'));
   const reopened = new SaveStore(storage, lookup, fresh);
   await reopened.open();

@@ -1,7 +1,7 @@
 import { LIVES_PREVIEW } from '../domain/campaign-lives';
 import { RECOVERY_GAMEPLAY } from '../domain/campaign-recovery';
 import { RANDOM_JOKER_PREVIEW } from '../domain/random-joker';
-import { equalityPreviewDeal, isEqualityVariant } from './campaign-v8-equality';
+import { equalityAttestedDeals, equalityPreviewDeal, isEqualityVariant } from './campaign-v8-equality';
 import { expansionDeals } from './expansion';
 import { findDaily } from './daily';
 import { modifierDeals } from './modifiers';
@@ -71,7 +71,7 @@ export const recoveryDeal: Deal = {
   recoveryPaths: undefined,
 };
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
-  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...lateAdaptiveDeals, equalityPreviewDeal, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
+  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...lateAdaptiveDeals, equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {

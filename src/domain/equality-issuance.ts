@@ -1,11 +1,6 @@
+import { equalityAttestation, type EqualityCandidate } from './equality-attestation';
 import { campaignId } from './progression';
 import type { Attempt, Deal, Save } from './types';
-
-export interface EqualityCandidate {
-  baseId: string;
-  deal: Deal;
-  proof: { version: 1; scope: 'PRODUCT_ADAPTED'; winningSteps: number; lateLossPaths: readonly string[] };
-}
 
 export type EqualitySegment = 'NonPayer' | 'Payer' | 'PotentialPayer' | 'SleepPayer' | 'unknown';
 
@@ -13,7 +8,8 @@ export interface EqualityPreviewPolicy {
   enabled: boolean;
   cohortEvidence: 'controlled-fixture' | 'verified-provider' | 'unknown';
   segment?: EqualitySegment;
-  enabledSegments?: readonly Exclude<EqualitySegment, 'unknown'>[];
+  enabledSegments: readonly Exclude<EqualitySegment, 'unknown'>[];
+  providerRevision?: string;
   seed?: number;
   minLevel?: number;
   version: string;
@@ -23,26 +19,24 @@ export interface EqualityPreviewPolicy {
 
 export function issueEqualityDeal(save: Save, base: Deal, attemptId: string, policy?: EqualityPreviewPolicy): Deal {
   const level = base.campaignLevel;
-  const segment = policy?.segment ?? (policy?.cohortEvidence === 'controlled-fixture' ? 'NonPayer' : 'unknown');
-  const seed = policy?.seed ?? (policy?.cohortEvidence === 'controlled-fixture' ? 1 : 0);
-  if (!policy?.enabled || policy.cohortEvidence === 'unknown' || segment === 'unknown' ||
+  const segment = policy?.segment ?? 'unknown';
+  const seed = policy?.seed ?? 0;
+  if (!policy?.enabled || (policy.cohortEvidence !== 'controlled-fixture' && policy.cohortEvidence !== 'verified-provider') ||
+    (policy.cohortEvidence === 'verified-provider' && !policy.providerRevision) ||
+    segment === 'unknown' || !['NonPayer', 'Payer', 'PotentialPayer', 'SleepPayer'].includes(segment) ||
     !Number.isSafeInteger(seed) || seed <= 0 || seed > 2147483647 ||
-    (policy.enabledSegments && !policy.enabledSegments.includes(segment)) ||
+    !policy.enabledSegments.includes(segment) ||
     !policy.version || !Number.isSafeInteger(policy.maxIssued) || policy.maxIssued <= (save.equality?.issued ?? 0) ||
     level === undefined || level < (policy.minLevel ?? 1) || base.daily || save.platform?.completedCampaign.includes(campaignId(level))) return base;
 
   const stats = save.equality ??= { version: 1, eligible: 0, attempted: 0, selected: 0, issued: 0, lost: 0, completed: 0 };
   stats.eligible++; stats.attempted++;
-  const candidate = policy.candidates.find(({ baseId, deal, proof }) => baseId === base.id &&
-    deal.id !== base.id && deal.version > 0 && !deal.daily && deal.campaignLevel === level &&
-    deal.initial.phase === 'playing' && deal.initial.movesLeft !== null && proof.version === 1 &&
-    proof.scope === 'PRODUCT_ADAPTED' && proof.winningSteps === deal.winningPath.length &&
-    proof.winningSteps > 0 && proof.winningSteps <= deal.initial.movesLeft &&
-    proof.lateLossPaths.every(hash => /^[a-f0-9]{64}$/.test(hash)) && new Set(proof.lateLossPaths).size >= 2);
+  const candidate = policy.candidates.map(equalityAttestation).find(entry => entry &&
+    entry.baseId === base.id && entry.paywallSeed === seed && entry.deal.id !== base.id && entry.deal.campaignLevel === level);
   if (!candidate) return base;
 
   stats.selected++; stats.issued++;
-  stats.last = { attemptId, dealId: candidate.deal.id, dealVersion: candidate.deal.version, policyVersion: policy.version, segment, cohortEvidence: policy.cohortEvidence, seed, lost: false, completed: false };
+  stats.last = { attemptId, dealId: candidate.deal.id, dealVersion: candidate.deal.version, policyVersion: policy.version, segment, cohortEvidence: policy.cohortEvidence, seed, attestation: candidate.attestation, providerRevision: policy.cohortEvidence === 'verified-provider' ? policy.providerRevision : undefined, lost: false, completed: false };
   return candidate.deal;
 }
 

@@ -2,7 +2,8 @@ import { createHash } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import { adjustedMoveBudget } from '../../src/domain/difficulty';
 import { applyBoard, assertBoard } from '../../src/domain/engine';
-import type { BoardCommand, Deal } from '../../src/domain/types';
+import { equalityBoardBinding } from '../../src/domain/equality-attestation';
+import type { Board, BoardCommand, Deal } from '../../src/domain/types';
 import { advance } from '../qa/gameplay-oracle';
 import { prepareFreshPlan, prepareSimulatedShuffle, resolveCandidateSeed } from './candidate-pipeline';
 import { dealOrdinary, EmbeddedRandom } from './plain-dealer';
@@ -29,12 +30,9 @@ export function validateHitappsFeatures(config: HitappsFeatureConfig): Appliers 
   return appliers;
 }
 
-export function rulesSnapshot(deal: Deal) {
-  const { initial, cards, lock, frozen, bound, puzzle, golden, starter, recovery, bonusSlots, training, daily } = deal;
-  return { initial, cards, lock, frozen, bound, puzzle, golden, starter, recovery, bonusSlots, training, daily };
-}
+export const rulesSnapshot = equalityBoardBinding;
 
-export function replayAuthoredRoute(deal: Deal, actions: readonly BoardCommand[]) {
+export function replayAuthoredRoute(deal: Deal, actions: readonly BoardCommand[], afterStep?: (board: Board) => void) {
   assertBoard(deal.initial, deal);
   let board = deal.initial;
   for (const [index, action] of actions.entries()) {
@@ -44,6 +42,7 @@ export function replayAuthoredRoute(deal: Deal, actions: readonly BoardCommand[]
       throw Error(`Engine and oracle do not certify action ${index + 1} for ${deal.id}`);
     }
     board = oracle;
+    afterStep?.(board);
   }
   return board;
 }

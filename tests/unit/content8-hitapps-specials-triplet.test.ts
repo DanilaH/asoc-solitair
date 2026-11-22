@@ -103,3 +103,26 @@ it('P10+P11+P12: invalid gesture, Undo and reload do not create phantom thaw/unb
   expect(resumed.accepted).toBe(true);
   expect(isBoundCard(resumed.next.attempt.board, deal, 'd1')).toBe(false);
 });
+
+it('P12+Ordered source co-occurrence: independent categories keep valid Rules3 ordering', () => {
+  // The original 226 local LevelBundles include four with PuzzleCards, two
+  // of which also contain Ordered words. This product test deliberately uses
+  // a DISTINCT ordered category; original per-card pairing remains UNKNOWN.
+  const ordered: Deal = {
+    ...deal,
+    cards: {
+      ...deal.cards,
+      c: { ...deal.cards.c, ordered: true },
+      c1: { ...deal.cards.c1, rank: 1 },
+    },
+  };
+  assertBoard(ordered.initial, ordered);
+  let board = structuredClone(ordered.initial);
+  for (const action of ordered.winningPath) {
+    const next = applyBoard(board, action, ordered);
+    if (typeof next === 'string') throw Error('Ordered+Puzzle: ' + next);
+    expect(advance(board, action, ordered)).toEqual(next.board);
+    board = next.board;
+  }
+  expect(board.phase).toBe('won');
+});

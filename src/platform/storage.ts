@@ -104,6 +104,10 @@ export function decodeSave(raw: string, source: DealSource): Save {
       (deal.daily || deal.campaignLevel === undefined || !validOutcome(save.attempt.sourceDifficulty)))) {
     throw Error('Повреждены исходные события сложности');
   }
+  if (save.sourceDifficultyPenalty !== undefined && (!sourceHistory || sourceHistory.length < DIFFICULTY_WINDOW ||
+    !Number.isSafeInteger(save.sourceDifficultyPenalty) || Math.abs(save.sourceDifficultyPenalty) > 100)) {
+    throw Error('Повреждён исходный коэффициент сложности');
+  }
   if (save.equality !== undefined) {
     const state = save.equality;
     if (!state || state.version !== 1 || ![state.eligible, state.attempted, state.selected, state.issued, state.lost, state.completed].every(natural) ||

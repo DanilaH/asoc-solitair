@@ -19,6 +19,9 @@ export function recordCampaignOutcome(save: Save) {
   if (SOURCE_DIFFICULTY_PREVIEW) {
     const entry = updateSourceDifficultySlot(save.attempt.sourceDifficulty, 'LevelWon').slot;
     save.sourceDifficultyHistory = [...(save.sourceDifficultyHistory ?? []), entry].slice(-DIFFICULTY_WINDOW);
+    if (save.sourceDifficultyHistory.length === DIFFICULTY_WINDOW) {
+      save.sourceDifficultyPenalty = nextPenalty(save.sourceDifficultyHistory, save.sourceDifficultyPenalty ?? 0, C8_DIFFICULTY);
+    }
   }
 }
 
@@ -39,6 +42,25 @@ export function easyDealTarget(input: {
     !Number.isSafeInteger(setting.targetSteps) || setting.targetSteps < 1) return;
   if (!Number.isSafeInteger(input.previousLosses) || input.previousLosses < 0 || input.previousLosses + 1 < setting.lossThreshold) return;
   return setting.targetSteps;
+}
+
+/** Full source event history takes precedence only in the isolated director build. */
+export function futureDifficultyPenalty(save: Save): number {
+  const source = save.sourceDifficultyHistory;
+  if (!SOURCE_DIFFICULTY_PREVIEW || !source || source.length < DIFFICULTY_WINDOW) return difficultyPenalty(save);
+  return save.sourceDifficultyPenalty ?? nextPenalty(source, 0, C8_DIFFICULTY);
+}
+
+export function planFutureDifficulty(input: Parameters<typeof easyDealTarget>[0] & {
+  baseBudget: number;
+  levelPenalty: number;
+  historyPenalty: number;
+}, easy: Parameters<typeof easyDealTarget>[1]) {
+  return {
+    penalty: input.levelPenalty + input.historyPenalty,
+    effectiveBudget: adjustedMoveBudget(input.baseBudget, input.levelPenalty + input.historyPenalty, input.stable),
+    easyTarget: easyDealTarget(input, easy),
+  };
 }
 
 export function recordCampaignExhaustion(attempt: Attempt) {

@@ -75,6 +75,8 @@ Before actual live billing: collect current official provider docs/contract, per
 
 ## P25 · Every E3 source offer family retained, own real entitlement semantics
 
+**OWNER DECISION 22.11.2026 · P25 option A:** Full three-vendor monetization **must** be implemented including all 15 existing source commercial families, P22 41 AZUR catalog concepts and exact-source-tier index of 10 publicly displayed Unico iOS item names including Fail Offer V2 / Hard / Very Hard / Advantage. Staged activation is allowed and required **only after** legal merchant access/payout, approved prices, trusted P23 grants, restore/refund, game balance and UX. Owner did **not** select a permanent or mandated shop+NoAds-only paid launch. New source family identity must be proven before incrementing source count; no live transaction, source-original price or renewal terms can be fabricated from store labels. [Binding decision](../OWNER_DECISIONS_2026-11-22.md) · [unified implementation TZ](../OWNER_SEVEN_DECISIONS_IMPLEMENTATION_TZ_2026-11-22.md). Current models remain offline, no checkout approved yet.
+
 Primary IDs: `hitapps-piggy-bank`, `azur-play-pass`, `hitapps-rotating-offers`, `hitapps-birthday-offer`, `hitapps-decoy-offer`, `hitapps-starter-offer`, `hitapps-inapp-shop`, `azur-offer-campaign`, `unico-vip`, `azur-iap-no-ads`, `azur-iap-coin-packs`, `azur-iap-coin-offer-series`, `azur-iap-premium-bundles`, `azur-iap-welcome-offer`, `azur-iap-unlimited-moves-tiers` — **all 15**, including 9 current live payment blockers under E3.
 
 Design separately versioned and testable family modules:

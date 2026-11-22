@@ -2,11 +2,11 @@
   "schema": "consumer-adoption-ledger-v1",
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/a5c246d9935474d7fe662da95fb657c61c245c0a/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "72efdad46077213e1ce68475b004544fe9dfec75",
-  "sourceInventoryRef": "a5c246d9935474d7fe662da95fb657c61c245c0a",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/adb0657facebf8b5e3ed22369305ba509c988626/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "79a44a8b1c0ec98a6b6bde9b1fbd4071cad1af6d",
+  "sourceInventoryRef": "adb0657facebf8b5e3ed22369305ba509c988626",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
-  "coverageDisclaimer": "114 source systems; AZUR original ARM64 source confirms DealCards shuffles a temporary copy of allCards (not persistent GameManager.allCards). Prior v1 trace comparator had a potential false-negative and has been corrected. Still zero Android original executions, so no source runtime/final board parity. No owner exclusions.",
+  "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
   "features": [
     {
@@ -178,7 +178,7 @@
       "id": "azur-shuffle-helper",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P16 PRODUCT_ADAPTED one free stock shuffle per attempt with current-board proof, atomic SaveStore and Undo. See docs/porting/P16_PROOF_SHUFFLE.md.",
-      "nextAction": "Determine re-deal constraints/save/provable solvability and user teaching D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
+      "nextAction": "Native original source is now NATIVE_STATIC kit PR #96: closed tableau + Stock + Reset Waste pooled, Undo.Clear on success, separate SpendShuffleHint/refund. Current P16 PR #103 stock-only verified-winning Shuffle with Undo retained is PRODUCT_ADAPTED; see issue #104 / docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md. Original Android/merchant gating UNKNOWN.",
       "stage": "D1"
     },
     {
@@ -752,7 +752,7 @@
       "id": "azur-shuffle-animation-controller",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P16 PRODUCT_ADAPTED stock rotation starts after the confirmed save and respects reduced motion. See docs/porting/P16_PROOF_SHUFFLE.md.",
-      "nextAction": "Implement independent shuffle mechanic and optional source-inspired animation only after solver/save guarantees D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
+      "nextAction": "Native GameController calls ShuffleAnimationController.Play after core success, cancels coroutine/refreshes fallback; current P16 animation-after-save is PRODUCT_ADAPTED. Actual original device frames unknown. See kit PR #96 / issue #104.",
       "stage": "D1"
     },
     {
@@ -790,7 +790,7 @@
       "id": "azur-defeat-vs-no-valid-move",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "CORE-0 verifies last-move win and budget exhaustion in Rules 3. The separate stock-cycle reachability query explicitly ignores the budget, including exhausted positions.",
-      "nextAction": "Capture original Android callbacks for no-valid-move help versus defeat and playtest both states on our APK. Continuation proof from exhausted positions is CORE-5.",
+      "nextAction": "Native source P05 22.11 (kit PR #98): GameManager.CheckAvailableMoves after accepted DrawCardFromDeck/MoveCard invokes optional delegate with NOT victory AND MoveValidator.HasAnyValidMove FALSE AND MovesSystem.HasMovesLeft TRUE, separate from CheckDefeat budget loss. MoveValidator uses independent Joker useless filter with CountJokersOnBoard>1 bypass. Our C8 phase based solely on won/budget is PRODUCT_ADAPTED. Build source-shaped diagnostic, not premature lost/ad. Original +0x70 callback subscriber and Android remain UNKNOWN. Issue #123, docs/qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md.",
       "stage": "B1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "evidenceRef": "docs/qa/content-v8/CORE_0.md"
@@ -895,6 +895,14 @@
       "stage": "B1",
       "currentImplementation": "Our published C8 levels use offline immutable Hitapps-derived Deals and bundled own game art. There is no AZUR-specific level-scoped CardSpriteLoader asynchronous asset preload, loaded-count fallback or source-aware locale word-count bridge. P34 has a versioned RU/EN preview and separate art count, negative tests and locale budget evidence. See docs/porting/P34_LOCALE_ART_BUDGET.md.",
       "nextAction": "Original XAPK P0 https://github.com/DanilaH/mini-games-kit/pull/90: capture-ready hooks for PreloadThemes + TryGetLoadedSpriteCount, recording requested/loaded theme counts without protected image data; static 90 art packs/490 Sprite counts verified by kit PR #88, but original Android preload and error/late/remote behavior NOT observed. Need actual authorized device trace with success/missing art, content count and immutable Save/Undo path before product source-runtime parity."
+    },
+    {
+      "id": "azur-greedy-hint-order",
+      "stage": "D2",
+      "status": "ROADMAPPED",
+      "currentImplementation": "C8 resolveHint uses independently verified winning continuation/solver, not the original AZUR five-stage first-success greedy MoveHintSystem; this is an intentional PRODUCT_ADAPTED policy.",
+      "nextAction": "P04 source native upgraded kit PR #98: exact MoveHintSystem Joker useless predicate (wouldUncoverHidden, alternative movable nonJoker, prior foundation) distinct from MoveValidator.HasAnyValidMove Joker predicate (CountJokersOnBoard>1 bypass, hidden previous/source, foundation). Native 5-stage hint class priority unchanged; keep current safe solver-backed Hint PRODUCT_ADAPTED, optional independently tested diagnostic and original Android P36 still needed. Issue #123 and docs/qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md.",
+      "evidenceRef": "docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md"
     }
   ],
   "auditRevision": "2026-11-20-azur-preset-schema-native-114-v14",

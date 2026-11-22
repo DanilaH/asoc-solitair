@@ -5,8 +5,12 @@ import type { Attempt, Deal, Save } from '../domain/types';
 export const ADAPTIVE_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'director';
 const profile = 'c8-budget-r2';
 
-export function adaptiveBank(bases: readonly Deal[]) {
-  return new Map(bases.flatMap(base => {
+type AdaptiveVariants = { tight?: Deal; relief: Deal; easy?: Deal; archived?: readonly string[] };
+
+export function adaptiveBank(bases: readonly Deal[], generated: readonly {
+  deal: Deal; direction: 'tight' | 'relief' | 'easy';
+}[] = []) {
+  const pools = new Map<string, AdaptiveVariants>(bases.flatMap(base => {
     if (base.campaignLevel === undefined || base.campaignLevel < 16 || base.training || !base.initial.movesLeft) return [];
     const budget = base.initial.movesLeft;
     const variant = (direction: 'tight' | 'relief', penalty: number): Deal => ({
@@ -19,8 +23,13 @@ export function adaptiveBank(bases: readonly Deal[]) {
     const relief = variant('relief', C8_DIFFICULTY.easyPenalty);
     if (relief.initial.movesLeft! <= budget || base.winningPath.length === 0) return [];
     const certifiedTight = tight.initial.movesLeft! < budget && tight.initial.movesLeft! >= base.winningPath.length ? tight : undefined;
-    return [[base.id, { tight: certifiedTight, relief }] as const];
+    return [[base.id, { tight: certifiedTight, relief, archived: [relief.id, ...(certifiedTight ? [certifiedTight.id] : [])] }] as const];
   }));
+  for (const { deal, direction } of generated) {
+    const pool = pools.get(deal.adaptive?.baseId ?? '');
+    if (pool) pool[direction] = deal;
+  }
+  return pools;
 }
 
 export type AdaptiveBank = ReturnType<typeof adaptiveBank>;
@@ -28,8 +37,8 @@ export type AdaptiveBank = ReturnType<typeof adaptiveBank>;
 export function selectAdaptiveDeal(save: Save, base: Deal, bank: AdaptiveBank, previous?: Attempt, enabled = ADAPTIVE_PREVIEW): Deal {
   const pool = bank.get(base.id), level = base.campaignLevel;
   if (!enabled || !pool || level === undefined || save.platform?.completedCampaign.includes(campaignId(level))) return base;
-  if (previous?.board.phase === 'exhausted' && [base.id, pool.tight?.id, pool.relief.id].includes(previous.dealId) &&
-      (previous.director?.previousLosses ?? 0) + 1 >= C8_DIFFICULTY.lossThreshold) return pool.relief;
+  if (previous?.board.phase === 'exhausted' && [base.id, pool.tight?.id, pool.relief.id, pool.easy?.id, ...(pool.archived ?? [])].includes(previous.dealId) &&
+      (previous.director?.previousLosses ?? 0) + 1 >= C8_DIFFICULTY.lossThreshold) return pool.easy ?? pool.relief;
   const penalty = futureDifficultyPenalty(save);
   if (penalty === C8_DIFFICULTY.hardPenalty) return pool.tight ?? base;
   if (penalty === C8_DIFFICULTY.easyPenalty) return pool.relief;

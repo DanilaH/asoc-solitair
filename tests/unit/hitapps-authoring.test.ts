@@ -14,6 +14,10 @@ it('binds card order, base geometry and the effective rules3 move budget', () =>
   expect(prepared).toMatchObject({ baseBudget: 164, effectiveBudget: 156 });
   expect(() => prepareHitappsInput(base, { ...structure, cardOrder: [...input.cardOrder].reverse() }, -5)).toThrow('structural input');
   expect(() => prepareHitappsInput({ ...base, initial: { ...base.initial, movesLeft: 162 } }, structure, -5)).toThrow('structural input');
+  const numeric = { ...input, provenance: 'AUTHENTICATED_NUMERIC_INPUT' as const };
+  const pin = hitappsInputHash(base, numeric);
+  expect(() => prepareHitappsInput(base, { ...numeric, levelInputHash: pin }, 0)).toThrow('external digest pin');
+  expect(prepareHitappsInput(base, { ...numeric, levelInputHash: pin }, 0, pin).effectiveBudget).toBe(164);
   const first = prepared.deal(42);
   expect(prepared.deal(42)).toEqual(first);
   expect(prepared.deal(43).initial.stock).not.toEqual(first.initial.stock);

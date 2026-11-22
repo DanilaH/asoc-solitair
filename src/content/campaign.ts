@@ -24,6 +24,7 @@ import { content8Slice } from './campaign-v8-preview';
 import { content8DirectorDeals, isC8DirectorVariant, otherC8Layout, selectC8Deal } from './campaign-v8-director';
 import { englishBeyondDeal, localizedCampaignDeal, sameLocalizedLevel } from './campaign-v8-locale';
 import { beyond80Deals } from './campaign-v8-beyond';
+import { hitappsDirectorDeals } from './campaign-v8-hitapps-director';
 import { adaptiveBank, selectAdaptiveDeal } from './campaign-v8-adaptive';
 import { BEYOND80_PREVIEW } from '../domain/progression';
 import { CONTENT8_PREVIEW } from '../domain/types';
@@ -58,8 +59,10 @@ const variants = new Map([
 export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
   ? [...content8Campaign.map(deal => specialByLevel.get(deal.campaignLevel) ?? deal), ...(BEYOND80_PREVIEW ? beyond80Deals : [])]
   : content7Deals;
-const lateAdaptive = adaptiveBank([...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8Special, ...content8BonusDeals]);
-export const lateAdaptiveDeals = [...lateAdaptive.values()].flatMap(({ tight, relief }) => tight ? [tight, relief] : [relief]);
+const adaptiveBases = [...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8Special, ...content8BonusDeals];
+const archivedAdaptive = adaptiveBank(adaptiveBases);
+const lateAdaptive = adaptiveBank(adaptiveBases, hitappsDirectorDeals);
+export const lateAdaptiveDeals = [...archivedAdaptive.values()].flatMap(({ tight, relief }) => tight ? [tight, relief] : [relief]);
 const jokerBase = content8Wave[0];
 export const randomJokerDeal: Deal = { ...jokerBase, id: jokerBase.id + '-random-joker-r1', randomJokerPreview: 1 };
 const recoveryBase = content8Wave[0];
@@ -71,7 +74,7 @@ export const recoveryDeal: Deal = {
   recoveryPaths: undefined,
 };
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
-  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...lateAdaptiveDeals, equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
+  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8DirectorDeals, ...lateAdaptiveDeals, ...hitappsDirectorDeals.map(entry => entry.deal), equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {

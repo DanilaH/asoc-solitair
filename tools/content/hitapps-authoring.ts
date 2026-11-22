@@ -62,8 +62,11 @@ export function hitappsInputHash(template: Deal, structure: Omit<HitappsStructur
 }
 
 /** Binds the numeric input to the expected input digest before interpreting any seed. */
-export function prepareHitappsInput(template: Deal, structure: HitappsStructure, dynamicPenalty: number) {
+export function prepareHitappsInput(template: Deal, structure: HitappsStructure, dynamicPenalty: number, trustedInputHash?: string) {
   const { levelInputHash, ...input } = structure;
+  if (input.provenance === 'AUTHENTICATED_NUMERIC_INPUT' && trustedInputHash !== levelInputHash) {
+    throw Error('Authenticated numeric input requires an external digest pin');
+  }
   const cardIds = Object.keys(template.cards);
   if (structure.schema !== 'hitapps-authoring-v1' || hitappsInputHash(template, input) !== levelInputHash ||
       cardIds.length !== input.cardOrder.length || new Set(input.cardOrder).size !== cardIds.length ||

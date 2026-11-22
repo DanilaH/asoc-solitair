@@ -82,6 +82,15 @@ jobs:
         run: |
           npm run build
           npx playwright test tests/browser/owner-campaign.spec.ts --output=test-results/owner-campaign
+      - name: Audit Hitapps balance and exercise the authoring bank on touch input
+        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-hitapps-')
+        env:
+          VITE_CONTENT8_PREVIEW: '1'
+          VITE_C8_OWNER_PREVIEW: director
+        run: |
+          npm run qa:hitapps-balance
+          npm run build
+          npx playwright test tests/browser/owner-campaign.spec.ts -g 'wins level 15' --output=test-results/hitapps-director
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -91,6 +100,7 @@ jobs:
             .recording/layout-audit/
             .recording/content7-ui/
             .recording/content7-recordings/
+            .authoring/hitapps/balance.json
             .authoring/content8/campaign-decisions.json
             .authoring/content8/campaign-decision-cost.json
             .authoring/content8/campaign-unknown-transfer-deep.json
@@ -124,7 +134,7 @@ jobs:
       - run: npm run android:sync
         env:
           VITE_CONTENT8_PREVIEW: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || startsWith(github.head_ref || github.ref_name, 'docs/c8-') || github.ref_name == 'feat/content8-reference-slice-20261119' || github.head_ref == 'feat/content8-reference-slice-20261119' || github.base_ref == 'feat/c8-onboarding-dealer-20261119') && '1' || '0' }}
-          VITE_C8_OWNER_PREVIEW: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p06-owner-') && 'director' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p08-owner-') && 'equality' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p15-owner-') && 'random-joker' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p19-owner-') && 'recovery' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p21-owner-') && 'ad-controls' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p25-owner-') && 'storefront' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p31-owner-') && 'lives' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-owner-') && 'acceptance' || '' }}
+          VITE_C8_OWNER_PREVIEW: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p06-owner-') && 'director' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-hitapps-') && 'director' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p08-owner-') && 'equality' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p15-owner-') && 'random-joker' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p19-owner-') && 'recovery' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p21-owner-') && 'ad-controls' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p25-owner-') && 'storefront' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p31-owner-') && 'lives' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-owner-') && 'acceptance' || '' }}
           VITE_CONTENT8_FROZEN: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p10-') && '1' || '0' }}
           VITE_CONTENT8_BOUND: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p11-') && '1' || '0' }}
           VITE_CONTENT8_BEYOND80: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-p33-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p34-')) && '1' || '0' }}

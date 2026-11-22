@@ -39,7 +39,7 @@
     {
       "id": "hitapps-dynamic-difficulty",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Изолированный C8 director выдаёт двусторонние R2 варианты с 16-го уровня, включая 81–87. Полная десятислотовая история запроса продолжения и рестарта обновляет отдельный коэффициент будущих раздач. Бюджет и ID закреплены до первого хода.",
+      "currentImplementation": "Изолированный C8 director выбирает 116 новых seeded Priority/EasyDeals вариантов на 53 уровнях в диапазоне 16–80. Для остальных случаев доступны архивные R2 варианты, включая 81–87. Десятислотовая история обновляет будущий коэффициент. Бюджет и Deal ID закреплены до первого хода.",
       "nextAction": "Физическая проверка сложности, исходный decCoef, активные условия Hitapps и оценка помощи после проигрышей. R2 — PRODUCT_ADAPTED по бюджету, старые раздачи и обычная выдача сохранены.",
       "stage": "B2",
       "evidenceRef": "docs/porting/P06_ADAPTIVE_BANK.md",
@@ -48,7 +48,7 @@
     {
       "id": "hitapps-easy-deals",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Изолированный C8 director выдаёт двусторонние R2 варианты с 16-го уровня, включая 81–87. Полная десятислотовая история запроса продолжения и рестарта обновляет отдельный коэффициент будущих раздач. Бюджет и ID закреплены до первого хода.",
+      "currentImplementation": "Изолированный C8 director выбирает 116 новых seeded Priority/EasyDeals вариантов на 53 уровнях в диапазоне 16–80. Для остальных случаев доступны архивные R2 варианты, включая 81–87. Десятислотовая история обновляет будущий коэффициент. Бюджет и Deal ID закреплены до первого хода.",
       "nextAction": "Физическая проверка сложности, исходный decCoef, активные условия Hitapps и оценка помощи после проигрышей. R2 — PRODUCT_ADAPTED по бюджету, старые раздачи и обычная выдача сохранены.",
       "stage": "B2",
       "evidenceRef": "docs/porting/P06_ADAPTIVE_BANK.md",
@@ -57,7 +57,7 @@
     {
       "id": "hitapps-equality-paywall",
       "status": "IN_PROGRESS",
-      "currentImplementation": "Seed 47 is archived for SaveStore. Competent bots win that field and the ordinary control. New issuance requires a pinned v2 catalog record with seed, final board, two independently replayed strategy traces and a distinct Rules3/oracle winning route.",
+      "currentImplementation": "Seed 47 is archived for SaveStore. Both new bots win it and the ordinary control. New issuance requires a pinned v2 catalog record with seed, board, replayed traces and a Rules3/oracle win. The level 16 run had no certified candidate among 100 seeds. P08 issuance stays off.",
       "nextAction": "Verify three-stack initial placement, author/persist immutable Equality variants, and measure the distinct selector and continuation on device. QA issuance is separate from the unknown verified live segment assignment; the pair transform remains unknown. Offline Equality vs issued runtime is separately classified in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; no accidental product activation. B3 source/product trace: existing 80%-late-bot-failure offline selector is NOT wired to campaign issuance; before use require immutable prevalidated special Deal, independent bot policies and separate actual-board +10 fair-recovery gate. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
       "stage": "B3",

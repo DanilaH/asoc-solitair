@@ -120,17 +120,19 @@ test('a foundation keeps a paper surface throughout an ordinary accepted flight'
   expect(minimum, 'No intermediate empty frame under the title/counter').toBeGreaterThan(.45);
 });
 
-test('an off-target release is neutral and draws no rejection below the finger', async ({ page, context }) => {
+test('an off-target release preserves the attempt and shows no rejection feedback', async ({ page, context }) => {
   const d = campaignDeals[5]; await seed(page, d, lightsState(5));
-  const { state, g, point, f } = await geometry(page, d), a = point(g.poses.find(p => p.id === 'lights_1')!), destination = { x: page.viewportSize()!.width - 45, y: page.viewportSize()!.height * .72 };
-  const before = await page.screenshot({ scale: 'css' }), c = await context.newCDPSession(page);
+  const { state, g, point, f } = await geometry(page, d), a = point(g.poses.find(p => p.id === 'lights_1')!);
+  const firstSlotTop = Math.min(...g.targets.map(slot => point({ x: slot.x, y: slot.y - slot.height / 2 }).y));
+  const destination = { x: page.viewportSize()!.width / 2, y: firstSlotTop - cardMetrics(d).height * f.unit / 2 - 28 };
+  const c = await context.newCDPSession(page);
   await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [a] });
   for (let i = 1; i <= 10; i++) { await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: a.x + (destination.x - a.x) * i / 10, y: a.y + (destination.y - a.y) * i / 10 }] }); await page.waitForTimeout(12); }
   await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await c.detach();
-  const after = await page.screenshot({ scale: 'css', path: test.info().outputPath('neutral-release.png') });
-  const bottom = { x: destination.x, y: destination.y + (cardMetrics(d).height / 2 - 2) * f.unit };
-  const oldColor = await patchMean(before, bottom), newColor = await patchMean(after, bottom);
-  expect(Math.max(...oldColor.map((v, i) => Math.abs(v - newColor[i])))).toBeLessThan(8);
+  await page.screenshot({ scale: 'css', path: test.info().outputPath('neutral-release.png') });
+  // The returning card may cross the release point. An actual rejection
+  // produces an error status and changes the prepared streak.
+  await expect(page.locator('#message')).not.toHaveClass(/\berror\b/);
   expect((await read(page)).attempt).toEqual(state.attempt);
 });
 

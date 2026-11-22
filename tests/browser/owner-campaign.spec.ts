@@ -30,10 +30,10 @@ test('wins level 15 and starts the certified tighter level 16 with its saved bud
   expect((await read(page)).attempt.board).toEqual(started.board);
 });
 
-test('starts the recorded Equality layout through Next and resumes its unchanged save', async ({ page }) => {
+test('gates new Equality issuance and resumes the archived deal and Undo exactly', async ({ page }) => {
   test.skip(preview !== 'equality', 'Requires the gated P08 gameplay build.');
   await page.setViewportSize({ width: 320, height: 568 });
-  const previous = content8Dealer[14];
+  const previous = content8Dealer[14], base = content8Wave[0];
   const { equalityPreviewDeal } = await import('../../src/content/campaign-v8-equality');
   let save = { ...fixture(14), attempt: freshSave(previous, 'owner-equality').attempt, contentVersion: 8 };
   save.settings.reducedMotion = true;
@@ -42,15 +42,24 @@ test('starts the recorded Equality layout through Next and resumes its unchanged
   await move(page, previous, previous.winningPath.at(-1)!);
   await page.locator('#next-level').tap();
   if (await page.locator('#difficulty-play').isVisible()) await page.locator('#difficulty-play').tap();
-  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', equalityPreviewDeal.id);
-  const started = await read(page);
-  expect(started.equality?.last).toMatchObject({ dealId: equalityPreviewDeal.id, segment: 'NonPayer', cohortEvidence: 'controlled-fixture' });
-  expect(started.attempt.board).toEqual(equalityPreviewDeal.initial);
-  await page.waitForTimeout(650);
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', base.id);
+  expect((await read(page)).equality).toBeUndefined();
+
+  const archived = { ...fixture(15), ...freshSave(equalityPreviewDeal, 'archived-equality'), contentVersion: 8 };
+  const moved = dispatch(archived, equalityPreviewDeal.winningPath[0], equalityPreviewDeal).next;
+  moved.platform = fixture(15).platform;
+  moved.settings.reducedMotion = true;
+  await seed(page, moved);
+  const enter = async () => {
+    const home = page.locator('#home-play');
+    if (await home.isVisible()) await home.tap();
+    await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', equalityPreviewDeal.id);
+  };
+  await enter();
   await page.reload();
-  await page.locator('#home-play').tap();
-  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', equalityPreviewDeal.id);
-  expect((await read(page)).attempt.board).toEqual(started.attempt.board);
+  await enter();
+  expect((await read(page)).attempt.board).toEqual(moved.attempt.board);
+  expect((await read(page)).attempt.undo).toEqual(moved.attempt.undo);
 });
 
 test('warns before the separate random Joker and clears Undo only after confirm', async ({ page }) => {

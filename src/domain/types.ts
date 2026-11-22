@@ -99,7 +99,7 @@ export interface MetaState { version: 1; winCycle: number; cycles: number; daily
 export interface EqualityIssuanceState {
   version: 1;
   eligible: number; attempted: number; selected: number; issued: number; lost: number; completed: number;
-  last?: { attemptId: string; dealId: string; dealVersion: number; policyVersion: string; segment?: 'NonPayer' | 'Payer' | 'PotentialPayer' | 'SleepPayer'; cohortEvidence?: 'controlled-fixture' | 'verified-provider'; seed?: number; lost: boolean; completed: boolean };
+  last?: { attemptId: string; dealId: string; dealVersion: number; policyVersion: string; segment?: 'NonPayer' | 'Payer' | 'PotentialPayer' | 'SleepPayer'; cohortEvidence?: 'controlled-fixture' | 'verified-provider'; seed?: number; attestation?: string; providerRevision?: string; lost: boolean; completed: boolean };
 }
 export interface Save {
   schema: 1; rulesVersion: number; contentVersion: number; balanceVersion: number; revision: number;

@@ -122,6 +122,9 @@ export function decodeSave(raw: string, source: DealSource): Save {
       (last.segment !== undefined && !['NonPayer', 'Payer', 'PotentialPayer', 'SleepPayer'].includes(last.segment)) ||
       (last.cohortEvidence !== undefined && !['controlled-fixture', 'verified-provider'].includes(last.cohortEvidence)) ||
       (last.seed !== undefined && (!Number.isSafeInteger(last.seed) || last.seed <= 0 || last.seed > 2147483647)) ||
+      (last.attestation !== undefined && (typeof last.attestation !== 'string' || !/^[a-f0-9]{64}$/.test(last.attestation))) ||
+      (last.providerRevision !== undefined && (last.cohortEvidence !== 'verified-provider' ||
+        typeof last.providerRevision !== 'string' || !last.providerRevision)) ||
       typeof last.lost !== 'boolean' || typeof last.completed !== 'boolean' ||
       (last.attemptId === save.attempt.id && (deal.daily || last.dealId !== deal.id || last.dealVersion !== deal.version)))) {
       throw Error('Повреждена особая попытка');

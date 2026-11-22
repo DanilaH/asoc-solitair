@@ -7,7 +7,7 @@ import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
 import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee, recordAdRevenue } from './domain/campaign-advertising';
 import { beginUnlimited, expireUnlimited, quotePurchasedUnlimited, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, usePurchasedUnlimited } from './domain/campaign-recovery';
 import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
-import { equalityPreviewPolicy } from './content/campaign-v8-equality';
+import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
 import { recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
 import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
@@ -175,6 +175,7 @@ function setDifficulty(element: HTMLElement, item?: Deal) {
 }
 
 async function start() {
+  const equalityPreviewPolicy = await loadEqualityPreviewPolicy();
 try {
   runtime.activity.setBlocked('screen', true);
   let firstLaunch = false;

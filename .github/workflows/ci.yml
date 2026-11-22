@@ -45,6 +45,7 @@ jobs:
           node tools/qa/summarize-c8-route-cost.mjs
           npm run qa:decision-cost
           npm run qa:decision-deep
+      - run: npm run qa:hitapps-equality
       - run: npm run qa:rules
       - run: npm run content:azur-preset
       - run: npm run qa:content8

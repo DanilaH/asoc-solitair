@@ -57,7 +57,7 @@
     {
       "id": "hitapps-equality-paywall",
       "status": "IN_PROGRESS",
-      "currentImplementation": "C8 QA preview issues one immutable seed-47 level-16 variant with real SaveStore and a solved route. Two distinct policy traces exhaust the 164-move budget. Ordinary play has no Equality assignment.",
+      "currentImplementation": "Seed 47 is archived for SaveStore. Competent bots win that field and the ordinary control. New issuance requires a pinned v2 catalog record with seed, final board, two independently replayed strategy traces and a distinct Rules3/oracle winning route.",
       "nextAction": "Verify three-stack initial placement, author/persist immutable Equality variants, and measure the distinct selector and continuation on device. QA issuance is separate from the unknown verified live segment assignment; the pair transform remains unknown. Offline Equality vs issued runtime is separately classified in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md; no accidental product activation. B3 source/product trace: existing 80%-late-bot-failure offline selector is NOT wired to campaign issuance; before use require immutable prevalidated special Deal, independent bot policies and separate actual-board +10 fair-recovery gate. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
       "stage": "B3",
@@ -66,7 +66,7 @@
     {
       "id": "hitapps-paywall-segmentation",
       "status": "IN_PROGRESS",
-      "currentImplementation": "Explicit positive seed, enabled/min-level/limit/segment whitelist enforced in the offline eligibility model.",
+      "currentImplementation": "Offline and QA issuance require an explicit positive paywall seed, level, attempt cap, one of the four cohorts and a whitelist. Provider provenance also requires a declared provider revision. Actual segment assignment remains unknown.",
       "nextAction": "Wire product eligibility and issued counters to immutable deals only with known segment or explicit unknown policy; preserve original live cohort UNKNOWN. Original cohort and remote-config activation remain unknown as detailed in docs/qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md. B3 source/product trace: native four cohorts and eligibility cannot be inferred from the synthetic segment input; original reset/increment lifecycle and durable product issued counter remain independent and UNIMPLEMENTED. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/42",
       "stage": "B3",

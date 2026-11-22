@@ -130,6 +130,19 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.attempt.jokerUsed !== undefined && typeof save.attempt.jokerUsed !== 'boolean') throw Error('Повреждён Джокер');
   if (save.attempt.shuffleUsed !== undefined && (save.attempt.shuffleUsed !== true || deal.shufflePreview !== 1))
     throw Error('Повреждено перемешивание');
+  const revive = save.attempt.revive;
+  if (revive !== undefined && (!deal.recovery || !save.attempt.continued || !revive || revive.version !== 1 ||
+      !['coins', 'earned'].includes(revive.channel) || revive.moves !== BALANCE.continueMoves ||
+      revive.price !== (revive.channel === 'coins' ? BALANCE.continueCoinPrice : 0))) throw Error('Повреждено возрождение');
+  const unlimited = save.attempt.unlimited;
+  if ((save.attempt.stockRestores !== undefined && (!deal.recovery || !natural(save.attempt.stockRestores))) ||
+      (unlimited !== undefined && (!deal.recovery || !unlimited || unlimited.version !== 1 ||
+        !/^[A-Za-z0-9_-]{1,100}$/.test(unlimited.id) || !natural(unlimited.issuedAt) ||
+        (unlimited.until !== undefined && (!natural(unlimited.until) || unlimited.until <= unlimited.issuedAt)) ||
+        (unlimited.expired !== undefined && (unlimited.expired !== true || unlimited.until === undefined)))) ||
+      ([save.attempt.board, ...save.attempt.undo].some(board => board.retainedMoves !== undefined) && (!unlimited || unlimited.expired))) {
+    throw Error('Повреждён договор восстановления');
+  }
   if (save.attempt.randomJokerUsed !== undefined && (save.attempt.randomJokerUsed !== true || deal.randomJokerPreview !== 1))
     throw Error('Повреждён расход случайного Джокера');
   if ([save.attempt.board, ...save.attempt.undo].some(board => board.joker &&

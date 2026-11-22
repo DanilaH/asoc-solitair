@@ -80,3 +80,31 @@ test('warns before the separate random Joker and clears Undo only after confirm'
   await page.locator('#home-play').tap();
   await expect.poll(async () => (await read(page)).attempt.board.joker?.card?.nativeType).toBe(2);
 });
+
+test('restores a finite stock and applies a separate timed Unlimited grant through the game', async ({ page }) => {
+  test.skip(preview !== 'recovery', 'Requires the gated P19 gameplay build.');
+  await page.setViewportSize({ width: 320, height: 568 });
+  const { recoveryDeal } = await import('../../src/content/campaign');
+  const save = { ...fixture(15), attempt: freshSave(recoveryDeal, 'recovery-controls').attempt, contentVersion: 8 };
+  const board = save.attempt.board;
+  board.waste = [...board.stock];
+  board.faceUp.push(...board.stock);
+  board.stock = [];
+  board.recyclesLeft = 0;
+  save.settings.reducedMotion = true;
+  await seed(page, save);
+  await page.locator('#wallet-open').tap();
+  await expect(page.locator('#restore-stock')).toContainText('бесплатно');
+  await page.locator('#restore-stock').tap();
+  await expect.poll(async () => (await read(page)).attempt.stockRestores).toBe(1);
+  const restored = await read(page);
+  expect(restored.attempt.board.stock).toEqual(board.waste);
+  expect(restored.profile.coins).toBe(save.profile.coins);
+  await page.locator('#wallet-open').tap();
+  await page.locator('#unlimited-preview').tap();
+  await expect(page.locator('#moves')).toHaveText('∞');
+  await page.waitForTimeout(650);
+  await page.reload();
+  await page.locator('#home-play').tap();
+  await expect(page.locator('#moves')).toHaveText('∞');
+});

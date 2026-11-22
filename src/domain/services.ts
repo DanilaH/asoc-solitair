@@ -87,7 +87,7 @@ export function useContinue(save: Save, proof?: ContinueProof): boolean {
   if (!state?.continueCredits || !canResume(save, proof)) return false;
   state.continueCredits--;
   if (!state.continuedAttempts.includes(attempt.id)) state.continuedAttempts.push(attempt.id);
-  resumeAttempt(save);
+  resumeAttempt(save, proof?.deal?.recovery ? 'earned' : undefined);
   return true;
 }
 
@@ -96,7 +96,7 @@ export function buyContinue(save: Save, proof: ContinueProof): boolean {
     save.platform?.continueCredits || !canResume(save, proof)) return false;
   save.profile.coins -= BALANCE.continueCoinPrice;
   // A receipt already earned from an earlier video remains payable as a credit.
-  resumeAttempt(save);
+  resumeAttempt(save, proof.deal.recovery ? 'coins' : undefined);
   return true;
 }
 
@@ -106,9 +106,10 @@ function canResume(save: Save, proof?: ContinueProof): boolean {
     (!requiresContinueProof(attempt) || Boolean(proof && verifiesContinue(attempt, proof)));
 }
 
-function resumeAttempt(save: Save) {
+function resumeAttempt(save: Save, channel?: 'coins' | 'earned') {
   const attempt = save.attempt;
   attempt.continued = true;
+  if (channel) attempt.revive = { version: 1, channel, moves: BALANCE.continueMoves, price: channel === 'coins' ? BALANCE.continueCoinPrice : 0 };
   attempt.board.movesLeft = BALANCE.continueMoves;
   attempt.board.phase = 'playing';
   if (attempt.telemetry) attempt.telemetry.finished = false;

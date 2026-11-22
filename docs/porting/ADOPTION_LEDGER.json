@@ -81,18 +81,20 @@
     },
     {
       "id": "hitapps-stock-restore",
-      "status": "DEFERRED",
-      "currentImplementation": "P19 verifies an offline finite-recycle variant with separate stock restoration, counter and independent replay. Shipped Rules3 still recycles for one move without a cap. See docs/porting/P19_RECOVERY_CONTRACTS.md.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore.",
       "nextAction": "Design true rule difference and migration before free/paid restore; don't sell existing free behavior Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "reason": "Existing free recycle contract requires a substantive rule/economy redesign",
-      "stage": "E1"
+      "stage": "E1",
+      "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md"
     },
     {
       "id": "hitapps-revive-offers",
-      "status": "ROADMAPPED",
-      "currentImplementation": "P19 has an offline segmented offer gate and settlement with attempt identity, separate coin/video terms and replayed proof. Current CORE-5 remains the in-game branch. See docs/porting/P19_RECOVERY_CONTRACTS.md.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore.",
       "nextAction": "Compare coin/rewarded/segment options and save/device flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
-      "stage": "E1"
+      "stage": "E1",
+      "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md"
     },
     {
       "id": "azur-coin-moves",
@@ -479,10 +481,11 @@
     },
     {
       "id": "azur-unlimited-moves-offer",
-      "status": "ROADMAPPED",
-      "currentImplementation": "P19 tests a versioned offline unlimited right per attempt or until a time, including null budget, Undo and expiry. See docs/porting/P19_RECOVERY_CONTRACTS.md.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore.",
       "nextAction": "Define exact entitlement duration/UI/server/SaveStore/budget migration without falsely copying AZUR Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
-      "stage": "E1"
+      "stage": "E1",
+      "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md"
     },
     {
       "id": "azur-offer-campaign",

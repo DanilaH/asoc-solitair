@@ -152,11 +152,14 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
     board.waste.push(id); board.faceUp.push(id); events.push({ type: 'draw', cards: [id] });
   } else {
     if (board.stock.length || !board.waste.length) return 'Повтор доступен после конца колоды';
+    if (board.recyclesLeft === 0) return 'Повторы колоды закончились';
+    if (board.recyclesLeft !== undefined) board.recyclesLeft--;
     const closing = new Set(board.waste);
     board.stock = board.waste.slice(); board.waste = [];
     board.faceUp = board.faceUp.filter(id => !closing.has(id)); events.push({ type: 'recycle' });
   }
   if (board.movesLeft !== null) board.movesLeft--;
+  if (board.retainedMoves !== undefined) board.retainedMoves = Math.max(0, board.retainedMoves - 1);
   board.phase = board.collected.length === Object.keys(deal.cards).length ? 'won' : board.movesLeft === 0 ? 'exhausted' : 'playing';
   assertBoard(board, deal);
   return { board, events };
@@ -185,7 +188,11 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
     if (trackDifficulty && attempt.board.phase !== 'won') carryCampaignRestart(attempt, next.attempt);
   } else if (cmd.type === 'undo') {
     if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || (next.profile.undos <= 0 && !freeUndoPractice(input, deal))) return refuse('Нет доступной отмены');
-    delete attempt.lessonHint; attempt.board = attempt.undo.pop()!; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; if (next.profile.undos > 0) next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
+    delete attempt.lessonHint; const restored = attempt.undo.pop()!;
+    if (attempt.unlimited && !attempt.unlimited.expired && restored.movesLeft !== null) {
+      restored.retainedMoves = restored.movesLeft; restored.movesLeft = null; restored.phase = 'playing';
+    }
+    attempt.board = restored; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; if (next.profile.undos > 0) next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
   } else if (cmd.type === 'place-joker') {
     if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || (next.profile.jokers <= 0 && !freeJokerPractice(input, deal))) return refuse('В этой попытке Джокер недоступен');
     const placed = placeJoker(attempt.board, cmd.column, deal);
@@ -284,7 +291,9 @@ export function canReachTransfer(board: Board, deal: Deal): boolean {
 }
 
 export function boardKey(board: Board): string {
-  return JSON.stringify([boardRules(board), board.tableau, board.foundations, board.stock, board.waste, [...board.faceUp].sort(), [...board.collected].sort(), board.joker ?? null, [...(board.keys ?? [])].sort()]);
+  const identity: unknown[] = [boardRules(board), board.tableau, board.foundations, board.stock, board.waste, [...board.faceUp].sort(), [...board.collected].sort(), board.joker ?? null, [...(board.keys ?? [])].sort()];
+  if (board.recyclesLeft !== undefined || board.retainedMoves !== undefined) identity.push(board.recyclesLeft, board.retainedMoves);
+  return JSON.stringify(identity);
 }
 export function assertBoard(board: Board, deal: Deal): void {
   if (board.rulesVersion !== undefined && board.rulesVersion !== 2 && board.rulesVersion !== 3) throw Error('Неизвестные правила попытки');
@@ -352,6 +361,10 @@ export function assertBoard(board: Board, deal: Deal): void {
   const expected = Object.keys(deal.cards);
   if (ids.length !== expected.length || new Set(ids).size !== ids.length || ids.some(id => !deal.cards[id])) throw Error('Нарушена целостность карт');
   if (new Set(board.faceUp).size !== board.faceUp.length || board.faceUp.some(id => !deal.cards[id]) || board.stock.some(id => board.faceUp.includes(id))) throw Error('Некорректная открытая карта');
+  if ((deal.recovery ? !Number.isSafeInteger(board.recyclesLeft) || board.recyclesLeft! < 0 ||
+      board.recyclesLeft! > deal.recovery.freeRecycles : board.recyclesLeft !== undefined) ||
+      (board.retainedMoves !== undefined && (!deal.recovery || board.movesLeft !== null ||
+        !Number.isSafeInteger(board.retainedMoves) || board.retainedMoves < 0))) throw Error('Повреждены правила восстановления');
   if (board.movesLeft !== null && (!Number.isInteger(board.movesLeft) || board.movesLeft < 0)) throw Error('Некорректный бюджет');
   if ((board.phase === 'playing' && board.movesLeft === 0) || (board.phase === 'exhausted' && board.movesLeft !== 0)) throw Error('Несогласованный бюджет');
   if (!['playing', 'exhausted', 'won'].includes(board.phase)) throw Error('Некорректная фаза');

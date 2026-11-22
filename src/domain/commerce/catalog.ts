@@ -9,11 +9,13 @@ export type ProductGood =
   | { type: 'charge'; resource: CurrencyResource; quantity: number }
   | { type: 'no-ads'; placements: 'interstitial' | 'banner-and-interstitial'; lifetime: true }
   | { type: 'unlimited'; durationMs: number }
-  | { type: 'pass'; term: 'season' };
+  | { type: 'pass'; term: 'season' }
+  | { type: 'piggy'; term: 'season' }
+  | { type: 'vip'; durationMs: number };
 
 export type ProductFamily = 'coin_packs' | 'coins_offers' | 'hints_offers' | 'undo_offers' |
   'definition_offers' | 'boosters_offers' | 'standalone_noads' | 'welcome_offer' | 'unlimited_moves_variants' |
-  'silver_gold_diamond_offers' | 'gold_pass';
+  'silver_gold_diamond_offers' | 'gold_pass' | 'campaign_piggy' | 'campaign_vip';
 export interface ProductDefinition {
   sku: string;
   revision: number;
@@ -68,7 +70,14 @@ export const PRODUCTS: readonly ProductDefinition[] = [
   product('gold_pass', 'season-track', 1, 'once-per-season', [{ type: 'pass', term: 'season' }]),
 ];
 
+export const CAMPAIGN_PRODUCTS = [
+  product('campaign_piggy', 'piggy', 1, 'once-per-season', [{ type: 'piggy', term: 'season' }]),
+  product('campaign_vip', 'vip', 1, 'once-per-account', [{ type: 'vip', durationMs: 30 * 86_400_000 }]),
+];
 export const PRODUCT_INDEX: ReadonlyMap<string, ProductDefinition> = new Map(PRODUCTS.map(item => [item.sku, item]));
+export const CHECKOUT_PRODUCT_INDEX: ReadonlyMap<string, ProductDefinition> = new Map(
+  [...PRODUCTS, ...CAMPAIGN_PRODUCTS].map(item => [item.sku, item]),
+);
 
 export function catalogErrors(items: readonly ProductDefinition[]): string[] {
   const errors: string[] = [], keys = new Set<string>(), slots = new Set<string>();
@@ -86,7 +95,7 @@ export function catalogErrors(items: readonly ProductDefinition[]): string[] {
     const durable = item.benefits.filter(benefit => benefit.type === 'no-ads');
     const passes = item.benefits.filter(benefit => benefit.type === 'pass');
     const malformed = item.benefits.some(benefit => benefit.type === 'charge' ? !positive(benefit.quantity) :
-      benefit.type === 'unlimited' ? !positive(benefit.durationMs) : benefit.type === 'pass' ? benefit.term !== 'season' :
+      benefit.type === 'unlimited' || benefit.type === 'vip' ? !positive(benefit.durationMs) : benefit.type === 'pass' || benefit.type === 'piggy' ? benefit.term !== 'season' :
         benefit.lifetime !== true || !['interstitial', 'banner-and-interstitial'].includes(benefit.placements));
     const benefitKeys = new Set(item.benefits.map(benefit => benefit.type === 'charge' ? benefit.resource : benefit.type));
     if (!item.benefits.length || benefitKeys.size !== item.benefits.length || malformed || durable.length !== Number(item.purchaseType === 'nonConsumable') ||

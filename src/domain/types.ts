@@ -1,3 +1,4 @@
+import type { StoreProgress } from './commerce/storefront';
 import type { CampaignAdsState } from './campaign-advertising';
 import type { DailyTaskJournal } from './events/daily-tasks';
 import type { PictureState } from './events/picture';
@@ -112,6 +113,8 @@ export interface Save {
   rewardOffers?: RewardOffers;
   campaignAds?: CampaignAdsState;
   commerce?: CommerceJournal;
+  commerceAccount?: string;
+  storeProgress?: StoreProgress;
   events?: EventLedger;
   picture?: PictureState;
   dailyTasks?: DailyTaskJournal;

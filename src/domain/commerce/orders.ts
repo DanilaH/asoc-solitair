@@ -1,4 +1,4 @@
-import { PRODUCT_INDEX, type ProductDefinition, type ProductGood } from './catalog';
+import { CHECKOUT_PRODUCT_INDEX, type ProductDefinition, type ProductGood } from './catalog';
 import type { Save } from '../types';
 
 interface OrderPrice { currency: string; minorUnits: number }
@@ -33,6 +33,7 @@ export interface PurchaseOrder extends VerifiedPurchase {
   sku: string;
   grant?: { id: string; issuedAt: number };
   acknowledged?: true;
+  walletApplied?: true;
 }
 export interface CommerceJournal {
   version: 1;
@@ -80,19 +81,20 @@ export function validCommerceJournal(value: CommerceJournal): boolean {
   if (!value || value.version !== 1 || !Array.isArray(value.orders)) return false;
   const invoices = new Set<string>(), purchases = new Set<string>();
   return value.orders.every(order => {
-    if (!validProof(order) || order.schema !== 1 || !PRODUCT_INDEX.has(order.sku)) return false;
+    if (!validProof(order) || order.schema !== 1 || !CHECKOUT_PRODUCT_INDEX.has(order.sku)) return false;
     const invoice = invoiceKey(order), purchase = purchaseKey(order);
     if (invoices.has(invoice) || (order.purchaseId && purchases.has(purchase))) return false;
     invoices.add(invoice);
     if (order.purchaseId) purchases.add(purchase);
     return (order.grant === undefined || (order.grant?.id === purchase && natural(order.grant.issuedAt) && order.purchaseId &&
       ['paid', 'refunded'].includes(order.status))) &&
-      (order.acknowledged === undefined || order.acknowledged === true && order.grant !== undefined);
+      (order.acknowledged === undefined || order.acknowledged === true && order.grant !== undefined) &&
+      (order.walletApplied === undefined || order.walletApplied === true && order.acknowledged === true);
   });
 }
 
 function applyObservation(save: Save, proof: VerifiedPurchase, query: PurchaseQuery): PurchaseOrder | undefined {
-  const item = PRODUCT_INDEX.get(query.binding.sku);
+  const item = CHECKOUT_PRODUCT_INDEX.get(query.binding.sku);
   if (!item || !validProof(proof) || !validPrice(query.binding.price) || !sameContract(proof, query) ||
     (item.eligibility === 'once-per-season') !== Boolean(proof.seasonId)) return;
   const key = invoiceKey(proof);
@@ -106,7 +108,7 @@ function applyObservation(save: Save, proof: VerifiedPurchase, query: PurchaseQu
 
   const order: PurchaseOrder = {
     ...proof, schema: 1, sku: item.sku, ...(previous?.purchaseId ? { purchaseId: previous.purchaseId } : {}),
-    ...(previous?.grant ? { grant: previous.grant } : {}), ...(previous?.acknowledged ? { acknowledged: true } : {}),
+    ...(previous?.grant ? { grant: previous.grant } : {}), ...(previous?.acknowledged ? { acknowledged: true } : {}), ...(previous?.walletApplied ? { walletApplied: true } : {}),
   };
   const alreadyEntitled = item.eligibility !== 'repeatable' && state.orders.some(other => other.accountId === order.accountId &&
     other.sku === item.sku && other.seasonId === order.seasonId && other.status === 'paid' && other.grant !== undefined);
@@ -123,11 +125,11 @@ export function activePurchaseGoods(journal: CommerceJournal | undefined, accoun
   const result: ActiveGood[] = [];
   for (const order of journal.orders) {
     if (order.status !== 'paid' || !order.grant || order.accountId !== accountId || order.grant.issuedAt > now) continue;
-    for (const good of PRODUCT_INDEX.get(order.sku)?.benefits ?? []) {
-      const expiresAt = good.type === 'unlimited' ? order.grant.issuedAt + good.durationMs : undefined;
+    for (const good of CHECKOUT_PRODUCT_INDEX.get(order.sku)?.benefits ?? []) {
+      const expiresAt = good.type === 'unlimited' || good.type === 'vip' ? order.grant.issuedAt + good.durationMs : undefined;
       if (expiresAt !== undefined && (!natural(expiresAt) || now >= expiresAt)) continue;
-      if (good.type === 'pass' && order.seasonId !== seasonId) continue;
-      result.push({ grantId: order.grant.id, sku: order.sku, good, ...(good.type === 'pass' ? { seasonId } : {}),
+      if ((good.type === 'pass' || good.type === 'piggy') && order.seasonId !== seasonId) continue;
+      result.push({ grantId: order.grant.id, sku: order.sku, good, ...((good.type === 'pass' || good.type === 'piggy') ? { seasonId } : {}),
         ...(expiresAt === undefined ? {} : { expiresAt }) });
     }
   }
@@ -153,7 +155,7 @@ export class PurchaseReconciler {
 
   async check({ invoiceId, sku: productKey }: OrderLookup): Promise<'ignored' | 'recorded' | 'acknowledged'> {
     const { accountId } = this.session;
-    if (!token(accountId) || !token(invoiceId) || !PRODUCT_INDEX.has(productKey)) return 'ignored';
+    if (!token(accountId) || !token(invoiceId) || !CHECKOUT_PRODUCT_INDEX.has(productKey)) return 'ignored';
     const binding = this.session.bindingFor(productKey);
     if (!binding || binding.sku !== productKey || !validPrice(binding.price)) return 'ignored';
     const query = { accountId, invoiceId, binding };
@@ -166,7 +168,7 @@ export class PurchaseReconciler {
     if (current?.status !== 'paid' || !current.grant) return 'recorded';
     if (current.acknowledged) return 'acknowledged';
 
-    const sku = PRODUCT_INDEX.get(current.sku)!;
+    const sku = CHECKOUT_PRODUCT_INDEX.get(current.sku)!;
     let flight = this.pendingAck.get(key);
     if (!flight) {
       flight = Promise.resolve().then(async () => {

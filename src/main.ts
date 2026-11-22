@@ -1,3 +1,6 @@
+import { createStorefront } from './platform/storefront';
+import { claimShopProgress, PASS_GOAL, PIGGY_LIMIT, productLabels, recordStoreClear, showProductGoods, storefrontView, STOREFRONT_PREVIEW } from './domain/commerce/storefront';
+import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
 import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee, recordAdRevenue } from './domain/campaign-advertising';
 import { beginUnlimited, expireUnlimited, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote } from './domain/campaign-recovery';
 import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
@@ -223,6 +226,8 @@ try {
       if (!saving && ready && screen === 'game' && !runtime.activity.isBlocked()) showGuidance();
     }
   }
+  const storefront = createStorefront(store);
+  if (STOREFRONT_PREVIEW) void storefront.refresh().catch(() => undefined);
   const ads = createAds({
     activity: runtime.activity,
     async beforeShow(request) {
@@ -354,6 +359,7 @@ try {
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   const hasTransfer = new WeakMap<Save['attempt']['board'], boolean>();
   function renderHud() {
+    $('#campaign-store-open').hidden = !STOREFRONT_PREVIEW;
     $('#coffee-open').hidden = !(ADS_CONTROLS_PREVIEW || campaignAdsApproved()) || (deal.campaignLevel ?? 0) < 16 || save.attempt.board.phase !== 'playing';
     const restore = $<HTMLButtonElement>('#restore-stock'), price = restoreQuote(save.attempt, deal);
     restore.hidden = !RECOVERY_PREVIEW || price === undefined;
@@ -597,6 +603,10 @@ try {
         expireUnlimited(next, Date.now());
         const beforeBoard = next.attempt.board;
         result = dispatch(next, cmd, deal, localDay());
+        if (STOREFRONT_PREVIEW && result.accepted && !result.next.attempt.daily &&
+            (result.next.platform?.completedCampaign.length ?? 0) > (next.platform?.completedCampaign.length ?? 0)) {
+          recordStoreClear(result.next, Date.now());
+        }
         if (PICTURE_PREVIEW && result.accepted && result.next.attempt.board.phase === 'won') {
           recordPictureWin(next, result.next, deal, Date.now());
         }
@@ -1070,7 +1080,7 @@ try {
       const card = deal.cards[id];
       definitionCardId = id;
       const definition = $<HTMLButtonElement>('#definition-use');
-      definition.hidden = !REWARD_OFFER_PREVIEW;
+      definition.hidden = !REWARD_OFFER_PREVIEW && !(STOREFRONT_PREVIEW && (save.rewardOffers?.definitions ?? 0));
       definition.disabled = (save.rewardOffers?.definitions ?? 1) === 0;
       definition.textContent = `Связанное слово · ${save.rewardOffers?.definitions ?? 1}`;
       $('#definition-related').hidden = true;
@@ -1461,6 +1471,85 @@ try {
     $(`#video-${helper}`).addEventListener('click', () => { void rewarded(helper); }, domOptions);
   }
   scheduleRecoveryClock();
+  function renderCampaignShop() {
+    const layout = storefrontView(save, Date.now(), storefront.accountId, storefront.context);
+    const list = $('#campaign-shop-catalog');
+    list.replaceChildren();
+    $('#campaign-shop-status').textContent = storefront.accountId ? '' : 'Покупки пока недоступны.';
+    $<HTMLButtonElement>('#campaign-shop-restore').disabled = !storefront.accountId;
+    const addClaim = (parent: HTMLElement, track: 'free'|'premium'|'piggy', label: string, enabled: boolean) => {
+      const button = document.createElement('button');
+      button.type = 'button'; button.className = 'secondary'; button.textContent = label;
+      button.disabled = !enabled; button.dataset.claim = track;
+      parent.append(button);
+    };
+    for (const offer of layout.offers) {
+      const group = document.createElement('details'), title = document.createElement('summary');
+      group.dataset.family = offer.sourceId; group.className = 'helper-offer';
+      title.textContent = productLabels[offer.sourceId]; group.append(title);
+      if (offer.sourceId === 'hitapps-piggy-bank' || offer.sourceId === 'azur-play-pass') group.open = true;
+      if (offer.sourceId === 'hitapps-piggy-bank') {
+        const meter = document.createElement('p');
+        meter.textContent = `${layout.data?.piggy ?? 0} / ${PIGGY_LIMIT} монет`;
+        group.append(meter);
+        addClaim(group, 'piggy', 'Забрать копилку', Boolean(layout.data?.piggy === PIGGY_LIMIT && !layout.data.piggyGrant && layout.active.some(x => x.good.type === 'piggy')));
+      }
+      if (offer.sourceId === 'azur-play-pass') {
+        const progress = document.createElement('p');
+        progress.textContent = `${layout.data?.clears ?? 0} / ${PASS_GOAL} первых побед`;
+        group.append(progress);
+        const ready = (layout.data?.clears ?? 0) >= PASS_GOAL;
+        addClaim(group, 'free', 'Забрать бесплатную награду', ready && !layout.data?.freeClaimed);
+        addClaim(group, 'premium', 'Забрать премиальную награду', ready && !layout.data?.premiumClaimed && layout.active.some(x => x.good.type === 'pass'));
+      }
+      if (offer.sourceId === 'unico-vip' && layout.active.some(x => x.good.type === 'vip')) {
+        const state = document.createElement('p');
+        state.textContent = 'VIP активен'; group.append(state);
+      }
+      const products = offer.sourceId === 'hitapps-piggy-bank' ? [CAMPAIGN_PRODUCTS[0]] :
+        offer.sourceId === 'unico-vip' ? [CAMPAIGN_PRODUCTS[1]] : offer.products;
+      for (const product of products) {
+        const binding = storefront.bindingFor(product.sku), item = document.createElement('button');
+        item.className = 'secondary'; item.type = 'button'; item.dataset.sku = product.sku;
+        item.disabled = !binding || (!offer.eligible && offer.sourceId !== 'unico-vip' && offer.sourceId !== 'hitapps-piggy-bank') ||
+          (offer.sourceId === 'hitapps-piggy-bank' && layout.data?.piggy !== PIGGY_LIMIT);
+        item.textContent = showProductGoods(product.sku);
+        if (binding) {
+          const currency = new Intl.NumberFormat('ru', { style: 'currency', currency: binding.price.currency });
+          const decimals = currency.resolvedOptions().maximumFractionDigits ?? 2;
+          item.textContent += ' · ' + currency.format(binding.price.minorUnits / (10 ** decimals));
+        }
+        group.append(item);
+      }
+      list.append(group);
+    }
+  }
+  $('#campaign-store-open').addEventListener('click', async () => {
+    if (!STOREFRONT_PREVIEW || saving || serviceBusy) return;
+    openDialog('#campaign-store');
+    renderCampaignShop();
+    await storefront.refresh().catch(() => undefined);
+    if ($<HTMLDialogElement>('#campaign-store').open) renderCampaignShop();
+  }, domOptions);
+  $('#campaign-shop-catalog').addEventListener('click', async event => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button');
+    if (!STOREFRONT_PREVIEW || !button || button.disabled || saving || serviceBusy) return;
+    serviceBusy = true;
+    try {
+      const { sku, claim } = button.dataset;
+      if (sku) await storefront.checkout(sku);
+      if (claim === 'free' || claim === 'premium' || claim === 'piggy') await write(next => claimShopProgress(next, Date.now(), claim, storefront.accountId));
+      renderCampaignShop();
+    } catch { $('#campaign-shop-status').textContent = 'Не удалось подтвердить операцию. Попробуйте ещё раз.'; }
+    finally { serviceBusy = false; }
+  }, domOptions);
+  $('#campaign-shop-restore').addEventListener('click', async () => {
+    if (!STOREFRONT_PREVIEW || !storefront.accountId || serviceBusy || saving) return;
+    serviceBusy = true;
+    try { await storefront.restore(); renderCampaignShop(); }
+    catch { $('#campaign-shop-status').textContent = 'Не удалось восстановить покупки.'; }
+    finally { serviceBusy = false; }
+  }, domOptions);
   $('#coffee-open').addEventListener('click', () => {
     if (!(ADS_CONTROLS_PREVIEW || campaignAdsApproved()) || saving || serviceBusy) return;
     $('#coffee-copy').textContent = campaignAdsApproved() ? 'Добровольное видео. После просмотра получите 10 монет.' : 'Показы для кофе-паузы ждут проверки рекламного SDK.';

@@ -32,8 +32,8 @@ export function recordAdRevenue(save: Save, value: unknown) {
 }
 
 export function adFree(save: Save, now: number, placement: 'interstitial'|'banner' = 'interstitial') {
-  const accounts = new Set(save.commerce?.orders.map(order => order.accountId));
-  return [...accounts].some(account => activePurchaseGoods(save.commerce, account, now).some(item => item.good.type === 'no-ads' && (placement === 'interstitial' || item.good.placements === 'banner-and-interstitial')));
+  return activePurchaseGoods(save.commerce, save.commerceAccount ?? '', now)
+    .some(item => item.good.type === 'no-ads' && (placement === 'interstitial' || item.good.placements === 'banner-and-interstitial'));
 }
 
 const MIN_LEVEL = 16, GAP = 180_000;

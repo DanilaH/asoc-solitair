@@ -1,0 +1,96 @@
+{
+  "schema": "asoc-unico-display-name-crosswalk-v1",
+  "sourceRef": "8f98c4cb71276ad3c520694e1a32a56bbdfb4f00",
+  "products": [
+    {
+      "displayedName": "1500 Coins",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "coin-pack",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    },
+    {
+      "displayedName": "Very Hard Level",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "difficulty-labelled-offer",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    },
+    {
+      "displayedName": "Starter Pack",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "starter-bundle",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    },
+    {
+      "displayedName": "No Ads Bundle",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "no-ads",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    },
+    {
+      "displayedName": "Fail Offer -2 V2",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "failure-labelled-offer",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    },
+    {
+      "displayedName": "Hard Level Offer",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "difficulty-labelled-offer",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    },
+    {
+      "displayedName": "Fail Offer -2",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "failure-labelled-offer",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    },
+    {
+      "displayedName": "Fail Offer - 1 V2",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "failure-labelled-offer",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    },
+    {
+      "displayedName": "Fail Offer -1",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "failure-labelled-offer",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    },
+    {
+      "displayedName": "Advantage Pack 1+1",
+      "region": "Turkey",
+      "sourceURL": "https://apps.apple.com/tr/app/word-solitaire-match-play/id6759088044",
+      "sourceTier": "STORE_LISTING",
+      "possibleFamily": "advantage-bundle",
+      "actualPredicate": "UNKNOWN",
+      "actualGrant": "UNKNOWN"
+    }
+  ]
+}

@@ -129,3 +129,25 @@ test('shows the optional Coffee Break with ads gated and preserves the accepted 
   expect((await read(page)).attempt.board).toEqual(before.attempt.board);
   expect((await read(page)).profile.coins).toEqual(before.profile.coins);
 });
+
+test('updates the gallery of shop families and progress from a real first win without a checkout', async ({ page }) => {
+  test.skip(preview !== 'storefront', 'Requires the gated P25 gameplay build.');
+  await page.setViewportSize({ width: 320, height: 568 });
+  const previous = content8Dealer[14];
+  let save = { ...fixture(14), attempt: freshSave(previous, 'store-progress').attempt, contentVersion: 8 };
+  save.settings.reducedMotion = true;
+  for (const cmd of previous.winningPath.slice(0, -1)) save = dispatch(save, cmd, previous).next;
+  await seed(page, save);
+  await move(page, previous, previous.winningPath.at(-1)!);
+  await page.locator('#next-level').tap();
+  if (await page.locator('#difficulty-play').isVisible()) await page.locator('#difficulty-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', content8Wave[0].id);
+  await page.locator('#wallet-open').tap();
+  await page.locator('#campaign-store-open').tap();
+  await expect(page.locator('#campaign-shop-catalog details')).toHaveCount(15);
+  await expect(page.locator('[data-family="hitapps-piggy-bank"]')).toContainText('10 / 30 монет');
+  await expect(page.locator('[data-family="azur-play-pass"]')).toContainText('1 / 3 первых побед');
+  await expect(page.locator('#campaign-shop-restore')).toBeDisabled();
+  await page.waitForTimeout(700);
+  expect((await read(page)).commerce).toBeUndefined();
+});

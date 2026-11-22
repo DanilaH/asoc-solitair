@@ -1,3 +1,4 @@
+import { validStoreProgress } from '../domain/commerce/storefront';
 import { validCampaignAds } from '../domain/campaign-advertising';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import { JsonStorageRepository, type StorageAdapter } from '@danilah/mini-games-kit/platform';
@@ -155,6 +156,8 @@ export function decodeSave(raw: string, source: DealSource): Save {
       [save.attempt.adBreakShown, save.attempt.coffeeRequested].some(value => value !== undefined && (value !== true || deal.daily || !deal.campaignLevel)))
     throw Error('Повреждена история рекламы');
   if (save.rewardOffers !== undefined && !validRewardOffers(save.rewardOffers)) throw Error('Повреждены бонусные предложения');
+  if (save.storeProgress !== undefined && !validStoreProgress(save.storeProgress)) throw Error('Повреждена история магазина');
+  if (save.commerceAccount !== undefined && !/^[0-9A-Za-z_.:-]{1,128}$/.test(save.commerceAccount)) throw Error('Повреждён профиль покупок');
   if (save.commerce !== undefined && !validCommerceJournal(save.commerce)) throw Error('Повреждён журнал покупок');
   if (save.events !== undefined && !validEventLedger(save.events)) throw Error('Повреждён журнал событий');
   if (save.picture !== undefined && !validPicture(save)) throw Error('Повреждён альбом');

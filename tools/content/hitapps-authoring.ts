@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
 import { adjustedMoveBudget } from '../../src/domain/difficulty';
 import { applyBoard, assertBoard } from '../../src/domain/engine';
 import type { BoardCommand, Deal } from '../../src/domain/types';
@@ -39,7 +40,7 @@ export function replayAuthoredRoute(deal: Deal, actions: readonly BoardCommand[]
   for (const [index, action] of actions.entries()) {
     const step = applyBoard(board, action, deal);
     const oracle = advance(board, action, deal);
-    if (typeof step === 'string' || !oracle || authoringHash(step.board) !== authoringHash(oracle)) {
+    if (typeof step === 'string' || !oracle || !isDeepStrictEqual(step.board, oracle)) {
       throw Error(`Engine and oracle do not certify action ${index + 1} for ${deal.id}`);
     }
     board = oracle;
@@ -71,6 +72,9 @@ export function prepareHitappsInput(template: Deal, structure: HitappsStructure,
   assertBoard(template.initial, template);
   const baseBudget = template.initial.movesLeft;
   if (baseBudget === null || baseBudget <= 0 || template.initial.phase !== 'playing') throw Error('Expected a fresh finite budget');
+  if (![structure.levelPenalty, dynamicPenalty].every(value => Number.isInteger(value) && value >= -2147483648 && value <= 2147483647)) {
+    throw Error('Expected signed Int32 penalties');
+  }
   const penalty = structure.levelPenalty + dynamicPenalty;
   const effectiveBudget = adjustedMoveBudget(baseBudget, penalty, structure.stableMoves);
   if (effectiveBudget <= 0) throw Error('Adjusted budget must be positive');

@@ -30,7 +30,7 @@
     {
       "id": "hitapps-candidate-priority",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "CORE-1 offline Priority chooser records attempts, early exit or first-closest fallback, restores the selected seed and replays the winning route independently. Our solver and target are adaptation.",
+      "currentImplementation": "P05/P07 share an authoring pipeline for None, Priority and Equality with effective budget, recorded seeds, feature phases and certification on the final board. Bot heuristics and search are PRODUCT_ADAPTED.",
       "nextAction": "Measure actual original strategy/config on device. Connect selected immutable variants to new attempts in later CORE packages.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "B1",

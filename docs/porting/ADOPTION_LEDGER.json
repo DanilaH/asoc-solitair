@@ -743,7 +743,7 @@
     {
       "id": "azur-victory-reward-sequencer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md. QA проверяет раздельный предпобедный бонус, получить, прилёт и Next после подтверждённого SaveStore. См. docs/qa/AZUR_FEEL_QA.md.",
+      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md. QA проверяет раздельный предпобедный бонус, получить, прилёт и Next после подтверждённого SaveStore. См. docs/qa/AZUR_FEEL_QA.md. P20/P37 изолированно проверяет источник формулы 25/50/100/200 и +5 за остаток. См. docs/qa/AZUR_VICTORY_QA.md.",
       "nextAction": "Replay skip/background/reopen/win/reward/Next with actual saved wallet and 320px UI",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"

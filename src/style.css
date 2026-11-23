@@ -583,3 +583,8 @@ html[data-reduced=true] .coin-debit{animation:none}
 .result-cycle-pips i{inline-size:8px;block-size:8px;border-radius:50%;background:#ccd8ce}
 .result-cycle-pips .lit{background:#ae792d}
 #daily-tasks-medals{border-radius:5px}
+
+#result-source-breakdown{padding:5px 9px;background:#f3ecdb;border-radius:9px;font-size:12px;color:#5a6257}
+#result-source-breakdown dl{margin:0}
+#result-source-breakdown dl>div:not([hidden]){display:flex;justify-content:space-between;gap:6px}
+#result-source-breakdown dd{margin:0;font-weight:900;font-variant-numeric:tabular-nums}

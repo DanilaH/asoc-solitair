@@ -50,6 +50,11 @@
 <dialog id="inspect-dialog" aria-labelledby="word-title"><button class="close" data-close aria-label="Закрыть">×</button><span class="eyebrow">КАРТОЧКА</span><h2 id="word-title"></h2><img id="word-image" alt="" hidden><p id="word-description"></p><p id="definition-related" role="status" hidden></p><button id="definition-use" class="secondary" hidden>Связанное слово</button><button class="primary" data-close>Понятно</button></dialog>
 <dialog id="result" aria-labelledby="result-title" class="sheet"><div class="sheet-heading"><span class="result-star" aria-hidden="true"><img src="art/generated/cycle.webp" alt=""></span><h2 id="result-title">Всё сошлось!</h2></div><div class="sheet-body"><p id="result-copy"></p><p id="result-continue-note" role="status" hidden></p><p id="result-continue-error" role="status" hidden></p>
 <div id="result-earnings"><span>Награда</span><strong id="result-total"></strong></div>
+<section id="result-source-breakdown" hidden aria-label="Выплата AZUR в режиме проверки">
+  <dl><div><dt>За уровень</dt><dd id="result-source-base"></dd></div>
+    <div><dt>За оставшиеся ходы</dt><dd id="result-source-moves"></dd></div>
+    <div id="result-source-extras" hidden><dt>Другие награды</dt><dd id="result-source-extra-amount"></dd></div></dl>
+</section>
 <section id="result-bonus" hidden><strong>Пять побед · 5 / 5</strong><span id="result-bonus-copy"></span></section>
 <div id="result-meta" class="result-meta"></div><button id="picture-result" class="secondary" hidden>Альбом</button><div id="win-video-offers" hidden><label for="win-video-kind">Бонус за видео</label><select id="win-video-kind"></select><button id="win-video-claim" class="secondary"></button></div>
 <section id="unlock-reward" hidden><div id="unlock-preview" class="appearance-preview unlock-preview" aria-hidden="true"><span class="preview-back"></span><span class="preview-face"><b>✦</b></span></div><div><strong id="unlock-title"></strong><button id="apply-unlock" class="secondary">Примерить</button></div></section>

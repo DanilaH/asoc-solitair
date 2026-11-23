@@ -210,15 +210,15 @@ export class SaveStore {
   private uncertain: { before: string; after: string; next: Save } | undefined;
   private repository: JsonStorageRepository<Save>;
   private value!: Save;
-  constructor(private adapter: StorageAdapter, private deal: DealSource, createDefault: () => Save) {
-    this.repository = new JsonStorageRepository({ storage: adapter, key: SAVE_KEY, createDefault, codec: { decode: value => decodeSave(JSON.stringify(value), deal) } });
+  constructor(private adapter: StorageAdapter, private deal: DealSource, createDefault: () => Save, private key = SAVE_KEY) {
+    this.repository = new JsonStorageRepository({ storage: adapter, key, createDefault, codec: { decode: value => decodeSave(JSON.stringify(value), deal) } });
   }
   get state(): Save { return this.value; }
   get needsRecovery(): boolean { return Boolean(this.uncertain); }
   async open(): Promise<Save> {
     // A failed native read never becomes a fresh game. Import legacy WebView state only when native is definitely empty.
-    const nativeRaw = await this.adapter.getItem(SAVE_KEY);
-    const legacy = nativeRaw === null && Capacitor.isNativePlatform() ? localStorage.getItem(SAVE_KEY) : null;
+    const nativeRaw = await this.adapter.getItem(this.key);
+    const legacy = this.key === SAVE_KEY && nativeRaw === null && Capacitor.isNativePlatform() ? localStorage.getItem(SAVE_KEY) : null;
     this.value = legacy === null ? await this.repository.load() : decodeSave(legacy, this.deal);
     await this.repository.write(this.value);
     return this.value;
@@ -243,7 +243,7 @@ export class SaveStore {
   }
   async recover(): Promise<boolean> {
     if (!this.uncertain) return true;
-    const pending = this.uncertain, raw = await this.adapter.getItem(SAVE_KEY);
+    const pending = this.uncertain, raw = await this.adapter.getItem(this.key);
     if (raw === pending.after) { this.value = pending.next; this.uncertain = undefined; this.onChange?.(this.value); return true; }
     if (raw === pending.before) { this.uncertain = undefined; return false; }
     throw Error('Сохранение ожидает проверки. Попробуйте ещё раз.');

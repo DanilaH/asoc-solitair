@@ -175,5 +175,23 @@
     "movesLeft": "number",
     "activeMs": "number",
     "dayId": "string"
+  },
+  "azur_victory_qa": {
+    "schema": "number",
+    "mode": "string",
+    "attemptId": "string",
+    "dealId": "string",
+    "rulesVersion": "number",
+    "contentVersion": "number",
+    "balanceVersion": "number",
+    "movesLeft": "number",
+    "activeMs": "number",
+    "policy": "string",
+    "sourceBuild": "string",
+    "provenance": "string",
+    "difficulty": "number",
+    "base": "number",
+    "bonus": "number",
+    "amount": "number"
   }
 }

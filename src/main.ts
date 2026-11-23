@@ -28,6 +28,7 @@ import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
 import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, ruleIntroMarker, type RuleIntro } from './app/tutorial';
 import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
+import { AZUR_VICTORY_DEFAULTS, AZUR_VICTORY_QA, AZUR_VICTORY_SAVE_KEY, quoteVictoryReward, victoryDifficulty } from './domain/azur-victory-reward';
 import { frozenLayers } from './domain/frozen-cards';
 import { isBoundCard } from './domain/bound-cards';
 import { collectedGold, goldenRewardKey } from './domain/golden-cards';
@@ -46,6 +47,7 @@ import type { HintRequest, HintResponse } from './domain/hint';
 import { BoardScene } from './game/BoardScene';
 import { createRuntime } from './platform/runtime';
 import { SaveStore, createStorage } from './platform/storage';
+import { validEvent } from './platform/analytics';
 import { createTelemetry } from './platform/telemetry';
 import { createAds } from './platform/ads';
 import { NativeBanner } from './platform/banner';
@@ -56,6 +58,8 @@ import './art.css';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const AZUR_FEEL_QA = import.meta.env.VITE_AZUR_FEEL_QA === '1';
+const victoryPolicy = AZUR_VICTORY_QA ? AZUR_VICTORY_DEFAULTS : undefined;
+const rewardOffersEnabled = REWARD_OFFER_PREVIEW && !AZUR_VICTORY_QA;
 let deal = campaignDeals[0];
 let screen: 'home' | 'game' = 'home';
 let scene: BoardScene | undefined;
@@ -231,7 +235,7 @@ try {
   const store = new SaveStore(createStorage(), findDeal, () => {
     firstLaunch = true;
     return freshSave(deal, crypto.randomUUID());
-  });
+  }, AZUR_VICTORY_QA ? AZUR_VICTORY_SAVE_KEY : undefined);
   await document.fonts.load('800 20px Nunito').catch(() => []);
   let save = await store.open();
   const systemMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -324,7 +328,12 @@ try {
   let recoveryClock: ReturnType<typeof setTimeout> | undefined;
   let banner: NativeBanner | undefined;
   const launchedAt = Date.now();
-  const telemetry = createTelemetry(() => save, runtime.activity);
+  const telemetry = createTelemetry(() => save, runtime.activity, AZUR_VICTORY_QA ? {
+    track(event, params) {
+      if (validEvent(event, params)) document.dispatchEvent(new CustomEvent('solitaire:qa-analytics', { detail: { event, params } }));
+    },
+    destroy() {},
+  } : undefined);
   const setInput = () => scene?.setEnabled(screen === 'game' && ready && !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
   const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && !adFree(save, Date.now(), 'banner') && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
   store.onChange = value => { save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); scheduleRecoveryClock(); };
@@ -361,7 +370,7 @@ try {
         }
         if (isOfferPlacement(request.placement)) {
           const pending = next.rewardOffers?.pending.find(entry => entry.id === request.attempt);
-          if (!REWARD_OFFER_PREVIEW || request.kind !== 'rewarded' || request.mode !== 'campaign' ||
+          if (!rewardOffersEnabled || request.kind !== 'rewarded' || request.mode !== 'campaign' ||
             !pending || pending.dealId !== request.dealId || pending.kind !== request.placement) {
             throw Error('Предложение изменилось');
           }
@@ -665,9 +674,17 @@ try {
     $('#apply-unlock').textContent = applied ? 'Применено' : 'Примерить';
     $<HTMLButtonElement>('#apply-unlock').disabled = !unlockChoice || applied || saving || serviceBusy;
     $('#save-retry').hidden = !store.needsRecovery;
-    if (REWARD_OFFER_PREVIEW) renderRewardOffers();
+    if (rewardOffersEnabled) renderRewardOffers();
     if (PICTURE_PREVIEW || save.picture) renderPicture();
     if (TASKS_PREVIEW) renderTasks();
+  }
+  function recordedVictoryReward() {
+    if (!victoryPolicy || save.attempt.daily || deal.campaignLevel === undefined || save.attempt.board.phase !== 'won') return;
+    const difficulty = victoryDifficulty(deal);
+    const grant = save.attempt.payout?.find(reward => reward.key === `win:${save.attempt.id}` && reward.reason === 'win');
+    if (!grant) return;
+    const quote = quoteVictoryReward(victoryPolicy, difficulty, save.attempt.board.movesLeft);
+    if (quote.total === grant.coins) return { ...quote, difficulty };
   }
   function outcome(collectionDeadline = Infinity) {
     if (save.attempt.board.phase === 'playing') return;
@@ -710,6 +727,15 @@ try {
     $('#replay').textContent = daily && won ? 'Сыграть как тренировку' : 'Ещё раз';
     const earned = (payout ? payout.reduce((sum, r) => sum + r.coins, 0) : !daily ? BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0);
     $('#result-total').textContent = `+${earned}`; $('#result-earnings').hidden = !won || earned === 0;
+    const sourceReward = recordedVictoryReward();
+    $('#result-source-breakdown').hidden = !sourceReward;
+    if (sourceReward) {
+      $('#result-source-base').textContent = `+${sourceReward.base}`;
+      $('#result-source-moves').textContent = `+${sourceReward.bonus}`;
+      const extras = earned - sourceReward.total;
+      $('#result-source-extras').hidden = extras <= 0;
+      $('#result-source-extra-amount').textContent = `+${extras}`;
+    }
     unlockChoice = payout?.some(r => r.key === 'milestone:20') ? 'cardBack' : payout?.some(r => r.key === 'milestone:10') ? 'palette' : undefined;
     $('#unlock-reward').hidden = !won || !unlockChoice;
     $('#unlock-title').textContent = unlockChoice === 'palette' ? 'Открыт стол «Чернила»' : 'Открыта рубашка «Ромбы»';
@@ -772,7 +798,7 @@ try {
           blockedLives = true; return;
         }
         const beforeBoard = next.attempt.board;
-        result = dispatch(next, cmd, deal, localDay());
+        result = dispatch(next, cmd, deal, localDay(), victoryPolicy);
         if (STOREFRONT_PREVIEW && result.accepted && !result.next.attempt.daily &&
             (result.next.platform?.completedCampaign.length ?? 0) > (next.platform?.completedCampaign.length ?? 0)) {
           recordStoreClear(result.next, Date.now());
@@ -818,6 +844,13 @@ try {
       if (finished) telemetry.track(save.attempt.board.phase === 'won' ? 'level_win' : 'level_fail');
       for (const event of result.events) if ((event.type === 'coins' || event.type === 'meta-reward' || event.type === 'win' && !save.attempt.daily) && event.amount) telemetry.track('reward_granted', { reason: event.type === 'coins' ? 'core_streak' : event.type === 'meta-reward' ? event.reason! : 'level_win', amount: event.amount });
       if (result.events.some(e => e.type === 'meta-reward' && e.reason === 'daily_completion')) telemetry.track('daily_completion');
+      const sourceReward = recordedVictoryReward();
+      if (victoryPolicy && sourceReward && result.events.some(event => event.type === 'win')) {
+        telemetry.track('azur_victory_qa', {
+          policy: victoryPolicy.id, sourceBuild: victoryPolicy.sourceBuild, provenance: victoryPolicy.provenance,
+          difficulty: sourceReward.difficulty, base: sourceReward.base, bonus: sourceReward.bonus, amount: sourceReward.total,
+        });
+      }
       if (cmd.type !== 'hint') activeHint = undefined;
       scene?.clearHint();
       const boardCommand = ['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined;
@@ -826,7 +859,9 @@ try {
       const freshWin = AZUR_FEEL_QA && !reducedMotion() && before.phase === 'playing' &&
         save.attempt.board.phase === 'won' && !save.attempt.daily && deal.campaignLevel !== undefined;
       if (freshWin) freshFeelWin = save.attempt.id;
-      const movesBonus = freshWin ? BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0;
+      const movesBonus = freshWin
+        ? sourceReward?.bonus ?? BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0)
+        : 0;
       const hasCoinFlight = coreCoins > 0 || movesBonus > 0;
       const lost = save.attempt.board.phase === 'exhausted';
       // The save/grant is already durable. Only optional sound/haptics/coins
@@ -1029,7 +1064,7 @@ try {
     return true;
   }
   async function requestRewardOffer(kind: OfferPlacement, selector: '#result'|'#helpers'|'#appearance') {
-    if (!REWARD_OFFER_PREVIEW || saving || serviceBusy || screen !== 'game' || ads.status.mode !== 'test' || !ads.status.rewarded) return;
+    if (!rewardOffersEnabled || saving || serviceBusy || screen !== 'game' || ads.status.mode !== 'test' || !ads.status.rewarded) return;
     const attempt = save.attempt.id, back = returnToDialog;
     serviceBusy = true;
     try {
@@ -1301,7 +1336,7 @@ try {
       const card = deal.cards[id];
       definitionCardId = id;
       const definition = $<HTMLButtonElement>('#definition-use');
-      definition.hidden = !REWARD_OFFER_PREVIEW && !(STOREFRONT_PREVIEW && (save.rewardOffers?.definitions ?? 0));
+      definition.hidden = !rewardOffersEnabled && !(STOREFRONT_PREVIEW && (save.rewardOffers?.definitions ?? 0));
       definition.disabled = (save.rewardOffers?.definitions ?? 1) === 0;
       definition.textContent = `Связанное слово · ${save.rewardOffers?.definitions ?? 1}`;
       $('#definition-related').hidden = true;
@@ -1482,7 +1517,7 @@ try {
       void write(next => claimPicture(next, Date.now())).catch(() => message('Не удалось сохранить награду.', true));
     }, domOptions);
   }
-  if (REWARD_OFFER_PREVIEW) {
+  if (rewardOffersEnabled) {
     const select = $<HTMLSelectElement>('#win-video-kind');
     for (const [kind, label] of Object.entries(offerLabels)) select.add(new Option(label, kind));
     select.addEventListener('change', renderRewardOffers, domOptions);

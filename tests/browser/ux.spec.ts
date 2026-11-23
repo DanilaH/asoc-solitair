@@ -85,7 +85,9 @@ for (const level of [3, 17]) test(`level ${level}: bottom deck works on both sid
     const before = await read(page);
     await page.locator('#menu').tap(); await pauseOptions(page); await page.locator('#appearance-settings').tap();
     await page.locator('button[data-deck-position=bottom]').tap(); await page.locator(`button[data-deck-side=${side}]`).tap();
-    await page.locator('#appearance .primary').tap();
+    await page.locator('#appearance-done').tap();
+    await expect(page.locator('#settings')).toBeVisible();
+    await page.locator('#settings-done').tap();
     const after = await read(page);
     expect(after.attempt.board).toEqual(before.attempt.board); expect(after.attempt.id).toBe(before.attempt.id);
     expect(after.attempt.undo).toEqual(before.attempt.undo); expect(after.attempt.streak).toEqual(before.attempt.streak);

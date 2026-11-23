@@ -250,7 +250,7 @@ try {
   const continueCheck = new ContinueCheck(() => { if (alive) renderHud(); });
   let continueVideoFailed: string | undefined;
   let rewardedResultAttempt: string | undefined;
-  let rewardOfferReturn: { attempt: string; selector: '#result'|'#helpers'|'#appearance' } | undefined;
+  let rewardOfferReturn: { attempt: string; selector: '#result'|'#helpers'|'#appearance'; back?: () => void } | undefined;
   let definitionCardId: string | undefined;
   let pictureReturnToResult = false;
   let themeExpiry: ReturnType<typeof setTimeout> | undefined;
@@ -904,16 +904,16 @@ try {
   }
   function restoreOfferDialog() {
     if (!rewardOfferReturn || runtime.activity.isBlocked()) return false;
-    const { selector, attempt } = rewardOfferReturn;
+    const { selector, attempt, back } = rewardOfferReturn;
     rewardOfferReturn = undefined;
     if (screen !== 'game' || save.attempt.id !== attempt) return false;
     if (selector === '#result') outcome();
-    else openDialog(selector);
+    else openDialog(selector, false, back);
     return true;
   }
   async function requestRewardOffer(kind: OfferPlacement, selector: '#result'|'#helpers'|'#appearance') {
     if (!REWARD_OFFER_PREVIEW || saving || serviceBusy || screen !== 'game' || ads.status.mode !== 'test' || !ads.status.rewarded) return;
-    const attempt = save.attempt.id;
+    const attempt = save.attempt.id, back = returnToDialog;
     serviceBusy = true;
     try {
       const offer = await write(next => prepareRewardOffer(next, deal, kind, Date.now(), crypto.randomUUID()));
@@ -921,7 +921,7 @@ try {
       closeDialogs();
       const result = await ads.show({ kind: 'rewarded', placement: kind, attempt: offer.id, dealId: offer.dealId, mode: 'campaign' });
       if (!alive) return;
-      rewardOfferReturn = { attempt, selector };
+      rewardOfferReturn = { attempt, selector, back };
       if (!result.shown) message('Сейчас видео недоступно. Попробуйте позже.', true);
     } catch { message('Не удалось сохранить предложение. Попробуйте ещё раз.', true); }
     finally {

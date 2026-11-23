@@ -1294,6 +1294,9 @@ test('reward offer preview renews the shop and theme only with their own receipt
   await expect(page.locator('#app')).toHaveAttribute('data-reward-theme', '');
   await expect(page.locator('#theme-video-claim')).toBeHidden();
   expect((await read(page)).profile.coins).toBe(save.profile.coins + 30);
+  await page.locator('#appearance-done').tap();
+  await expect(page.locator('#settings')).toBeVisible();
+  await expect(page.locator('#appearance-settings')).toBeFocused();
 });
 
 test('picture gallery preview reveals the last fragment from a real winning touch and saves the artwork', async ({ page }) => {

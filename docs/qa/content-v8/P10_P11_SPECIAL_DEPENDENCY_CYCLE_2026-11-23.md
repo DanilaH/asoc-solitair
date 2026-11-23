@@ -9,8 +9,8 @@ On a four-card, two-category, original-author-controlled *product* board:
 - A has leader `a` and **ice1** member `a1`.
 - B has leader `b` and bound member `b1`, whose scissors trigger is `a1`.
 - Own Frozen rule removes one layer per completed category; own Bound rule releases only once its designated scissors card reaches an upper foundation/collected group.
-- **Cycle**: A cannot finish until B completes to thaw `a1`; B cannot finish until `a1` reaches a foundation; `a1` cannot reach foundation before A finishes. With both frozen and bound cards immobile there is no solution.
-- Current source-shaped schema/board can be syntactically valid under `assertBoard` despite this puzzle-level deadlock. A direct negative test on the independent gameplay oracle `search(..., cap=2500)` must return **exhaustive UNSOLVABLE**, not cap-UNKNOWN.
+- **Cycle**: A cannot finish until B completes to thaw `a1`; B cannot finish until `a1` reaches a foundation; `a1` cannot reach foundation before A finishes. With both frozen and bound cards immobile there is **no winning path under this no-helper Rules3 fixture**; it has no premium slot, Joker bypass or granted continuation. This is not proof of impossibility under unknown live original helper policies.
+- Current source-shaped schema/board can be syntactically valid under `assertBoard` despite this puzzle-level deadlock. A direct negative test on the independent gameplay oracle, with precisely this authored no-helper action set, `search(..., cap=2500)` must return **exhaustive UNSOLVABLE**, not cap-UNKNOWN.
 
 Fixing *only* `scissorsByCard.b1` to point at unlocked `a` changes the dependency graph and yields a four-move winning witness `a→f0, b→f1, b1→f1, a1→f0`, separately replayed in actual `applyBoard` and independent oracle. The geometry and move budget stay unchanged. Thus the combination, rather than the isolated special mechanics, caused the issue.
 

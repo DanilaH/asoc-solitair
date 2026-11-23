@@ -110,7 +110,7 @@ function cancelCoins(settle = true) {
 }
 function clearDialogs(preserveCoins = false) {
   // Discard presentation before its top-layer owner closes.
-  cancelCoins(!preserveCoins); restoreWallet();
+  cancelCoins(!preserveCoins); wallet?.clearDebit(); clearActionFeedback(); restoreWallet();
   document.body.append($('#coin-layer')); dialogs.forEach(d => d.close());
   returnToDialog = undefined;
 }
@@ -236,7 +236,7 @@ try {
   const systemMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const reducedMotion = () => systemMotion.matches || save.settings.reducedMotion;
   let presentingCommand = false;
-  wallet = new WalletPresentation(save.profile.coins, $('#coin-layer'), $('#coins'), $('#helper-wallet'), $('#wallet-open'), () => runtime.play('coins', 'ui'), reducedMotion);
+  wallet = new WalletPresentation(save.profile.coins, $('#coin-layer'), $('#coins'), $('#helper-wallet-amount'), $('#wallet-open'), () => runtime.play('coins', 'ui'), reducedMotion);
   function syncMotionPreference() {
     const reduced = reducedMotion(), root = document.documentElement;
     if (root.dataset.reduced === String(reduced)) return;
@@ -259,6 +259,15 @@ try {
   let localeRestartAttempt: string | undefined;
   const dismissedRules = new Set<string>();
   let outcomeViewed = false;
+  let pendingRewardProgress: string | undefined;
+  function animateRewardProgress(element: HTMLElement) {
+    if (reducedMotion() || runtime.activity.getBlockReasons().some(reason => reason !== 'modal' && reason !== 'screen')) return;
+    animateActionFeedback(element, 'reward-progress', [
+      { boxShadow: '0 0 0 0 #d5aa56aa' },
+      { boxShadow: '0 0 0 3px #d5aa5670', offset: .35 },
+      { boxShadow: '0 0 0 7px #d5aa5600' },
+    ], 460);
+  }
   let chapterPage = 0, chapterAttemptId = '';
   const training = () => Boolean(save.attempt.daily && save.attempt.board.phase !== 'won' && !dailyRewardEligible(save, localDay()));
   let removeForeground: (() => void) | undefined;
@@ -649,8 +658,23 @@ try {
     const cycleReward = payout?.find(r => r.reason === 'campaign_win_cycle');
     $('#result-bonus').hidden = !won || !cycleReward;
     $('#result-bonus-copy').textContent = cycleReward ? `Получено: +${cycleReward.coins} монет${cycleReward.hints ? ` и +${cycleReward.hints} подсказка` : ''}` : '';
-    $('#result-meta').textContent = daily ? `Серия дней · ${currentDailyStreak(save, localDay())}` : `Новый цикл · ${save.meta!.winCycle} / 5`;
-    $('#result-meta').hidden = !won || !daily && !payout?.some(r => r.reason === 'campaign_win_cycle');
+    const cycle = save.meta!.winCycle, progress = $('#result-meta');
+    progress.hidden = !won || !daily && !cycleReward && (!deal.campaignLevel || cycle === 0);
+    progress.textContent = daily ? `Серия дней · ${currentDailyStreak(save, localDay())}`
+      : cycleReward ? 'Новый цикл · 0 / 5' : `Пять побед · ${cycle} / 5`;
+    let pulseTarget = cycleReward ? $('#result-bonus') : progress;
+    if (!progress.hidden && !daily && !cycleReward) {
+      const pips = document.createElement('span');
+      pips.className = 'result-cycle-pips';
+      pips.setAttribute('aria-hidden', 'true');
+      for (let i = 0; i < 5; i++) {
+        const pip = document.createElement('i');
+        pip.classList.toggle('lit', i < cycle);
+        pips.append(pip);
+      }
+      pulseTarget = pips.children.item(cycle - 1) as HTMLElement;
+      progress.append(pips);
+    }
     $('#replay').textContent = daily && won ? 'Сыграть как тренировку' : 'Ещё раз';
     const earned = (payout ? payout.reduce((sum, r) => sum + r.coins, 0) : !daily ? BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0);
     $('#result-total').textContent = `+${earned}`; $('#result-earnings').hidden = !won || earned === 0;
@@ -669,6 +693,10 @@ try {
       `${nextDifficulty ? nextDifficulty + ' уровень' : 'Уровень'} ${next.campaignLevel} →`;
     $('#result-home').hidden = daily || deal.campaignLevel === CAMPAIGN_LENGTH;
     openDialog('#result', true); pinWallet();
+    if (pendingRewardProgress === save.attempt.id) {
+      pendingRewardProgress = undefined;
+      if (won && (cycleReward || !progress.hidden)) animateRewardProgress(pulseTarget);
+    }
     if (won) wallet?.reveal($('#result-total'), earned);
     if (won && wallet?.pending) {
       $('#result').append($('#coin-layer'));
@@ -687,7 +715,7 @@ try {
       showGuidance();
       return false;
     }
-    const before = save.attempt.board;
+    const before = save.attempt.board, metaBefore = save.meta;
     const progressBefore = save.attempt.streak.progress, movesBefore = before.movesLeft;
     const helper = cmd.type === 'hint' ? 'hints' : cmd.type === 'undo' ? 'undos' : undefined;
     const helperBefore = helper ? save.profile[helper] : 0;
@@ -780,6 +808,9 @@ try {
       }
       if (coveredWaste)
         message('Подходящая карта теперь под верхней картой сброса. Её можно вернуть на новом круге.');
+      if (before.phase === 'playing' && save.attempt.board.phase === 'won' &&
+          (save.meta!.winCycle !== metaBefore?.winCycle || save.meta!.cycles !== metaBefore?.cycles ||
+           save.meta!.dailyStreak !== metaBefore?.dailyStreak)) pendingRewardProgress = save.attempt.id;
       if (save.attempt.board.phase !== 'playing') {
         const delay = reducedMotion() ? 100 : save.attempt.board.phase === 'won' ? 0 : 465;
         const collectionDeadline = hasCoinFlight ? Infinity : performance.now() + 720;
@@ -853,7 +884,8 @@ try {
       CollectThemes: 'Собрать тему', CompleteLevels: 'Впервые пройти уровень',
     };
     const prizeNames: Record<string, string> = { Coins: 'монет', MoveHint: 'подсказка', Undo: 'отмена', Medals: 'мед.' };
-    $('#daily-tasks-medals').textContent = `Медали недели · ${current.week.totalMedals}/5`;
+    const medals = $('#daily-tasks-medals'), caption = `Медали недели · ${current.week.totalMedals}/5`;
+    if (medals.textContent !== caption) medals.textContent = caption;
     const list = $('#daily-tasks-list');
     list.replaceChildren(...current.day.tasks.map(task => {
       const row = document.createElement('section'), label = document.createElement('strong'), button = document.createElement('button');
@@ -861,7 +893,16 @@ try {
       button.className = 'secondary';
       button.textContent = task.claimed ? 'Получено' : `Получить · ${task.prize.quantity} ${prizeNames[task.prize.kind] ?? ''}`;
       button.disabled = saving || Boolean(task.claimed) || task.progress < task.target;
-      button.addEventListener('click', () => { void write(next => claimTask(next, current.day.utc, task.id)).catch(() => message('Не удалось сохранить награду.', true)); }, { once: true });
+      button.addEventListener('click', async () => {
+        if (saving) return;
+        const { startUtc, totalMedals } = current.week;
+        try {
+          if (!await write(next => claimTask(next, current.day.utc, task.id))) return;
+          const recorded = currentTasks(save)?.week;
+          if ($<HTMLDialogElement>('#daily-tasks-dialog').open && recorded?.startUtc === startUtc && recorded.totalMedals > totalMedals)
+            animateRewardProgress(medals);
+        } catch { message('Не удалось сохранить награду.', true); }
+      }, { once: true });
       row.append(label, button);
       return row;
     }));
@@ -1279,6 +1320,9 @@ try {
         playDealSound(); showGuidance();
       }
     }
+    if (runtime.activity.getBlockReasons().some(reason => reason !== 'modal' && reason !== 'screen')) {
+      wallet?.clearDebit(true);
+    }
     if (!renderer.isBooted) return;
     if (blocked) clearActionFeedback();
     if (blocked && ready) { scene?.clearFeedback(); renderer.loop.sleep(); if (runtime.activity.getBlockReasons().some(r => r !== 'modal' && r !== 'screen')) cancelCoins(); }
@@ -1639,6 +1683,7 @@ try {
     const seconds = data?.refillAt !== undefined ? Math.max(0, Math.ceil((data.refillAt - Date.now()) / 1000)) : undefined;
     $('#campaign-lives-timer').textContent = seconds === undefined ? 'Жизни восстановлены' :
       `Следующая через ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+    $('#campaign-lives-wallet').textContent = `${save.profile.coins} монет`;
     $<HTMLButtonElement>('#campaign-life-coin').disabled = saving || serviceBusy || count >= LIVES_RULES.max || save.profile.coins < LIVES_RULES.coinPrice;
     const credit = $<HTMLButtonElement>('#campaign-life-credit');
     credit.hidden = !data?.earnedCredits;

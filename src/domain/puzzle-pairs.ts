@@ -1,7 +1,11 @@
 import type { Deal } from './types';
 
+export function picturePair(deal: Deal, id: string) {
+  return deal.puzzle?.pairs.find(candidate => candidate.top === id || candidate.bottom === id);
+}
+
 export function puzzleHalf(deal: Deal, id: string): 'top' | 'bottom' | undefined {
-  const pair = deal.puzzle?.pairs.find(candidate => candidate.top === id || candidate.bottom === id);
+  const pair = picturePair(deal, id);
   return pair ? pair.top === id ? 'top' : 'bottom' : undefined;
 }
 

@@ -4,14 +4,14 @@ import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
 import { frozenLayers } from '../domain/frozen-cards';
 import { isBoundCard } from '../domain/bound-cards';
-import { puzzleHalf } from '../domain/puzzle-pairs';
+import { picturePair, puzzleHalf } from '../domain/puzzle-pairs';
 import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
 import { boardFrame, cardMetrics, dragTarget, dropTarget, layout, slotCount, tableauPresentation } from './layout';
 import { bonusKinds } from '../domain/bonus-slots';
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text; puzzleArt?: { half: Phaser.GameObjects.Image; full: Phaser.GameObjects.Image } }
 interface Options {
   deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void; allows?(command: BoardCommand): boolean;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene, newDeal: boolean): void;
@@ -58,6 +58,7 @@ export class BoardScene extends Phaser.Scene {
   private jokerBadge!: Phaser.GameObjects.Container;
   private lockArt!: Phaser.GameObjects.Container;
   private lockIcon!: Phaser.GameObjects.Image;
+  private get lockGoal() { return this.options.deal.lock?.requiredKeys.length ?? 3; }
   private lockCount!: Phaser.GameObjects.Text;
   private keyFlights: Phaser.GameObjects.Image[] = [];
   private keyPresentation: KeyPresentation | undefined;
@@ -159,9 +160,9 @@ export class BoardScene extends Phaser.Scene {
     this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.add.image(0, 5, 'art-joker').setDisplaySize(78, 78)]).setVisible(false);
     this.jokerBadge = this.add.container(0, 0, [this.add.circle(0, 0, 11, 0xf1cc73).setStrokeStyle(1, 0xffecc0), this.add.text(0, 0, '✦', { fontFamily: 'Nunito, Arial', fontSize: '15px', color: '#715321' }).setOrigin(.5)]).setDepth(425).setVisible(false);
     const lock = this.add.image(0, 0, 'art-card-back-diamonds').setDisplaySize(this.cardW, this.cardH).setTint(0x9198b9);
-    this.lockCount = this.label(0, 36, '0 / 3', 21, '#ffe6a1');
+    this.lockCount = this.label(0, 36, `0 / ${this.lockGoal}`, 21, '#ffe6a1');
     this.lockIcon = this.add.image(0, -8, 'art-lock').setDisplaySize(66, 66);
-    this.lockArt = this.add.container(0, 0, [lock, this.lockIcon, this.label(0, -this.cardH / 2 + 12, 'ТРИ КЛЮЧА', 11, '#fff0cf'), this.lockCount]).setVisible(false).setDepth(420);
+    this.lockArt = this.add.container(0, 0, [lock, this.lockIcon, this.label(0, -this.cardH / 2 + 12, this.lockGoal === 1 ? 'ОДИН КЛЮЧ' : 'ТРИ КЛЮЧА', 11, '#fff0cf'), this.lockCount]).setVisible(false).setDepth(420);
     this.world.add([this.jokerArt, this.jokerBadge, this.lockArt]);
     this.keyFlights = Array.from({ length: 3 }, () => { const key = this.add.image(0, 0, 'art-key').setDisplaySize(40, 40).setDepth(590).setVisible(false); this.world.add(key); return key; });
     for (const card of Object.values(this.options.deal.cards)) this.views.set(card.id, this.makeCard(card.id));
@@ -215,8 +216,10 @@ export class BoardScene extends Phaser.Scene {
     const shadow = this.add.image(0, 0, shadowKey).setOrigin(.5, this.cardH / 2 / (this.cardH + 8));
     const g = this.add.image(0, 0, card.leader ? 'art-card-category' : 'art-card-face').setDisplaySize(this.cardW, this.cardH);
     const content = this.add.container(0, 0); face.add([g, content]);
+    let puzzleArt: CardView['puzzleArt'];
     let caption: Phaser.GameObjects.Text | undefined, strip: Phaser.GameObjects.Text | Phaser.GameObjects.Image | undefined;
     const image = cardArtwork(card, this.options.deal);
+    const half = puzzleHalf(this.options.deal, id);
     if (card.leader) {
       if (card.ordered) content.add(this.label(0, -this.cardH / 2 + 11, 'ПО ПОРЯДКУ', 11, '#b2916e'));
       else {
@@ -234,7 +237,20 @@ export class BoardScene extends Phaser.Scene {
       strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
     } else if (image) {
-      content.add(this.add.image(0, 0, image).setDisplaySize(Math.min(104, this.cardW - 22), Math.min(104, this.cardW - 22)));
+      const size = Math.min(104, this.cardW - 22);
+      const illustration = this.add.image(0, 0, image).setDisplaySize(size, size);
+      if (half && picturePair(this.options.deal, id)?.illustration) {
+        const { cutWidth, cutHeight } = illustration.frame;
+        const split = Math.floor(cutHeight / 2);
+        illustration.setCrop(0, half === 'top' ? 0 : split, cutWidth, half === 'top' ? split : cutHeight - split);
+        illustration.y = half === 'top' ? size / 4 : -size / 4;
+        if (half === 'top') {
+          const full = this.add.image(0, 0, image).setDisplaySize(size, size).setVisible(false);
+          content.add(full);
+          puzzleArt = { half: illustration, full };
+        }
+      }
+      content.add(illustration);
       strip = this.add.image(0, -this.cardH / 2 + 11, image).setDisplaySize(18, 18); face.add(strip); strip.setVisible(false);
     } else {
       caption = this.label(0, 0, card.text, card.text.length > 11 ? 23 : 26, '#294d5d', this.cardH - 72); caption.setOrigin(.5); content.add(caption);
@@ -258,7 +274,6 @@ export class BoardScene extends Phaser.Scene {
       backgroundColor: '#f3dcef', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0).setVisible(false) : undefined;
     if (binding) face.add(binding);
-    const half = puzzleHalf(this.options.deal, id);
     if (half) face.add(this.add.text(0, -this.cardH / 2 + 8, half === 'top' ? 'Верх' : 'Низ', {
       fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#2d532d',
       backgroundColor: '#ddf1ce', padding: { x: 4, y: 2 },
@@ -276,7 +291,7 @@ export class BoardScene extends Phaser.Scene {
     this.paintBack(b);
     const shade = this.add.image(0, 0, shadeKey).setAlpha(0);
     back.add(b); node.add([shadow, face, back, shade]); this.world.add(node);
-    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice, binding };
+    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice, binding, puzzleArt };
   }
   private paintBack(b: Phaser.GameObjects.Image) {
     const diamonds = this.options.getSave().settings.cardBack === 'diamonds';
@@ -291,6 +306,10 @@ export class BoardScene extends Phaser.Scene {
     copy.badge.setText(source.badge.text).setY(source.badge.y).setVisible(source.badge.visible);
     if (source.ice) copy.ice?.setText(source.ice.text).setVisible(source.ice.visible);
     if (source.binding) copy.binding?.setY(source.binding.y).setVisible(source.binding.visible);
+    if (source.puzzleArt && copy.puzzleArt) {
+      copy.puzzleArt.half.setVisible(source.puzzleArt.half.visible);
+      copy.puzzleArt.full.setVisible(source.puzzleArt.full.visible);
+    }
     copy.shade.setAlpha(source.shade.alpha);
     copy.strip?.setVisible(source.strip?.visible ?? false);
     if (copy.strip && source.strip) copy.strip.setPosition(source.strip.x, source.strip.y).setScale(source.strip.scaleX, source.strip.scaleY).setAngle(source.strip.angle);
@@ -417,7 +436,7 @@ export class BoardScene extends Phaser.Scene {
     if (this.metrics.joker) this.jokerArt.setPosition(this.metrics.joker.x, this.metrics.joker.y).setDepth(this.metrics.joker.depth);
     const lockTarget = this.options.deal.lock && this.metrics.targets.find(t => t.location.kind === 'tableau' && t.location.index === this.options.deal.lock!.column);
     this.lockArt.setVisible(Boolean(lockTarget && isLocked(board, this.options.deal.lock!.column, this.options.deal)));
-    if (lockTarget) { this.lockArt.setPosition(lockTarget.x, lockTarget.y); this.lockCount.setText(`${board.keys?.length ?? 0} / 3`); }
+    if (lockTarget) { this.lockArt.setPosition(lockTarget.x, lockTarget.y); this.lockCount.setText(`${board.keys?.length ?? 0} / ${this.lockGoal}`); }
     const keyEvents = events.filter(e => e.type === 'key');
     const contactAtKey = keyEvents.length > 0 && (feedback?.kind === 'key' || feedback?.kind === 'unlock');
     if (keyEvents.length && lockTarget) this.presentKeys(keyEvents, events.some(e => e.type === 'unlock'), lockTarget, contactAtKey ? contact : undefined);
@@ -532,6 +551,15 @@ export class BoardScene extends Phaser.Scene {
       if (!keepEntry) this.tweens.killTweensOf(view.node);
       this.tweens.killTweensOf([view.face, view.back]); view.face.setScale(1); view.back.setScale(1);
       view.face.setVisible(pose.faceUp); view.back.setVisible(!pose.faceUp);
+      if (view.puzzleArt) {
+        const pair = picturePair(this.options.deal, pose.id)!;
+        const joined = [...board.tableau, ...board.foundations].some(pile => {
+          const index = pile.indexOf(pair.top);
+          return index > 0 && pile[index - 1] === pair.bottom;
+        });
+        view.puzzleArt.half.setVisible(!joined);
+        view.puzzleArt.full.setVisible(joined);
+      }
       if (view.ice) {
         const layers = frozenLayers(board, this.options.deal, pose.id);
         view.ice.setText(`Лёд ${layers}`).setVisible(pose.faceUp && layers > 0);
@@ -675,7 +703,7 @@ export class BoardScene extends Phaser.Scene {
     this.lockArt.setScale(1).setAlpha(1); this.lockIcon.setTexture('art-lock').setAngle(0);
     const board = this.options.getSave().attempt.board, lock = this.options.deal.lock;
     this.lockArt.setVisible(Boolean(lock && isLocked(board, lock.column, this.options.deal)));
-    this.lockCount.setText(`${board.keys?.length ?? 0} / 3`);
+    this.lockCount.setText(`${board.keys?.length ?? 0} / ${this.lockGoal}`);
     for (const id of pending.revealed) {
       const view = this.views.get(id); if (!view) continue;
       this.tweens.killTweensOf([view.face, view.back]);
@@ -687,17 +715,17 @@ export class BoardScene extends Phaser.Scene {
   private presentKeys(events: GameEvent[], unlock: boolean, target: Target, contact?: () => void) {
     const board = this.options.getSave().attempt.board, count = board.keys?.length ?? 0;
     const reduced = this.options.getSave().settings.reducedMotion || new URLSearchParams(location.search).get('fxCards') === '0';
-    if (reduced) { this.lockCount.setText(`${count} / 3`); if (unlock) this.showPraise('Замок открыт!'); contact?.(); return; }
+    if (reduced) { this.lockCount.setText(`${count} / ${this.lockGoal}`); if (unlock) this.showPraise('Замок открыт!'); contact?.(); return; }
     const revealDelay = 190 + 240 + 60 + 130;
     const revealed = unlock ? this.metrics.poses.filter(p => board.tableau[this.options.deal.lock!.column].includes(p.id) && p.faceUp && !this.views.get(p.id)!.face.visible).map(p => p.id) : [];
     const pending: KeyPresentation = { timers: [], revealed, revealDelay };
     this.keyPresentation = pending;
     const alive = () => this.keyPresentation === pending;
     this.lockArt.setVisible(true).setScale(1).setAlpha(1);
-    this.lockCount.setText(`${Math.max(0, count - events.length)} / 3`);
+    this.lockCount.setText(`${Math.max(0, count - events.length)} / ${this.lockGoal}`);
     const arrive = () => {
       if (!alive()) return;
-      this.lockCount.setText(`${count} / 3`); contact?.();
+      this.lockCount.setText(`${count} / ${this.lockGoal}`); contact?.();
       if (unlock) {
         this.showPraise('Замок открыт!');
         if (this.textures.exists('art-lock-open')) this.lockIcon.setTexture('art-lock-open');

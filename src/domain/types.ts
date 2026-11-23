@@ -42,10 +42,10 @@ export interface Deal {
   legacyWinningPath?: BoardCommand[];
   campaignLevel?: number;
   tags?: string[];
-  lock?: { column: number; requiredKeys: string[] };
+  lock?: { version?: 2; column: number; requiredKeys: string[] };
   frozen?: { version: 1; layers: Readonly<Record<string, number>> };
   bound?: { version: 1; scissorsByCard: Readonly<Record<string, string>> };
-  puzzle?: { version: 1; pairs: readonly { top: string; bottom: string }[] };
+  puzzle?: { version: 1; pairs: readonly { top: string; bottom: string; illustration?: string }[] };
   golden?: { version: 1; ids: readonly string[]; coinsPerCard: number };
   starter?: { version: 1; cards: Readonly<Record<string, 'magnet' | 'hammer'>> };
   shufflePreview?: 1;

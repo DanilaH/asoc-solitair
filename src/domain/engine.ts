@@ -349,7 +349,10 @@ export function assertBoard(board: Board, deal: Deal): void {
   const keys = board.keys ?? [];
   if (new Set(keys).size !== keys.length || keys.some(key => !deal.lock?.requiredKeys.includes(key))) throw Error('Некорректные ключи');
   if (deal.lock) {
-    if (deal.lock.requiredKeys.length !== 3 || new Set(deal.lock.requiredKeys).size !== 3 || !board.tableau[deal.lock.column]) throw Error('Некорректный замок');
+    const keyCount = deal.lock.version === 2 ? 1 : 3;
+    if ((deal.lock.version !== undefined && (deal.lock.version !== 2 || boardRules(board) !== 3)) ||
+        deal.lock.requiredKeys.length !== keyCount || new Set(deal.lock.requiredKeys).size !== keyCount ||
+        !board.tableau[deal.lock.column]) throw Error('Некорректный замок');
     for (const key of deal.lock.requiredKeys) {
       const card = Object.values(deal.cards).find(c => c.keyId === key);
       if (!card || Object.values(deal.cards).filter(c => c.keyId === key).length !== 1 || deal.initial.faceUp.includes(card.id) || deal.initial.tableau[deal.lock.column].includes(card.id) || !deal.initial.tableau.some(col => col.includes(card.id))) throw Error('Некорректная карта ключа');

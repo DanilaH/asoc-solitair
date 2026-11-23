@@ -1,8 +1,8 @@
-import { adjustedMoveBudget, C8_DIFFICULTY, futureDifficultyPenalty } from '../domain/difficulty';
+import { adjustedMoveBudget, C8_DIFFICULTY, futureDifficultyPenalty, SOURCE_DIFFICULTY_PREVIEW } from '../domain/difficulty';
 import { campaignId } from '../domain/progression';
 import type { Attempt, Deal, Save } from '../domain/types';
 
-export const ADAPTIVE_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'director';
+export const ADAPTIVE_PREVIEW = SOURCE_DIFFICULTY_PREVIEW;
 const profile = 'c8-budget-r2';
 
 type AdaptiveVariants = { tight?: Deal; relief: Deal; easy?: Deal; archived?: readonly string[] };

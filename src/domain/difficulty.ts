@@ -119,7 +119,8 @@ export function updateSourceDifficultySlot(slot: CampaignOutcome | undefined, ev
   return { slot: slot ?? { outcome: 'Clean', restarts: 0 } satisfies CampaignOutcome, advance: true };
 }
 
-export const SOURCE_DIFFICULTY_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'director';
+export const GENERATION_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'generation';
+export const SOURCE_DIFFICULTY_PREVIEW = GENERATION_PREVIEW || import.meta.env?.VITE_C8_OWNER_PREVIEW === 'director';
 
 export function recordSourceContinue(save: Save, deal: { campaignLevel?: number }) {
   const attempt = save.attempt;

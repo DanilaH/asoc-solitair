@@ -8,7 +8,7 @@ import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAd
 import { beginUnlimited, expireUnlimited, quotePurchasedUnlimited, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, usePurchasedUnlimited } from './domain/campaign-recovery';
 import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
-import { recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
+import { GENERATION_PREVIEW, recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
 import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
@@ -1078,7 +1078,8 @@ try {
             blockedLives = true; return false;
           }
           if (next.attempt.daily) switchMode(next, 'campaign', previousDeal ?? selected, crypto.randomUUID());
-          beginDeal(next, selected, crypto.randomUUID(), previousDeal, redeal ? undefined : equalityPreviewPolicy);
+          const equalityBase = GENERATION_PREVIEW && selected.adaptive?.baseId === target.id ? target : selected;
+          beginDeal(next, selected, crypto.randomUUID(), previousDeal, redeal ? undefined : equalityPreviewPolicy, equalityBase);
           return true;
         });
         if (started) {

@@ -1,4 +1,5 @@
 import { BALANCE_VERSION, CONTENT8_PREVIEW, CONTENT_VERSION, RULES_VERSION } from './types';
+import { quoteVictoryReward, victoryDifficulty, type VictoryRewardConfig } from './azur-victory-reward';
 import { BALANCE } from './balance';
 import { carryCampaignRestart, recordCampaignExhaustion } from './difficulty';
 import { freeHintDemo, freeJokerPractice, freeUndoPractice, helperUnlocked, markTutorial, seenTutorial } from './progression';
@@ -171,7 +172,7 @@ export function sameBoardCommand(a: BoardCommand, b: BoardCommand) {
     a.to.kind === b.to.kind && a.to.index === b.to.index;
 }
 
-export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Result {
+export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', victoryReward?: VictoryRewardConfig): Result {
   const next = structuredClone(input);
   const attempt = next.attempt;
   const trackDifficulty = CONTENT8_PREVIEW && !deal.daily && deal.campaignLevel !== undefined;
@@ -241,7 +242,10 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = ''): Res
       } else {
         const rewardKey = `win:${attempt.id}`;
         if (!next.profile.rewards.includes(rewardKey)) {
-          const amount = BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (attempt.board.movesLeft ?? 0);
+          const amount = victoryReward && deal.campaignLevel !== undefined
+            ? quoteVictoryReward(victoryReward, victoryDifficulty(deal), attempt.board.movesLeft).total
+            : BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (attempt.board.movesLeft ?? 0);
+          if (victoryReward && !Number.isSafeInteger(next.profile.coins + amount)) throw new RangeError('Wallet overflow');
           next.profile.coins += amount; next.profile.wins++; next.profile.rewards.push(rewardKey);
           attempt.payout = [{ key: rewardKey, reason: 'win', label: 'За победу и оставшиеся ходы', coins: amount }, ...markCampaignWin(next, deal.id, deal.campaignLevel)];
           const goldenReward = claimGoldenCards(next, deal);

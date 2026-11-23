@@ -76,7 +76,7 @@ dialog{
 dialog::backdrop{background:#092c3d9c;backdrop-filter:none}
 dialog h2{color:#345d6b;text-shadow:0 1px 0 #fffdf5}
 dialog .small{color:#6c8180}
-.close{color:#8c8bb0;background:#eee9ee;border:1px solid #d8d5df;border-radius:10px;box-shadow:inset 0 1px 0 #fffdf7}
+.close{color:#67658c;background:#eee9ee;border:1px solid #d8d5df;border-radius:10px;box-shadow:inset 0 1px 0 #fffdf7}
 .eyebrow{color:#9b8261}
 .setting{border-bottom-color:#e3ddce;color:#4e6c76}
 .setting input{appearance:none;position:relative;flex-shrink:0;width:42px;height:25px;margin:0;border:2px solid #fffaf0;border-radius:20px;background:#b8c1c6;box-shadow:inset 0 1px 2px #647e8855;cursor:pointer;transition:background .12s}

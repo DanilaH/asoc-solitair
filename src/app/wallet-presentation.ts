@@ -15,16 +15,19 @@ export class WalletPresentation {
   get pending(){return Math.max(0,this.target-this.reserved);}
   sync(total:number,defer=false){
     if(total===this.target)return;
-    if(total<this.target){this.cancel();this.target=total;this.goal=total;this.reserved=total;this.run();return;}
+    if(total<this.target){
+      if(this.reduced()){this.target=total;this.cancel();return;}
+      this.cancel();this.target=total;this.goal=total;this.reserved=total;this.run();return;
+    }
     this.target=total;if(!defer)this.collect(this.wallet);
   }
   collect(origin:HTMLElement,limit=this.pending){
     const amount=Math.min(this.pending,limit);if(!amount)return;this.reserved+=amount;
+    if(this.reduced()){this.value=this.goal=Math.min(this.target,this.goal+amount);this.paint();this.sound();return;}
     const source=origin.getBoundingClientRect(),icon=this.wallet.querySelector('.coin-icon')??this.wallet,dest=icon.getBoundingClientRect();
     const sx=source.x+source.width/2,sy=source.y+source.height/2,tx=dest.x+dest.width/2,ty=dest.y+dest.height/2;
     const badge=document.createElement('span');badge.className='coin-gain';badge.textContent=`+${amount}`;badge.setAttribute('role','status');badge.setAttribute('aria-label',`Получено ${amount} монет`);badge.style.left=`${Math.max(30,Math.min(innerWidth-55,sx))}px`;badge.style.top=`${Math.max(20,sy-22)}px`;this.layer.append(badge);
-    const animation=badge.animate(this.reduced()?[{opacity:1},{opacity:0}]:[{opacity:0,transform:'translate(-50%,0) scale(.85)'},{opacity:1,transform:'translate(-50%,-10px) scale(1.1)',offset:.18},{opacity:1,offset:.7},{opacity:0,transform:'translate(-50%,-22px) scale(1)'}],{duration:this.reduced()?450:950});animation.onfinish=()=>badge.remove();animation.oncancel=()=>badge.remove();
-    if(this.reduced()){this.goal=Math.min(this.target,this.goal+amount);this.sound();this.run();return;}
+    const animation=badge.animate([{opacity:0,transform:'translate(-50%,0) scale(.85)'},{opacity:1,transform:'translate(-50%,-10px) scale(1.1)',offset:.18},{opacity:1,offset:.7},{opacity:0,transform:'translate(-50%,-22px) scale(1)'}],{duration:950});animation.onfinish=()=>badge.remove();animation.oncancel=()=>badge.remove();
     const available=this.pool.filter(n=>!this.flights.some(f=>f.node===n));
     if(!available.length){this.goal=Math.min(this.target,this.goal+amount);this.run();return;}
     const plan=createValueTransferPlan(amount,{minDurationMs:650,maxDurationMs:900,maxVisualTokens:Math.min(8,available.length),maxAudioEvents:4,flightBaseMs:480,maxFlightDurationMs:560,flightPerVisualTokenMs:5});
@@ -36,7 +39,10 @@ export class WalletPresentation {
     }
     this.run();
   }
-  reveal(node:HTMLElement,amount:number){this.receipt={node,amount,start:performance.now()};node.textContent='+0';this.run();}
+  reveal(node:HTMLElement,amount:number){
+    if(this.reduced()){node.textContent=`+${amount}`;return;}
+    this.receipt={node,amount,start:performance.now()};node.textContent='+0';this.run();
+  }
   cancel(settle=true){
     cancelAnimationFrame(this.raf);this.raf=0;
     for(const f of this.flights)f.node.style.display='none';this.flights=[];

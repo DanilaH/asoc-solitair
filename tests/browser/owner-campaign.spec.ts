@@ -285,6 +285,14 @@ test('keeps campaign dialog headings clear of their close buttons', async ({ pag
   await page.locator('#wallet-open').tap();
   await page.locator('#campaign-store-open').tap();
   await expectClearTitle('#campaign-store');
+  const helpers = page.getByRole('dialog', { name: 'Помощники' });
+  await expect(helpers).toBeVisible();
+  await expect(page.locator('#campaign-store-open')).toBeFocused();
+  expect(await helpers.evaluate(element => getComputedStyle(element, '::backdrop').animationName)).toBe('none');
+  await page.locator('#campaign-store-open').tap();
+  await page.locator('#campaign-store').getByRole('button', { name: 'Назад' }).tap();
+  await expect(helpers).toBeVisible();
+  await expect(page.locator('#campaign-store-open')).toBeFocused();
   await page.reload();
   await page.locator('#campaign-liveops-open').tap();
   await expectClearTitle('#campaign-liveops');

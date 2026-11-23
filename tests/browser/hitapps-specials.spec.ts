@@ -13,6 +13,13 @@ test('one-key lock opens on the first key and Undo closes it after reload', asyn
   save.settings.reducedMotion = true;
   await seed(page, save);
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
+  const lesson = page.getByRole('dialog', { name: 'Один ключ' });
+  await expect(lesson.locator('#lesson-keys img')).toHaveCount(1);
+  await expect(lesson).toContainText('Откройте карту с ключом');
+  await page.waitForTimeout(600);
+  await lesson.getByRole('button', { name: 'Попробовать' }).tap();
+  await expect(lesson).toBeHidden();
+  await expect.poll(async () => (await read(page)).campaign?.tutorials).toContain('intro:keys:1');
   await expect.poll(async () => (await read(page)).attempt.board.faceUp).not.toContain('spruce');
   await page.waitForTimeout(850);
   await move(page, deal, deal.winningPath[0]);
@@ -21,6 +28,7 @@ test('one-key lock opens on the first key and Undo closes it after reload', asyn
   await page.reload();
   await page.locator('#home-play').tap();
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
+  await expect(page.locator('#learn-rule')).toBeHidden();
   await page.locator('#undo').tap();
   await expect.poll(async () => (await read(page)).attempt.board).toEqual(deal.initial);
   await page.waitForTimeout(750);

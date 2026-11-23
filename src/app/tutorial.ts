@@ -34,6 +34,10 @@ export function recordLearning(save: Save, before: Board, action: BoardCommand, 
   if (deal.campaignLevel && deal.campaignLevel <= 2) markTutorial(save, marker(skillFor(before, action, deal)));
 }
 export type RuleIntro = 'joker' | 'ordered' | 'keys';
+export function ruleIntroMarker(rule: RuleIntro, deal: Deal): string {
+  const keys = deal.lock?.requiredKeys.length;
+  return rule === 'keys' && keys !== undefined && keys !== 3 ? `intro:keys:${keys}` : `intro:${rule}`;
+}
 const isJokerLesson = (deal: Deal) => deal.tags?.includes('joker') && deal.tags.includes('teaching');
 export function ruleIntroduction(save: Save, deal: Deal): RuleIntro | undefined {
   if (deal.daily || save.attempt.board.phase !== 'playing') return;
@@ -41,7 +45,7 @@ export function ruleIntroduction(save: Save, deal: Deal): RuleIntro | undefined 
   if (isJokerLesson(deal)) rules.push('joker');
   if (Object.values(deal.cards).some(card => card.ordered)) rules.push('ordered');
   if (deal.lock) rules.push('keys');
-  return rules.find(rule => !seenTutorial(save, `intro:${rule}`) &&
+  return rules.find(rule => !seenTutorial(save, ruleIntroMarker(rule, deal)) &&
     (rule !== 'joker' || !seenTutorial(save, 'joker-used')));
 }
 export interface Guidance {

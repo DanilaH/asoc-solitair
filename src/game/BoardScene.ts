@@ -11,7 +11,7 @@ import { bonusKinds } from '../domain/bonus-slots';
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text; puzzleArt?: { half: Phaser.GameObjects.Image; full: Phaser.GameObjects.Image } }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text; puzzleLabel?: Phaser.GameObjects.Text; puzzleArt?: { half: Phaser.GameObjects.Image; full: Phaser.GameObjects.Image } }
 interface Options {
   deal: Deal; getSave(): Save; command(command: Command): void; sound(name: string): void; allows?(command: BoardCommand): boolean;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene, newDeal: boolean): void;
@@ -274,10 +274,11 @@ export class BoardScene extends Phaser.Scene {
       backgroundColor: '#f3dcef', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0).setVisible(false) : undefined;
     if (binding) face.add(binding);
-    if (half) face.add(this.add.text(0, -this.cardH / 2 + 8, half === 'top' ? 'Верх' : 'Низ', {
+    const puzzleLabel = half ? this.add.text(0, -this.cardH / 2 + 8, half === 'top' ? 'Верх' : 'Низ', {
       fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#2d532d',
       backgroundColor: '#ddf1ce', padding: { x: 4, y: 2 },
-    }).setOrigin(.5, 0));
+    }).setOrigin(.5, 0) : undefined;
+    if (puzzleLabel) face.add(puzzleLabel);
     if (this.options.deal.golden?.ids.includes(id)) face.add(this.add.text(0, -this.cardH / 2 + 8, 'Золото', {
       fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#533408',
       backgroundColor: '#f9dfa4', padding: { x: 4, y: 2 },
@@ -291,7 +292,7 @@ export class BoardScene extends Phaser.Scene {
     this.paintBack(b);
     const shade = this.add.image(0, 0, shadeKey).setAlpha(0);
     back.add(b); node.add([shadow, face, back, shade]); this.world.add(node);
-    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice, binding, puzzleArt };
+    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice, binding, puzzleLabel, puzzleArt };
   }
   private paintBack(b: Phaser.GameObjects.Image) {
     const diamonds = this.options.getSave().settings.cardBack === 'diamonds';
@@ -310,6 +311,7 @@ export class BoardScene extends Phaser.Scene {
       copy.puzzleArt.half.setVisible(source.puzzleArt.half.visible);
       copy.puzzleArt.full.setVisible(source.puzzleArt.full.visible);
     }
+    copy.puzzleLabel?.setVisible(source.puzzleLabel?.visible ?? false);
     copy.shade.setAlpha(source.shade.alpha);
     copy.strip?.setVisible(source.strip?.visible ?? false);
     if (copy.strip && source.strip) copy.strip.setPosition(source.strip.x, source.strip.y).setScale(source.strip.scaleX, source.strip.scaleY).setAngle(source.strip.angle);
@@ -569,6 +571,7 @@ export class BoardScene extends Phaser.Scene {
         const active = isBoundCard(board, this.options.deal, pose.id) || isBoundCard(board, this.options.deal, linked);
         view.binding.setY(-this.cardH / 2 + (view.ice?.visible ? 32 : 8)).setVisible(pose.faceUp && active);
       }
+      view.puzzleLabel?.setVisible(pose.faceUp && !view.ice?.visible && !view.binding?.visible && !view.puzzleArt?.full.visible);
       const def = this.options.deal.cards[pose.id];
       if (previousCollected.has(pose.id) && events.some(e => e.type === 'undo')) {
         // A reloaded save has no old sprite positions. Restore from an actual

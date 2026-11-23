@@ -55,6 +55,7 @@ import './style.css';
 import './art.css';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
+const AZUR_FEEL_QA = import.meta.env.VITE_AZUR_FEEL_QA === '1';
 let deal = campaignDeals[0];
 let screen: 'home' | 'game' = 'home';
 let scene: BoardScene | undefined;
@@ -236,7 +237,10 @@ try {
   const systemMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const reducedMotion = () => systemMotion.matches || save.settings.reducedMotion;
   let presentingCommand = false;
-  wallet = new WalletPresentation(save.profile.coins, $('#coin-layer'), $('#coins'), $('#helper-wallet-amount'), $('#wallet-open'), () => runtime.play('coins', 'ui'), reducedMotion);
+  wallet = new WalletPresentation(save.profile.coins, $('#coin-layer'), $('#coins'), $('#helper-wallet-amount'), $('#wallet-open'), animated => {
+    runtime.play('coins', 'ui');
+    if (AZUR_FEEL_QA && animated) runtime.pulse('coin-land');
+  }, reducedMotion);
   function syncMotionPreference() {
     const reduced = reducedMotion(), root = document.documentElement;
     if (root.dataset.reduced === String(reduced)) return;
@@ -244,6 +248,7 @@ try {
     if (reduced) {
       clearPraise();
       cancelCoins();
+      finishRewardClaim();
       clearActionFeedback();
       document.querySelectorAll('#streak i').forEach(element => element.getAnimations().forEach(animation => animation.cancel()));
       scene?.settleMotion();
@@ -259,6 +264,33 @@ try {
   let localeRestartAttempt: string | undefined;
   const dismissedRules = new Set<string>();
   let outcomeViewed = false;
+  let freshFeelWin: string | undefined;
+  let rewardClaim: { attemptId: string; nextLabel: string; flying: boolean } | undefined;
+  let rewardClaimTimer: ReturnType<typeof setTimeout> | undefined;
+  const nextLevelButton = $<HTMLButtonElement>('#next-level');
+  function finishRewardClaim() {
+    const claim = rewardClaim;
+    if (!claim) return;
+    rewardClaim = undefined;
+    clearTimeout(rewardClaimTimer);
+    nextLevelButton.removeAttribute('aria-busy');
+    nextLevelButton.disabled = false;
+    if (save.attempt.id === claim.attemptId) nextLevelButton.textContent = claim.nextLabel;
+  }
+  function startRewardClaim() {
+    const claim = rewardClaim;
+    if (!claim || claim.attemptId !== save.attempt.id) return false;
+    if (!claim.flying) {
+      claim.flying = true;
+      nextLevelButton.disabled = true;
+      nextLevelButton.setAttribute('aria-busy', 'true');
+      rewardClaimTimer = setTimeout(() => { cancelCoins(); finishRewardClaim(); }, 1300);
+      const layer = $('#coin-layer'), origin = $('#result-total');
+      $('#result').append(layer);
+      wallet?.collect(origin, undefined, finishRewardClaim);
+    }
+    return true;
+  }
   let pendingRewardProgress: string | undefined;
   function animateRewardProgress(element: HTMLElement) {
     if (reducedMotion() || runtime.activity.getBlockReasons().some(reason => reason !== 'modal' && reason !== 'screen')) return;
@@ -686,11 +718,13 @@ try {
     renderHud();
     $('#result-undo').hidden = won || !save.attempt.undo.length;
     $('#result-undo').textContent = save.profile.undos ? 'Отменить последний ход' : 'Получить отмену';
-    $('#next-level').hidden = !won;
+    finishRewardClaim();
+    nextLevelButton.hidden = !won;
     const next = daily ? undefined : campaignDeals[deal.campaignLevel ?? 0];
-    const nextDifficulty = setDifficulty($('#next-level'), next);
-    $('#next-level').textContent = daily ? 'К заданиям и уровням' : !next ? 'К уровням' :
+    const nextDifficulty = setDifficulty(nextLevelButton, next);
+    const nextLabel = daily ? 'К заданиям и уровням' : !next ? 'К уровням' :
       `${nextDifficulty ? nextDifficulty + ' уровень' : 'Уровень'} ${next.campaignLevel} →`;
+    nextLevelButton.textContent = nextLabel;
     $('#result-home').hidden = daily || deal.campaignLevel === CAMPAIGN_LENGTH;
     openDialog('#result', true); pinWallet();
     if (pendingRewardProgress === save.attempt.id) {
@@ -698,6 +732,14 @@ try {
       if (won && (cycleReward || !progress.hidden)) animateRewardProgress(pulseTarget);
     }
     if (won) wallet?.reveal($('#result-total'), earned);
+    if (freshFeelWin === save.attempt.id) {
+      freshFeelWin = undefined;
+      if (won && wallet?.pending && !reducedMotion()) {
+        rewardClaim = { attemptId: save.attempt.id, nextLabel, flying: false };
+        nextLevelButton.textContent = 'Забрать';
+        return;
+      }
+    }
     if (won && wallet?.pending) {
       $('#result').append($('#coin-layer'));
       const attemptId = save.attempt.id, presentation = coinPresentation;
@@ -781,7 +823,11 @@ try {
       const boardCommand = ['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined;
       const major = result.events.find(e => e.type === 'win') ?? result.events.find(e => e.type === 'unlock') ?? result.events.find(e => e.type === 'complete') ?? result.events.find(e => e.type === 'key') ?? result.events.find(e => e.type === 'coins') ?? result.events[0];
       const coreCoins = result.events.filter(e => e.type === 'coins').reduce((n,e) => n + (e.amount ?? 0), 0);
-      const hasCoinFlight = coreCoins > 0;
+      const freshWin = AZUR_FEEL_QA && !reducedMotion() && before.phase === 'playing' &&
+        save.attempt.board.phase === 'won' && !save.attempt.daily && deal.campaignLevel !== undefined;
+      if (freshWin) freshFeelWin = save.attempt.id;
+      const movesBonus = freshWin ? BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0) : 0;
+      const hasCoinFlight = coreCoins > 0 || movesBonus > 0;
       const lost = save.attempt.board.phase === 'exhausted';
       // The save/grant is already durable. Only optional sound/haptics/coins
       // follow the visible contact and may be dropped when superseded.
@@ -790,9 +836,11 @@ try {
         else if (major) {
           runtime.play(major.type === 'coins' ? 'transfer' : major.type);
           if (major.type === 'key' || major.type === 'unlock' || major.type === 'joker') runtime.pulse(major.type === 'key' ? 'coins' : major.type === 'unlock' ? 'complete' : 'hint');
+          if (AZUR_FEEL_QA && major.type === 'draw') runtime.pulse('draw');
           if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type === 'coins' ? 'transfer' : major.type as 'transfer' | 'complete' | 'win' | 'undo' | 'hint');
         }
-        if (hasCoinFlight) coinBurst($('#streak-reward'), coreCoins);
+        if (coreCoins) coinBurst($('#streak-reward'), coreCoins);
+        if (movesBonus) coinBurst($('#moves'), movesBonus);
       };
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, before, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
@@ -819,7 +867,8 @@ try {
     } else {
       scene?.cancel(); scene?.reject(['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined);
       const broken = progressBefore > 0 && save.attempt.streak.progress === 0;
-      runtime.play(broken ? 'streak-break' : 'invalid'); runtime.pulse(broken ? 'streak-break' : 'invalid');
+      runtime.play(broken ? 'streak-break' : 'invalid');
+      runtime.pulse(AZUR_FEEL_QA && cmd.type === 'transfer' ? 'invalid-heavy' : broken ? 'streak-break' : 'invalid');
       if (broken) {
         for (const cell of [...$('#streak').children].slice(0, progressBefore)) {
           cell.getAnimations().forEach(animation => animation.cancel());
@@ -1322,7 +1371,9 @@ try {
     }
     if (runtime.activity.getBlockReasons().some(reason => reason !== 'modal' && reason !== 'screen')) {
       wallet?.clearDebit(true);
+      if (rewardClaim) { cancelCoins(); finishRewardClaim(); }
     }
+    if (!$<HTMLDialogElement>('#result').open) finishRewardClaim();
     if (!renderer.isBooted) return;
     if (blocked) clearActionFeedback();
     if (blocked && ready) { scene?.clearFeedback(); renderer.loop.sleep(); if (runtime.activity.getBlockReasons().some(r => r !== 'modal' && r !== 'screen')) cancelCoins(); }
@@ -1385,7 +1436,11 @@ try {
     const button = (event.target as Element).closest<HTMLButtonElement>('[data-level]');
     if (button && !button.disabled) void openLevel(Number(button.dataset.level));
   }, domOptions);
-  $('#next-level').addEventListener('click', () => { if (save.attempt.daily || deal.campaignLevel === CAMPAIGN_LENGTH) goHome(); else void openLevel((deal.campaignLevel ?? 0) + 1); }, domOptions);
+  nextLevelButton.addEventListener('click', () => {
+    if (startRewardClaim()) return;
+    if (save.attempt.daily || deal.campaignLevel === CAMPAIGN_LENGTH) goHome();
+    else void openLevel((deal.campaignLevel ?? 0) + 1);
+  }, domOptions);
   if (TASKS_PREVIEW) {
     $('#daily-tasks-open').addEventListener('click', async () => {
       if (saving || serviceBusy) return;
@@ -1998,6 +2053,7 @@ try {
   const cleanup = () => {
     if (!alive) return; clearPraise(); clearActionFeedback(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearInterval(lifeTick); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
+    finishRewardClaim();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
     clearTimeout(themeExpiry); worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };

@@ -349,6 +349,25 @@ describe('optional native services', () => {
     haptics.setBlocked(false); haptics.pulse('complete'); expect(pulse.mock.calls[1][0].generation).toBeGreaterThan(firstGeneration);
     haptics.setEnabled(false); haptics.pulse('button'); expect(pulse).toHaveBeenCalledTimes(2); haptics.destroy(); expect(cancel).toHaveBeenCalled();
   });
+  it('limits coin-landing haptics separately from draw and rejected placement', () => {
+    vi.useFakeTimers();
+    try {
+      const pulse = vi.fn(async (_options: { cue: string; issuedAt: number; generation: number }) => undefined);
+      const haptics = createHaptics({ pulse, cancel: vi.fn(async () => undefined) });
+      haptics.setBlocked(false);
+      haptics.pulse('coin-land');
+      haptics.pulse('coin-land');
+      haptics.pulse('draw');
+      haptics.pulse('invalid-heavy');
+      vi.advanceTimersByTime(350);
+      haptics.pulse('coin-land');
+      haptics.setEnabled(false);
+      vi.advanceTimersByTime(350);
+      haptics.pulse('coin-land');
+      expect(pulse.mock.calls.map(([value]) => value.cue)).toEqual(['coin-land', 'draw', 'invalid-heavy', 'coin-land']);
+      haptics.destroy();
+    } finally { vi.useRealTimers(); }
+  });
   it('counts monotonic active time separately from modal/ad/background and whitelists telemetry fields', () => {
     let now = 0; const state = fresh(), activity = new GameplayActivityCoordinator(() => undefined, () => undefined), track = vi.fn();
     const telemetry = createTelemetry(() => state, activity, { track, destroy: () => undefined }, () => now);

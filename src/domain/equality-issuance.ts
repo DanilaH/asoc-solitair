@@ -18,7 +18,7 @@ export interface EqualityPreviewPolicy {
   candidates: readonly EqualityCandidate[];
 }
 
-export function issueEqualityDeal(save: Save, base: Deal, attemptId: string, policy?: EqualityPreviewPolicy): Deal {
+export function issueEqualityDeal(save: Save, base: Deal, attemptId: string, policy?: EqualityPreviewPolicy, fallback = base): Deal {
   const level = base.campaignLevel;
   const segment = policy?.segment ?? 'unknown';
   const seed = policy?.seed ?? 0;
@@ -28,15 +28,16 @@ export function issueEqualityDeal(save: Save, base: Deal, attemptId: string, pol
     !Number.isSafeInteger(seed) || seed <= 0 || seed > 2147483647 ||
     !policy.enabledSegments.includes(segment) ||
     !policy.version || !Number.isSafeInteger(policy.maxIssued) || policy.maxIssued <= (save.equality?.issued ?? 0) ||
-    level === undefined || level < (policy.minLevel ?? 1) || base.daily || save.platform?.completedCampaign.includes(campaignId(level))) return base;
+    level === undefined || level < (policy.minLevel ?? 1) || base.daily || save.platform?.completedCampaign.includes(campaignId(level))) return fallback;
 
   const stats = save.equality ??= { version: 1, eligible: 0, attempted: 0, selected: 0, issued: 0, lost: 0, completed: 0 };
   stats.eligible++; stats.attempted++;
   const penalty = futureDifficultyPenalty(save);
   const candidate = policy.candidates.map(equalityAttestation).find(entry => entry &&
     entry.baseId === base.id && entry.paywallSeed === seed && entry.historyPenalty === penalty &&
-    entry.baseBudget === base.initial.movesLeft && entry.deal.id !== base.id && entry.deal.campaignLevel === level);
-  if (!candidate) return base;
+    entry.baseBudget === base.initial.movesLeft &&
+    (fallback.id === base.id || (fallback.adaptive?.baseId === base.id && fallback.initial.movesLeft === entry.deal.initial.movesLeft)) && entry.deal.id !== base.id && entry.deal.campaignLevel === level);
+  if (!candidate) return fallback;
 
   stats.selected++; stats.issued++;
   stats.last = { attemptId, dealId: candidate.deal.id, dealVersion: candidate.deal.version, policyVersion: policy.version, segment, cohortEvidence: policy.cohortEvidence, seed, attestation: candidate.attestation, providerRevision: policy.cohortEvidence === 'verified-provider' ? policy.providerRevision : undefined, lost: false, completed: false };

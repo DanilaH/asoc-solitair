@@ -1,3 +1,4 @@
+import { GENERATION_PREVIEW } from '../domain/difficulty';
 import attestedBank from './campaign-v8-equality-attested.json' with { type: 'json' };
 import { registerBundledEquality, type EqualityManifest } from '../domain/equality-attestation';
 import bank from './campaign-v8-equality-bank.json' with { type: 'json' };
@@ -5,7 +6,7 @@ import { content8Wave } from './campaign-v8-dealer';
 import type { EqualityPreviewPolicy } from '../domain/equality-issuance';
 import type { Board, BoardCommand, Deal } from '../domain/types';
 
-export const EQUALITY_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'equality';
+export const EQUALITY_PREVIEW = GENERATION_PREVIEW || import.meta.env?.VITE_C8_OWNER_PREVIEW === 'equality';
 const base = content8Wave.find(deal => deal.id === bank.baseId)!;
 
 export const equalityPreviewDeal: Deal = {

@@ -7,7 +7,7 @@ const preview = process.env.VITE_C8_OWNER_PREVIEW;
 if (process.env.ASOC_OWNER_GIF === '1') test.use({ video: 'on' });
 
 test('wins level 15 and starts the certified tighter level 16 with its saved budget', async ({ page }) => {
-  test.skip(preview !== 'director', 'Requires the gated P06 gameplay build.');
+  test.skip(preview !== 'director' && preview !== 'generation', 'Requires the gated P06 gameplay build.');
   await page.setViewportSize({ width: 320, height: 568 });
   const previous = content8Dealer[14], base = content8Wave[0];
   const { hitappsDirectorDeals } = await import('../../src/content/campaign-v8-hitapps-director');
@@ -67,7 +67,7 @@ test('gates new Equality issuance and resumes the archived deal and Undo exactly
 });
 
 test('issues the attested Equality deal only for the matching future budget and preserves Undo', async ({ page }) => {
-  test.skip(preview !== 'equality', 'Requires the isolated Equality build.');
+  test.skip(preview !== 'equality' && preview !== 'generation', 'Requires an isolated Equality build.');
   await page.setViewportSize({ width: 320, height: 568 });
   const previous = content8Wave.find(deal => deal.campaignLevel === 30)!;
   const { equalityAttestedDeals } = await import('../../src/content/campaign-v8-equality');
@@ -76,6 +76,12 @@ test('issues the attested Equality deal only for the matching future budget and 
   save.settings.reducedMotion = true;
   save.difficultyHistory = Array.from({ length: 10 }, () => ({ outcome: 'Restart', restarts: 1 }));
   save.difficultyPenalty = 10;
+  if (preview === 'generation') {
+    save.sourceDifficultyHistory = structuredClone(save.difficultyHistory);
+    save.sourceDifficultyPenalty = 10;
+    save.difficultyHistory = [];
+    save.difficultyPenalty = 0;
+  }
   for (const cmd of previous.winningPath.slice(0, -1)) save = dispatch(save, cmd, previous).next;
   await seed(page, save);
   await move(page, previous, previous.winningPath.at(-1)!);

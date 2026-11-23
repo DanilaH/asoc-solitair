@@ -62,7 +62,7 @@ canvas{display:block!important;width:100%!important;height:100%!important;touch-
 .deck-tools button{pointer-events:auto}
 .moves{width:60px;min-height:80px;display:flex;flex-direction:column;align-items:center;padding:7px 8px 9px;border:2px solid #e4f0e1;border-radius:13px;background:linear-gradient(#dfebe0,#bdd4cf);box-shadow:0 3px 0 #8daab3;color:#376c75}
 .moves>span{font-size:10px;font-weight:900;color:#6f9797}
-.moves strong{font-size:29px;line-height:32px;font-weight:900}
+.moves strong{width:100%;text-align:center;font-variant-numeric:tabular-nums;font-size:29px;line-height:32px;font-weight:900}
 .moves[data-urgency=low] strong{color:#a83c33}
 .moves[data-urgency=critical] strong,.moves[data-urgency=lost] strong{color:#902c28}
 .moves[data-urgency=low] .move-track i,.moves[data-urgency=critical] .move-track i{background:#ba4841}

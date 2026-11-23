@@ -4,12 +4,13 @@ import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
 import { frozenLayers } from '../domain/frozen-cards';
 import { isBoundCard } from '../domain/bound-cards';
-import { picturePair, puzzleHalf } from '../domain/puzzle-pairs';
+import { isPictureJoined, picturePair, puzzleHalf } from '../domain/puzzle-pairs';
 import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
 import { boardFrame, cardMetrics, dragTarget, dropTarget, layout, slotCount, tableauPresentation } from './layout';
 import { bonusKinds } from '../domain/bonus-slots';
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
+import { specialCardCues, type SpecialCardCue } from './special-card-feedback';
 
 interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text; puzzleLabel?: Phaser.GameObjects.Text; puzzleArt?: { half: Phaser.GameObjects.Image; full: Phaser.GameObjects.Image } }
 interface Options {
@@ -23,7 +24,7 @@ interface CardPress { pointerId: number; toggle: boolean; from: Location | null;
 interface FoundationSurface { view: CardView; frontId: string }
 interface CoveredFace { frontId: string; strip: boolean }
 interface CollectionView { node: Phaser.GameObjects.Container; targets: Phaser.GameObjects.GameObject[]; timers: Phaser.Time.TimerEvent[]; sparks: Phaser.GameObjects.Image[]; readableUntil?: number }
-interface ContactFeedback { kind: GameEvent['type']; play(): void }
+interface ContactFeedback { kind: GameEvent['type']; before: Save['attempt']['board']; play(): void }
 interface KeyPresentation { timers: Phaser.Time.TimerEvent[]; revealed: string[]; revealDelay: number }
 type RevealSource = (cards: readonly Phaser.GameObjects.Container[], offsetX?: number, offsetY?: number, landed?: boolean) => void;
 const inside = (x: number, y: number, target: { x: number; y: number; width: number; height: number }) =>
@@ -86,6 +87,7 @@ export class BoardScene extends Phaser.Scene {
   private backStyle = '';
   private particles: Phaser.GameObjects.Image[] = [];
   private cues: Phaser.GameObjects.Container[] = [];
+  private specialEffects = new Set<Phaser.GameObjects.Graphics>();
   private hoverKey = '';
   private dropBoard: Save['attempt']['board'] | undefined;
   private dropValidity = new Map<string, boolean>();
@@ -129,6 +131,7 @@ export class BoardScene extends Phaser.Scene {
     this.collectedIds.clear(); this.collectionOrigins.clear();
     this.pendingReturn = null;
     this.keyPresentation = undefined; this.presentationGeneration++;
+    this.specialEffects.clear();
     this.slotViews.clear();
     this.collections.clear();
     this.enteringCards.clear();
@@ -378,6 +381,7 @@ export class BoardScene extends Phaser.Scene {
   public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand, feedback?: ContactFeedback, returningIds: readonly string[] = []): void {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
     this.clearKeys();
+    this.clearSpecialEffects();
     const generation = ++this.presentationGeneration;
     let sounded = false;
     const contact = () => { if (!sounded && generation === this.presentationGeneration) { sounded = true; feedback?.play(); } };
@@ -403,6 +407,8 @@ export class BoardScene extends Phaser.Scene {
     const duration = reduced ? 0 : 215;
     const effects = new URLSearchParams(location.search);
     const cardsAnimate = effects.get('fxCards') !== '0';
+    const special = !reduced && cardsAnimate && feedback ? specialCardCues(feedback.before, board, this.options.deal) : [];
+    const joining = new Set(special.filter(cue => cue.kind === 'join').map(cue => cue.id));
     const movedIds = (events.find(e => e.type === 'transfer')?.cards ?? []).slice();
     movedIds.sort((a, b) => Number(Boolean(this.options.deal.cards[a].leader)) - Number(Boolean(this.options.deal.cards[b].leader)));
     const exposedId = duration && cardsAnimate && command?.type === 'transfer' && command.from.kind === 'tableau'
@@ -492,6 +498,7 @@ export class BoardScene extends Phaser.Scene {
       if (landed || generation !== this.presentationGeneration) return;
       landed = true;
       if (!contactAtKey && !contactAtCollection) contact();
+      if (!completed) this.presentSpecialEffects(special);
       const target = command?.type === 'transfer' && this.metrics.targets.find(t => same(t.location, command.to));
       if (target && !completed) this.cue(target.x, target.y, 0xa5ead1);
       const front = arrivalId && this.views.get(arrivalId);
@@ -508,7 +515,11 @@ export class BoardScene extends Phaser.Scene {
     };
     if (command?.type === 'transfer' && command.to.kind === 'foundation') {
       this.clearCollection(command.to.index);
-      if (completed) this.collect(completed, movedIds, command.to.index, contactAtCollection ? contact : undefined, revealSource);
+      if (completed) this.collect(completed, movedIds, command.to.index, () => {
+        if (generation !== this.presentationGeneration) return;
+        if (contactAtCollection) contact();
+        this.presentSpecialEffects(special);
+      }, revealSource);
     }
     if (!completed && command?.type === 'transfer' && command.to.kind === 'foundation' && !reduced) {
       const index = command.to.index, oldId = this.foundationFaces.get(index), frontId = foundationTops.find(id => board.foundations[index].includes(id));
@@ -556,10 +567,7 @@ export class BoardScene extends Phaser.Scene {
       view.face.setVisible(pose.faceUp); view.back.setVisible(!pose.faceUp);
       if (view.puzzleArt) {
         const pair = picturePair(this.options.deal, pose.id)!;
-        const joined = [...board.tableau, ...board.foundations].some(pile => {
-          const index = pile.indexOf(pair.top);
-          return index > 0 && pile[index - 1] === pair.bottom;
-        });
+        const joined = isPictureJoined(board, pair) && (landed || !joining.has(pose.id));
         view.puzzleArt.half.setVisible(!joined);
         view.puzzleArt.full.setVisible(joined);
       }
@@ -692,7 +700,10 @@ export class BoardScene extends Phaser.Scene {
     this.initial = false;
     this.world.sort('depth');
     this.drawFocus();
-    if (feedback && !arrivalId && !contactAtCollection && !contactAtKey) contact();
+    if (feedback && !arrivalId && !completed) {
+      if (!contactAtCollection && !contactAtKey) contact();
+      this.presentSpecialEffects(special);
+    }
     if (previous && events.some(e => e.type === 'undo')) for (const pose of this.metrics.poses.filter(p => p.faceUp && visible.has(p.id) && !previous.poses.some(old => old.id === p.id && old.x === p.x && old.y === p.y && old.faceUp === p.faceUp)).slice(-3)) this.cue(pose.x, pose.y, 0xc3b3ec);
     // A completed touch may arrive after the pointerdown frame already slept.
     // Starting visual work must own its wake, independently of a future input.
@@ -852,9 +863,60 @@ export class BoardScene extends Phaser.Scene {
       this.tweens.add({ targets: dot, x: dot.x + side * 13, y: dot.y - 12, scaleX: dot.scaleX * .3, scaleY: dot.scaleY * .3, alpha: 0, duration: 260, ease: 'Cubic.easeOut', onComplete: () => dot.setVisible(false) });
     }
   }
+  private presentSpecialEffects(cues: readonly SpecialCardCue[]): void {
+    for (const cue of cues) {
+      const view = this.views.get(cue.id);
+      if (!view?.node.visible) continue;
+      if (cue.kind === 'join' && view.puzzleArt) {
+        view.puzzleArt.half.setVisible(false);
+        view.puzzleArt.full.setVisible(true);
+        view.puzzleLabel?.setVisible(false);
+      }
+      const graphic = this.add.graphics();
+      view.face.add(graphic);
+      this.specialEffects.add(graphic);
+      const paint = (progress: number) => {
+        graphic.clear();
+        if (cue.kind === 'join') {
+          const span = Math.min(38, this.cardW * .31) * (.32 + .68 * progress);
+          graphic.lineStyle(4, 0xfab85c, .85).lineBetween(-span, 0, span, 0)
+            .lineStyle(1.5, 0xfff7d4).lineBetween(-span, 0, span, 0);
+          return;
+        }
+        const y = -this.cardH / 2 + (cue.kind === 'cut' && cue.underIce ? 44 : 21);
+        if (cue.kind === 'cut') {
+          const gap = 3 + 12 * progress;
+          graphic.lineStyle(3, 0x9d3d8a).lineBetween(-gap - 20, y, -gap, y)
+            .lineBetween(gap, y, gap + 20, y)
+            .lineStyle(2, 0xfdf0fa).lineBetween(-3, y + 5 - 9 * progress, 3, y - 5 - 9 * progress);
+          return;
+        }
+        graphic.lineStyle(3, 0x2182a7).strokeRoundedRect(-this.cardW / 2 + 3, -this.cardH / 2 + 3,
+          this.cardW - 6, this.cardH - 6, 10);
+        for (const direction of [-1, 1]) {
+          const x = direction * (23 + progress * 17);
+          graphic.fillStyle(0x77c8e9).fillTriangle(x, y - 8 - 8 * progress, x - 4, y + 2, x + 4, y + 2);
+        }
+      };
+      paint(0);
+      this.tweens.add({
+        targets: graphic, alpha: 0, duration: 230, ease: 'Sine.easeIn',
+        onUpdate: tween => paint(tween.progress),
+        onComplete: () => { this.specialEffects.delete(graphic); graphic.destroy(); },
+      });
+    }
+  }
+  private clearSpecialEffects(): void {
+    for (const graphic of this.specialEffects) {
+      this.tweens.killTweensOf(graphic);
+      graphic.destroy();
+    }
+    this.specialEffects.clear();
+  }
   /** Decorative work has no domain ownership and must not outlive its screen. */
   public clearFeedback(): void {
     this.presentationGeneration++;
+    this.clearSpecialEffects();
     this.clearKeys();
     for (const pending of this.coveredFaces.values()) this.finishCovers(pending.frontId);
     this.settleSurfaces();

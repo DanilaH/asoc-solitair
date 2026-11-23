@@ -119,3 +119,76 @@ test('requesting Hint from Aa exits reading, shows the cue and lets its move exe
   await expect.poll(async () => (await read(page)).attempt.board).toEqual(dispatch(before, action, deal).next.attempt.board);
   expect((await read(page)).profile.hints).toBe(before.profile.hints - 1);
 });
+
+test('the move counter and helpers respond only to saved changes and respect system motion', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const { before, a, b, action } = await seed(page);
+  await page.evaluate(() => {
+    const entries: { id: string; helper: string | undefined; label: string | null; save: Save }[] = [];
+    const animate = Element.prototype.animate;
+    Element.prototype.animate = function (...args) {
+      const animation = animate.apply(this, args);
+      queueMicrotask(() => {
+        if (!['move-count', 'helper-spend'].includes(animation.id)) return;
+        entries.push({
+          id: animation.id,
+          helper: this.closest('button')?.id,
+          label: document.querySelector('#moves')!.textContent,
+          save: JSON.parse(localStorage.getItem('asoc-solitaire.save.v1')!),
+        });
+      });
+      return animation;
+    };
+    Object.assign(window, { feedbackLog: entries });
+  });
+  type Entry = { id: string; helper?: string; label: string; save: Save };
+  const log = () => page.evaluate(() => (window as typeof window & { feedbackLog: Entry[] }).feedbackLog);
+  const counter = page.locator('#moves');
+  const width = await counter.evaluate(el => el.getBoundingClientRect().width);
+  const transfer = async () => { await page.touchscreen.tap(a.x, a.y); await page.touchscreen.tap(b.x, b.y); };
+
+  await page.evaluate(() => {
+    const write = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      if (key === 'asoc-solitaire.save.v1') {
+        Storage.prototype.setItem = write;
+        throw new Error('Test write failure');
+      }
+      write.call(this, key, value);
+    };
+  });
+  await transfer();
+  await expect(page.getByText('Не удалось сохранить ход. Попробуйте ещё раз.')).toBeVisible();
+  expect((await read(page)).attempt.board).toEqual(before.attempt.board);
+  expect(await log()).toEqual([]);
+
+  await page.locator('#hint').tap();
+  await expect.poll(async () => (await log()).length).toBe(1);
+  const [hint] = await log();
+  expect(hint).toMatchObject({ id: 'helper-spend', helper: 'hint', save: { profile: { hints: before.profile.hints - 1 } } });
+  await page.locator('#hint').tap();
+  expect(await log()).toHaveLength(1);
+
+  await transfer();
+  const after = dispatch(before, action, deal).next.attempt.board;
+  await expect(counter).toHaveText(String(after.movesLeft));
+  await expect.poll(async () => (await log()).length).toBe(2);
+  expect((await log())[1]).toMatchObject({ id: 'move-count', label: String(after.movesLeft), save: { attempt: { board: after } } });
+  expect(await counter.evaluate(el => el.getBoundingClientRect().width)).toBe(width);
+
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await log()).length).toBe(4);
+  const entries = await log();
+  expect(entries[2]).toMatchObject({ id: 'move-count', label: String(before.attempt.board.movesLeft) });
+  expect(entries[3]).toMatchObject({ id: 'helper-spend', helper: 'undo', save: { profile: { undos: before.profile.undos - 1 } } });
+  expect((await read(page)).attempt.board).toEqual(before.attempt.board);
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(page.locator('html')).toHaveAttribute('data-reduced', 'true');
+  expect(await page.locator('#moves, #undo .helper-icon').evaluateAll(elements => elements.flatMap(el => el.getAnimations().map(animation => animation.id)))).toEqual([]);
+  await transfer();
+  await expect(counter).toHaveText(String(after.movesLeft));
+  expect((await read(page)).settings.reducedMotion).toBe(false);
+  expect(await log()).toHaveLength(4);
+});

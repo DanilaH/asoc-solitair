@@ -27,7 +27,7 @@ try {
   await page.locator('#menu').tap(); await pauseOptions(page); await page.locator('#appearance-settings').tap();
   await page.locator('button[data-deck-position=bottom]').tap(); await page.locator('button[data-deck-side=left]').tap(); await wait(page);
   await page.screenshot({ path: 'docs/qa/review-layout-controls.png', scale: 'css' });
-  await page.locator('#appearance .primary').tap(); await wait(page, 950);
+  await page.locator('#appearance-done').tap(); await page.locator('#settings-done').tap(); await wait(page, 950);
   const before = await read(page);
   if (JSON.stringify(before.attempt.board) !== JSON.stringify(save.attempt.board)) throw Error('Layout changed the board');
   await page.screenshot({ path: 'docs/qa/review-bottom-deck.png', scale: 'css' });
@@ -48,7 +48,7 @@ try {
   await page.locator('#undo').tap(); await wait(page, 900);
   if (JSON.stringify((await read(page)).attempt.board) !== JSON.stringify(before.attempt.board)) throw Error('Undo changed the board');
   await page.locator('#menu').tap(); await pauseOptions(page); await page.locator('#appearance-settings').tap(); await page.locator('button[data-deck-side=right]').tap();
-  await page.locator('#appearance .primary').tap(); await wait(page, 900);
+  await page.locator('#appearance-done').tap(); await page.locator('#settings-done').tap(); await wait(page, 900);
   if (errors.length) throw Error(errors.join('\n'));
   const video = page.video()!; await context.close(); const file = '.recording/review-layout.webm'; await video.saveAs(file);
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', file, '-vf', 'fps=12,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle', 'docs/qa/review-layout.gif']);

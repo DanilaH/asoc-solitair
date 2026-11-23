@@ -81,7 +81,7 @@ try {
   await compactPage.reload(); await compactPage.waitForSelector('#app[data-ready=true]'); await compactPage.locator('#home-play').tap(); await wait(compactPage, 300);
   await compactPage.screenshot({ path: '.recording/feel-evidence/feel-dense-compact.png' });
   await compactPage.locator('#menu').tap(); await pauseOptions(compactPage); await compactPage.locator('#appearance-settings').tap();
-  await compactPage.locator('button[data-deck-position=bottom]').tap(); await compactPage.locator('button[data-deck-side=left]').tap(); await compactPage.locator('#appearance .primary').tap(); await wait(compactPage, 300);
+  await compactPage.locator('button[data-deck-position=bottom]').tap(); await compactPage.locator('button[data-deck-side=left]').tap(); await compactPage.locator('#appearance-done').tap(); await compactPage.locator('#settings-done').tap(); await wait(compactPage, 300);
   await compactPage.screenshot({ path: '.recording/feel-evidence/feel-bottom-compact.png' }); await compactContext.close();
   if (errors.length) throw Error(errors.join('\n'));
   console.info('PASS: real touch first win / Next and reachable dense completion / overlapping next move / Undo / settings.');

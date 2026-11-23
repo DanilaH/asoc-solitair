@@ -135,7 +135,8 @@ footer button[aria-pressed=true] .helper-icon{outline:3px solid #f7d69e}
 /* One material language across pause, results and secondary menus. */
 dialog{border:3px solid #e6e6d5;border-radius:26px;background:linear-gradient(#fffdf3,#f5efdf);color:#52717a;padding:24px 23px;width:min(92vw,370px);max-height:calc(100dvh - 24px);box-shadow:0 7px 0 #a5b6ba,0 25px 80px #082d4599;overflow-y:auto}
 dialog::backdrop{background:#123744a8}
-dialog[open]{animation:panel-in .22s cubic-bezier(.2,.8,.3,1.15)}
+dialog[open]{animation:panel-in 180ms cubic-bezier(.18,.75,.25,1) both,panel-opacity 75ms ease-out both}
+dialog[open][data-backdrop-enter]::backdrop{animation:backdrop-in 135ms ease-out both}
 dialog h2{font-size:29px;line-height:1.1;margin:9px 0 20px;font-weight:1000;letter-spacing:-.6px}
 dialog p{line-height:1.5;font-size:14px}
 .eyebrow{font-size:9px;letter-spacing:1.2px;color:#a3ad97;font-weight:900}
@@ -219,9 +220,9 @@ dialog p{line-height:1.5;font-size:14px}
 .wallet.bump,.reward-line strong.bump{animation:bump .22s ease-out}
 @keyframes bump{50%{transform:scale(1.09)}
 }
-@keyframes panel-in{from{opacity:0;transform:translateY(14px) scale(.94)}
-to{opacity:1;transform:translateY(0) scale(1)}
-}
+@keyframes panel-in{from{transform:translateY(10px) scale(.985)}to{transform:none}}
+@keyframes panel-opacity{from{opacity:.3}to{opacity:1}}
+@keyframes backdrop-in{from{opacity:0}to{opacity:1}}
 @keyframes screen-in{from{opacity:.2}
 to{opacity:1}
 }
@@ -248,9 +249,9 @@ footer svg{width:33px;height:33px}
 #settings-done{padding:11px}
 }
 
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after,dialog::backdrop{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
-html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=true] *:after{animation:none!important;transition:none!important}
+html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=true] *:after,html[data-reduced=true] dialog::backdrop{animation:none!important;transition:none!important}
 
 
 /* DOM controls use the same logical-to-CSS scale as the rendered board. */
@@ -336,7 +337,8 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 .rule-card{display:grid;place-items:center;width:64px;height:98px;background:url('/art/generated/card-face.webp') center/100% 100% no-repeat;color:#345d6b;font-size:36px;font-weight:1000;box-shadow:0 3px 2px #516b6822;border-radius:13px}
 .rule-arrow{font-size:22px;color:#a68a60}
 .rule-example img{width:38px;height:52px;object-fit:contain}
-.rule-example .demo-lock{width:48px;height:65px}
+#lesson-keys{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.rule-example .demo-lock{flex-shrink:0;width:48px;height:65px}
 .ordered-example .rule-card:nth-of-type(3){animation:rule-arrive .9s ease-in-out 2}
 .joker-support{background-image:url('/art/generated/card-category.webp');width:85px;height:112px}
 .joker-support img{width:58px;height:65px}
@@ -424,6 +426,8 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 #helpers .helper-offer{padding:12px 0}
 #helpers .helper-offer button{min-height:44px}
 #helper-wallet{font-size:13px!important;margin:0 0 12px;font-variant-numeric:tabular-nums}
+#calendar-reward-copy{color:#506e6b}
+#calendar .eyebrow{color:#77644f}
 #calendar-reward-copy,#cycle-info .small{font-size:13px!important;line-height:1.45}
 #calendar .sheet-heading h2{margin-bottom:12px}
 #chapter-name,.choice-row button small{font-size:11px}
@@ -507,11 +511,11 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 /* Secondary activities read as navigation rows, with their purpose and progress. */
 #home .home-shortcuts{display:flex;flex-direction:column;gap:8px}
 #home .daily-card{padding:7px 82px 7px 8px;position:relative;min-height:56px}
-#home .daily-card>button:first-child{display:grid;grid-template-columns:36px 1fr;column-gap:8px;text-align:left}
+#home .daily-card>button:first-child{min-height:44px;display:grid;grid-template-columns:36px 1fr;column-gap:8px;text-align:left}
 #home .daily-card .event-medal{grid-row:1/4;width:36px;height:39px}
 #home .daily-card strong,#home .daily-card small{margin:0;grid-column:2;text-align:left}
 #home .daily-card small:empty{display:none}
-#home .daily-card .calendar-link{position:absolute;right:5px;top:6px;min-height:44px;width:74px;border-radius:10px;background:#e9eddf;font-size:11px}
+#home .daily-card .calendar-link{position:absolute;right:5px;top:6px;min-height:44px;width:74px;border-radius:10px;background:#e9eddf;color:#476a68;font-size:11px}
 #home .cycle-card{display:grid;grid-template-columns:36px 1fr 96px;column-gap:8px;min-height:56px;padding:7px 8px;text-align:left}
 #home .cycle-card .event-medal{grid-row:1/3;width:36px;height:39px}
 #home .cycle-card strong,#home .cycle-card .cycle-status{grid-column:2;text-align:left;margin:0}

@@ -25,7 +25,7 @@ import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } f
 import { WalletPresentation } from './app/wallet-presentation';
 import { ContinueCheck } from './app/continue-check';
 import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
-import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, type RuleIntro } from './app/tutorial';
+import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, ruleIntroMarker, type RuleIntro } from './app/tutorial';
 import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import { frozenLayers } from './domain/frozen-cards';
@@ -68,6 +68,7 @@ let praiseAnimation: Animation | undefined;
 let inspectMode = false;
 let dismissRule: (() => void) | undefined;
 let dismissDifficulty: (() => void) | undefined;
+let returnToDialog: (() => void) | undefined;
 let alive = true;
 let ready = false;
 const abort = new AbortController();
@@ -75,11 +76,10 @@ const domOptions = { signal: abort.signal };
 const dialogs = [...document.querySelectorAll<HTMLDialogElement>('dialog')];
 const runtime = createRuntime(() => { scene?.cancel(); }, () => {
   if (runtime.activity.getBlockReasons().some(r => r !== 'modal' && r !== 'screen')) return;
-  if ($<HTMLDialogElement>('#learn-rule').open) { dismissRule?.(); return; }
-  if ($<HTMLDialogElement>('#difficulty-entry').open) { dismissDifficulty?.(); return; }
+  const dialog = dialogs.find(d => d.open);
+  if (dialog) { dismissDialog(dialog); return; }
   if (screen === 'game' && scene?.back()) return;
-  if (dialogs.some(d => d.open)) closeDialogs();
-  else if (inspectMode) setInspect(false);
+  if (inspectMode) setInspect(false);
   else openDialog('#settings');
 });
 
@@ -93,12 +93,43 @@ function cancelCoins(settle = true) {
   $('#coin-layer').getAnimations({ subtree: true }).forEach(a => a.cancel());
   $('#coin-layer').querySelectorAll<HTMLElement>('.flying-coin').forEach(n => { n.style.display = 'none'; });
 }
-function closeDialogs(preserveCoins = false) {
-  // Discard presentation before its top-layer owner closes. Never carry coins to another screen.
+function clearDialogs(preserveCoins = false) {
+  // Discard presentation before its top-layer owner closes.
   cancelCoins(!preserveCoins); restoreWallet();
-  document.body.append($('#coin-layer')); dialogs.forEach(d => d.close()); runtime.activity.setBlocked('modal', false);
+  document.body.append($('#coin-layer')); dialogs.forEach(d => d.close());
+  returnToDialog = undefined;
 }
-function openDialog(selector: string, preserveCoins = false) { peekCard(null); clearPraise(); scene?.clearFeedback(); closeDialogs(preserveCoins); scene?.cancel(); runtime.activity.setBlocked('modal', true); $<HTMLDialogElement>(selector).showModal(); }
+function closeDialogs() {
+  clearDialogs();
+  runtime.activity.setBlocked('modal', false);
+}
+function openDialog(selector: string, preserveCoins = false, back?: () => void) {
+  const entering = !dialogs.some(d => d.open);
+  peekCard(null); clearPraise(); scene?.clearFeedback(); clearDialogs(preserveCoins); scene?.cancel();
+  const dialog = $<HTMLDialogElement>(selector);
+  dialog.toggleAttribute('data-backdrop-enter', entering);
+  const done = selector === '#helpers' ? '#helper-return' : selector === '#appearance' ? '#appearance-done' : undefined;
+  if (done) $(done).textContent = back ? 'Назад' : screen === 'home' ? 'Готово' : 'К игре';
+  returnToDialog = back;
+  dialog.showModal();
+  runtime.activity.setBlocked('modal', true);
+}
+function openChildDialog(selector: string, parent: string, opener: HTMLElement) {
+  const ancestor = returnToDialog;
+  const body = $<HTMLDialogElement>(parent).querySelector<HTMLElement>('.sheet-body, #pause-options');
+  const scroll = body?.scrollTop ?? 0;
+  openDialog(selector, false, () => {
+    openDialog(parent, false, ancestor);
+    if (body) body.scrollTop = scroll;
+    opener.focus({ preventScroll: true });
+  });
+}
+function dismissDialog(dialog: HTMLDialogElement) {
+  if (dialog.id === 'learn-rule') dismissRule?.();
+  else if (dialog.id === 'difficulty-entry') dismissDifficulty?.();
+  else if (returnToDialog) returnToDialog();
+  else closeDialogs();
+}
 let peeked: string | null = null;
 function peekCard(id: string | null, previewOnly = false) {
   if (peeked === id) return;
@@ -183,14 +214,26 @@ try {
   let firstLaunch = false;
   const store = new SaveStore(createStorage(), findDeal, () => {
     firstLaunch = true;
-    const initial = freshSave(deal, crypto.randomUUID());
-    initial.settings.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    return initial;
+    return freshSave(deal, crypto.randomUUID());
   });
   await document.fonts.load('800 20px Nunito').catch(() => []);
   let save = await store.open();
+  const systemMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reducedMotion = () => systemMotion.matches || save.settings.reducedMotion;
   let presentingCommand = false;
-  wallet = new WalletPresentation(save.profile.coins, $('#coin-layer'), $('#coins'), $('#helper-wallet'), $('#wallet-open'), () => runtime.play('coins', 'ui'), () => save.settings.reducedMotion);
+  wallet = new WalletPresentation(save.profile.coins, $('#coin-layer'), $('#coins'), $('#helper-wallet'), $('#wallet-open'), () => runtime.play('coins', 'ui'), reducedMotion);
+  function syncMotionPreference() {
+    const reduced = reducedMotion(), root = document.documentElement;
+    if (root.dataset.reduced === String(reduced)) return;
+    root.dataset.reduced = String(reduced);
+    if (reduced) {
+      clearPraise();
+      cancelCoins();
+      document.querySelectorAll('#moves, #streak i').forEach(element => element.getAnimations().forEach(animation => animation.cancel()));
+      scene?.settleMotion();
+    }
+  }
+  systemMotion.addEventListener('change', syncMotionPreference, domOptions);
   deal = findDeal(save.attempt.dealId)!;
   let requestedLevel: number | undefined;
   let difficultyRequest: { level: number; returnTo: 'result' | 'picker' | undefined } | undefined;
@@ -198,7 +241,7 @@ try {
   let activeRule: RuleIntro | undefined;
   let unlockChoice: 'palette' | 'cardBack' | undefined;
   let localeRestartAttempt: string | undefined;
-  const dismissedRules = new Set<RuleIntro>();
+  const dismissedRules = new Set<string>();
   let outcomeViewed = false;
   let chapterPage = 0, chapterAttemptId = '';
   const training = () => Boolean(save.attempt.daily && save.attempt.board.phase !== 'won' && !dailyRewardEligible(save, localDay()));
@@ -207,7 +250,7 @@ try {
   const continueCheck = new ContinueCheck(() => { if (alive) renderHud(); });
   let continueVideoFailed: string | undefined;
   let rewardedResultAttempt: string | undefined;
-  let rewardOfferReturn: { attempt: string; selector: '#result'|'#helpers'|'#appearance' } | undefined;
+  let rewardOfferReturn: { attempt: string; selector: '#result'|'#helpers'|'#appearance'; back?: () => void } | undefined;
   let definitionCardId: string | undefined;
   let pictureReturnToResult = false;
   let themeExpiry: ReturnType<typeof setTimeout> | undefined;
@@ -343,7 +386,12 @@ try {
     $('#bonus-balance').textContent = save.profile.coins < offer.coins
       ? `Не хватает ${offer.coins - save.profile.coins} монет.` : `В кошельке ${save.profile.coins} монет.`;
   }
-  function openHelpers(focus?: typeof helperFocus) { helperFocus = focus; renderHud(); openDialog('#helpers'); }
+  function openHelpers(focus?: typeof helperFocus, fromSettings = false) {
+    helperFocus = focus;
+    renderHud();
+    if (fromSettings) openChildDialog('#helpers', '#settings', $('#helpers-open'));
+    else openDialog('#helpers');
+  }
   function helperBought(helper: NonNullable<typeof helperFocus>) {
     if (helperFocus !== helper || screen !== 'game') return;
     closeDialogs();
@@ -400,7 +448,7 @@ try {
     $('#random-joker-open').hidden = !(RANDOM_JOKER_PREVIEW && allowsRandomJoker(save.attempt, deal));
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
-    document.documentElement.dataset.reduced = String(save.settings.reducedMotion);
+    syncMotionPreference();
     const board = save.attempt.board;
     const shuffle = $<HTMLButtonElement>('#proof-shuffle');
     const shuffling = runtime.activity.getBlockReasons().includes('shuffle');
@@ -482,7 +530,7 @@ try {
     if (streak.children.length !== tier.count) streak.replaceChildren(...Array.from({ length: tier.count }, () => document.createElement('i')));
     [...streak.children].forEach((cell, index) => {
       const filled = index < save.attempt.streak.progress;
-      if (filled && !cell.classList.contains('filled') && !save.settings.reducedMotion) cell.animate([{ transform: 'scale(.8)' }, { transform: 'translateY(-2px) scale(1.2)', offset: .55 }, { transform: 'translateY(-1px) scale(1)' }], { duration: 240 });
+      if (filled && !cell.classList.contains('filled') && !reducedMotion()) cell.animate([{ transform: 'scale(.8)' }, { transform: 'translateY(-2px) scale(1.2)', offset: .55 }, { transform: 'translateY(-1px) scale(1)' }], { duration: 240 });
       cell.classList.toggle('filled', filled);
     });
     $('#streak').setAttribute('aria-label', `${save.attempt.streak.progress} из ${tier.count}`);
@@ -501,8 +549,6 @@ try {
     $('#helper-title').textContent = helperFocus ? { hint: 'Подсказка', undo: 'Отмена', joker: 'Джокер' }[helperFocus] : 'Помощники';
     $('#helpers').dataset.focus = helperFocus ?? 'all';
     for (const helper of ['hint', 'undo', 'joker']) $(`#buy-${helper}`).className = helperFocus === helper ? 'primary' : 'secondary';
-    $('#helper-return').textContent = screen === 'home' ? 'Готово' : 'К игре';
-    $('#appearance-done').textContent = screen === 'home' ? 'Готово' : 'К игре';
     $('#joker-next-attempt').hidden = !save.attempt.jokerUsed || !jokerUnlocked || Boolean(helperFocus && helperFocus !== 'joker');
 
     $('#hint-stock').textContent = String(save.profile.hints); $('#undo-stock').textContent = String(save.profile.undos);
@@ -570,7 +616,7 @@ try {
     if (save.attempt.board.phase === 'playing') return;
     // The final count gets its reading beat. A delayed frame may skip the
     // decorative tail, but it must never cancel a streak flight before contact.
-    const holdingCategory = !save.settings.reducedMotion && scene?.holdingCollection && performance.now() < collectionDeadline;
+    const holdingCategory = !reducedMotion() && scene?.holdingCollection && performance.now() < collectionDeadline;
     if (save.attempt.board.phase === 'won' && (holdingCategory || wallet?.settling)) {
       outcomeTimer = setTimeout(() => outcome(collectionDeadline), 32); return;
     }
@@ -716,7 +762,7 @@ try {
       if (coveredWaste)
         message('Подходящая карта теперь под верхней картой сброса. Её можно вернуть на новом круге.');
       if (save.attempt.board.phase !== 'playing') {
-        const delay = save.settings.reducedMotion ? 100 : save.attempt.board.phase === 'won' ? 0 : 465;
+        const delay = reducedMotion() ? 100 : save.attempt.board.phase === 'won' ? 0 : 465;
         const collectionDeadline = hasCoinFlight ? Infinity : performance.now() + 720;
         clearTimeout(outcomeTimer); outcomeTimer = setTimeout(() => outcome(collectionDeadline), delay);
       }
@@ -728,14 +774,14 @@ try {
         for (const cell of [...$('#streak').children].slice(0, progressBefore)) {
           cell.getAnimations().forEach(animation => animation.cancel());
           const fade = { background: '#e7a999', borderColor: '#ffd0b4' };
-          cell.animate(save.settings.reducedMotion ? [fade, {}] : [fade, { ...fade, transform: 'translateY(2px) scale(.83)' }, {}], { duration: 240 });
+          cell.animate(reducedMotion() ? [fade, {}] : [fade, { ...fade, transform: 'translateY(2px) scale(.83)' }, {}], { duration: 240 });
         }
       }
       telemetry.track('move_rejected', { reason: result.reason ?? 'unknown' }); message(result.reason ?? 'Сюда не подходит', true);
     }
     renderHud();
     const moves = save.attempt.board.movesLeft;
-    if (result.accepted && moves !== null && moves > 0 && moves <= 5 && movesBefore !== null && moves < movesBefore && !save.settings.reducedMotion) {
+    if (result.accepted && moves !== null && moves > 0 && moves <= 5 && movesBefore !== null && moves < movesBefore && !reducedMotion()) {
       const counter = $('#moves');
       counter.getAnimations().forEach(animation => animation.cancel());
       counter.animate([{ transform: 'none' }, { transform: 'translateX(-2px) scale(1.08)' },
@@ -858,16 +904,16 @@ try {
   }
   function restoreOfferDialog() {
     if (!rewardOfferReturn || runtime.activity.isBlocked()) return false;
-    const { selector, attempt } = rewardOfferReturn;
+    const { selector, attempt, back } = rewardOfferReturn;
     rewardOfferReturn = undefined;
     if (screen !== 'game' || save.attempt.id !== attempt) return false;
     if (selector === '#result') outcome();
-    else openDialog(selector);
+    else openDialog(selector, false, back);
     return true;
   }
   async function requestRewardOffer(kind: OfferPlacement, selector: '#result'|'#helpers'|'#appearance') {
     if (!REWARD_OFFER_PREVIEW || saving || serviceBusy || screen !== 'game' || ads.status.mode !== 'test' || !ads.status.rewarded) return;
-    const attempt = save.attempt.id;
+    const attempt = save.attempt.id, back = returnToDialog;
     serviceBusy = true;
     try {
       const offer = await write(next => prepareRewardOffer(next, deal, kind, Date.now(), crypto.randomUUID()));
@@ -875,7 +921,7 @@ try {
       closeDialogs();
       const result = await ads.show({ kind: 'rewarded', placement: kind, attempt: offer.id, dealId: offer.dealId, mode: 'campaign' });
       if (!alive) return;
-      rewardOfferReturn = { attempt, selector };
+      rewardOfferReturn = { attempt, selector, back };
       if (!result.shown) message('Сейчас видео недоступно. Попробуйте позже.', true);
     } catch { message('Не удалось сохранить предложение. Попробуйте ещё раз.', true); }
     finally {
@@ -960,21 +1006,35 @@ try {
   }
   function maybeIntroduceRule(requested?: 'joker'): boolean {
     const intro = requested ?? ruleIntroduction(save, deal);
-    if (!intro || dismissedRules.has(intro) || activeRule || !ready || saving || inspectMode || screen !== 'game' || runtime.activity.isBlocked()) return false;
+    if (!intro || dismissedRules.has(ruleIntroMarker(intro, deal)) || activeRule || !ready || saving || inspectMode || screen !== 'game' || runtime.activity.isBlocked()) return false;
     activeRule = intro;
     $('#learn-rule').dataset.rule = intro;
-    $('#learn-title').textContent = { joker: 'Джокер', ordered: 'По порядку', keys: 'Три ключа' }[intro];
+    const keyCount = deal.lock?.requiredKeys.length ?? 0;
+    if (intro === 'keys') {
+      $('#lesson-keys').replaceChildren(...Array.from({ length: keyCount }, () => {
+        const key = new Image();
+        key.src = 'art/generated/key.webp';
+        key.alt = '';
+        return key;
+      }));
+    }
+    $('#learn-title').textContent = {
+      joker: 'Джокер', ordered: 'По порядку',
+      keys: keyCount === 1 ? 'Один ключ' : keyCount === 3 ? 'Три ключа' : 'Замок с ключами',
+    }[intro];
     $('#learn-copy').textContent = {
       joker: 'Временное место для одной группы. Один раз за раздачу. Можно пройти и без Джокера.',
       ordered: 'Соединяйте соседние номера без пропусков. К категории добавляйте по порядку, начиная с первого.',
-      keys: 'Открывайте карты с ключами. Три найденных ключа снимут замок со столбца.',
+      keys: keyCount === 1 ? 'Откройте карту с ключом, чтобы снять замок со столбца.'
+        : `Открывайте карты с ключами. Когда счётчик дойдёт до ${keyCount}, замок со столбца снимется.`,
     }[intro];
     openDialog('#learn-rule'); return true;
   }
   dismissRule = () => { void (async () => {
     const intro = activeRule; if (!intro) return;
-    activeRule = undefined; dismissedRules.add(intro);
-    try { await write(next => markTutorial(next, `intro:${intro}`)); } catch { /* Presentation can be dismissed; SaveStore keeps recovery ownership. */ }
+    const marker = ruleIntroMarker(intro, deal);
+    activeRule = undefined; dismissedRules.add(marker);
+    try { await write(next => markTutorial(next, marker)); } catch { /* Presentation can be dismissed; SaveStore keeps recovery ownership. */ }
     closeDialogs(); showGuidance();
   })(); };
   document.querySelectorAll('[data-lesson-close]').forEach(button => button.addEventListener('click', () => dismissRule?.(), domOptions));
@@ -1115,7 +1175,7 @@ try {
     return { rect, backing: getBackingStoreSize(Math.max(1, rect.width), Math.max(1, rect.height), ratio) };
   }
   const initial = size();
-  scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, command: execute, allows: allowsLesson, praise: showPraise, sound: name => runtime.play(name),
+  scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, reducedMotion, command: execute, allows: allowsLesson, praise: showPraise, sound: name => runtime.play(name),
     inputRoot: () => root, readerZone: () => $('#inspect').getBoundingClientRect(), peek: peekCard,
     boardBounds() { const rect = root.getBoundingClientRect(), zoom = game?.scale.zoom ?? initial.rect.width / initial.backing.width;
       return { x: (rect.width ? rect.x : 12) / zoom, y: (rect.height ? rect.y : 76) / zoom,
@@ -1210,8 +1270,11 @@ try {
   window.addEventListener('pointercancel', () => scene?.cancel(), domOptions);
   window.addEventListener('blur', () => scene?.cancel(), domOptions);
   document.addEventListener('keydown', event => { if (event.key === 'Escape') { scene?.cancel(); setInspect(false); } }, domOptions);
-  dialogs.forEach(dialog => dialog.addEventListener('cancel', event => { event.preventDefault(); if (dialog.id === 'learn-rule') dismissRule?.(); else if (dialog.id === 'difficulty-entry') dismissDifficulty?.(); else closeDialogs(); }, domOptions));
-  document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach(button => button.addEventListener('click', () => closeDialogs(), domOptions));
+  dialogs.forEach(dialog => dialog.addEventListener('cancel', event => { event.preventDefault(); dismissDialog(dialog); }, domOptions));
+  document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach(button => button.addEventListener('click', () => {
+    const dialog = button.closest('dialog');
+    if (dialog?.open) dismissDialog(dialog);
+  }, domOptions));
   $('#home-play').addEventListener('click', () => {
     if (save.attempt.daily) { void activateMode('campaign'); return; }
     if (save.attempt.board.phase === 'playing' || !outcomeViewed) showGame();
@@ -1220,7 +1283,11 @@ try {
   }, domOptions);
   $('#daily-play').addEventListener('click', () => { void activateMode('daily'); }, domOptions);
   $('#daily-resume-old').addEventListener('click', () => { void activateMode('daily', true); }, domOptions);
-  for (const [button, dialog] of [['calendar-open', '#calendar'], ['appearance-open', '#appearance'], ['appearance-settings', '#appearance'], ['win-cycle-open', '#cycle-info'], ['looks-open', '#appearance'], ['level-picker-open', '#level-picker'], ['wallet-open', '#helpers']]) $(`#${button}`).addEventListener('click', () => { renderMeta(save, saving); if (dialog === '#helpers') openHelpers(); else openDialog(dialog); }, domOptions);
+  for (const [button, dialog] of [['calendar-open', '#calendar'], ['appearance-open', '#appearance'], ['win-cycle-open', '#cycle-info'], ['looks-open', '#appearance'], ['level-picker-open', '#level-picker'], ['wallet-open', '#helpers']]) $(`#${button}`).addEventListener('click', () => { renderMeta(save, saving); if (dialog === '#helpers') openHelpers(); else openDialog(dialog); }, domOptions);
+  $('#appearance-settings').addEventListener('click', () => {
+    renderMeta(save, saving);
+    openChildDialog('#appearance', '#settings', $('#appearance-settings'));
+  }, domOptions);
   for (const button of document.querySelectorAll<HTMLButtonElement>('button[data-palette], button[data-card-back], button[data-deck-side], button[data-deck-position]')) button.addEventListener('click', async () => {
     const key = button.dataset.palette ? 'palette' : button.dataset.cardBack ? 'cardBack' : button.dataset.deckSide ? 'deckSide' : 'deckPosition';
     if (saving || button.disabled) return;
@@ -1434,7 +1501,7 @@ try {
     const request: HintRequest = { ...pendingHint, board: save.attempt.board, deal };
     hintWorker.postMessage(request); renderHud();
   }, domOptions);
-  $('#helpers-open').addEventListener('click', () => { runtime.pulse('button'); openHelpers(); }, domOptions);
+  $('#helpers-open').addEventListener('click', () => { runtime.pulse('button'); openHelpers(undefined, true); }, domOptions);
   $('#proof-shuffle').addEventListener('click', async () => {
     if (!ready || saving || serviceBusy || screen !== 'game' || runtime.activity.isBlocked() || !canShuffle(save, deal)) return;
     const request: ShuffleRequest = {
@@ -1695,7 +1762,7 @@ try {
   if (OFFER_CAMPAIGNS_PREVIEW) mountOfferCampaignPreview(store, openDialog, () => deal.campaignLevel ?? 0, domOptions.signal);
   $('#campaign-store-open').addEventListener('click', async () => {
     if (!STOREFRONT_PREVIEW || saving || serviceBusy) return;
-    openDialog('#campaign-store');
+    openChildDialog('#campaign-store', '#helpers', $('#campaign-store-open'));
     renderCampaignShop();
     await storefront.refresh().catch(() => undefined);
     if ($<HTMLDialogElement>('#campaign-store').open) renderCampaignShop();

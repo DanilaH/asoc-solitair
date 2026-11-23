@@ -362,6 +362,8 @@ test('the third key opens the column and Undo restores the saved two-key board',
   await loadWaveFixture(page, save, 17);
   await openGame(page, deal);
   await expect(page.locator('#learn-rule')).toHaveAttribute('data-rule', 'keys');
+  await expect(page.locator('#learn-title')).toHaveText('Три ключа');
+  await expect(page.locator('#lesson-keys img')).toHaveCount(3);
   await page.locator('#learn-rule .primary').tap();
   await expect(page.locator('#lesson-copy')).toContainText('0 из 3');
   for (const [index, move] of deal.winningPath.slice(0, 2).entries()) {
@@ -1292,6 +1294,9 @@ test('reward offer preview renews the shop and theme only with their own receipt
   await expect(page.locator('#app')).toHaveAttribute('data-reward-theme', '');
   await expect(page.locator('#theme-video-claim')).toBeHidden();
   expect((await read(page)).profile.coins).toBe(save.profile.coins + 30);
+  await page.locator('#appearance-done').tap();
+  await expect(page.locator('#settings')).toBeVisible();
+  await expect(page.locator('#appearance-settings')).toBeFocused();
 });
 
 test('picture gallery preview reveals the last fragment from a real winning touch and saves the artwork', async ({ page }) => {

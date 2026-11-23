@@ -158,7 +158,7 @@
     {
       "id": "hitapps-frozen",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P10 PRODUCT_ADAPTED preview uses per-card starting layers and thaws one layer per completed category. Immutable Deal ID, two dual-engine winning routes and browser Undo/relaunch. Evidence: docs/porting/P10_FROZEN_CARDS.md. В проверочном поле подтверждены 1–3 слоя адаптированного льда. Отдельная модель следов хранит параметры оригинала и два вида снятия.",
+      "currentImplementation": "P10 PRODUCT_ADAPTED preview uses per-card starting layers and thaws one layer per completed category. Immutable Deal ID, two dual-engine winning routes and browser Undo/relaunch. Evidence: docs/porting/P10_FROZEN_CARDS.md. В проверочном поле подтверждены 1–3 слоя адаптированного льда. Отдельная модель следов хранит параметры оригинала и два вида снятия. В интерфейсе снятый слой отмечается на затронутой карте. См. docs/qa/UX_ACTION_FEEDBACK.md.",
       "nextAction": "Track body-level predicates and original Android under P36. Independent versioned playback and product preview are recorded for #174. Kit #125 confirms access to the exact XAPK. Complete native transition predicates and original physical Android comparison in P36.",
       "stage": "D1",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md"
@@ -166,7 +166,7 @@
     {
       "id": "hitapps-bound",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P11 PRODUCT_ADAPTED per-card binding with a matching scissors transfer, two solved routes, browser Undo and reload. See docs/porting/P11_BOUND_SCISSORS.md. Проверены две связи и разные ножницы на общем поле. Отдельная source-static модель различает Cut, Discard и Unbound.",
+      "currentImplementation": "P11 PRODUCT_ADAPTED per-card binding with a matching scissors transfer, two solved routes, browser Undo and reload. See docs/porting/P11_BOUND_SCISSORS.md. Проверены две связи и разные ножницы на общем поле. Отдельная source-static модель различает Cut, Discard и Unbound. В интерфейсе разрыв отображается на освобождённой карте. См. docs/qa/UX_ACTION_FEEDBACK.md.",
       "nextAction": "Reconstruct bound-card pattern and design original mechanic + undo/solver/migration D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md. Kit #125 confirms access to the exact XAPK. Complete native transition predicates and original physical Android comparison in P36.",
       "stage": "D1",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md"
@@ -196,7 +196,7 @@
     {
       "id": "hitapps-ghost-hint",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Current ghost Hint+free lesson; search for large deals improved",
+      "currentImplementation": "Current ghost Hint+free lesson; search for large deals improved. Иконка подсказки реагирует после подтверждённого списания. См. docs/qa/UX_ACTION_FEEDBACK.md.",
       "nextAction": "Validate Hint after off-witness choice on Android and strict no-charge failure",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "D2"
@@ -857,7 +857,7 @@
     {
       "id": "hitapps-puzzle-top-bottom-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P12 PRODUCT_ADAPTED top/bottom pairs join in tableau before entering the foundation together. Old deals remain unchanged. See docs/porting/P12_PUZZLE_PAIRS.md. Собственная иллюстрация из двух карт проходит совместно с Ordered другой категории. Отдельно проверены ненулевой tag, идентичность и порядок исхода сборки.",
+      "currentImplementation": "P12 PRODUCT_ADAPTED top/bottom pairs join in tableau before entering the foundation together. Old deals remain unchanged. See docs/porting/P12_PUZZLE_PAIRS.md. Собственная иллюстрация из двух карт проходит совместно с Ordered другой категории. Отдельно проверены ненулевой tag, идентичность и порядок исхода сборки. Иллюстрация соединяется при контакте карт. См. docs/qa/UX_ACTION_FEEDBACK.md.",
       "nextAction": "Trace PuzzleTop/PuzzleBottom distribution, stock placements, move legality and interactions; then implement clean-room additional card types with verifier D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md. Kit #125 confirms access to the exact XAPK. Complete native transition predicates and original physical Android comparison in P36.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",
@@ -866,7 +866,7 @@
     {
       "id": "hitapps-bound-scissors-pattern",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P11 PRODUCT_ADAPTED scissors release a separately bound card on a legal move into the foundation. Native reveal/cost/target remain unknown. See docs/porting/P11_BOUND_SCISSORS.md. Раздельные числовые ветки 0/1/2/retry проверены на двух целях. Известная зависимость с Frozen проходит отрицательные проверки авторинга.",
+      "currentImplementation": "P11 PRODUCT_ADAPTED scissors release a separately bound card on a legal move into the foundation. Native reveal/cost/target remain unknown. See docs/porting/P11_BOUND_SCISSORS.md. Раздельные числовые ветки 0/1/2/retry проверены на двух целях. Известная зависимость с Frozen проходит отрицательные проверки авторинга. Отклик показывает фактически снятую связь на карте. См. docs/qa/UX_ACTION_FEEDBACK.md.",
       "nextAction": "Recover actual native scissors reveal/remove, layer and move-cost rules for BoundPattern; create specified Rules/Undo/Solver/teaching test upon proof D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md. Kit #125 confirms access to the exact XAPK. Complete native transition predicates and original physical Android comparison in P36.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",

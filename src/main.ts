@@ -65,6 +65,21 @@ let outcomeTimer: ReturnType<typeof setTimeout> | undefined;
 let guideTimer: ReturnType<typeof setTimeout> | undefined;
 let messageTimer: ReturnType<typeof setTimeout> | undefined;
 let praiseAnimation: Animation | undefined;
+const actionFeedback = new Map<HTMLElement, Animation>();
+
+function animateActionFeedback(element: HTMLElement, id: string, frames: Keyframe[], duration: number) {
+  actionFeedback.get(element)?.cancel();
+  const animation = element.animate(frames, { duration, easing: 'ease-out' });
+  animation.id = id;
+  actionFeedback.set(element, animation);
+  const forget = () => { if (actionFeedback.get(element) === animation) actionFeedback.delete(element); };
+  void animation.finished.then(forget, forget);
+}
+
+function clearActionFeedback() {
+  for (const animation of actionFeedback.values()) animation.cancel();
+  actionFeedback.clear();
+}
 let inspectMode = false;
 let dismissRule: (() => void) | undefined;
 let dismissDifficulty: (() => void) | undefined;
@@ -229,7 +244,8 @@ try {
     if (reduced) {
       clearPraise();
       cancelCoins();
-      document.querySelectorAll('#moves, #streak i').forEach(element => element.getAnimations().forEach(animation => animation.cancel()));
+      clearActionFeedback();
+      document.querySelectorAll('#streak i').forEach(element => element.getAnimations().forEach(animation => animation.cancel()));
       scene?.settleMotion();
     }
   }
@@ -671,7 +687,10 @@ try {
       showGuidance();
       return false;
     }
-    const progressBefore = save.attempt.streak.progress, movesBefore = save.attempt.board.movesLeft;
+    const before = save.attempt.board;
+    const progressBefore = save.attempt.streak.progress, movesBefore = before.movesLeft;
+    const helper = cmd.type === 'hint' ? 'hints' : cmd.type === 'undo' ? 'undos' : undefined;
+    const helperBefore = helper ? save.profile[helper] : 0;
     let result: Result | undefined;
     let started = false, finished = false, coveredWaste = false, blockedLives = false;
     try {
@@ -747,7 +766,7 @@ try {
         }
         if (hasCoinFlight) coinBurst($('#streak-reward'), coreCoins);
       };
-      scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, play: present } : undefined);
+      scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, before, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
       if (boardCommand && campaignAdsApproved()) {
         const attempt = save.attempt.id, revision = save.revision;
@@ -780,12 +799,20 @@ try {
       telemetry.track('move_rejected', { reason: result.reason ?? 'unknown' }); message(result.reason ?? 'Сюда не подходит', true);
     }
     renderHud();
-    const moves = save.attempt.board.movesLeft;
-    if (result.accepted && moves !== null && moves > 0 && moves <= 5 && movesBefore !== null && moves < movesBefore && !reducedMotion()) {
-      const counter = $('#moves');
-      counter.getAnimations().forEach(animation => animation.cancel());
-      counter.animate([{ transform: 'none' }, { transform: 'translateX(-2px) scale(1.08)' },
-        { transform: 'translateX(2px)' }, { transform: 'none' }], { duration: 230, easing: 'ease-out' });
+    if (result.accepted && !reducedMotion() && !runtime.activity.isBlocked()) {
+      const moves = save.attempt.board.movesLeft;
+      if (cmd.type === 'restart') clearActionFeedback();
+      else if (moves !== null && movesBefore !== null && moves !== movesBefore) {
+        animateActionFeedback($('#moves'), 'move-count', [
+          { transform: `translateY(${moves < movesBefore ? 3 : -3}px)`, opacity: .74 },
+          { transform: 'none', opacity: 1 },
+        ], 145);
+      }
+      if (helper && save.profile[helper] < helperBefore) {
+        animateActionFeedback($(`#${cmd.type} .helper-icon`), 'helper-spend', [
+          { transform: 'none' }, { transform: 'scale(.9)', offset: .34 }, { transform: 'none' },
+        ], 190);
+      }
     }
     if (save.attempt.board.phase === 'playing') showGuidance(cmd.type !== 'hint');
     return result.accepted;
@@ -1253,6 +1280,7 @@ try {
       }
     }
     if (!renderer.isBooted) return;
+    if (blocked) clearActionFeedback();
     if (blocked && ready) { scene?.clearFeedback(); renderer.loop.sleep(); if (runtime.activity.getBlockReasons().some(r => r !== 'modal' && r !== 'screen')) cancelCoins(); }
     else renderer.loop.wake();
   });
@@ -1923,7 +1951,7 @@ try {
   });
   renderHud(); renderHome();
   const cleanup = () => {
-    if (!alive) return; clearPraise(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
+    if (!alive) return; clearPraise(); clearActionFeedback(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearInterval(lifeTick); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
     clearTimeout(themeExpiry); worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);

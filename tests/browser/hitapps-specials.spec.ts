@@ -56,3 +56,38 @@ test('pictured halves join, can be separated after reload, and go into a foundat
   await expect(page.locator('#result')).toBeVisible();
   expect((await read(page)).attempt.board).toMatchObject({ phase: 'won', movesLeft: 11 });
 });
+
+test('pictured effects support a quick next move and Undo at contact on a narrow screen', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  const drawErrors: string[] = [];
+  page.on('pageerror', error => drawErrors.push(error.message));
+  const deal = picturedSpecialsDeal;
+  const save = { ...fixture(25), attempt: freshSave(deal, 'pictured-feedback').attempt, contentVersion: 8 };
+  await seed(page, save);
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
+  await expect(page.locator('html')).toHaveAttribute('data-reduced', 'false');
+  await page.waitForTimeout(300);
+
+  await move(page, deal, deal.winningPath[0]);
+  await page.waitForTimeout(320);
+  await move(page, deal, deal.winningPath[1]);
+  const afterCut = (await read(page)).attempt.board;
+  await move(page, deal, deal.winningPath[2]);
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board).toEqual(afterCut);
+  await move(page, deal, deal.winningPath[2]);
+  for (const action of deal.winningPath.slice(3, 6)) {
+    await move(page, deal, action);
+    await page.waitForTimeout(360);
+  }
+
+  const separate = (await read(page)).attempt.board;
+  await move(page, deal, deal.winningPath[6]);
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board).toEqual(separate);
+  await page.waitForTimeout(350);
+  await move(page, deal, deal.winningPath[6]);
+  await page.waitForTimeout(540);
+  expect((await read(page)).attempt.board.tableau[4]).toEqual(['shell-bottom', 'shell-top']);
+  expect(drawErrors).toEqual([]);
+});

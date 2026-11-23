@@ -7,6 +7,7 @@ import { JsonStorageRepository, type StorageAdapter } from '@danilah/mini-games-
 import { dayNumber, metaState, milestoneRewards } from '../domain/meta';
 import { BALANCE } from '../domain/balance';
 import { validRewardOffers } from '../domain/reward-offers';
+import { validOfferCampaignJournal } from '../domain/commerce/offer-campaigns';
 import { validCommerceJournal } from '../domain/commerce/orders';
 import { validEventLedger } from '../domain/events/ledger';
 import { validPicture } from '../domain/events/picture';
@@ -173,6 +174,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.rewardOffers !== undefined && !validRewardOffers(save.rewardOffers)) throw Error('Повреждены бонусные предложения');
   if (save.storeProgress !== undefined && !validStoreProgress(save.storeProgress)) throw Error('Повреждена история магазина');
   if (save.commerceAccount !== undefined && !/^[0-9A-Za-z_.:-]{1,128}$/.test(save.commerceAccount)) throw Error('Повреждён профиль покупок');
+  if (save.offerCampaigns !== undefined && !validOfferCampaignJournal(save.offerCampaigns)) throw Error('Повреждён журнал предложений');
   if (save.commerce !== undefined && !validCommerceJournal(save.commerce)) throw Error('Повреждён журнал покупок');
   if (save.events !== undefined && !validEventLedger(save.events)) throw Error('Повреждён журнал событий');
   if (save.picture !== undefined && !validPicture(save)) throw Error('Повреждён альбом');

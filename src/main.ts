@@ -1,3 +1,5 @@
+import { OFFER_CAMPAIGNS_PREVIEW } from './domain/commerce/offer-campaigns';
+import { mountOfferCampaignPreview } from './app/offer-campaign-preview';
 import { authorizeLifeVideo, cancelLifeVideo, LIVES_PREVIEW, LIVES_RULES, matchesLifeVideo, mayStartCampaignAttempt, refillCampaignLife, refreshCampaignLives } from './domain/campaign-lives';
 import { liveOpsDefinitions, liveOpsTitles, recordLiveOpsWin, type LiveOpsSource } from './domain/events/campaign-liveops';
 import { availableEvents, claimMilestone, eventKey } from './domain/events/ledger';
@@ -1690,6 +1692,7 @@ try {
       list.append(group);
     }
   }
+  if (OFFER_CAMPAIGNS_PREVIEW) mountOfferCampaignPreview(store, openDialog, () => deal.campaignLevel ?? 0, domOptions.signal);
   $('#campaign-store-open').addEventListener('click', async () => {
     if (!STOREFRONT_PREVIEW || saving || serviceBusy) return;
     openDialog('#campaign-store');

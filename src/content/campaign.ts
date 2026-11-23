@@ -10,6 +10,7 @@ import { content8Special } from './campaign-v8-special';
 import { content8BonusDeals } from './campaign-v8-bonus';
 import { content8FrozenDeal } from './campaign-v8-frozen';
 import { content8BoundDeal } from './campaign-v8-bound';
+import { HITAPPS_SPECIALS_PREVIEW, oneKeyDeal, picturedSpecialsDeal } from './campaign-v8-hitapps-specials';
 import { content8PuzzleDeal } from './campaign-v8-puzzle';
 import { content8GoldenDeal } from './campaign-v8-golden';
 import { content8StarterDeal } from './campaign-v8-starter';
@@ -47,6 +48,8 @@ const specialByLevel = new Map([...content8Special, ...content8BonusDeals].map(d
 const variants = new Map([
   { deal: content8FrozenDeal, enabled: import.meta.env?.VITE_CONTENT8_FROZEN === '1' },
   { deal: content8BoundDeal, enabled: import.meta.env?.VITE_CONTENT8_BOUND === '1' },
+  { deal: oneKeyDeal, enabled: HITAPPS_SPECIALS_PREVIEW },
+  { deal: picturedSpecialsDeal, enabled: HITAPPS_SPECIALS_PREVIEW },
   { deal: content8PuzzleDeal, enabled: import.meta.env?.VITE_CONTENT8_SPECIAL === 'puzzle' },
   { deal: content8GoldenDeal, enabled: LIVES_PREVIEW || import.meta.env?.VITE_CONTENT8_SPECIAL === 'gold' },
   { deal: content8StarterDeal, enabled: import.meta.env?.VITE_CONTENT8_SPECIAL === 'starter' },
@@ -54,7 +57,7 @@ const variants = new Map([
 ].map(({ deal, enabled }) => {
   const base = content8Wave.find(candidate => candidate.campaignLevel === deal.campaignLevel)!;
   if (enabled) specialByLevel.set(deal.campaignLevel, deal);
-  return [deal.campaignLevel, { deal, ids: new Set([base.id, deal.id]) }] as const;
+  return [deal.campaignLevel, { deal, ids: new Set([base.id, deal.id, specialByLevel.get(deal.campaignLevel)?.id, ...content8Special.filter(item => item.campaignLevel === deal.campaignLevel).map(item => item.id)]) }] as const;
 }));
 export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
   ? [...content8Campaign.map(deal => specialByLevel.get(deal.campaignLevel) ?? deal), ...(BEYOND80_PREVIEW ? beyond80Deals : [])]

@@ -15,7 +15,7 @@ export function resolveCandidateSeed(requested: number, drawSeed: (maxExclusive:
 
 const phaseOrder = {
   initial: ['paywall', 'ordered'],
-  shuffle: ['lockers', 'frozen', 'bound'],
+  shuffle: ['puzzleDistribution', 'lockers', 'frozen', 'bound'],
   final: ['golden', 'starterBooster'],
 } as const;
 type Phase = keyof typeof phaseOrder;

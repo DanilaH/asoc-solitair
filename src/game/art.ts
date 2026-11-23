@@ -1,4 +1,5 @@
 /** Presentation-only resources. Published deal URLs, IDs and save data stay intact. */
+import { picturePair } from '../domain/puzzle-pairs';
 import type { Card, Deal } from '../domain/types';
 import subjectsByText from './subject-art.json' with { type: 'json' };
 export const UI_ART = ['card-face', 'card-category', 'card-back-classic', 'card-back-diamonds', 'slot-tableau', 'slot-foundation', 'hint', 'undo', 'joker', 'coin', 'daily', 'cycle', 'looks', 'milestone', 'key', 'lock', 'lock-open', 'spark', 'ribbon'] as const;
@@ -17,6 +18,8 @@ export function illustrationUrl(original: string): string {
 const categoryArt = new WeakMap<Deal, Map<string, string>>();
 /** Frozen memberships retain their original image metadata; the view is homogeneous. */
 export function cardArtwork(card: Card, deal: Deal): string | undefined {
+  const splitIllustration = picturePair(deal, card.id)?.illustration;
+  if (splitIllustration) return splitIllustration;
   if (deal.tags?.includes('content8-beyond80')) return !card.leader && card.image ? illustrationUrl(card.image) : undefined;
   let art = categoryArt.get(deal);
   if (!art) {

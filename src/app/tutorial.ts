@@ -135,7 +135,7 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
       if (seen('learn:keys')) break;
       const action = step();
       if (!action) break;
-      return exact(`Сделайте отмеченный ход. Найдено ${board.keys?.length ?? 0} из 3 ключей.`, action);
+      return exact(`Сделайте отмеченный ход. Найдено ${board.keys?.length ?? 0} из ${deal.lock?.requiredKeys.length ?? 3}.`, action);
     }
   }
 }

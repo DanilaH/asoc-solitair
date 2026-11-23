@@ -727,7 +727,7 @@
     {
       "id": "azur-card-animation-controller",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game scene implements card move/flip/feedback motions, but not native AZUR timing/easing equivalence",
+      "currentImplementation": "Game scene implements card move/flip/feedback motions, but not native AZUR timing/easing equivalence. QA использует существующую точку контакта для принятого перемещения. См. docs/qa/AZUR_FEEL_QA.md.",
       "nextAction": "Map source/target animation interruption and cancellation on phone; metadata alone is not exact native implementation",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -735,7 +735,7 @@
     {
       "id": "azur-coin-flight-animator",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/app/wallet-presentation.ts visual coin flights with persisted-domain rewards. Отдельная метка показывает подтверждённое списание рядом с балансом. См. docs/qa/UX_WALLET_PROGRESS.md.",
+      "currentImplementation": "src/app/wallet-presentation.ts visual coin flights with persisted-domain rewards. Отдельная метка показывает подтверждённое списание рядом с балансом. См. docs/qa/UX_WALLET_PROGRESS.md. QA ограничивает Light-intent по прилёту при отдельной настройке вибрации. См. docs/qa/AZUR_FEEL_QA.md.",
       "nextAction": "Compare timeout, landing and duplicate callbacks with original UI reference; physical Android audio pending",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -743,7 +743,7 @@
     {
       "id": "azur-victory-reward-sequencer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md.",
+      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md. QA проверяет раздельный предпобедный бонус, получить, прилёт и Next после подтверждённого SaveStore. См. docs/qa/AZUR_FEEL_QA.md.",
       "nextAction": "Replay skip/background/reopen/win/reward/Next with actual saved wallet and 320px UI",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -751,7 +751,7 @@
     {
       "id": "azur-button-haptic-feedback",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game button feedback/native haptic service exists; exact AZUR press states not compared",
+      "currentImplementation": "Game button feedback/native haptic service exists; exact AZUR press states not compared. Проверочный профиль различает Light добора и Heavy-intent отказа, используя собственный Android bridge. См. docs/qa/AZUR_FEEL_QA.md.",
       "nextAction": "Test press/release/exit scale/sound/haptics alignment on signed Android",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"

@@ -493,9 +493,10 @@
     {
       "id": "azur-offer-campaign",
       "status": "ROADMAPPED",
-      "currentImplementation": "No activated commercial campaigns other than fixed helper shop P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Build separable offer schedule + owner-verified store provider after event state E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "stage": "E3"
+      "currentImplementation": "No activated commercial campaigns other than fixed helper shop P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. P25 #163 adds a durable eight-trigger local dispatcher and exact three named presenter routes. The default-off Welcome QA fixture preserves the static 5000/2/2 dual-trigger gates.",
+      "nextAction": "Build separable offer schedule + owner-verified store provider after event state E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Validate actual remote configuration, real SDK/provider and physical Android while the offline profile remains isolated.",
+      "stage": "E3",
+      "evidenceRef": "docs/porting/P25_AZUR_CONTEXT_CAMPAIGNS.md"
     },
     {
       "id": "azur-fullscreen-ads-clock",
@@ -655,10 +656,11 @@
     {
       "id": "azur-iap-welcome-offer",
       "status": "BLOCKED",
-      "currentImplementation": "No store-backed welcome purchase or original paid entry offer P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Validate store purchases and first-use entitlement; keep future welcome-bundle ID in roadmap E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "No store-backed welcome purchase or original paid entry offer P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. P25 #163 adds a durable eight-trigger local dispatcher and exact three named presenter routes. The default-off Welcome QA fixture preserves the static 5000/2/2 dual-trigger gates.",
+      "nextAction": "Validate store purchases and first-use entitlement; keep future welcome-bundle ID in roadmap E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Validate actual remote configuration, real SDK/provider and physical Android while the offline profile remains isolated.",
       "stage": "E3",
-      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
+      "evidenceRef": "docs/porting/P25_AZUR_CONTEXT_CAMPAIGNS.md"
     },
     {
       "id": "azur-iap-unlimited-moves-tiers",

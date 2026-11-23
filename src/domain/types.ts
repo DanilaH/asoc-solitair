@@ -5,6 +5,7 @@ import type { CampaignAdsState } from './campaign-advertising';
 import type { DailyTaskJournal } from './events/daily-tasks';
 import type { PictureState } from './events/picture';
 import type { EventLedger } from './events/ledger';
+import type { OfferCampaignJournal } from './commerce/offer-campaigns';
 import type { CommerceJournal } from './commerce/orders';
 import type { RewardOffers } from './reward-offers';
 
@@ -120,6 +121,7 @@ export interface Save {
   campaignLives?: CampaignLives;
   lavaRun?: LavaRun;
   commerce?: CommerceJournal;
+  offerCampaigns?: OfferCampaignJournal;
   commerceAccount?: string;
   storeProgress?: StoreProgress;
   events?: EventLedger;

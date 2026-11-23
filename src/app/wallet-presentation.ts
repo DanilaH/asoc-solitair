@@ -4,6 +4,9 @@ import {createValueTransferPlan,valueTransferEmissionDelay,valueAfterVisualArriv
 export class WalletPresentation {
   private target:number;private value:number;private goal:number;private reserved:number;private raf=0;private last=0;
   private flights:{node:HTMLElement;start:number;duration:number;credit:number;sounded:boolean;sound:boolean;path:{x:number,y:number}[]}[]=[];
+  private debit?: HTMLElement;
+  private debitFrame = 0;
+  private debitTimeout = 0;
   private pool:HTMLElement[]=[];private receipt?:{node:HTMLElement;amount:number;start:number};private pulse?:Animation;
   constructor(total:number,private layer:HTMLElement,private counter:HTMLElement,private helper:HTMLElement,private wallet:HTMLElement,private sound:()=>void,private reduced:()=>boolean){
     this.target=this.value=this.goal=this.reserved=total;
@@ -16,10 +19,43 @@ export class WalletPresentation {
   sync(total:number,defer=false){
     if(total===this.target)return;
     if(total<this.target){
-      if(this.reduced()){this.target=total;this.cancel();return;}
-      this.cancel();this.target=total;this.goal=total;this.reserved=total;this.run();return;
+      const spent = this.target - total;
+      this.target = total;
+      this.cancel();
+      this.showDebit(spent);
+      return;
     }
     this.target=total;if(!defer)this.collect(this.wallet);
+  }
+  private showDebit(amount: number) {
+    this.clearDebit(true);
+    // The confirmed action can close its sheet before the next paint.
+    this.debitFrame = requestAnimationFrame(() => {
+      this.debitFrame = 0;
+      if (document.hidden) return;
+      const dialog = document.querySelector<HTMLDialogElement>('dialog[open]');
+      const anchor = !dialog || dialog.contains(this.wallet)
+        ? this.wallet : dialog.querySelector<HTMLElement>('[data-wallet-balance]');
+      if (!anchor?.getClientRects().length) return;
+
+      const badge = document.createElement('span');
+      badge.className = 'coin-debit';
+      badge.setAttribute('role', 'status');
+      badge.setAttribute('aria-label', `Списано ${amount} монет`);
+      badge.textContent = `−${new Intl.NumberFormat('ru-RU').format(amount)}`;
+      anchor.append(badge);
+      this.debit = badge;
+      this.debitTimeout = window.setTimeout(() => this.clearDebit(), 1000);
+    });
+  }
+  clearDebit(cancelPending = false) {
+    if (cancelPending) {
+      cancelAnimationFrame(this.debitFrame);
+      this.debitFrame = 0;
+    }
+    clearTimeout(this.debitTimeout);
+    this.debit?.remove();
+    this.debit = undefined;
   }
   collect(origin:HTMLElement,limit=this.pending){
     const amount=Math.min(this.pending,limit);if(!amount)return;this.reserved+=amount;
@@ -51,7 +87,7 @@ export class WalletPresentation {
     if(settle)this.value=this.goal=this.reserved=this.target;else { this.value=this.goal=this.reserved; }
     this.paint();
   }
-  dispose(){this.cancel();this.pool.forEach(n=>n.remove());}
+  dispose(){this.clearDebit(true);this.cancel();this.pool.forEach(n=>n.remove());}
   private paint(){const n=Math.round(this.value);this.counter.textContent=n<100000?String(n):new Intl.NumberFormat('ru-RU',{notation:'compact',maximumFractionDigits:1}).format(n);this.helper.textContent=`${n} монет`;}
   private run(){if(!this.raf){this.last=performance.now();this.raf=requestAnimationFrame(t=>this.tick(t));}}
   private tick(now:number){

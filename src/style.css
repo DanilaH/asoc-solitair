@@ -571,3 +571,15 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 
 #card-language-controls label{display:block;font-size:.9rem;margin:.6rem 0 .2rem}
 #card-language{font:inherit;width:100%;padding:.5rem;border:1px solid #d8cdb9;border-radius:8px;background:#fffaf0;color:inherit}
+
+/* Durable debit beside the balance on the active surface. */
+.balance-line{display:flex;align-items:center;gap:7px;min-height:20px}
+.coin-debit{flex:0 0 auto;display:inline-block;padding:1px 6px;border-radius:6px;background:#f7ddd1;color:#873e30;font-size:12px;font-weight:900;line-height:17px;white-space:nowrap;pointer-events:none;animation:coin-debit-in .15s ease-out}
+.wallet .coin-debit{position:absolute;inset-block-start:calc(100% - 5px);inset-inline-start:0}
+@keyframes coin-debit-in{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+html[data-reduced=true] .coin-debit{animation:none}
+.result-meta{border-radius:5px}
+.result-cycle-pips{display:inline-flex;gap:5px;margin-inline-start:7px;vertical-align:1px}
+.result-cycle-pips i{inline-size:8px;block-size:8px;border-radius:50%;background:#ccd8ce}
+.result-cycle-pips .lit{background:#ae792d}
+#daily-tasks-medals{border-radius:5px}

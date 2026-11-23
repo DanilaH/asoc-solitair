@@ -236,7 +236,7 @@
     {
       "id": "azur-daily-tasks",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P28 has all 16 source task kinds and nine typed grants, UTC-day/week save identities, and a four-task optional touch-tested preview. Paid triggers depend on P23/P24. See docs/porting/P28_DAILY_TASKS.md.",
+      "currentImplementation": "P28 has all 16 source task kinds and nine typed grants, UTC-day/week save identities, and a four-task optional touch-tested preview. Paid triggers depend on P23/P24. See docs/porting/P28_DAILY_TASKS.md. В проверочном профиле счётчик недели выделяет фактически полученные медали. См. docs/qa/UX_WALLET_PROGRESS.md.",
       "nextAction": "Inventory ALL 16 original DailyTask kinds and 9 reward kinds (engagement, helper-use, spend/purchase), with per-kind evidence and trigger; implement in owner-approved stages without silently dropping commercially oriented task types F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
@@ -271,7 +271,7 @@
     {
       "id": "hitapps-win-streak",
       "status": "ROADMAPPED",
-      "currentImplementation": "Existing 5-first-win cycle differs from loss-sensitive WinStreak An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md.",
+      "currentImplementation": "Existing 5-first-win cycle differs from loss-sensitive WinStreak An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md. Текущий продуктовый цикл из пяти побед отображает прогресс в результате. См. docs/qa/UX_WALLET_PROGRESS.md.",
       "nextAction": "Define streak failure/reset milestone and test against current cycle without double credits F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1"
     },
@@ -735,7 +735,7 @@
     {
       "id": "azur-coin-flight-animator",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/app/wallet-presentation.ts visual coin flights with persisted-domain rewards",
+      "currentImplementation": "src/app/wallet-presentation.ts visual coin flights with persisted-domain rewards. Отдельная метка показывает подтверждённое списание рядом с балансом. См. docs/qa/UX_WALLET_PROGRESS.md.",
       "nextAction": "Compare timeout, landing and duplicate callbacks with original UI reference; physical Android audio pending",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -743,7 +743,7 @@
     {
       "id": "azur-victory-reward-sequencer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown",
+      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md.",
       "nextAction": "Replay skip/background/reopen/win/reward/Next with actual saved wallet and 320px UI",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"

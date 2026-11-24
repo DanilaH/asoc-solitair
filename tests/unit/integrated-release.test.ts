@@ -1,0 +1,58 @@
+import { content7Deals } from '../../src/content/campaign-v7';
+import { expect, it } from 'vitest';
+import { advance } from '../../tools/qa/gameplay-oracle';
+import { releaseProfile } from '../../src/config/profile';
+import { campaignDeals, findDeal, integratedCampaignDeals, isCurrentCampaignDeal, selectCampaignDeal } from '../../src/content/campaign';
+import { loadEqualityPreviewPolicy } from '../../src/content/campaign-v8-equality';
+import { dailyForDay } from '../../src/content/daily';
+import { beginDeal } from '../../src/domain/campaign';
+import { mayStartCampaignAttempt } from '../../src/domain/campaign-lives';
+import { dispatch, freshSave } from '../../src/domain/engine';
+import { C8_DIFFICULTY } from '../../src/domain/difficulty';
+import { campaignId } from '../../src/domain/progression';
+import { switchMode } from '../../src/domain/sessions';
+import { decodeSave } from '../../src/platform/storage';
+
+it('replays every integrated passport with both rules implementations', () => {
+  expect(integratedCampaignDeals.length).toBeGreaterThan(2);
+  for (const deal of integratedCampaignDeals) {
+    expect(deal.id.length).toBeLessThanOrEqual(100);
+    expect(findDeal(deal.id)).toBe(deal);
+    let independent = deal.initial, save = freshSave(deal, 'replay');
+    for (const move of deal.winningPath) {
+      const result = dispatch(save, move, deal);
+      const board = advance(independent, move, deal);
+      expect(result.accepted, deal.id).toBe(true);
+      expect(board, deal.id).toEqual(result.next.attempt.board);
+      independent = board!;
+      save = result.next;
+    }
+    expect(independent.phase, deal.id).toBe('won');
+  }
+});
+
+it.skipIf(!releaseProfile)('starts an adapted L16 with recovery and Joker, then preserves exact identity through Daily, Undo and reload', async () => {
+  const previous = content7Deals[14], target = campaignDeals[15];
+  const old = freshSave(previous, 'earlier');
+  old.contentVersion = 7;
+  old.platform = { receipts: ['earned'], continuedAttempts: [], continueCredits: 1, winsSinceInterstitial: 0, lastFullscreenAt: 0,
+    completedCampaign: Array.from({ length: 15 }, (_, i) => campaignId(i + 1)) };
+  old.difficultyPenalty = C8_DIFFICULTY.easyPenalty;
+  let save = decodeSave(JSON.stringify(old), findDeal);
+  expect(save.contentVersion).toBe(8);
+  const selected = selectCampaignDeal(save, target);
+  expect(selected).toMatchObject({ campaignLevel: 16, adaptive: { direction: 'relief' }, recovery: { version: 1 }, randomJokerCost: 1 });
+  expect(isCurrentCampaignDeal(selected.id, target)).toBe(true);
+  expect(await loadEqualityPreviewPolicy()).toBeUndefined();
+  expect(mayStartCampaignAttempt(save, save.attempt, 100)).toBe(true);
+  beginDeal(save, selected, 'issued', previous);
+  save = dispatch(save, selected.winningPath[0], selected).next;
+  expect(save.attempt.undo).toHaveLength(1);
+  const attempt = structuredClone(save.attempt);
+  switchMode(save, 'daily', dailyForDay('2026-11-24'), 'daily');
+  save = decodeSave(JSON.stringify(save), findDeal);
+  switchMode(save, 'campaign', selected, 'resume');
+  expect(save.attempt).toEqual(attempt);
+  expect(save.platform).toMatchObject({ receipts: ['earned'], continueCredits: 1 });
+  expect(dispatch(save, { type: 'undo' }, selected).next.attempt.board).toEqual(selected.initial);
+});

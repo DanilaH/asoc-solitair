@@ -1,6 +1,7 @@
+import { releaseProfile } from './config/profile';
 import { OFFER_CAMPAIGNS_PREVIEW } from './domain/commerce/offer-campaigns';
 import { mountOfferCampaignPreview } from './app/offer-campaign-preview';
-import { authorizeLifeVideo, cancelLifeVideo, LIVES_PREVIEW, LIVES_RULES, matchesLifeVideo, mayStartCampaignAttempt, refillCampaignLife, refreshCampaignLives } from './domain/campaign-lives';
+import { authorizeLifeVideo, cancelLifeVideo, LIVEOPS_PREVIEW, LIVES_PREVIEW, LIVES_RULES, matchesLifeVideo, mayStartCampaignAttempt, refillCampaignLife, refreshCampaignLives } from './domain/campaign-lives';
 import { liveOpsDefinitions, liveOpsTitles, recordLiveOpsWin, type LiveOpsSource } from './domain/events/campaign-liveops';
 import { availableEvents, claimMilestone, eventKey } from './domain/events/ledger';
 import { createStorefront } from './platform/storefront';
@@ -503,15 +504,15 @@ try {
     $('#campaign-store-open').hidden = !STOREFRONT_PREVIEW;
     $('#coffee-open').hidden = !(ADS_CONTROLS_PREVIEW || campaignAdsApproved()) || (deal.campaignLevel ?? 0) < 16 || save.attempt.board.phase !== 'playing';
     const restore = $<HTMLButtonElement>('#restore-stock'), price = restoreQuote(save.attempt, deal);
-    restore.hidden = !RECOVERY_GAMEPLAY || price === undefined;
+    restore.hidden = !recoveryEnabled() || price === undefined;
     restore.disabled = price === undefined || save.profile.coins < price || saving;
     restore.textContent = price ? `Восстановить колоду · ${price} монет` : 'Восстановить колоду · бесплатно';
     const unlimited = $('#unlimited-preview');
-    const purchase = RECOVERY_GAMEPLAY && STOREFRONT_PREVIEW && quotePurchasedUnlimited(save, deal, storefront.accountId, Date.now());
+    const purchase = recoveryEnabled() && quotePurchasedUnlimited(save, deal, unlimitedAccount(), Date.now());
     const trial = RECOVERY_PREVIEW && deal.recovery && save.attempt.board.phase === 'playing' && !save.attempt.unlimited;
     unlimited.hidden = !(purchase || trial);
     unlimited.textContent = purchase ? 'Применить купленные ходы без лимита' : 'Ходы без лимита · 2 мин';
-    $('#random-joker-open').hidden = !(RANDOM_JOKER_PREVIEW && allowsRandomJoker(save.attempt, deal));
+    $('#random-joker-open').hidden = !canRequestRandomJoker();
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
     syncMotionPreference();
@@ -635,11 +636,11 @@ try {
     const canBuyContinue = showCoinOffer && save.profile.coins >= BALANCE.continueCoinPrice;
     const continueBusy = saving || serviceBusy || store.needsRecovery;
     const coinButton = $<HTMLButtonElement>('#result-continue-coins');
-    const recoveryLabel = RECOVERY_GAMEPLAY && deal.recovery ? 'Возродить партию' : 'Продолжить';
+    const recoveryLabel = recoveryEnabled() && deal.recovery ? 'Возродить партию' : 'Продолжить';
     coinButton.hidden = !showCoinOffer;
     coinButton.disabled = !canBuyContinue || continueBusy;
     coinButton.textContent = `+${BALANCE.continueMoves} ходов за ${BALANCE.continueCoinPrice} монет`;
-    if (RECOVERY_GAMEPLAY && deal.recovery && !coinButton.hidden) coinButton.textContent = `${recoveryLabel} · +${BALANCE.continueMoves} ходов за ${BALANCE.continueCoinPrice}`;
+    if (recoveryEnabled() && deal.recovery && !coinButton.hidden) coinButton.textContent = `${recoveryLabel} · +${BALANCE.continueMoves} ходов за ${BALANCE.continueCoinPrice}`;
     const continueButton = $<HTMLButtonElement>('#result-continue');
     continueButton.hidden = !canContinue;
     continueButton.disabled = !canContinue || continueBusy;
@@ -803,7 +804,7 @@ try {
             (result.next.platform?.completedCampaign.length ?? 0) > (next.platform?.completedCampaign.length ?? 0)) {
           recordStoreClear(result.next, Date.now());
         }
-        if (LIVES_PREVIEW && result.accepted) recordLiveOpsWin(next, result.next, deal, Date.now());
+        if (LIVEOPS_PREVIEW && result.accepted) recordLiveOpsWin(next, result.next, deal, Date.now());
         if (PICTURE_PREVIEW && result.accepted && result.next.attempt.board.phase === 'won') {
           recordPictureWin(next, result.next, deal, Date.now());
         }
@@ -1110,7 +1111,7 @@ try {
   }
   function renderHome() {
     renderLives();
-    if (LIVES_PREVIEW && unlockedLevel(save) >= 16) prewarmLiveOps();
+    if (LIVEOPS_PREVIEW && unlockedLevel(save) >= 16) prewarmLiveOps();
     $('#app').dataset.palette = cosmeticUnlocked(save, 'palette') ? save.settings.palette ?? 'green' : 'green';
     $('#app').dataset.back = cosmeticUnlocked(save, 'cardBack') ? save.settings.cardBack ?? 'classic' : 'classic';
     if (screen !== 'home' && !['#appearance','#calendar','#level-picker'].some(id => $<HTMLDialogElement>(id).open)) return;
@@ -1767,7 +1768,7 @@ try {
     const count = data?.remaining ?? LIVES_RULES.max;
     const home = $('#campaign-lives-open');
     home.hidden = !LIVES_PREVIEW;
-    $('#campaign-liveops-open').hidden = !LIVES_PREVIEW;
+    $('#campaign-liveops-open').hidden = !LIVEOPS_PREVIEW;
     home.textContent = `Жизни · ${count} из ${LIVES_RULES.max}`;
     $('#campaign-lives-status').textContent = count ? `Жизни · ${count} из ${LIVES_RULES.max}` : 'Для новой партии нужна жизнь.';
     const seconds = data?.refillAt !== undefined ? Math.max(0, Math.ceil((data.refillAt - Date.now()) / 1000)) : undefined;
@@ -1856,13 +1857,13 @@ try {
     }
   }
   $('#campaign-liveops-open').addEventListener('click', () => {
-    if (!LIVES_PREVIEW) return;
+    if (!LIVEOPS_PREVIEW) return;
     prewarmLiveOps();
     paintLiveOps(); openDialog('#campaign-liveops');
   }, domOptions);
   $('#campaign-liveops-list').addEventListener('click', async event => {
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button');
-    if (!LIVES_PREVIEW || !button?.dataset.claim || !button.dataset.eventKey || saving || serviceBusy) return;
+    if (!LIVEOPS_PREVIEW || !button?.dataset.claim || !button.dataset.eventKey || saving || serviceBusy) return;
     const { claim, eventKey: key } = button.dataset;
     try { await write(next => claimMilestone(next, key, claim)); paintLiveOps(); }
     catch { message('Не удалось сохранить награду события.', true); }
@@ -1909,7 +1910,7 @@ try {
         item.className = 'secondary'; item.type = 'button'; item.dataset.sku = product.sku;
         item.disabled = !binding || (!offer.eligible && offer.sourceId !== 'unico-vip' && offer.sourceId !== 'hitapps-piggy-bank') ||
           (product.benefits.some(good => good.type === 'unlimited') &&
-            !(RECOVERY_GAMEPLAY && deal.recovery && save.attempt.board.phase === 'playing')) ||
+            !(recoveryEnabled() && deal.recovery && save.attempt.board.phase === 'playing')) ||
           (offer.sourceId === 'hitapps-piggy-bank' && layout.data?.piggy !== PIGGY_LIMIT);
         item.textContent = showProductGoods(product.sku);
         if (binding) {
@@ -1970,7 +1971,7 @@ try {
     finally { serviceBusy = false; renderHud(); }
   }, domOptions);
   $('#restore-stock').addEventListener('click', async () => {
-    if (!RECOVERY_GAMEPLAY || saving || serviceBusy) return;
+    if (!recoveryEnabled() || saving || serviceBusy) return;
     const source = deal, cost = restoreQuote(save.attempt, source);
     if (cost === undefined) return;
     const quote = { attemptId: save.attempt.id, revision: save.revision, cost };
@@ -1982,9 +1983,9 @@ try {
     } catch { message('Не удалось сохранить восстановление колоды.', true); }
   }, domOptions);
   $('#unlimited-preview').addEventListener('click', async () => {
-    if (!RECOVERY_GAMEPLAY || !deal.recovery || saving || serviceBusy) return;
-    const source = deal, now = Date.now(), accountId = storefront.accountId;
-    const purchase = STOREFRONT_PREVIEW && quotePurchasedUnlimited(save, source, accountId, now);
+    if (!recoveryEnabled() || !deal.recovery || saving || serviceBusy) return;
+    const source = deal, now = Date.now(), accountId = unlimitedAccount();
+    const purchase = quotePurchasedUnlimited(save, source, accountId, now);
     if (!purchase && !RECOVERY_PREVIEW) return;
     const id = crypto.randomUUID(), attemptId = save.attempt.id;
     try {
@@ -1997,11 +1998,24 @@ try {
       if (applied) { closeDialogs(); scene?.sync(); }
     } catch { message('Не удалось сохранить ходы без лимита.', true); }
   }, domOptions);
+  function canRequestRandomJoker() {
+    return (RANDOM_JOKER_PREVIEW || deal.randomJokerPreview === 1) &&
+      save.profile.jokers >= (deal.randomJokerCost ?? 0) && allowsRandomJoker(save.attempt, deal);
+  }
+  function recoveryEnabled() {
+    return RECOVERY_GAMEPLAY || Boolean(deal.recovery);
+  }
+  function unlimitedAccount() {
+    if (STOREFRONT_PREVIEW) return storefront.accountId;
+    return (releaseProfile?.capabilities.earnedUnlimited === 'active' || deal.recovery) ? save.commerceAccount ?? '' : '';
+  }
   $('#random-joker-open').addEventListener('click', () => {
-    if (RANDOM_JOKER_PREVIEW && !saving && !serviceBusy && allowsRandomJoker(save.attempt, deal)) openDialog('#random-joker-warning');
+    if (saving || serviceBusy || !canRequestRandomJoker()) return;
+    $('#random-joker-confirm').textContent = deal.randomJokerCost ? 'Потратить 1 Джокера' : 'Разместить';
+    openDialog('#random-joker-warning');
   }, domOptions);
   $('#random-joker-confirm').addEventListener('click', async () => {
-    if (!RANDOM_JOKER_PREVIEW || saving || serviceBusy || !$<HTMLDialogElement>('#random-joker-warning').open) return;
+    if (!canRequestRandomJoker() || saving || serviceBusy || !$<HTMLDialogElement>('#random-joker-warning').open) return;
     const source = deal, attemptId = save.attempt.id, revision = save.revision;
     const id = 'azj-' + crypto.randomUUID();
     const candidate = placeRandomJoker(save.attempt, source, randomJokerColumn, () => id);

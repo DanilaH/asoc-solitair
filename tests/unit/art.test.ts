@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import { existsSync } from 'node:fs';
-import { campaignDeals } from '../../src/content/campaign';
+import { content7Deals as campaignDeals } from '../../src/content/campaign-v7';
 import { dailyPool } from '../../src/content/daily';
 import { introDeal } from '../../src/content/intro';
 import { cardArtwork } from '../../src/game/art';

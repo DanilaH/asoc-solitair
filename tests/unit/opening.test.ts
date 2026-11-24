@@ -1,3 +1,4 @@
+import { CONTENT_VERSION } from '../../src/domain/types';
 import{describe,it,expect}from'vitest';
 import{content6CampaignDeals as campaignDeals,legacyCampaignDeals,findDeal}from'../../src/content/campaign';
 import{dailyForDay}from'../../src/content/daily';
@@ -18,14 +19,14 @@ describe('revision6 opening and historical ownership',()=>{
   const daily=play(previous(freshSave(day,'old-daily'),6),day,2).attempt;s.parked={daily};
   if(mode==='daily'){const campaign=s.attempt;s.attempt=daily;s.parked={campaign};}
   s.contentVersion=5;s.profile.coins=17;s.profile.jokers=0;s.profile.hints=0;s.profile.undos=1;s.settings.deckSide='left';
-  const original=structuredClone(s),r=decodeSave(JSON.stringify(s),findDeal);expect(r.contentVersion).toBe(7);expect({...r,contentVersion:5}).toEqual(original);
+  const original=structuredClone(s),r=decodeSave(JSON.stringify(s),findDeal);expect(r.contentVersion).toBe(CONTENT_VERSION);expect({...r,contentVersion:5}).toEqual(original);
   expect(decodeSave(JSON.stringify(r),findDeal)).toEqual(r);switchMode(r,'campaign',old,'ignored-on-resume');expect(r.attempt.dealId).toBe(old.id);expect(findDeal(r.attempt.dealId)).toBe(old);
   const again=dispatch(r,{type:'restart',attemptId:'old-restart'},old).next;expect(again.attempt.board).toEqual(old.initial);expect(again.profile.jokers).toBe(0);expect(again.platform?.receipts).toEqual(['kept-receipt']);
  });
  it('retains old v2 rules, exact Undo and legal old continuation after the content6 envelope is saved',()=>{
   const d=legacyCampaignDeals[5];let s=previous(freshSave(d,'old-v2'),6);s.contentVersion=5;s.rulesVersion=2;s.attempt.board.rulesVersion=2;
   for(const a of d.legacyWinningPath!.slice(0,3)){const before=structuredClone(s.attempt.board),r=applyBoard(before,a,d);if(typeof r==='string')throw Error(r);s.attempt.undo.push(before);s.attempt.board=r.board;}
-  const r=decodeSave(JSON.stringify(s),findDeal);expect(r.attempt).toEqual(s.attempt);expect(r.contentVersion).toBe(7);expect(r.attempt.board.rulesVersion).toBe(2);
+  const r=decodeSave(JSON.stringify(s),findDeal);expect(r.attempt).toEqual(s.attempt);expect(r.contentVersion).toBe(CONTENT_VERSION);expect(r.attempt.board.rulesVersion).toBe(2);
   const undo=dispatch(r,{type:'undo'},d);expect(undo.accepted).toBe(true);expect(undo.next.attempt.board).toEqual(s.attempt.undo.at(-1));expect(decodeSave(JSON.stringify(undo.next),findDeal)).toEqual(undo.next);
  });
  it('does not award the same campaign milestone/cycle twice when a revised level replaces an already cleared original',()=>{
@@ -40,7 +41,7 @@ describe('revision6 opening and historical ownership',()=>{
   for(const d of campaignDeals.slice(0,15)){let s=previous(freshSave(d,'before-replay'),d.campaignLevel!);s.profile.jokers=0;s=play(s,d,1);s=dispatch(s,{type:'restart',attemptId:'fixed-replay'},d).next;expect(s.attempt.dealId).toBe(d.id);expect(s.attempt.board,d.id).toEqual(d.initial);expect(s.profile.jokers).toBe(0);}
  });
  it('refuses a revision6 identity in an old envelope and future content without overwriting the raw save',async()=>{
-  for(const contentVersion of [5,8]){const s=freshSave(campaignDeals[2],'invalid-envelope');s.contentVersion=contentVersion;const raw=JSON.stringify(s);let stored=raw;
+  for(const contentVersion of [5, CONTENT_VERSION + 1]){const s=freshSave(campaignDeals[2],'invalid-envelope');s.contentVersion=contentVersion;const raw=JSON.stringify(s);let stored=raw;
    const store=new SaveStore({async getItem(){return stored;},async setItem(_k,v){stored=v;},async removeItem(){throw Error('no reset');}},findDeal,()=>freshSave(campaignDeals[0],'fallback'));
    await expect(store.open()).rejects.toThrow();expect(stored).toBe(raw);
   }

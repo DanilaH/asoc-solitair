@@ -6,6 +6,10 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-24.04
+    env:
+      VITE_ASOC_PROFILE: c8-release-v1
+      ASOC_AD_MODE: live
+      ASOC_APK_VARIANT: release
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,7 +37,6 @@ jobs:
       - run: npm run check && npm run android:sync
       - name: Build using configured signing identity
         env:
-          ASOC_AD_MODE: live
           YANDEX_BANNER_AD_UNIT_ID: ${{ secrets.YANDEX_BANNER_AD_UNIT_ID }}
           YANDEX_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.YANDEX_INTERSTITIAL_AD_UNIT_ID }}
           YANDEX_REWARDED_AD_UNIT_ID: ${{ secrets.YANDEX_REWARDED_AD_UNIT_ID }}
@@ -50,10 +53,14 @@ jobs:
           printf '%s' "$STORE_BASE64" | base64 --decode > "$ASOC_STORE_FILE"
           cd native/android
           ./gradlew --no-daemon assembleRelease bundleRelease
+      - run: |
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs native/android/app/build/outputs/apk/release/app-release.apk
+          python3 tools/qa/verify-release-apk.py native/android/app/build/outputs/apk/release/app-release.apk
       - uses: actions/upload-artifact@v4
         with:
           name: asoc-solitair-signed
           path: |
+            dist/release-manifest.json
             native/android/app/build/outputs/apk/release/*.apk
             native/android/app/build/outputs/bundle/release/*.aab
             native/android/app/build/outputs/mapping/release/

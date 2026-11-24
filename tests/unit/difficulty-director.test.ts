@@ -136,7 +136,10 @@ it('issues only certified variants to new C8 starts and keeps their identity acr
   expect(selectCampaignDeal(save, base)).toBe(base);
   save.difficultyHistory.push({ outcome: 'Clean', restarts: 0 });
   expect(selectCampaignDeal(save, campaignDeals[7])).toBe(campaignDeals[7]);
-  expect(selectCampaignDeal(save, campaignDeals[15])).toBe(campaignDeals[15]);
+  const late = campaignDeals[15];
+  const selected = selectCampaignDeal(save, late);
+  if (import.meta.env.VITE_ASOC_PROFILE) expect(selected).toMatchObject({ campaignLevel: 16, recovery: { version: 1 }, randomJokerCost: 1 });
+  else expect(selected).toBe(late);
   const tight = selectCampaignDeal(save, base);
   expect(tight.id).toBe(base.id + '-tight-r1');
   expect(tight.initial.movesLeft).toBe(64);

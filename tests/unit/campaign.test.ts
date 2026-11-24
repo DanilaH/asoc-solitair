@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { campaignDeals, findDeal } from '../../src/content/campaign';
+import { findDeal } from '../../src/content/campaign';
+import { content7Deals as campaignDeals } from '../../src/content/campaign-v7';
 import { introDeal } from '../../src/content/intro';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { beginDeal } from '../../src/domain/campaign';

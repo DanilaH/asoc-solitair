@@ -1,7 +1,8 @@
+import { LEGACY_OWNER_PREVIEW } from '../domain/types';
 import { activePurchaseGoods } from './commerce/orders';
 import type { Deal, Save } from './types';
 
-export const ADS_CONTROLS_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'ad-controls';
+export const ADS_CONTROLS_PREVIEW = LEGACY_OWNER_PREVIEW === 'ad-controls';
 const token = (value: unknown): value is string => typeof value === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(value);
 const natural = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) >= 0;
 export interface AdRevenue {

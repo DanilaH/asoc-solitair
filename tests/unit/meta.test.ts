@@ -1,3 +1,4 @@
+import { content7Deals } from '../../src/content/campaign-v7';
 import {campaignId} from '../../src/domain/progression';
 import { describe, expect, it } from 'vitest';
 import { campaignDeals, legacyCampaignDeals, findDeal } from '../../src/content/campaign';
@@ -31,7 +32,7 @@ describe('compact campaign goals', () => {
     expect(save.attempt.payout!.map(r => r.reason)).toEqual(['win']);
   });
   it('pausing and temporary exhaustion preserve the cycle; Undo/continue preserve it; restart resets it', () => {
-    const deal = campaignDeals[2]; let save = freshSave(deal, 'cycle'); completed(save, 2); save.meta!.winCycle = 4;
+    const deal = content7Deals[2]; let save = freshSave(deal, 'cycle'); completed(save, 2); save.meta!.winCycle = 4;
     const oneMove = structuredClone(save); oneMove.attempt.board.movesLeft = 1;
     save = dispatch(oneMove, deal.winningPath[0], deal).next; expect(save.attempt.board.phase).toBe('exhausted'); expect(save.meta!.winCycle).toBe(4);
     completed(save, 3); const undone = dispatch(save, { type: 'undo' }, deal).next;

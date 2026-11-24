@@ -139,6 +139,21 @@
     "format": "string",
     "phase": "string"
   },
+  "ad_revenue": {
+    "schema": "number",
+    "mode": "string",
+    "attemptId": "string",
+    "dealId": "string",
+    "rulesVersion": "number",
+    "contentVersion": "number",
+    "balanceVersion": "number",
+    "movesLeft": "number",
+    "activeMs": "number",
+    "format": "string",
+    "placement": "string",
+    "currency": "string",
+    "micros": "number"
+  },
   "runtime_error": {
     "schema": "number",
     "mode": "string",

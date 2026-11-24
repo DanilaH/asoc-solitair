@@ -6,7 +6,7 @@ export const ADS_CONTROLS_PREVIEW = LEGACY_OWNER_PREVIEW === 'ad-controls';
 const token = (value: unknown): value is string => typeof value === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(value);
 const natural = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) >= 0;
 export interface AdRevenue {
-  id: string; micros: number; currency: string; kind: 'banner'|'rewarded'|'interstitial';
+  id: string; placement?: string; micros: number; currency: string; kind: 'banner'|'rewarded'|'interstitial';
 }
 export interface CampaignAdsState {
   version: 1;
@@ -18,10 +18,11 @@ export interface CampaignAdsState {
 const state = (save: Save) => save.campaignAds ??= { version: 1, shownLevels: [], revenue: [] };
 export function parseAdRevenue(value: unknown): AdRevenue | undefined {
   if (!value || typeof value !== 'object') return;
-  const { id, micros, currency, kind } = value as Partial<AdRevenue>;
+  const { id, placement, micros, currency, kind } = value as Partial<AdRevenue>;
   if (!token(id) || !natural(micros) || typeof currency !== 'string' || !/^[A-Z]{3}$/.test(currency) ||
       !kind || !['banner', 'rewarded', 'interstitial'].includes(kind)) return;
-  return { id, micros, currency, kind };
+  if (placement !== undefined && (!token(placement) || placement.length > 48)) return;
+  return { id, micros, currency, kind, ...(placement ? { placement } : {}) };
 }
 export function recordAdRevenue(save: Save, value: unknown) {
   const event = parseAdRevenue(value);

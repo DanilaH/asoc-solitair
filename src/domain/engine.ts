@@ -243,9 +243,16 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
       } else {
         const rewardKey = `win:${attempt.id}`;
         if (!next.profile.rewards.includes(rewardKey)) {
-          const amount = victoryReward && deal.campaignLevel !== undefined
-            ? quoteVictoryReward(victoryReward, victoryDifficulty(deal), attempt.board.movesLeft).total
-            : BALANCE.winCoins + BALANCE.coinsPerRemainingMove * (attempt.board.movesLeft ?? 0);
+          const tier = victoryDifficulty(deal);
+          const parts = victoryReward && deal.campaignLevel !== undefined
+            ? quoteVictoryReward(victoryReward, tier, attempt.board.movesLeft)
+            : { base: BALANCE.winCoins, bonus: BALANCE.coinsPerRemainingMove * (attempt.board.movesLeft ?? 0) };
+          const amount = parts.base + parts.bonus;
+          if (deal.campaignLevel !== undefined) attempt.victory = {
+            version: 1, rewardKey, policy: victoryReward?.id ?? 'existing-balance-v3',
+            tier, tierBase: parts.base, movesBonus: parts.bonus,
+            contentVersion: next.contentVersion, balanceVersion: next.balanceVersion,
+          };
           if (victoryReward && !Number.isSafeInteger(next.profile.coins + amount)) throw new RangeError('Wallet overflow');
           next.profile.coins += amount; next.profile.wins++; next.profile.rewards.push(rewardKey);
           attempt.payout = [{ key: rewardKey, reason: 'win', label: 'За победу и оставшиеся ходы', coins: amount }, ...markCampaignWin(next, deal.id, deal.campaignLevel)];

@@ -12,7 +12,7 @@
     "interactionFeedback": "azur-feel-r1",
     "lives": 1,
     "economy": "existing-balance-v3",
-    "advertising": "existing-placement-gates"
+    "advertising": "single-placement-pause-r1"
   },
   "capabilities": {
     "generation": "active",
@@ -29,7 +29,9 @@
     "lives": "active",
     "proofShuffle": "qa",
     "drawInvalidCoinFeedback": "active",
-    "advertising": "existing-gates",
+    "advertising": "sdk-acceptance-gated",
+    "rewardOffers": "sdk-acceptance-gated",
+    "freeSeasonalTrack": "active",
     "purchases": "off",
     "retention": "pending"
   }

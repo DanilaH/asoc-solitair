@@ -84,3 +84,28 @@ test('opens full Frozen level through Next and keeps the board and Undo at compa
   await page.locator('#undo').tap();
   await expect.poll(async () => (await read(page)).attempt.board).toEqual(starting.board);
 });
+
+test('claims free shop coins through the ordinary helper panel on an offline build', async ({ page }) => {
+  const campaign = content8Wave[0];
+  const save = freshSave(campaign, 'free-shop-coins');
+  save.contentVersion = 8;
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0,
+    winsSinceInterstitial: 0, completedCampaign: Array.from({ length: 15 }, (_, index) => campaignId(index + 1)) };
+  save.settings.reducedMotion = true;
+  save.campaign = { version: 1, tutorials: ['intro:joker', 'intro:ordered', 'intro:keys', 'learn:category', 'learn:match', 'learn:stock', 'hint-demo', 'undo-used'] };
+  await page.addInitScript(value => {
+    if (!localStorage.getItem('asoc-solitaire.save.v1')) localStorage.setItem('asoc-solitaire.save.v1', value);
+  }, JSON.stringify(save));
+  await page.goto('/');
+  await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await page.locator('#home-play').tap();
+  await page.locator('#wallet-open').tap();
+  await expect(page.locator('#coffee-open')).toBeHidden();
+  await expect(page.locator('#shop-video-claim')).toBeHidden();
+  await page.locator('#shop-free-claim').tap();
+  await expect.poll(async () => (await read(page)).profile.coins).toBe(save.profile.coins + 30);
+  await expect(page.locator('#shop-free-claim')).toBeHidden();
+  await page.reload();
+  await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  expect((await read(page)).profile.coins).toBe(save.profile.coins + 30);
+});

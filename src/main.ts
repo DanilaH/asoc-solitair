@@ -7,7 +7,7 @@ import { availableEvents, claimMilestone, eventKey } from './domain/events/ledge
 import { createStorefront } from './platform/storefront';
 import { claimShopProgress, PASS_GOAL, PIGGY_LIMIT, productLabels, recordStoreClear, showProductGoods, storefrontView, STOREFRONT_PREVIEW } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
-import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee, recordAdRevenue } from './domain/campaign-advertising';
+import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee, parseAdRevenue, recordAdRevenue } from './domain/campaign-advertising';
 import { beginUnlimited, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
 import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
@@ -35,7 +35,7 @@ import { isBoundCard } from './domain/bound-cards';
 import { collectedGold, goldenRewardKey } from './domain/golden-cards';
 import { TASKS_PREVIEW, acceptedTaskSignals, claimTask, claimTaskMilestone, currentTasks, recordTaskSignal, updatePreviewTasks, type TaskSignal } from './domain/events/daily-tasks';
 import { PICTURE_PREVIEW, PICTURE_PRICES, PICTURE_TITLE, claimPicture, observePictureClock, openPictureEvent, pictureClosed, pictureTokens, recordPictureWin, revealPicturePart } from './domain/events/picture';
-import { REWARD_OFFER_PREVIEW, isOfferPlacement, offerLabels, offerQuote, prepareRewardOffer, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
+import { REWARD_OFFER_PREVIEW, canClaimShopCoins, claimShopCoins, isOfferPlacement, offerLabels, offerQuote, offerShowContext, prepareRewardOffer, selectedWinMultiplier, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
 import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-shuffle';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
@@ -61,7 +61,9 @@ const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.qu
 const azurInteractionFeedback = releaseProfile?.capabilities.drawInvalidCoinFeedback === 'active' ||
   import.meta.env.VITE_AZUR_FEEL_QA === '1';
 const victoryPolicy = AZUR_VICTORY_QA ? AZUR_VICTORY_DEFAULTS : undefined;
-const rewardOffersEnabled = REWARD_OFFER_PREVIEW && !AZUR_VICTORY_QA;
+const integratedOffers = releaseProfile?.capabilities.rewardOffers === 'sdk-acceptance-gated';
+const rewardOffersEnabled = (REWARD_OFFER_PREVIEW || integratedOffers) && !AZUR_VICTORY_QA;
+const freeSeasonalTrack = releaseProfile?.capabilities.freeSeasonalTrack === 'active';
 let deal = campaignDeals[0];
 let screen: 'home' | 'game' = 'home';
 let scene: BoardScene | undefined;
@@ -324,9 +326,12 @@ try {
   let prewarmedLiveOps = '';
   let blockedLifeLevel: number | undefined;
   let retryLifeRestart = false;
-  const livesVideoApproved = () => ads.status.mode === 'live' && ads.status.livesApproved === true;
+  const testSdk = () => ads.status.mode === 'test';
+  const approvedOffers = () => testSdk() || (ads.status.mode === 'live' && ads.status.offersApproved === true);
+  const livesVideoApproved = () => releaseProfile && testSdk() || (ads.status.mode === 'live' && ads.status.livesApproved === true);
   let adBreakTimer: ReturnType<typeof setTimeout> | undefined;
-  const campaignAdsApproved = () => ads.status.mode === 'live' && ads.status.campaignApproved === true;
+  const campaignAdsApproved = () => releaseProfile && testSdk() || (ads.status.mode === 'live' && ads.status.campaignApproved === true);
+  const coffeePreview = () => !releaseProfile && (ADS_CONTROLS_PREVIEW || campaignAdsApproved());
   let recoveryClock: ReturnType<typeof setTimeout> | undefined;
   let banner: NativeBanner | undefined;
   const launchedAt = Date.now();
@@ -378,8 +383,8 @@ try {
         }
         if (isOfferPlacement(request.placement)) {
           const pending = next.rewardOffers?.pending.find(entry => entry.id === request.attempt);
-          if (!rewardOffersEnabled || request.kind !== 'rewarded' || request.mode !== 'campaign' ||
-            !pending || pending.dealId !== request.dealId || pending.kind !== request.placement) {
+          if (!rewardOffersEnabled || !approvedOffers() || request.kind !== 'rewarded' || request.mode !== 'campaign' ||
+            !pending || offerShowContext(next, request)?.attemptId !== next.attempt.id) {
             throw Error('Предложение изменилось');
           }
           return;
@@ -388,7 +393,7 @@ try {
         if (request.attempt !== attempt.id || request.dealId !== attempt.dealId ||
           request.mode !== (attempt.daily ? 'daily' : 'campaign')) throw Error('Партия изменилась');
         if (request.placement === 'coffee-break') {
-          if (!campaignAdsApproved() || request.kind !== 'rewarded' || !matchesCoffee(next, request.attempt, request.dealId))
+          if (!coffeePreview() || !campaignAdsApproved() || request.kind !== 'rewarded' || !matchesCoffee(next, request.attempt, request.dealId))
             throw Error('Кофе-пауза недоступна');
           return;
         }
@@ -434,8 +439,13 @@ try {
     onStatus() { renderLives(); renderHud(); updateBanner(); if ((deal.campaignLevel ?? 0) > BALANCE.ads.interstitialAfterLevel) void ads.prepareInterstitial(); },
     onEvent(event) {
       telemetry.track('ad_event', { format: event.kind, phase: event.phase });
-      if (event.phase === 'revenue' && campaignAdsApproved())
-        void store.mutate(next => recordAdRevenue(next, event.revenue)).catch(() => undefined);
+      if (event.phase === 'revenue' && ads.status.campaignApproved === true) {
+        const revenue = parseAdRevenue(event.revenue);
+        if (revenue) void store.mutate(next => recordAdRevenue(next, revenue)).then(recorded => {
+          if (recorded) telemetry.track('ad_revenue', { format: revenue.kind, placement: revenue.placement ?? 'unknown',
+            currency: revenue.currency, micros: revenue.micros });
+        }).catch(() => undefined);
+      }
     },
   });
   if (ads.bridge) banner = new NativeBanner(ads.bridge, $('#banner-slot'));
@@ -508,8 +518,8 @@ try {
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   const hasTransfer = new WeakMap<Save['attempt']['board'], boolean>();
   function renderHud() {
-    $('#campaign-store-open').hidden = !STOREFRONT_PREVIEW;
-    $('#coffee-open').hidden = !(ADS_CONTROLS_PREVIEW || campaignAdsApproved()) || (deal.campaignLevel ?? 0) < 16 || save.attempt.board.phase !== 'playing';
+    $('#campaign-store-open').hidden = !STOREFRONT_PREVIEW && !freeSeasonalTrack;
+    $('#coffee-open').hidden = !coffeePreview() || (deal.campaignLevel ?? 0) < 16 || save.attempt.board.phase !== 'playing';
     const restore = $<HTMLButtonElement>('#restore-stock'), price = restoreQuote(save.attempt, deal);
     restore.hidden = !recoveryEnabled() || price === undefined;
     restore.disabled = price === undefined || save.profile.coins < price || saving;
@@ -808,7 +818,7 @@ try {
         }
         const beforeBoard = next.attempt.board;
         result = dispatch(next, cmd, deal, localDay(), victoryPolicy);
-        if (STOREFRONT_PREVIEW && result.accepted && !result.next.attempt.daily &&
+        if ((STOREFRONT_PREVIEW || freeSeasonalTrack) && result.accepted && !result.next.attempt.daily &&
             (result.next.platform?.completedCampaign.length ?? 0) > (next.platform?.completedCampaign.length ?? 0)) {
           recordStoreClear(result.next, Date.now());
         }
@@ -1045,17 +1055,22 @@ try {
     } catch { message('Не удалось открыть альбом. Попробуйте ещё раз.', true); }
   }
   function renderRewardOffers() {
-    const now = Date.now(), available = screen === 'game' && ads.status.mode === 'test' && ads.status.rewarded;
+    const now = Date.now(), available = screen === 'game' && approvedOffers() && ads.status.rewarded;
     const busy = saving || serviceBusy || store.needsRecovery;
-    const kind = $<HTMLSelectElement>('#win-video-kind').value as WinOffer;
-    const quote = offerQuote(save, deal, kind, now);
+    const select = $<HTMLSelectElement>('#win-video-kind');
+    select.hidden = integratedOffers;
+    const kind = integratedOffers ? selectedWinMultiplier(save, deal) : select.value as WinOffer;
+    const quote = kind ? offerQuote(save, deal, kind, now, integratedOffers) : undefined;
     $('#win-video-offers').hidden = !available || !quote;
     const win = $<HTMLButtonElement>('#win-video-claim');
-    win.textContent = quote ? `Получить ещё ${quote.amount} монет` : '';
+    win.textContent = quote && kind ? `${integratedOffers ? (kind === 'win-fivefold' ? '×5 · ' : '×3 · ') : ''}Получить ещё ${quote.amount} монет` : '';
     win.disabled = busy;
+    const free = $<HTMLButtonElement>('#shop-free-claim');
+    free.hidden = !integratedOffers || !canClaimShopCoins(save, deal, now);
+    free.disabled = busy;
     for (const [selector, placement] of [['#shop-video-claim', 'shop-free-coins'], ['#theme-video-claim', 'rewarded-theme']] as const) {
       const button = $<HTMLButtonElement>(selector);
-      button.hidden = !available || !offerQuote(save, deal, placement, now);
+      button.hidden = !available || !offerQuote(save, deal, placement, now, integratedOffers);
       button.disabled = busy;
     }
     const expires = save.rewardOffers?.themeUntil ?? 0;
@@ -1073,11 +1088,11 @@ try {
     return true;
   }
   async function requestRewardOffer(kind: OfferPlacement, selector: '#result'|'#helpers'|'#appearance') {
-    if (!rewardOffersEnabled || saving || serviceBusy || screen !== 'game' || ads.status.mode !== 'test' || !ads.status.rewarded) return;
+    if (!rewardOffersEnabled || saving || serviceBusy || screen !== 'game' || !approvedOffers() || !ads.status.rewarded) return;
     const attempt = save.attempt.id, back = returnToDialog;
     serviceBusy = true;
     try {
-      const offer = await write(next => prepareRewardOffer(next, deal, kind, Date.now(), crypto.randomUUID()));
+      const offer = await write(next => prepareRewardOffer(next, deal, kind, Date.now(), crypto.randomUUID(), true, integratedOffers));
       if (!offer || !alive || save.attempt.id !== attempt) return;
       closeDialogs();
       const result = await ads.show({ kind: 'rewarded', placement: kind, attempt: offer.id, dealId: offer.dealId, mode: 'campaign' });
@@ -1532,7 +1547,15 @@ try {
     const select = $<HTMLSelectElement>('#win-video-kind');
     for (const [kind, label] of Object.entries(offerLabels)) select.add(new Option(label, kind));
     select.addEventListener('change', renderRewardOffers, domOptions);
-    $('#win-video-claim').addEventListener('click', () => { void requestRewardOffer(select.value as WinOffer, '#result'); }, domOptions);
+    $('#win-video-claim').addEventListener('click', () => {
+      const kind = integratedOffers ? selectedWinMultiplier(save, deal) : select.value as WinOffer;
+      if (kind) void requestRewardOffer(kind, '#result');
+    }, domOptions);
+    $('#shop-free-claim').addEventListener('click', async () => {
+      if (!integratedOffers || saving || serviceBusy) return;
+      try { await write(next => claimShopCoins(next, deal, Date.now())); }
+      catch { message('Не удалось сохранить выдачу монет.', true); }
+    }, domOptions);
     $('#shop-video-claim').addEventListener('click', () => { void requestRewardOffer('shop-free-coins', '#helpers'); }, domOptions);
     $('#theme-video-claim').addEventListener('click', () => { void requestRewardOffer('rewarded-theme', '#appearance'); }, domOptions);
     $('#definition-use').addEventListener('click', async () => {
@@ -1892,7 +1915,8 @@ try {
     const layout = storefrontView(save, Date.now(), storefront.accountId, storefront.context);
     const list = $('#campaign-shop-catalog');
     list.replaceChildren();
-    $('#campaign-shop-status').textContent = storefront.accountId ? '' : 'Покупки пока недоступны.';
+    $('#campaign-shop-status').textContent = STOREFRONT_PREVIEW && !storefront.accountId ? 'Покупки пока недоступны.' : '';
+    $('#campaign-shop-restore').hidden = !STOREFRONT_PREVIEW;
     $<HTMLButtonElement>('#campaign-shop-restore').disabled = !storefront.accountId;
     const addClaim = (parent: HTMLElement, track: 'free'|'premium'|'piggy', label: string, enabled: boolean) => {
       const button = document.createElement('button');
@@ -1901,6 +1925,7 @@ try {
       parent.append(button);
     };
     for (const offer of layout.offers) {
+      if (!STOREFRONT_PREVIEW && offer.sourceId !== 'azur-play-pass') continue;
       const group = document.createElement('details'), title = document.createElement('summary');
       group.dataset.family = offer.sourceId; group.className = 'helper-offer';
       title.textContent = productLabels[offer.sourceId]; group.append(title);
@@ -1917,12 +1942,13 @@ try {
         group.append(progress);
         const ready = (layout.data?.clears ?? 0) >= PASS_GOAL;
         addClaim(group, 'free', 'Забрать бесплатную награду', ready && !layout.data?.freeClaimed);
-        addClaim(group, 'premium', 'Забрать премиальную награду', ready && !layout.data?.premiumClaimed && layout.active.some(x => x.good.type === 'pass'));
+        if (STOREFRONT_PREVIEW) addClaim(group, 'premium', 'Забрать премиальную награду', ready && !layout.data?.premiumClaimed && layout.active.some(x => x.good.type === 'pass'));
       }
       if (offer.sourceId === 'unico-vip' && layout.active.some(x => x.good.type === 'vip')) {
         const state = document.createElement('p');
         state.textContent = 'VIP активен'; group.append(state);
       }
+      if (!STOREFRONT_PREVIEW) { list.append(group); continue; }
       const products = offer.sourceId === 'hitapps-piggy-bank' ? [CAMPAIGN_PRODUCTS[0]] :
         offer.sourceId === 'unico-vip' ? [CAMPAIGN_PRODUCTS[1]] : offer.products;
       for (const product of products) {
@@ -1945,15 +1971,15 @@ try {
   }
   if (OFFER_CAMPAIGNS_PREVIEW) mountOfferCampaignPreview(store, openDialog, () => deal.campaignLevel ?? 0, domOptions.signal);
   $('#campaign-store-open').addEventListener('click', async () => {
-    if (!STOREFRONT_PREVIEW || saving || serviceBusy) return;
+    if ((!STOREFRONT_PREVIEW && !freeSeasonalTrack) || saving || serviceBusy) return;
     openChildDialog('#campaign-store', '#helpers', $('#campaign-store-open'));
     renderCampaignShop();
-    await storefront.refresh().catch(() => undefined);
+    if (STOREFRONT_PREVIEW) await storefront.refresh().catch(() => undefined);
     if ($<HTMLDialogElement>('#campaign-store').open) renderCampaignShop();
   }, domOptions);
   $('#campaign-shop-catalog').addEventListener('click', async event => {
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button');
-    if (!STOREFRONT_PREVIEW || !button || button.disabled || saving || serviceBusy) return;
+    if (!button || button.disabled || saving || serviceBusy || (!STOREFRONT_PREVIEW && !(freeSeasonalTrack && button.dataset.claim === 'free'))) return;
     serviceBusy = true;
     try {
       const { sku, claim } = button.dataset;
@@ -1971,13 +1997,13 @@ try {
     finally { serviceBusy = false; }
   }, domOptions);
   $('#coffee-open').addEventListener('click', () => {
-    if (!(ADS_CONTROLS_PREVIEW || campaignAdsApproved()) || saving || serviceBusy) return;
+    if (!coffeePreview() || saving || serviceBusy) return;
     $('#coffee-copy').textContent = campaignAdsApproved() ? 'Добровольное видео. После просмотра получите 10 монет.' : 'Показы для кофе-паузы ждут проверки рекламного SDK.';
     $<HTMLButtonElement>('#coffee-watch').disabled = !campaignAdsApproved() || !ads.status.rewarded || Boolean(save.attempt.coffeeRequested);
     openDialog('#coffee-break');
   }, domOptions);
   $('#coffee-watch').addEventListener('click', async () => {
-    if (!campaignAdsApproved() || !ads.status.rewarded || saving || serviceBusy) return;
+    if (!coffeePreview() || !campaignAdsApproved() || !ads.status.rewarded || saving || serviceBusy) return;
     const source = deal, attempt = save.attempt.id;
     serviceBusy = true;
     try {

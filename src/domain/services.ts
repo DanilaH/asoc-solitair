@@ -1,7 +1,7 @@
 import { matchesLifeShow, settleLifeVideo } from './campaign-lives';
 import { recordAdBreakShown, settleCoffee } from './campaign-advertising';
 import { campaignRewards } from './meta';
-import { isOfferPlacement, settleRewardOffer, type OfferPlacement } from './reward-offers';
+import { isOfferPlacement, offerShowContext, settleRewardOffer, type OfferPlacement } from './reward-offers';
 import { BALANCE } from './balance';
 import { campaignId } from './progression';
 import { CONTENT8_PREVIEW, type Deal, type PlatformState, type Save } from './types';
@@ -43,7 +43,10 @@ export function parseFullscreenShown(value: unknown): FullscreenShown {
 export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?: number): 'applied' | 'already-applied' {
   const attempt = save.attempt;
   const verifiedLife = shown.placement === 'life-refill' && matchesLifeShow(save, shown.attempt, shown.dealId);
-  if (!verifiedLife && (shown.attempt !== attempt.id || shown.dealId !== attempt.dealId || shown.mode !== (attempt.daily ? 'daily' : 'campaign'))) {
+  const offerPlacement = isOfferPlacement(shown.placement);
+  const verifiedOffer = offerPlacement && shown.kind === 'rewarded' && Boolean(offerShowContext(save, shown));
+  if (offerPlacement && !verifiedOffer) return 'already-applied';
+  if (!verifiedLife && !verifiedOffer && (shown.attempt !== attempt.id || shown.dealId !== attempt.dealId || shown.mode !== (attempt.daily ? 'daily' : 'campaign'))) {
     return 'already-applied';
   }
   const state = platformState(save);

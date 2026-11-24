@@ -105,6 +105,10 @@ export interface Attempt {
   lessonHint?: BoardCommand;
   daily?: { dayId: string; contentVersion: number };
   payout?: RewardGrant[];
+  victory?: {
+    version: 1; rewardKey: string; policy: string; tier: number;
+    tierBase: number; movesBonus: number; contentVersion: number; balanceVersion: number;
+  };
   telemetry?: { started: boolean; finished: boolean; activeMs: number };
 }
 export interface PlatformState {

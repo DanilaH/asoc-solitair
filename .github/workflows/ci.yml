@@ -204,11 +204,11 @@ jobs:
       - name: Build signed preview APK
         shell: bash
         run: |
-          if ./gradlew --no-daemon assembleDebug 2>&1 | tee "$RUNNER_TEMP/asoc-gradle.log"; then
+          if ./gradlew --no-daemon testDebugUnitTest assembleDebug 2>&1 | tee "$RUNNER_TEMP/asoc-gradle.log"; then
             exit 0
           fi
           grep -q 'https://repo.maven.apache.org/maven2' "$RUNNER_TEMP/asoc-gradle.log"
-          ASOC_MAVEN_CENTRAL_MIRROR=1 ./gradlew --no-daemon assembleDebug
+          ASOC_MAVEN_CENTRAL_MIRROR=1 ./gradlew --no-daemon testDebugUnitTest assembleDebug
           echo 'ASOC_MAVEN_CENTRAL_MIRROR=1' >> "$GITHUB_ENV"
         working-directory: native/android
         env:

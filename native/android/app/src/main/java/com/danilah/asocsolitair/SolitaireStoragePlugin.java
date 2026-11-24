@@ -20,6 +20,16 @@ public class SolitaireStoragePlugin extends Plugin {
         if (!directory.isDirectory() && !directory.mkdirs()) throw new IllegalStateException("Storage unavailable");
         return new AtomicFile(new File(directory, key + ".json"));
     }
+    @PluginMethod public void readRecoveryClock(PluginCall call) {
+        try {
+            int boot = android.provider.Settings.Global.getInt(getContext().getContentResolver(), android.provider.Settings.Global.BOOT_COUNT);
+            JSObject result = new JSObject();
+            result.put("boot", boot);
+            result.put("elapsed", android.os.SystemClock.elapsedRealtime());
+            call.resolve(result);
+        } catch (Exception unavailable) { call.reject("Monotonic clock unavailable"); }
+    }
+
     @PluginMethod public void get(PluginCall call) { IO.execute(() -> {
         try {
             AtomicFile file = file(call); JSObject result = new JSObject();

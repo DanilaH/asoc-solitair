@@ -23,6 +23,7 @@ public class SolitaireAnalyticsPlugin extends Plugin {
     }
     @PluginMethod public void report(PluginCall call) {
         String name = call.getString("event", "");
+        if ("ad_impression_revenue".equals(name)) { call.reject("Native impression required"); return; }
         JSObject params = call.getObject("params", new JSObject());
         JSONObject fields = contract.optJSONObject(name);
         if (fields == null || fields.length() != params.length()) { call.reject("Invalid event"); return; }

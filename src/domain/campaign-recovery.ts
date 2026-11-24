@@ -53,7 +53,7 @@ export function validUnlimitedAccess(access: UnlimitedAccess, attempt: Attempt, 
     Number.isSafeInteger(access.issuedAt) && access.issuedAt >= 0 &&
     Number.isSafeInteger(access.until) && access.until > access.issuedAt &&
     (access.consumed === undefined || access.consumed === true) &&
-    (access.expired === undefined || (access.expired === true && !access.consumed)));
+    (access.expired === undefined || (access.expired === true && !access.consumed)) && validUnlimitedClock(access));
 }
 
 export function grantUnlimitedAccess(save: Save, deal: Deal, grant: UnlimitedAccess) {
@@ -82,17 +82,18 @@ export function buyUnlimitedAccess(save: Save, deal: Deal, id: string, now: numb
   return true;
 }
 
-export function quoteUnlimitedAccess(save: Save, deal: Deal, now: number) {
+export function quoteUnlimitedAccess(save: Save, deal: Deal, now: number, reading?: ClockReading) {
   const { attempt } = save;
   const access = attempt.unlimitedAccess;
   if (!access || access.consumed || access.expired || attempt.unlimited || !unlimitedEligible(attempt, deal) ||
-      !Number.isSafeInteger(now) || now < access.issuedAt || now >= access.until) return;
+      !Number.isSafeInteger(now) || (!reading && now < access.issuedAt) || !unlimitedRemaining(access, now, reading)) return;
   return access;
 }
 
-export function useUnlimitedAccess(save: Save, deal: Deal, grantId: string, now: number) {
-  const quote = quoteUnlimitedAccess(save, deal, now);
-  if (quote?.id !== grantId || !beginUnlimited(save, deal, quote, now)) return false;
+export function useUnlimitedAccess(save: Save, deal: Deal, grantId: string, now: number, reading?: ClockReading) {
+  const quote = quoteUnlimitedAccess(save, deal, now, reading);
+  if (quote?.id !== grantId || !beginUnlimited(save, deal, quote, quote.clock ? quote.issuedAt : now)) return false;
+  if (quote.clock) save.attempt.unlimited!.clock = quote.clock;
   quote.consumed = true;
   return true;
 }
@@ -139,14 +140,51 @@ function restoreFiniteBudget(board: Board): Board {
   return { ...finite, movesLeft, phase: board.phase === 'won' ? 'won' : movesLeft ? 'playing' : 'exhausted' };
 }
 
-export function expireUnlimited(save: Save, now: number) {
+interface ClockReading { timeline: string; elapsed: number }
+
+type TimedRight = Pick<NonNullable<Attempt['unlimited']>, 'until' | 'issuedAt' | 'expired' | 'clock'>;
+
+export function validUnlimitedClock(right: TimedRight) {
+  const clock = right.clock;
+  return clock === undefined || Boolean(clock && right.until && typeof clock.timeline === 'string' &&
+    /^(android-\d+|page-[a-f0-9-]{36})$/.test(clock.timeline) && Number.isSafeInteger(clock.elapsed) &&
+    clock.elapsed >= 0 && Number.isSafeInteger(clock.wall) && clock.wall >= right.issuedAt && clock.wall < right.until);
+}
+
+export function unlimitedRemaining(right: TimedRight, now: number, reading?: ClockReading) {
+  if (right.until === undefined || right.expired) return;
+  const anchor = right.clock;
+  if (reading && now < right.issuedAt && (!anchor || reading.timeline !== anchor.timeline)) return 0;
+  if (anchor?.timeline.startsWith('android-') && reading && reading.timeline !== anchor.timeline) {
+    // Across a reboot there is no comparable offline elapsed clock.
+    return 0;
+  }
+  const floor = anchor && reading?.timeline === anchor.timeline
+    ? anchor.wall + Math.max(0, reading.elapsed - anchor.elapsed) : anchor?.wall ?? right.issuedAt;
+  if (anchor && reading?.timeline !== anchor.timeline && now < floor) return 0;
+  return Math.max(0, right.until - Math.max(now, floor));
+}
+
+function observeClock(right: TimedRight, now: number, remaining: number, reading?: ClockReading) {
+  if (!reading || right.until === undefined) return false;
+  const old = right.clock, wall = right.until - remaining;
+  if (old && old.timeline === reading.timeline &&
+      (now !== wall || now <= old.wall + Math.max(0, reading.elapsed - old.elapsed))) return false;
+  right.clock = { ...reading, wall };
+  return true;
+}
+
+export function expireUnlimited(save: Save, now: number, reading?: ClockReading) {
   if (!Number.isSafeInteger(now)) return false;
   let changed = false;
   for (const attempt of [save.attempt, save.parked?.campaign]) {
     const access = attempt?.unlimitedAccess;
-    if (access && !access.consumed && !access.expired && now >= access.until) {
-      access.expired = true;
-      changed = true;
+    if (access && !access.consumed && !access.expired) {
+      const remaining = unlimitedRemaining(access, now, reading)!;
+      if (remaining === 0) {
+        access.expired = true;
+        changed = true;
+      } else if (observeClock(access, now, remaining, reading)) changed = true;
     }
     const deadline = attempt?.unlimited?.until;
     if (!attempt?.unlimited || attempt.unlimited.expired || deadline === undefined) continue;
@@ -154,7 +192,12 @@ export function expireUnlimited(save: Save, now: number) {
     const order = purchaseRef ? save.commerce?.orders.find(item => item.grant?.id === purchaseRef) : undefined;
     const revoked = Boolean(purchaseRef && (!order || order.status !== 'paid' || !order.acknowledged ||
       (save.commerceAccount && order.accountId !== save.commerceAccount)));
-    if (!revoked && now < deadline) continue;
+    const right = attempt.unlimited;
+    const remaining = unlimitedRemaining(right, now, reading);
+    if (!revoked && remaining !== 0) {
+      if (observeClock(right, now, remaining!, reading)) changed = true;
+      continue;
+    }
     attempt.board = restoreFiniteBudget(attempt.board);
     attempt.undo = attempt.undo.map(restoreFiniteBudget);
     attempt.unlimited.expired = true;

@@ -1,6 +1,9 @@
 import { coreSpecialDeals } from '../../src/content/campaign-v8-integrated-specials';
 import { content8Special } from '../../src/content/campaign-v8-special';
 import { expect, test } from '@playwright/test';
+import { recoverable } from '../fixtures/content8-loss';
+import { updatePreviewTasks } from '../../src/domain/events/daily-tasks';
+import { rewardOfferState } from '../../src/domain/reward-offers';
 import { content8Dealer } from '../../src/content/campaign-v8-dealer';
 import { campaignId } from '../../src/domain/progression';
 import { dispatch, freshSave } from '../../src/domain/engine';
@@ -27,7 +30,7 @@ test('L15 to adaptive L16 through the normal campaign UI, then reopen and retain
   }, JSON.stringify(save));
   await page.goto('/');
   const manifest = await page.request.get('/release-manifest.json');
-  expect(await manifest.json()).toMatchObject({ id: 'c8-release-v1', contentVersion: 8, capabilities: { purchases: 'off' } });
+  expect(await manifest.json()).toMatchObject({ id: 'c8-release-v1', contentVersion: 8, capabilities: { purchases: 'off', proofShuffle: 'active', contextOffers: 'active' }, policies: { chargedShuffleLevel: 30 } });
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   await expect(page.locator('#campaign-lives-open')).toBeVisible();
   await page.locator('#home-play').tap();
@@ -144,4 +147,51 @@ test('opens cards in Daily Bonus, resumes the same round and claims only once', 
   await expect(page.locator('#daily-bonus-status')).toHaveText('Бонус получен');
   await expect(page.locator('#daily-bonus-claim')).toBeHidden();
   expect((await read(page)).dailyBonus?.claimed).toBe(true);
+});
+
+test('uses both task Definition charges and opens normal offers when the stock is empty', async ({ page }) => {
+  let save = freshSave(recoverable, 'task-definition');
+  save.contentVersion = 8;
+  for (const command of recoverable.winningPath.slice(0, 20)) save = dispatch(save, command, recoverable).next;
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0,
+    winsSinceInterstitial: 0, completedCampaign: Array.from({ length: 15 }, (_, index) => campaignId(index + 1)) };
+  save.settings.reducedMotion = true;
+  updatePreviewTasks(save, Date.now());
+  rewardOfferState(save).definitions = 0;
+  save.dailyTasks!.inventory.definitions = 2;
+  await page.addInitScript(value => {
+    if (!localStorage.getItem('asoc-solitaire.save.v1')) localStorage.setItem('asoc-solitaire.save.v1', value);
+  }, JSON.stringify(save));
+  await page.goto('/');
+  await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await page.locator('#home-play').tap();
+  const rect = (await page.locator('#game-root').boundingBox())!;
+  const board = save.attempt.board;
+  const frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, recoverable);
+  const geometry = layout(board, recoverable, frame, save.settings.deckSide, save.settings.deckPosition);
+  const pose = geometry.poses.find(p => p.faceUp && board.tableau.some(col => col.at(-1) === p.id) &&
+    board.faceUp.some(id => id !== p.id && !recoverable.cards[id].leader && recoverable.cards[id].category === recoverable.cards[p.id].category))!;
+  const use = page.locator('#definition-use');
+  for (let available = 2; available >= 0; available--) {
+    await page.locator('#inspect').tap();
+    await page.touchscreen.tap(rect.x + frame.offsetX + pose.x * frame.unit, rect.y + pose.y * frame.unit);
+    await expect(use).toHaveText(`Связанное слово · ${available}`);
+    if (!available) break;
+    await use.tap();
+    await expect(page.locator('#definition-related')).toBeVisible();
+    await page.getByRole('button', { name: 'Понятно' }).tap();
+  }
+  await expect(use).toBeDisabled();
+  await page.locator('#definition-refill').tap();
+  await expect(page.locator('#helpers')).toBeVisible();
+  await expect(page.locator('#product-offer-helpers')).toHaveText('Доступны бесплатные монеты.');
+  await expect.poll(async () => (await read(page)).productOffers?.reservation).toMatchObject({ resource: 'definition', surface: 'definition' });
+  await expect(page.locator('#shop-free-claim')).toBeVisible();
+  await expect(page.locator('#shop-video-claim')).toBeHidden();
+  await page.locator('#shop-free-claim').tap();
+  await expect.poll(async () => (await read(page)).profile.coins).toBe(save.profile.coins + 30);
+  const after = await read(page);
+  expect(after.dailyTasks?.inventory.definitions).toBe(0);
+  expect(after.attempt.board).toEqual(board);
+  expect(after.commerceAccount).toBeUndefined();
 });

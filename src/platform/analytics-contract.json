@@ -139,20 +139,18 @@
     "format": "string",
     "phase": "string"
   },
-  "ad_revenue": {
+  "ad_impression_revenue": {
     "schema": "number",
-    "mode": "string",
-    "attemptId": "string",
-    "dealId": "string",
-    "rulesVersion": "number",
-    "contentVersion": "number",
-    "balanceVersion": "number",
-    "movesLeft": "number",
-    "activeMs": "number",
+    "deliveryId": "string",
     "format": "string",
     "placement": "string",
+    "micros": "number",
     "currency": "string",
-    "micros": "number"
+    "provider": "string",
+    "sdk": "string",
+    "sdkMode": "string",
+    "build": "string",
+    "policy": "string"
   },
   "runtime_error": {
     "schema": "number",

@@ -89,12 +89,20 @@ public class SolitaireAdsPlugin extends Plugin {
             long micros = revenue.movePointRight(6)
                 .setScale(0, RoundingMode.HALF_UP).longValueExact();
             if (!currency.matches("[A-Z]{3}") || micros < 0 || micros > 9007199254740991L) return;
-            JSObject value = new JSObject();
-            value.put("id", id); value.put("kind", kind); value.put("placement", placement);
-            value.put("micros", micros); value.put("currency", currency);
-            JSObject notice = new JSObject();
-            notice.put("kind", kind); notice.put("phase", "revenue"); notice.put("revenue", value);
-            notifyListeners("adEvent", notice);
+            RevenueDelivery delivery = SolitaireApplication.revenue;
+            if (delivery == null) return;
+            JSONObject value = new JSONObject();
+            value.put("schema", 1); value.put("deliveryId", id); value.put("format", kind);
+            value.put("placement", placement); value.put("micros", micros); value.put("currency", currency);
+            value.put("provider", "yandex-mobile-ads"); value.put("sdk", "8.6.0");
+            value.put("sdkMode", BuildConfig.AD_MODE); value.put("build", BuildConfig.VERSION_NAME);
+            value.put("policy", "single-placement-pause-r1");
+            RevenueOutbox.Receipt result = delivery.receive(id, value.toString());
+            if (result == RevenueOutbox.Receipt.QUEUED) event(kind, "revenue_queued");
+            if (result == RevenueOutbox.Receipt.FULL) event(kind, "revenue_queue_full");
+        } catch (java.io.IOException error) {
+            android.util.Log.w("SolitaireRevenue", "Could not persist impression");
+            event(kind, "revenue_store_error");
         } catch (Exception ignored) { /* The SDK did not provide a usable paid impression. */ }
     }
     @PluginMethod public void status(PluginCall call) { handler.post(() -> {

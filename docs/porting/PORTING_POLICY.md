@@ -1,6 +1,12 @@
 # Association Solitaire — обязательное покрытие исследований конкурентных игр
 
-**Уточнение владельца · 24.11.2026:** [первый выпуск — кор и полный рекламный контур](OWNER_AD_RELEASE_2026-11-24.md). Денежные покупки недоступны и не блокируют этот выпуск; игровые монеты и рекламные сценарии остаются в работе. Платёжные системы сохраняются в общей дорожной карте с внешним блокером. Приёмка SDK/баланса/UX/Android остаётся обязательной; это уточнение не подтверждает реализацию.
+**Действующие уточнения владельца · 24.11.2026:** [первый выпуск — кор и рекламная монетизация](OWNER_AD_RELEASE_2026-11-24.md), с **одной продуктовой рекламной паузой** на основе исследований AdsBreak и Coffee Break. Недоступен денежный канал покупки; независимые игровые монеты, бесплатный прогресс, реклама и права с определённым non-IAP источником продолжают разрабатываться. Платёжные возможности остаются в общей дорожной карте для будущей активации. Приёмка SDK/баланса/UX/Android выбранного состава обязательна; это уточнение не подтверждает реализацию.
+
+### Источник → продуктовая возможность → этап выпуска
+
+[Матрица проверки возможностей](PRODUCT_CAPABILITY_RECHECK_2026-11-24.md) отделяет 115 source IDs, продуктовые контракты и этапы включения. **115 источников не означают 115 самостоятельных экранов/кнопок/продуктов, а 38 пакетов не являются списком MUST первого выпуска.** Один source ID имеет одного ответственного владельца пакета для учёта; несколько исходных механизмов могут соответствовать одной продуктовой возможности с явно сохранёнными различиями. Например, AdsBreak и Coffee Break остаются двумя строками исследования и сопоставляются одной принятой рекламной паузе. Это объединение не означает OWNER_EXCLUDED и не даёт права скрыть потерянную функциональность или назвать адаптацию точной копией каждого оригинала.
+
+Общая дорожная карта сохраняет все изученные системы. Ближайший выпуск принимает явно определённый состав из [решения 24.11](OWNER_AD_RELEASE_2026-11-24.md), а самостоятельные будущие возможности сохраняет с этапом и следующим действием. Изменение плана не меняет фактов `implemented`, `enabled` и `accepted`. Merchant-блокер относится к реальным денежным операциям, а не ко всем бесплатным/рекламным частям 15 коммерческих семейств. Source parity и работоспособность собственной адаптации проверяются раздельно; незакрытая конкретная зависимость включённой механики сохраняет свой gate.
 
 ## 0. Исполняемая полная очередь после решения владельца 21 ноября 2026
 
@@ -95,3 +101,4 @@ python3 ../mini-games-kit/tools/verify-reference-porting.py \
 **Latest P0 source correction:** Comparator v2 must reconstruct AZUR native temporary shuffled permutation from ordered original tableau columns plus stock; require original `GameManager.allCards` remains in enumerated order, native last-card face-up and stock suffix. A previous comparator expecting a shuffled `allCards` was invalid as an original-runtime acceptance oracle. The source inventory remains **114**, no scope reductions; original run still missing.
 
 **Native source after PR #93:** `azur-tutorial-preset-deal` is already in the 114-system register, so deeper schema proof does not create a duplicate feature. Null/disabled preset validates as an optional tutorial config, not an activated board. Full source validator failure semantics and live first-level preset remain UNKNOWN. Do not replace frozen Hitapps-based C8 FTUE without product acceptance.
+

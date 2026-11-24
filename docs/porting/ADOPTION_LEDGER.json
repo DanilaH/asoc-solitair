@@ -10,7 +10,9 @@
     "advertisingAcceptanceRequired": true,
     "preserveAllSourceFeatures": true,
     "returnToPaidActivation": "When purchase connectivity becomes available, verify provider and entitlement/restore/refund prerequisites; do not reopen the seven already-approved directions.",
-    "nonIapWork": "Core, lives, recovery, free rewards and advertising must not require merchant/checkout activation. Retain independent work from P22-P25 when needed for these flows."
+    "nonIapWork": "Core, lives, recovery, free rewards and advertising must not require merchant/checkout activation. The payment blocker applies to monetary acquisition channels, not entire commercial families; retain independent work from P22-P25.",
+    "capabilityMappingRef": "docs/porting/PRODUCT_CAPABILITY_RECHECK_2026-11-24.md",
+    "scopeInterpretation": "Multiple source IDs can map to one product capability with versioned rules and preserved provenance. Source inventory and packet counts are not counts of mandatory separate release features; acceptance applies to the selected product scenarios without deleting the full roadmap."
   },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
@@ -934,3 +936,4 @@
   "auditRevision": "2026-11-20-azur-preset-schema-native-114-v14",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }
+

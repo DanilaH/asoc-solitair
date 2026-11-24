@@ -2,11 +2,21 @@
 
 **P01, P18–P25.** Read [source E1/E2 audit](../../qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md), [source E3 41-product catalog and legal path](../../qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md), [consumer ad-clock issue #80](https://github.com/DanilaH/asoc-solitair/issues/80), [CORE-5 actual-board recovery](../../qa/CORE_REFERENCE_IMPLEMENTATION_SPEC_2026-11-20.md). This stream is the primary home for **13 E1, five E2 and 18 E3 feature IDs**; no commercial system is dropped because it is not the easiest first implementation.
 
-## P01 · P1 fix: fullscreen request is not an actual shown impression
+## Применимость требований · уточнение 24.11.2026
 
-**Primary source ID:** `azur-fullscreen-ads-clock`. **Current confirmed code regression:** `src/platform/ads.ts createAds.show` calls `options.beforeShow` **before** `native.show`, while `src/main.ts beforeShow` persists `platform.lastFullscreenAt=Date.now()` for rewarded and interstitial **and resets `winsSinceInterstitial=0` for interstitial**. Java `SolitaireAdsPlugin.java` can return `shown=false/outcome=unavailable` (for example SDK initialized but interstitial not loaded), `error` or `cancelled`. Its native callbacks already distinguish `onAdShown → phase=show`, `onAdImpression → phase=impression`, `onRewarded → durable earned receipt`. Current source can therefore reduce ad cadence after **no ad was shown**. Source original AZUR uses shared *shown* timestamps but its live values are not ours.
+[Первый выпуск: кор и реклама](../OWNER_AD_RELEASE_2026-11-24.md) снимает зависимость выпуска от live IAP/P24, сохраняя весь будущий коммерческий scope. [Сверка возможностей](../PRODUCT_CAPABILITY_RECHECK_2026-11-24.md) различает source ID, продуктовую возможность и вариант её политики. Разделы P20/P21 ниже заменяют прежние нормы «отдельный surface для каждого коэффициента», «free claim требует earned» и «Unico opt-in Coffee Break как отдельный обязательный placement». Исторические наблюдения и уже написанные адаптации не переписываются в доказанную source parity. Runtime, баланс, source IDs и статусы приёмки этой правкой не меняются.
 
-### Required engineering design
+## P01 · Actual shown clock: historical defect and current code boundary
+
+**Code rechecked at C8 HEAD `c4215e18d54927a5ac73a350876f29852aa36861`:** the beforeShow timestamp defect described below is corrected in this code snapshot. Native `shownJournal` persists the bound `onAdShown` identity separately from the earned journal; `src/platform/ads.ts::recoverShown` delivers it to `src/main.ts::commitShown` and `applyFullscreenShown`. Pre-show checks no longer persist a shown timestamp merely because an ad was requested. This is a code-level correction, not a new claim that issue #80 is closed, merged release acceptance is complete, or real Android SDK/lifecycle tests have passed.
+
+### Historical defect and original acceptance design
+
+The following defect description and numbered design are retained for provenance. Their references to missing callback identity or the old beforeShow writer describe the earlier implementation, not the checked C8 HEAD. Device acceptance and negative regressions remain applicable.
+
+**Primary source ID:** `azur-fullscreen-ads-clock`. **Historical defect recorded in the 21 November source/product audit:** `src/platform/ads.ts createAds.show` calls `options.beforeShow` **before** `native.show`, while `src/main.ts beforeShow` persists `platform.lastFullscreenAt=Date.now()` for rewarded and interstitial **and resets `winsSinceInterstitial=0` for interstitial**. Java `SolitaireAdsPlugin.java` can return `shown=false/outcome=unavailable` (for example SDK initialized but interstitial not loaded), `error` or `cancelled`. Its native callbacks already distinguish `onAdShown → phase=show`, `onAdImpression → phase=impression`, `onRewarded → durable earned receipt`. That historical code could therefore reduce ad cadence after **no ad was shown**. Source original AZUR uses shared *shown* timestamps but its live values are not ours.
+
+### Original engineering design and continuing acceptance criteria
 
 1. Split **pre-show eligibility/continue proof and request lifecycle** from actual `SDK_SHOWN`. Preflight may reject attempted continue before invoking ad; it must **not** update fullscreen timestamp or interstitial win quota. New callback/return contract must carry **per-request identity** (kind, placement, attempt/deal and unique ad session ID) to prevent stale/duplicate `show` events for a different board. Existing `AdEvent {kind,phase}` lacks identity; extend it safely or choose an equally robust verified binding. Do not misattribute two interleaving ads.
 2. Move persistence of `lastFullscreenAt` and `winsSinceInterstitial=0` to a real native `onAdShown` event for the exact interstitial, **idempotent under two shown callbacks**. A successfully shown rewarded ad may share the fullscreen cooldown if that product policy remains approved; a rewarded request without show may not. Define whether the durable state must be committed during show vs on outcome, and test process death before/after show. `impression` is a separate SDK event and **must not** be inferred from `shown`; `earned` alone grants reward after native journal and JS SaveStore dedup.
@@ -34,24 +44,59 @@ Primary IDs: `hitapps-stock-restore`, `hitapps-revive-offers`, `azur-unlimited-m
 
 **Exit:** separate finite-stock, Revive and Unlimited rules/entitlements, verified source-or-adapted parameters, versioned migration and clean negative tests; the owner has approved inclusion and QA-gated activation, but numeric amounts / actual provider billing and Android device remain separate release gates; no forced spending.
 
-## P20 · Win rewards, free claim, Definition and theme offers
+## P20 · One post-win offer policy, free/rewarded coin stages, Definition and themes
 
-Primary IDs: `azur-win-multiplier`, `hitapps-win-rewarded-offer`, `unico-rewarded-theme`, `unico-double-reward`, `azur-definition-consumable`, `azur-free-shop-coin-claim`, `azur-remaining-moves-coin-bonus`.
+Primary IDs: `azur-win-multiplier`, `hitapps-win-rewarded-offer`, `unico-rewarded-theme`, `unico-double-reward`, `azur-definition-consumable`, `azur-free-shop-coin-claim`, `azur-remaining-moves-coin-bonus`. All remain mapped; several source IDs may feed one product capability without losing their independent evidence or unknowns.
 
-- Keep distinct original evidence: AZUR video **x3 and temporary x5** CTA; Hitapps win RV config metadata; Unico **double** result video; AZUR +200 free shop sample **845→1045** with ad/cap unknown; Definition source viewer and SKU family; rewarded cosmetic «Try Now» badge; AZUR unused-move coin bonus is **inferred ≈5/remaining move** from source videos, our own `coinsPerRemainingMove=2`. None is a verified live reward/payout or recommended price.
-- Implement separate opt-in user surfaces **without changing baseline win grant**; context payout receipt ID `(canonical win/economy revision,placement,provider receipt)`, grant bonus delta **once**, persist after verified earned callback; no reissuing at animation, replay, ad dismiss or midnight. Build own product price/amount configuration, include free/coin earned variants explicitly distinct from IAP.
-- Define Definition as a specific resource/charge **separate** from existing free card reader; do not remove basic learning UX by silently paywalling it. Keep unique rewarded theme entitlement with visibility/expiry/restoration. Free shop claim has true cooldown and earned evidence, never mint on request. NoAds/bundles reside in P25.
-- Quantify wallet supply vs sinks and the effect of multiplier on P18 +10/Undo/replays and level finish. No externally unverified income claims.
+**Correction dated 24 November:** the earlier separate-surface wording did not establish that every reference name or multiplier must become a separate product placement. The old +200 ad/cap UNKNOWN and video-only AZUR formula notes are superseded for the specific branches recovered in [source free/rewarded issue #160](https://github.com/DanilaH/asoc-solitair/issues/160), [victory base/bonus issue #180](https://github.com/DanilaH/asoc-solitair/issues/180) and [x3/x5 issue #182](https://github.com/DanilaH/asoc-solitair/issues/182). Those findings are authenticated original **NATIVE_STATIC**, not original Android/SDK execution or live remote configuration. [P20 preview record](../P20_REWARD_OFFERS.md) retains the actual earlier product adaptation.
 
-## P21 · In-play AdsBreak, banner, revenue, Coffee Break
+### One post-win opportunity with versioned policy variants
 
-**OWNER DIRECTION 22.11.2026 · вариант А:** максимально перенести полные Hitapps AdsBreak/banners, AZUR verified ILRD и Unico opt-in Coffee Break с отдельными quota/cooldown/difficulty/level gates. **Новые обязательные и добровольные показы активировать только после проверки реального SDK, баланса и UX**; это условное разрешение будущего rollout, не прямое включение и не согласование исходно неизвестных численных параметров. Отличать `request`, `shown`, `impression`, `earned`, `paid`; никогда не трогать незавершённый жест или незафиксированный SaveStore, проверять отсутствие потери ходов после нативной рекламы [#138](https://github.com/DanilaH/asoc-solitair/issues/138). [Решение владельца](../OWNER_DECISIONS_2026-11-22.md). Повторно согласовывать факт переноса 4 original features не нужно.
+- AZUR x3 and x5 are a selected factor of **one rewarded victory claim**, not two required SDK placements. Its source-compiled fallback schedule selects x3/x3/x5 over qualifying calls with a persisted counter and difficulty gate; active values and original replay semantics remain unknown. Unico x2 is observed UI evidence, while Hitapps win RV configuration is metadata evidence; neither proves the same formula, schedule or callback behavior as AZUR.
+- Preserve current own factor2/factor3/factor5/flat variants as versioned policy choices, not four mandatory simultaneous buttons or independent per-factor quotas. The current fixed +20 is a product preview amount, not a recovered Hitapps payout. Use one appropriate selected offer and a canonical once-only grant policy; keep existing historical dedup identities compatible when defining a new revision.
+- Keep baseline grant, bonus calculation and presentation separate. For source-shaped AZUR, `rewardedExtra = (selectedFactor - 1) * tierBase`; `movesBonus` is already credited once and is not multiplied. Base50 + movesBonus25 + x3 extra100 =175 overall; multiplying the whole75 to225 is **not** that source formula. The current own trial instead multiplies ordinary base plus remaining-moves reward; it is PRODUCT_ADAPTED and must not be silently relabelled source-exact. Stage/cycle/streak/gold rewards remain separate from either multiplier basis.
+- Store the relevant base components, quote, policy revision and result identity before the ad; do not reconstruct an old win from today's balance. Grant only the saved extra on a matching earned receipt, once; ordinary claim/continuation remains available as defined by the selected result flow. No second base grant from a button, animation, replay or ad dismissal.
+- Distinguish counters by their actual trigger. Source x5 schedule progresses on eligible victory/UI calls under `IsRewardedAdsAllowed`, **not earned video completions**. A rollback after a later no-fill is not established by that source trace. Product dedup/retry rules may strengthen it but must be declared adaptations. A no-fill grants no reward; that does not establish that every previously advanced eligibility counter must rewind.
 
-Primary IDs: `hitapps-adbreak`, `hitapps-ingame-banner`, `azur-ad-revenue-attribution`, `unico-coffee-break`. Depends on fixed P01 event identity and audited P18 receipts.
+### One coin-reward flow with distinct free and rewarded stages
 
-Original Hitapps `AdsBreakService` uses configurable in-level opportunity and **per difficulty/per-level caps/cooldowns**, active remote numbers UNKNOWN; AZUR shared 120s local default, `OnRevenuePaid` interfaces don't prove ILRD success. Existing product banner available after campaign level≥3, real safe-area/callback unknown. Unico optional Coffee Break +3 sample is VIDEO, no proven transaction.
+- Source AZUR has a true free claim without an ad, followed by an optional rewarded stage. Verified compiled defaults are free200 once per UTC-date key, then rewarded400 with max10 earned/day and300s post-earn spacing. These are source fixtures, not approved production amounts/quotas. Preserve the original state separation even when choosing our own calibrated values.
+- The free action requires its own date/entitlement identity and atomic wallet+claimed commit, **not an earned advertising receipt** and not IAP. The rewarded action requires its own quote, earned receipt and earned-count/cooldown commit. Request, shown, dismiss and no-fill do not grant the rewarded amount. Test UTC rollover, rollback, duplicate/late callbacks and interrupted persistence independently.
+- Current `shop-free-coins` +30/rolling24h is actually a rewarded adaptation. It does not implement the source's free first stage, UTC policy or successor quota. Seasonal Pass free coins are another reward and do not substitute for the source shop claim. These may share a resource screen without requiring separate redundant product buttons or a live paid storefront.
 
-Build an offer **eligibility engine separate from user-visible actions**, with placements `opportunity→request→native_shown→impression→earned/revenue`, unique request/session ID, per-level/difficulty counters reset on actual source/product-defined rules, background/offline/resume, no in-level ad interrupt behind a live gesture, no effect on daily until explicit policy. True ILRD requires provider revenue payload+currency+placement+event identity, **not** revenue from show-request. Coffee Break must be opt-in with source-known +own amount and earned receipt before coins. Keep native banner safe-area tests, orientation/FontScale and no-fill. **Owner has approved the full development direction and conditional activation AFTER verified SDK, balance and UX;** keep new placements default-off until those gates and still-unspecified actual provider/rate parameters are accepted. Current source remote numbers UNKNOWN.
+### Other rewards retain their own semantic contracts
+
+Definition remains a specific resource/charge distinct from the existing free card reader; do not silently remove basic learning access. A rewarded theme has its own cosmetic entitlement, visibility, expiry and restoration. Helpers, moves, bonus slots and lives may share the ad transport but not their entitlement targets or rules. Free claim, internal-coin exchange, rewarded earned and IAP are different authorizations even when they grant the same kind of resource.
+
+Quantify wallet supply and sinks across baseline wins, remaining moves, tasks, claim stages, selected post-win policy, helpers, recovery and lives. Do not infer income, conversion or retention from compiled defaults, mocks or the existence of an ad button. Real SDK, balance and UX acceptance still gate new live advertising.
+
+## P21 · One in-play advertising-break capability, banner and revenue attribution
+
+Primary IDs: `hitapps-adbreak`, `hitapps-ingame-banner`, `azur-ad-revenue-attribution`, `unico-coffee-break`. Retain the complete owner-approved P21 direction and the conditions of real SDK, balance and UX acceptance. [P21 clarification](../P21_AD_PLACEMENTS.md) and [first-release scope](../OWNER_AD_RELEASE_2026-11-24.md) replace the earlier requirement for a separate mandatory opt-in Coffee Break and independently additive quotas. P24/live purchases are not prerequisites for advertising.
+
+### Evidence and product mapping
+
+Hitapps source supports configurable in-level opportunities with difficulty/level caps; live remote values are unknown. Original Unico footage shows **Daily interruption +3**, with the same board after return; a separate opt-in was not observed. Ad format, consent/skip behavior, exact settlement callback and active cadence remain UNKNOWN. See [source correction #157](https://github.com/DanilaH/asoc-solitair/issues/157). Do not repeat the superseded source label “Unico optional Coffee Break” as a verified fact.
+
+AdsBreak/Coffee map to one product advertising-break capability with declared context/trigger/reward variants and a common fullscreen-frequency policy. Keep context-specific limits when justified by source or chosen product rules, rather than granting another independent ad budget because a reference used another name. Current campaign opt-in +10 and offline +3 trials are PRODUCT_ADAPTED; they do not prove the original callback or require a separate Coffee CTA. Voluntary coins-for-video belong to the rewarded-offer layer. Banner remains its own SDK/layout format.
+
+### Separate event facts, not one automatic grant chain
+
+| Fact | Authority and permitted effect |
+| --- | --- |
+| Opportunity / request | Eligibility and request lifecycle only; no invented show, reward or revenue |
+| Bound native shown | Actual display and declared frequency accounting, once; not proof of impression or earned |
+| SDK impression / ILRD | Provider payload plus currency, placement and event identity; independent telemetry, not player reward or proof of payout settlement |
+| Rewarded earned | Matching saved entitlement, atomic SaveStore effect/dedup, then native acknowledgement |
+| Dismiss / interstitial completion | Return/resume; neither substitutes for earned or independently authorizes coins |
+
+Do not derive an original Unico reward from a generic shown/dismiss callback. A source-shaped +3 variant requires stronger source evidence or a separately declared product settlement contract. No-fill without show must not create shown/earned/revenue or a reward; a real shown followed by an error remains a historical show. Shared transport and cadence must not collapse distinct clocks or receipt purposes.
+
+### Integration and acceptance
+
+Use stable request/session, attempt/deal and placement identities; per-context eligibility and counters follow explicit rules. Never interrupt an unfinished gesture or roll back a committed move. Preserve the exact active/parked board through background, offline, no-fill, cancellation and relaunch. Existing source Daily eligibility remains an evidence gap to model, not automatic permission to turn on new forced Daily ads.
+
+Native ILRD parsing and the current local buffer do not establish completed analytics delivery: transmit actual amount/currency/placement/event identity and check the real SDK/dashboard path. Retain banner safe-area, FontScale, orientation and lifecycle checks. New placements and increased frequency remain default-off until the already accepted SDK/balance/UX gates and actual provider/rate settings pass. IAP unavailability does not block this work.
 
 ## P22 · Full offline AZUR commercial catalogue
 

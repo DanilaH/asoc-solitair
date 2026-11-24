@@ -1,5 +1,11 @@
 # Project contract
 
+## Owner release decision — 24 November 2026: core and advertising
+
+Read [the binding release clarification](docs/porting/OWNER_AD_RELEASE_2026-11-24.md) before implementation or release planning. The owner says real-money purchases cannot be connected; all advertising work must proceed. The first release targets integrated core plus the full approved advertising system. Merchant onboarding, checkout, IAP prices/SKUs, sandbox purchases and live IAP receipts are not gates for this release. Advertising accounts/units/payout availability and real SDK, economy, UX and Android acceptance remain advertising gates.
+
+Retain soft-currency purchases and separate core/lives/recovery/free rewards/ad placements from paid storefront activation. Complete P20 live rewarded support, P21 placements and ILRD delivery, one C8 release configuration and attainable rewards without IAP. Do not turn paid entitlements into rewarded grants or count video as MakePurchase without a separately defined product contract. Keep all 115 source IDs, 38 packets and 15 commercial families in the full roadmap; unavailable paid systems remain blocked for future activation, never OWNER_EXCLUDED. This supersedes only older requirements to complete live IAP before releasing the game; the other approved directions and their quality gates remain in force.
+
 ## Native source research update (22.11.2026): useful moves, two Joker predicates
 
 - [kit PR #98](https://github.com/DanilaH/mini-games-kit/pull/98) source-original native `MoveHintSystem` and `MoveValidator` have independently different `IsUselessJokerColumnToColumnMove` predicates; `GameManager.CheckAvailableMoves` after draw/transfer can invoke an opaque callback **with positive moves left** when no validator-useful move exists. This is **not** the same as the game's move-budget loss and NOT proof of a paywall. [Exact source/product report](docs/qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md) and [issue #123](https://github.com/DanilaH/asoc-solitair/issues/123). P05 source diagnostic + P04 offline hint policy are independent and do not authorize changing currently frozen Deal IDs, Rules3, production safe Hint, wallet or no-fill/coin recovery. Source pin v16 115/115, 38 packages; original Android missing.

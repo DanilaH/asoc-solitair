@@ -1,5 +1,7 @@
 # Association Solitaire — полная дорожная карта переноса исследованных систем
 
+**Уточнение владельца · 24.11.2026:** [первый выпуск — кор и полный рекламный контур](OWNER_AD_RELEASE_2026-11-24.md). Денежные покупки недоступны и не блокируют этот выпуск; игровые монеты и рекламные сценарии остаются в работе. Платёжные системы сохраняются в общей дорожной карте с внешним блокером. Приёмка SDK/баланса/UX/Android остаётся обязательной; это уточнение не подтверждает реализацию.
+
 **19 ноября 2026 · Owner scope: full reference-system adoption, staged implementation · research/program document, NO game runtime edits in this PR.**
 
 This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/7f91abfd824162780a6567c6823b95864142957c/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.

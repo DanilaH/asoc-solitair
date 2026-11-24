@@ -1,5 +1,17 @@
 {
   "schema": "asoc-autonomous-delivery-queue-v1",
+  "releaseScope": {
+    "decisionDate": "2026-11-24",
+    "decisionRef": "docs/porting/OWNER_AD_RELEASE_2026-11-24.md",
+    "nearTermGoal": "Integrated core and all approved advertising; real-money purchases unavailable",
+    "realMoneyPurchases": "BLOCKED_EXTERNAL",
+    "liveIapRequiredForFirstRelease": false,
+    "softCurrencyPurchasesRetained": true,
+    "advertisingAcceptanceRequired": true,
+    "preserveAllSourceFeatures": true,
+    "returnToPaidActivation": "When purchase connectivity becomes available, verify provider and entitlement/restore/refund prerequisites; do not reopen the seven already-approved directions.",
+    "nonIapWork": "Core, lives, recovery, free rewards and advertising must not require merchant/checkout activation. Retain independent work from P22-P25 when needed for these flows."
+  },
   "asOf": "2026-11-21",
   "sourcePin": {
     "repo": "DanilaH/asoc-solitair",

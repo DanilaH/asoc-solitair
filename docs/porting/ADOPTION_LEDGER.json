@@ -1,5 +1,17 @@
 {
   "schema": "consumer-adoption-ledger-v1",
+  "releaseScope": {
+    "decisionDate": "2026-11-24",
+    "decisionRef": "docs/porting/OWNER_AD_RELEASE_2026-11-24.md",
+    "nearTermGoal": "Integrated core and all approved advertising; real-money purchases unavailable",
+    "realMoneyPurchases": "BLOCKED_EXTERNAL",
+    "liveIapRequiredForFirstRelease": false,
+    "softCurrencyPurchasesRetained": true,
+    "advertisingAcceptanceRequired": true,
+    "preserveAllSourceFeatures": true,
+    "returnToPaidActivation": "When purchase connectivity becomes available, verify provider and entitlement/restore/refund prerequisites; do not reopen the seven already-approved directions.",
+    "nonIapWork": "Core, lives, recovery, free rewards and advertising must not require merchant/checkout activation. Retain independent work from P22-P25 when needed for these flows."
+  },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
   "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/adb0657facebf8b5e3ed22369305ba509c988626/research/games/association-solitaire/porting/SOURCE_FEATURES.json",

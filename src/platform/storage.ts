@@ -1,6 +1,7 @@
+import { validProductOffers } from '../domain/commerce/product-offers';
 import { validCombo } from '../domain/events/combo';
 import { validDailyBonus } from '../domain/events/daily-bonus';
-import { validUnlimitedAccess } from '../domain/campaign-recovery';
+import { validUnlimitedAccess, validUnlimitedClock } from '../domain/campaign-recovery';
 import { validLavaRun } from '../domain/events/campaign-liveops';
 import { validCampaignLives } from '../domain/campaign-lives';
 import { validStoreProgress } from '../domain/commerce/storefront';
@@ -170,7 +171,8 @@ export function decodeSave(raw: string, source: DealSource): Save {
         (unlimited.until !== undefined && (!natural(unlimited.until) || unlimited.until <= unlimited.issuedAt)) ||
         (unlimited.purchaseRef !== undefined && (typeof unlimited.purchaseRef !== 'string' ||
           !unlimited.purchaseRef || unlimited.purchaseRef.length > 400 || unlimited.until === undefined)) ||
-        (unlimited.expired !== undefined && (unlimited.expired !== true || unlimited.until === undefined)))) ||
+        (unlimited.expired !== undefined && (unlimited.expired !== true || unlimited.until === undefined)) ||
+        !validUnlimitedClock(unlimited))) ||
       ([save.attempt.board, ...save.attempt.undo].some(board => board.retainedMoves !== undefined) && (!unlimited || unlimited.expired))) {
     throw Error('Повреждён договор восстановления');
   }
@@ -198,6 +200,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.rewardOffers !== undefined && !validRewardOffers(save.rewardOffers)) throw Error('Повреждены бонусные предложения');
   if (save.storeProgress !== undefined && !validStoreProgress(save.storeProgress)) throw Error('Повреждена история магазина');
   if (save.commerceAccount !== undefined && !/^[0-9A-Za-z_.:-]{1,128}$/.test(save.commerceAccount)) throw Error('Повреждён профиль покупок');
+  if (save.productOffers !== undefined && !validProductOffers(save.productOffers)) throw Error('Повреждены контекстные предложения');
   if (save.offerCampaigns !== undefined && !validOfferCampaignJournal(save.offerCampaigns)) throw Error('Повреждён журнал предложений');
   if (save.commerce !== undefined && !validCommerceJournal(save.commerce)) throw Error('Повреждён журнал покупок');
   if (save.events !== undefined && !validEventLedger(save.events)) throw Error('Повреждён журнал событий');

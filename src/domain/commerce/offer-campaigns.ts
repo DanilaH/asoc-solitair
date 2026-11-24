@@ -109,8 +109,8 @@ export function validOfferCampaignJournal(journal: OfferCampaignJournal): boolea
 interface CampaignStore {
   mutate<T>(update: (save: Save) => T): Promise<T>;
 }
-interface Presentation { reveal(): void }
-type Presenter = (definition: OfferCampaignDefinition, event: OfferEvent) => Presentation | false | undefined;
+interface Presentation { persist?(save: Save): void; reveal(): void }
+type Presenter = (definition: OfferCampaignDefinition, event: OfferEvent, current: Readonly<Save>) => Presentation | false | undefined;
 export interface OfferPresenters {
   named: Partial<Record<WindowId, Presenter>>;
   fallback?: Presenter;
@@ -128,7 +128,7 @@ function ownsSku(save: Save, accountId: string, skus: readonly string[], at: num
 
 /** Presenter stages synchronously. The only visible effect is released after a durable SaveStore commit. */
 export function createOfferCampaignDispatcher(store: CampaignStore, config: {
-  enabled: boolean; definitions: readonly OfferCampaignDefinition[]; presenters: OfferPresenters;
+  enabled: boolean; definitions: readonly OfferCampaignDefinition[]; presenters: OfferPresenters; recentEvents?: number;
 }) {
   const definitions = config.definitions.filter(validDefinition)
     .sort((a, b) => b.priority - a.priority || ordinal(a.campaignId, b.campaignId));
@@ -147,6 +147,8 @@ export function createOfferCampaignDispatcher(store: CampaignStore, config: {
       if (event.trigger === OfferTrigger.OutOfBooster) occurrence.booster = event.booster;
       if (event.trigger === OfferTrigger.NoValidMoves) occurrence.movesRemaining = event.movesRemaining;
       account.events.push(occurrence);
+      if (config.recentEvents && account.events.length > config.recentEvents)
+        account.events.splice(0, account.events.length - config.recentEvents);
       const eligible: string[] = [];
       const attempted: string[] = [];
       const candidates = definitions.map(d => {
@@ -175,7 +177,7 @@ export function createOfferCampaignDispatcher(store: CampaignStore, config: {
         eligible.push(d.campaignId);
         const named = Object.hasOwn(NamedOfferWindow, d.windowId) ? config.presenters.named[d.windowId as WindowId] : undefined;
         attempted.push(d.campaignId);
-        const presentation = named?.(d, event) || config.presenters.fallback?.(d, event);
+        const presentation = named?.(d, event, next) || config.presenters.fallback?.(d, event, next);
         if (!presentation) continue;
         const committed: CampaignState = {
           ...state, revision: d.revision, active: state.active ?? { from: at, until },
@@ -185,6 +187,7 @@ export function createOfferCampaignDispatcher(store: CampaignStore, config: {
         if (index < 0) account.campaigns.push(committed);
         else account.campaigns[index] = committed;
         occurrence.presented = d.campaignId;
+        presentation.persist?.(next);
         return { status: 'presenter-accepted', campaignId: d.campaignId, eligible, attempted, presentation } as const;
       }
       return { status: 'no-presentation', eligible, attempted } as const;

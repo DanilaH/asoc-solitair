@@ -11,6 +11,7 @@
     "specials": "c8-core-special-r1",
     "interactionFeedback": "azur-feel-r1",
     "lives": 1,
+    "chargedShuffleLevel": 30,
     "economy": "c8-non-iap-rights-r1",
     "extraHelpers": { "randomJokerCoins": 250, "unlimitedCoins": 120, "unlimitedMs": 60000 },
     "advertising": "single-placement-pause-r1"
@@ -28,10 +29,13 @@
     "earnedUnlimited": "active",
     "newUnlimited": "candidate-coins",
     "lives": "active",
-    "proofShuffle": "qa",
+    "proofShuffle": "active",
     "drawInvalidCoinFeedback": "active",
     "advertising": "sdk-acceptance-gated",
+    "impressionRevenue": "native-durable-outbox",
+    "unlimitedClock": "android-elapsed-realtime",
     "rewardOffers": "sdk-acceptance-gated",
+    "contextOffers": "active",
     "freeSeasonalTrack": "active",
     "purchases": "off",
     "retention": "c8-retention-candidate-r1"

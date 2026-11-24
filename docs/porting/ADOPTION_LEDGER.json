@@ -284,9 +284,10 @@
     {
       "id": "azur-shuffle-helper",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P16 PRODUCT_ADAPTED one free stock shuffle per attempt with current-board proof, atomic SaveStore and Undo. See docs/porting/P16_PROOF_SHUFFLE.md.",
-      "nextAction": "Native original source is now NATIVE_STATIC kit PR #96: closed tableau + Stock + Reset Waste pooled, Undo.Clear on success, separate SpendShuffleHint/refund. Current P16 PR #103 stock-only verified-winning Shuffle with Undo retained is PRODUCT_ADAPTED; see issue #104 / docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md. Original Android/merchant gating UNKNOWN.",
-      "stage": "D1"
+      "currentImplementation": "Обычный C8 L30 использует один накопленный заряд и проверенный путь победы; manifest proofShuffle active. Архивный stock-only P16 сохраняет старый паспорт.",
+      "nextAction": "Принять физический L30, Undo и реальную выдачу зарядов. NATIVE_STATIC kit #96 описывает closed tableau + Stock + Reset Waste и Undo.Clear; точные исходные runtime/merchant gates остаются UNKNOWN.",
+      "stage": "D1",
+      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
     },
     {
       "id": "hitapps-joker",
@@ -591,18 +592,18 @@
     {
       "id": "azur-unlimited-moves-offer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore.",
-      "nextAction": "Define exact entitlement duration/UI/server/SaveStore/budget migration without falsely copying AZUR Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
+      "currentImplementation": "C8 B4 даёт отдельное право 120 монет/60 секунд. Android elapsedRealtime защищает срочный доступ и бюджеты active/parked/Undo от отката wall clock в рамках boot.",
+      "nextAction": "Проверить реальный фон, перезапуск, смену часов и reboot на Android; принять кандидатные цены. Срок и источники права в оригинале требуют P36.",
       "stage": "E1",
-      "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md"
+      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
     },
     {
       "id": "azur-offer-campaign",
-      "status": "ROADMAPPED",
-      "currentImplementation": "No activated commercial campaigns other than fixed helper shop P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. P25 #163 adds a durable eight-trigger local dispatcher and exact three named presenter routes. The default-off Welcome QA fixture preserves the static 5000/2/2 dual-trigger gates.",
-      "nextAction": "Build separable offer schedule + owner-verified store provider after event state E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Validate actual remote configuration, real SDK/provider and physical Android while the offline profile remains isolated.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Диспетчер P25 получает восемь игровых фактов из обычного C8 и выбирает контекст для существующих неплатных экранов. Checkout отключён.",
+      "nextAction": "Физическая проверка неплатных точек и реальных rewarded, затем в отдельном этапе подтвердить фактический remote-граф AZUR, коммерческие gates и приоритеты.",
       "stage": "E3",
-      "evidenceRef": "docs/porting/P25_AZUR_CONTEXT_CAMPAIGNS.md"
+      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
     },
     {
       "id": "azur-fullscreen-ads-clock",
@@ -615,10 +616,11 @@
     },
     {
       "id": "azur-ad-revenue-attribution",
-      "status": "ROADMAPPED",
-      "currentImplementation": "P21 offline model tracks explicit provider impression, currency, integer amount and idempotent event identity. No real ILRD has been verified. See docs/porting/P21_AD_PLACEMENTS.md. Игровой runtime и native callback подключены под отдельным разрешением. Новый показ и фактический ILRD ещё не приняты на телефоне.",
-      "nextAction": "Verify ILRD/currency+placements in target ad provider, not revenue from click Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
-      "stage": "E2"
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Живой native impression callback сохраняет нормализованное ILRD в отдельной очереди до передачи SDK AppMetrica; retries используют стабильный ID.",
+      "nextAction": "Принять все форматы/точки на Android и проверить валюту, сумму, доставку и дедупликацию в AppMetrica по одному delivery ID.",
+      "stage": "E2",
+      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
     },
     {
       "id": "azur-cosmetics",
@@ -780,9 +782,10 @@
     {
       "id": "azur-definition-consumable",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P20 opt-in preview has a distinct related-word charge. The existing explanation remains accessible. See docs/porting/P20_REWARD_OFFERS.md.",
-      "nextAction": "Trace Definition usage/intro pricing and define own paid/free resource vs reader UX Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
-      "stage": "E1"
+      "currentImplementation": "Обычная карточка общим счётчиком учитывает P20 и инвентарь задач/ежедневного бонуса; одна успешная выдача тратит один заряд. Основное объяснение открыто.",
+      "nextAction": "Проверить инвентарь и reader на Android; точные исходные триггеры и цена Definition требуют P36.",
+      "stage": "E1",
+      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
     },
     {
       "id": "azur-free-shop-coin-claim",

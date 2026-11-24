@@ -1,3 +1,4 @@
+import type { ProductOffers } from './commerce/product-offers';
 import type { Combo } from './events/combo';
 import type { DailyBonus } from './events/daily-bonus';
 import { releaseProfile } from '../config/profile';
@@ -85,6 +86,8 @@ export interface CampaignIssuance {
   seed?: { value: number; inputHash: string; boardHash: string; routeHash: string };
   equality: 'unknown-cohort' | 'not-eligible';
 }
+type UnlimitedClock = { timeline: string; elapsed: number; wall: number };
+
 export interface Attempt {
   id: string; dealId: string; board: Board; undo: Board[];
   issuance?: CampaignIssuance;
@@ -102,9 +105,10 @@ export interface Attempt {
   revive?: { version: 1; channel: 'coins' | 'earned'; moves: number; price: number };
   unlimitedAccess?: {
     version: 1; id: string; attemptId: string; source: 'rewarded' | 'campaign' | 'coins';
-    issuedAt: number; until: number; consumed?: true; expired?: true;
+    issuedAt: number; until: number; consumed?: true; expired?: true; clock?: UnlimitedClock;
   };
-  unlimited?: { version: 1; id: string; issuedAt: number; until?: number; expired?: true; purchaseRef?: string };
+  unlimited?: { version: 1; id: string; issuedAt: number; until?: number; expired?: true; purchaseRef?: string;
+    clock?: UnlimitedClock };
   shuffleUsed?: true;
   verifiedTaskHints?: number;
   combo?: Combo;
@@ -153,6 +157,7 @@ export interface Save {
   lavaRun?: LavaRun;
   commerce?: CommerceJournal;
   offerCampaigns?: OfferCampaignJournal;
+  productOffers?: ProductOffers;
   commerceAccount?: string;
   storeProgress?: StoreProgress;
   events?: EventLedger;

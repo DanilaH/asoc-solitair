@@ -1,3 +1,6 @@
+import { createProductOfferAdapter, noUsefulMoveFact, startOfferSession, type ContextFact } from './domain/commerce/product-offers';
+import { OfferTrigger } from './domain/commerce/offer-campaigns';
+import { createRecoveryClock } from './platform/recovery-clock';
 import { COMBO_STAGES } from './domain/events/combo';
 import { claimDailyBonus, openDailyBonusRound, revealDailyBonusCard } from './domain/events/daily-bonus';
 import { releaseProfile } from './config/profile';
@@ -9,8 +12,8 @@ import { availableEvents, claimMilestone, eventKey } from './domain/events/ledge
 import { createStorefront } from './platform/storefront';
 import { claimShopProgress, PASS_GOAL, PIGGY_LIMIT, productLabels, recordStoreClear, showProductGoods, storefrontView, STOREFRONT_PREVIEW } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
-import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee, parseAdRevenue, recordAdRevenue } from './domain/campaign-advertising';
-import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
+import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee } from './domain/campaign-advertising';
+import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, unlimitedRemaining, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
 import { allowsRandomJoker, buyRandomJokerAccess, placeRandomJoker, randomJokerReady, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
 import { GENERATION_PREVIEW, recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
@@ -243,7 +246,37 @@ try {
     return freshSave(deal, crypto.randomUUID());
   }, AZUR_VICTORY_QA ? AZUR_VICTORY_SAVE_KEY : undefined);
   await document.fonts.load('800 20px Nunito').catch(() => []);
+  const recoveryTime = createRecoveryClock();
   let save = await store.open();
+  const expireRecovery = (next: Save) => expireUnlimited(next, Date.now(), recoveryTime.read());
+  await recoveryTime.refresh();
+  if (recoveryWait(save) !== undefined) {
+    await store.mutate(expireRecovery);
+    save = store.state;
+  }
+  function recoveryWait(state: Save) {
+    const now = Date.now(), reading = recoveryTime.read();
+    const waits = [state.attempt, state.parked?.campaign].flatMap(attempt => {
+      const timed = attempt?.unlimited, access = attempt?.unlimitedAccess;
+      const remaining = timed && unlimitedRemaining(timed, now, reading);
+      const unspent = access && !access.consumed ? unlimitedRemaining(access, now, reading) : undefined;
+      return [
+        ...(remaining !== undefined ? [remaining] : []),
+        ...(unspent !== undefined ? [unspent] : []),
+      ];
+    });
+    return waits.length ? Math.min(...waits) : undefined;
+  }
+  const productOfferEnabled = releaseProfile?.capabilities.contextOffers === 'active';
+  if (productOfferEnabled) {
+    await store.mutate(next => startOfferSession(next, Date.now()));
+    save = store.state;
+  }
+  const dispatchContext = productOfferEnabled ? createProductOfferAdapter(store) : undefined;
+  function offerFact(fact: ContextFact) {
+    if (!dispatchContext || !alive) return;
+    void dispatchContext(save, deal, fact, Date.now())?.catch(() => undefined);
+  }
   const sourceDailyTasks = import.meta.env.VITE_CONTENT8_DAILY_TASKS === 'source';
   const dailyBonusEnabled = releaseTasks || sourceDailyTasks;
   function syncRetention(next: Save, now: number) {
@@ -359,21 +392,19 @@ try {
   store.onChange = value => { save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); scheduleRecoveryClock(); };
   function scheduleRecoveryClock() {
     clearTimeout(recoveryClock);
-    const times = [save.attempt, save.parked?.campaign].flatMap(attempt => {
-      const timed = attempt?.unlimited, access = attempt?.unlimitedAccess;
-      return [
-        ...(timed?.until !== undefined && !timed.expired ? [timed.until] : []),
-        ...(access && !access.expired && !access.consumed ? [access.until] : []),
-      ];
-    });
-    if (!times.length) return;
+    const remaining = recoveryWait(save);
+    if (remaining === undefined) return;
     recoveryClock = setTimeout(() => {
       if (!alive) return;
-      void write(next => expireUnlimited(next, Date.now())).then(changed => {
-        if (changed && alive) { scene?.sync(); if (screen === 'game' && save.attempt.board.phase === 'exhausted') outcome(); }
-        else if (alive) scheduleRecoveryClock();
-      }).catch(() => message('Не удалось восстановить лимит ходов.', true));
-    }, Math.min(2_147_483_647, Math.max(0, Math.min(...times) - Date.now())));
+      void syncRecoveryTime().catch(() => message('Не удалось восстановить лимит ходов.', true));
+    }, Math.min(2_147_483_647, remaining));
+  }
+  async function syncRecoveryTime() {
+    if (recoveryWait(save) === undefined) return;
+    const changed = await write(expireRecovery);
+    if (!alive) return;
+    if (changed) { scene?.sync(); if (screen === 'game' && save.attempt.board.phase === 'exhausted') outcome(); }
+    scheduleRecoveryClock();
   }
   async function write<T>(change: (next: Save) => T): Promise<T> {
     pendingWrites++; saving = true; setInput();
@@ -454,13 +485,6 @@ try {
     onStatus() { renderLives(); renderHud(); updateBanner(); if ((deal.campaignLevel ?? 0) > BALANCE.ads.interstitialAfterLevel) void ads.prepareInterstitial(); },
     onEvent(event) {
       telemetry.track('ad_event', { format: event.kind, phase: event.phase });
-      if (event.phase === 'revenue' && ads.status.campaignApproved === true) {
-        const revenue = parseAdRevenue(event.revenue);
-        if (revenue) void store.mutate(next => recordAdRevenue(next, revenue)).then(recorded => {
-          if (recorded) telemetry.track('ad_revenue', { format: revenue.kind, placement: revenue.placement ?? 'unknown',
-            currency: revenue.currency, micros: revenue.micros });
-        }).catch(() => undefined);
-      }
     },
   });
   if (ads.bridge) banner = new NativeBanner(ads.bridge, $('#banner-slot'));
@@ -541,7 +565,7 @@ try {
     restore.textContent = price ? `Восстановить колоду · ${price} монет` : 'Восстановить колоду · бесплатно';
     const unlimited = $('#unlimited-preview');
     const purchase = recoveryEnabled() && quotePurchasedUnlimited(save, deal, unlimitedAccount(), Date.now());
-    const earned = quoteUnlimitedAccess(save, deal, Date.now());
+    const earned = quoteUnlimitedAccess(save, deal, Date.now(), recoveryTime.read());
     const trial = RECOVERY_PREVIEW && deal.recovery && save.attempt.board.phase === 'playing' && !save.attempt.unlimited;
     const buyUnlimited = canBuyUnlimitedAccess(save, deal);
     unlimited.hidden = !(purchase || earned || trial || buyUnlimited);
@@ -577,7 +601,7 @@ try {
     const jokerUnlocked = helperUnlocked(save, 'joker', deal);
     $('#joker').hidden = !jokerUnlocked; $('#joker-offer').hidden = !jokerUnlocked || Boolean(helperFocus && helperFocus !== 'joker');
     $('#joker-count').textContent = String(save.profile.jokers); $('#joker-stock').textContent = String(save.profile.jokers);
-    $<HTMLButtonElement>('#buy-joker').disabled = serviceBusy || saving || save.profile.coins < BALANCE.helperPrices.joker;
+    $<HTMLButtonElement>('#buy-joker').disabled = serviceBusy || saving || (!productOfferEnabled && save.profile.coins < BALANCE.helperPrices.joker);
     $<HTMLButtonElement>('#wallet-open').disabled = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
     $('.wallet-plus').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
     $('#helpers-open').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
@@ -663,7 +687,8 @@ try {
 
     $('#hint-stock').textContent = String(save.profile.hints); $('#undo-stock').textContent = String(save.profile.undos);
     for (const helper of ['hint', 'undo'] as const) {
-      $<HTMLButtonElement>(`#buy-${helper}`).disabled = serviceBusy || saving || save.profile.coins < BALANCE.helperPrices[helper];
+      $<HTMLButtonElement>(`#buy-${helper}`).disabled = serviceBusy || saving ||
+        (!productOfferEnabled && save.profile.coins < BALANCE.helperPrices[helper]);
       $<HTMLButtonElement>(`#video-${helper}`).disabled = serviceBusy || !ads.status.rewarded;
       $(`#video-${helper}`).hidden = !ads.status.rewarded;
     }
@@ -722,6 +747,30 @@ try {
     if (PICTURE_PREVIEW || save.picture) renderPicture();
     if (TASKS_PREVIEW) renderTasks();
     if (dailyBonusEnabled) renderDailyBonus();
+    if (productOfferEnabled) renderProductContext();
+  }
+  function renderProductContext() {
+    const pending = save.productOffers?.reservation;
+    const context = pending?.attemptId === save.attempt.id ? pending : undefined;
+    const helpersText = $('#product-offer-helpers'), resultText = $('#product-offer-result');
+    const forHelpers = Boolean(context && context.surface !== 'result' && !save.attempt.daily);
+    const forResult = Boolean(context?.surface === 'result' && save.attempt.board.phase !== 'playing');
+    helpersText.hidden = !forHelpers;
+    resultText.hidden = !forResult;
+    $('#context-bonus-open').hidden = !forHelpers || !dailyBonusEnabled || unlockedLevel(save) < 2;
+    if (forHelpers) {
+      const now = Date.now();
+      helpersText.textContent = canClaimShopCoins(save, deal, now) ? 'Доступны бесплатные монеты.' :
+        approvedOffers() && ads.status.rewarded && offerQuote(save, deal, 'shop-free-coins', now, integratedOffers)
+          ? 'Можно пополнить монеты за видео.' : context?.resource === 'definition'
+            ? 'Объяснения могут выпасть в ежедневном бонусе.' : context?.eventId.startsWith('short-')
+              ? 'Не хватает монет. Дополнительные награды доступны в ежедневном бонусе.'
+              : 'Помощников можно пополнить за монеты или из наград.';
+    }
+    if (forResult) {
+      resultText.textContent = save.attempt.board.phase === 'won'
+        ? 'Награду можно забрать без видео.' : 'Попробуйте отмену, доступное продолжение или начните заново.';
+    }
   }
   function recordedVictoryReward() {
     if (!victoryPolicy || save.attempt.daily || deal.campaignLevel === undefined || save.attempt.board.phase !== 'won') return;
@@ -837,7 +886,7 @@ try {
     try {
       presentingCommand = true;
       await write(next => {
-        expireUnlimited(next, Date.now());
+        expireRecovery(next);
         if (LIVES_PREVIEW && !next.attempt.daily && deal.campaignLevel &&
             (cmd.type === 'restart' ? !mayStartCampaignAttempt(next, next.attempt, Date.now()) : Boolean(next.attempt.lostLife && next.attempt.board.phase === 'exhausted'))) {
           blockedLives = true; return;
@@ -882,7 +931,21 @@ try {
     if (blockedLives) { retryLifeRestart = true; blockedLifeLevel = undefined; openLives(); return false; }
     if (!result) return false;
     if (result.accepted) {
-      if (started) { telemetry.track('level_start'); if (save.attempt.daily) telemetry.track('daily_start'); }
+      if (started) {
+        telemetry.track('level_start');
+        if (save.attempt.daily) telemetry.track('daily_start');
+        offerFact({ trigger: OfferTrigger.LevelStarted, key: 'start' });
+      }
+      if (finished && deal.campaignLevel !== undefined && save.attempt.board.phase === 'won') {
+        offerFact({ trigger: OfferTrigger.LevelCompleted, completedLevel: deal.campaignLevel, key: 'win' });
+      } else if (finished && save.attempt.board.phase === 'exhausted') {
+        offerFact({ trigger: OfferTrigger.LevelFailed, key: 'failure' });
+      } else if (productOfferEnabled && (cmd.type === 'transfer' || cmd.type === 'draw' || cmd.type === 'recycle') &&
+          !save.offerCampaigns?.accounts.some(account => account.accountId === 'local-c8-profile' &&
+            account.events.some(item => item.id === `no-valid-moves:${save.attempt.id}`))) {
+        const fact = noUsefulMoveFact(save, deal, board => hasTransfer.get(board) ?? canReachTransfer(board, deal));
+        if (fact) offerFact(fact);
+      }
       if (cmd.type === 'restart') { telemetry.track('level_restart'); announceDeal(); }
       if (cmd.type === 'hint' || cmd.type === 'undo' || cmd.type === 'place-joker') telemetry.track('helper_used', { helper: cmd.type === 'place-joker' ? 'joker' : cmd.type });
       if (finished) telemetry.track(save.attempt.board.phase === 'won' ? 'level_win' : 'level_fail');
@@ -1166,7 +1229,7 @@ try {
     const attempt = save.attempt.id, back = returnToDialog;
     serviceBusy = true;
     try {
-      const offer = await write(next => prepareRewardOffer(next, deal, kind, Date.now(), crypto.randomUUID(), true, integratedOffers));
+      const offer = await write(next => prepareRewardOffer(next, deal, kind, Date.now(), crypto.randomUUID(), integratedOffers, integratedOffers));
       if (!offer || !alive || save.attempt.id !== attempt) return;
       closeDialogs();
       const result = await ads.show({ kind: 'rewarded', placement: kind, attempt: offer.id, dealId: offer.dealId, mode: 'campaign' });
@@ -1398,6 +1461,7 @@ try {
         });
         if (started) {
           if (redeal) telemetry.track('level_restart');
+          offerFact({ trigger: OfferTrigger.LevelStarted, key: 'start' });
           presentLevelStart();
         }
       } catch { failed = true; if (!redeal) message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
@@ -1437,8 +1501,9 @@ try {
       definitionCardId = id;
       const definition = $<HTMLButtonElement>('#definition-use');
       definition.hidden = !rewardOffersEnabled && !(STOREFRONT_PREVIEW && definitionCount(save));
-      definition.disabled = (save.rewardOffers?.definitions ?? 1) === 0;
-      definition.textContent = `Связанное слово · ${save.rewardOffers?.definitions ?? 1}`;
+      definition.disabled = definitionCount(save) === 0;
+      $('#definition-refill').hidden = !productOfferEnabled || !definition.disabled || Boolean(save.attempt.daily);
+      definition.textContent = `Связанное слово · ${definitionCount(save)}`;
       $('#definition-related').hidden = true;
       setInspect(false);
       const image = $<HTMLImageElement>('#word-image'), artwork = cardArtwork(card, deal); image.hidden = !artwork;
@@ -1491,7 +1556,19 @@ try {
   window.addEventListener('resize', resizeToRoot, domOptions);
   window.addEventListener('resize', () => { cancelCoins(); if ($<HTMLDialogElement>('#result').open) pinWallet(); }, domOptions);
   document.querySelectorAll('.sheet-body').forEach(body => body.addEventListener('scroll', () => cancelCoins(), domOptions));
+  let wasBackground = runtime.activity.getBlockReasons().some(reason => reason === 'visibility' || reason === 'native-background');
   const unblock = runtime.activity.onBlockReasonsChange(() => {
+    const background = runtime.activity.getBlockReasons().some(reason => reason === 'visibility' || reason === 'native-background');
+    const resumed = wasBackground && !background;
+    wasBackground = background;
+    if (resumed) {
+      if (recoveryWait(save) !== undefined) {
+        runtime.activity.setBlocked('recovery-time', true);
+        void recoveryTime.refresh().then(syncRecoveryTime)
+          .catch(() => message('Не удалось восстановить лимит ходов.', true))
+          .finally(() => { if (alive) runtime.activity.setBlocked('recovery-time', false); });
+      } else void recoveryTime.refresh();
+    }
     const blocked = runtime.activity.isBlocked();
     if (runtime.activity.getBlockReasons().some(reason => reason !== 'shuffle')) cancelShuffle?.();
     setInput(); updateBanner();
@@ -1541,7 +1618,10 @@ try {
   }, domOptions);
   $('#daily-play').addEventListener('click', () => { void activateMode('daily'); }, domOptions);
   $('#daily-resume-old').addEventListener('click', () => { void activateMode('daily', true); }, domOptions);
-  for (const [button, dialog] of [['calendar-open', '#calendar'], ['appearance-open', '#appearance'], ['win-cycle-open', '#cycle-info'], ['looks-open', '#appearance'], ['level-picker-open', '#level-picker'], ['wallet-open', '#helpers']]) $(`#${button}`).addEventListener('click', () => { renderMeta(save, saving); if (dialog === '#helpers') openHelpers(); else openDialog(dialog); }, domOptions);
+  for (const [button, dialog] of [['calendar-open', '#calendar'], ['appearance-open', '#appearance'], ['win-cycle-open', '#cycle-info'], ['looks-open', '#appearance'], ['level-picker-open', '#level-picker'], ['wallet-open', '#helpers']]) $(`#${button}`).addEventListener('click', () => { renderMeta(save, saving); if (dialog === '#helpers') {
+      offerFact({ trigger: OfferTrigger.Manual, key: 'manual-wallet' });
+      openHelpers();
+    } else openDialog(dialog); }, domOptions);
   $('#appearance-settings').addEventListener('click', () => {
     renderMeta(save, saving);
     openChildDialog('#appearance', '#settings', $('#appearance-settings'));
@@ -1577,7 +1657,7 @@ try {
     else void openLevel((deal.campaignLevel ?? 0) + 1);
   }, domOptions);
   if (dailyBonusEnabled) {
-    $('#daily-bonus-open').addEventListener('click', async () => {
+    async function showDailyBonus(fromHelpers = false) {
       if (saving || serviceBusy) return;
       try {
         const round = await write(next => {
@@ -1585,9 +1665,11 @@ try {
           syncRetention(next, now);
           return openDailyBonusRound(next, now, crypto.randomUUID(), randomJokerColumn, sourceDailyTasks ? 'azur-compiled-r1' : 'offline-r1');
         });
-        if (round) { openDialog('#daily-bonus-dialog'); renderDailyBonus(); }
+        if (round) { openDialog('#daily-bonus-dialog', false, fromHelpers ? () => openHelpers() : undefined); renderDailyBonus(); }
       } catch { message('Не удалось открыть ежедневный бонус.', true); }
-    }, domOptions);
+    }
+    $('#daily-bonus-open').addEventListener('click', () => { void showDailyBonus(); }, domOptions);
+    $('#context-bonus-open').addEventListener('click', () => { void showDailyBonus(true); }, domOptions);
     $('#daily-bonus-claim').addEventListener('click', async () => {
       if (saving || !save.dailyBonus) return;
       const id = save.dailyBonus.roundId;
@@ -1662,6 +1744,11 @@ try {
     }, domOptions);
     $('#shop-video-claim').addEventListener('click', () => { void requestRewardOffer('shop-free-coins', '#helpers'); }, domOptions);
     $('#theme-video-claim').addEventListener('click', () => { void requestRewardOffer('rewarded-theme', '#appearance'); }, domOptions);
+    $('#definition-refill').addEventListener('click', () => {
+      if (!productOfferEnabled || saving || serviceBusy || definitionCount(save) !== 0) return;
+      offerFact({ trigger: OfferTrigger.OutOfBooster, booster: 'definition', resource: 'definition', key: 'definition-empty' });
+      openHelpers();
+    }, domOptions);
     $('#definition-use').addEventListener('click', async () => {
       const id = definitionCardId;
       if (!id || saving || serviceBusy) return;
@@ -1677,8 +1764,9 @@ try {
         hint.hidden = false;
         if (word) {
           const button = $<HTMLButtonElement>('#definition-use');
-          button.textContent = `Связанное слово · ${save.rewardOffers?.definitions ?? 0}`;
+          button.textContent = `Связанное слово · ${definitionCount(save)}`;
           button.disabled = definitionCount(save) === 0;
+          $('#definition-refill').hidden = !productOfferEnabled || !button.disabled || Boolean(save.attempt.daily);
         }
       } catch { message('Не удалось сохранить расход заряда.', true); }
     }, domOptions);
@@ -1699,7 +1787,14 @@ try {
   }, domOptions);
   $('#buy-joker').addEventListener('click', async () => {
     if (serviceBusy || saving || !helperUnlocked(save, 'joker', deal)) return;
-    try { if (await write(next => buyTaskHelper(next, 'joker'))) { telemetry.track('helper_purchase', { helper: 'joker', cost: BALANCE.helperPrices.joker }); helperBought('joker'); } }
+    try {
+      if (await write(next => buyTaskHelper(next, 'joker'))) {
+        telemetry.track('helper_purchase', { helper: 'joker', cost: BALANCE.helperPrices.joker });
+        helperBought('joker');
+      } else if (save.profile.coins < BALANCE.helperPrices.joker) {
+        offerFact({ trigger: OfferTrigger.OutOfCoins, resource: 'joker', key: `short-joker-${save.profile.coins}` });
+      }
+    }
     catch { message('Не удалось сохранить покупку. Попробуйте ещё раз.', true); }
     renderHud();
   }, domOptions);
@@ -1769,7 +1864,10 @@ try {
     if (workerDeadline || saving || runtime.activity.isBlocked()) return;
     if (inspectMode) setInspect(false);
     const repeat = repeatHint();
-    if (save.profile.hints === 0 && !freeHintDemo(save, deal) && !repeat) { openHelpers('hint'); return; }
+    if (save.profile.hints === 0 && !freeHintDemo(save, deal) && !repeat) {
+      offerFact({ trigger: OfferTrigger.OutOfBooster, booster: 'hint', resource: 'hint', key: 'hint-empty' });
+      openHelpers('hint'); return;
+    }
     if (repeat) {
       renderer.loop.wake(); scene?.hint(repeat);
       message('');
@@ -1903,6 +2001,8 @@ try {
       if (serviceBusy || saving) return;
       try {
         const bought = await write(next => buyTaskHelper(next, helper));
+        if (!bought && save.profile.coins < BALANCE.helperPrices[helper])
+          offerFact({ trigger: OfferTrigger.OutOfCoins, resource: helper, key: `short-${helper}-${save.profile.coins}` });
         if (bought) { telemetry.track('helper_purchase', { helper, cost: BALANCE.helperPrices[helper] }); runtime.pulse('button'); helperBought(helper); }
       } catch { message('Не удалось сохранить покупку. Попробуйте ещё раз.', true); }
       renderHud();
@@ -2136,7 +2236,7 @@ try {
     if (!recoveryEnabled() || !deal.recovery || saving || serviceBusy) return;
     const source = deal, now = Date.now(), accountId = unlimitedAccount();
     const purchase = quotePurchasedUnlimited(save, source, accountId, now);
-    const earned = quoteUnlimitedAccess(save, source, now);
+    const earned = quoteUnlimitedAccess(save, source, now, recoveryTime.read());
     const buy = canBuyUnlimitedAccess(save, source);
     if (!purchase && !earned && !buy && !RECOVERY_PREVIEW) return;
     const id = crypto.randomUUID(), attemptId = save.attempt.id;
@@ -2144,11 +2244,13 @@ try {
       const applied = await write(next => {
         const at = Date.now();
         if (next.attempt.id !== attemptId) return false;
-        if (earned) return useUnlimitedAccess(next, source, earned.id, at);
-        return purchase
+        expireRecovery(next);
+        const applied = earned ? useUnlimitedAccess(next, source, earned.id, at, recoveryTime.read()) : purchase
           ? usePurchasedUnlimited(next, source, { ...purchase, id }, accountId, at)
           : buy ? buyUnlimitedAccess(next, source, id, at)
             : beginUnlimited(next, source, { id, attemptId, until: at + 120_000 }, at);
+        if (applied) expireRecovery(next);
+        return applied;
       });
       if (applied) { closeDialogs(); scene?.sync(); }
     } catch { message('Не удалось сохранить ходы без лимита.', true); }
@@ -2274,6 +2376,7 @@ try {
     resolveButton: target => target instanceof Element ? target.closest<HTMLButtonElement>('.board-bonus') : null,
   });
   renderHud(); renderHome();
+  offerFact({ trigger: OfferTrigger.SessionStarted, key: 'session' });
   const cleanup = () => {
     if (!alive) return; clearPraise(); clearActionFeedback(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearInterval(lifeTick); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();

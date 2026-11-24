@@ -106,7 +106,7 @@ for (const source of [...recoveryBases, ...lateAdaptiveDeals, ...hitappsDirector
   releaseDealBySource.set(source.id, deal);
   releaseSourceById.set(deal.id, source.id);
 }
-const shuffleBySource = new Map([...releaseDealBySource.values()].filter(deal => deal.campaignLevel === 30).map(source => {
+const shuffleBySource = new Map([...releaseDealBySource.values()].filter(deal => deal.campaignLevel === releaseConfig.policies.chargedShuffleLevel).map(source => {
   const deal: Deal = { ...source, id: source.id + '-shuffle-r1', shufflePolicy: 'hidden-pool-r1', shuffleCost: 'charge' };
   releaseSourceById.set(deal.id, releaseSourceById.get(source.id)!);
   return [source.id, deal];
@@ -150,7 +150,7 @@ export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): 
   const candidate = selectAdaptiveDeal(save, selected, lateAdaptive, previousSource ? { ...previous!, dealId: previousSource } : previous);
   if (!releaseProfile) return candidate;
   const composed = releaseDealBySource.get(candidate.id) ?? candidate;
-  const withShuffle = releaseProfile.capabilities.retention === 'c8-retention-candidate-r1'
+  const withShuffle = releaseProfile.capabilities.proofShuffle === 'active'
     ? shuffleBySource.get(composed.id) ?? composed : composed;
   return releaseProfile.policies.economy === 'c8-non-iap-rights-r1' ? rightsBySource.get(withShuffle.id) ?? withShuffle : withShuffle;
 }

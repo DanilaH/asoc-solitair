@@ -70,6 +70,15 @@
     ],
     "evidence": "Implemented C8 candidate routes with retained source QA and pending device/economy acceptance."
   },
+  "integratedAndroidCandidate": {
+    "packet": "B4",
+    "implementationRef": "docs/porting/B4_ANDROID_CANDIDATE.md",
+    "candidateCapabilities": [
+      "azur-joker-random-column-insertion",
+      "azur-unlimited-moves-offer"
+    ],
+    "evidence": "Separate coin-denominated candidate rights and explicit SDK manifest. Physical Android and live acceptance remain pending."
+  },
   "researchMethod": {
     "decisionDate": "2026-11-24",
     "decisionRef": "docs/porting/RESEARCH_METHOD_2026-11-24.md",

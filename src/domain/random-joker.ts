@@ -57,12 +57,30 @@ export function proveRandomJoker(board: NonNullable<ReturnType<typeof placeRando
   return result.status === 'SOLVED' ? result.path : undefined;
 }
 
+export function randomJokerReady(save: Save, deal: Deal) {
+  const { attempt } = save;
+  if (!allowsRandomJoker(attempt, deal)) return false;
+  if (deal.extraHelpers?.randomJokerCoins !== undefined) return Boolean(attempt.randomJokerAccess && !attempt.randomJokerAccess.consumed);
+  return save.profile.jokers >= (deal.randomJokerCost ?? 0);
+}
+
+export function buyRandomJokerAccess(save: Save, deal: Deal, id: string, now: number) {
+  const cost = deal.extraHelpers?.randomJokerCoins;
+  if (cost === undefined || save.profile.coins < cost || save.attempt.randomJokerAccess ||
+      !allowsRandomJoker(save.attempt, deal) || !Number.isSafeInteger(now) || now < 0 ||
+      !/^[a-zA-Z0-9_-]{1,100}$/.test(id)) return false;
+  save.profile.coins -= cost;
+  save.attempt.randomJokerAccess = { version: 1, id, source: 'coins', cost, issuedAt: now };
+  save.revision++;
+  return true;
+}
+
 export function settleRandomJoker(save: Save, deal: Deal, request: {
   attemptId: string; revision: number; column: number; id: string; path: readonly BoardCommand[];
 }) {
   const { attempt } = save;
   const cost = deal.randomJokerCost ?? 0;
-  if (save.profile.jokers < cost) return false;
+  if (!randomJokerReady(save, deal)) return false;
   if (request.attemptId !== attempt.id || request.revision !== save.revision || !request.path.length) return false;
   const board = placeRandomJoker(attempt, deal, () => request.column, () => request.id);
   if (!board) return false;
@@ -77,6 +95,7 @@ export function settleRandomJoker(save: Save, deal: Deal, request: {
   attempt.undo = [];
   attempt.randomJokerUsed = true;
   save.profile.jokers -= cost;
+  if (deal.extraHelpers?.randomJokerCoins !== undefined) attempt.randomJokerAccess!.consumed = true;
   save.revision++;
   return true;
 }

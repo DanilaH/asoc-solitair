@@ -58,6 +58,7 @@ export interface Deal {
   shuffleCost?: 'charge';
   randomJokerPreview?: 1;
   randomJokerCost?: 1;
+  extraHelpers?: { version: 1; randomJokerCoins?: number; unlimitedCoins: number; unlimitedMs: number };
   recovery?: { version: 1; freeRecycles: number; restoreBase: number; restoreIncrement: number };
   adaptive?: { version: 1; profile: string; baseId: string; direction: 'tight' | 'relief'; scope: 'PRODUCT_ADAPTED'; proof: string };
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;
@@ -93,6 +94,7 @@ export interface Attempt {
   sourceDifficulty?: CampaignOutcome;
   jokerUsed?: boolean;
   randomJokerUsed?: true;
+  randomJokerAccess?: { version: 1; id: string; source: 'coins'; cost: number; issuedAt: number; consumed?: true };
   lostLife?: true;
   adBreakShown?: true;
   coffeeRequested?: true;

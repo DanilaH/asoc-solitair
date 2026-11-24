@@ -174,6 +174,13 @@ export function decodeSave(raw: string, source: DealSource): Save {
       ([save.attempt.board, ...save.attempt.undo].some(board => board.retainedMoves !== undefined) && (!unlimited || unlimited.expired))) {
     throw Error('Повреждён договор восстановления');
   }
+  const jokerAccess = save.attempt.randomJokerAccess;
+  if (jokerAccess !== undefined && (!jokerAccess || jokerAccess.version !== 1 || jokerAccess.source !== 'coins' ||
+    !/^[a-zA-Z0-9_-]{1,100}$/.test(jokerAccess.id) || !natural(jokerAccess.issuedAt) ||
+    !natural(jokerAccess.cost) || deal.extraHelpers?.randomJokerCoins !== jokerAccess.cost ||
+    (jokerAccess.consumed !== undefined && (jokerAccess.consumed !== true || save.attempt.randomJokerUsed !== true)))) {
+    throw Error('Повреждён заряд случайного Джокера');
+  }
   if (save.attempt.randomJokerUsed !== undefined && (save.attempt.randomJokerUsed !== true || deal.randomJokerPreview !== 1))
     throw Error('Повреждён расход случайного Джокера');
   if ([save.attempt.board, ...save.attempt.undo].some(board => board.joker &&

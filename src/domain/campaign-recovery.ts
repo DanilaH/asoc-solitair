@@ -65,6 +65,23 @@ export function grantUnlimitedAccess(save: Save, deal: Deal, grant: UnlimitedAcc
   return true;
 }
 
+export function canBuyUnlimitedAccess(save: Save, deal: Deal) {
+  return Boolean(deal.extraHelpers && !save.attempt.unlimited && !save.attempt.unlimitedAccess &&
+    save.profile.coins >= deal.extraHelpers.unlimitedCoins && unlimitedEligible(save.attempt, deal));
+}
+
+export function buyUnlimitedAccess(save: Save, deal: Deal, id: string, now: number) {
+  const policy = deal.extraHelpers;
+  if (!policy || !canBuyUnlimitedAccess(save, deal) || !Number.isSafeInteger(now) || now < 0 ||
+      !/^[a-zA-Z0-9_-]{1,100}$/.test(id) || !Number.isSafeInteger(now + policy.unlimitedMs)) return false;
+  const quote: UnlimitedAccess = { version: 1, id, attemptId: save.attempt.id, source: 'coins',
+    issuedAt: now, until: now + policy.unlimitedMs };
+  if (!beginUnlimited(save, deal, quote, now)) return false;
+  save.attempt.unlimitedAccess = { ...quote, consumed: true };
+  save.profile.coins -= policy.unlimitedCoins;
+  return true;
+}
+
 export function quoteUnlimitedAccess(save: Save, deal: Deal, now: number) {
   const { attempt } = save;
   const access = attempt.unlimitedAccess;

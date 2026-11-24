@@ -7,7 +7,7 @@ import { loadEqualityPreviewPolicy } from '../../src/content/campaign-v8-equalit
 import { dailyForDay } from '../../src/content/daily';
 import { beginDeal } from '../../src/domain/campaign';
 import { mayStartCampaignAttempt } from '../../src/domain/campaign-lives';
-import { dispatch, freshSave } from '../../src/domain/engine';
+import { applyBoard, dispatch, freshSave } from '../../src/domain/engine';
 import { C8_DIFFICULTY } from '../../src/domain/difficulty';
 import { campaignId } from '../../src/domain/progression';
 import { switchMode } from '../../src/domain/sessions';
@@ -18,14 +18,14 @@ it('replays every integrated passport with both rules implementations', () => {
   for (const deal of integratedCampaignDeals) {
     expect(deal.id.length).toBeLessThanOrEqual(100);
     expect(findDeal(deal.id)).toBe(deal);
-    let independent = deal.initial, save = freshSave(deal, 'replay');
+    let independent = deal.initial, production = deal.initial;
     for (const move of deal.winningPath) {
-      const result = dispatch(save, move, deal);
+      const result = applyBoard(production, move, deal);
       const board = advance(independent, move, deal);
-      expect(result.accepted, deal.id).toBe(true);
-      expect(board, deal.id).toEqual(result.next.attempt.board);
+      if (typeof result === 'string') throw Error(`${deal.id}: ${result}`);
+      expect(board, deal.id).toEqual(result.board);
       independent = board!;
-      save = result.next;
+      production = result.board;
     }
     expect(independent.phase, deal.id).toBe('won');
   }
@@ -41,7 +41,7 @@ it.skipIf(!releaseProfile)('starts an adapted L16 with recovery and Joker, then 
   let save = decodeSave(JSON.stringify(old), findDeal);
   expect(save.contentVersion).toBe(8);
   const selected = selectCampaignDeal(save, target);
-  expect(selected).toMatchObject({ campaignLevel: 16, adaptive: { direction: 'relief' }, recovery: { version: 1 }, randomJokerCost: 1 });
+  expect(selected).toMatchObject({ campaignLevel: 16, adaptive: { direction: 'relief' }, recovery: { version: 1 }, randomJokerPreview: 1, extraHelpers: { version: 1, randomJokerCoins: 250 } });
   expect(isCurrentCampaignDeal(selected.id, target)).toBe(true);
   expect(await loadEqualityPreviewPolicy()).toBeUndefined();
   expect(mayStartCampaignAttempt(save, save.attempt, 100)).toBe(true);

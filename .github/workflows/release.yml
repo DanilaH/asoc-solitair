@@ -10,6 +10,9 @@ jobs:
       VITE_ASOC_PROFILE: c8-release-v1
       ASOC_AD_MODE: live
       ASOC_APK_VARIANT: release
+      ASOC_OWNER_ADS_READY: ${{ vars.ASOC_OWNER_ADS_READY }}
+      ASOC_OWNER_LIVES_ADS_READY: ${{ vars.ASOC_OWNER_LIVES_ADS_READY }}
+      ASOC_REWARD_OFFERS_ADS_READY: ${{ vars.ASOC_REWARD_OFFERS_ADS_READY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

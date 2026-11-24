@@ -1,0 +1,866 @@
+{
+  "schema": "asoc-pr201-recheck-evidence-v1",
+  "date": "2026-11-24",
+  "reportTimezone": "Asia/Yekaterinburg",
+  "repository": "DanilaH/asoc-solitair",
+  "head": "23e71a898fd69b86b702ce074621637bcf82432e",
+  "base": "324744f569f37223f59ac15278c8dfde603852f2",
+  "pr": "https://github.com/DanilaH/asoc-solitair/pull/201",
+  "scope": "Read-only code/CI/APK review and actual-function probes; no runtime, save, remote, live ads or payment mutation. Subsequent PR is documentation only.",
+  "ciIndependentlyRead": {
+    "prRun": 45386902920,
+    "pushRun": 45386892450,
+    "conclusions": [
+      "success",
+      "success"
+    ],
+    "prMergeRef": "a4314162610c6c0dd0abaf9be4db29fd070b1bda",
+    "androidJob": 138420069316,
+    "webJob": 138420069664,
+    "c8Unit": {
+      "passed": 434,
+      "skipped": 1
+    },
+    "defaultUnit": {
+      "passed": 429,
+      "skipped": 6
+    },
+    "defaultBrowser": {
+      "passed": 284,
+      "skipped": 154
+    },
+    "integratedC8Browser": {
+      "passed": 10
+    },
+    "c8PreviewBrowser": {
+      "passed": 68,
+      "skipped": 30
+    },
+    "androidNativeUnitTask": "testDebugUnitTest executed successfully",
+    "layoutBoundary": "The common qa:layout job runs default C7, not a full integrated C8 raster acceptance."
+  },
+  "apkIndependentDownloadAndPayloadVerification": {
+    "artifactId": 14916702123,
+    "records": [
+      {
+        "commit": "23e71a898fd69b86b702ce074621637bcf82432e",
+        "id": "c8-release-v1",
+        "gameVersion": "0.20.3",
+        "androidVersionCode": 44,
+        "packageId": "com.danilah.asocsolitair.debug",
+        "sdkMode": "test",
+        "apkVariant": "debug",
+        "apk": "app-debug.apk",
+        "apkSha256": "7986a5e556f541c24290752bdee43cedd42783372d40f158a1bdf8a4ea3aa7ba",
+        "files": 212,
+        "mismatches": [],
+        "payloadHash": "840ff288858e4438afbbe3dfdc9ef109391737283c253b968e31ad1f6915eced",
+        "payloadMatches": true,
+        "sdkCapabilities": {
+          "campaignPause": true,
+          "lifeRefill": true,
+          "rewardedOffers": true,
+          "impressionRevenue": false
+        }
+      },
+      {
+        "commit": "23e71a898fd69b86b702ce074621637bcf82432e",
+        "id": "c8-release-v1",
+        "gameVersion": "0.20.3",
+        "androidVersionCode": 44,
+        "packageId": "com.danilah.asocsolitair",
+        "sdkMode": "disabled",
+        "apkVariant": "release",
+        "apk": "app-release-unsigned.apk",
+        "apkSha256": "419e1b27340cb770ca54fc18287b85151f3abda8fc4ae7c161fa1ed174e8f1b7",
+        "files": 212,
+        "mismatches": [],
+        "payloadHash": "840ff288858e4438afbbe3dfdc9ef109391737283c253b968e31ad1f6915eced",
+        "payloadMatches": true,
+        "sdkCapabilities": {
+          "campaignPause": false,
+          "lifeRefill": false,
+          "rewardedOffers": false,
+          "impressionRevenue": false
+        }
+      }
+    ],
+    "debugSignerFingerprintFromCI": "0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e",
+    "limit": "Embedded file hashes were independently recomputed. Signer fingerprint is read from CI verification, not a physical installation. Unsigned SDK-disabled release APK is a compile artifact."
+  },
+  "actualFunctionProbes": {
+    "nativeRevenue": {
+      "runtime": "Java 21.0.13",
+      "checks": [
+        "transport_failure_restart_and_duplicate=PASS",
+        "ack_failure_same_process_send_once=PASS",
+        "crash_after_sdk_before_ack_resends_same_id=OBSERVED_EXPECTED_AT_LEAST_ONCE",
+        "bounded_queue_keeps_256_and_counts_drop=PASS",
+        "actual_delivery_worker_backoff_retry=PASS",
+        "receive_while_delivery_scheduled=PASS",
+        "first_receive_IO_failure_then_same_callback=DEFECT_EVENT_LOST_NO_RETRY"
+      ],
+      "sources": [
+        {
+          "path": "RevenueOutbox.java",
+          "git_blob_sha": "d27c66f84bca3cdaf0a779882718353e81f1ebb8"
+        },
+        {
+          "path": "RevenueDelivery.java",
+          "git_blob_sha": "daf8d19ebae77a91ebf2cda82d3d36953e0e2623"
+        },
+        {
+          "path": "SolitaireAdsPlugin.java::impression+recordImpression",
+          "sha256": "48912e90846281c11492f0c0fddd3e29b3d605b1fdd730245dfb1dfaccf5f144"
+        }
+      ],
+      "limits": "Production RevenueOutbox/RevenueDelivery are unchanged. Android AtomicFile/Context, AppMetrica and JSON parsing are explicit stubs. Capture methods are extracted unchanged. Not an Android, SDK, network or dashboard run."
+    },
+    "coreClock": {
+      "head": "23e71a898fd69b86b702ce074621637bcf82432e",
+      "scope": "Exact TypeScript recovery and clock-factory bodies, stripped with Node 24.22.3. Controlled clocks and bridge responses; representative board snapshots, JSON persistence. Does not execute the full app, SaveStore backend, card moves or physical Android.",
+      "checks": [
+        {
+          "name": "active: rollback/reload/expiry restores board and Undo without resurrection",
+          "result": "PASS"
+        },
+        {
+          "name": "parked: rollback/reload/expiry restores board and Undo without resurrection",
+          "result": "PASS"
+        },
+        {
+          "name": "active: historical indefinite right remains indefinite",
+          "result": "PASS"
+        },
+        {
+          "name": "parked: historical indefinite right remains indefinite",
+          "result": "PASS"
+        },
+        {
+          "name": "expiry preserves a won board",
+          "result": "PASS"
+        },
+        {
+          "name": "unspent earned right keeps its original remaining duration and activates once",
+          "result": "PASS"
+        },
+        {
+          "name": "Android-bound right expires on boot change / missing native clock after reload",
+          "result": "PASS",
+          "nextTimeline": "android-18"
+        },
+        {
+          "name": "Android-bound right expires on boot change / missing native clock after reload",
+          "result": "PASS",
+          "nextTimeline": "page-00000000-0000-0000-0000-000000000001"
+        },
+        {
+          "name": "native resampling after background catches elapsed time despite wall rollback",
+          "result": "PASS"
+        },
+        {
+          "name": "native acquisition fallback survives restart and extends elapsed term",
+          "result": "REPRODUCED_RESIDUAL",
+          "precondition": "readRecoveryClock rejects at acquisition; main has no acquisition gate for page fallback",
+          "initialSavedAnchor": {
+            "timeline": "page-00000000-0000-0000-0000-000000000003",
+            "elapsed": 0,
+            "wall": 100000
+          },
+          "wallAtRestart": 110000,
+          "realElapsedMs": 60000,
+          "remainingReportedMs": 50000,
+          "reanchoredTimeline": "android-17",
+          "scope": "Exact domain and clock-factory function bodies with injected native bridge failure and controlled clocks; no device failure frequency is claimed."
+        }
+      ],
+      "metadata": [
+        {
+          "path": "src/domain/campaign-recovery.ts",
+          "sha256": "83bd659efdfea24fb45431b7d3431bce982b0dfa514f449061342834c39b58c5"
+        },
+        {
+          "path": "src/platform/recovery-clock.ts",
+          "sha256": "63a6c2c9990e02fef64d7d94821f32d1ec0fceabb46f3139f3d25cf5b0504f1c"
+        },
+        {
+          "path": "src/platform/recovery-clock.ts",
+          "sha256": "63a6c2c9990e02fef64d7d94821f32d1ec0fceabb46f3139f3d25cf5b0504f1c"
+        },
+        {
+          "path": "src/platform/recovery-clock.ts",
+          "sha256": "63a6c2c9990e02fef64d7d94821f32d1ec0fceabb46f3139f3d25cf5b0504f1c"
+        }
+      ]
+    },
+    "dailyTelemetry": {
+      "head": "23e71a898fd69b86b702ce074621637bcf82432e",
+      "scope": "Actual createTelemetry/createAnalytics/validEvent function bodies; injected successful transport and minimal daily save. This is a narrow call-contract reproduction, not a browser, native SDK or AppMetrica dashboard run.",
+      "currentCalls": [
+        "level_start",
+        "daily_start",
+        "daily_completion"
+      ],
+      "currentForwarded": [
+        "level_start"
+      ],
+      "dailyCallsWithExplicitDayIdForwarded": [
+        "daily_start",
+        "daily_completion"
+      ],
+      "conclusion": "Current main.ts daily_start and daily_completion calls omit required dayId; validation silently rejects both while generic level_start remains accepted.",
+      "metadata": [
+        {
+          "path": "src/platform/analytics.ts",
+          "sha256": "c7aeeca4114982d4ce2b6dca58d1640b6982b057ac23bc8c9b6512e2b015ed7e"
+        },
+        {
+          "path": "src/platform/telemetry.ts",
+          "sha256": "06735e9c07c21116d36e2be9d3e58e13cadaab26988134b4ab5a100d12dcfa84"
+        }
+      ]
+    },
+    "p25AdapterAndPresentation": {
+      "runtime": "v24.22.3",
+      "checks": [
+        {
+          "test": "Real shortage adapter persists and deduplicates through JSON reopen, no currency/helper grant or merchant",
+          "status": "PASS"
+        },
+        {
+          "test": "Failed durable reservation can retry same fact; no visible reservation before commit",
+          "status": "PASS"
+        },
+        {
+          "test": "Stale attempt/shortage cannot present; useful moves and exhausted outcome remain distinct",
+          "status": "PASS"
+        },
+        {
+          "test": "All eight ordinary facts route to local guidance; completion uses completed level",
+          "status": "PASS",
+          "routes": [
+            {
+              "trigger": 0,
+              "surface": "resources"
+            },
+            {
+              "trigger": 1,
+              "surface": "resources"
+            },
+            {
+              "trigger": 2,
+              "surface": "result"
+            },
+            {
+              "trigger": 3,
+              "surface": "result"
+            },
+            {
+              "trigger": 4,
+              "surface": "resources"
+            },
+            {
+              "trigger": 5,
+              "surface": "resources"
+            },
+            {
+              "trigger": 6,
+              "surface": "definition"
+            },
+            {
+              "trigger": 7,
+              "surface": "resources"
+            }
+          ]
+        },
+        {
+          "test": "Actual main button predicates at zero wallet/Hint, buy-Hint click and empty-Hint click reach shortage adapter",
+          "status": "PASS",
+          "buyHintDisabled": false,
+          "buyUndoDisabled": false,
+          "buyJokerDisabled": false,
+          "emptyHintDisabled": false
+        },
+        {
+          "test": "Definition shortage guidance prefers free coins despite no Definition coin-purchase; daily bonus link also exists",
+          "status": "OBSERVED_UX_REMAINDER",
+          "beforeText": "Доступны бесплатные монеты.",
+          "afterText": "Объяснения могут выпасть в ежедневном бонусе.",
+          "coins": 30,
+          "definitions": 0,
+          "dailyBonusLinkVisible": true
+        }
+      ],
+      "sources": [
+        {
+          "path": "/workspace/scratch/2172e3b9d075/mvp-audit-20261124/current/economy/src/domain/balance.ts",
+          "sha256": "7d9ed3c57dae9242e544ecd9a5f65ab6dfd4fc9e06aa21a33f80ef6a434adf38"
+        },
+        {
+          "path": "/workspace/scratch/2172e3b9d075/mvp-audit-20261124/current/economy/src/domain/reward-offers.ts",
+          "sha256": "a2ffc7f699bebed58152f3b66eb0496dae70949b533b6bcd260138b766b20a5e"
+        },
+        {
+          "path": "/workspace/scratch/2172e3b9d075/followup-tz-20261124/current/ads-economy/src/domain/commerce/offer-campaigns.ts",
+          "sha256": "b58ae915cefbed02130a481a8d72446a9f2edfc1834f5c19e2ea91c69f357a93"
+        },
+        {
+          "path": "/workspace/scratch/2172e3b9d075/mvp-audit-20261124/current/economy-pr201/src/domain/commerce/product-offers.ts",
+          "sha256": "7af55eb6e72894500cc58f97009e5e497cecbd169f906f1f4b20b9969e11e91e"
+        },
+        {
+          "path": "/workspace/scratch/2172e3b9d075/mvp-audit-20261124/current/economy/src/domain/services.ts",
+          "sha256": "4314eccc7441ce5f1ebbacce09a51781cfb096abeb2a982a658a434e68cf819e"
+        }
+      ],
+      "limits": "Actual production functions and UI statement/handler bodies, with controlled fixture state, DOM facade and serialized JSON mutation adapter. Not a full browser/SaveStore/Android test or original-game runtime."
+    },
+    "retention": {
+      "head": "23e71a898fd69b86b702ce074621637bcf82432e",
+      "kind": "actual-domain-functions; constructor dependency adapters for unused commerce/reference contexts, no browser/full-save claim",
+      "rows": [
+        {
+          "case": "bonus_stale_open",
+          "roundValid": true,
+          "uiDisabled": false,
+          "revealAccepted": false
+        },
+        {
+          "case": "old_won_bonus_then_current_day",
+          "oldRoundRetained": true,
+          "claimed": {
+            "kind": "Coins",
+            "quantity": 10
+          },
+          "duplicateAccepted": false,
+          "coins": 10,
+          "freshDay": 20780,
+          "expectedDay": 20780
+        },
+        {
+          "case": "old_tasks_claim_after_new_week",
+          "historicClaim": true,
+          "historicWeekly": true,
+          "duplicateTask": false,
+          "duplicateWeek": false,
+          "oldMedals": 5,
+          "currentMedals": 0,
+          "coins": 20,
+          "valid": true
+        },
+        {
+          "case": "old_free_season_bonus_before_current_month_clear",
+          "expiredClaimAccepted": false,
+          "before": {
+            "version": 1,
+            "season": "2026-10",
+            "clears": 3,
+            "piggy": 30
+          },
+          "after": {
+            "version": 1,
+            "season": "2026-11",
+            "clears": 1,
+            "piggy": 10
+          },
+          "coins": 0
+        },
+        {
+          "case": "old_liveops_claim_domain_allowed",
+          "valid": true,
+          "ready": {
+            "key": "hitapps-gold-rush-event:gold-1:1",
+            "phase": "completed",
+            "progress": 1,
+            "ready": [
+              {
+                "id": "gold-win",
+                "threshold": 1,
+                "reward": {
+                  "coins": 15
+                }
+              }
+            ]
+          },
+          "claim": true,
+          "duplicate": false,
+          "coins": 15
+        }
+      ]
+    },
+    "proposedShuffleAdmissionOnly": {
+      "head": "23e71a898fd69b86b702ce074621637bcf82432e",
+      "scope": "Structural candidate check only. Exact canShuffle predicate; authored records and generated records reconstructed by the current decoder shape. Proposed wrapper in memory only, no runtime edits. No new shuffled winning route was proven.",
+      "result": [
+        {
+          "level": 33,
+          "id": "campaign-c8-wave-033",
+          "title": "Выбор из колоды",
+          "difficulty": "normal",
+          "note": "These levels have no ordinary special/bonus override in the inspected current composition.",
+          "checks": [
+            {
+              "source": "base",
+              "id": "campaign-c8-wave-033",
+              "budget": 122,
+              "stock": 42,
+              "hidden": 18,
+              "hiddenPool": 60,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "archived-budget-tight",
+              "id": "campaign-c8-wave-033-tight-r2",
+              "budget": 116,
+              "stock": 42,
+              "hidden": 18,
+              "hiddenPool": 60,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "archived-budget-relief",
+              "id": "campaign-c8-wave-033-relief-r2",
+              "budget": 134,
+              "stock": 42,
+              "hidden": 18,
+              "hiddenPool": 60,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "current-generated-tight",
+              "id": "campaign-c8-wave-033-ha1-priority-49-116-44f0f8122b7d",
+              "budget": 116,
+              "stock": 42,
+              "hidden": 18,
+              "hiddenPool": 60,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "current-generated-relief",
+              "id": "campaign-c8-wave-033-ha1-priority-49-134-195954dd915f",
+              "budget": 134,
+              "stock": 42,
+              "hidden": 18,
+              "hiddenPool": 60,
+              "candidateCanShuffleWithOneCharge": true
+            }
+          ]
+        },
+        {
+          "level": 36,
+          "id": "campaign-c8-wave-036",
+          "title": "Верхние слоты",
+          "difficulty": "hard",
+          "note": "These levels have no ordinary special/bonus override in the inspected current composition.",
+          "checks": [
+            {
+              "source": "base",
+              "id": "campaign-c8-wave-036",
+              "budget": 158,
+              "stock": 54,
+              "hidden": 20,
+              "hiddenPool": 74,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "archived-budget-tight",
+              "id": "campaign-c8-wave-036-tight-r2",
+              "budget": 150,
+              "stock": 54,
+              "hidden": 20,
+              "hiddenPool": 74,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "archived-budget-relief",
+              "id": "campaign-c8-wave-036-relief-r2",
+              "budget": 174,
+              "stock": 54,
+              "hidden": 20,
+              "hiddenPool": 74,
+              "candidateCanShuffleWithOneCharge": true
+            }
+          ]
+        },
+        {
+          "level": 39,
+          "id": "campaign-c8-wave-039",
+          "title": "Передышка",
+          "difficulty": "normal",
+          "note": "These levels have no ordinary special/bonus override in the inspected current composition.",
+          "checks": [
+            {
+              "source": "base",
+              "id": "campaign-c8-wave-039",
+              "budget": 84,
+              "stock": 28,
+              "hidden": 13,
+              "hiddenPool": 41,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "archived-budget-tight",
+              "id": "campaign-c8-wave-039-tight-r2",
+              "budget": 80,
+              "stock": 28,
+              "hidden": 13,
+              "hiddenPool": 41,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "archived-budget-relief",
+              "id": "campaign-c8-wave-039-relief-r2",
+              "budget": 92,
+              "stock": 28,
+              "hidden": 13,
+              "hiddenPool": 41,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "current-generated-tight",
+              "id": "campaign-c8-wave-039-ha1-priority-47-80-c270ee645259",
+              "budget": 80,
+              "stock": 28,
+              "hidden": 13,
+              "hiddenPool": 41,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "current-generated-relief",
+              "id": "campaign-c8-wave-039-ha1-priority-47-92-15f0e71a4e7a",
+              "budget": 92,
+              "stock": 28,
+              "hidden": 13,
+              "hiddenPool": 41,
+              "candidateCanShuffleWithOneCharge": true
+            },
+            {
+              "source": "current-generated-easy",
+              "id": "campaign-c8-wave-039-ha1-priority-50-92-1aa242726fcf",
+              "budget": 92,
+              "stock": 28,
+              "hidden": 13,
+              "hiddenPool": 41,
+              "candidateCanShuffleWithOneCharge": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "blobVerification": {
+    "core": [
+      {
+        "path": "index.html",
+        "expected": "b5478170abf22662e541a90891a3d9dd53439e20",
+        "actual": "b5478170abf22662e541a90891a3d9dd53439e20",
+        "verified": true
+      },
+      {
+        "path": "native/android/app/src/main/java/com/danilah/asocsolitair/SolitaireStoragePlugin.java",
+        "expected": "3028b0f4e74642480757231785f63398cb828b44",
+        "actual": "3028b0f4e74642480757231785f63398cb828b44",
+        "verified": true
+      },
+      {
+        "path": "src/config/c8-release.json",
+        "expected": "540654e4b330e208d5b3c109cb42ddebb4796207",
+        "actual": "540654e4b330e208d5b3c109cb42ddebb4796207",
+        "verified": true
+      },
+      {
+        "path": "src/content/campaign-v8-adaptive.ts",
+        "expected": "2be8574ac37e061445362049816f621427ba7f56",
+        "actual": "2be8574ac37e061445362049816f621427ba7f56",
+        "verified": true
+      },
+      {
+        "path": "src/content/campaign-v8-director.ts",
+        "expected": "8182e688e4fecc50eea039d788edc68657764304",
+        "actual": "8182e688e4fecc50eea039d788edc68657764304",
+        "verified": true
+      },
+      {
+        "path": "src/content/campaign-v8-hitapps-032.json",
+        "expected": "991bfe52390ce08dd410678820b2d3de6f099a93",
+        "actual": "991bfe52390ce08dd410678820b2d3de6f099a93",
+        "verified": true
+      },
+      {
+        "path": "src/content/campaign-v8-hitapps-director.ts",
+        "expected": "f015ccd901dd86ff0b594d48206d2b760d2b7328",
+        "actual": "f015ccd901dd86ff0b594d48206d2b760d2b7328",
+        "verified": true
+      },
+      {
+        "path": "src/content/campaign-v8-late.json",
+        "expected": "7553c1dfa4427fb15c380603b7bc86f07a35cb43",
+        "actual": "7553c1dfa4427fb15c380603b7bc86f07a35cb43",
+        "verified": true
+      },
+      {
+        "path": "src/content/campaign.ts",
+        "expected": "ee4c2234d8950c57fd82e9538bc2e5716e61c3e5",
+        "actual": "ee4c2234d8950c57fd82e9538bc2e5716e61c3e5",
+        "verified": true
+      },
+      {
+        "path": "src/domain/balance.ts",
+        "expected": "d887060b1e95cfe0563c5078f908d6288ef1b52f",
+        "actual": "d887060b1e95cfe0563c5078f908d6288ef1b52f",
+        "verified": true
+      },
+      {
+        "path": "src/domain/campaign-recovery.ts",
+        "expected": "7e624698ed9587e65a2d8e43313b692615e5292a",
+        "actual": "7e624698ed9587e65a2d8e43313b692615e5292a",
+        "verified": true
+      },
+      {
+        "path": "src/domain/difficulty.ts",
+        "expected": "eebe8cb69233ccfd9cb994f512979b63be69c39c",
+        "actual": "eebe8cb69233ccfd9cb994f512979b63be69c39c",
+        "verified": true
+      },
+      {
+        "path": "src/domain/engine.ts",
+        "expected": "e4a56a449bcba024e148d257a1210955b35d3e87",
+        "actual": "e4a56a449bcba024e148d257a1210955b35d3e87",
+        "verified": true
+      },
+      {
+        "path": "src/domain/events/daily-bonus.ts",
+        "expected": "c815ca9c1380680d32cb38d3264760ab6eabded9",
+        "actual": "c815ca9c1380680d32cb38d3264760ab6eabded9",
+        "verified": true
+      },
+      {
+        "path": "src/domain/history.ts",
+        "expected": "3a811987446a791e7dbaa0e8bf49ec51726aef69",
+        "actual": "3a811987446a791e7dbaa0e8bf49ec51726aef69",
+        "verified": true
+      },
+      {
+        "path": "src/domain/meta.ts",
+        "expected": "854652d1dc0054915fd410d8b6c45a5f197d9d8f",
+        "actual": "854652d1dc0054915fd410d8b6c45a5f197d9d8f",
+        "verified": true
+      },
+      {
+        "path": "src/domain/progression.ts",
+        "expected": "d954c8fa1a8071d92d14931275dcdbdef2f69937",
+        "actual": "d954c8fa1a8071d92d14931275dcdbdef2f69937",
+        "verified": true
+      },
+      {
+        "path": "src/domain/proof-shuffle.ts",
+        "expected": "eaa7e40f9ea360432f5ad48c8e8b50663d2f97a8",
+        "actual": "eaa7e40f9ea360432f5ad48c8e8b50663d2f97a8",
+        "verified": true
+      },
+      {
+        "path": "src/domain/random-joker.ts",
+        "expected": "d7c37dd28d6d75416d29c287495278f70b1b36bb",
+        "actual": "d7c37dd28d6d75416d29c287495278f70b1b36bb",
+        "verified": true
+      },
+      {
+        "path": "src/domain/sessions.ts",
+        "expected": "506da94598738db7a8a3f34accfebb4f618af5de",
+        "actual": "506da94598738db7a8a3f34accfebb4f618af5de",
+        "verified": true
+      },
+      {
+        "path": "src/domain/types.ts",
+        "expected": "ec58a2fd523fbbba60ee1e11d895432dc6056076",
+        "actual": "ec58a2fd523fbbba60ee1e11d895432dc6056076",
+        "verified": true
+      },
+      {
+        "path": "src/main.ts",
+        "expected": "ca37330db55975c86d1af0427a826d7a2ce6f512",
+        "actual": "ca37330db55975c86d1af0427a826d7a2ce6f512",
+        "verified": true
+      },
+      {
+        "path": "src/platform/recovery-clock.ts",
+        "expected": "6f6343b77052a955c4d4f23929800082ff859c04",
+        "actual": "6f6343b77052a955c4d4f23929800082ff859c04",
+        "verified": true
+      },
+      {
+        "path": "src/platform/storage.ts",
+        "expected": "7513d12b00192d5311d0c8d352deef20ccf14927",
+        "actual": "7513d12b00192d5311d0c8d352deef20ccf14927",
+        "verified": true
+      },
+      {
+        "path": "tests/unit/release-audit-followup.test.ts",
+        "expected": "edff4103c50315cc2bc04ee2e7714bb454892ad2",
+        "actual": "edff4103c50315cc2bc04ee2e7714bb454892ad2",
+        "verified": true
+      }
+    ],
+    "ads": [
+      {
+        "path": "tests/unit/release-audit-followup.test.ts",
+        "sha": "edff4103c50315cc2bc04ee2e7714bb454892ad2",
+        "expected": "edff4103c50315cc2bc04ee2e7714bb454892ad2",
+        "matches": true
+      },
+      {
+        "path": "src/platform/ads.ts",
+        "sha": "b459f544323ed801fd7633dc18061db8bd811a07",
+        "expected": "b459f544323ed801fd7633dc18061db8bd811a07",
+        "matches": true
+      },
+      {
+        "path": "src/domain/commerce/offer-campaigns.ts",
+        "sha": "bdcf99434f46012da4762b1764ae495d2a20c1cf",
+        "expected": "bdcf99434f46012da4762b1764ae495d2a20c1cf",
+        "matches": true
+      },
+      {
+        "path": "native/android/app/build.gradle",
+        "sha": "09d6ec3578cb6d9aae3eae185dad2282dae19f40",
+        "expected": "09d6ec3578cb6d9aae3eae185dad2282dae19f40",
+        "matches": true
+      },
+      {
+        "path": "native/android/app/src/test/java/com/danilah/asocsolitair/RevenueOutboxTest.java",
+        "sha": "9f280aedd80698f41c130237f69fdeb8d6675ec5",
+        "expected": "9f280aedd80698f41c130237f69fdeb8d6675ec5",
+        "matches": true
+      },
+      {
+        "path": "native/android/app/src/main/java/com/danilah/asocsolitair/SolitaireApplication.java",
+        "sha": "961a559c0c2a7e644d33a3371702c63bbefa4cca",
+        "expected": "961a559c0c2a7e644d33a3371702c63bbefa4cca",
+        "matches": true
+      },
+      {
+        "path": "native/android/app/src/main/java/com/danilah/asocsolitair/SolitaireAnalyticsPlugin.java",
+        "sha": "d21fbcffd01151b45176cd166b7c4079a20aa53a",
+        "expected": "d21fbcffd01151b45176cd166b7c4079a20aa53a",
+        "matches": true
+      },
+      {
+        "path": "native/android/app/src/main/java/com/danilah/asocsolitair/SolitaireAdsPlugin.java",
+        "sha": "c745afc7d8651f7e32733b106230fca81c8bdc94",
+        "expected": "c745afc7d8651f7e32733b106230fca81c8bdc94",
+        "matches": true
+      },
+      {
+        "path": "index.html",
+        "sha": "b5478170abf22662e541a90891a3d9dd53439e20",
+        "expected": "b5478170abf22662e541a90891a3d9dd53439e20",
+        "matches": true
+      },
+      {
+        "path": "src/main.ts",
+        "sha": "ca37330db55975c86d1af0427a826d7a2ce6f512",
+        "expected": "ca37330db55975c86d1af0427a826d7a2ce6f512",
+        "matches": true
+      },
+      {
+        "path": "src/config/c8-release.json",
+        "sha": "540654e4b330e208d5b3c109cb42ddebb4796207",
+        "expected": "540654e4b330e208d5b3c109cb42ddebb4796207",
+        "matches": true
+      },
+      {
+        "path": "src/platform/telemetry.ts",
+        "sha": "3f8e242b008d8802926bb1765c04d14f6881368d",
+        "expected": "3f8e242b008d8802926bb1765c04d14f6881368d",
+        "matches": true
+      },
+      {
+        "path": "src/platform/analytics.ts",
+        "sha": "b3b7fc704e6925f6ae565ca516aa2fd035e93b4b",
+        "expected": "b3b7fc704e6925f6ae565ca516aa2fd035e93b4b",
+        "matches": true
+      },
+      {
+        "path": "src/platform/analytics-contract.json",
+        "sha": "3fdd2991dc1ccdc1d9ea92183ed6515d23715e65",
+        "expected": "3fdd2991dc1ccdc1d9ea92183ed6515d23715e65",
+        "matches": true
+      },
+      {
+        "path": "native/android/app/src/main/java/com/danilah/asocsolitair/RevenueOutbox.java",
+        "sha": "d27c66f84bca3cdaf0a779882718353e81f1ebb8",
+        "expected": "d27c66f84bca3cdaf0a779882718353e81f1ebb8",
+        "matches": true
+      },
+      {
+        "path": "native/android/app/src/main/java/com/danilah/asocsolitair/RevenueDelivery.java",
+        "sha": "daf8d19ebae77a91ebf2cda82d3d36953e0e2623",
+        "expected": "daf8d19ebae77a91ebf2cda82d3d36953e0e2623",
+        "matches": true
+      }
+    ]
+  },
+  "developerReportedNotIndependentlyRerunInFull": {
+    "source": "PR201 body read at this audit",
+    "integratedC8Layouts": 147,
+    "viewports": 7,
+    "targetedBrowserRegressions": 10,
+    "independentRules3Transitions": 1021257,
+    "definitions": 203,
+    "routes": 311,
+    "freeWitnessWalletAtL15L40L80": [
+      1317,
+      3488,
+      7206
+    ],
+    "weeklyCurrentTasksRows": 28,
+    "apkExtractedWebUpgrade": "B4 to PR201 at two browser sizes; not a physical APK upgrade"
+  },
+  "sourceAndCoverage": {
+    "sourceInventoryRef": "adb0657facebf8b5e3ed22369305ba509c988626",
+    "sourceInventoryBlob": "79a44a8b1c0ec98a6b6bde9b1fbd4071cad1af6d",
+    "methodPin": "06a01d5c1f7af3cdf8013c9ce0f6a691d086af78",
+    "runtimeKitPin": "a9325265e87583a4872cf6a158e1e881a0d7508e",
+    "features": 115,
+    "packets": 38,
+    "commercialFamilies": 15,
+    "ownerExcluded": 0,
+    "sourceStatusesUnchanged": {
+      "BLOCKED": 9,
+      "EVIDENCE_GAP": 11,
+      "IMPLEMENTED_UNVERIFIED": 64,
+      "IN_PROGRESS": 7,
+      "ROADMAPPED": 24
+    },
+    "sourceParityAndReleaseAcceptance": "Not inferred from this documentation-only review; original live rules, device and provider acceptance remain distinct."
+  },
+  "residuals": [
+    {
+      "id": "F1",
+      "classification": "confirmed-engineering-defect",
+      "summary": "First intake I/O failure loses ILRD before durable acceptance."
+    },
+    {
+      "id": "F2",
+      "classification": "confirmed-engineering-defect",
+      "summary": "Android native-clock acquisition failure permits unsafe page-bound timed right."
+    },
+    {
+      "id": "F3",
+      "classification": "confirmed-engineering-defect",
+      "summary": "Daily events omit required dayId and are rejected by actual contract."
+    },
+    {
+      "id": "U2",
+      "classification": "confirmed-presentation-mismatch",
+      "summary": "Definition shortage guidance can yield coins, which cannot purchase Definition."
+    }
+  ],
+  "notExecuted": [
+    "physical Android",
+    "live advertising SDK callbacks",
+    "AppMetrica dashboard/server receipt",
+    "human balance acceptance",
+    "production signing/installation acceptance"
+  ]
+}

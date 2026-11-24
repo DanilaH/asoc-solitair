@@ -210,6 +210,15 @@ export function decodeSave(raw: string, source: DealSource): Save {
     const value = save.settings[key as keyof Save['settings']];
     if (value !== undefined && !values.includes(String(value))) throw Error('Повреждено оформление');
   }
+  const victory = save.attempt.victory;
+  if (victory !== undefined && (!victory || victory.version !== 1 || deal.daily || !deal.campaignLevel ||
+      save.attempt.board.phase !== 'won' || victory.rewardKey !== `win:${save.attempt.id}` ||
+      typeof victory.policy !== 'string' || !victory.policy ||
+      ![victory.tier, victory.tierBase, victory.movesBonus, victory.contentVersion, victory.balanceVersion].every(natural) ||
+      victory.tier > 4 || !save.attempt.payout?.some(grant =>
+        grant.key === victory.rewardKey && grant.reason === 'win' && grant.coins === victory.tierBase + victory.movesBonus))) {
+    throw Error('Повреждена выплата победы');
+  }
   if (save.attempt.payout && (!Array.isArray(save.attempt.payout) || save.attempt.payout.some(r => !strings([r.key]) || !natural(r.coins) || !['win', 'campaign_milestone', 'campaign_win_cycle', 'daily_completion', 'daily_streak_milestone', 'golden_cards'].includes(r.reason) || typeof r.label !== 'string' || r.label.length > 200 || (r.hints !== undefined && !natural(r.hints)) || (r.undos !== undefined && !natural(r.undos))))) throw Error('Повреждён результат');
   return save;
 }

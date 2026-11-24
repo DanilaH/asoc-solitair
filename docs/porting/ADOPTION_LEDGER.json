@@ -45,6 +45,19 @@
     ],
     "evidence": "Full product deals and adaptive passports use dual replay. Native original and device acceptance remain open."
   },
+  "integratedAdsCandidate": {
+    "packet": "B2",
+    "implementationRef": "docs/porting/B2_ADVERTISING_ACCOUNTING.md",
+    "candidateCapabilities": [
+      "azur-win-multiplier",
+      "azur-free-shop-coin-claim",
+      "hitapps-adbreak",
+      "unico-coffee-break",
+      "azur-ad-revenue-attribution",
+      "azur-play-pass"
+    ],
+    "evidence": "P20 accounting works for shown and earned in either order. One pause in the candidate. Physical SDK and acquisition paths remain open."
+  },
   "researchMethod": {
     "decisionDate": "2026-11-24",
     "decisionRef": "docs/porting/RESEARCH_METHOD_2026-11-24.md",

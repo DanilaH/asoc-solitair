@@ -14,6 +14,7 @@ android {
         buildConfigField 'String', 'AD_MODE', quoted(adMode)
         buildConfigField 'boolean', 'CAMPAIGN_LIVES_ADS_APPROVED', String.valueOf(adMode == 'live' && System.getenv('ASOC_OWNER_LIVES_ADS_READY') == '1')
         buildConfigField 'boolean', 'CAMPAIGN_ADS_APPROVED', String.valueOf(adMode == 'live' && System.getenv('ASOC_OWNER_ADS_READY') == '1')
+        buildConfigField 'boolean', 'REWARD_OFFERS_ADS_APPROVED', String.valueOf(adMode == 'live' && System.getenv('ASOC_REWARD_OFFERS_ADS_READY') == '1')
         buildConfigField 'String', 'BANNER_AD_UNIT_ID', quoted(bannerId)
         buildConfigField 'String', 'INTERSTITIAL_AD_UNIT_ID', quoted(interstitialId)
         buildConfigField 'String', 'REWARDED_AD_UNIT_ID', quoted(rewardedId)

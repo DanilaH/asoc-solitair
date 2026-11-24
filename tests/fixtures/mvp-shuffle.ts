@@ -1,6 +1,6 @@
 /** Reachable positions: replay this many ordinary winningPath moves, then use the seed.
  * These are positive witnesses, not a claim that every initial seed is solvable. */
-export const shuffleIntroWitness = { id: 'campaign-c8-bonus-030-c8-core-r1-shuffle-r1-rights-r1', prefix: 104, seed: 0 } as const;
+export const shuffleIntroWitness = { id: 'campaign-c8-bonus-030-c8-core-r1-shuffle-r1-rights-r1', prefix: 0, seed: 7 } as const;
 
 export const shuffleProgressionWitnesses = [
   { id: 'campaign-c8-wave-033-shuffle-r2', prefix: 98, seed: 0 },

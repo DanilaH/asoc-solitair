@@ -1,13 +1,16 @@
 import { expect, test, type Page } from '@playwright/test';
 import { content8Dealer, content8Late, content8Wave } from '../../src/content/campaign-v8-dealer';
-import { freshSave } from '../../src/domain/engine';
+import { dispatch, freshSave } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import { platformState } from '../../src/domain/services';
 import { openDailyBonusRound, revealDailyBonusCard, claimDailyBonus } from '../../src/domain/events/daily-bonus';
 import { claimTask, claimTaskMilestone, recordTaskSignal, updatePreviewTasks, type TaskSignal } from '../../src/domain/events/daily-tasks';
 import { eventKey, observeEvents, recordEventWin, type EventDefinition } from '../../src/domain/events/ledger';
 import { openPictureEvent } from '../../src/domain/events/picture';
+import { rewardOfferState } from '../../src/domain/reward-offers';
+import { boardFrame, layout } from '../../src/game/layout';
 import type { Save } from '../../src/domain/types';
+import { recoverable } from '../fixtures/content8-loss';
 import { read } from './wallet-fixture';
 
 test.skip(!process.env.VITE_ASOC_PROFILE, 'Requires the ordinary integrated C8 release build');
@@ -15,7 +18,11 @@ test.use({ timezoneId: 'UTC' });
 if (process.env.ASOC_MVP_DEMO === '1') {
   test.use({ video: 'on' });
   test.afterEach(async ({ page }, info) => {
-    if (!page.isClosed()) await info.attach('screen', { body: await page.screenshot(), contentType: 'image/png' });
+    if (!page.isClosed()) {
+      const path = info.outputPath('screen.png');
+      await page.screenshot({ path });
+      await info.attach('screen', { path, contentType: 'image/png' });
+    }
   });
 }
 
@@ -272,5 +279,117 @@ test('legacy claims list only earned LiveOps while Picture retains its separate 
   await expect(page.locator('#picture-claim')).toBeHidden();
   expect((await read(page)).profile.coins).toBe(baseline + 17);
   expect((await read(page)).events?.events).toHaveLength(2);
+});
+
+test('legacy helper-only and bundled claims name every frozen resource and grant exactly those amounts once', async ({ page }) => {
+  const save = profile(32), start = NOW - 60 * DAY;
+  const event: EventDefinition = { id: 'historic-resource-bundles', version: 1, sourceFeatureId: 'hitapps-gold-rush-event', minCampaignLevel: 16, daily: false,
+    schedule: { clock: 'local', zone: 'UTC', start, end: start + 7 * DAY },
+    milestones: [
+      { id: 'helpers-only', threshold: 1, reward: { hints: 2, undos: 3, jokers: 1 } },
+      { id: 'bundle', threshold: 2, reward: { coins: 17, hints: 4, undos: 5, jokers: 2 } },
+    ] };
+  for (const level of [16, 17]) recordEventWin(save, [event],
+    { id: 'campaign:' + level, campaignLevel: level, mode: 'campaign' }, { localMs: start + level });
+  observeEvents(save, [], { localMs: NOW });
+  await seedHome(page, save);
+  const baseline = (await read(page)).profile;
+  await page.locator('#campaign-liveops-open').tap();
+  const list = page.locator('#campaign-liveops-list');
+  const helpers = list.locator('button[data-claim="helpers-only"]'), bundle = list.locator('button[data-claim="bundle"]');
+  await expect(list.getByRole('button')).toHaveCount(2);
+  await expect(helpers).toContainText(/\+2\s+подсказ/);
+  await expect(helpers).toContainText(/\+3\s+отмен/);
+  await expect(helpers).toContainText(/\+1\s+Джокер/);
+  await expect(helpers).not.toContainText(/монет|undefined|NaN/);
+  await expect(bundle).toContainText(/\+17\s+монет/);
+  await expect(bundle).toContainText(/\+4\s+подсказ/);
+  await expect(bundle).toContainText(/\+5\s+отмен/);
+  await expect(bundle).toContainText(/\+2\s+Джокер/);
+  await helpers.tap();
+  await expect.poll(async () => (await read(page)).profile).toMatchObject({
+    coins: baseline.coins, hints: baseline.hints + 2, undos: baseline.undos + 3, jokers: baseline.jokers + 1,
+  });
+  await expect(helpers).toHaveCount(0);
+  await expect(list.getByRole('button')).toHaveCount(1);
+  await bundle.tap();
+  const expected = { coins: baseline.coins + 17, hints: baseline.hints + 6, undos: baseline.undos + 8, jokers: baseline.jokers + 3 };
+  await expect.poll(async () => (await read(page)).profile).toMatchObject(expected);
+  await expect(list.getByRole('button')).toHaveCount(0);
+  const paid = (await read(page)).events!.events.find(record => eventKey(record.definition) === eventKey(event))!;
+  expect(paid.definition).toEqual(event);
+  expect(paid.claimed).toEqual(['helpers-only', 'bundle']);
+  await page.reload();
+  await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await expect(page.locator('#campaign-liveops-open')).toBeHidden();
+  expect((await read(page)).profile).toMatchObject(expected);
+  expect((await read(page)).events?.events).toHaveLength(1);
+  expect((await read(page)).attempt.board).toEqual(save.attempt.board);
+});
+
+test('repeated empty Definition after a manual wallet visit keeps its Bonus guidance without another offer activation', async ({ page }) => {
+  let save = profile(16);
+  for (const command of recoverable.winningPath.slice(0, 20)) save = dispatch(save, command, recoverable).next;
+  updatePreviewTasks(save, NOW);
+  rewardOfferState(save).definitions = 0;
+  save.dailyTasks!.inventory.definitions = 0;
+  await seedHome(page, save);
+  await page.locator('#home-play').tap();
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', recoverable.id);
+  const inspectEmptyDefinition = async () => {
+    const rect = (await page.locator('#game-root').boundingBox())!;
+    const board = (await read(page)).attempt.board;
+    const frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, recoverable);
+    const geometry = layout(board, recoverable, frame, save.settings.deckSide, save.settings.deckPosition);
+    const pose = geometry.poses.find(card => card.faceUp && board.tableau.some(column => column.at(-1) === card.id) &&
+      board.faceUp.some(id => id !== card.id && !recoverable.cards[id].leader && recoverable.cards[id].category === recoverable.cards[card.id].category));
+    expect(pose, 'the saved ordinary board has an inspectable card with a related word').toBeDefined();
+    await page.locator('#inspect').tap();
+    await page.touchscreen.tap(rect.x + frame.offsetX + pose!.x * frame.unit, rect.y + pose!.y * frame.unit);
+    await expect(page.locator('#definition-use')).toHaveText('Связанное слово · 0');
+    await expect(page.locator('#definition-use')).toBeDisabled();
+    await page.locator('#definition-refill').tap();
+    await expect(page.locator('#helpers')).toBeVisible();
+  };
+  const copy = page.locator('#product-offer-helpers'), source = page.locator('#context-bonus-open');
+  const definitionId = 'definition-empty:' + save.attempt.id;
+  await inspectEmptyDefinition();
+  await expect(copy).toContainText(/Объяснения/);
+  await expect(copy).toContainText(/не гарантирован/);
+  await expect(source).toBeVisible();
+  await expect.poll(async () => (await read(page)).productOffers?.reservation).toMatchObject({
+    eventId: definitionId, resource: 'definition', surface: 'definition',
+  });
+  const first = await read(page);
+  expect(first.offerCampaigns!.accounts[0].campaigns.find(campaign => campaign.campaignId === 'c8-local-helper'))
+    .toMatchObject({ activations: 1, shows: 1 });
+  await page.locator('#helper-return').tap();
+  await page.locator('#wallet-open').tap();
+  await expect.poll(async () => (await read(page)).productOffers?.reservation).toMatchObject({
+    eventId: 'manual-wallet:' + save.attempt.id, surface: 'resources',
+  });
+  await expect(copy).toContainText(/монеты/);
+  await expect(copy).not.toContainText(/Объяснения/);
+  const manual = await read(page);
+  expect(manual.productOffers?.reservation?.resource).toBeUndefined();
+  await page.locator('#helper-return').tap();
+  await inspectEmptyDefinition();
+  await expect(copy).toContainText(/Объяснения/);
+  await expect(copy).toContainText(/не гарантирован/);
+  await expect(source).toBeVisible();
+  // Following the promised source also waits for a later SaveStore transaction,
+  // so the duplicate fact has finished before comparing its unchanged journal.
+  await source.tap();
+  await expect(page.locator('#daily-bonus-dialog')).toBeVisible();
+  await expect.poll(async () => (await read(page)).dailyBonus?.roundId).toBeDefined();
+  const after = await read(page);
+  expect(after.offerCampaigns).toEqual(manual.offerCampaigns);
+  expect(after.productOffers).toEqual(manual.productOffers);
+  expect(after.offerCampaigns!.accounts[0].events.filter(event => event.id === definitionId)).toHaveLength(1);
+  expect(after.dailyTasks?.inventory.definitions).toBe(0);
+  expect(after.rewardOffers?.definitions).toBe(0);
+  expect(after.profile.coins).toBe(save.profile.coins);
+  expect(after.attempt.board).toEqual(save.attempt.board);
+  expect(after.commerceAccount).toBeUndefined();
 });
 

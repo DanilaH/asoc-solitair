@@ -1,0 +1,55 @@
+{
+  "source": "src/main.ts clearRecoveryClock..syncRecoveryTime (actual extracted source)",
+  "sourceSha256": "462e693d0729ff52ceb9dd2ca3f62dbc900c066606e449d150f7632a7a0b77b5",
+  "mainSha256": "79cc20e2553e61437f569bbea6ce2319edc24ed4e3e429b4f10c414206d08986",
+  "continuousFiveSecondCommits": {
+    "tick": 30000,
+    "reads": [
+      1000,
+      3000,
+      7000,
+      15000
+    ],
+    "writes": 4,
+    "writeTicks": [
+      1000,
+      3000,
+      7000,
+      15000
+    ],
+    "unknown": false,
+    "timers": [],
+    "recoveryRetryDelay": 1000,
+    "recoverySyncing": false,
+    "recoveryWriteRetryAt": 0,
+    "recoveryWriteDelay": 1000
+  },
+  "expiredWriteFailures": {
+    "tick": 123000,
+    "reads": [],
+    "writes": 8,
+    "writeTicks": [
+      0,
+      1000,
+      3000,
+      7000,
+      15000,
+      31000,
+      63000,
+      123000
+    ],
+    "unknown": false,
+    "timers": [
+      {
+        "at": 183000,
+        "delay": 60000
+      }
+    ],
+    "recoveryRetryDelay": 1000,
+    "recoverySyncing": false,
+    "recoveryTimerAt": 183000,
+    "recoveryWriteRetryAt": 183000,
+    "recoveryWriteDelay": 60000
+  },
+  "verdict": "Both reproduced timer findings fixed; deterministic source-extracted scheduler traces, not browser/device evidence."
+}

@@ -1,6 +1,12 @@
 # Current work · MVP cohesion implementation · 24 November 2026
 
-Owner: «Возьми ты в работу это». Implementation branch `feat/c8-mvp-cohesion-20261124` starts from docs PR202 `c85fdc772cfcf07acd6289aa8c1519f55df38e09`. Version0.20.4/code45. Read [implementation and exact evidence](qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md). F1–F3/C1–C3/U1–U5 are implemented; CI, exact artifacts and visual verification must be completed before marking independently testable engineering accepted. Preserve all115IDs/38packets/15families and source-status distinctions. No IAP/live activation or old-branch merges.
+Owner: «Возьми ты в работу это». Implementation branch `feat/c8-mvp-cohesion-20261124`, [PR203](https://github.com/DanilaH/asoc-solitair/pull/203), version **0.20.4 / Android code 45**. The branch starts from docs PR202 `c85fdc772cfcf07acd6289aa8c1519f55df38e09`. F1–F3, C1–C3 and U1–U5 are implemented; read the [implementation and exact evidence](qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md).
+
+**First PR203 head `d4b4120762b3fc5f873484b546d8a2408c003971`: [CI run 45404920495](https://github.com/DanilaH/asoc-solitair/actions/runs/45404920495) passed cohesion with 485 unit tests, 1 skip and 38 UI cases; the Android job, native JUnit and R8 passed.** The subsequent delta fixes startup clock/scheduler behavior, repeated Definition context after Manual wallet, and complete labels for frozen helper-only/bundled rewards. Its full local C8 unit rerun passed **490 tests, 1 skipped, 0 failed**. This local result does not replace CI for the next head.
+
+Initial L30 Shuffle now has a full positive proof at **prefix 0 / seed 7**, with 113 moves under the unchanged 124-move budget and production + independent replay to WON. All 14 future wrappers retain positive reachable fixtures; their separate initial seed 0 check reports **5 SOLVED / 9 bounded UNKNOWN**. Arbitrary-seed success is not promised. Full evidence and the current scheduler/Definition/bundle changes are recorded in the report.
+
+**Next:** publish the current delta, complete the exact final-head UI and Android CI, verify both APK identities/web payloads, and attach that head's videos/screenshots/native results. These next-head UI/APK checks remain **PENDING**. Physical Android, live SDK/AppMetrica, human economy and production release acceptance are still separate open gates; no global acceptance or source-status upgrade follows from the first CI. Preserve all **115 source IDs / 38 packets / 15 commercial families**, immutable old deals and the complete roadmap. No IAP/live activation or old-branch merges.
 
 ---
 

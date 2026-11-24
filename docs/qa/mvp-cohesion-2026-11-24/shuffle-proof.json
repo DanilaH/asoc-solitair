@@ -1,0 +1,5947 @@
+{
+  "policy": "c8-shuffle-progression-r1",
+  "note": "Positive reachable positions; not every initial seed is promised solvable.",
+  "witnesses": [
+    {
+      "id": "campaign-c8-wave-033-shuffle-r2",
+      "prefix": 98,
+      "seed": 0,
+      "movesLeft": 24,
+      "hidden": 0,
+      "stock": 0,
+      "waste": 9,
+      "hiddenPool": 9,
+      "remainingCards": 29,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-036-shuffle-r2",
+      "prefix": 66,
+      "seed": 0,
+      "movesLeft": 92,
+      "hidden": 11,
+      "stock": 21,
+      "waste": 9,
+      "hiddenPool": 41,
+      "remainingCards": 61,
+      "route": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-039-shuffle-r2",
+      "prefix": 55,
+      "seed": 0,
+      "movesLeft": 29,
+      "hidden": 0,
+      "stock": 6,
+      "waste": 4,
+      "hiddenPool": 10,
+      "remainingCards": 29,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-033-tight-r2-shuffle-r2",
+      "prefix": 103,
+      "seed": 0,
+      "movesLeft": 13,
+      "hidden": 0,
+      "stock": 0,
+      "waste": 5,
+      "hiddenPool": 5,
+      "remainingCards": 24,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-033-relief-r2-shuffle-r2",
+      "prefix": 54,
+      "seed": 0,
+      "movesLeft": 80,
+      "hidden": 10,
+      "stock": 11,
+      "waste": 16,
+      "hiddenPool": 37,
+      "remainingCards": 53,
+      "route": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-036-tight-r2-shuffle-r2",
+      "prefix": 66,
+      "seed": 0,
+      "movesLeft": 84,
+      "hidden": 11,
+      "stock": 21,
+      "waste": 9,
+      "hiddenPool": 41,
+      "remainingCards": 61,
+      "route": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-036-relief-r2-shuffle-r2",
+      "prefix": 66,
+      "seed": 0,
+      "movesLeft": 108,
+      "hidden": 11,
+      "stock": 21,
+      "waste": 9,
+      "hiddenPool": 41,
+      "remainingCards": 61,
+      "route": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-039-tight-r2-shuffle-r2",
+      "prefix": 55,
+      "seed": 0,
+      "movesLeft": 25,
+      "hidden": 0,
+      "stock": 6,
+      "waste": 4,
+      "hiddenPool": 10,
+      "remainingCards": 29,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-039-relief-r2-shuffle-r2",
+      "prefix": 55,
+      "seed": 0,
+      "movesLeft": 37,
+      "hidden": 0,
+      "stock": 6,
+      "waste": 4,
+      "hiddenPool": 10,
+      "remainingCards": 29,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-033-ha1-priority-49-116-44f0f8122b7d-shuffle-r2",
+      "prefix": 54,
+      "seed": 0,
+      "movesLeft": 62,
+      "hidden": 6,
+      "stock": 18,
+      "waste": 8,
+      "hiddenPool": 32,
+      "remainingCards": 58,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-033-ha1-priority-49-134-195954dd915f-shuffle-r2",
+      "prefix": 54,
+      "seed": 0,
+      "movesLeft": 80,
+      "hidden": 6,
+      "stock": 18,
+      "waste": 8,
+      "hiddenPool": 32,
+      "remainingCards": 58,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-039-ha1-priority-47-80-c270ee645259-shuffle-r2",
+      "prefix": 66,
+      "seed": 0,
+      "movesLeft": 14,
+      "hidden": 0,
+      "stock": 1,
+      "waste": 5,
+      "hiddenPool": 6,
+      "remainingCards": 22,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-039-ha1-priority-47-92-15f0e71a4e7a-shuffle-r2",
+      "prefix": 37,
+      "seed": 0,
+      "movesLeft": 55,
+      "hidden": 6,
+      "stock": 8,
+      "waste": 10,
+      "hiddenPool": 24,
+      "remainingCards": 39,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-wave-039-ha1-priority-50-92-1aa242726fcf-shuffle-r2",
+      "prefix": 36,
+      "seed": 0,
+      "movesLeft": 56,
+      "hidden": 0,
+      "stock": 17,
+      "waste": 1,
+      "hiddenPool": 18,
+      "remainingCards": 33,
+      "route": [
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "chargeConsumed": 1
+    },
+    {
+      "id": "campaign-c8-bonus-030-c8-core-r1-shuffle-r1-rights-r1",
+      "prefix": 0,
+      "seed": 7,
+      "movesLeft": 124,
+      "hidden": 18,
+      "stock": 44,
+      "waste": 0,
+      "hiddenPool": 62,
+      "remainingCards": 66,
+      "route": [
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "draw"
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 2
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 3
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "tableau",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "tableau",
+            "index": 1
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 1
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 0
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 2
+          }
+        },
+        {
+          "type": "transfer",
+          "from": {
+            "kind": "waste",
+            "index": 0
+          },
+          "to": {
+            "kind": "foundation",
+            "index": 3
+          }
+        }
+      ],
+      "production": "won",
+      "independent": "won",
+      "introGrant": 1,
+      "chargeConsumed": 1
+    }
+  ],
+  "sourceHashes": {
+    "src/game/shuffle-proof.ts": "73832290303e7a5fa6a7da21409298ea98da2c2d313d92efb84f3a4d37db5640",
+    "src/domain/ordinary-search.ts": "85aa5ea5e2736def5746e9768ff0f137f9c915ffd6f24af28242108e8247ec62",
+    "src/domain/proof-shuffle.ts": "efe2261f097ec3348bb3745a70664653f45cde83b9a25686c3cf20b62990428d",
+    "src/content/campaign.ts": "468b10848d10729ab14193ede4689f0f445cf429d962d260b0102857b9f616a1",
+    "src/config/c8-release.json": "ba0778dad6ed1f8511b4d06ce5d6765b1e8f4d18016361d9e1c5b524ae057822"
+  }
+}

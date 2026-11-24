@@ -1,5 +1,6 @@
 import { afterAll, describe, expect, it } from 'vitest';
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { campaignDeals, campaignIssuance, findDeal, integratedCampaignDeals, isCurrentCampaignDeal, selectCampaignDeal } from '../../src/content/campaign';
 import { releaseProfile } from '../../src/config/profile';
 import { dailyForDay } from '../../src/content/daily';
@@ -21,6 +22,8 @@ const evidence: unknown[] = [];
 afterAll(() => {
   if (process.env.SHUFFLE_EVIDENCE) writeFileSync(process.env.SHUFFLE_EVIDENCE, JSON.stringify({
     policy: 'c8-shuffle-progression-r1', note: 'Positive reachable positions; not every initial seed is promised solvable.', witnesses: evidence,
+    sourceHashes: Object.fromEntries(['src/game/shuffle-proof.ts', 'src/domain/ordinary-search.ts', 'src/domain/proof-shuffle.ts',
+      'src/content/campaign.ts', 'src/config/c8-release.json'].map(path => [path, createHash('sha256').update(readFileSync(path)).digest('hex')])),
   }, null, 2));
 });
 function profile(deal: Deal, completed = deal.campaignLevel! - 1) {

@@ -26,6 +26,8 @@ export function createRecoveryClock() {
     read(): RecoveryClockReading {
       const now = performance.now();
       const source = native ? { native: true as const } : {};
+      // native + page timeline means no usable Android sample in this process. Consumers
+      // must not mistake it for a known new boot or re-anchor an existing timed right to it.
       if (!anchor) return { timeline: pageTimeline, elapsed: Math.floor(now), ...source };
       return { timeline: anchor.reading.timeline, elapsed: anchor.reading.elapsed + Math.floor(Math.max(0, now - anchor.sampledAt)), ...source };
     },

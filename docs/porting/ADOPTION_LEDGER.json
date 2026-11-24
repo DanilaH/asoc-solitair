@@ -1232,5 +1232,30 @@
     }
   ],
   "auditRevision": "2026-11-24-mvp-cohesion-local-implementation",
-  "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
+  "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md",
+  "mvpCohesionCandidate20261124": {
+    "branch": "feat/c8-mvp-cohesion-20261124",
+    "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/203",
+    "firstHead": "d4b4120762b3fc5f873484b546d8a2408c003971",
+    "firstCIRun": "https://github.com/DanilaH/asoc-solitair/actions/runs/45404920495",
+    "firstCohesion": {
+      "unitPassed": 485,
+      "unitSkipped": 1,
+      "browserPassed": 38
+    },
+    "firstAndroid": "PASS",
+    "finalHeadAcceptance": "PENDING_FINAL_HEAD_RERUN",
+    "shuffleInitialL30": {
+      "seed": 7,
+      "prefix": 0,
+      "proofMoves": 113,
+      "budget": 124
+    },
+    "futureInitialSeed0": {
+      "solved": 5,
+      "unknown": 9
+    },
+    "evidence": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
+    "external": "Physical Android/live SDK/ILRD ingestion/human economy pending; no IAP gate or owner exclusion"
+  }
 }

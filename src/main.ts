@@ -10,12 +10,12 @@ import { OFFER_CAMPAIGNS_PREVIEW } from './domain/commerce/offer-campaigns';
 import { mountOfferCampaignPreview } from './app/offer-campaign-preview';
 import { authorizeLifeVideo, cancelLifeVideo, LIVEOPS_PREVIEW, LIVES_PREVIEW, LIVES_RULES, matchesLifeVideo, mayStartCampaignAttempt, refillCampaignLife, refreshCampaignLives } from './domain/campaign-lives';
 import { claimLegacyLiveOpsReward, legacyLiveOpsRewards, liveOpsDefinitions, liveOpsTitles, recordLiveOpsWin, type LiveOpsSource } from './domain/events/campaign-liveops';
-import { availableEvents, claimMilestone, eventKey } from './domain/events/ledger';
+import { availableEvents, claimMilestone, eventKey, type EventReward } from './domain/events/ledger';
 import { createStorefront } from './platform/storefront';
 import { claimShopProgress, freeCampaignBonusState, PASS_GOAL, PIGGY_LIMIT, productLabels, recordFreeCampaignClear, recordStoreClear, settleFreeCampaignBonus, showProductGoods, storefrontView, STOREFRONT_PREVIEW } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
 import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee } from './domain/campaign-advertising';
-import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, unlimitedRemaining, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
+import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, requiresNativeRecoveryClock, restoreCampaignStock, restoreQuote, unlimitedRemaining, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
 import { allowsRandomJoker, buyRandomJokerAccess, placeRandomJoker, randomJokerCount, randomJokerReady, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
 import { GENERATION_PREVIEW, recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
@@ -252,7 +252,7 @@ try {
   let save = await store.open();
   const expireRecovery = (next: Save) => expireUnlimited(next, Date.now(), recoveryTime.read());
   await recoveryTime.refresh();
-  if (recoveryWait(save) !== undefined) {
+  if (recoveryWait(save) !== undefined || requiresNativeRecoveryClock(save, recoveryTime.read())) {
     await store.mutate(expireRecovery);
     save = store.state;
   }
@@ -383,6 +383,21 @@ try {
   const campaignAdsApproved = () => releaseProfile && testSdk() || (ads.status.mode === 'live' && ads.status.campaignApproved === true);
   const coffeePreview = () => !releaseProfile && (ADS_CONTROLS_PREVIEW || campaignAdsApproved());
   let recoveryClock: ReturnType<typeof setTimeout> | undefined;
+  let recoveryRetryDelay = 1000, recoverySyncing = false;
+  let recoveryTimerAt: number | undefined;
+  let recoveryWriteRetryAt = 0, recoveryWriteDelay = 1000;
+  let unlimitedError: { attemptId: string; text: string } | undefined;
+  function recoveryClockBlocked() {
+    const attempt = save.attempt;
+    return screen === 'game' && !attempt.daily && attempt.board.phase === 'playing' && attempt.board.movesLeft === null &&
+      attempt.unlimited?.until !== undefined && !attempt.unlimited.expired && requiresNativeRecoveryClock(save, recoveryTime.read());
+  }
+  function updateRecoveryBlock() {
+    const blocked = recoveryClockBlocked();
+    runtime.activity.setBlocked('recovery-time', blocked);
+    $('#app').dataset.recoveryClock = String(blocked);
+    $('#recovery-clock-status').hidden = !blocked;
+  }
   let banner: NativeBanner | undefined;
   const launchedAt = Date.now();
   const telemetry = createTelemetry(() => save, runtime.activity, AZUR_VICTORY_QA ? {
@@ -394,21 +409,49 @@ try {
   const setInput = () => scene?.setEnabled(screen === 'game' && ready && !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
   const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && !adFree(save, Date.now(), 'banner') && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
   store.onChange = value => { save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); scheduleRecoveryClock(); };
+  function clearRecoveryClock() {
+    clearTimeout(recoveryClock); recoveryClock = undefined; recoveryTimerAt = undefined;
+  }
   function scheduleRecoveryClock() {
-    clearTimeout(recoveryClock);
-    const remaining = recoveryWait(save);
-    if (remaining === undefined) return;
+    updateRecoveryBlock();
+    if (recoverySyncing) { clearRecoveryClock(); return; }
+    const unknown = requiresNativeRecoveryClock(save, recoveryTime.read()), remaining = recoveryWait(save);
+    if (!unknown && remaining === undefined) {
+      clearRecoveryClock(); recoveryRetryDelay = 1000; recoveryWriteRetryAt = 0; recoveryWriteDelay = 1000; return;
+    }
+    const rawDelay = unknown ? Math.min(recoveryRetryDelay, remaining ?? Infinity) : remaining!;
+    const now = performance.now(), delay = Math.min(2_147_483_647, Math.max(0, rawDelay, recoveryWriteRetryAt - now));
+    const due = now + delay;
+    // Unrelated SaveStore commits must not move an already scheduled native sample later.
+    if (recoveryClock !== undefined && recoveryTimerAt !== undefined && recoveryTimerAt <= due) return;
+    clearRecoveryClock(); recoveryTimerAt = due;
     recoveryClock = setTimeout(() => {
+      recoveryClock = undefined; recoveryTimerAt = undefined;
       if (!alive) return;
       void syncRecoveryTime().catch(() => message('Не удалось восстановить лимит ходов.', true));
-    }, Math.min(2_147_483_647, remaining));
+    }, delay);
   }
   async function syncRecoveryTime() {
-    if (recoveryWait(save) === undefined) return;
-    const changed = await write(expireRecovery);
-    if (!alive) return;
-    if (changed) { scene?.sync(); if (screen === 'game' && save.attempt.board.phase === 'exhausted') outcome(); }
-    scheduleRecoveryClock();
+    if (recoverySyncing || !alive) return;
+    if (recoveryWait(save) === undefined && !requiresNativeRecoveryClock(save, recoveryTime.read())) { updateRecoveryBlock(); return; }
+    recoverySyncing = true;
+    try {
+      if (requiresNativeRecoveryClock(save, recoveryTime.read())) {
+        const refreshed = await recoveryTime.refresh();
+        recoveryRetryDelay = refreshed ? 1000 : Math.min(60_000, recoveryRetryDelay * 2);
+      }
+      if (!alive) return;
+      const changed = await write(expireRecovery);
+      recoveryWriteRetryAt = 0; recoveryWriteDelay = 1000;
+      if (changed) { scene?.sync(); if (screen === 'game' && save.attempt.board.phase === 'exhausted') outcome(); }
+    } catch (error) {
+      recoveryWriteRetryAt = performance.now() + recoveryWriteDelay;
+      recoveryWriteDelay = Math.min(60_000, recoveryWriteDelay * 2);
+      throw error;
+    } finally {
+      recoverySyncing = false;
+      if (alive) { scheduleRecoveryClock(); renderHud(); }
+    }
   }
   async function write<T>(change: (next: Save) => T): Promise<T> {
     pendingWrites++; saving = true; setInput();
@@ -495,6 +538,7 @@ try {
   telemetry.track('session_start');
   if (save.attempt.telemetry?.started && save.attempt.board.phase === 'playing') telemetry.track('level_resume');
   let helperFocus: 'hint' | 'undo' | 'joker' | undefined;
+  let helperResource: 'definition' | undefined;
   let bonusSelection: { kind: BonusKind; attemptId: string } | undefined;
   function selectedBonus() {
     if (!bonusSelection || bonusSelection.attemptId !== save.attempt.id || save.attempt.board.phase !== 'playing') return;
@@ -513,8 +557,8 @@ try {
     $('#bonus-balance').textContent = save.profile.coins < offer.coins
       ? `Не хватает ${offer.coins - save.profile.coins} монет.` : `В кошельке ${save.profile.coins} монет.`;
   }
-  function openHelpers(focus?: typeof helperFocus, fromSettings = false) {
-    helperFocus = focus;
+  function openHelpers(focus?: typeof helperFocus, fromSettings = false, resource?: typeof helperResource) {
+    helperFocus = focus; helperResource = resource;
     renderHud();
     if (fromSettings) openChildDialog('#helpers', '#settings', $('#helpers-open'));
     else openDialog('#helpers');
@@ -561,6 +605,7 @@ try {
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   const hasTransfer = new WeakMap<Save['attempt']['board'], boolean>();
   function renderHud() {
+    updateRecoveryBlock();
     $('#campaign-store-open').hidden = !STOREFRONT_PREVIEW;
     $('#coffee-open').hidden = !coffeePreview() || (deal.campaignLevel ?? 0) < 16 || save.attempt.board.phase !== 'playing';
     const restore = $<HTMLButtonElement>('#restore-stock'), price = restoreQuote(save.attempt, deal);
@@ -573,14 +618,18 @@ try {
     const earned = quoteUnlimitedAccess(save, deal, Date.now(), recoveryTime.read());
     const trial = RECOVERY_PREVIEW && deal.recovery && save.attempt.board.phase === 'playing' && !save.attempt.unlimited;
     const buyUnlimited = canBuyUnlimitedAccess(save, deal);
-    unlimited.hidden = !(purchase || earned || trial || buyUnlimited);
-    unlimited.textContent = earned ? 'Активировать ходы без лимита' : purchase ? 'Применить купленные ходы без лимита' :
+    const clockPending = requiresNativeRecoveryClock(save, recoveryTime.read()) && Boolean(save.attempt.unlimited || save.attempt.unlimitedAccess);
+    unlimited.hidden = !(purchase || earned || trial || buyUnlimited || clockPending);
+    const unlimitedStatus = $('#unlimited-status');
+    unlimitedStatus.hidden = !(clockPending || unlimitedError?.attemptId === save.attempt.id);
+    unlimitedStatus.textContent = unlimitedError?.attemptId === save.attempt.id ? unlimitedError.text : clockPending ? 'Проверяем время. Заряд сохранён; исходный срок действия не меняется.' : '';
+    unlimited.textContent = clockPending ? 'Проверить время ходов без лимита' : earned ? 'Активировать ходы без лимита' : purchase ? 'Применить купленные ходы без лимита' :
       buyUnlimited ? `Без лимита · ${deal.extraHelpers!.unlimitedMs / 1000} с · ${deal.extraHelpers!.unlimitedCoins} монет` : 'Ходы без лимита · 2 мин';
     const joker = $<HTMLButtonElement>('#random-joker-open');
     const jokerPrice = deal.extraHelpers?.randomJokerCoins;
     const canBuy = jokerPrice !== undefined && randomJokerCount(save) === 0 && allowsRandomJoker(save.attempt, deal);
     joker.hidden = !(canRequestRandomJoker() || canBuy);
-    joker.disabled = saving || (canBuy && save.profile.coins < jokerPrice);
+    joker.disabled = saving || recoveryClockBlocked() || (canBuy && save.profile.coins < jokerPrice);
     joker.textContent = canBuy ? `Заряд случайного Джокера · ${jokerPrice} монет` : 'Случайный Джокер · 1';
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
@@ -589,7 +638,7 @@ try {
     const shuffle = $<HTMLButtonElement>('#proof-shuffle');
     const shuffling = runtime.activity.getBlockReasons().includes('shuffle');
     shuffle.hidden = !deal.shufflePreview && !deal.shufflePolicy;
-    shuffle.disabled = !canShuffle(save, deal) || saving || shuffling;
+    shuffle.disabled = !canShuffle(save, deal) || saving || shuffling || recoveryClockBlocked();
     shuffle.setAttribute('aria-busy', String(shuffling));
     $('#proof-shuffle-label').textContent = shuffling ? 'Ищу…' : save.attempt.shuffleUsed ? 'Использовано' :
       deal.shuffleCost ? `Перемешать · ${save.dailyTasks?.inventory.shuffles ?? 0}` : 'Перемешать';
@@ -646,14 +695,14 @@ try {
         : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : goldNote ?? boosterNote);
     if ($('#lesson-copy').textContent !== (note ?? '')) $('#lesson-copy').textContent = note ?? '';
     $('#lesson-note').hidden = !note;
-    $<HTMLButtonElement>('#joker').disabled = board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving ||
+    $<HTMLButtonElement>('#joker').disabled = recoveryClockBlocked() || board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving ||
       Boolean(instruction?.accepts && instruction.attention !== 'joker');
     $('#joker').classList.toggle('attention', instruction?.attention === 'joker');
     $('#hint').classList.toggle('attention', instruction?.attention === 'hint');
     $('#undo').classList.toggle('attention', instruction?.attention === 'undo');
 
     $('#wallet-open').setAttribute('aria-label', `${save.profile.coins} монет. Монеты и помощники`);
-    $('#moves').textContent = board.movesLeft === null ? '∞' : String(board.movesLeft);
+    $('#moves').textContent = recoveryClockBlocked() ? '…' : board.movesLeft === null ? '∞' : String(board.movesLeft);
     $('.moves').dataset.urgency = board.movesLeft === 0 ? 'lost' : board.movesLeft !== null && board.movesLeft <= 5 ? board.movesLeft <= 2 ? 'critical' : 'low' : '';
     $('#move-fill').style.width = `${100 * (board.movesLeft ?? 1) / (deal.initial.movesLeft ?? 1)}%`;
     const replayHint = Boolean(repeatHint());
@@ -663,8 +712,8 @@ try {
     $('#hint').setAttribute('aria-busy', String(searching));
     $('#hint').setAttribute('aria-label', searching ? 'Ищу подсказку' : replayHint ? 'Повторить подсказку бесплатно' : 'Подсказка');
     $('#hint-count').textContent = String(save.profile.hints); $('#undo-count').textContent = String(save.profile.undos);
-    $<HTMLButtonElement>('#hint').disabled = board.phase !== 'playing' || Boolean(workerDeadline) || saving || Boolean(instruction?.accepts && instruction.attention !== 'hint' && !replayHint);
-    $<HTMLButtonElement>('#undo').disabled = board.phase === 'won' || !save.attempt.undo.length || saving || Boolean(instruction?.accepts && instruction.attention !== 'undo');
+    $<HTMLButtonElement>('#hint').disabled = recoveryClockBlocked() || board.phase !== 'playing' || Boolean(workerDeadline) || saving || Boolean(instruction?.accepts && instruction.attention !== 'hint' && !replayHint);
+    $<HTMLButtonElement>('#undo').disabled = recoveryClockBlocked() || board.phase === 'won' || !save.attempt.undo.length || saving || Boolean(instruction?.accepts && instruction.attention !== 'undo');
     const combo = save.attempt.combo;
     const tier = combo ? COMBO_STAGES[combo.stage] ?? { count: 0, coins: 0 } : STREAK[save.attempt.streak.tier];
     const progress = combo?.progress ?? save.attempt.streak.progress;
@@ -807,7 +856,8 @@ try {
     const pending = save.productOffers?.reservation;
     const context = pending?.attemptId === save.attempt.id ? pending : undefined;
     const helpersText = $('#product-offer-helpers'), resultText = $('#product-offer-result');
-    const forHelpers = Boolean(context && context.surface !== 'result' && !save.attempt.daily);
+    const forHelpers = !save.attempt.daily && Boolean(helperResource || context && context.surface !== 'result');
+    const resource = helperResource ?? context?.resource;
     const forResult = Boolean(context?.surface === 'result' && save.attempt.board.phase !== 'playing');
     helpersText.hidden = !forHelpers;
     resultText.hidden = !forResult;
@@ -820,7 +870,7 @@ try {
         : bonus.phase === 'claimed' ? 'Бонус дня получен. Следующий — ' + resetText(bonus.nextResetAt) + '.'
         : bonus.phase === 'future' ? 'Бонус будет доступен ' + resetText(bonus.availableAt) + '.'
         : bonus.phase === 'playing' ? 'Можно продолжить бонус дня. Приз случайный.' : 'Приз бонуса дня случайный.';
-      helpersText.textContent = context?.resource === 'definition'
+      helpersText.textContent = resource === 'definition'
         ? 'Объяснения могут выпасть в бонусе дня; нужный приз не гарантирован. ' + bonusCopy
         : canClaimShopCoins(save, deal, now) ? 'Доступны бесплатные монеты.'
           : approvedOffers() && ads.status.rewarded && offerQuote(save, deal, 'shop-free-coins', now, integratedOffers)
@@ -931,7 +981,7 @@ try {
     }
   }
   async function execute(cmd: Command) {
-    if (!alive || saving || screen !== 'game' || runtime.activity.isBlocked()) return false;
+    if (!alive || saving || screen !== 'game' || (runtime.activity.isBlocked() && !(cmd.type === 'restart' && runtime.activity.getBlockReasons().every(reason => reason === 'recovery-time')))) return false;
     if (!allowsLesson(cmd)) {
       scene?.cancel();
       showGuidance();
@@ -1376,7 +1426,7 @@ try {
     serviceBusy = false;
     if (!alive) return;
     // Dismissal and foreground are independent. Never continue behind a displayed ad.
-    if (runtime.activity.isBlocked()) {
+    if (runtime.activity.getBlockReasons().some(reason => reason !== 'recovery-time')) {
       const remove = runtime.activity.onBlockedChange(blocked => { if (!blocked) { remove(); if (alive) void execute({ type: 'restart', attemptId: crypto.randomUUID() }); } });
     } else await execute({ type: 'restart', attemptId: crypto.randomUUID() });
   }
@@ -1684,12 +1734,9 @@ try {
       if (TASKS_PREVIEW) renderTasks();
       if (rewardOffersEnabled) renderRewardOffers();
       renderHome();
-      if (recoveryWait(save) !== undefined) {
-        runtime.activity.setBlocked('recovery-time', true);
-        void recoveryTime.refresh().then(syncRecoveryTime)
-          .catch(() => message('Не удалось восстановить лимит ходов.', true))
-          .finally(() => { if (alive) runtime.activity.setBlocked('recovery-time', false); });
-      } else void recoveryTime.refresh();
+      void recoveryTime.refresh().then(syncRecoveryTime)
+        .catch(() => message('Не удалось восстановить лимит ходов.', true));
+
     }
     const blocked = runtime.activity.isBlocked();
     if (runtime.activity.getBlockReasons().some(reason => reason !== 'shuffle')) cancelShuffle?.();
@@ -1884,7 +1931,7 @@ try {
     $('#definition-refill').addEventListener('click', () => {
       if (!productOfferEnabled || saving || serviceBusy || definitionCount(save) !== 0) return;
       offerFact({ trigger: OfferTrigger.OutOfBooster, booster: 'definition', resource: 'definition', key: 'definition-empty' });
-      openHelpers();
+      openHelpers(undefined, false, 'definition');
     }, domOptions);
     $('#definition-use').addEventListener('click', async () => {
       const id = definitionCardId;
@@ -2235,6 +2282,10 @@ try {
     } catch { message('Не удалось подтвердить восстановление жизни.', true); }
     finally { serviceBusy = false; if (alive) openLives(); }
   }, domOptions);
+  function eventRewardLabel(reward: EventReward) {
+    return (['coins', 'hints', 'undos', 'jokers'] as const).filter(key => (reward[key] ?? 0) > 0)
+      .map(key => '+' + reward[key] + ' ' + ({ coins: 'монет', hints: 'подсказок', undos: 'отмен', jokers: 'Джокеров' }[key])).join(' · ');
+  }
   function paintLiveOps() {
     if (!LIVEOPS_PREVIEW) {
       const rewards = legacyLiveOpsRewards(save);
@@ -2244,7 +2295,7 @@ try {
         title.textContent = reward.title;
         detail.textContent = 'Награда сохранена · ' + reward.progress + '/' + reward.threshold;
         claim.type = 'button'; claim.className = 'secondary'; claim.dataset.claim = reward.id; claim.dataset.eventKey = reward.eventKey;
-        claim.textContent = 'Забрать +' + reward.reward.coins + ' монет';
+        claim.textContent = 'Забрать ' + eventRewardLabel(reward.reward);
         claim.disabled = saving || serviceBusy || store.needsRecovery;
         row.append(title, detail, claim); return row;
       }));
@@ -2269,7 +2320,7 @@ try {
       for (const target of state?.ready ?? []) {
         const claim = document.createElement('button'); claim.className = 'secondary';
         claim.dataset.claim = target.id; claim.dataset.eventKey = key;
-        claim.textContent = `Забрать +${target.reward.coins} монет`; row.append(claim);
+        claim.textContent = 'Забрать ' + eventRewardLabel(target.reward); row.append(claim);
       }
       list.append(row);
     }
@@ -2401,7 +2452,7 @@ try {
     finally { serviceBusy = false; renderHud(); }
   }, domOptions);
   $('#restore-stock').addEventListener('click', async () => {
-    if (!recoveryEnabled() || saving || serviceBusy) return;
+    if (!recoveryEnabled() || saving || serviceBusy || recoveryClockBlocked()) return;
     const source = deal, cost = restoreQuote(save.attempt, source);
     if (cost === undefined) return;
     const quote = { attemptId: save.attempt.id, revision: save.revision, cost };
@@ -2415,10 +2466,10 @@ try {
   $('#unlimited-preview').addEventListener('click', async () => {
     if (!recoveryEnabled() || !deal.recovery || saving || serviceBusy) return;
     const source = deal, attemptId = save.attempt.id, accountId = unlimitedAccount();
-    serviceBusy = true; renderHud();
+    unlimitedError = undefined; serviceBusy = true; renderHud();
     try {
       const reading = await recoveryTime.acquire();
-      if (!reading) { message('Не удалось проверить время. Ходы не куплены, заряд сохранён. Попробуйте ещё раз.', true); return; }
+      if (!reading) { unlimitedError = { attemptId, text: 'Не удалось проверить время. Монеты не списаны, заряд сохранён. Попробуйте ещё раз.' }; return; }
       const now = Date.now();
       if (!alive || save.attempt.id !== attemptId || deal.id !== source.id) return;
       const purchase = quotePurchasedUnlimited(save, source, accountId, now);
@@ -2438,11 +2489,11 @@ try {
         return applied;
       });
       if (applied) { closeDialogs(); scene?.sync(); }
-    } catch { message('Не удалось сохранить ходы без лимита.', true); }
-    finally { serviceBusy = false; if (alive) renderHud(); }
+    } catch { unlimitedError = { attemptId, text: 'Не удалось сохранить ходы без лимита. Проверьте сохранение перед повтором.' }; }
+    finally { serviceBusy = false; if (alive) { scheduleRecoveryClock(); renderHud(); } }
   }, domOptions);
   function canRequestRandomJoker() {
-    return (RANDOM_JOKER_PREVIEW || deal.randomJokerPreview === 1) &&
+    return !recoveryClockBlocked() && (RANDOM_JOKER_PREVIEW || deal.randomJokerPreview === 1) &&
       randomJokerReady(save, deal);
   }
   function recoveryEnabled() {
@@ -2454,7 +2505,7 @@ try {
   }
   let randomJokerIntent: { attemptId: string; dealId: string; buy: boolean; cost?: number } | undefined;
   $('#random-joker-open').addEventListener('click', () => {
-    if (saving || serviceBusy) return;
+    if (saving || serviceBusy || recoveryClockBlocked()) return;
     const buy = !canRequestRandomJoker(), cost = deal.extraHelpers?.randomJokerCoins;
     if (buy && (cost === undefined || randomJokerCount(save) > 0 || !allowsRandomJoker(save.attempt, deal))) return;
     randomJokerIntent = { attemptId: save.attempt.id, dealId: deal.id, buy, cost };
@@ -2466,7 +2517,7 @@ try {
   }, domOptions);
   $('#random-joker-confirm').addEventListener('click', async () => {
     const intent = randomJokerIntent;
-    if (!intent || saving || serviceBusy || !$<HTMLDialogElement>('#random-joker-warning').open ||
+    if (!intent || saving || serviceBusy || recoveryClockBlocked() || !$<HTMLDialogElement>('#random-joker-warning').open ||
         intent.attemptId !== save.attempt.id || intent.dealId !== deal.id) return;
     const source = deal, attemptId = save.attempt.id, revision = save.revision;
     if (intent.buy) {

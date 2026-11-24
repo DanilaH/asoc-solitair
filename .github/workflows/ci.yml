@@ -67,7 +67,7 @@ jobs:
           ASOC_AD_MODE: disabled
         run: |
           npm run build
-          npm run test:browser -- tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts
+          npm run test:browser -- tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts
       - name: Verify the Content 8 preview with actual touch input
         if: startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || startsWith(github.head_ref || github.ref_name, 'docs/c8-') || github.base_ref == 'feat/c8-onboarding-dealer-20261119'
         env:
@@ -183,7 +183,7 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - name: Verify saved rights and reward lifecycle through ordinary touch UI
-        run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts --output=test-results/mvp-cohesion
+        run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts --output=test-results/mvp-cohesion
       - uses: actions/upload-artifact@v4
         if: always()
         with:

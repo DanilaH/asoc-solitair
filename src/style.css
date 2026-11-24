@@ -617,3 +617,6 @@ html[data-reduced=true] .coin-debit{animation:none}
 #result-new-attempt small{display:block;font-size:12px;font-weight:600;line-height:1.35;margin-top:3px}
 #result-life-note{font-size:12px;line-height:1.4;margin:2px 4px}
 @media(max-width:360px){.inventory-list{grid-template-columns:1fr}.inventory-list>div{padding:7px 9px}}
+
+#recovery-clock-status{position:absolute;inset:0;margin:0;padding:6px 12px;display:flex;align-items:center;border-radius:11px;background:#154e52;color:#fff3d6;font-size:13px;line-height:1.35;z-index:3}
+#app[data-recovery-clock=true] #lesson-note,#app[data-recovery-clock=true] #no-transfer,#app[data-recovery-clock=true] #praise,#app[data-recovery-clock=true] #message{visibility:hidden}

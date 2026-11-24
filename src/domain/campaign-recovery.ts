@@ -152,6 +152,22 @@ function safeTimedAcquisition(reading?: RecoveryClockReading) {
 
 type TimedRight = Pick<NonNullable<Attempt['unlimited']>, 'until' | 'issuedAt' | 'expired' | 'clock'>;
 
+/** A failed first native read is not evidence that Android rebooted.
+ * Page anchors from an older process remain a separate, intentionally expired legacy case.
+ */
+function unknownNativeClock(right: TimedRight, reading?: RecoveryClockReading) {
+  return Boolean(right.until !== undefined && !right.expired && reading?.native &&
+    !reading.timeline.startsWith('android-') && (!right.clock || right.clock.timeline.startsWith('android-')));
+}
+
+/** Schedule native resampling for active or parked rights. Only an active infinite board needs an input block. */
+export function requiresNativeRecoveryClock(save: Save, reading: RecoveryClockReading): boolean {
+  return [save.attempt, save.parked?.campaign].some(attempt => Boolean(attempt && (
+    attempt.unlimited && unknownNativeClock(attempt.unlimited, reading) ||
+    attempt.unlimitedAccess && !attempt.unlimitedAccess.consumed && unknownNativeClock(attempt.unlimitedAccess, reading)
+  )));
+}
+
 export function validUnlimitedClock(right: TimedRight) {
   const clock = right.clock;
   return clock === undefined || Boolean(clock && right.until && typeof clock.timeline === 'string' &&
@@ -165,6 +181,9 @@ export function unlimitedRemaining(right: TimedRight, now: number, reading?: Rec
   // Old Android saves may have acquired a page-only anchor while the bridge failed.
   // Its elapsed time cannot be compared after a process restart, even if native reads recover.
   if (anchor?.timeline.startsWith('page-') && reading?.native && reading.timeline !== anchor.timeline) return 0;
+  // Do not burn a valid native-bound earned right or turn it into a new page-clock right
+  // while the bridge is temporarily unavailable. Its original wall deadline can still end it.
+  if (unknownNativeClock(right, reading)) return now >= right.until ? 0 : undefined;
   if (reading && now < right.issuedAt && (!anchor || reading.timeline !== anchor.timeline)) return 0;
   if (anchor?.timeline.startsWith('android-') && reading && reading.timeline !== anchor.timeline) {
     // Across a reboot there is no comparable offline elapsed clock.
@@ -191,11 +210,11 @@ export function expireUnlimited(save: Save, now: number, reading?: RecoveryClock
   for (const attempt of [save.attempt, save.parked?.campaign]) {
     const access = attempt?.unlimitedAccess;
     if (access && !access.consumed && !access.expired) {
-      const remaining = unlimitedRemaining(access, now, reading)!;
+      const remaining = unlimitedRemaining(access, now, reading);
       if (remaining === 0) {
         access.expired = true;
         changed = true;
-      } else if (observeClock(access, now, remaining, reading)) changed = true;
+      } else if (remaining !== undefined && observeClock(access, now, remaining, reading)) changed = true;
     }
     const deadline = attempt?.unlimited?.until;
     if (!attempt?.unlimited || attempt.unlimited.expired || deadline === undefined) continue;
@@ -206,7 +225,7 @@ export function expireUnlimited(save: Save, now: number, reading?: RecoveryClock
     const right = attempt.unlimited;
     const remaining = unlimitedRemaining(right, now, reading);
     if (!revoked && remaining !== 0) {
-      if (observeClock(right, now, remaining!, reading)) changed = true;
+      if (remaining !== undefined && observeClock(right, now, remaining, reading)) changed = true;
       continue;
     }
     attempt.board = restoreFiniteBudget(attempt.board);

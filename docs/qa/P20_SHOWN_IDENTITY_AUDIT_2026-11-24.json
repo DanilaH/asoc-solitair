@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-11-24",
+  "classification": "EXECUTED_PRODUCT_FUNCTION_CHECK",
+  "executionRuntime": "Node.js v24.22.3",
+  "repository": "DanilaH/asoc-solitair",
+  "commit": "c4215e18d54927a5ac73a350876f29852aa36861",
+  "source": {
+    "function": "src/domain/services.ts::applyFullscreenShown",
+    "lines": [43, 60],
+    "caller": "src/main.ts::requestRewardOffer",
+    "callerLine": 1074,
+    "callerBehavior": "The ad request uses the persisted offer.id as request.attempt, rather than the underlying game attempt.id."
+  },
+  "method": "Read exact consumer function bodies from files whose Git blob hashes match the queried commit tree. Extract applyFullscreenShown and platformState bodies without rewriting them; remove only the TypeScript function signatures by placing bodies in JavaScript new Function. Execute both cases locally in Node. No dependencies, SDK or game app were installed or launched.",
+  "dependencies": {
+    "platformState": "Exact body extracted from the same source file.",
+    "matchesLifeShow": "Stub returns false. Neither tested placement is life-refill, so short-circuit evaluation never calls it.",
+    "recordAdBreakShown": "Stub throws if called. Neither tested placement is ads-break, so it was not called."
+  },
+  "commonInput": {
+    "saveAttempt": { "id": "game-attempt-1", "dealId": "deal-16", "daily": false },
+    "platform": { "receipts": [], "continuedAttempts": [], "continueCredits": 0, "completedCampaign": [], "winsSinceInterstitial": 3, "lastFullscreenAt": 0 },
+    "pendingQuote": { "id": "offer-nonce-1", "kind": "win-triple", "dealId": "deal-16", "key": "win-3-16", "at": 1000, "amount": 100 },
+    "shownBase": { "schema": 1, "id": "sdk-show-1", "dealId": "deal-16", "mode": "campaign", "kind": "rewarded", "shownAt": 10000 },
+    "levelArgument": 16
+  },
+  "cases": [
+    {
+      "name": "P20 persisted quote identity",
+      "shownAttempt": "offer-nonce-1",
+      "placement": "win-triple",
+      "observed": { "returnValue": "already-applied", "lastFullscreenAt": 0, "fullscreenCadence": null },
+      "requiredRegression": "A genuine shown notice bound to the durable P20 request updates the shared fullscreen cadence once. Unbound or forged nonces remain rejected."
+    },
+    {
+      "name": "Ordinary rewarded identity control",
+      "shownAttempt": "game-attempt-1",
+      "placement": "hint",
+      "observed": { "returnValue": "applied", "lastFullscreenAt": 10000, "fullscreenCadence": { "version": 1, "lastShownId": "sdk-show-1" } }
+    }
+  ],
+  "followup": "Preserve a durable request-to-attempt binding even after earned settlement removes pending quotes. Verify shown-before-earned and earned-before-shown, relaunch, duplicate shown and quote rejection; do not solve this by accepting all arbitrary offer nonces.",
+  "limits": [
+    "This is an executed narrow product pure-function check, not full application, native bridge, Android or SDK acceptance.",
+    "It does not execute original AZUR or Hitapps functions and does not change source evidence tiers.",
+    "The downstream frequency effect follows from the unmodified lastFullscreenAt and existing cadence consumers; no live ad was shown during this audit."
+  ]
+}

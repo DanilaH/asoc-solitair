@@ -1,5 +1,19 @@
 {
   "schema": "consumer-adoption-ledger-v1",
+  "deliveryBrief": {
+    "asOf": "2026-11-24",
+    "codeRef": "c4215e18d54927a5ac73a350876f29852aa36861",
+    "docsBasisRef": "23f04d32f00ca4cb8bd569e8802a75343e48bd3c",
+    "auditRef": "docs/porting/DEVELOPER_AUDIT_2026-11-24.md",
+    "masterRef": "docs/porting/CORE_ADS_RELEASE_TZ_2026-11-24.md",
+    "streamRefs": [
+      "docs/porting/CORE_RELEASE_IMPLEMENTATION_TZ_2026-11-24.md",
+      "docs/porting/ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24.md",
+      "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
+    ],
+    "state": "PLANNED_IMPLEMENTATION",
+    "note": "B0 includes core C1 once; all source IDs, packet owners and implementation/acceptance statuses are preserved. Scope and evidence boundaries are defined in the linked audit and briefs."
+  },
   "researchMethod": {
     "decisionDate": "2026-11-24",
     "decisionRef": "docs/porting/RESEARCH_METHOD_2026-11-24.md",
@@ -149,9 +163,10 @@
     {
       "id": "azur-win-multiplier",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P20 opt-in preview offers distinct x3 and x5 against the baseline win and remaining moves with one grant per balance version/level. See docs/porting/P20_REWARD_OFFERS.md.",
-      "nextAction": "Prototype optional post-win earned bonus with separate idempotent receipt and economy model Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
-      "stage": "E1"
+      "currentImplementation": "P20 preview has alternative x3/x5/flat policies and one settledWins guard; current multiplication uses base win plus remaining-moves bonus. PR190 adds isolated AZUR base/move-bonus QA with a persisted total, while displayed components are reconstructed from current policy. It is not an immutable breakdown or an integrated live post-win path.",
+      "nextAction": "ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24 section4.2: persist immutable base/move/other components and policy, connect one selected offer, source-shaped extra=(factor-1)*tierBase, and separate eligible-offer schedule from shown and earned. Kit133 source evidence does not imply schedule rollback on any SDK no-fill; real SDK/economy QA remains.",
+      "stage": "E1",
+      "implementationBriefRef": "docs/porting/ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "hitapps-golden-cards",
@@ -259,16 +274,18 @@
     {
       "id": "azur-daily-tasks",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P28 has all 16 source task kinds and nine typed grants, UTC-day/week save identities, and a four-task optional touch-tested preview. Paid triggers depend on P23/P24. See docs/porting/P28_DAILY_TASKS.md. В проверочном профиле счётчик недели выделяет фактически полученные медали. См. docs/qa/UX_WALLET_PROGRESS.md.",
-      "nextAction": "Inventory ALL 16 original DailyTask kinds and 9 reward kinds (engagement, helper-use, spend/purchase), with per-kind evidence and trigger; implement in owner-approved stages without silently dropping commercially oriented task types F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "stage": "F1"
+      "currentImplementation": "P28 has 16 task kinds/nine reward kinds, UTC day/week identities, signal/claim dedup and a four-task preview. TaskTarget has one prize with quantity<=100; source medal+bonus and large milestone bundles are not implemented. beginDeal/switchMode initialize hint tracking only if the journal exists; attempts before lazy journal creation remain the specific WinNoHints gap. Existing wallet-progress feedback is retained.",
+      "nextAction": "RETENTION_SOURCE_DELTA_TZ_2026-11-24 R1/R2: shared resource/grant contract, hint tracking from new-attempt creation, 28-row source fixture, composite rewards/five milestones/persisted3-of4 chest and a reachable no-IAP policy. Preserve unknown legacy hints. Kit141/143 conditional1210/960 arithmetic is not a live paywall or a defect of the current own schedule; MakePurchase is not video.",
+      "stage": "F1",
+      "implementationBriefRef": "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
     },
     {
       "id": "azur-daily-bonus",
       "status": "ROADMAPPED",
-      "currentImplementation": "Current daily calendar but no separate card-choice bonus P29 distinguishes the independent source and preserves the current 28-deal puzzle bank. See docs/porting/P29_DAILY_REWARDS.md.",
-      "nextAction": "Prototype optional daily card-choice mini reward; measure friction, scope and locale dates F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "stage": "F1"
+      "currentImplementation": "Ordinary Daily Level/calendar exists. P29 retains a separate offline one-winning-slot/one-choice trial, not the newly source-confirmed weighted four-prize three-match card bonus. No new product integration or original-runtime acceptance is claimed.",
+      "nextAction": "RETENTION_SOURCE_DELTA_TZ_2026-11-24 R3: use kit135/136 exact weighted/conflict/fallback and saved-round evidence, restore before generation, persist third-match winner and atomic day+reward claim, share usable resources. Source slot geometry, active calendar/remote and full original runtime remain open; own layout/clock is an explicit adaptation.",
+      "stage": "F1",
+      "implementationBriefRef": "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
     },
     {
       "id": "hitapps-weekend-race",
@@ -500,10 +517,11 @@
     {
       "id": "azur-combo-streak",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "Own transfer streak and first-win cycle differ from AZUR ComboStreak An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md.",
-      "nextAction": "Reconstruct reward/counter reset/FTUE and determine whether separate progress necessary F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "Own transfer streak/first-win cycle and P30 offline trial are present. The trial resets on any draw/recycle/Undo and does not implement the newly confirmed typed AZUR handler/track. Source reports kit142/144 deepen evidence without changing game code.",
+      "nextAction": "RETENTION_SOURCE_DELTA_TZ_2026-11-24 R4: typed MoveSummary, draw&&skipped-playable-waste reset precedence, one versioned in-game-series policy, five source reward stages and durable pending Moves. Preserve old attempts and anti-farming as adaptation. Investigate producers, wildcard/Undo/recycle mapping, after-fifth-stage behavior and live activation; do not recreate a second same-purpose HUD.",
       "stage": "F2",
-      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+      "reason": "Typed handler flags, reset precedence and compiled reward track are now NATIVE_STATIC. Original event producers, full wildcard/Undo/recycle mapping, later-stage/live configuration and original-runtime behavior remain unverified.",
+      "implementationBriefRef": "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
     },
     {
       "id": "azur-unlimited-moves-offer",
@@ -524,10 +542,11 @@
     {
       "id": "azur-fullscreen-ads-clock",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P01 persists only a bound SDK onAdShown through a separate atomic journal. Product post-win placement keeps three wins, 120 seconds and level >5. A rewarded show shares the clock. Existing earned receipts keep their own journal. Regression: docs/porting/P01_FULLSCREEN_CADENCE.md.",
-      "nextAction": "P02/Q3 must observe signed Android test ads, no-fill, pause/restart and durable show/earned handoff for issue https://github.com/DanilaH/asoc-solitair/issues/80. Source AZUR entry placement and remote cadence remain separate from the current post-win product adaptation. E1/E2 evidence: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
+      "currentImplementation": "P01 persists bound SDK onAdShown through a separate durable journal. Ordinary rewarded identity works; the 24 November code audit reproduced a P20 quote-nonce mismatch in applyFullscreenShown, so P20 shows do not currently advance shared cadence. Existing shown/earned journals are reused, not replaced.",
+      "nextAction": "ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24 section4.1: persist request nonce-to-game-attempt/deal/mode/placement binding through earned settlement; verify both callback orders, duplicates, relaunch and RV-to-interstitial/pause interval. Then real signed Android SDK/cadence QA. Source entry/remote cadence remains separate.",
       "stage": "E2",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "implementationBriefRef": "docs/porting/ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "azur-ad-revenue-attribution",
@@ -704,8 +723,9 @@
       "id": "azur-free-shop-coin-claim",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P20 opt-in preview has +30 earned shop coins with durable receipt and a separate 24-hour cooldown. See docs/porting/P20_REWARD_OFFERS.md.",
-      "nextAction": "Prototype source-observed optional 200-coin claim with real receipt/availability/cooldown verification Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
-      "stage": "E1"
+      "nextAction": "ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24 section4.3: implement a distinct free claim without SDK/earned, followed by independently quoted rewarded coins. Preserve old +30/rolling24h claims, separate UTC claim/earned quota/cooldown, and verify no-fill/clock/relaunch. Kit114 compiled200/400/10/300 values are source fixtures, not approved live prices.",
+      "stage": "E1",
+      "implementationBriefRef": "docs/porting/ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "azur-variable-category-sizes",

@@ -1,5 +1,19 @@
 {
   "schema": "asoc-autonomous-delivery-queue-v1",
+  "deliveryBrief": {
+    "asOf": "2026-11-24",
+    "codeRef": "c4215e18d54927a5ac73a350876f29852aa36861",
+    "docsBasisRef": "23f04d32f00ca4cb8bd569e8802a75343e48bd3c",
+    "auditRef": "docs/porting/DEVELOPER_AUDIT_2026-11-24.md",
+    "masterRef": "docs/porting/CORE_ADS_RELEASE_TZ_2026-11-24.md",
+    "streamRefs": [
+      "docs/porting/CORE_RELEASE_IMPLEMENTATION_TZ_2026-11-24.md",
+      "docs/porting/ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24.md",
+      "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
+    ],
+    "state": "PLANNED_IMPLEMENTATION",
+    "note": "B0 includes core C1 once; all source IDs, packet owners and implementation/acceptance statuses are preserved. Scope and evidence boundaries are defined in the linked audit and briefs."
+  },
   "researchMethod": {
     "decisionDate": "2026-11-24",
     "decisionRef": "docs/porting/RESEARCH_METHOD_2026-11-24.md",

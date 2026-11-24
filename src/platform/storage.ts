@@ -1,3 +1,5 @@
+import { validCombo } from '../domain/events/combo';
+import { validDailyBonus } from '../domain/events/daily-bonus';
 import { validUnlimitedAccess } from '../domain/campaign-recovery';
 import { validLavaRun } from '../domain/events/campaign-liveops';
 import { validCampaignLives } from '../domain/campaign-lives';
@@ -74,6 +76,8 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (!natural(save.revision) || typeof save.attempt.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(save.attempt.id)) throw Error('Повреждён номер сохранения');
   for (const value of [save.profile.coins, save.profile.hints, save.profile.undos, save.profile.jokers, save.profile.wins, save.attempt.streak.coins]) if (!natural(value)) throw Error('Повреждён профиль');
   const streak = save.attempt.streak;
+  if (save.attempt.combo !== undefined && (deal.daily || (deal.campaignLevel ?? 0) < 5 || !validCombo(save.attempt.combo)))
+    throw Error('Повреждена серия переносов');
   if (!natural(streak.tier) || streak.tier > 3 || !natural(streak.progress) || streak.progress >= 4 + streak.tier || !strings(streak.counted)) throw Error('Повреждена серия');
   if (!strings(save.profile.rewards) || !Array.isArray(save.attempt.undo)) throw Error('Повреждена история');
   save.attempt.undo.forEach(board => {
@@ -191,6 +195,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (save.commerce !== undefined && !validCommerceJournal(save.commerce)) throw Error('Повреждён журнал покупок');
   if (save.events !== undefined && !validEventLedger(save.events)) throw Error('Повреждён журнал событий');
   if (save.picture !== undefined && !validPicture(save)) throw Error('Повреждён альбом');
+  if (save.dailyBonus !== undefined && !validDailyBonus(save.dailyBonus)) throw Error('Повреждён ежедневный бонус');
   if (save.dailyTasks !== undefined && !validDailyTasks(save.dailyTasks)) throw Error('Повреждён журнал задач');
   if (save.parked) {
     const active = save.attempt.daily ? 'daily' : 'campaign';

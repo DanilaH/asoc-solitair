@@ -1,3 +1,5 @@
+import { COMBO_STAGES } from './domain/events/combo';
+import { claimDailyBonus, openDailyBonusRound, revealDailyBonusCard } from './domain/events/daily-bonus';
 import { releaseProfile } from './config/profile';
 import { OFFER_CAMPAIGNS_PREVIEW } from './domain/commerce/offer-campaigns';
 import { mountOfferCampaignPreview } from './app/offer-campaign-preview';
@@ -33,9 +35,9 @@ import { AZUR_VICTORY_DEFAULTS, AZUR_VICTORY_QA, AZUR_VICTORY_SAVE_KEY, quoteVic
 import { frozenLayers } from './domain/frozen-cards';
 import { isBoundCard } from './domain/bound-cards';
 import { collectedGold, goldenRewardKey } from './domain/golden-cards';
-import { TASKS_PREVIEW, acceptedTaskSignals, claimTask, claimTaskMilestone, currentTasks, recordTaskSignal, updatePreviewTasks, type TaskSignal } from './domain/events/daily-tasks';
+import { TASKS_PREVIEW, acceptedTaskSignals, claimTask, claimTaskMilestone, currentTasks, recordTaskSignal, releaseTasks, shouldScheduleTasks, updatePreviewTasks, type TaskSignal } from './domain/events/daily-tasks';
 import { PICTURE_PREVIEW, PICTURE_PRICES, PICTURE_TITLE, claimPicture, observePictureClock, openPictureEvent, pictureClosed, pictureTokens, recordPictureWin, revealPicturePart } from './domain/events/picture';
-import { REWARD_OFFER_PREVIEW, canClaimShopCoins, claimShopCoins, isOfferPlacement, offerLabels, offerQuote, offerShowContext, prepareRewardOffer, selectedWinMultiplier, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
+import { REWARD_OFFER_PREVIEW, canClaimShopCoins, claimShopCoins, definitionCount, isOfferPlacement, offerLabels, offerQuote, offerShowContext, prepareRewardOffer, selectedWinMultiplier, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
 import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-shuffle';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
@@ -242,6 +244,17 @@ try {
   }, AZUR_VICTORY_QA ? AZUR_VICTORY_SAVE_KEY : undefined);
   await document.fonts.load('800 20px Nunito').catch(() => []);
   let save = await store.open();
+  const sourceDailyTasks = import.meta.env.VITE_CONTENT8_DAILY_TASKS === 'source';
+  const dailyBonusEnabled = releaseTasks || sourceDailyTasks;
+  function syncRetention(next: Save, now: number) {
+    if (!(releaseTasks || sourceDailyTasks) || unlockedLevel(next) < 2) return;
+    updatePreviewTasks(next, now);
+    recordTaskSignal(next, now, { id: 'login', kind: 'DailyLogin', channel: 'login', amount: 1 });
+  }
+  if (dailyBonusEnabled && unlockedLevel(save) >= 2) {
+    await store.mutate(next => syncRetention(next, Date.now()));
+    save = store.state;
+  }
   const systemMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const reducedMotion = () => systemMotion.matches || save.settings.reducedMotion;
   let presentingCommand = false;
@@ -425,6 +438,8 @@ try {
           deal: findDeal(receipt.dealId), onBonusUnlocked: () => { openedBonus = true; }, continueProof: continueCheck.proof,
         });
         grantedOfferCoins = next.profile.coins - beforeCoins;
+        if (applied === 'applied' && grantedOfferCoins > 0)
+          logTaskAction(next, 'EarnCoins', 'wallet', grantedOfferCoins, `rewarded:${receipt.id}`);
         if (placement === 'continue' && !hadExtra && next.attempt.continued) logTaskAction(next, 'BuyExtraMoves', 'continue');
         earnedContinue = placement === 'continue' && !hadContinue && Boolean(next.platform?.continuedAttempts.includes(receipt.attempt));
         return applied;
@@ -540,7 +555,8 @@ try {
     shuffle.hidden = !deal.shufflePreview && !deal.shufflePolicy;
     shuffle.disabled = !canShuffle(save, deal) || saving || shuffling;
     shuffle.setAttribute('aria-busy', String(shuffling));
-    $('#proof-shuffle-label').textContent = shuffling ? 'Ищу…' : save.attempt.shuffleUsed ? 'Использовано' : 'Перемешать';
+    $('#proof-shuffle-label').textContent = shuffling ? 'Ищу…' : save.attempt.shuffleUsed ? 'Использовано' :
+      deal.shuffleCost ? `Перемешать · ${save.dailyTasks?.inventory.shuffles ?? 0}` : 'Перемешать';
     $('#game').dataset.exhausted = String(board.phase === 'exhausted');
     if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
     $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;
@@ -610,16 +626,18 @@ try {
     $('#hint-count').textContent = String(save.profile.hints); $('#undo-count').textContent = String(save.profile.undos);
     $<HTMLButtonElement>('#hint').disabled = board.phase !== 'playing' || Boolean(workerDeadline) || saving || Boolean(instruction?.accepts && instruction.attention !== 'hint' && !replayHint);
     $<HTMLButtonElement>('#undo').disabled = board.phase === 'won' || !save.attempt.undo.length || saving || Boolean(instruction?.accepts && instruction.attention !== 'undo');
-    const tier = STREAK[save.attempt.streak.tier];
+    const combo = save.attempt.combo;
+    const tier = combo ? COMBO_STAGES[combo.stage] ?? { count: 0, coins: 0 } : STREAK[save.attempt.streak.tier];
+    const progress = combo?.progress ?? save.attempt.streak.progress;
     const streak = $('#streak');
     if (streak.children.length !== tier.count) streak.replaceChildren(...Array.from({ length: tier.count }, () => document.createElement('i')));
     [...streak.children].forEach((cell, index) => {
-      const filled = index < save.attempt.streak.progress;
+      const filled = index < progress;
       if (filled && !cell.classList.contains('filled') && !reducedMotion()) cell.animate([{ transform: 'scale(.8)' }, { transform: 'translateY(-2px) scale(1.2)', offset: .55 }, { transform: 'translateY(-1px) scale(1)' }], { duration: 240 });
       cell.classList.toggle('filled', filled);
     });
-    $('#streak').setAttribute('aria-label', `${save.attempt.streak.progress} из ${tier.count}`);
-    $('#streak-reward').firstChild!.textContent = save.attempt.daily && !dailyRewardEligible(save, localDay()) ? '— ' : `+${tier.coins} `;
+    $('#streak').setAttribute('aria-label', tier.count ? `${progress} из ${tier.count}` : 'Серия завершена');
+    $('#streak-reward').firstChild!.textContent = !tier.count || (save.attempt.daily && !dailyRewardEligible(save, localDay())) ? '— ' : `+${tier.coins} `;
     $('#card-language-controls').hidden = !LOCALE_PREVIEW;
     if (LOCALE_PREVIEW) {
       $<HTMLSelectElement>('#card-language').value = save.settings.contentLanguage ?? 'ru';
@@ -696,6 +714,7 @@ try {
     if (rewardOffersEnabled) renderRewardOffers();
     if (PICTURE_PREVIEW || save.picture) renderPicture();
     if (TASKS_PREVIEW) renderTasks();
+    if (dailyBonusEnabled) renderDailyBonus();
   }
   function recordedVictoryReward() {
     if (!victoryPolicy || save.attempt.daily || deal.campaignLevel === undefined || save.attempt.board.phase !== 'won') return;
@@ -803,7 +822,7 @@ try {
       return false;
     }
     const before = save.attempt.board, metaBefore = save.meta;
-    const progressBefore = save.attempt.streak.progress, movesBefore = before.movesLeft;
+    const progressBefore = save.attempt.combo?.progress ?? save.attempt.streak.progress, movesBefore = before.movesLeft;
     const helper = cmd.type === 'hint' ? 'hints' : cmd.type === 'undo' ? 'undos' : undefined;
     const helperBefore = helper ? save.profile[helper] : 0;
     let result: Result | undefined;
@@ -826,14 +845,13 @@ try {
         if (PICTURE_PREVIEW && result.accepted && result.next.attempt.board.phase === 'won') {
           recordPictureWin(next, result.next, deal, Date.now());
         }
-        if (result.next.dailyTasks && result.accepted) {
+        if (result.accepted && (TASKS_PREVIEW || result.next.dailyTasks)) {
           const now = Date.now();
-          if (TASKS_PREVIEW) updatePreviewTasks(result.next, now);
-          if (cmd.type === 'restart') result.next.attempt.verifiedTaskHints = 0;
-          if (cmd.type === 'hint' && typeof next.attempt.verifiedTaskHints === 'number') {
-            result.next.attempt.verifiedTaskHints = next.attempt.verifiedTaskHints + 1;
+          syncRetention(result.next, now);
+          if (result.next.dailyTasks) {
+            if (TASKS_PREVIEW) updatePreviewTasks(result.next, now);
+            for (const signal of acceptedTaskSignals(next, result, cmd, deal)) recordTaskSignal(result.next, now, signal);
           }
-          for (const signal of acceptedTaskSignals(next, result, cmd, deal)) recordTaskSignal(result.next, now, signal);
         }
         Object.assign(next, result.next);
         if (result.accepted) {
@@ -920,7 +938,7 @@ try {
       }
     } else {
       scene?.cancel(); scene?.reject(['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined);
-      const broken = progressBefore > 0 && save.attempt.streak.progress === 0;
+      const broken = progressBefore > 0 && (save.attempt.combo?.progress ?? save.attempt.streak.progress) === 0;
       runtime.play(broken ? 'streak-break' : 'invalid');
       runtime.pulse(azurInteractionFeedback && cmd.type === 'transfer' ? 'invalid-heavy' : broken ? 'streak-break' : 'invalid');
       if (broken) {
@@ -962,11 +980,13 @@ try {
     outcome();
     return true;
   }
-  function logTaskAction(next: Save, kind: TaskSignal['kind'], channel: TaskSignal['channel']) {
-    if (!next.dailyTasks) return;
+  function logTaskAction(next: Save, kind: TaskSignal['kind'], channel: TaskSignal['channel'], amount = 1,
+    id = `game:${next.attempt.id}:${next.revision}:${kind}`) {
     const now = Date.now();
+    syncRetention(next, now);
+    if (!next.dailyTasks) return;
     if (TASKS_PREVIEW) updatePreviewTasks(next, now);
-    recordTaskSignal(next, now, { id: `game:${next.attempt.id}:${next.revision}:${kind}`, kind, channel, amount: 1 });
+    recordTaskSignal(next, now, { id, kind, channel, amount });
   }
   function logTaskContinue(next: Save, moved: boolean) {
     if (moved) logTaskAction(next, 'BuyExtraMoves', 'continue');
@@ -978,23 +998,29 @@ try {
     return bought;
   }
   function renderTasks() {
-    $('#daily-tasks-open').hidden = false;
+    $('#daily-tasks-open').hidden = (releaseTasks || sourceDailyTasks) && unlockedLevel(save) < 2;
+    $('#daily-bonus-open').hidden = !dailyBonusEnabled || unlockedLevel(save) < 2;
     if (!$<HTMLDialogElement>('#daily-tasks-dialog').open) return;
     const current = currentTasks(save);
     if (!current) return;
     const taskNames: Record<string, string> = {
-      DailyLogin: 'Зайти в игру', DrawCards: 'Взять карту из колоды', ExecuteMoves: 'Сделать 4 хода',
-      CollectThemes: 'Собрать тему', CompleteLevels: 'Впервые пройти уровень',
+      DailyLogin: 'Зайти в игру', DrawCards: 'Взять карты из колоды', ExecuteMoves: 'Сделать ходы',
+      CollectThemes: 'Собрать темы', CompleteLevels: 'Впервые пройти уровни', WinNoHints: 'Пройти без подсказок',
+      UseHints: 'Использовать подсказки', CollectDailyBonuses: 'Забрать ежедневные бонусы',
+      UseDefinitions: 'Открыть объяснения', UseJokers: 'Применить Джокеры', UseRollbacks: 'Отменить ходы',
+      UseShuffles: 'Перемешать колоду', EarnCoins: 'Заработать монеты', BuyExtraMoves: 'Продолжить игру',
+      BuyBoosters: 'Пополнить помощников', MakePurchase: 'Покупка',
     };
-    const prizeNames: Record<string, string> = { Coins: 'монет', MoveHint: 'подсказка', Undo: 'отмена', Medals: 'мед.' };
-    const medals = $('#daily-tasks-medals'), caption = `Медали недели · ${current.week.totalMedals}/5`;
+    const medals = $('#daily-tasks-medals');
+    const cap = Math.max(0, ...current.week.milestones.map(entry => entry.medals));
+    const caption = `Медали недели · ${current.week.totalMedals}/${cap}`;
     if (medals.textContent !== caption) medals.textContent = caption;
     const list = $('#daily-tasks-list');
     list.replaceChildren(...current.day.tasks.map(task => {
       const row = document.createElement('section'), label = document.createElement('strong'), button = document.createElement('button');
       label.textContent = `${taskNames[task.kind] ?? task.kind} · ${task.progress}/${task.target}`;
       button.className = 'secondary';
-      button.textContent = task.claimed ? 'Получено' : `Получить · ${task.prize.quantity} ${prizeNames[task.prize.kind] ?? ''}`;
+      button.textContent = task.claimed ? 'Получено' : `Получить · ${prizeLabel(task.prize)}${task.bonus ? ` + ${prizeLabel(task.bonus)}` : ''}`;
       button.disabled = saving || Boolean(task.claimed) || task.progress < task.target;
       button.addEventListener('click', async () => {
         if (saving) return;
@@ -1010,7 +1036,48 @@ try {
       return row;
     }));
     const weekly = $<HTMLButtonElement>('#daily-tasks-weekly');
+    weekly.hidden = current.week.catalog === 'azur-compiled-r1';
     weekly.disabled = saving || current.week.totalMedals < 5 || current.week.claimedMilestones.includes('week');
+    $('#daily-tasks-milestones').replaceChildren(...(weekly.hidden ? current.week.milestones.map(entry => {
+      const claim = document.createElement('button');
+      claim.type = 'button';
+      claim.className = 'secondary';
+      const claimed = current.week.claimedMilestones.includes(entry.id);
+      claim.textContent = `${entry.medals} мед. · ${claimed ? 'Получено' : [entry.prize, ...(entry.bundle ?? [])].map(prizeLabel).join(' + ')}`;
+      claim.disabled = saving || claimed || current.week.totalMedals < entry.medals;
+      claim.addEventListener('click', () => {
+        void write(next => claimTaskMilestone(next, current.week.startUtc, entry.id))
+          .catch(() => message('Не удалось сохранить награду.', true));
+      });
+      return claim;
+    }) : []));
+  }
+  function prizeLabel(prize: { kind: string; quantity: number }) {
+    const labels: Record<string, string> = { Coins: 'монет', MoveHint: 'подсказок', Undo: 'отмен', Medals: 'мед.',
+      Joker: 'Джокер', Definition: 'объяснений', Shuffle: 'перемешиваний', CardBack: 'рубашка', RandomBoostersChest: 'сундук' };
+    return `${prize.quantity} ${labels[prize.kind] ?? ''}`;
+  }
+  function renderDailyBonus() {
+    if (!$<HTMLDialogElement>('#daily-bonus-dialog').open) return;
+    const round = save.dailyBonus;
+    if (!round) return;
+    $('#daily-bonus-status').textContent = round.claimed ? 'Бонус получен' :
+      round.won === undefined ? 'Откройте три карты с одинаковым призом' : prizeLabel(round.columns[round.won]);
+    $('#daily-bonus-claim').hidden = round.won === undefined || Boolean(round.claimed);
+    $('#daily-bonus-cards').replaceChildren(...round.slots.map((column, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'secondary';
+      const revealed = round.revealed.includes(index);
+      button.textContent = revealed ? prizeLabel(round.columns[column]) : 'Открыть';
+      button.disabled = saving || revealed || round.won !== undefined;
+      button.setAttribute('aria-label', revealed ? prizeLabel(round.columns[column]) : `Открыть карту ${index + 1}`);
+      button.addEventListener('click', () => {
+        if (!saving) void write(next => revealDailyBonusCard(next, round.roundId, index, Date.now()))
+          .catch(() => message('Не удалось сохранить открытие карты.', true));
+      });
+      return button;
+    }));
   }
 
   const showPicture = () => PICTURE_PREVIEW || Boolean(save.picture);
@@ -1362,7 +1429,7 @@ try {
       const card = deal.cards[id];
       definitionCardId = id;
       const definition = $<HTMLButtonElement>('#definition-use');
-      definition.hidden = !rewardOffersEnabled && !(STOREFRONT_PREVIEW && (save.rewardOffers?.definitions ?? 0));
+      definition.hidden = !rewardOffersEnabled && !(STOREFRONT_PREVIEW && definitionCount(save));
       definition.disabled = (save.rewardOffers?.definitions ?? 1) === 0;
       definition.textContent = `Связанное слово · ${save.rewardOffers?.definitions ?? 1}`;
       $('#definition-related').hidden = true;
@@ -1502,6 +1569,33 @@ try {
     if (save.attempt.daily || deal.campaignLevel === CAMPAIGN_LENGTH) goHome();
     else void openLevel((deal.campaignLevel ?? 0) + 1);
   }, domOptions);
+  if (dailyBonusEnabled) {
+    $('#daily-bonus-open').addEventListener('click', async () => {
+      if (saving || serviceBusy) return;
+      try {
+        const round = await write(next => {
+          const now = Date.now();
+          syncRetention(next, now);
+          return openDailyBonusRound(next, now, crypto.randomUUID(), randomJokerColumn, sourceDailyTasks ? 'azur-compiled-r1' : 'offline-r1');
+        });
+        if (round) { openDialog('#daily-bonus-dialog'); renderDailyBonus(); }
+      } catch { message('Не удалось открыть ежедневный бонус.', true); }
+    }, domOptions);
+    $('#daily-bonus-claim').addEventListener('click', async () => {
+      if (saving || !save.dailyBonus) return;
+      const id = save.dailyBonus.roundId;
+      try {
+        await write(next => {
+          const now = Date.now();
+          syncRetention(next, now);
+          const prize = claimDailyBonus(next, id, now);
+          if (!prize) return;
+          recordTaskSignal(next, now, { id: `bonus:${id}`, kind: 'CollectDailyBonuses', channel: 'daily-bonus', amount: 1 });
+          if (prize.kind === 'Coins') recordTaskSignal(next, now, { id: `bonus-coins:${id}`, kind: 'EarnCoins', channel: 'wallet', amount: prize.quantity });
+        });
+      } catch { message('Не удалось сохранить ежедневный бонус.', true); }
+    }, domOptions);
+  }
   if (TASKS_PREVIEW) {
     $('#daily-tasks-open').addEventListener('click', async () => {
       if (saving || serviceBusy) return;
@@ -1553,7 +1647,10 @@ try {
     }, domOptions);
     $('#shop-free-claim').addEventListener('click', async () => {
       if (!integratedOffers || saving || serviceBusy) return;
-      try { await write(next => claimShopCoins(next, deal, Date.now())); }
+      try { await write(next => {
+        const before = next.profile.coins;
+        if (claimShopCoins(next, deal, Date.now())) logTaskAction(next, 'EarnCoins', 'wallet', next.profile.coins - before);
+      }); }
       catch { message('Не удалось сохранить выдачу монет.', true); }
     }, domOptions);
     $('#shop-video-claim').addEventListener('click', () => { void requestRewardOffer('shop-free-coins', '#helpers'); }, domOptions);
@@ -1574,7 +1671,7 @@ try {
         if (word) {
           const button = $<HTMLButtonElement>('#definition-use');
           button.textContent = `Связанное слово · ${save.rewardOffers?.definitions ?? 0}`;
-          button.disabled = (save.rewardOffers?.definitions ?? 0) === 0;
+          button.disabled = definitionCount(save) === 0;
         }
       } catch { message('Не удалось сохранить расход заряда.', true); }
     }, domOptions);
@@ -2075,7 +2172,11 @@ try {
     }
     try {
       const column = candidate.joker.column;
-      if (await write(next => settleRandomJoker(next, source, { attemptId, revision, column, id, path }))) {
+      if (await write(next => {
+        const applied = settleRandomJoker(next, source, { attemptId, revision, column, id, path });
+        if (applied) logTaskAction(next, 'UseJokers', 'helper');
+        return applied;
+      })) {
         closeDialogs(); scene?.sync();
       }
     } catch { message('Проверьте сохранение перед повторной попыткой.', true); }
@@ -2134,7 +2235,14 @@ try {
     catch { message('Пока не удалось проверить сохранение. Попробуйте ещё раз.', true); }
     renderHud();
   }, domOptions);
-  const dayRefresh = setInterval(() => { if (alive && ready) { renderHome(); if (screen === 'game' && save.attempt.daily) renderHud(); } }, 30000);
+  const dayRefresh = setInterval(() => {
+    if (!alive || !ready) return;
+    const now = Date.now();
+    if (dailyBonusEnabled && !saving && !serviceBusy && unlockedLevel(save) >= 2 && shouldScheduleTasks(save, now))
+      void write(next => syncRetention(next, now)).catch(() => undefined);
+    renderHome();
+    if (screen === 'game' && save.attempt.daily) renderHud();
+  }, 30000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) renderHome(); }, domOptions);
   const checkpoint = setInterval(() => {
     if (!alive || saving || workerDeadline || store.needsRecovery || !save.attempt.telemetry?.started) return;

@@ -106,7 +106,12 @@ for (const source of [...recoveryBases, ...lateAdaptiveDeals, ...hitappsDirector
   releaseDealBySource.set(source.id, deal);
   releaseSourceById.set(deal.id, source.id);
 }
-export const integratedCampaignDeals = [...releaseDealBySource.values()];
+const shuffleBySource = new Map([...releaseDealBySource.values()].filter(deal => deal.campaignLevel === 30).map(source => {
+  const deal: Deal = { ...source, id: source.id + '-shuffle-r1', shufflePolicy: 'hidden-pool-r1', shuffleCost: 'charge' };
+  releaseSourceById.set(deal.id, releaseSourceById.get(source.id)!);
+  return [source.id, deal];
+}));
+export const integratedCampaignDeals = [...releaseDealBySource.values(), ...shuffleBySource.values()];
 
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
   ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...integratedCampaignDeals, ...coreSpecialDeals, ...content8DirectorDeals, ...lateAdaptiveDeals, ...hitappsDirectorDeals.map(entry => entry.deal), equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
@@ -134,7 +139,9 @@ export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): 
   const selected = localizedCampaignDeal(save, selectC8Deal(save, base, previous));
   const previousSource = previous && releaseSourceById.get(previous.dealId);
   const candidate = selectAdaptiveDeal(save, selected, lateAdaptive, previousSource ? { ...previous!, dealId: previousSource } : previous);
-  return releaseProfile ? releaseDealBySource.get(candidate.id) ?? candidate : candidate;
+  if (!releaseProfile) return candidate;
+  const composed = releaseDealBySource.get(candidate.id) ?? candidate;
+  return releaseProfile.capabilities.retention === 'c8-retention-candidate-r1' ? shuffleBySource.get(composed.id) ?? composed : composed;
 }
 
 const directorRecordsById = new Map(hitappsDirectorRecords.map(record => [record.id, record]));

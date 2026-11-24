@@ -588,3 +588,14 @@ html[data-reduced=true] .coin-debit{animation:none}
 #result-source-breakdown dl{margin:0}
 #result-source-breakdown dl>div:not([hidden]){display:flex;justify-content:space-between;gap:6px}
 #result-source-breakdown dd{margin:0;font-weight:900;font-variant-numeric:tabular-nums}
+
+.daily-bonus-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .5rem;
+}
+.daily-bonus-cards button {
+  min-height: 3.1rem;
+  padding: .35rem;
+  line-height: 1.15;
+}

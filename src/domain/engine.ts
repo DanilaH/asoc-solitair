@@ -1,3 +1,5 @@
+import { comboDisposition, COMBO_STAGES } from './events/combo';
+import { releaseProfile } from '../config/profile';
 import { BALANCE_VERSION, CONTENT8_PREVIEW, CONTENT_VERSION, RULES_VERSION } from './types';
 import { quoteVictoryReward, victoryDifficulty, type VictoryRewardConfig } from './azur-victory-reward';
 import { BALANCE } from './balance';
@@ -19,7 +21,11 @@ import { hammerCard, matchingStock } from './starter-boosters';
 export const STREAK = BALANCE.streak;
 export const boardRules = (board: Board): 2 | 3 => board.rulesVersion ?? RULES_VERSION;
 export function freshAttempt(deal: Deal, id: string): Attempt {
-  return { id, dealId: deal.id, ...(deal.daily ? { daily: { dayId: deal.daily.dayId, contentVersion: deal.daily.contentVersion } } : {}), board: structuredClone(deal.initial), undo: [], streak: { tier: 0, progress: 0, coins: 0, counted: [] } };
+  return { id, dealId: deal.id,
+    ...(releaseProfile?.capabilities.retention === 'c8-retention-candidate-r1' ? { verifiedTaskHints: 0 } : {}),
+    ...(releaseProfile && !deal.daily && (deal.campaignLevel ?? 0) >= 5 ?
+      { combo: { version: 1 as const, policy: 'azur-combo-candidate-r1' as const, stage: 0, progress: 0 } } : {}),
+    ...(deal.daily ? { daily: { dayId: deal.daily.dayId, contentVersion: deal.daily.contentVersion } } : {}), board: structuredClone(deal.initial), undo: [], streak: { tier: 0, progress: 0, coins: 0, counted: [] } };
 }
 export function freshSave(deal: Deal, id: string): Save {
   return { schema: 1, rulesVersion: RULES_VERSION, contentVersion: CONTENT_VERSION, balanceVersion: BALANCE_VERSION,
@@ -178,7 +184,8 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
   const trackDifficulty = CONTENT8_PREVIEW && !deal.daily && deal.campaignLevel !== undefined;
   let events: GameEvent[] = [];
   const refuse = (reason: string, reset = false): Result => {
-    if (reset && attempt.streak.progress) { attempt.streak.progress = 0; next.revision++; }
+    const streak = attempt.combo ?? attempt.streak;
+    if (reset && streak.progress) { streak.progress = 0; next.revision++; }
     return { next, accepted: false, events: [{ type: 'invalid', reason }], reason };
   };
   if (cmd.type === 'restart') {
@@ -186,6 +193,9 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     abandonCampaign(next);
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
     if (attempt.issuance) next.attempt.issuance = attempt.issuance;
+    if (attempt.combo) next.attempt.combo = { ...attempt.combo, stage: 0, progress: 0 };
+    else delete next.attempt.combo;
+    if (next.dailyTasks) next.attempt.verifiedTaskHints = 0;
     carryEqualityRestart(next, attempt);
     if (trackDifficulty && attempt.board.phase !== 'won') carryCampaignRestart(attempt, next.attempt);
   } else if (cmd.type === 'undo') {
@@ -206,6 +216,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     if (!helperUnlocked(next, 'hint', deal) || cmd.revision !== input.revision || (!demo && next.profile.hints <= 0) || typeof applyBoard(attempt.board, cmd.action, deal) === 'string') return refuse('Подсказка больше не подходит');
     if (demo) markTutorial(next, 'hint-demo'); else next.profile.hints--;
     if (deal.training === 'hint' && !seenTutorial(next, 'hint-practiced')) attempt.lessonHint = cmd.action;
+    if (attempt.verifiedTaskHints !== undefined) attempt.verifiedTaskHints++;
     events = [{ type: 'hint' }];
   } else {
     const result = applyBoard(attempt.board, cmd, deal);
@@ -219,17 +230,35 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     recordUndo(attempt); attempt.board = result.board; events = result.events;
     recordEqualityOutcome(next, attempt);
     if (trackDifficulty && attempt.board.phase === 'exhausted') recordCampaignExhaustion(attempt);
-    if (cmd.type === 'transfer') {
-      // Route identity excludes the budget/economy and survives Undo. Reversing the same group is the same edge.
+    const combo = attempt.combo, before = input.attempt.board;
+    const relocation = cmd.type === 'transfer';
+    const disposition = combo ? comboDisposition({
+      IsCardRelocation: relocation, IsDeckDraw: cmd.type === 'draw',
+      InvolvesWildCard: relocation && before.joker !== undefined &&
+        ((cmd.from.kind === 'tableau' && cmd.from.index === before.joker.column) ||
+         (cmd.to.kind === 'tableau' && cmd.to.index === before.joker.column)),
+      PlacedOnCardOrFoundation: relocation &&
+        (cmd.to.kind === 'foundation' || (cmd.to.kind === 'tableau' && before.tableau[cmd.to.index].length > 0)),
+      SkippedPlayableWasteCard: cmd.type === 'draw' && before.waste.length > 0 &&
+        legalCommands(before, deal).some(action => action.type === 'transfer' && action.from.kind === 'waste'),
+    }) : relocation ? 'advance' : 'neutral';
+    if (combo && disposition === 'reset') combo.progress = 0;
+    const tier = combo ? COMBO_STAGES[combo.stage] : STREAK[attempt.streak.tier];
+    if (relocation && disposition === 'advance' && tier) {
+      // Keep the shared transfer-edge dedupe across Undo.
       const endpoints = [cmd.from.kind + cmd.from.index, cmd.to.kind + cmd.to.index].sort().join(':');
       const key = `${events[0].cards!.slice().sort().join(',')}@${endpoints}`;
       if (!attempt.streak.counted.includes(key)) {
-        attempt.streak.counted.push(key); attempt.streak.progress++;
-        const tier = STREAK[attempt.streak.tier];
-        if (attempt.streak.progress >= tier.count) {
+        const progress = combo ?? attempt.streak;
+        attempt.streak.counted.push(key);
+        progress.progress++;
+        if (progress.progress >= tier.count) {
           const amount = !attempt.daily || dailyRewardEligible(next, today) ? tier.coins : 0;
-          next.profile.coins += amount; attempt.streak.coins += amount; attempt.streak.progress = 0;
-          attempt.streak.tier = Math.min(3, attempt.streak.tier + 1);
+          next.profile.coins += amount;
+          attempt.streak.coins += amount;
+          progress.progress = 0;
+          if (combo) combo.stage++;
+          else attempt.streak.tier = Math.min(3, attempt.streak.tier + 1);
           if (amount) events.push({ type: 'coins', amount });
         }
       }

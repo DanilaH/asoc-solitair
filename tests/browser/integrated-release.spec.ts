@@ -109,3 +109,33 @@ test('claims free shop coins through the ordinary helper panel on an offline bui
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   expect((await read(page)).profile.coins).toBe(save.profile.coins + 30);
 });
+
+test('opens cards in Daily Bonus, resumes the same round and claims only once', async ({ page }) => {
+  const deal = content8Dealer[2];
+  const save = freshSave(deal, 'bonus-browser');
+  save.contentVersion = 8;
+  save.settings.reducedMotion = true;
+  save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0,
+    winsSinceInterstitial: 0, completedCampaign: [campaignId(1), campaignId(2)] };
+  await page.addInitScript(value => {
+    if (!localStorage.getItem('asoc-solitaire.save.v1')) localStorage.setItem('asoc-solitaire.save.v1', value);
+  }, JSON.stringify(save));
+  await page.goto('/');
+  await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await page.locator('#daily-bonus-open').tap();
+  const round = (await read(page)).dailyBonus!;
+  const chosen = round.slots.flatMap((column, index) => column === 0 ? [index] : []);
+  const cards = page.locator('#daily-bonus-cards button');
+  await cards.nth(chosen[0]).tap();
+  await expect.poll(async () => (await read(page)).dailyBonus?.revealed).toEqual([chosen[0]]);
+  await page.reload();
+  await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await page.locator('#daily-bonus-open').tap();
+  expect((await read(page)).dailyBonus?.roundId).toBe(round.roundId);
+  await cards.nth(chosen[1]).tap();
+  await cards.nth(chosen[2]).tap();
+  await page.locator('#daily-bonus-claim').tap();
+  await expect(page.locator('#daily-bonus-status')).toHaveText('Бонус получен');
+  await expect(page.locator('#daily-bonus-claim')).toBeHidden();
+  expect((await read(page)).dailyBonus?.claimed).toBe(true);
+});

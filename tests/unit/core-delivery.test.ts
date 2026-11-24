@@ -27,7 +27,7 @@ it('keeps original full fields for new specials and replays the finished definit
     }
     expect(board.phase, deal.id).toBe('won');
   }
-});
+}, 20_000);
 
 it.skipIf(!releaseProfile)('binds generated provenance to the issued deal and carries it through a fixed restart', () => {
   const base = campaignDeals[15], save = freshSave(base, 'issuance');

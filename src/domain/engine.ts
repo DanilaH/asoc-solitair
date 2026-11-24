@@ -185,6 +185,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     if (cmd.attemptId === attempt.id) return refuse('Для повтора нужен новый номер попытки');
     abandonCampaign(next);
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
+    if (attempt.issuance) next.attempt.issuance = attempt.issuance;
     carryEqualityRestart(next, attempt);
     if (trackDifficulty && attempt.board.phase !== 'won') carryCampaignRestart(attempt, next.attempt);
   } else if (cmd.type === 'undo') {

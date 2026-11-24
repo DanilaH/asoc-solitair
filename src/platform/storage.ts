@@ -1,3 +1,4 @@
+import { validUnlimitedAccess } from '../domain/campaign-recovery';
 import { validLavaRun } from '../domain/events/campaign-liveops';
 import { validCampaignLives } from '../domain/campaign-lives';
 import { validStoreProgress } from '../domain/commerce/storefront';
@@ -131,6 +132,16 @@ export function decodeSave(raw: string, source: DealSource): Save {
       throw Error('Повреждена особая попытка');
     }
   }
+  const issuance = save.attempt.issuance;
+  if (issuance !== undefined && (!issuance || issuance.version !== 1 || deal.daily || !deal.campaignLevel ||
+    issuance.dealId !== deal.id || issuance.effectiveBudget !== deal.initial.movesLeft ||
+    ![issuance.profile, issuance.policy, issuance.baseId].every(value => typeof value === 'string' && /^[\w-]{1,100}$/.test(value)) ||
+    (issuance.baseBudget !== null && !natural(issuance.baseBudget)) ||
+    !['unknown-cohort', 'not-eligible'].includes(issuance.equality) ||
+    !['authored', 'director-r1', 'budget-r2', 'certified-seed'].includes(issuance.source) ||
+    (issuance.source === 'certified-seed') !== Boolean(issuance.seed) ||
+    (issuance.seed && (!natural(issuance.seed.value) || ![issuance.seed.inputHash, issuance.seed.boardHash, issuance.seed.routeHash]
+      .every(value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)))))) throw Error('Повреждён паспорт раздачи');
   const director = save.attempt.director;
   if (director !== undefined && (!director || deal.daily || deal.campaignLevel === undefined ||
     !natural(director.restarts) || !natural(director.previousLosses) || director.previousLosses > director.restarts ||
@@ -140,13 +151,15 @@ export function decodeSave(raw: string, source: DealSource): Save {
   if (t && (typeof t.started !== 'boolean' || typeof t.finished !== 'boolean' || !natural(t.activeMs))) throw Error('Повреждён счётчик времени');
   if (save.campaign && (save.campaign.version !== 1 || !strings(save.campaign.tutorials))) throw Error('Повреждено обучение');
   if (save.attempt.jokerUsed !== undefined && typeof save.attempt.jokerUsed !== 'boolean') throw Error('Повреждён Джокер');
-  if (save.attempt.shuffleUsed !== undefined && (save.attempt.shuffleUsed !== true || deal.shufflePreview !== 1))
+  if (save.attempt.shuffleUsed !== undefined && (save.attempt.shuffleUsed !== true || (deal.shufflePreview !== 1 && !deal.shufflePolicy)))
     throw Error('Повреждено перемешивание');
   const revive = save.attempt.revive;
   if (revive !== undefined && (!deal.recovery || !save.attempt.continued || !revive || revive.version !== 1 ||
       !['coins', 'earned'].includes(revive.channel) || revive.moves !== BALANCE.continueMoves ||
       revive.price !== (revive.channel === 'coins' ? BALANCE.continueCoinPrice : 0))) throw Error('Повреждено возрождение');
   const unlimited = save.attempt.unlimited;
+  if (save.attempt.unlimitedAccess !== undefined && !validUnlimitedAccess(save.attempt.unlimitedAccess, save.attempt, deal))
+    throw Error('Повреждено право на ходы без лимита');
   if ((save.attempt.stockRestores !== undefined && (!deal.recovery || !natural(save.attempt.stockRestores))) ||
       (unlimited !== undefined && (!deal.recovery || !unlimited || unlimited.version !== 1 ||
         !/^[A-Za-z0-9_-]{1,100}$/.test(unlimited.id) || !natural(unlimited.issuedAt) ||

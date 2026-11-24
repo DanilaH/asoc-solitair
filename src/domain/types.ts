@@ -49,9 +49,10 @@ export interface Deal {
   frozen?: { version: 1; layers: Readonly<Record<string, number>> };
   bound?: { version: 1; scissorsByCard: Readonly<Record<string, string>> };
   puzzle?: { version: 1; pairs: readonly { top: string; bottom: string; illustration?: string }[] };
-  golden?: { version: 1; ids: readonly string[]; coinsPerCard: number };
+  golden?: { version: 1; ids: readonly string[]; coinsPerCard: number; rewardGroup?: string };
   starter?: { version: 1; cards: Readonly<Record<string, 'magnet' | 'hammer'>> };
   shufflePreview?: 1;
+  shufflePolicy?: 'hidden-pool-r1';
   randomJokerPreview?: 1;
   randomJokerCost?: 1;
   recovery?: { version: 1; freeRecycles: number; restoreBase: number; restoreIncrement: number };
@@ -68,8 +69,21 @@ export interface CampaignOutcome {
   outcome: 'Clean' | 'ExtraSteps' | 'Restart';
   restarts: number;
 }
+export interface CampaignIssuance {
+  version: 1;
+  profile: string;
+  policy: string;
+  baseId: string;
+  dealId: string;
+  baseBudget: number | null;
+  effectiveBudget: number | null;
+  source: 'authored' | 'director-r1' | 'budget-r2' | 'certified-seed';
+  seed?: { value: number; inputHash: string; boardHash: string; routeHash: string };
+  equality: 'unknown-cohort' | 'not-eligible';
+}
 export interface Attempt {
   id: string; dealId: string; board: Board; undo: Board[];
+  issuance?: CampaignIssuance;
   streak: { tier: number; progress: number; coins: number; counted: string[] };
   continued?: boolean;
   director?: { restarts: number; previousLosses: number; exhausted?: true };
@@ -81,6 +95,10 @@ export interface Attempt {
   coffeeRequested?: true;
   stockRestores?: number;
   revive?: { version: 1; channel: 'coins' | 'earned'; moves: number; price: number };
+  unlimitedAccess?: {
+    version: 1; id: string; attemptId: string; source: 'rewarded' | 'campaign' | 'coins';
+    issuedAt: number; until: number; consumed?: true; expired?: true;
+  };
   unlimited?: { version: 1; id: string; issuedAt: number; until?: number; expired?: true; purchaseRef?: string };
   shuffleUsed?: true;
   verifiedTaskHints?: number;

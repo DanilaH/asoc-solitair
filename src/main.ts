@@ -562,6 +562,7 @@ try {
     renderHud();
     if (fromSettings) openChildDialog('#helpers', '#settings', $('#helpers-open'));
     else openDialog('#helpers');
+    if (resource) $('#helpers .sheet-body').scrollTop = 0;
   }
   function helperBought(helper: NonNullable<typeof helperFocus>) {
     if (helperFocus !== helper || screen !== 'game') return;
@@ -829,7 +830,7 @@ try {
   }
   function renderHelperInventory() {
     const visible = unlockedLevel(save) >= 2;
-    $('#helper-inventory').hidden = !visible || Boolean(helperFocus);
+    $('#helper-inventory').hidden = !visible || Boolean(helperFocus || helperResource);
     if (!visible) return;
     const rows: Array<[string, number, string]> = [
       ...(['hint', 'undo', 'joker'] as const).map(helper => [

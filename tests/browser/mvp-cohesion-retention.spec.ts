@@ -327,7 +327,7 @@ test('legacy helper-only and bundled claims name every frozen resource and grant
   expect((await read(page)).attempt.board).toEqual(save.attempt.board);
 });
 
-test('repeated empty Definition after a manual wallet visit keeps its Bonus guidance without another offer activation', async ({ page }) => {
+test('repeated empty Definition after a manual wallet visit keeps its Bonus guidance without another offer activation', async ({ page }, info) => {
   let save = profile(16);
   for (const command of recoverable.winningPath.slice(0, 20)) save = dispatch(save, command, recoverable).next;
   updatePreviewTasks(save, NOW);
@@ -352,11 +352,31 @@ test('repeated empty Definition after a manual wallet visit keeps its Bonus guid
     await expect(page.locator('#helpers')).toBeVisible();
   };
   const copy = page.locator('#product-offer-helpers'), source = page.locator('#context-bonus-open');
+  const addressedContext = async () => {
+    await expect(copy).toContainText(/Объяснения/);
+    await expect(copy).toContainText(/не гарантирован/);
+    await expect(page.locator('#helper-inventory')).toBeHidden();
+    const viewport = page.viewportSize()!, body = (await page.locator('#helpers .sheet-body').boundingBox())!;
+    for (const locator of [copy, source]) {
+      await expect(locator).toBeVisible();
+      const rect = (await locator.boundingBox())!;
+      expect(rect.x).toBeGreaterThanOrEqual(Math.max(0, body.x) - .5);
+      expect(rect.y).toBeGreaterThanOrEqual(Math.max(0, body.y) - .5);
+      expect(rect.x + rect.width).toBeLessThanOrEqual(Math.min(viewport.width, body.x + body.width) + .5);
+      expect(rect.y + rect.height).toBeLessThanOrEqual(Math.min(viewport.height, body.y + body.height) + .5);
+    }
+    const point = await source.evaluate(node => {
+      const rect = node.getBoundingClientRect(), x = rect.x + rect.width / 2, y = rect.y + rect.height / 2;
+      const hit = document.elementFromPoint(x, y);
+      return { x, y, height: rect.height, hit: Boolean(hit && (hit === node || node.contains(hit))) };
+    });
+    expect(point.height).toBeGreaterThanOrEqual(44);
+    expect(point.hit, 'the Bonus source is touchable before any test-driven scroll').toBe(true);
+    return point;
+  };
   const definitionId = 'definition-empty:' + save.attempt.id;
   await inspectEmptyDefinition();
-  await expect(copy).toContainText(/Объяснения/);
-  await expect(copy).toContainText(/не гарантирован/);
-  await expect(source).toBeVisible();
+  await addressedContext();
   await expect.poll(async () => (await read(page)).productOffers?.reservation).toMatchObject({
     eventId: definitionId, resource: 'definition', surface: 'definition',
   });
@@ -370,16 +390,21 @@ test('repeated empty Definition after a manual wallet visit keeps its Bonus guid
   });
   await expect(copy).toContainText(/монеты/);
   await expect(copy).not.toContainText(/Объяснения/);
+  await expect(page.locator('#helper-inventory')).toBeVisible();
+  await expect(page.locator('#helper-inventory-list')).toContainText(/Объяснения · 0/);
   const manual = await read(page);
   expect(manual.productOffers?.reservation?.resource).toBeUndefined();
+  await page.locator('#helpers .sheet-body').evaluate(node => { node.scrollTop = node.scrollHeight; });
+  await expect.poll(() => page.locator('#helpers .sheet-body').evaluate(node => node.scrollTop)).toBeGreaterThan(0);
   await page.locator('#helper-return').tap();
   await inspectEmptyDefinition();
-  await expect(copy).toContainText(/Объяснения/);
-  await expect(copy).toContainText(/не гарантирован/);
-  await expect(source).toBeVisible();
+  const point = await addressedContext();
+  const screenshotPath = info.outputPath('definition-context.png');
+  await page.screenshot({ path: screenshotPath });
+  await info.attach('definition-context', { path: screenshotPath, contentType: 'image/png' });
   // Following the promised source also waits for a later SaveStore transaction,
   // so the duplicate fact has finished before comparing its unchanged journal.
-  await source.tap();
+  await page.touchscreen.tap(point.x, point.y);
   await expect(page.locator('#daily-bonus-dialog')).toBeVisible();
   await expect.poll(async () => (await read(page)).dailyBonus?.roundId).toBeDefined();
   const after = await read(page);

@@ -1244,7 +1244,7 @@
       "browserPassed": 38
     },
     "firstAndroid": "PASS",
-    "finalHeadAcceptance": "PENDING_FINAL_HEAD_RERUN",
+    "finalHeadAcceptance": "REVIEW_PR203_EXACT_HEAD_CHECKS_AND_ARTIFACTS",
     "shuffleInitialL30": {
       "seed": 7,
       "prefix": 0,
@@ -1256,6 +1256,15 @@
       "unknown": 9
     },
     "evidence": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
-    "external": "Physical Android/live SDK/ILRD ingestion/human economy pending; no IAP gate or owner exclusion"
+    "external": "Physical Android/live SDK/ILRD ingestion/human economy pending; no IAP gate or owner exclusion",
+    "checkedIntegratedHead": "0fcba27fc99296fb0e922a7f274474a94d69951e",
+    "checkedIntegratedCI": "https://github.com/DanilaH/asoc-solitair/actions/runs/45408510186",
+    "checkedIntegratedResults": {
+      "unitPassed": 490,
+      "unitSkipped": 1,
+      "browserPassed": 50,
+      "android": "PASS"
+    },
+    "fullWebDelta": "d4b412 default browser:282pass/182skip/2fail at320x480 apply-unlock; corrected pinned unlock action requires new head CI"
   }
 }

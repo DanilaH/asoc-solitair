@@ -22,6 +22,8 @@
 
 ### Доказательства и границы этой записи
 
+- Новый проверенный checkpoint **PR203 `0fcba27`**, [CI 45408510186](https://github.com/DanilaH/asoc-solitair/actions/runs/45408510186): **490 unit pass / 1 skip, 50 UI pass, 14 native JUnit pass, Android/R8 PASS**. Проверены оба actual APK, accepted debug signer и все 212 web payload hashes. Следующий узкий UI delta исправляет 320×480 unlock action, видимость Shuffle icon и initial viewport адресного Definition. Итоговые проверки точного более нового head и идентичность его APK фиксируются в **PR203**; результаты checkpoint не подменяют их.
+
 - **Первый CI:** точный head `d4b4120762b3fc5f873484b546d8a2408c003971`, run `45404920495`, cohesion **485 pass + 1 skip**, **38 UI cases**, Android/native JUnit/R8 **PASS**. Эти результаты относятся к первому head PR203, а не автоматически к следующему delta.
 - **Текущий локальный C8 rerun:** **490 pass + 1 skip, 0 failed**. Retention-набор включает реальные SaveStore fail-before-write, ambiguous-after-write, duplicate, reload и сохранность active/parked/Undo. Проверки нового head и его APK ещё ожидаются.
 - **Shuffle:** initial L30 prefix 0 / seed 7 и все 14 будущих положительных fixtures имеют полный production + independent replay. Initial seed 0 на 14 будущих wrappers дал **5 SOLVED / 9 UNKNOWN**. Полные маршруты и исходные параметры опубликованы в отчёте; UNKNOWN не означает доказанную неразрешимость.

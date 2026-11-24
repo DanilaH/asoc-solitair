@@ -73,6 +73,8 @@ test('L30 grants its first Shuffle after an already claimed Bonus and commits a 
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
   await expect(page.locator('#proof-shuffle')).toBeEnabled();
   await expect(page.locator('#proof-shuffle-label')).toHaveText('Перемешать · 1');
+  await expect(page.locator('#proof-shuffle svg')).toBeVisible();
+  await expect(page.locator('#proof-shuffle svg')).not.toHaveCSS('color', 'rgba(0, 0, 0, 0)');
   await capture(page, info, 'shuffle-before');
 
   await page.locator('#proof-shuffle').tap();

@@ -35,6 +35,7 @@ footer .helper-icon::after{content:'';position:absolute;inset:8px;background:cen
 #hint .helper-icon::after{background-image:url('/art/generated/hint.webp')}
 #undo .helper-icon::after{background-image:url('/art/generated/undo.webp')}
 #joker .helper-icon::after{background-image:url('/art/generated/joker.webp')}
+#proof-shuffle .helper-icon svg{display:block;color:#5b96bd}
 footer b{background:linear-gradient(#ffe0ae,#efb47b);border-color:#fff0d1;color:#805130;box-shadow:0 1px 2px #21495666}
 footer button:disabled{opacity:.45;filter:saturate(.5)}
 footer button[aria-pressed=true] .helper-icon{outline:2px solid #ffe4a4;outline-offset:2px}

@@ -412,6 +412,7 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 .sheet-actions>.text-button{padding:6px}
 #result .sheet-heading{padding:0}
 #result .sheet-body{padding-bottom:3px}
+#result>#unlock-reward{flex-shrink:0}
 #result .sheet-actions{gap:9px}
 #result-redeal small{display:block;font-size:12px}
 #result-copy:empty{display:none}

@@ -6,6 +6,12 @@
 
 **Статус:** реализация в [PR203](https://github.com/DanilaH/asoc-solitair/pull/203). Первый head `d4b4120762b3fc5f873484b546d8a2408c003971`: [CI run 45404920495](https://github.com/DanilaH/asoc-solitair/actions/runs/45404920495) подтвердил 485 unit tests / 1 skip, 38 UI cases и Android job/JUnit/R8. Следующий delta закрывает дополнительно найденные startup clock, timer, repeated Definition context и bundle-label случаи; Итоговые ссылки на точный CI head, APK, native JUnit и браузерную запись публикуются в PR203 после их фактического выполнения; до этого итоговая приёмка остаётся открытой. Эта запись не означает physical Android, live SDK/AppMetrica, human economy или production release acceptance. Числа обучения и расширение Shuffle остаются PRODUCT_ADAPTED candidates.
 
+## Проверенный интегрированный checkpoint
+
+Head `0fcba27fc99296fb0e922a7f274474a94d69951e`, [CI run 45408510186](https://github.com/DanilaH/asoc-solitair/actions/runs/45408510186): **490 unit passed, 1 skipped; 50 обычных UI cases passed; Android/JUnit/R8 job passed**. Browser artifact `14926154126`, SHA256 `700d2b8fee8c7db9006433085341290fdfb0a16776ab6212598629273d4756f5`. Android artifact `14927445807`, SHA256 `8e4436b0b4e68c771e48c430cd41482f8e411a14e2bfca75903f70655ae3d1ed`. Полные XML, манифесты и APK доступны в этом run.
+
+Первый полный default browser suite на `d4b412` дал 282 passed / 182 skipped / 2 failed: два viewport выявили обрезанный край `apply-unlock` на 320×480. Новый текст replay увеличил нижний блок. Следующее исправление закрепляет earned unlock action вне прокручиваемых подробностей; исходная hit-проверка сохранена. Во время просмотра настоящих Shuffle PNG также выявлен невидимый glyph: для этой кнопки добавлена собственная SVG-иконка с адресным стилем. Адресный вход из пустого Definition теперь сразу показывает объяснение и кнопку Bonus: общий запас скрыт только для этого входа, Manual wallet продолжает показывать весь inventory. Итоговое состояние более нового head, артефакты и результаты полного CI записываются в **PR203**; эти визуальные правки не получают PASS по более раннему checkpoint.
+
 ## Что изменено
 
 | Пункт | Реальное поведение | Проверяемая граница |

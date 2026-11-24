@@ -1,5 +1,6 @@
 import { comboDisposition, COMBO_STAGES } from './events/combo';
 import { releaseProfile } from '../config/profile';
+import { migrateRandomJokerRights } from './random-joker-rights';
 import { BALANCE_VERSION, CONTENT8_PREVIEW, CONTENT_VERSION, RULES_VERSION } from './types';
 import { quoteVictoryReward, victoryDifficulty, type VictoryRewardConfig } from './azur-victory-reward';
 import { BALANCE } from './balance';
@@ -190,6 +191,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
   };
   if (cmd.type === 'restart') {
     if (cmd.attemptId === attempt.id) return refuse('Для повтора нужен новый номер попытки');
+    migrateRandomJokerRights(next);
     abandonCampaign(next);
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
     if (attempt.issuance) next.attempt.issuance = attempt.issuance;

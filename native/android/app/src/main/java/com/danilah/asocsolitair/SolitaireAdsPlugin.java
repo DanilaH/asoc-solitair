@@ -43,7 +43,9 @@ public class SolitaireAdsPlugin extends Plugin {
         final PluginCall call;
         final String kind, placement, attempt, mode, dealId;
         final String id = UUID.randomUUID().toString();
-        boolean invoked, shown, earned, impressed;
+        boolean invoked, shown, earned;
+        // Memory capture ownership/rejection is distinct from the worker's durable receipt.
+        RevenueDelivery.Capture impressionCapture;
         long invokedAt;
         Session(PluginCall call, String kind, String placement, String attempt, String mode, String dealId) {
             this.call = call; this.kind = kind; this.placement = placement; this.attempt = attempt; this.mode = mode; this.dealId = dealId;
@@ -74,39 +76,47 @@ public class SolitaireAdsPlugin extends Plugin {
         JSObject e = new JSObject(); e.put("kind", kind); e.put("phase", phase); notifyListeners("adEvent", e);
     }
     private void impression(Session s, @Nullable ImpressionData data) {
-        if (session != s || s.impressed) return;
-        s.impressed = true;
-        recordImpression(s.kind, s.placement, s.id, data);
+        if (session != s || s.impressionCapture != null) return;
+        s.impressionCapture = recordImpression(s.kind, s.placement, s.id, data);
     }
-    private void recordImpression(String kind, String placement, String id, @Nullable ImpressionData data) {
+    private RevenueDelivery.Capture recordImpression(String kind, String placement, String id, @Nullable ImpressionData data) {
         event(kind, "impression");
-        if (!BuildConfig.CAMPAIGN_ADS_APPROVED || destroyed || data == null) return;
+        if (!BuildConfig.CAMPAIGN_ADS_APPROVED || destroyed || data == null) return null;
         try {
             JSONObject raw = new JSONObject(data.getRawData());
             String currency = raw.optString("currency");
             BigDecimal revenue = new BigDecimal(raw.getString("revenue"));
-            if (revenue.signum() < 0) return;
+            if (revenue.signum() < 0) return null;
             long micros = revenue.movePointRight(6)
                 .setScale(0, RoundingMode.HALF_UP).longValueExact();
-            if (!currency.matches("[A-Z]{3}") || micros < 0 || micros > 9007199254740991L) return;
+            if (!currency.matches("[A-Z]{3}") || micros < 0 || micros > 9007199254740991L) return null;
             RevenueDelivery delivery = SolitaireApplication.revenue;
-            if (delivery == null) return;
+            if (delivery == null) return null;
             JSONObject value = new JSONObject();
             value.put("schema", 1); value.put("deliveryId", id); value.put("format", kind);
             value.put("placement", placement); value.put("micros", micros); value.put("currency", currency);
             value.put("provider", "yandex-mobile-ads"); value.put("sdk", "8.6.0");
             value.put("sdkMode", BuildConfig.AD_MODE); value.put("build", BuildConfig.VERSION_NAME);
             value.put("policy", "single-placement-pause-r1");
-            RevenueOutbox.Receipt result = delivery.receive(id, value.toString());
-            if (result == RevenueOutbox.Receipt.QUEUED) event(kind, "revenue_queued");
-            if (result == RevenueOutbox.Receipt.FULL) event(kind, "revenue_queue_full");
-        } catch (java.io.IOException error) {
-            android.util.Log.w("SolitaireRevenue", "Could not persist impression");
-            event(kind, "revenue_store_error");
+            RevenueDelivery.Capture result = delivery.receive(id, value.toString());
+            if (result == RevenueDelivery.Capture.CAPTURED) event(kind, "revenue_intake_pending");
+            if (result == RevenueDelivery.Capture.INTAKE_FULL) event(kind, "revenue_intake_full");
+            if (result == RevenueDelivery.Capture.INVALID) event(kind, "revenue_intake_invalid");
+            return result;
         } catch (Exception ignored) { /* The SDK did not provide a usable paid impression. */ }
+        return null;
     }
     @PluginMethod public void status(PluginCall call) { handler.post(() -> {
         JSObject result = new JSObject(); result.put("ready", ready); result.put("mode", BuildConfig.AD_MODE); result.put("campaignApproved", BuildConfig.CAMPAIGN_ADS_APPROVED); result.put("livesApproved", BuildConfig.CAMPAIGN_LIVES_ADS_APPROVED); result.put("offersApproved", BuildConfig.REWARD_OFFERS_ADS_APPROVED);
+        RevenueDelivery delivery = SolitaireApplication.revenue;
+        if (delivery != null) {
+            RevenueDelivery.Diagnostics diagnostics = delivery.diagnostics();
+            JSObject revenue = new JSObject();
+            revenue.put("intakePending", diagnostics.intakePending); revenue.put("intakeErrors", diagnostics.intakeErrors);
+            revenue.put("intakeDropped", diagnostics.intakeDropped); revenue.put("queueDropped", diagnostics.queueDropped);
+            revenue.put("durableAccepted", diagnostics.durableAccepted); revenue.put("durableDuplicates", diagnostics.durableDuplicates);
+            result.put("revenueProcess", revenue);
+        }
         result.put("banner", available("banner")); result.put("rewarded", available("rewarded")); result.put("interstitial", available("interstitial")); call.resolve(result);
     }); }
     @PluginMethod public void prepareInterstitial(PluginCall call) { handler.post(() -> {

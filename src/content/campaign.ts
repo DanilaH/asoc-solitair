@@ -120,7 +120,18 @@ const rightsBySource = new Map([...releaseDealBySource.values(), ...shuffleBySou
   releaseSourceById.set(deal.id, releaseSourceById.get(source.id)!);
   return [source.id, deal];
 }));
-export const integratedCampaignDeals = [...releaseDealBySource.values(), ...shuffleBySource.values(), ...rightsBySource.values()];
+// Shuffle progression is independent of finite stock/recovery. Preserve all published
+// sources and attach a new identity after authored/adaptive/generated selection.
+const progressionShuffleBySource = new Map([...content8Campaign, ...lateAdaptiveDeals,
+  ...hitappsDirectorDeals.map(entry => entry.deal)].filter(source =>
+  source.campaignLevel !== releaseConfig.policies.chargedShuffleLevel &&
+  releaseConfig.policies.chargedShuffleLevels.includes(source.campaignLevel!)).map(source => {
+  const deal: Deal = { ...source, id: source.id + '-shuffle-r2', shufflePolicy: 'hidden-pool-r1', shuffleCost: 'charge' };
+  releaseSourceById.set(deal.id, source.id);
+  return [source.id, deal];
+}));
+export const integratedCampaignDeals = [...releaseDealBySource.values(), ...shuffleBySource.values(), ...rightsBySource.values(),
+  ...progressionShuffleBySource.values()];
 
 const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
   ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...integratedCampaignDeals, ...coreSpecialDeals, ...content8DirectorDeals, ...lateAdaptiveDeals, ...hitappsDirectorDeals.map(entry => entry.deal), equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
@@ -151,7 +162,7 @@ export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): 
   if (!releaseProfile) return candidate;
   const composed = releaseDealBySource.get(candidate.id) ?? candidate;
   const withShuffle = releaseProfile.capabilities.proofShuffle === 'active'
-    ? shuffleBySource.get(composed.id) ?? composed : composed;
+    ? shuffleBySource.get(composed.id) ?? progressionShuffleBySource.get(composed.id) ?? composed : composed;
   return releaseProfile.policies.economy === 'c8-non-iap-rights-r1' ? rightsBySource.get(withShuffle.id) ?? withShuffle : withShuffle;
 }
 

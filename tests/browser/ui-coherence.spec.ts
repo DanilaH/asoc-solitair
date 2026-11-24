@@ -38,7 +38,7 @@ async function action(p:Page, selector:string) {
 for(const [width,height] of [[320,480],[320,568],[360,780],[393,851]]) {
   test(`dialog actions stay reachable before scroll at ${width}x${height}`,async({page})=>{
     await page.setViewportSize({width,height}); await seed(page,profile(25));
-    for(const [open,close] of [['#looks-open','#appearance-done'],['#wallet-open','#helper-return'],['#calendar-open','#calendar .sheet-actions button'],['#level-picker-open','#level-picker .sheet-actions button']]) {
+    for(const [open,close] of [['#appearance-open','#appearance-done'],['#wallet-open','#helper-return'],['#calendar-open','#calendar .sheet-actions button'],['#level-picker-open','#level-picker .sheet-actions button']]) {
       await page.locator(open).tap(); await page.waitForTimeout(250);
       const point=await action(page,close); await action(page,'dialog[open] .close');
       const body=page.locator('dialog[open] .sheet-body');
@@ -56,7 +56,7 @@ for(const [width,height] of [[320,480],[320,568],[360,780],[393,851]]) {
 }
 test('enlarged text leaves modal exits and continuation available',async({page})=>{
   await page.setViewportSize({width:320,height:568});await seed(page,profile(25));
-  for(const [open,close] of [['#looks-open','#appearance-done'],['#wallet-open','#helper-return'],['#calendar-open','#calendar .sheet-actions button']]){
+  for(const [open,close] of [['#appearance-open','#appearance-done'],['#wallet-open','#helper-return'],['#calendar-open','#calendar .sheet-actions button']]){
     await page.locator(open).tap();await page.waitForTimeout(250);
     await page.locator('dialog[open]').evaluate(root=>{
       const nodes=[...root.querySelectorAll<HTMLElement>('*')].filter(e=>[...e.childNodes].some(n=>n.nodeType===Node.TEXT_NODE&&n.textContent?.trim()));

@@ -1,3 +1,9 @@
+# Current work · MVP cohesion implementation · 24 November 2026
+
+Owner: «Возьми ты в работу это». Implementation branch `feat/c8-mvp-cohesion-20261124` starts from docs PR202 `c85fdc772cfcf07acd6289aa8c1519f55df38e09`. Version0.20.4/code45. Read [implementation and exact evidence](qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md). F1–F3/C1–C3/U1–U5 are implemented; CI, exact artifacts and visual verification must be completed before marking independently testable engineering accepted. Preserve all115IDs/38packets/15families and source-status distinctions. No IAP/live activation or old-branch merges.
+
+---
+
 ## 24 November 2026 — audited developer brief ready
 
 **READ FIRST:** [current code audit](porting/DEVELOPER_AUDIT_2026-11-24.md) and [integrated core/ads brief](porting/CORE_ADS_RELEASE_TZ_2026-11-24.md). Actual code remains PR190 `c4215e18d54927a5ac73a350876f29852aa36861` (0.20.3/code44); documentation baseline is PR194 `23f04d3`. Both web/Android jobs at [45220990653](https://github.com/DanilaH/asoc-solitair/actions/runs/45220990653) are green, but that APK uses an isolated specials/feel/victory QA profile. Ordinary release workflow still defaults to C7. Start the single B0/C1 profile+composition+manifest package, then the remaining core/ads/retention deltas. Refresh HEAD before coding.

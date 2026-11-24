@@ -23,7 +23,8 @@ export function referenceActions(board: Board, deal: Deal): BoardCommand[] {
       if (canUseEmpty || canJoin) out.push({ type: 'transfer', from, to: { kind: 'tableau', index } });
     }
   }
-  if (board.stock.length || board.waste.length) out.push({ type: board.stock.length ? 'draw' : 'recycle' });
+  if (board.stock.length || board.waste.length && board.recyclesLeft !== 0)
+    out.push({ type: board.stock.length ? 'draw' : 'recycle' });
   return out;
 }
 
@@ -31,6 +32,7 @@ type Node = { board: Board; parent?: Node; action?: BoardCommand; steps: number;
 const key = (board: Board) => JSON.stringify([
   board.tableau.map(group => group.join(',')).sort(), board.foundations.map(group => group.join(',')).sort(),
   board.stock, board.waste, board.tableau.map(group => group.filter(id => board.faceUp.includes(id)).join(',')).sort(),
+  board.recyclesLeft ?? null,
 ]);
 
 export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allowLower = true, deadline = Infinity) {

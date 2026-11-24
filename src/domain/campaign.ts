@@ -2,6 +2,7 @@ import { abandonCampaign } from './meta';
 import { carryCampaignRestart } from './difficulty';
 import { issueEqualityDeal, type EqualityPreviewPolicy } from './equality-issuance';
 import { freshAttempt } from './engine';
+import { migrateRandomJokerRights } from './random-joker-rights';
 import { unlockedLevel } from './progression';
 import { CONTENT8_PREVIEW, type Deal, type Save } from './types';
 
@@ -11,6 +12,7 @@ export function beginDeal(save: Save, deal: Deal, attemptId: string, previousDea
   if (!/^[a-zA-Z0-9_-]{1,100}$/.test(attemptId) || attemptId === save.attempt.id) throw Error('Нужен новый номер попытки');
   if (deal.campaignLevel === undefined || deal.campaignLevel > unlockedLevel(save)) throw Error('Этот уровень пока закрыт');
   const previous = save.attempt;
+  migrateRandomJokerRights(save);
   abandonCampaign(save);
   save.attempt = freshAttempt(CONTENT8_PREVIEW ? issueEqualityDeal(save, equalityBase, attemptId, equality, deal) : deal, attemptId);
   if (save.dailyTasks) save.attempt.verifiedTaskHints = 0;

@@ -121,11 +121,11 @@ test('home appearance button stays under a held finger and opens reliably', asyn
   await page.goto('/'); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   const returning = freshSave(campaignDeals[1], 'returning-home'); returning.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, lastFullscreenAt: 0, winsSinceInterstitial: 0, completedCampaign: [campaignId(1)] };
   await page.evaluate(s => localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(s)), returning); await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
-  const before = (await page.locator('#looks-open').boundingBox())!;
+  const before = (await page.locator('#appearance-open').boundingBox())!;
   const cdp = await page.context().newCDPSession(page), point = { x: before.x + before.width / 2, y: before.y + before.height / 2 };
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
   await page.waitForTimeout(160);
-  const pressed = (await page.locator('#looks-open').boundingBox())!;
+  const pressed = (await page.locator('#appearance-open').boundingBox())!;
   expect(Math.abs(pressed.y - before.y)).toBeLessThan(4);
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await cdp.detach(); await expect(page.locator('#appearance')).toBeVisible();

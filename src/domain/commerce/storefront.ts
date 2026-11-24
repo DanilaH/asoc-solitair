@@ -4,6 +4,7 @@ import { PRODUCTS, CHECKOUT_PRODUCT_INDEX, type ProductGood } from './catalog';
 import { reviewOffers, type CommercialContext, type OfferFamily } from './offer-policy';
 import { OWNER_ACCEPTANCE_PREVIEW } from '../types';
 import type { Save } from '../types';
+import { CAMPAIGN_LENGTH, completedLevels } from '../progression';
 
 export const STOREFRONT_PREVIEW = LEGACY_OWNER_PREVIEW === 'storefront' || OWNER_ACCEPTANCE_PREVIEW;
 const natural = (n: unknown): n is number => Number.isSafeInteger(n) && (n as number) >= 0;
@@ -46,6 +47,54 @@ export function validStoreProgress(data: StoreProgress) {
     (data.freeClaimed === undefined || data.freeClaimed === true) &&
     [data.premiumClaimed, data.piggyGrant].every(id => id === undefined || typeof id === 'string' && id.length <= 300));
 }
+
+export interface FreeCampaignBonusGrant { season: string; coins: 10 }
+
+/** Settle a recorded earned free reward, including an older month, before its record can reset.
+ * This is the ordinary no-IAP product policy; paid tracks keep their existing owner.
+ */
+export function settleFreeCampaignBonus(save: Save, now: number): FreeCampaignBonusGrant | undefined {
+  const season = period(now), data = save.storeProgress;
+  if (!season || !data || !validStoreProgress(data) || data.season > season.id ||
+      data.clears < PASS_GOAL || data.freeClaimed || !natural(save.profile.coins + 10)) return;
+  data.freeClaimed = true;
+  save.profile.coins += 10;
+  save.revision++;
+  return { season: data.season, coins: 10 };
+}
+
+/** Caller invokes once for an accepted campaign first clear, inside that win's SaveStore mutation.
+ * All three steps commit together; an unpayable earned right never gets overwritten by a new month.
+ */
+export function recordFreeCampaignClear(save: Save, now: number): { recorded: boolean; grants: FreeCampaignBonusGrant[] } {
+  const season = period(now), data = save.storeProgress;
+  if (!season || (data && (!validStoreProgress(data) || data.season > season.id))) return { recorded: false, grants: [] };
+  const draft: Save = { ...save, profile: { ...save.profile }, ...(data ? { storeProgress: { ...data } } : {}) };
+  const oldGrant = settleFreeCampaignBonus(draft, now);
+  if (data && data.clears >= PASS_GOAL && !data.freeClaimed && !oldGrant) return { recorded: false, grants: [] };
+  if (!recordStoreClear(draft, now)) return { recorded: false, grants: [] };
+  const newGrant = settleFreeCampaignBonus(draft, now);
+  if (draft.storeProgress!.clears >= PASS_GOAL && !draft.storeProgress!.freeClaimed) return { recorded: false, grants: [] };
+  save.storeProgress = draft.storeProgress;
+  save.profile.coins = draft.profile.coins;
+  save.revision = draft.revision;
+  return { recorded: true, grants: [oldGrant, newGrant].filter((grant): grant is FreeCampaignBonusGrant => Boolean(grant)) };
+}
+
+/** Current-month presentation only: paying an old month cannot mark this month as claimed. */
+export function freeCampaignBonusState(save: Save, now: number) {
+  const season = period(now), data = save.storeProgress;
+  const remainingFirstClears = Math.max(0, CAMPAIGN_LENGTH - completedLevels(save));
+  if (!season) return { phase: 'unavailable' as const, visible: false, clears: 0, goal: PASS_GOAL, remainingFirstClears };
+  if (data && data.season > season.id) return { phase: 'future' as const, visible: false, clears: 0,
+    goal: PASS_GOAL, remainingFirstClears, season: season.id, nextResetAt: season.end };
+  const current = data?.season === season.id ? data : undefined;
+  const clears = current?.clears ?? 0, reachable = clears + remainingFirstClears >= PASS_GOAL;
+  const phase = current?.freeClaimed ? 'claimed' : clears >= PASS_GOAL ? 'ready' : reachable ? 'progress' : 'exhausted';
+  return { phase, visible: phase !== 'exhausted', season: season.id, clears, goal: PASS_GOAL, remainingFirstClears,
+    progress: Math.min(clears, PASS_GOAL), nextResetAt: season.end };
+}
+
 export function claimShopProgress(save: Save, now: number, track: 'free'|'premium'|'piggy', accountId = '') {
   const season = period(now), data = save.storeProgress;
   if (!season || !data || season.id !== data.season) return false;

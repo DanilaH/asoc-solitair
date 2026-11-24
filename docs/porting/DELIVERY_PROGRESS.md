@@ -6,6 +6,8 @@
 
 **Первый head PR203 `d4b4120762b3fc5f873484b546d8a2408c003971` прошёл [CI 45404920495](https://github.com/DanilaH/asoc-solitair/actions/runs/45404920495): cohesion — 485 unit pass, 1 skip и 38 UI cases; Android job, native JUnit и R8 — PASS.** После этого внесены дополнительные исправления startup clock/scheduler, повторного Definition context и описаний составных наград. Полный локальный C8 unit rerun следующего delta: **490 pass, 1 skip, 0 failed**. UI-прогон, Android CI и проверенная идентичность APK следующего итогового head ещё **PENDING**. Доказательства и границы собраны в [отчёте реализации](../qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md); первый CI не заменяет проверки последующих изменений.
 
+Последний опубликованный checkpoint `ffa457d` подтвердил independent cohesion 490 unit / 1 skip + 50 UI, Android 14 JUnit и C8 preview 68 / 30 skip. Default browser 284 / 194 skip PASS, но integrated repeat в web — 48 PASS / 2 FAIL в ожидании native-clock telemetry checkpoint; общий web ещё не принят. Финальный follow-up также добавляет подтверждение старой месячной выплаты после commit и обычную C8 геометрию/касания с 60px баннерным резервом. Проверка актуального head и точные артефакты — в PR203.
+
 | Задача / пакеты | Что изменено в текущем кандидате | Остаток приёмки |
 | --- | --- | --- |
 | F1 · P21 | Первый native ILRD callback попадает в ограниченный процессный intake; worker повторяет первую durable запись с исходным delivery ID независимо от Session/WebView. Memory capture, durable receive и SDK handoff различаются. | Android/JUnit/R8 прошли на первом head; нужны повтор на итоговом head, физический SDK и денежный агрегат в разрешённой выгрузке. Process death до первой записи остаётся границей потери; server exactly-once не заявлен. |

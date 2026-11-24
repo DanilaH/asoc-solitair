@@ -12,7 +12,7 @@ import { authorizeLifeVideo, cancelLifeVideo, LIVEOPS_PREVIEW, LIVES_PREVIEW, LI
 import { claimLegacyLiveOpsReward, legacyLiveOpsRewards, liveOpsDefinitions, liveOpsTitles, recordLiveOpsWin, type LiveOpsSource } from './domain/events/campaign-liveops';
 import { availableEvents, claimMilestone, eventKey, type EventReward } from './domain/events/ledger';
 import { createStorefront } from './platform/storefront';
-import { claimShopProgress, freeCampaignBonusState, PASS_GOAL, PIGGY_LIMIT, productLabels, recordFreeCampaignClear, recordStoreClear, settleFreeCampaignBonus, showProductGoods, storefrontView, STOREFRONT_PREVIEW } from './domain/commerce/storefront';
+import { claimShopProgress, freeCampaignBonusState, PASS_GOAL, PIGGY_LIMIT, productLabels, recordFreeCampaignClear, recordStoreClear, settleFreeCampaignBonus, showProductGoods, storefrontView, STOREFRONT_PREVIEW, type FreeCampaignBonusGrant } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
 import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee } from './domain/campaign-advertising';
 import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, requiresNativeRecoveryClock, restoreCampaignStock, restoreQuote, unlimitedRemaining, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
@@ -281,16 +281,30 @@ try {
   }
   const sourceDailyTasks = import.meta.env.VITE_CONTENT8_DAILY_TASKS === 'source';
   const dailyBonusEnabled = releaseTasks || sourceDailyTasks;
+  type MonthlyConfirmation = { state: Save; grants: FreeCampaignBonusGrant[] };
+  let deferredMonthlyConfirmation: MonthlyConfirmation | undefined;
+  function confirmMonthlyBonuses(grants: FreeCampaignBonusGrant[]) {
+    if (!grants.length) return;
+    const copy = grants.map(grant => `Бонус за ${grant.season.slice(5)}.${grant.season.slice(0, 4)} · +${grant.coins} монет получено`).join('\n');
+    for (const node of document.querySelectorAll<HTMLElement>('[data-monthly-confirmation]')) {
+      node.textContent = copy;
+      node.hidden = false;
+    }
+  }
   function syncRetention(next: Save, now: number) {
-    if (freeSeasonalTrack) settleFreeCampaignBonus(next, now);
     if (!(releaseTasks || sourceDailyTasks) || unlockedLevel(next) < 2) return;
     updatePreviewTasks(next, now);
     recordTaskSignal(next, now, { id: 'login', kind: 'DailyLogin', channel: 'login', amount: 1 });
     if (releaseTasks) grantShuffleIntro(next);
   }
   if (freeSeasonalTrack || dailyBonusEnabled && unlockedLevel(save) >= 2) {
-    await store.mutate(next => syncRetention(next, Date.now()));
+    const grant = await store.mutate(next => {
+      const now = Date.now(), grant = freeSeasonalTrack ? settleFreeCampaignBonus(next, now) : undefined;
+      syncRetention(next, now);
+      return grant;
+    });
     save = store.state;
+    if (grant) confirmMonthlyBonuses([grant]);
   }
   const systemMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const reducedMotion = () => systemMotion.matches || save.settings.reducedMotion;
@@ -408,7 +422,15 @@ try {
   } : undefined);
   const setInput = () => scene?.setEnabled(screen === 'game' && ready && !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
   const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && !adFree(save, Date.now(), 'banner') && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
-  store.onChange = value => { save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); scheduleRecoveryClock(); };
+  store.onChange = value => {
+    // A previously ambiguous write can become confirmed during a later recovery.
+    // Keep only its transient presentation; SaveStore still owns every reward.
+    if (deferredMonthlyConfirmation?.state === value) {
+      confirmMonthlyBonuses(deferredMonthlyConfirmation.grants);
+      deferredMonthlyConfirmation = undefined;
+    }
+    save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); scheduleRecoveryClock();
+  };
   function clearRecoveryClock() {
     clearTimeout(recoveryClock); recoveryClock = undefined; recoveryTimerAt = undefined;
   }
@@ -453,10 +475,25 @@ try {
       if (alive) { scheduleRecoveryClock(); renderHud(); }
     }
   }
-  async function write<T>(change: (next: Save) => T): Promise<T> {
+  async function write<T>(change: (next: Save, monthlyGrants: FreeCampaignBonusGrant[], now: number) => T): Promise<T> {
     pendingWrites++; saving = true; setInput();
-    try { return await store.mutate(change); }
+    let confirmation: MonthlyConfirmation | undefined;
+    try {
+      const result = await store.mutate(next => {
+        const now = Date.now(), grant = freeSeasonalTrack ? settleFreeCampaignBonus(next, now) : undefined;
+        const grants = grant ? [grant] : [];
+        const value = change(next, grants, now);
+        confirmation = { state: next, grants };
+        return value;
+      });
+      if (confirmation) confirmMonthlyBonuses(confirmation.grants);
+      return result;
+    } catch (error) {
+      if (store.needsRecovery && confirmation?.grants.length) deferredMonthlyConfirmation = confirmation;
+      throw error;
+    }
     finally {
+      if (!store.needsRecovery) deferredMonthlyConfirmation = undefined;
       saving = --pendingWrites > 0; setInput(); renderHud(); renderHome();
       if (!saving && ready && screen === 'game' && !runtime.activity.isBlocked()) showGuidance();
     }
@@ -996,7 +1033,7 @@ try {
     let started = false, finished = false, coveredWaste = false, blockedLives = false;
     try {
       presentingCommand = true;
-      await write(next => {
+      await write((next, monthlyGrants, now) => {
         expireRecovery(next);
         if (LIVES_PREVIEW && !next.attempt.daily && deal.campaignLevel &&
             (cmd.type === 'restart' ? !mayStartCampaignAttempt(next, next.attempt, Date.now()) : Boolean(next.attempt.lostLife && next.attempt.board.phase === 'exhausted'))) {
@@ -1006,15 +1043,14 @@ try {
         result = dispatch(next, cmd, deal, localDay(), victoryPolicy);
         if ((STOREFRONT_PREVIEW || freeSeasonalTrack) && result.accepted && !result.next.attempt.daily &&
             (result.next.platform?.completedCampaign.length ?? 0) > (next.platform?.completedCampaign.length ?? 0)) {
-          if (freeSeasonalTrack && !STOREFRONT_PREVIEW) recordFreeCampaignClear(result.next, Date.now());
-          else recordStoreClear(result.next, Date.now());
+          if (freeSeasonalTrack && !STOREFRONT_PREVIEW) monthlyGrants.push(...recordFreeCampaignClear(result.next, now).grants);
+          else recordStoreClear(result.next, now);
         }
         if (LIVEOPS_PREVIEW && result.accepted) recordLiveOpsWin(next, result.next, deal, Date.now());
         if (PICTURE_PREVIEW && result.accepted && result.next.attempt.board.phase === 'won') {
           recordPictureWin(next, result.next, deal, Date.now());
         }
         if (result.accepted && (TASKS_PREVIEW || result.next.dailyTasks)) {
-          const now = Date.now();
           syncRetention(result.next, now);
           if (result.next.dailyTasks) {
             if (TASKS_PREVIEW) updatePreviewTasks(result.next, now);

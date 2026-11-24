@@ -610,6 +610,8 @@ html[data-reduced=true] .coin-debit{animation:none}
 #home .activity-entry{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;min-height:56px;padding:10px 13px;font-size:14px}
 #home .activity-entry small{font-size:11px;font-weight:600;line-height:1.4;color:#617974}
 #campaign-monthly-bonus{width:calc(100% - 20px);margin:4px 0 9px;font-size:11px;line-height:1.45;text-align:center;color:#617974}
+.monthly-confirmation{font-size:12px;line-height:1.45;color:#416b73;white-space:pre-line}
+#campaign-monthly-confirmation{width:calc(100% - 20px);margin:4px 0 7px;text-align:center}
 #daily-tasks-dialog .sheet-body section{padding:10px 0;border-bottom:1px solid #d8dccd}
 #daily-tasks-dialog .sheet-body section>strong{display:block;font-size:14px;line-height:1.4;margin-bottom:7px}
 #daily-tasks-dialog .sheet-body h3{font-size:16px;margin:15px 0 7px}

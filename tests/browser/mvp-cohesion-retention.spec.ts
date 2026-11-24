@@ -217,7 +217,7 @@ test.describe('local presentation of unchanged UTC reward periods', () => {
   });
 });
 
-test('settles an old monthly reward at endgame once, preserves cosmetics, and keeps independent free shop coins', async ({ page }) => {
+test('settles an old monthly reward at endgame once, preserves cosmetics, and keeps independent free shop coins', async ({ page }, info) => {
   const save = profile(16), baseline = save.profile.coins;
   platformState(save).completedCampaign = Array.from({ length: 80 }, (_, index) => campaignId(index + 1));
   save.meta!.winCycle = 3;
@@ -225,8 +225,19 @@ test('settles an old monthly reward at endgame once, preserves cosmetics, and ke
   save.storeProgress = { version: 1, season: '2026-10', clears: 3, piggy: 30 };
   await seedHome(page, save);
   await expect.poll(async () => (await read(page)).profile.coins).toBe(baseline + 10);
+  const confirmation = page.locator('#campaign-monthly-confirmation');
+  await expect(confirmation).toBeVisible();
+  await expect(confirmation).toContainText('+10');
+  await expect(confirmation).toContainText('10.2026');
+  expect((await read(page)).storeProgress).toEqual({ ...save.storeProgress, freeClaimed: true });
   await expect(page.locator('#win-cycle-open')).toBeHidden();
   await expect(page.locator('#campaign-monthly-bonus')).toBeHidden();
+  const confirmationBox = (await confirmation.boundingBox())!;
+  expect(confirmationBox.y).toBeGreaterThanOrEqual(0);
+  expect(confirmationBox.y + confirmationBox.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+  const screenshot = info.outputPath('monthly-confirmation.png');
+  await page.screenshot({ path: screenshot });
+  await info.attach('monthly-confirmation', { path: screenshot, contentType: 'image/png' });
   await expect(page.locator('#looks-open')).toBeHidden();
   await expect(page.locator('#daily-play')).toBeVisible();
   await page.locator('#appearance-open').tap();
@@ -242,6 +253,10 @@ test('settles an old monthly reward at endgame once, preserves cosmetics, and ke
   await page.reload();
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   expect((await read(page)).profile.coins).toBe(baseline + 40);
+  await expect(confirmation).toBeHidden();
+  await expect(page.locator('#result-monthly-confirmation')).toBeHidden();
+  await expect(page.locator('#campaign-monthly-bonus')).toBeHidden();
+  expect((await read(page)).storeProgress).toEqual({ ...save.storeProgress, freeClaimed: true });
   expect((await read(page)).meta?.winCycle).toBe(3);
   expect((await read(page)).attempt.board).toEqual(save.attempt.board);
   expect((await read(page)).settings).toMatchObject({ palette: 'ink', cardBack: 'diamonds', deckSide: 'left', deckPosition: 'bottom' });

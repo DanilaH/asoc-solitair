@@ -1265,6 +1265,10 @@
       "browserPassed": 50,
       "android": "PASS"
     },
-    "fullWebDelta": "d4b412 default browser:282pass/182skip/2fail at320x480 apply-unlock; corrected pinned unlock action requires new head CI"
+    "fullWebDelta": "ffa457d default browser:284pass/194skip; compact early gate:2pass; integrated repeat:48pass/2fail at unknown-native-clock telemetry checkpoint wait. Resolve and rerun exact final head; no full web acceptance yet.",
+    "finalAcceptanceDelta": {
+      "monthlyConfirmation": "Original earned month and +10 shown only after confirmed SaveStore commit; late ambiguous recovery uses exact committed Save; no repeat after reload",
+      "integratedBannerReserve": "Ordinary c8-release-v1 phone/compact: test-injected 60px DOM reserve, layout/hit JSON, PNG/video, real Shuffle/draw/Undo; not native SDK evidence"
+    }
   }
 }

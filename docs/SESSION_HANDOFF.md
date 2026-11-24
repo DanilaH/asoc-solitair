@@ -8,6 +8,8 @@ Initial L30 Shuffle has a full positive proof at **prefix 0 / seed 7**, with 113
 
 The full default browser suite on the earlier `d4b412` checkpoint found two viewport failures of one 320×480 earned-cosmetic action. The current follow-up pins that action outside the scrollable result body, supplies a visible own-code Shuffle icon, and puts the addressed empty-Definition source on the initial helper viewport. Existing hit checks remain intact; a fast compact gate precedes the complete browser suite. These visual changes require their own exact-head CI and records in PR203.
 
+Final scoped follow-up adds post-commit monthly confirmation (including an old ready month at 80/80) and ordinary C8 phone/compact banner-reserve DOM/raster/touch evidence. The latest full checkpoint `ffa457d` passed the 284-case default browser suite but failed the repeated integrated native-clock telemetry wait in two viewports; that failure must be resolved and rerun before final acceptance. See PR203 for the final exact head and artifacts; do not deliver a prior checkpoint as the finished candidate.
+
 **Remaining external acceptance:** physical Android, live advertising SDK/AppMetrica ingestion and human economy/UX. Preserve all **115 source IDs / 38 packets / 15 commercial families**, immutable old deals and the complete roadmap. No IAP/live activation, source-parity upgrade, owner exclusion or old-branch merge follows from this implementation or its engineering checks.
 
 ---

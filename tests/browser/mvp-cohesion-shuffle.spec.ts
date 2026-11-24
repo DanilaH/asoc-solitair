@@ -1,4 +1,5 @@
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
+import { writeFile } from 'node:fs/promises';
 import { findDeal } from '../../src/content/campaign';
 import { freshSave } from '../../src/domain/engine';
 import { claimDailyBonus, openDailyBonusRound, revealDailyBonusCard } from '../../src/domain/events/daily-bonus';
@@ -7,7 +8,7 @@ import { prepareShuffleBoard } from '../../src/domain/proof-shuffle';
 import { campaignId } from '../../src/domain/progression';
 import { SHUFFLE_INTRO_KEY } from '../../src/domain/shuffle-progression';
 import { shuffleIntroWitness } from '../fixtures/mvp-shuffle';
-import { read } from './wallet-fixture';
+import { move, read } from './wallet-fixture';
 
 test.skip(process.env.VITE_ASOC_PROFILE !== 'c8-release-v1', 'Requires the ordinary integrated C8 release build');
 test.use({ timezoneId: 'UTC' });
@@ -22,7 +23,51 @@ async function capture(page: Page, info: TestInfo, name: string) {
   await info.attach(name, { path, contentType: 'image/png' });
 }
 
-test('L30 grants its first Shuffle after an already claimed Bonus and commits a real worker proof once', async ({ page }, info) => {
+async function bannerReserve(page: Page, info: TestInfo, name: string) {
+  // Geometry fixture only: reserve the same slot as NativeBanner without claiming
+  // a native SDK/ad render. The ordinary production profile and layout run unchanged.
+  const manifest = await (await page.request.get('/release-manifest.json')).json();
+  expect(manifest.id).toBe('c8-release-v1');
+  await page.locator('#banner-slot').evaluate(slot => {
+    slot.removeAttribute('hidden');
+    slot.style.height = '60px';
+  });
+  await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  const metrics = await page.evaluate(() => {
+    const rect = (selector: string) => {
+      const r = document.querySelector(selector)!.getBoundingClientRect();
+      return { x: r.x, y: r.y, width: r.width, height: r.height, right: r.right, bottom: r.bottom };
+    };
+    return {
+      viewport: { width: innerWidth, height: innerHeight },
+      banner: rect('#banner-slot'), board: rect('#game-root'), dock: rect('#dock'),
+      buttons: ['hint', 'undo', 'joker', 'proof-shuffle'].map(id => {
+        const element = document.getElementById(id)!, r = rect('#' + id);
+        const target = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+        return { id, ...r, centerHit: Boolean(target && element.contains(target)) };
+      }),
+    };
+  });
+  expect(metrics.banner.height).toBe(60);
+  expect(metrics.banner.bottom).toBeLessThanOrEqual(metrics.viewport.height + 1);
+  expect(metrics.dock.bottom).toBeLessThanOrEqual(metrics.banner.y + 1);
+  expect(metrics.board.bottom).toBeLessThanOrEqual(metrics.dock.y + 1);
+  for (const button of metrics.buttons) {
+    expect(button.width, button.id).toBeGreaterThanOrEqual(44);
+    expect(button.height, button.id).toBeGreaterThanOrEqual(44);
+    expect(button.x, button.id).toBeGreaterThanOrEqual(0);
+    expect(button.right, button.id).toBeLessThanOrEqual(metrics.viewport.width + 1);
+    expect(button.bottom, button.id).toBeLessThanOrEqual(metrics.banner.y + 1);
+    expect(button.centerHit, button.id).toBe(true);
+  }
+  const path = info.outputPath(name + '.json');
+  await writeFile(path, JSON.stringify({ profile: manifest.id, head: manifest.commit,
+    payloadSha256: manifest.webPayload.sha256, reserveSource: 'test-injected DOM slot; native SDK not executed', metrics }, null, 2));
+  await info.attach(name, { path, contentType: 'application/json' });
+  return metrics;
+}
+
+test('L30 grants its first Shuffle after an already claimed Bonus and commits a real worker proof once with the banner reserve', async ({ page }, info) => {
   test.setTimeout(60_000);
   expect(shuffleIntroWitness.prefix).toBe(0);
   expect(shuffleIntroWitness.seed).toBe(7);
@@ -75,9 +120,11 @@ test('L30 grants its first Shuffle after an already claimed Bonus and commits a 
   await expect(page.locator('#proof-shuffle-label')).toHaveText('Перемешать · 1');
   await expect(page.locator('#proof-shuffle svg')).toBeVisible();
   await expect(page.locator('#proof-shuffle svg')).not.toHaveCSS('color', 'rgba(0, 0, 0, 0)');
+  const reserved = await bannerReserve(page, info, 'banner-layout-before');
   await capture(page, info, 'shuffle-before');
 
-  await page.locator('#proof-shuffle').tap();
+  const button = reserved.buttons.find(button => button.id === 'proof-shuffle')!;
+  await page.touchscreen.tap(button.x + button.width / 2, button.y + button.height / 2);
   await expect(page.locator('#shuffle-warning')).toBeVisible();
   await expect(page.locator('#shuffle-warning')).toContainText('история отмены очистится');
   const consent = await read(page);
@@ -112,10 +159,23 @@ test('L30 grants its first Shuffle after an already claimed Bonus and commits a 
   await expect(page.locator('#proof-shuffle-label')).toHaveText('Использовано');
   await expect(page.locator('#proof-shuffle')).toBeDisabled();
   const restored = await read(page);
+  await bannerReserve(page, info, 'banner-layout-reloaded');
   expect(restored.attempt.board).toEqual(committed.attempt.board);
   expect(restored.attempt.undo).toEqual([]);
   expect(restored.dailyTasks!.inventory.shuffles).toBe(0);
   expect(restored.profile.rewards.filter(key => key === SHUFFLE_INTRO_KEY)).toHaveLength(1);
   expect(restored.dailyBonus).toEqual(granted.dailyBonus);
   await capture(page, info, 'shuffle-reloaded');
+
+  // Real board input and Undo remain usable above the reserved native-ad area.
+  await move(page, deal, { type: 'draw' });
+  await expect(page.locator('#undo')).toBeEnabled();
+  const afterDraw = await read(page);
+  expect(afterDraw.attempt.board.movesLeft).toBe(sourceInitial.movesLeft! - 1);
+  expect(afterDraw.attempt.undo).toHaveLength(1);
+  await page.locator('#undo').tap();
+  await expect.poll(async () => (await read(page)).attempt.board).toEqual(committed.attempt.board);
+  expect((await read(page)).attempt.undo).toEqual([]);
+  expect((await read(page)).dailyTasks!.inventory.shuffles).toBe(0);
+  await capture(page, info, 'banner-board-after-undo');
 });

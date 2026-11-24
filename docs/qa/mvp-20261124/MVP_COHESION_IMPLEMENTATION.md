@@ -12,6 +12,8 @@ Head `0fcba27fc99296fb0e922a7f274474a94d69951e`, [CI run 45408510186](https://gi
 
 Первый полный default browser suite на `d4b412` дал 282 passed / 182 skipped / 2 failed: два viewport выявили обрезанный край `apply-unlock` на 320×480. Новый текст replay увеличил нижний блок. Следующее исправление закрепляет earned unlock action вне прокручиваемых подробностей; исходная hit-проверка сохранена. Во время просмотра настоящих Shuffle PNG также выявлен невидимый glyph: для этой кнопки добавлена собственная SVG-иконка с адресным стилем. Адресный вход из пустого Definition теперь сразу показывает объяснение и кнопку Bonus: общий запас скрыт только для этого входа, Manual wallet продолжает показывать весь inventory. Итоговое состояние более нового head, артефакты и результаты полного CI записываются в **PR203**; эти визуальные правки не получают PASS по более раннему checkpoint.
 
+Последний опубликованный checkpoint `ffa457d3be90a606e1a7f11262e86553ffb0c68a`, [CI 45417496662](https://github.com/DanilaH/asoc-solitair/actions/runs/45417496662): независимый cohesion 490 unit / 1 skip и 50 UI PASS; Android 14 native JUnit, подпись и R8 PASS; C8 preview 68 PASS / 30 skip. Полный default browser прошёл 284 / 194 skip, ранний 320×480 — 2 PASS. Повтор integrated suite внутри web дал 48 PASS / 2 FAIL на ожидании telemetry checkpoint в unknown-native-clock сценарии; итоговый web не объявлен зелёным. Новый follow-up требует собственного полного CI.
+
 ## Что изменено
 
 | Пункт | Реальное поведение | Проверяемая граница |
@@ -39,6 +41,12 @@ Head `0fcba27fc99296fb0e922a7f274474a94d69951e`, [CI run 45408510186](https://gi
 Неизвестный native sample теперь отличается от подтверждённого reboot. Unused earned право сохраняет исходные clock/until, активная бесконечная доска ждёт native sample, а Home/Daily и конечная игра доступны. Фоновый retry ограничен 1–60 секундами. Обычные telemetry/SaveStore commits не переносят уже назначенный retry; failed expiry write имеет отдельный backoff и не создаёт цикл с задержкой 0 мс. Неуспешный ручной запрос времени виден внутри Helpers.
 
 Повторный запрос при 0 Definition имеет текущий адресный UI-контекст даже после Manual wallet; persistent offer dedup не обходится. Старые LiveOps labels перечисляют все сохранённые coins/hints/undos/jokers, включая helper-only rewards.
+
+Финальная сверка U4 добавляет отдельное подтверждение месячной выплаты на Home и в результате: исходный месяц и фактически полученные +10 появляются только после подтверждённого SaveStore commit. Старое ready-право видно и после 80/80, хотя цель нового месяца уже скрыта. После reload выплата и подтверждение не повторяются. Неоднозначная запись ждёт подтверждения именно своего Save при recovery; rollback не создаёт уведомления. Источник текста — grants существующего settlement, без второго кошелька или нового durable receipt.
+
+Два D web падения разобраны по actual trace: native recovery успел вернуть expired finite parked board во время неуспешного ожидания `activeMs`. В pinned Playwright 1.56.1 [воспроизведено перекрытие realtime clock run и fastForward](../mvp-cohesion-2026-11-24/clock-controller-repro.json): старый run может завершиться после скачка и вернуть ticks назад. Это доказательство небезопасной предпосылки harness, а не однозначная атрибуция внутренних clock/saving переменных конкретного trace. В одном timer segment теста часы теперь приостанавливаются, `runFor` сохраняет порядок сроков, затем realtime возобновляется до дальнейших касаний. Все ожидания каждого genuine checkpoint, native retry, исходного права, finite board и Undo сохранены; production F2 scheduler не изменён.
+
+V1 дополнен обычным `c8-release-v1` сценарием с 60px резервом под баннер на phone и compact. Тест сохраняет DOM-геометрию, release head/payload hash и реальные PNG/video, проверяет размеры и доступность центров четырёх кнопок, выполняет Shuffle, reload, ход из колоды и Undo. Резерв задаётся тестом в DOM; это проверка production layout и touch, а не исполнение native banner SDK. Итоговый PASS относится только к новому head в PR203.
 
 ## Владение состоянием
 

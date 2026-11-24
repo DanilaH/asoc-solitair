@@ -493,12 +493,15 @@ test('unknown startup clock blocks an active infinite board while Home and Daily
   await move(page, daily, daily.winningPath[0]);
   const dailyMoved = (await read(page)).attempt;
   expect((await read(page)).parked?.campaign?.unlimited).toEqual(original.unlimited);
+  // Keep the timer segment deterministic: the pinned clock's realtime run and
+  // fastForward can overlap. runFor preserves each timer's own due time.
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
   await page.clock.setSystemTime(new Date(NOW - 120_000));
   // Reach at least the eight-second native retry delay. Daily's accepted move started
   // real five-second telemetry checkpoints, which must not postpone the native retry.
   for (let tick = 0; tick < 4 && await clockReads(page) < 4; tick++) {
     const before = await clockReads(page);
-    await page.clock.fastForward(5000);
+    await page.clock.runFor(5000);
     await expect.poll(() => clockReads(page)).toBeGreaterThan(before);
   }
   expect(await clockReads(page)).toBeGreaterThanOrEqual(4);
@@ -513,7 +516,7 @@ test('unknown startup clock blocks an active infinite board while Home and Daily
   await setNativeClock(page, { fail: false, boot: 7, elapsed: 111_000 });
   for (let tick = 0; tick < 4; tick++) {
     const activeBefore = (await read(page)).attempt.telemetry!.activeMs;
-    await page.clock.fastForward(5000);
+    await page.clock.runFor(5000);
     await expect.poll(async () => (await read(page)).attempt.telemetry?.activeMs).toBeGreaterThan(activeBefore);
   }
   expect(await clockReads(page)).toBeGreaterThan(readsBeforeRecovery);
@@ -527,6 +530,7 @@ test('unknown startup clock blocks an active infinite board while Home and Daily
   expect(recovered.undo[0].movesLeft).toBe(level16.initial.movesLeft);
   expect((await read(page)).attempt.board).toEqual(dailyMoved.board);
   expect((await read(page)).profile.coins).toBe(paidCoins);
+  await page.clock.resume();
   await home(page);
   await page.locator('#home-play').tap();
   await gameReady(page, level16);

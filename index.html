@@ -17,7 +17,7 @@
     <button id="daily-resume-old" class="calendar-link" hidden></button>
     <button id="appearance-open" class="milestone-card"><span class="milestone-gem" aria-hidden="true">✦</span><span class="milestone-details"><strong id="milestone-title">Веха 10</strong><span class="milestone-track"><i id="milestone-fill"></i></span><small id="milestone-copy">Стол «Чернила»</small></span><small id="milestone-progress">0 / 10</small></button>
     <button id="campaign-lives-open" class="secondary" hidden></button><button id="campaign-liveops-open" class="secondary" hidden>События кампании</button><button id="picture-home" class="secondary" hidden>Альбом</button><button id="daily-bonus-open" class="secondary activity-entry" hidden><span>Бонус дня</span><small id="daily-bonus-home-status"></small></button><button id="daily-tasks-open" class="secondary activity-entry" hidden><span>Задания</span><small id="daily-tasks-home-status"></small></button>
-    </div><div class="home-actions"><p id="campaign-monthly-bonus" class="small monthly-bonus" role="status" hidden></p><div class="campaign-context"><strong>Кампания</strong><span id="home-progress"></span></div><button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
+    </div><div class="home-actions"><p id="campaign-monthly-confirmation" class="small monthly-confirmation" data-monthly-confirmation role="status" hidden></p><p id="campaign-monthly-bonus" class="small monthly-bonus" role="status" hidden></p><div class="campaign-context"><strong>Кампания</strong><span id="home-progress"></span></div><button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
     <button id="level-picker-open" class="levels-link">Выбрать уровень</button></div>
   </section>
   <div id="play-screen" hidden>
@@ -49,6 +49,7 @@
 <dialog id="inspect-dialog" aria-labelledby="word-title"><button class="close" data-close aria-label="Закрыть">×</button><span class="eyebrow">КАРТОЧКА</span><h2 id="word-title"></h2><img id="word-image" alt="" hidden><p id="word-description"></p><button id="definition-refill" class="secondary" hidden>Пополнить объяснения</button><p id="definition-related" role="status" hidden></p><button id="definition-use" class="secondary" hidden>Связанное слово</button><button class="primary" data-close>Понятно</button></dialog>
 <dialog id="result" aria-labelledby="result-title" class="sheet"><div class="sheet-heading"><span class="result-star" aria-hidden="true"><img src="art/generated/cycle.webp" alt=""></span><h2 id="result-title">Всё сошлось!</h2></div><div class="sheet-body"><p id="product-offer-result" class="small" hidden></p><p id="result-copy"></p><p id="result-continue-note" role="status" hidden></p><p id="result-continue-error" role="status" hidden></p>
 <div id="result-earnings"><span>Награда</span><strong id="result-total"></strong></div>
+<p id="result-monthly-confirmation" class="small monthly-confirmation" data-monthly-confirmation role="status" hidden></p>
 <section id="result-source-breakdown" hidden aria-label="Выплата AZUR в режиме проверки">
   <dl><div><dt>За уровень</dt><dd id="result-source-base"></dd></div>
     <div><dt>За оставшиеся ходы</dt><dd id="result-source-moves"></dd></div>

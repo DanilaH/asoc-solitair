@@ -2,6 +2,8 @@
 
 **P26–P32.** [All 23 source ID evidence and current consumer delta](../../qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md), [AZUR original retention enums](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-18-retention-loops/evidence.json), [machine source crosswalk](../../qa/content-v8/f-source-event-matrix.json), [existing compact consumer meta](../../content/COMPACT_META.md). This is **full owner-approved roadmap scope**, not the older kit memo's suggested **one mini experiment / permanent exclusion**.
 
+**Метод исследования и переноса · 24.11.2026:** [текущий метод](../RESEARCH_METHOD_2026-11-24.md) и [шаблон передачи](../RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md) применяются к исходным event state, расписаниям, зависимостям, выдаче и восстановлению. Разработчик читает исследованный код и архитектуру и использует их как основу собственного исполнения без clean-room изоляции; точные релевантные фрагменты вывода инструментов хранятся с provenance в private mini-games-kit, отдельно от псевдокода и нашего кода. Статические ветви, изолированное исполнение исходных функций и работа полного клиента подтверждают разные границы. Live-активацию события подтверждает соответствующее наблюдение полного клиента; вывод об удержании требует отдельных измерений.
+
 ## Core requirement: event progression is distinct from gameplay and ordinary rewards
 
 The current game already has **28 rotated dated daily solitaire levels**, first-completion daily rewards, 3-/7-day streak, five-first-win campaign cycle, milestones at 10/20 and two cosmetics. Those are functioning **product adaptations** — they are NOT AZUR DailyTasks, Hitapps PuzzleEvent/Gallery, separate DailyRewards, real WinStreak, WeekendRace, Lives, GoldRush, PlayPass, Unico Fortune/TaskStreak or long LiveOps. Do not duplicate wallet grants or collapse every original event into a generic «+20 coins on login».
@@ -95,7 +97,7 @@ Source coverage: MetaRegion catalog has unlockLevel/regions/starCount and native
 
 **Separate product contracts:**
 - Regions/buildings: region map, star/level/dedicated resource balance and building unlock, milestone and saved quest state.
-- CascadeEvents: genuine event schedule priority, dependencies, conflict/overlay/expiry, saved pending claims; source original call order requires P36 or isolated read-only native proof.
+- CascadeEvents: genuine event schedule priority, dependencies, conflict/overlay/expiry, saved pending claims; recover source call order from authenticated code and distinguish a static path from an executed NATIVE_ISOLATED trace. Actual full-client event activation remains a separate P36 observation.
 - Digging: own stage board/action/token costs and rewards, exact deterministic generation/retention data; original rule unknown must be marked adapted.
 - LuckyWheel: explicit probabilities, no hidden manipulation, reward grant idempotence, honest labels if odds/expected outcomes are product-selected rather than vendor-derived.
 - EndlessTreasure: authored progression, costs and chapter resets, own rewards/claims and independent state, not simply new LuckyWheel skin.

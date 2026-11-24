@@ -1,5 +1,14 @@
 {
   "schema": "consumer-adoption-ledger-v1",
+  "researchMethod": {
+    "decisionDate": "2026-11-24",
+    "decisionRef": "docs/porting/RESEARCH_METHOD_2026-11-24.md",
+    "kitGuidanceRef": "06a01d5c1f7af3cdf8013c9ce0f6a691d086af78",
+    "briefTemplate": "docs/porting/RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md",
+    "sourceEvidenceRepository": "DanilaH/mini-games-kit",
+    "sourceEvidenceVisibility": "private",
+    "implementationBasis": "Own implementation based on inspected original code and recovered architecture; no clean-room isolation required."
+  },
   "releaseScope": {
     "decisionDate": "2026-11-24",
     "decisionRef": "docs/porting/OWNER_AD_RELEASE_2026-11-24.md",
@@ -936,4 +945,3 @@
   "auditRevision": "2026-11-20-azur-preset-schema-native-114-v14",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }
-

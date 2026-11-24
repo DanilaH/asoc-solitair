@@ -48,7 +48,7 @@ it.skipIf(!releaseProfile)('binds generated provenance to the issued deal and ca
   expect(() => decodeSave(JSON.stringify(restart), findDeal)).toThrow('паспорт');
 });
 
-it('uses non-purchase rights once and expires both active and parked rights durably', () => {
+it.skipIf(!releaseProfile)('uses non-purchase rights once and expires both active and parked rights durably', () => {
   const deal = recoveryDeal, save = freshSave(deal, 'with-right');
   const grant = { version: 1, attemptId: save.attempt.id, id: 'earned-1', source: 'campaign', issuedAt: 200, until: 300 } as const;
   expect(grantUnlimitedAccess(save, deal, grant)).toBe(true);

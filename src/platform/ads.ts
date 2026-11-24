@@ -41,7 +41,7 @@ export function createAds(options: {
   let retryDelay = 1000;
   let status = disabledStatus;
   let listener: PluginListenerHandle | undefined;
-  let recoveryFlight: Promise<void> | undefined, shownFlight: Promise<void> | undefined, prepareFlight: Promise<void> | undefined, statusFlight: Promise<void> | undefined;
+  let recoveryFlight: Promise<void> | undefined, shownFlight: Promise<boolean> | undefined, prepareFlight: Promise<void> | undefined, statusFlight: Promise<void> | undefined;
   let retry: ReturnType<typeof setTimeout> | undefined;
   const queue = new DurableReceiptQueue<EarnedReceipt>({ commit: async r => {
     if (!alive) throw Error('Disposed receipt receiver');
@@ -69,20 +69,25 @@ export function createAds(options: {
         // cannot earn a reward. Older bridges omit activeLife, so keep their request.
         if (alive && life && result.activeLife === null && !receipts.some(receipt =>
             receipt.placement === 'life-refill' && receipt.attempt === life.id && receipt.dealId === life.dealId)) {
-          await options.retireLife?.(life);
+          // Shown cadence may still need this nonce after a process restart.
+          // Read again after any earlier lookup, which may have predated the show.
+          await shownFlight;
+          if (await recoverShown() && alive) await options.retireLife?.(life);
         }
       } catch { /* Retry in the background, retaining the exact native receipt. */ }
       finally { recoveryFlight = undefined; }
     })();
     return recoveryFlight;
   }
-  function recoverShown(): Promise<void> {
-    if (!alive || !native) return Promise.resolve();
+  function recoverShown(): Promise<boolean> {
+    if (!alive || !native) return Promise.resolve(false);
     if (shownFlight) return shownFlight;
     shownFlight = (async () => {
       const { shown } = await native.pendingShown();
-      if (alive && shown !== null) await shownQueue.deliver(parseFullscreenShown(shown));
-    })().catch(() => undefined).finally(() => { shownFlight = undefined; });
+      if (!alive) return false;
+      if (shown !== null) await shownQueue.deliver(parseFullscreenShown(shown));
+      return true;
+    })().catch(() => false).finally(() => { shownFlight = undefined; });
     return shownFlight;
   }
   async function recover(): Promise<void> {

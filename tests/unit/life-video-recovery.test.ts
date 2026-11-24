@@ -3,7 +3,7 @@ import { GameplayActivityCoordinator, type StorageAdapter } from '@danilah/mini-
 import { content8Wave } from '../../src/content/campaign-v8-dealer';
 import { authorizeLifeVideo, cancelLifeVideo, mayStartCampaignAttempt, refreshCampaignLives } from '../../src/domain/campaign-lives';
 import { dispatch, freshSave } from '../../src/domain/engine';
-import { applyReceipt, type EarnedReceipt } from '../../src/domain/services';
+import { applyFullscreenShown, applyReceipt, type EarnedReceipt, type FullscreenShown } from '../../src/domain/services';
 import { createAds, type AdsBridge } from '../../src/platform/ads';
 import { SaveStore } from '../../src/platform/storage';
 
@@ -89,7 +89,7 @@ describe('life rewarded recovery', () => {
     } finally { ads.destroy(); }
   });
 
-  it('recovers a request persisted immediately before process termination, so later life videos remain usable', async () => {
+  it.each(['never-shown', 'shown-without-earn'] as const)('reconciles a %s life request, preserving a pending cadence receipt', async phase => {
     const mem = memory();
     const first = new SaveStore(mem.adapter, deal, reachableTwoLives);
     await first.open();
@@ -99,6 +99,11 @@ describe('life rewarded recovery', () => {
     await reopened.open();
     let activeLife: { id: string; dealId: string } | null = { id: 'before-process-kill', dealId: deal.id };
     let failRead = true;
+    let failShown = phase === 'shown-without-earn';
+    let shown: FullscreenShown | null = phase === 'shown-without-earn' ? {
+      schema: 1, id: 'shown-life', attempt: 'before-process-kill', dealId: deal.id,
+      kind: 'rewarded', mode: 'campaign', placement: 'life-refill', shownAt: now,
+    } : null;
     const api: AdsBridge = {
       status: async () => ({ rewarded: true, interstitial: false, banner: false, mode: 'test' }),
       prepareInterstitial: async () => undefined,
@@ -107,7 +112,12 @@ describe('life rewarded recovery', () => {
         if (failRead) throw Error('Temporary journal read failure');
         return { receipts: [], activeLife };
       },
-      acknowledge: async () => undefined, pendingShown: async () => ({ shown: null }), acknowledgeShown: async () => undefined,
+      acknowledge: async () => undefined,
+      pendingShown: async () => {
+        if (failShown) throw Error('Temporarily cannot read the shown receipt');
+        return { shown };
+      },
+      acknowledgeShown: async () => { shown = null; },
       cancelPending: async () => undefined, measureBanner: async () => null, placeBanner: async () => undefined,
       hideBanner: async () => undefined, dispose: async () => undefined, addListener: async () => ({ remove: async () => undefined }),
     };
@@ -115,7 +125,7 @@ describe('life rewarded recovery', () => {
       activity: new GameplayActivityCoordinator(() => undefined, () => undefined),
       beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
       commit: value => reopened.mutate(next => applyReceipt(next, value, { offerNow: now })),
-      commitShown: async () => 'already-applied',
+      commitShown: value => reopened.mutate(next => applyFullscreenShown(next, value, 16)),
       pendingLife: () => reopened.state.campaignLives?.pending,
       async retireLife(request) { await reopened.mutate(next => cancelLifeVideo(next, request.id)); },
     }, api);
@@ -127,6 +137,13 @@ describe('life rewarded recovery', () => {
       expect(reopened.state.campaignLives?.pending?.id).toBe('before-process-kill');
       activeLife = null;
       await ads.recover();
+      if (phase === 'shown-without-earn') {
+        expect(reopened.state.campaignLives?.pending?.id).toBe('before-process-kill');
+        failShown = false;
+        await ads.recover();
+        expect(reopened.state.platform?.lastFullscreenAt).toBe(now);
+        expect(shown).toBeNull();
+      }
       expect(reopened.state.campaignLives?.pending).toBeUndefined();
       expect(reopened.state.campaignLives?.remaining).toBe(2);
       expect(await reopened.mutate(next => authorizeLifeVideo(next, now + 1, 'next-life-video', true))).toBe(true);

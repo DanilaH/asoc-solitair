@@ -82,3 +82,20 @@ export function recordPuzzleAssembly(parts: readonly Part[], observation: {
     physicalPartCount: 2, semanticOutcomeCount: 1, placement: 'UNKNOWN', moveCost: 'UNKNOWN',
   } as const;
 }
+
+/** K2 native predicate for resolved event inputs. No mapping to app gesture types. */
+export function sourceFrozenPositive(input: {
+  firstJoker: Evidence; firstStarter: Evidence; boosterSpendsMove: Evidence;
+  discriminator?: number; precedingIndex?: number; precedingJoker: Evidence; placeOnJokerPositive: Evidence;
+}): Evidence {
+  if (input.firstJoker === true) return false;
+  if (input.firstJoker === 'UNKNOWN' || input.firstStarter === 'UNKNOWN') return 'UNKNOWN';
+  if (input.firstStarter) return input.boosterSpendsMove;
+  if (input.discriminator === undefined) return 'UNKNOWN';
+  if (input.discriminator === 3) return true;
+  if (input.discriminator !== 2) return input.placeOnJokerPositive;
+  if (input.precedingIndex === 0) return true;
+  if (!Number.isSafeInteger(input.precedingIndex) || input.precedingIndex! < 1) return 'UNKNOWN';
+  if (input.precedingJoker === false || input.placeOnJokerPositive === true) return true;
+  return input.precedingJoker === true ? input.placeOnJokerPositive : 'UNKNOWN';
+}

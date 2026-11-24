@@ -1,5 +1,5 @@
 import { solve } from '../domain/solver';
-import { shuffledStock, type ShuffleRequest } from '../domain/proof-shuffle';
+import { prepareShuffleBoard, type ShuffleRequest } from '../domain/proof-shuffle';
 import type { Board, BoardCommand, Deal } from '../domain/types';
 import { advance, options } from '../../tools/qa/gameplay-oracle';
 
@@ -20,8 +20,9 @@ function foundationFirst(start: Board, deal: Deal): BoardCommand[] | null {
 
 export function proveShuffle(request: ShuffleRequest): BoardCommand[] | null {
   const { board, deal, seed } = request;
-  if (deal.shufflePreview !== 1 || board.phase !== 'playing' || board.stock.length < 2) return null;
-  const candidate = { ...board, stock: shuffledStock(board.stock, seed) };
+  if (board.phase !== 'playing' || (deal.shufflePreview === 1 && board.stock.length < 2)) return null;
+  const candidate = prepareShuffleBoard(board, deal, seed);
+  if (!candidate) return null;
   const quick = foundationFirst(candidate, deal);
   if (quick) return quick;
   const result = solve(candidate, deal, 12_000, performance.now() + 1800);

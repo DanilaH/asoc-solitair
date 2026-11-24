@@ -8,7 +8,7 @@ import { createStorefront } from './platform/storefront';
 import { claimShopProgress, PASS_GOAL, PIGGY_LIMIT, productLabels, recordStoreClear, showProductGoods, storefrontView, STOREFRONT_PREVIEW } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
 import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee, recordAdRevenue } from './domain/campaign-advertising';
-import { beginUnlimited, expireUnlimited, quotePurchasedUnlimited, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, usePurchasedUnlimited } from './domain/campaign-recovery';
+import { beginUnlimited, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
 import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
 import { GENERATION_PREVIEW, recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
@@ -16,7 +16,7 @@ import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
-import { campaignDeals, campaignRedeal, findDeal, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
+import { campaignIssuance, campaignDeals, campaignRedeal, findDeal, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
 import { CAMPAIGN_LENGTH, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { canSwitchCardLanguage, localizedCampaignDeal, LOCALE_PREVIEW } from './content/campaign-v8-locale';
@@ -58,7 +58,8 @@ import './style.css';
 import './art.css';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
-const AZUR_FEEL_QA = import.meta.env.VITE_AZUR_FEEL_QA === '1';
+const azurInteractionFeedback = releaseProfile?.capabilities.drawInvalidCoinFeedback === 'active' ||
+  import.meta.env.VITE_AZUR_FEEL_QA === '1';
 const victoryPolicy = AZUR_VICTORY_QA ? AZUR_VICTORY_DEFAULTS : undefined;
 const rewardOffersEnabled = REWARD_OFFER_PREVIEW && !AZUR_VICTORY_QA;
 let deal = campaignDeals[0];
@@ -244,7 +245,7 @@ try {
   let presentingCommand = false;
   wallet = new WalletPresentation(save.profile.coins, $('#coin-layer'), $('#coins'), $('#helper-wallet-amount'), $('#wallet-open'), animated => {
     runtime.play('coins', 'ui');
-    if (AZUR_FEEL_QA && animated) runtime.pulse('coin-land');
+    if (azurInteractionFeedback && animated) runtime.pulse('coin-land');
   }, reducedMotion);
   function syncMotionPreference() {
     const reduced = reducedMotion(), root = document.documentElement;
@@ -340,13 +341,19 @@ try {
   store.onChange = value => { save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); scheduleRecoveryClock(); };
   function scheduleRecoveryClock() {
     clearTimeout(recoveryClock);
-    const times = [save.attempt, save.parked?.campaign].flatMap(attempt =>
-      attempt?.unlimited?.until !== undefined && !attempt.unlimited.expired ? [attempt.unlimited.until] : []);
+    const times = [save.attempt, save.parked?.campaign].flatMap(attempt => {
+      const timed = attempt?.unlimited, access = attempt?.unlimitedAccess;
+      return [
+        ...(timed?.until !== undefined && !timed.expired ? [timed.until] : []),
+        ...(access && !access.expired && !access.consumed ? [access.until] : []),
+      ];
+    });
     if (!times.length) return;
     recoveryClock = setTimeout(() => {
       if (!alive) return;
       void write(next => expireUnlimited(next, Date.now())).then(changed => {
         if (changed && alive) { scene?.sync(); if (screen === 'game' && save.attempt.board.phase === 'exhausted') outcome(); }
+        else if (alive) scheduleRecoveryClock();
       }).catch(() => message('Не удалось восстановить лимит ходов.', true));
     }, Math.min(2_147_483_647, Math.max(0, Math.min(...times) - Date.now())));
   }
@@ -509,9 +516,10 @@ try {
     restore.textContent = price ? `Восстановить колоду · ${price} монет` : 'Восстановить колоду · бесплатно';
     const unlimited = $('#unlimited-preview');
     const purchase = recoveryEnabled() && quotePurchasedUnlimited(save, deal, unlimitedAccount(), Date.now());
+    const earned = quoteUnlimitedAccess(save, deal, Date.now());
     const trial = RECOVERY_PREVIEW && deal.recovery && save.attempt.board.phase === 'playing' && !save.attempt.unlimited;
-    unlimited.hidden = !(purchase || trial);
-    unlimited.textContent = purchase ? 'Применить купленные ходы без лимита' : 'Ходы без лимита · 2 мин';
+    unlimited.hidden = !(purchase || earned || trial);
+    unlimited.textContent = earned ? 'Активировать ходы без лимита' : purchase ? 'Применить купленные ходы без лимита' : 'Ходы без лимита · 2 мин';
     $('#random-joker-open').hidden = !canRequestRandomJoker();
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
@@ -519,7 +527,7 @@ try {
     const board = save.attempt.board;
     const shuffle = $<HTMLButtonElement>('#proof-shuffle');
     const shuffling = runtime.activity.getBlockReasons().includes('shuffle');
-    shuffle.hidden = !deal.shufflePreview;
+    shuffle.hidden = !deal.shufflePreview && !deal.shufflePolicy;
     shuffle.disabled = !canShuffle(save, deal) || saving || shuffling;
     shuffle.setAttribute('aria-busy', String(shuffling));
     $('#proof-shuffle-label').textContent = shuffling ? 'Ищу…' : save.attempt.shuffleUsed ? 'Использовано' : 'Перемешать';
@@ -625,7 +633,7 @@ try {
       $(`#video-${helper}`).hidden = !ads.status.rewarded;
     }
     const credits = save.platform?.continueCredits ?? 0;
-    const exhausted = board.phase === 'exhausted' && !save.attempt.continued;
+    const exhausted = board.phase === 'exhausted' && !save.attempt.continued && !save.attempt.lostLife;
     const requiresProof = requiresContinueProof(save.attempt);
     continueCheck.update(save.attempt, deal, ready && screen === 'game' && exhausted && requiresProof);
     const proofStatus = continueCheck.status;
@@ -656,7 +664,7 @@ try {
         ? 'Видео сейчас недоступно.' : showCoinOffer && !canBuyContinue
           ? 'На +10 ходов не хватает монет.' : 'Из этой позиции можно выиграть за 10 ходов или меньше.'
       : '';
-    const undoRecovery = board.phase === 'exhausted' && save.attempt.undo.length > 0 && (save.profile.undos > 0 || save.profile.coins >= BALANCE.helperPrices.undo || ads.status.rewarded);
+    const undoRecovery = board.phase === 'exhausted' && !save.attempt.lostLife && save.attempt.undo.length > 0 && (save.profile.undos > 0 || save.profile.coins >= BALANCE.helperPrices.undo || ads.status.rewarded);
     const resultRetry = $<HTMLButtonElement>('#result-save-retry');
     resultRetry.hidden = !store.needsRecovery;
     resultRetry.disabled = saving || serviceBusy;
@@ -743,7 +751,7 @@ try {
     $('#unlock-preview').dataset.palette = unlockChoice === 'palette' ? 'ink' : save.settings.palette ?? 'green';
     $('#unlock-preview').dataset.back = unlockChoice === 'cardBack' ? 'diamonds' : save.settings.cardBack ?? 'classic';
     renderHud();
-    $('#result-undo').hidden = won || !save.attempt.undo.length;
+    $('#result-undo').hidden = won || Boolean(save.attempt.lostLife) || !save.attempt.undo.length;
     $('#result-undo').textContent = save.profile.undos ? 'Отменить последний ход' : 'Получить отмену';
     finishRewardClaim();
     nextLevelButton.hidden = !won;
@@ -857,7 +865,7 @@ try {
       const boardCommand = ['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined;
       const major = result.events.find(e => e.type === 'win') ?? result.events.find(e => e.type === 'unlock') ?? result.events.find(e => e.type === 'complete') ?? result.events.find(e => e.type === 'key') ?? result.events.find(e => e.type === 'coins') ?? result.events[0];
       const coreCoins = result.events.filter(e => e.type === 'coins').reduce((n,e) => n + (e.amount ?? 0), 0);
-      const freshWin = AZUR_FEEL_QA && !reducedMotion() && before.phase === 'playing' &&
+      const freshWin = azurInteractionFeedback && !reducedMotion() && before.phase === 'playing' &&
         save.attempt.board.phase === 'won' && !save.attempt.daily && deal.campaignLevel !== undefined;
       if (freshWin) freshFeelWin = save.attempt.id;
       const movesBonus = freshWin
@@ -872,7 +880,7 @@ try {
         else if (major) {
           runtime.play(major.type === 'coins' ? 'transfer' : major.type);
           if (major.type === 'key' || major.type === 'unlock' || major.type === 'joker') runtime.pulse(major.type === 'key' ? 'coins' : major.type === 'unlock' ? 'complete' : 'hint');
-          if (AZUR_FEEL_QA && major.type === 'draw') runtime.pulse('draw');
+          if (azurInteractionFeedback && major.type === 'draw') runtime.pulse('draw');
           if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type === 'coins' ? 'transfer' : major.type as 'transfer' | 'complete' | 'win' | 'undo' | 'hint');
         }
         if (coreCoins) coinBurst($('#streak-reward'), coreCoins);
@@ -904,7 +912,7 @@ try {
       scene?.cancel(); scene?.reject(['transfer', 'draw', 'recycle'].includes(cmd.type) ? cmd as BoardCommand : undefined);
       const broken = progressBefore > 0 && save.attempt.streak.progress === 0;
       runtime.play(broken ? 'streak-break' : 'invalid');
-      runtime.pulse(AZUR_FEEL_QA && cmd.type === 'transfer' ? 'invalid-heavy' : broken ? 'streak-break' : 'invalid');
+      runtime.pulse(azurInteractionFeedback && cmd.type === 'transfer' ? 'invalid-heavy' : broken ? 'streak-break' : 'invalid');
       if (broken) {
         for (const cell of [...$('#streak').children].slice(0, progressBefore)) {
           cell.getAnimations().forEach(animation => animation.cancel());
@@ -1295,6 +1303,8 @@ try {
           if (next.attempt.daily) switchMode(next, 'campaign', previousDeal ?? selected, crypto.randomUUID());
           const equalityBase = GENERATION_PREVIEW && selected.adaptive?.baseId === target.id ? target : selected;
           beginDeal(next, selected, crypto.randomUUID(), previousDeal, redeal ? undefined : equalityPreviewPolicy, equalityBase);
+          const issuance = campaignIssuance(next, target, findDeal(next.attempt.dealId) ?? selected);
+          if (issuance) next.attempt.issuance = issuance;
           return true;
         });
         if (started) {
@@ -1665,7 +1675,17 @@ try {
     hintWorker.postMessage(request); renderHud();
   }, domOptions);
   $('#helpers-open').addEventListener('click', () => { runtime.pulse('button'); openHelpers(undefined, true); }, domOptions);
-  $('#proof-shuffle').addEventListener('click', async () => {
+  $('#proof-shuffle').addEventListener('click', () => {
+    if (!canShuffle(save, deal) || saving || serviceBusy) return;
+    if (deal.shufflePolicy) openDialog('#shuffle-warning');
+    else void requestShuffle();
+  }, domOptions);
+  $('#shuffle-confirm').addEventListener('click', () => {
+    if (!deal.shufflePolicy || !$<HTMLDialogElement>('#shuffle-warning').open) return;
+    closeDialogs();
+    void requestShuffle();
+  }, domOptions);
+  async function requestShuffle() {
     if (!ready || saving || serviceBusy || screen !== 'game' || runtime.activity.isBlocked() || !canShuffle(save, deal)) return;
     const request: ShuffleRequest = {
       attemptId: save.attempt.id, dealId: deal.id, revision: save.revision, board: save.attempt.board, deal,
@@ -1702,7 +1722,7 @@ try {
       cancelShuffle?.(); runtime.activity.setBlocked('shuffle', false);
       if (alive) renderHud();
     }
-  }, domOptions);
+  }
   const bonusDialog = $<HTMLDialogElement>('#bonus-offer');
   let bonusPressedButton: HTMLButtonElement | null = null;
   const bonusControl = (event: Event) => (event.target as Element).closest<HTMLButtonElement>('button');
@@ -1986,11 +2006,13 @@ try {
     if (!recoveryEnabled() || !deal.recovery || saving || serviceBusy) return;
     const source = deal, now = Date.now(), accountId = unlimitedAccount();
     const purchase = quotePurchasedUnlimited(save, source, accountId, now);
-    if (!purchase && !RECOVERY_PREVIEW) return;
+    const earned = quoteUnlimitedAccess(save, source, now);
+    if (!purchase && !earned && !RECOVERY_PREVIEW) return;
     const id = crypto.randomUUID(), attemptId = save.attempt.id;
     try {
       const applied = await write(next => {
         const at = Date.now();
+        if (earned) return useUnlimitedAccess(next, source, earned.id, at);
         return purchase
           ? usePurchasedUnlimited(next, source, { ...purchase, id }, accountId, at)
           : beginUnlimited(next, source, { id, attemptId, until: at + 120_000 }, at);

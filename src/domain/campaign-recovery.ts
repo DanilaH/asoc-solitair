@@ -44,6 +44,42 @@ export function beginUnlimited(save: Save, deal: Deal, grant: Omit<UnlimitedGran
   return applyUnlimited(save, deal, { id: grant.id, attemptId: grant.attemptId, until: grant.until }, now);
 }
 
+type UnlimitedAccess = NonNullable<Attempt['unlimitedAccess']>;
+
+export function validUnlimitedAccess(access: UnlimitedAccess, attempt: Attempt, deal: Deal) {
+  return Boolean(access && deal.recovery && !deal.daily && access.version === 1 &&
+    typeof access.id === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(access.id) && access.attemptId === attempt.id &&
+    ['rewarded', 'campaign', 'coins'].includes(access.source) &&
+    Number.isSafeInteger(access.issuedAt) && access.issuedAt >= 0 &&
+    Number.isSafeInteger(access.until) && access.until > access.issuedAt &&
+    (access.consumed === undefined || access.consumed === true) &&
+    (access.expired === undefined || (access.expired === true && !access.consumed)));
+}
+
+export function grantUnlimitedAccess(save: Save, deal: Deal, grant: UnlimitedAccess) {
+  const { attempt } = save;
+  if (attempt.unlimitedAccess || grant.consumed || grant.expired || !unlimitedEligible(attempt, deal) ||
+      !validUnlimitedAccess(grant, attempt, deal)) return false;
+  attempt.unlimitedAccess = { ...grant };
+  save.revision++;
+  return true;
+}
+
+export function quoteUnlimitedAccess(save: Save, deal: Deal, now: number) {
+  const { attempt } = save;
+  const access = attempt.unlimitedAccess;
+  if (!access || access.consumed || access.expired || attempt.unlimited || !unlimitedEligible(attempt, deal) ||
+      !Number.isSafeInteger(now) || now < access.issuedAt || now >= access.until) return;
+  return access;
+}
+
+export function useUnlimitedAccess(save: Save, deal: Deal, grantId: string, now: number) {
+  const quote = quoteUnlimitedAccess(save, deal, now);
+  if (quote?.id !== grantId || !beginUnlimited(save, deal, quote, now)) return false;
+  quote.consumed = true;
+  return true;
+}
+
 function applyUnlimited(save: Save, deal: Deal, grant: UnlimitedGrant, now: number) {
   const attempt = save.attempt, board = attempt.board;
   const current = attempt.unlimited;
@@ -87,10 +123,16 @@ function restoreFiniteBudget(board: Board): Board {
 }
 
 export function expireUnlimited(save: Save, now: number) {
+  if (!Number.isSafeInteger(now)) return false;
   let changed = false;
   for (const attempt of [save.attempt, save.parked?.campaign]) {
+    const access = attempt?.unlimitedAccess;
+    if (access && !access.consumed && !access.expired && now >= access.until) {
+      access.expired = true;
+      changed = true;
+    }
     const deadline = attempt?.unlimited?.until;
-    if (!attempt?.unlimited || attempt.unlimited.expired || deadline === undefined || !Number.isSafeInteger(now)) continue;
+    if (!attempt?.unlimited || attempt.unlimited.expired || deadline === undefined) continue;
     const purchaseRef = attempt.unlimited.purchaseRef;
     const order = purchaseRef ? save.commerce?.orders.find(item => item.grant?.id === purchaseRef) : undefined;
     const revoked = Boolean(purchaseRef && (!order || order.status !== 'paid' || !order.acknowledged ||

@@ -32,6 +32,19 @@
     ],
     "evidence": "Two implementations replay all composed L16 passports. SDK/device rollout and source gaps remain open."
   },
+  "integratedCoreCandidate": {
+    "packet": "B1",
+    "implementationRef": "docs/porting/B1_CORE_DELIVERY.md",
+    "candidateCapabilities": [
+      "hitapps-frozen",
+      "hitapps-bound",
+      "hitapps-puzzle-top-bottom-cards",
+      "hitapps-golden-cards",
+      "hitapps-magnet-hammer",
+      "azur-unlimited-moves-offer"
+    ],
+    "evidence": "Full product deals and adaptive passports use dual replay. Native original and device acceptance remain open."
+  },
   "researchMethod": {
     "decisionDate": "2026-11-24",
     "decisionRef": "docs/porting/RESEARCH_METHOD_2026-11-24.md",

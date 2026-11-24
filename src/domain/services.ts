@@ -112,7 +112,7 @@ export function buyContinue(save: Save, proof: ContinueProof): boolean {
 
 function canResume(save: Save, proof?: ContinueProof): boolean {
   const attempt = save.attempt;
-  return !attempt.continued && attempt.board.phase === 'exhausted' && attempt.board.movesLeft === 0 &&
+  return !attempt.continued && !attempt.lostLife && attempt.board.phase === 'exhausted' && attempt.board.movesLeft === 0 &&
     (!requiresContinueProof(attempt) || Boolean(proof && verifiesContinue(attempt, proof)));
 }
 

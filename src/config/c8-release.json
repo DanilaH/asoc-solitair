@@ -11,7 +11,8 @@
     "specials": "c8-core-special-r1",
     "interactionFeedback": "azur-feel-r1",
     "lives": 1,
-    "economy": "existing-balance-v3",
+    "economy": "c8-non-iap-rights-r1",
+    "extraHelpers": { "randomJokerCoins": 250, "unlimitedCoins": 120, "unlimitedMs": 60000 },
     "advertising": "single-placement-pause-r1"
   },
   "capabilities": {
@@ -25,7 +26,7 @@
     "randomJoker": "active",
     "stockRestore": "active",
     "earnedUnlimited": "active",
-    "newUnlimited": "candidate-right-awaits-acquisition",
+    "newUnlimited": "candidate-coins",
     "lives": "active",
     "proofShuffle": "qa",
     "drawInvalidCoinFeedback": "active",

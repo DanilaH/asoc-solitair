@@ -44,6 +44,12 @@ const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding:
 const manifest = {
   version: 1, commit, gameVersion: pkg.version, androidVersionCode: Number(versionCode),
   ...profile, runtimePin, sdkMode, apkVariant,
+  sdkCapabilities: {
+    campaignPause: sdkMode === 'test' || (sdkMode === 'live' && process.env.ASOC_OWNER_ADS_READY === '1'),
+    lifeRefill: sdkMode === 'test' || (sdkMode === 'live' && process.env.ASOC_OWNER_LIVES_ADS_READY === '1'),
+    rewardedOffers: sdkMode === 'test' || (sdkMode === 'live' && process.env.ASOC_REWARD_OFFERS_ADS_READY === '1'),
+    impressionRevenue: sdkMode === 'live' && process.env.ASOC_OWNER_ADS_READY === '1',
+  },
   packageId: apkVariant === 'debug' ? appId + suffix : appId,
   webPayload: {
     algorithm: 'sha256 of sorted path, NUL, file sha256, newline',

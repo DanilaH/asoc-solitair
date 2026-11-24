@@ -10,8 +10,8 @@ import { createStorefront } from './platform/storefront';
 import { claimShopProgress, PASS_GOAL, PIGGY_LIMIT, productLabels, recordStoreClear, showProductGoods, storefrontView, STOREFRONT_PREVIEW } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
 import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee, parseAdRevenue, recordAdRevenue } from './domain/campaign-advertising';
-import { beginUnlimited, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
-import { allowsRandomJoker, placeRandomJoker, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
+import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, restoreCampaignStock, restoreQuote, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
+import { allowsRandomJoker, buyRandomJokerAccess, placeRandomJoker, randomJokerReady, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
 import { GENERATION_PREVIEW, recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
 import Phaser from 'phaser';
@@ -543,9 +543,16 @@ try {
     const purchase = recoveryEnabled() && quotePurchasedUnlimited(save, deal, unlimitedAccount(), Date.now());
     const earned = quoteUnlimitedAccess(save, deal, Date.now());
     const trial = RECOVERY_PREVIEW && deal.recovery && save.attempt.board.phase === 'playing' && !save.attempt.unlimited;
-    unlimited.hidden = !(purchase || earned || trial);
-    unlimited.textContent = earned ? 'Активировать ходы без лимита' : purchase ? 'Применить купленные ходы без лимита' : 'Ходы без лимита · 2 мин';
-    $('#random-joker-open').hidden = !canRequestRandomJoker();
+    const buyUnlimited = canBuyUnlimitedAccess(save, deal);
+    unlimited.hidden = !(purchase || earned || trial || buyUnlimited);
+    unlimited.textContent = earned ? 'Активировать ходы без лимита' : purchase ? 'Применить купленные ходы без лимита' :
+      buyUnlimited ? `Без лимита · ${deal.extraHelpers!.unlimitedMs / 1000} с · ${deal.extraHelpers!.unlimitedCoins} монет` : 'Ходы без лимита · 2 мин';
+    const joker = $<HTMLButtonElement>('#random-joker-open');
+    const jokerPrice = deal.extraHelpers?.randomJokerCoins;
+    const canBuy = jokerPrice !== undefined && !save.attempt.randomJokerAccess && allowsRandomJoker(save.attempt, deal);
+    joker.hidden = !(canRequestRandomJoker() || canBuy);
+    joker.disabled = saving || (canBuy && save.profile.coins < jokerPrice);
+    joker.textContent = canBuy ? `Заряд случайного Джокера · ${jokerPrice} монет` : 'Случайный Джокер · 1';
     $('#app').dataset.screen = screen;
     $('#game-surface').hidden = screen !== 'game';
     syncMotionPreference();
@@ -2130,22 +2137,25 @@ try {
     const source = deal, now = Date.now(), accountId = unlimitedAccount();
     const purchase = quotePurchasedUnlimited(save, source, accountId, now);
     const earned = quoteUnlimitedAccess(save, source, now);
-    if (!purchase && !earned && !RECOVERY_PREVIEW) return;
+    const buy = canBuyUnlimitedAccess(save, source);
+    if (!purchase && !earned && !buy && !RECOVERY_PREVIEW) return;
     const id = crypto.randomUUID(), attemptId = save.attempt.id;
     try {
       const applied = await write(next => {
         const at = Date.now();
+        if (next.attempt.id !== attemptId) return false;
         if (earned) return useUnlimitedAccess(next, source, earned.id, at);
         return purchase
           ? usePurchasedUnlimited(next, source, { ...purchase, id }, accountId, at)
-          : beginUnlimited(next, source, { id, attemptId, until: at + 120_000 }, at);
+          : buy ? buyUnlimitedAccess(next, source, id, at)
+            : beginUnlimited(next, source, { id, attemptId, until: at + 120_000 }, at);
       });
       if (applied) { closeDialogs(); scene?.sync(); }
     } catch { message('Не удалось сохранить ходы без лимита.', true); }
   }, domOptions);
   function canRequestRandomJoker() {
     return (RANDOM_JOKER_PREVIEW || deal.randomJokerPreview === 1) &&
-      save.profile.jokers >= (deal.randomJokerCost ?? 0) && allowsRandomJoker(save.attempt, deal);
+      randomJokerReady(save, deal);
   }
   function recoveryEnabled() {
     return RECOVERY_GAMEPLAY || Boolean(deal.recovery);
@@ -2154,8 +2164,17 @@ try {
     if (STOREFRONT_PREVIEW) return storefront.accountId;
     return (releaseProfile?.capabilities.earnedUnlimited === 'active' || deal.recovery) ? save.commerceAccount ?? '' : '';
   }
-  $('#random-joker-open').addEventListener('click', () => {
-    if (saving || serviceBusy || !canRequestRandomJoker()) return;
+  $('#random-joker-open').addEventListener('click', async () => {
+    if (saving || serviceBusy) return;
+    if (!canRequestRandomJoker()) {
+      const source = deal, attempt = save.attempt.id;
+      if (source.extraHelpers?.randomJokerCoins === undefined) return;
+      try {
+        if (await write(next => next.attempt.id === attempt && buyRandomJokerAccess(next, source, crypto.randomUUID(), Date.now())))
+          message('Заряд сохранён. Его можно применить в этой партии.');
+      } catch { message('Не удалось сохранить заряд.', true); }
+      return;
+    }
     $('#random-joker-confirm').textContent = deal.randomJokerCost ? 'Потратить 1 Джокера' : 'Разместить';
     openDialog('#random-joker-warning');
   }, domOptions);

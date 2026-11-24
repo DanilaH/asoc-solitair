@@ -21,6 +21,7 @@ test('L15 to adaptive L16 through the normal campaign UI, then reopen and retain
   for (const command of level.winningPath) save = dispatch(save, command, level).next;
   save.platform!.completedCampaign = Array.from({ length: 15 }, (_, index) => campaignId(index + 1));
   save.difficultyPenalty = 10;
+  save.profile.coins = 500;
   await page.addInitScript(value => {
     if (!localStorage.getItem('asoc-solitaire.save.v1')) localStorage.setItem('asoc-solitaire.save.v1', value);
   }, JSON.stringify(save));
@@ -33,16 +34,21 @@ test('L15 to adaptive L16 through the normal campaign UI, then reopen and retain
   await page.locator('#next-level').tap();
   const difficulty = page.locator('#difficulty-play');
   if (await difficulty.isVisible()) await difficulty.tap();
-  await expect.poll(async () => (await read(page)).attempt.dealId).toMatch(/-c8-core-r1$/);
+  await expect.poll(async () => (await read(page)).attempt.dealId).toMatch(/-c8-core-r1-rights-r1$/);
   const issued = (await read(page)).attempt;
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', issued.dealId);
   await page.locator('#wallet-open').tap();
   await expect(page.locator('#random-joker-open')).toBeVisible();
+  const before = await read(page);
+  await expect(page.locator('#random-joker-open')).toContainText('250 монет');
   await page.locator('#random-joker-open').tap();
-  await expect(page.locator('#random-joker-confirm')).toHaveText('Потратить 1 Джокера');
+  await expect.poll(async () => (await read(page)).profile.coins).toBe(before.profile.coins - 250);
+  expect((await read(page)).profile.jokers).toBe(before.profile.jokers);
+  await page.locator('#random-joker-open').tap();
+  await expect(page.locator('#random-joker-confirm')).toHaveText('Разместить');
   await page.locator('#random-joker-warning [data-close]').tap();
   if (await page.locator('#helpers').isVisible()) await page.locator('#helper-return').tap();
-  const baseId = issued.dealId.replace(/-c8-core-r1$/, '');
+  const baseId = issued.dealId.replace(/-c8-core-r1-rights-r1$/, '');
   const base = hitappsDirectorDeals.find(entry => entry.deal.id === baseId)?.deal ?? content8Wave[0];
   const rect = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, base);

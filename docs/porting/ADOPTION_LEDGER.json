@@ -141,11 +141,12 @@
     {
       "id": "hitapps-dynamic-difficulty",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Изолированный C8 director выбирает 116 новых seeded Priority/EasyDeals вариантов на 53 уровнях в диапазоне 16–80. Для остальных случаев доступны архивные R2 варианты, включая 81–87. Десятислотовая история обновляет будущий коэффициент. Бюджет и Deal ID закреплены до первого хода.",
-      "nextAction": "Verify balance and continuation on physical Android, starting with the 11 tight levels with at most five spare moves. Capture original event rounding and active rates separately.",
+      "currentImplementation": "PR201 integrated C8 selects existing authored/seeded adaptive variants for future attempts, freezing Deal/budget/issuance. Fixed replay preserves that board. After the current failure threshold new issuance can use relief, but ordinary replay does not itself invoke that selector.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 C3/V1: expose a distinct new-attempt action through the existing selector, keep fixed replay/old boards and current thresholds, atomic history/lives/issuance. Human balance and original rounding/active remote coefficients remain unverified; retain full P06 direction.",
       "stage": "B2",
-      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170"
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "hitapps-easy-deals",
@@ -284,10 +285,11 @@
     {
       "id": "azur-shuffle-helper",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Обычный C8 L30 использует один накопленный заряд и проверенный путь победы; manifest proofShuffle active. Архивный stock-only P16 сохраняет старый паспорт.",
-      "nextAction": "Принять физический L30, Undo и реальную выдачу зарядов. NATIVE_STATIC kit #96 описывает closed tableau + Stock + Reset Waste и Undo.Clear; точные исходные runtime/merchant gates остаются UNKNOWN.",
+      "currentImplementation": "PR201 ordinary L30 uses hidden-pool-r1: hidden tableau plus stock/waste reset, own seeded permutation, proof-before-charge, Undo.Clear after success; manifest active. Legacy stock-only preview stays separate. No guaranteed first charge exists; random Daily Bonus can grant Shuffle after its only forward campaign use.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 C2: one versioned intro charge, separate wrapper for L33/36/39 after actual selection, certify every new final-board variant, eligibility for future grants and preserve old stock/frozen rounds. Structural14-variant admission is not shuffle proof. Original RNG/live acquisition/runtime acceptance remain unproven.",
       "stage": "D1",
-      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "hitapps-joker",
@@ -340,18 +342,20 @@
     {
       "id": "azur-daily-tasks",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P28 has 16 task kinds/nine reward kinds, UTC day/week identities, signal/claim dedup and a four-task preview. TaskTarget has one prize with quantity<=100; source medal+bonus and large milestone bundles are not implemented. beginDeal/switchMode initialize hint tracking only if the journal exists; attempts before lazy journal creation remain the specific WinNoHints gap. Existing wallet-progress feedback is retained.",
-      "nextAction": "RETENTION_SOURCE_DELTA_TZ_2026-11-24 R1/R2: shared resource/grant contract, hint tracking from new-attempt creation, 28-row source fixture, composite rewards/five milestones/persisted3-of4 chest and a reachable no-IAP policy. Preserve unknown legacy hints. Kit141/143 conditional1210/960 arithmetic is not a live paywall or a defect of the current own schedule; MakePurchase is not video.",
+      "currentImplementation": "PR201 ordinary C8 has a four-task own daily schedule, weekly5-medal/20coin milestone, common grant inventory, from-creation hint history and persisted day/week definitions. Saved completed old tasks and old weekly milestones can be claimed by existing domain APIs, but ordinary UI exposes only the current day. This is not full source28/five-milestone parity.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 U2/U3: visible locked stock, old ready rewards with original day/week IDs, honest completed/reset states; preserve current schedule. Full RETENTION_SOURCE_DELTA_TZ_2026-11-24 R1/R2 source28/composite rewards/five milestones/3-of4 chest remains roadmap. Kit141/143 conditional1210/960 is not a live paywall; video is not MakePurchase.",
       "stage": "F1",
-      "implementationBriefRef": "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md"
     },
     {
       "id": "azur-daily-bonus",
       "status": "ROADMAPPED",
-      "currentImplementation": "Ordinary Daily Level/calendar exists. P29 retains a separate offline one-winning-slot/one-choice trial, not the newly source-confirmed weighted four-prize three-match card bonus. No new product integration or original-runtime acceptance is claimed.",
-      "nextAction": "RETENTION_SOURCE_DELTA_TZ_2026-11-24 R3: use kit135/136 exact weighted/conflict/fallback and saved-round evidence, restore before generation, persist third-match winner and atomic day+reward claim, share usable resources. Source slot geometry, active calendar/remote and full original runtime remain open; own layout/clock is an explicit adaptation.",
+      "currentImplementation": "PR201 ordinary C8 now has a persisted UTC-day four-prize/12-card first-triple Bonus, independent of Daily Level and Tasks, with atomic saved-prize claim. Old won/unclaimed prize survives; an open unfinished old round has active UI while reveal rejects after midnight. Source-complete acceptance remains separate from this implemented candidate.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 U1/U2/C2: explicit lifecycle/rollover selector, preserve old won and frozen prizes, show locked stock, correct Shuffle eligibility. Preserve source/source-parity work under RETENTION_SOURCE_DELTA_TZ_2026-11-24 R3 and kit135/136; original runtime/schedule/weights acceptance is not inferred.",
       "stage": "F1",
-      "implementationBriefRef": "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md"
     },
     {
       "id": "hitapps-weekend-race",
@@ -399,18 +403,21 @@
     {
       "id": "hitapps-lives",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "В отдельной обычной кампании конечный проигрыш списывает жизнь, ноль блокирует запуск, таймер и монеты восстанавливают доступ. Видеонаграда требует отдельного нативного допуска и earned request identity.",
-      "nextAction": "Determine effect on current unlimited offline play and clear rule+save variation F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "PR201 ordinary C8 candidate uses3 lives, free refill per5min and50coin/RV alternatives. A life is charged once when starting the next attempt/retry after exhausted, not merely on Home/Daily switch; playing restart is not that loss. Live rewarded and human acceptance remain separate.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 C3/V1: explain exact charge moment before first use, retain zero-resource free wait and actual Daily unlock, verify duplicate/reload/ads lifecycle. Preserve owner-approved ordinary lives; source loss/regen/live parameters and numeric acceptance are not inferred.",
       "stage": "F2",
-      "evidenceRef": "docs/porting/P31_LIVEOPS_TRIALS.md"
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "azur-play-pass",
       "status": "BLOCKED",
-      "currentImplementation": "No native premium/free pass or authorized purchase path P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Verify store IAP/entitlements and payments then spec free/premium claims E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "PR201 ordinary freeSeasonalTrack exposes an adapted10coin bonus after3 first campaign clears per UTC month. Premium/IAP remains disabled; the full commercial family is not accepted. Saved ready old free progress is rejected by current-month claim and can be overwritten by a new-month clear.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 U4: settle recorded ready old free bonus before reset, auto-grant current free threshold and present compact progress instead of a separate ordinary storefront. Preserve claims and paid fields. Full free/premium pass, provider/entitlements and purchase acceptance remain future work; IAP does not block the free fix.",
       "reason": "Unverified available IAP/provider integration and legal payout for current target stores. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
-      "stage": "E3"
+      "stage": "E3",
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "hitapps-rotating-offers",
@@ -522,9 +529,10 @@
       "id": "hitapps-daily-puzzle",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "Consumer has its own 28-puzzle Daily pool, but no independently verified Hitapps Daily Level reference; S1 only confirms DailyRewards P29 distinguishes the independent source and preserves the current 28-deal puzzle bank. See docs/porting/P29_DAILY_REWARDS.md.",
-      "nextAction": "Acquire original Hitapps Daily Level actual session or native scene/level data; do not claim this was source-copied F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 F3/U3: restore actual Daily telemetry dayId and clear local-day/reset/completed states; preserve28-puzzle own bank. Acquire original Hitapps Daily Level actual session or native scene/level data; do not claim this was source-copied F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
       "stage": "F1",
-      "reason": "Original hitapps S1 reference lacks an independently verified daily puzzle scene; prior attribution was unsupported"
+      "reason": "Original hitapps S1 reference lacks an independently verified daily puzzle scene; prior attribution was unsupported",
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md"
     },
     {
       "id": "hitapps-win-rewarded-offer",
@@ -583,27 +591,30 @@
     {
       "id": "azur-combo-streak",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "Own transfer streak/first-win cycle and P30 offline trial are present. The trial resets on any draw/recycle/Undo and does not implement the newly confirmed typed AZUR handler/track. Source reports kit142/144 deepen evidence without changing game code.",
-      "nextAction": "RETENTION_SOURCE_DELTA_TZ_2026-11-24 R4: typed MoveSummary, draw&&skipped-playable-waste reset precedence, one versioned in-game-series policy, five source reward stages and durable pending Moves. Preserve old attempts and anti-farming as adaptation. Investigate producers, wildcard/Undo/recycle mapping, after-fifth-stage behavior and live activation; do not recreate a second same-purpose HUD.",
+      "currentImplementation": "PR201 includes an ordinary versioned C8 Combo candidate and retained first-win-cycle/legacy P30 paths. The candidate is a product adaptation; kit142/144 typed MoveSummary and original reward/reset/deferred-Moves source findings do not by themselves establish full consumer/original runtime parity.",
+      "nextAction": "Retain current Combo in the first-release composition and measure replay income/value under MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 V1. Full RETENTION_SOURCE_DELTA_TZ_2026-11-24 R4 typed flags, five source stages and durable deferred Moves stay in the full roadmap with exact source provenance and UNKNOWN boundaries; do not reopen all of it as an extra first-release gate.",
       "stage": "F2",
       "reason": "Typed handler flags, reset precedence and compiled reward track are now NATIVE_STATIC. Original event producers, full wildcard/Undo/recycle mapping, later-stage/live configuration and original-runtime behavior remain unverified.",
-      "implementationBriefRef": "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md"
     },
     {
       "id": "azur-unlimited-moves-offer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 B4 даёт отдельное право 120 монет/60 секунд. Android elapsedRealtime защищает срочный доступ и бюджеты active/parked/Undo от отката wall clock в рамках boot.",
-      "nextAction": "Проверить реальный фон, перезапуск, смену часов и reboot на Android; принять кандидатные цены. Срок и источники права в оригинале требуют P36.",
+      "currentImplementation": "PR201: ordinary C8 candidate120coins/60sec plus retained earned rights; Android boot/elapsedRealtime protects active/parked finite budgets and Undo on normal lifecycle paths. A native read failure at acquisition still permits page-clock timed rights, which can extend after process restart/wall rollback.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 F2/V1: gate timed acquisition on a suitable native snapshot without debit/consume on failure; conservative handling of incomparable saved timed anchors, preserve indefinite/won/earned contracts. Physical lifecycle and human value remain unaccepted; original lifetime/acquisition policy still requires source evidence.",
       "stage": "E1",
-      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "azur-offer-campaign",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Диспетчер P25 получает восемь игровых фактов из обычного C8 и выбирает контекст для существующих неплатных экранов. Checkout отключён.",
-      "nextAction": "Физическая проверка неплатных точек и реальных rewarded, затем в отдельном этапе подтвердить фактический remote-граф AZUR, коммерческие gates и приоритеты.",
+      "currentImplementation": "PR201 dispatcher receives eight ordinary C8 facts with durable reservation, duplicate/stale checks and existing Helpers/Result presenters;0coin buy and0Hint paths reach the adapter. No merchant or resource grant is fabricated by the trigger. Recommendation relevance/free-RV states remain a UX delta.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 U2/V1: resource-specific acquisition and actual free/RV/claimed/cooldown/unavailable states, then physical nonpaid/rewarded acceptance. Full AZUR remote graph, commercial gates/priorities and15 families remain future source-to-product work, not blocked ordinary free/coin/ads integration.",
       "stage": "E3",
-      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "azur-fullscreen-ads-clock",
@@ -617,18 +628,21 @@
     {
       "id": "azur-ad-revenue-attribution",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Живой native impression callback сохраняет нормализованное ILRD в отдельной очереди до передачи SDK AppMetrica; retries используют стабильный ID.",
-      "nextAction": "Принять все форматы/точки на Android и проверить валюту, сумму, доставку и дедупликацию в AppMetrica по одному delivery ID.",
+      "currentImplementation": "PR201: native normalized ILRD uses durable pending/forwarded outbox, stable delivery ID, process-wide delivery worker and SDK/ACK retries. Independently checked post-receive paths pass. First capture I/O failure before durable receive can still lose the payload; no live dashboard acceptance is claimed.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 F1/V1: fix capture-to-durable retry with the same ID independently of Session/WebView; verify queue limits and the at-least-once crash boundary. Then physical formats/amount/currency/placement and deduplicated analytics aggregate in permitted receiver/export. Source live revenue remains unobserved.",
       "stage": "E2",
-      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "azur-cosmetics",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Two earned existing palette/card-back rewards at levels10/20",
-      "nextAction": "Compare catalog UX/unlocks; extend own assets without copying vendor artwork F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "PR201 has earned palette/card-back rewards at10/20 campaign clears, preview and saved appearance/deck settings. Home contains two routes to the same appearance view in addition to Settings.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 U4: remove only duplicate looks-open tile, preserve milestone/Settings/reward previews and saved choices. Full own cosmetic catalog/source unlock comparison remains roadmap; no vendor artwork copied.",
       "stage": "F1",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "unico-coffee-break",
@@ -679,9 +693,10 @@
       "id": "unico-daily-puzzles",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Daily calendar + 28 fixed pool, distinct from Unico seed and losses P29 distinguishes the independent source and preserves the current 28-deal puzzle bank. See docs/porting/P29_DAILY_REWARDS.md.",
-      "nextAction": "Compare failure-retry loop and daily award once-per-date on actual Android",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 F3/U3: restore actual Daily telemetry dayId and clear local-day/reset/completed states; preserve28-puzzle own bank. Compare failure-retry loop and daily award once-per-date on actual Android",
       "stage": "C2",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md"
     },
     {
       "id": "unico-loss-dialog",
@@ -782,10 +797,11 @@
     {
       "id": "azur-definition-consumable",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Обычная карточка общим счётчиком учитывает P20 и инвентарь задач/ежедневного бонуса; одна успешная выдача тратит один заряд. Основное объяснение открыто.",
-      "nextAction": "Проверить инвентарь и reader на Android; точные исходные триггеры и цена Definition требуют P36.",
+      "currentImplementation": "PR201 ordinary Definition correctly reads the shared legacy/task/bonus stock and spends one on successful reveal. P25 Definition shortage currently prioritizes free coins although no coin-to-Definition exchange exists; the separate Daily Bonus route is available.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 U2: retain shared-count fix, make shortage advice resource-specific and honest about random Bonus/claimed/reset states; device reader/stock regression. Original trigger/price policy still requires P36, no new price inferred.",
       "stage": "E1",
-      "evidenceRef": "docs/porting/C8_RELEASE_AUDIT_FOLLOWUP.md"
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "azur-free-shop-coin-claim",
@@ -1002,10 +1018,11 @@
     {
       "id": "azur-joker-random-column-insertion",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "В C8 QA действует отдельная открытая карта с собственным ID в слое столбца. Успешная выдача очищает Undo в одной записи. Продолжение проверяется перед расходом тестового права.",
-      "nextAction": "Research kit PR #84 original AZUR GameManager.AddJokerCard: shared Unity Random.Range(0,min(configured limit,current tableau columns)) chooses GetColumn, adds revealed card using PlaceCardForced, conditionally clears UndoSystem and TryAddJokerCard emits RaiseJokerUsed only on nonnull. Define versioned separate optional AZUR helper with source-derived/random-column tests and explicit Undo reset policy; actual positive/zero bounds, UI unlocking, coin/SDK receipts, original Android/restart/save states and global RNG state remain UNKNOWN. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
+      "currentImplementation": "PR201 ordinary L16 supports a separate random-column Joker with proof-before-success and Undo.Clear on committed insertion; manual Joker remains separate.250coin unused acquisition is attempt-owned and is currently lost when a new attempt replaces it; pre-purchase/abandon wording does not fully expose this.",
+      "nextAction": "MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 C1: migrate recorded unconsumed rights idempotently to durable ownership until successful compatible L16 use, preserve IDs/consumed states and warn before insertion. Price remains candidate. Original live bound, zero-target, unlock/SDK policy and Android parity remain UNKNOWN; retain full P15 source work.",
       "stage": "D1",
-      "evidenceRef": "docs/porting/P15_AZUR_JOKER.md"
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md"
     },
     {
       "id": "azur-art-sprite-wordcount-override",
@@ -1030,6 +1047,6 @@
       "evidenceRef": "docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md"
     }
   ],
-  "auditRevision": "2026-11-20-azur-preset-schema-native-114-v14",
+  "auditRevision": "2026-11-24-pr201-recheck-23e71a8",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md"
 }

@@ -20,7 +20,7 @@ export function resolveHint(board: Board, deal: Deal, limit = 4000): HintResolut
     const fullBoard = Boolean(deal.lock || deal.puzzle);
     if (fullBoard || deal.tags?.includes('ordinary-dealer')) {
       const search = findReferenceRoute(deal, board, limit, true, performance.now() + (fullBoard ? 3200 : 1500),
-        fullBoard ? 'full-board' : undefined);
+        fullBoard ? 'verified-specials' : undefined);
       return search.status === 'FOUND' && search.path[0] ? { status: 'SOLVED', action: search.path[0] } : { status: 'UNKNOWN' };
     }
   }

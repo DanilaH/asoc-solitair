@@ -1,4 +1,4 @@
-import { applyBoard, boardKey, legalCommands, packet, sourceCards } from './engine';
+import { applyBoard, boardKey, packet, sourceCards } from './engine';
 import type { Board, BoardCommand, Deal, Location } from './types';
 
 /** Symmetry-pruned actions for the ordinary, unlocked reference slice. */
@@ -36,9 +36,8 @@ const key = (board: Board) => JSON.stringify([
 ]);
 
 export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allowLower = true, deadline = Infinity,
-  mode?: 'full-board') {
-  const identity = mode === 'full-board' ? boardKey : key;
-  const actions = mode === 'full-board' ? legalCommands : referenceActions;
+  mode?: 'verified-specials') {
+  const identity = mode === 'verified-specials' ? boardKey : key;
   const heap: Node[] = [], seen = new Map<string, number>();
   const weights = new Map<string, number>();
   for (const card of Object.values(deal.cards)) weights.set(card.category, (weights.get(card.category) ?? 0) + 1);
@@ -90,10 +89,14 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
       for (let n: Node = node; n.parent; n = n.parent) path.push(n.action!);
       return { status: 'FOUND' as const, path: path.reverse(), visited };
     }
-    for (const action of actions(node.board, deal)) {
+    for (const action of referenceActions(node.board, deal)) {
       if (!allowLower && action.type === 'transfer' && action.to.kind === 'tableau') continue;
       const result = applyBoard(node.board, action, deal);
-      if (typeof result === 'string') throw Error(result);
+      if (typeof result === 'string') {
+        // Ordered ranks, locked targets and puzzle constraints can reject a proposal.
+        if (mode === 'verified-specials') continue;
+        throw Error(result);
+      }
       if (result.board.phase === 'exhausted') continue;
       const steps = node.steps + 1;
       push({ board: result.board, parent: node, action, steps, score: score(result.board, steps) });

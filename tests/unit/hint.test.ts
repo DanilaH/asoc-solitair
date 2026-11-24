@@ -70,7 +70,7 @@ it.each([
     { type: 'transfer', from: { kind: 'tableau', index: 0 }, to: { kind: 'tableau', index: to } }, deal);
   if (typeof deviation === 'string') throw Error(deviation);
   const hint = resolveHint(deviation.board, deal);
-  const certificate = findReferenceRoute(deal, deviation.board, 4000, true, Infinity, 'full-board');
+  const certificate = findReferenceRoute(deal, deviation.board, 4000, true, Infinity, 'verified-specials');
   if (certificate.status !== 'FOUND') throw Error('Expected a full winning route');
   expect(hint).toEqual({ status: 'SOLVED', action: certificate.path[0] });
   let board = deviation.board;

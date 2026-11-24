@@ -624,6 +624,6 @@ html[data-reduced=true] .coin-debit{animation:none}
 #recovery-clock-status{position:absolute;inset:0;margin:0;padding:6px 12px;display:flex;align-items:center;border-radius:11px;background:#154e52;color:#fff3d6;font-size:13px;line-height:1.35;z-index:3}
 #app[data-recovery-clock=true] #lesson-note,#app[data-recovery-clock=true] #no-transfer,#app[data-recovery-clock=true] #praise,#app[data-recovery-clock=true] #message{visibility:hidden}
 
-#stock-recovery{grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 9px;padding:2px 4px 5px;color:#ffdda6;font-size:11px;text-align:center}
+#stock-recovery{position:relative;z-index:1;grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 9px;padding:2px 4px 5px;color:#ffdda6;font-size:11px;text-align:center}
 #stock-recovery-button.secondary{margin:0;min-height:28px;width:auto;padding:3px 9px;font-size:11px}
 #app[data-lesson=true] #feedback-row:has(#stock-recovery:not([hidden])){height:auto;min-height:70px}

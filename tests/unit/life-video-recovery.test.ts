@@ -7,7 +7,7 @@ import { applyReceipt, type EarnedReceipt } from '../../src/domain/services';
 import { createAds, type AdsBridge } from '../../src/platform/ads';
 import { SaveStore } from '../../src/platform/storage';
 
-const deal = content8Wave[0];
+const deal = { ...content8Wave[0], id: 'regression-life-receipt' };
 const now = 1_000_000;
 function reachableTwoLives() {
   let save = freshSave(deal, 'life-before-loss');

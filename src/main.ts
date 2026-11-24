@@ -475,6 +475,9 @@ try {
       if (requiresNativeRecoveryClock(save, recoveryTime.read())) {
         const refreshed = await recoveryTime.refresh();
         recoveryRetryDelay = refreshed ? 1000 : Math.min(60_000, recoveryRetryDelay * 2);
+        // While the native clock is unavailable, a parked right need not interrupt
+        // the active finite game just to write an unchanged snapshot.
+        if (!refreshed && recoveryWait(save) === undefined) return;
       }
       if (!alive) return;
       const changed = await write(expireRecovery);
@@ -507,7 +510,10 @@ try {
       throw error;
     }
     finally {
-      if (!store.needsRecovery) deferredMonthlyConfirmation = undefined;
+      if (!store.needsRecovery) {
+        deferredMonthlyConfirmation = undefined;
+        if (pendingWrites === 1) transitionPresentation = undefined;
+      }
       saving = --pendingWrites > 0; setInput(); renderHud(); renderHome();
       if (!saving && ready && screen === 'game' && !runtime.activity.isBlocked()) showGuidance();
     }

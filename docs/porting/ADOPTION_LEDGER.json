@@ -58,6 +58,18 @@
     ],
     "evidence": "P20 accounting works for shown and earned in either order. One pause in the candidate. Physical SDK and acquisition paths remain open."
   },
+  "integratedRetentionCandidate": {
+    "packet": "B3",
+    "implementationRef": "docs/porting/B3_RETENTION_DELIVERY.md",
+    "candidateCapabilities": [
+      "azur-daily-tasks",
+      "azur-daily-bonus",
+      "azur-combo-streak",
+      "azur-definition-consumable",
+      "azur-shuffle-helper"
+    ],
+    "evidence": "Implemented C8 candidate routes with retained source QA and pending device/economy acceptance."
+  },
   "researchMethod": {
     "decisionDate": "2026-11-24",
     "decisionRef": "docs/porting/RESEARCH_METHOD_2026-11-24.md",

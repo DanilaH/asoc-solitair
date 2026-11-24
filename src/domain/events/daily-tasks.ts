@@ -1,3 +1,6 @@
+import { releaseProfile } from '../../config/profile';
+import { rewardOfferState } from '../reward-offers';
+import sourceRows from './azur-task-source.json' with { type: 'json' };
 import type { Command, Deal, Result, Save } from '../types';
 import { settledFirstWin } from './ledger';
 import type { PurchaseOrder } from '../commerce/orders';
@@ -21,12 +24,15 @@ const channel: Record<Exclude<Task, 'Unknown'>, Channel> = {
   BuyBoosters: 'wallet', MakePurchase: 'purchase',
 };
 
-export interface TaskTarget { id: string; kind: Exclude<Task, 'Unknown'>; target: number; prize: { kind: Reward; quantity: number } }
+export type TaskPrize = { kind: Reward; quantity: number };
+export interface TaskTarget { id: string; kind: Exclude<Task, 'Unknown'>; target: number; prize: TaskPrize; bonus?: TaskPrize }
 export interface TaskSignal { id: string; kind: Exclude<Task, 'Unknown'>; channel: Channel; amount: number; attemptId?: string }
 interface DayTask extends TaskTarget { progress: number; claimed?: true }
-interface WeekMilestone { id: string; medals: number; prize: TaskTarget['prize'] }
+interface WeekMilestone { id: string; medals: number; prize: TaskPrize; bundle?: TaskPrize[] }
+type Catalog = 'c8-task-base-r1' | 'azur-compiled-r1';
 interface Week {
   startUtc: string;
+  catalog?: Catalog;
   totalMedals: number;
   claimedMilestones: string[];
   milestones: WeekMilestone[];
@@ -55,17 +61,21 @@ const weekOf = (day: string) => {
   return utcKey(at - ((weekday + 6) % 7) * DAY)!;
 };
 
+function validPrize(prize: TaskPrize): boolean {
+  return Boolean(prize && Object.hasOwn(RewardKind, prize.kind) && natural(prize.quantity) && prize.quantity > 0 &&
+    prize.quantity <= (prize.kind === 'Coins' ? 5000 : prize.kind === 'Medals' ? 250 : 100));
+}
 function validTask(prize: TaskTarget): boolean {
   return Boolean(prize && token(prize.id) && Object.hasOwn(channel, prize.kind) && natural(prize.target) && prize.target > 0 &&
-    prize.prize && Object.hasOwn(RewardKind, prize.prize.kind) && natural(prize.prize.quantity) &&
-    prize.prize.quantity > 0 && prize.prize.quantity <= 100);
+    validPrize(prize.prize) && (prize.bonus === undefined || validPrize(prize.bonus)));
 }
 
 const uniqueTokens = (items: unknown): items is string[] => Array.isArray(items) &&
   items.every(token) && new Set(items).size === items.length;
 
 const validMilestone = (milestone: WeekMilestone) => Boolean(milestone &&
-  validTask({ id: milestone.id, kind: 'DailyLogin', target: milestone.medals, prize: milestone.prize }));
+  validTask({ id: milestone.id, kind: 'DailyLogin', target: milestone.medals, prize: milestone.prize }) &&
+  (milestone.bundle === undefined || (Array.isArray(milestone.bundle) && milestone.bundle.every(validPrize))));
 export function validDailyTasks(state: DailyTaskJournal): boolean {
   return Boolean(state && state.version === 1 && realDate(state.lastUtc) && uniqueTokens(state.seenSignals) &&
     uniqueTokens(state.hintedAttempts) && uniqueTokens(state.loginDaysUtc) && state.loginDaysUtc.every(realDate) &&
@@ -73,6 +83,7 @@ export function validDailyTasks(state: DailyTaskJournal): boolean {
     typeof state.inventory.cardBack === 'boolean' && uniqueTokens(state.inventory.chestKeys) &&
     Array.isArray(state.weeks) && new Set(state.weeks.map(week => week.startUtc)).size === state.weeks.length &&
     state.weeks.every(week => week && realDate(week.startUtc) && week.startUtc === weekOf(week.startUtc) &&
+      (week.catalog === undefined || ['c8-task-base-r1', 'azur-compiled-r1'].includes(week.catalog)) &&
       natural(week.totalMedals) && uniqueTokens(week.claimedMilestones) && Array.isArray(week.milestones) &&
       week.milestones.every(validMilestone) && new Set(week.milestones.map(item => item.id)).size === week.milestones.length &&
       week.claimedMilestones.every(id => week.milestones.some(item => item.id === id && item.medals <= week.totalMedals)) && Array.isArray(week.days) &&
@@ -83,7 +94,7 @@ export function validDailyTasks(state: DailyTaskJournal): boolean {
           (task.claimed === undefined || task.claimed === true && task.progress === task.target)))));
 }
 
-export function scheduleTasks(save: Save, now: number, definitions: readonly TaskTarget[], milestones: readonly WeekMilestone[] = []): boolean {
+export function scheduleTasks(save: Save, now: number, definitions: readonly TaskTarget[], milestones: readonly WeekMilestone[] = [], catalog?: Catalog): boolean {
   const utc = utcKey(now);
   if (!utc || !definitions.length || !milestones.every(validMilestone) ||
     new Set(milestones.map(item => item.id)).size !== milestones.length || definitions.some(definition => !validTask(definition)) ||
@@ -93,7 +104,7 @@ export function scheduleTasks(save: Save, now: number, definitions: readonly Tas
   const weekStart = weekOf(utc);
   let week = state.weeks.find(entry => entry.startUtc === weekStart);
   if (!week) {
-    week = { startUtc: weekStart, totalMedals: 0, claimedMilestones: [], milestones: [...structuredClone(milestones)], days: [] };
+    week = { startUtc: weekStart, ...(catalog ? { catalog } : {}), totalMedals: 0, claimedMilestones: [], milestones: [...structuredClone(milestones)], days: [] };
     state.weeks.push(week);
   }
   if (week.days.some(day => day.utc === utc)) return false;
@@ -174,11 +185,43 @@ function grant(save: Save, week: Week, prize: TaskTarget['prize'], key: string):
   return true;
 }
 
+function grantBundle(save: Save, week: Week, prizes: readonly TaskPrize[], key: string) {
+  const draft = structuredClone(save);
+  const target = draft.dailyTasks!.weeks.find(entry => entry.startUtc === week.startUtc)!;
+  if (!prizes.every(prize => grant(draft, target, prize, key))) return false;
+  save.profile = draft.profile;
+  save.rewardOffers = draft.rewardOffers;
+  save.dailyTasks!.inventory = draft.dailyTasks!.inventory;
+  week.totalMedals = target.totalMedals;
+  return true;
+}
+
+/** Canonical helper inventory for grants outside Tasks, including free Daily Bonus. */
+export function grantEventPrize(save: Save, prize: TaskPrize): boolean {
+  if (!validPrize(prize)) return false;
+  const field = walletFields[prize.kind as keyof typeof walletFields];
+  if (field && natural(save.profile[field] + prize.quantity)) {
+    save.profile[field] += prize.quantity;
+    return true;
+  }
+  if (prize.kind === 'Definition') {
+    const offers = rewardOfferState(save);
+    if (!natural(offers.definitions + prize.quantity)) return false;
+    offers.definitions += prize.quantity;
+    return true;
+  }
+  if (prize.kind === 'Shuffle' && save.dailyTasks && natural(save.dailyTasks.inventory.shuffles + prize.quantity)) {
+    save.dailyTasks.inventory.shuffles += prize.quantity;
+    return true;
+  }
+  return false;
+}
+
 export function claimTask(save: Save, utc: string, id: string): boolean {
   if (!realDate(utc)) return false;
   const week = save.dailyTasks?.weeks.find(week => week.startUtc === weekOf(utc));
   const task = week?.days.find(day => day.utc === utc)?.tasks.find(task => task.id === id);
-  if (!week || !task || task.claimed || task.progress < task.target || !grant(save, week, task.prize, `task:${utc}:${id}`)) return false;
+  if (!week || !task || task.claimed || task.progress < task.target || !grantBundle(save, week, [task.prize, ...(task.bonus ? [task.bonus] : [])], `task:${utc}:${id}`)) return false;
   task.claimed = true;
   return true;
 }
@@ -188,7 +231,7 @@ export function claimTaskMilestone(save: Save, weekStart: string, id: string): b
   const config = week?.milestones.find(item => item.id === id);
   const key = `weekly:${weekStart}:${id}`;
   if (!week || !config || week.totalMedals < config.medals || week.claimedMilestones.includes(id) ||
-    !grant(save, week, config.prize, key)) return false;
+    !grantBundle(save, week, [config.prize, ...(config.bundle ?? [])], key)) return false;
   week.claimedMilestones.push(id);
   return true;
 }
@@ -213,7 +256,9 @@ export function openTaskChest(save: Save, chestKey: string): 'hints'|'undos'|'jo
   return reward;
 }
 
-export const TASKS_PREVIEW = import.meta.env?.VITE_CONTENT8_DAILY_TASKS === '1';
+const sourceTasks = import.meta.env?.VITE_CONTENT8_DAILY_TASKS === 'source';
+export const releaseTasks = releaseProfile?.capabilities.retention === 'c8-retention-candidate-r1';
+export const TASKS_PREVIEW = releaseTasks || sourceTasks || import.meta.env?.VITE_CONTENT8_DAILY_TASKS === '1';
 const earnedRows: readonly TaskTarget[] = [
   { id: 'visit', kind: 'DailyLogin', target: 1, prize: { kind: 'Medals', quantity: 1 } },
   { id: 'draw', kind: 'DrawCards', target: 1, prize: { kind: 'Coins', quantity: 10 } },
@@ -222,13 +267,53 @@ const earnedRows: readonly TaskTarget[] = [
   { id: 'win', kind: 'CompleteLevels', target: 1, prize: { kind: 'Undo', quantity: 1 } },
 ];
 
+type SourceRow = [Exclude<Task, 'Unknown'>, number, number, Reward, number];
+export const azurTaskDays = (sourceRows as SourceRow[][]).map((rows, d): TaskTarget[] =>
+  rows.map(([kind, target, medals, bonusKind, bonusAmount], i) => ({
+    id: `azur-${d + 1}-${i + 1}`, kind, target, prize: { kind: 'Medals', quantity: medals },
+    ...(bonusAmount ? { bonus: { kind: bonusKind, quantity: bonusAmount } } : {}),
+  })));
+
+function sourceMilestones(now: number): WeekMilestone[] {
+  const prize = (kind: Reward, quantity: number): TaskPrize => ({ kind, quantity });
+  const pool = ['MoveHint', 'Undo', 'Definition', 'Shuffle'] as const;
+  const types = [...pool];
+  // A stable product seed keeps the same saved subset for the whole UTC week.
+  let state = (Math.floor(now / DAY) + 97) >>> 0;
+  for (let i = 0; i < 3; i++) {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    const j = i + state % (types.length - i);
+    [types[i], types[j]] = [types[j], types[i]];
+  }
+  return [
+    { id: 'source-50', medals: 50, prize: prize('Coins', 500), bundle: [prize('MoveHint', 2)] },
+    { id: 'source-100', medals: 100, prize: prize('MoveHint', 5), bundle: [prize('Undo', 5)] },
+    { id: 'source-300', medals: 300, prize: prize('Shuffle', 7), bundle: [prize('Definition', 7)] },
+    { id: 'source-600', medals: 600, prize: prize('Joker', 3), bundle: [prize('Coins', 2000)] },
+    { id: 'source-1000', medals: 1000, prize: prize('Coins', 5000),
+      bundle: [...types.slice(0, 3).map(kind => prize(kind, 4)), prize('CardBack', 1)] },
+  ];
+}
+
 export function updatePreviewTasks(save: Save, now: number): void {
   const utc = utcKey(now);
   if (!utc) return;
-  const last = new Date(now).getUTCDay() % 2 ? earnedRows[3] : earnedRows[4];
+  const day = new Date(now).getUTCDay();
+  const weekStart = weekOf(utc);
+  const catalog = save.dailyTasks?.weeks.find(week => week.startUtc === weekStart)?.catalog ??
+    (sourceTasks ? 'azur-compiled-r1' : 'c8-task-base-r1');
+  if (catalog === 'azur-compiled-r1') {
+    scheduleTasks(save, now, azurTaskDays[(day + 6) % 7], sourceMilestones(parseUtc(weekStart)), catalog);
+    return;
+  }
+  const last = releaseTasks && day % 3 === 2
+    ? { id: 'no-hint', kind: 'WinNoHints', target: 1, prize: { kind: 'Medals', quantity: 2 } } as const
+    : day % 2 ? earnedRows[3] : earnedRows[4];
   scheduleTasks(save, now, [...earnedRows.slice(0, 3), last],
-    [{ id: 'week', medals: 5, prize: { kind: 'Coins', quantity: 20 } }]);
+    [{ id: 'week', medals: 5, prize: { kind: 'Coins', quantity: 20 } }], catalog);
 }
+
+export const shouldScheduleTasks = (save: Save, now: number) => (utcKey(now) ?? '') > (save.dailyTasks?.lastUtc ?? '');
 
 export function currentTasks(save: Save) {
   const journal = save.dailyTasks;

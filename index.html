@@ -17,7 +17,7 @@
     </div>
     <button id="daily-resume-old" class="calendar-link" hidden></button>
     <button id="appearance-open" class="milestone-card"><span class="milestone-gem" aria-hidden="true">✦</span><span class="milestone-details"><strong id="milestone-title">Веха 10</strong><span class="milestone-track"><i id="milestone-fill"></i></span><small id="milestone-copy">Стол «Чернила»</small></span><small id="milestone-progress">0 / 10</small></button>
-    <button id="campaign-lives-open" class="secondary" hidden></button><button id="campaign-liveops-open" class="secondary" hidden>События кампании</button><button id="picture-home" class="secondary" hidden>Альбом</button><button id="daily-tasks-open" class="secondary" hidden>Задачи недели</button>
+    <button id="campaign-lives-open" class="secondary" hidden></button><button id="campaign-liveops-open" class="secondary" hidden>События кампании</button><button id="picture-home" class="secondary" hidden>Альбом</button><button id="daily-bonus-open" class="secondary" hidden>Ежедневный бонус</button><button id="daily-tasks-open" class="secondary" hidden>Задачи недели</button>
     </div><div class="home-actions"><div class="campaign-context"><strong>Кампания</strong><span id="home-progress"></span></div><button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
     <button id="level-picker-open" class="levels-link">Выбрать уровень</button></div>
   </section>
@@ -100,9 +100,14 @@
   <div class="sheet-body"><p id="picture-status" role="status"></p><div id="picture-grid" role="group" aria-label="Фрагменты иллюстрации"></div><p id="picture-prize"></p></div>
   <div class="sheet-actions"><button id="picture-claim" class="primary" hidden>Забрать 20 монет и подсказку</button><button id="picture-done" class="secondary">Готово</button></div>
 </dialog>
+<dialog id="daily-bonus-dialog" class="sheet" aria-labelledby="daily-bonus-title">
+  <div class="sheet-heading"><button class="close" data-close aria-label="Закрыть">×</button><h2 id="daily-bonus-title">Ежедневный бонус</h2><p id="daily-bonus-status" role="status"></p></div>
+  <div class="sheet-body"><div id="daily-bonus-cards" class="daily-bonus-cards"></div></div>
+  <div class="sheet-actions"><button id="daily-bonus-claim" class="primary" hidden>Забрать бонус</button><button class="secondary" data-close>Закрыть</button></div>
+</dialog>
 <dialog id="daily-tasks-dialog" class="sheet" aria-labelledby="daily-tasks-title">
   <div class="sheet-heading"><button class="close" data-close aria-label="Закрыть">×</button><h2 id="daily-tasks-title">Задачи недели</h2></div>
-  <div class="sheet-body"><p id="daily-tasks-medals" role="status"></p><div id="daily-tasks-list"></div><button id="daily-tasks-weekly" class="secondary" disabled>Получить 20 монет за 5 медалей</button></div>
+  <div class="sheet-body"><p id="daily-tasks-medals" role="status"></p><div id="daily-tasks-list"></div><div id="daily-tasks-milestones"></div><button id="daily-tasks-weekly" class="secondary" disabled>Получить 20 монет за 5 медалей</button></div>
   <div class="sheet-actions"><button class="secondary" data-close>Готово</button></div>
 </dialog>
 <script type="module" src="/src/main.ts"></script>

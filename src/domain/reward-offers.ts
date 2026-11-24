@@ -175,14 +175,19 @@ export function settleRewardOffer(save: Save, earned: { attempt: string; dealId:
   return true;
 }
 
+export function definitionCount(save: Save) {
+  return (save.rewardOffers?.definitions ?? 1) + (save.dailyTasks?.inventory.definitions ?? 0);
+}
+
 export function revealRelatedWord(save: Save, deal: Deal, cardId: string): string | undefined {
   if (save.attempt.dealId !== deal.id || save.attempt.board.phase !== 'playing' ||
-    !save.attempt.board.faceUp.includes(cardId) || !(save.rewardOffers?.definitions ?? 1)) return;
+    !save.attempt.board.faceUp.includes(cardId) || definitionCount(save) === 0) return;
   const card = deal.cards[cardId];
   if (!card) return;
   const other = Object.values(deal.cards).find(candidate => candidate.category === card.category && candidate.id !== cardId &&
     !candidate.leader && save.attempt.board.faceUp.includes(candidate.id));
   if (!other) return;
-  rewardOfferState(save).definitions--;
+  if (save.dailyTasks?.inventory.definitions) save.dailyTasks.inventory.definitions--;
+  else rewardOfferState(save).definitions--;
   return other.text;
 }

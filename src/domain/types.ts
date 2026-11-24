@@ -1,3 +1,5 @@
+import type { Combo } from './events/combo';
+import type { DailyBonus } from './events/daily-bonus';
 import { releaseProfile } from '../config/profile';
 import type { LavaRun } from './events/campaign-liveops';
 import type { CampaignLives } from './campaign-lives';
@@ -53,6 +55,7 @@ export interface Deal {
   starter?: { version: 1; cards: Readonly<Record<string, 'magnet' | 'hammer'>> };
   shufflePreview?: 1;
   shufflePolicy?: 'hidden-pool-r1';
+  shuffleCost?: 'charge';
   randomJokerPreview?: 1;
   randomJokerCost?: 1;
   recovery?: { version: 1; freeRecycles: number; restoreBase: number; restoreIncrement: number };
@@ -102,6 +105,7 @@ export interface Attempt {
   unlimited?: { version: 1; id: string; issuedAt: number; until?: number; expired?: true; purchaseRef?: string };
   shuffleUsed?: true;
   verifiedTaskHints?: number;
+  combo?: Combo;
   lessonHint?: BoardCommand;
   daily?: { dayId: string; contentVersion: number };
   payout?: RewardGrant[];
@@ -152,6 +156,7 @@ export interface Save {
   events?: EventLedger;
   picture?: PictureState;
   dailyTasks?: DailyTaskJournal;
+  dailyBonus?: DailyBonus;
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';

@@ -10,7 +10,7 @@ export interface ShuffleRequest {
 export function canShuffle(save: Save, deal: Deal): boolean {
   const { attempt } = save;
   const { board } = attempt;
-  if (attempt.daily || attempt.shuffleUsed || board.phase !== 'playing' || attempt.dealId !== deal.id) return false;
+  if ((deal.shuffleCost === 'charge' && !save.dailyTasks?.inventory.shuffles) || attempt.daily || attempt.shuffleUsed || board.phase !== 'playing' || attempt.dealId !== deal.id) return false;
   if (deal.shufflePolicy === 'hidden-pool-r1') {
     const hidden = board.tableau.flat().filter(id => !board.faceUp.includes(id)).length;
     return !board.joker && !deal.lock && board.stock.length + board.waste.length + hidden > 1;
@@ -73,6 +73,7 @@ export function commitShuffle(save: Save, deal: Deal, request: ShuffleRequest, r
   else recordUndo(attempt);
   attempt.board = next;
   attempt.shuffleUsed = true;
+  if (deal.shuffleCost === 'charge') save.dailyTasks!.inventory.shuffles--;
   save.revision++;
   return true;
 }

@@ -23,9 +23,9 @@ function legacy(s:Save):Save {
 describe('rules v3 destinations and compatibility',()=>{
   const d=campaignDeals[5],bad=transfer(0,1);
   it('rejects the actual flashlight-to-lower-theme move without a turn, charge or Undo',()=>{
-    const s=unlock(freshSave(d,'new-rules'));s.attempt.streak.progress=2;
+    const s=unlock(freshSave(d,'new-rules'));(s.attempt.combo??s.attempt.streak).progress=2;
     const r=dispatch(s,bad,d);expect(r.accepted).toBe(false);expect(r.reason).toBe('Сначала перенесите тему в верхний слот');
-    expect(r.next.attempt.board).toEqual(s.attempt.board);expect(r.next.profile).toEqual(s.profile);expect(r.next.attempt.undo).toEqual([]);expect(r.next.attempt.streak.progress).toBe(0);
+    expect(r.next.attempt.board).toEqual(s.attempt.board);expect(r.next.profile).toEqual(s.profile);expect(r.next.attempt.undo).toEqual([]);expect((r.next.attempt.combo??r.next.attempt.streak).progress).toBe(0);
     expect(legalCommands(s.attempt.board,d)).not.toContainEqual(bad);
   });
   it('allows upper collection after moving the theme; Undo retains the attempt rules',()=>{

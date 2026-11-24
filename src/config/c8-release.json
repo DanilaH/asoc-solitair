@@ -33,6 +33,6 @@
     "rewardOffers": "sdk-acceptance-gated",
     "freeSeasonalTrack": "active",
     "purchases": "off",
-    "retention": "pending"
+    "retention": "c8-retention-candidate-r1"
   }
 }

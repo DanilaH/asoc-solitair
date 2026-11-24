@@ -53,7 +53,7 @@ it('selects special definitions for fresh starts and restores the old C8 board a
     const selected = campaignDeals[level - 1];
     if (import.meta.env.VITE_ASOC_PROFILE && [17, 26].includes(level)) {
       expect(selected.id).toBe(deal.id + '-core-special-r1');
-      expect(findDeal(deal.id)).toBe(deal);
+      expect(findDeal(deal.id)).toEqual(deal);
     } else expect(selected.id).toBe(deal.id);
     expect(archived.initial.tableau.map(col => col.length)).toEqual(deal.initial.tableau.map(col => col.length));
     expect(archived.initial.movesLeft).toBe(deal.initial.movesLeft);

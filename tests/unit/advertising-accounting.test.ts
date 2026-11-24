@@ -6,7 +6,7 @@ import { claimShopCoins, offerQuote, prepareRewardOffer, selectedWinMultiplier }
 import { applyFullscreenShown, applyReceipt, type EarnedReceipt } from '../../src/domain/services';
 import { decodeSave } from '../../src/platform/storage';
 
-const deal = content8Wave[0];
+const deal = { ...content8Wave[0], id: 'advertising-accounting-level-16' };
 function won(id: string) {
   const save = freshSave(deal, id);
   save.attempt.board = { ...deal.initial, tableau: deal.initial.tableau.map(() => []),

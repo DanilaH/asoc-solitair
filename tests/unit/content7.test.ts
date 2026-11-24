@@ -1,8 +1,9 @@
 import {describe,it,expect} from 'vitest';
-import {campaignDeals,content6CampaignDeals,legacyCampaignDeals,findDeal} from '../../src/content/campaign';
+import {content7Deals as campaignDeals} from '../../src/content/campaign-v7';
+import {content6CampaignDeals,legacyCampaignDeals,findDeal} from '../../src/content/campaign';
 import {dailyForDay,dailyPool} from '../../src/content/daily';
 import {freshSave,dispatch,applyBoard} from '../../src/domain/engine';
-import {CONTENT_VERSION,RULES_VERSION,BALANCE_VERSION,type Save,type Deal} from '../../src/domain/types';
+import {RULES_VERSION,BALANCE_VERSION,type Save,type Deal} from '../../src/domain/types';
 import {decodeSave,SaveStore} from '../../src/platform/storage';
 import {campaignId} from '../../src/domain/progression';
 import {beginDeal} from '../../src/domain/campaign';
@@ -14,7 +15,7 @@ const unlock=(s:Save,n=80)=>{s.platform={receipts:['before-upgrade'],continuedAt
 function play(s:Save,d:Deal,n=d.winningPath.length){for(const cmd of d.winningPath.slice(0,n)){const r=dispatch(s,cmd,d);expect(r.accepted,r.reason).toBe(true);s=r.next;}return s;}
 describe('Content7 frozen catalog and ownership',()=>{
  it('selects exactly eighty separate identities with the exact approved pace and feature schedule',()=>{
-  expect([RULES_VERSION,CONTENT_VERSION,BALANCE_VERSION]).toEqual([3,7,3]);expect(campaignDeals).toHaveLength(80);
+  expect([RULES_VERSION,BALANCE_VERSION]).toEqual([3,3]);expect(campaignDeals).toHaveLength(80);
   for(const [i,d]of campaignDeals.entries()){
    const p=plan.levels[i],cats=Object.values(d.cards).filter(c=>c.leader).length,n=Object.keys(d.cards).length;
    expect(d.id).toBe(`campaign-c7-${String(i+1).padStart(3,'0')}`);expect(d.campaignLevel).toBe(i+1);expect(d.version).toBe(1);expect(findDeal(d.id)).toBe(d);

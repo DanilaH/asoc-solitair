@@ -1,8 +1,9 @@
 import { applyBoard, assertBoard, boardRules, legalCommands, placeJoker } from './engine';
 import { knownContinuation, solve } from './solver';
+import { LEGACY_OWNER_PREVIEW } from './types';
 import type { Attempt, BoardCommand, Deal, Save } from './types';
 
-export const RANDOM_JOKER_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'random-joker';
+export const RANDOM_JOKER_PREVIEW = LEGACY_OWNER_PREVIEW === 'random-joker';
 
 export function allowsRandomJoker(attempt: Attempt, deal: Deal) {
   return deal.randomJokerPreview === 1 && attempt.dealId === deal.id && !attempt.daily &&
@@ -60,6 +61,8 @@ export function settleRandomJoker(save: Save, deal: Deal, request: {
   attemptId: string; revision: number; column: number; id: string; path: readonly BoardCommand[];
 }) {
   const { attempt } = save;
+  const cost = deal.randomJokerCost ?? 0;
+  if (save.profile.jokers < cost) return false;
   if (request.attemptId !== attempt.id || request.revision !== save.revision || !request.path.length) return false;
   const board = placeRandomJoker(attempt, deal, () => request.column, () => request.id);
   if (!board) return false;
@@ -73,6 +76,7 @@ export function settleRandomJoker(save: Save, deal: Deal, request: {
   attempt.board = board;
   attempt.undo = [];
   attempt.randomJokerUsed = true;
+  save.profile.jokers -= cost;
   save.revision++;
   return true;
 }

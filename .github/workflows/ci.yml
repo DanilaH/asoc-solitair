@@ -59,6 +59,13 @@ jobs:
       - run: npm run qa:content7
         env:
           C7_REQUIRE_UI: '1'
+      - name: Verify the integrated profile through the campaign UI
+        env:
+          VITE_ASOC_PROFILE: c8-release-v1
+          ASOC_AD_MODE: disabled
+        run: |
+          npm run build
+          npm run test:browser -- tests/browser/integrated-release.spec.ts
       - name: Verify the Content 8 preview with actual touch input
         if: startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || startsWith(github.head_ref || github.ref_name, 'docs/c8-') || github.base_ref == 'feat/c8-onboarding-dealer-20261119'
         env:
@@ -151,8 +158,14 @@ jobs:
           retention-days: 7
   android:
     runs-on: ubuntu-24.04
+    env:
+      VITE_ASOC_PROFILE: c8-release-v1
+      ASOC_AD_MODE: test
+      ASOC_APK_VARIANT: debug
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -175,20 +188,7 @@ jobs:
         env:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
-      - run: npm run android:sync
-        env:
-          VITE_AZUR_FEEL_QA: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-azur-feel-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-azur-victory-qa-')) && '1' || '0' }}
-          VITE_AZUR_VICTORY_QA: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-azur-victory-qa-') && '1' || '0' }}
-          VITE_CONTENT8_PREVIEW: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || startsWith(github.head_ref || github.ref_name, 'docs/c8-') || github.ref_name == 'feat/content8-reference-slice-20261119' || github.head_ref == 'feat/content8-reference-slice-20261119' || github.base_ref == 'feat/c8-onboarding-dealer-20261119') && '1' || '0' }}
-          VITE_C8_OWNER_PREVIEW: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p25-offer-campaigns-') && 'offer-campaigns' || (startsWith(github.head_ref || github.ref_name, 'feat/c8-hitapps-specials-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-polish-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-feedback-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-wallet-progress-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-azur-feel-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-azur-victory-qa-')) && 'specials' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-hitapps-combined-') && 'generation' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p06-owner-') && 'director' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-hitapps-') && 'director' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p08-owner-') && 'equality' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p15-owner-') && 'random-joker' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p19-owner-') && 'recovery' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p21-owner-') && 'ad-controls' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p25-owner-') && 'storefront' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p31-owner-') && 'lives' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-owner-') && 'acceptance' || '' }}
-          VITE_CONTENT8_FROZEN: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p10-') && '1' || '0' }}
-          VITE_CONTENT8_BOUND: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p11-') && '1' || '0' }}
-          VITE_CONTENT8_BEYOND80: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-p33-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p34-')) && '1' || '0' }}
-          VITE_CONTENT8_LOCALE: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p34-') && '1' || '0' }}
-          VITE_CONTENT8_DAILY_TASKS: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-p28-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-wallet-progress-')) && '1' || '0' }}
-          VITE_CONTENT8_PICTURE: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p27-') && '1' || '0' }}
-          VITE_CONTENT8_REWARD_OFFERS: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p20-') && '1' || '0' }}
-          VITE_CONTENT8_SPECIAL: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p12-') && 'puzzle' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p13-') && 'gold' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p14-') && 'starter' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p16-') && 'shuffle' || '' }}
+      - run: npm run check && npm run android:sync
       - uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/asoc-debug-signing/debug.keystore
@@ -212,13 +212,19 @@ jobs:
           echo 'ASOC_MAVEN_CENTRAL_MIRROR=1' >> "$GITHUB_ENV"
         working-directory: native/android
         env:
-          ASOC_AD_MODE: test
           ASOC_DEBUG_STORE_FILE: ${{ runner.temp }}/asoc-debug-signing/debug.keystore
       - name: Verify the preview APK signature
         run: |
           $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk
           $ANDROID_HOME/build-tools/36.0.0/apksigner verify --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk | grep -F '0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e'
           $ANDROID_HOME/build-tools/36.0.0/aapt dump badging native/android/app/build/outputs/apk/debug/app-debug.apk | head -1
+      - run: |
+          python3 tools/qa/verify-release-apk.py native/android/app/build/outputs/apk/debug/app-debug.apk
+          cp dist/release-manifest.json "$RUNNER_TEMP/release-manifest-debug.json"
+      - run: npm run android:sync
+        env:
+          ASOC_AD_MODE: disabled
+          ASOC_APK_VARIANT: release
       - run: ./gradlew --no-daemon assembleRelease
         working-directory: native/android
         env:
@@ -229,6 +235,8 @@ jobs:
         with:
           name: android-builds
           path: |
+            ${{ runner.temp }}/release-manifest-debug.json
+            dist/release-manifest.json
             native/android/app/build/outputs/apk/**/*.apk
             native/android/app/build/outputs/mapping/release/
           retention-days: 7

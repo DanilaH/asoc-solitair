@@ -1,3 +1,5 @@
+import { releaseProfile } from '../config/profile';
+import { LEGACY_OWNER_PREVIEW } from './types';
 import type { Attempt, CampaignOutcome, DifficultyTier, Save } from './types';
 
 export const DIFFICULTY_WINDOW = 10;
@@ -119,8 +121,8 @@ export function updateSourceDifficultySlot(slot: CampaignOutcome | undefined, ev
   return { slot: slot ?? { outcome: 'Clean', restarts: 0 } satisfies CampaignOutcome, advance: true };
 }
 
-export const GENERATION_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'generation';
-export const SOURCE_DIFFICULTY_PREVIEW = GENERATION_PREVIEW || import.meta.env?.VITE_C8_OWNER_PREVIEW === 'director';
+export const GENERATION_PREVIEW = releaseProfile?.capabilities.generation === 'active' || LEGACY_OWNER_PREVIEW === 'generation';
+export const SOURCE_DIFFICULTY_PREVIEW = releaseProfile?.capabilities.difficulty === 'active' || GENERATION_PREVIEW || LEGACY_OWNER_PREVIEW === 'director';
 
 export function recordSourceContinue(save: Save, deal: { campaignLevel?: number }) {
   const attempt = save.attempt;

@@ -1,3 +1,4 @@
+import { releaseProfile } from '../config/profile';
 import type { LavaRun } from './events/campaign-liveops';
 import type { CampaignLives } from './campaign-lives';
 import type { StoreProgress } from './commerce/storefront';
@@ -10,8 +11,9 @@ import type { CommerceJournal } from './commerce/orders';
 import type { RewardOffers } from './reward-offers';
 
 export const RULES_VERSION = 3;
-export const CONTENT8_PREVIEW = import.meta.env?.VITE_CONTENT8_PREVIEW === '1';
-export const OWNER_ACCEPTANCE_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'acceptance';
+export const CONTENT8_PREVIEW = Boolean(releaseProfile) || import.meta.env?.VITE_CONTENT8_PREVIEW === '1';
+export const LEGACY_OWNER_PREVIEW = releaseProfile ? undefined : import.meta.env?.VITE_C8_OWNER_PREVIEW;
+export const OWNER_ACCEPTANCE_PREVIEW = LEGACY_OWNER_PREVIEW === 'acceptance';
 export const CONTENT_VERSION = CONTENT8_PREVIEW ? 8 : 7;
 export const BALANCE_VERSION = 3;
 export interface Card {
@@ -51,6 +53,7 @@ export interface Deal {
   starter?: { version: 1; cards: Readonly<Record<string, 'magnet' | 'hammer'>> };
   shufflePreview?: 1;
   randomJokerPreview?: 1;
+  randomJokerCost?: 1;
   recovery?: { version: 1; freeRecycles: number; restoreBase: number; restoreIncrement: number };
   adaptive?: { version: 1; profile: string; baseId: string; direction: 'tight' | 'relief'; scope: 'PRODUCT_ADAPTED'; proof: string };
   bonusSlots?: Partial<Record<BonusKind, { coins: number }>>;

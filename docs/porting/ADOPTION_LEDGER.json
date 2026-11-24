@@ -14,6 +14,24 @@
     "state": "PLANNED_IMPLEMENTATION",
     "note": "B0 includes core C1 once; all source IDs, packet owners and implementation/acceptance statuses are preserved. Scope and evidence boundaries are defined in the linked audit and briefs."
   },
+  "integratedReleaseCandidate": {
+    "profile": "c8-release-v1",
+    "packet": "B0/C1",
+    "implementationRef": "docs/porting/B0_C1_INTEGRATED_PROFILE.md",
+    "candidateCapabilities": [
+      "hitapps-stock-dealer",
+      "hitapps-dynamic-difficulty",
+      "hitapps-easy-deals",
+      "hitapps-ordered-category",
+      "hitapps-lockers",
+      "azur-extra-foundation",
+      "azur-bonus-lower-column",
+      "azur-joker-random-column-insertion",
+      "hitapps-stock-restore",
+      "hitapps-lives"
+    ],
+    "evidence": "Two implementations replay all composed L16 passports. SDK/device rollout and source gaps remain open."
+  },
   "researchMethod": {
     "decisionDate": "2026-11-24",
     "decisionRef": "docs/porting/RESEARCH_METHOD_2026-11-24.md",

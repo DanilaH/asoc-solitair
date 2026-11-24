@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { campaignDeals, legacyCampaignDeals } from '../../src/content/campaign';
+import { content7Deals as campaignDeals } from '../../src/content/campaign-v7';
+import { legacyCampaignDeals } from '../../src/content/campaign';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { campaignId, markTutorial } from '../../src/domain/progression';
 import { lesson, recordLearning, ruleIntroduction } from '../../src/app/tutorial';

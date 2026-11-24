@@ -1,10 +1,11 @@
+import { LEGACY_OWNER_PREVIEW } from '../../domain/types';
 import { activePurchaseGoods } from './orders';
 import { PRODUCTS, CHECKOUT_PRODUCT_INDEX, type ProductGood } from './catalog';
 import { reviewOffers, type CommercialContext, type OfferFamily } from './offer-policy';
 import { OWNER_ACCEPTANCE_PREVIEW } from '../types';
 import type { Save } from '../types';
 
-export const STOREFRONT_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'storefront' || OWNER_ACCEPTANCE_PREVIEW;
+export const STOREFRONT_PREVIEW = LEGACY_OWNER_PREVIEW === 'storefront' || OWNER_ACCEPTANCE_PREVIEW;
 const natural = (n: unknown): n is number => Number.isSafeInteger(n) && (n as number) >= 0;
 export interface StoreProgress {
   version: 1; season: string; clears: number; piggy: number; freeClaimed?: true;

@@ -1,6 +1,7 @@
+import { LEGACY_OWNER_PREVIEW } from '../../domain/types';
 import type { Save } from '../types';
 
-export const OFFER_CAMPAIGNS_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'offer-campaigns';
+export const OFFER_CAMPAIGNS_PREVIEW = LEGACY_OWNER_PREVIEW === 'offer-campaigns';
 export const OfferTrigger = {
   SessionStarted: 0, LevelStarted: 1, LevelCompleted: 2, LevelFailed: 3,
   NoValidMoves: 4, OutOfCoins: 5, OutOfBooster: 6, Manual: 7,

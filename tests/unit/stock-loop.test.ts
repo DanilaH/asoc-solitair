@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { campaignDeals } from '../../src/content/campaign';
+import { content7Deals as campaignDeals } from '../../src/content/campaign-v7';
 import { canReachTransfer, dispatch, freshSave, legalCommands } from '../../src/domain/engine';
 import type { Board, BoardCommand, Deal } from '../../src/domain/types';
 import { advance } from '../../tools/qa/gameplay-oracle';

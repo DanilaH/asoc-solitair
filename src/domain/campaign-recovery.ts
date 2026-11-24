@@ -1,11 +1,12 @@
 import { applyBoard } from './engine';
 import { recordUndo } from './history';
 import { activePurchaseGoods } from './commerce/orders';
-import { OWNER_ACCEPTANCE_PREVIEW } from './types';
+import { releaseProfile } from '../config/profile';
+import { LEGACY_OWNER_PREVIEW, OWNER_ACCEPTANCE_PREVIEW } from './types';
 import type { Attempt, Board, Deal, Save } from './types';
 
-export const RECOVERY_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'recovery';
-export const RECOVERY_GAMEPLAY = RECOVERY_PREVIEW || OWNER_ACCEPTANCE_PREVIEW;
+export const RECOVERY_PREVIEW = LEGACY_OWNER_PREVIEW === 'recovery';
+export const RECOVERY_GAMEPLAY = releaseProfile?.capabilities.stockRestore === 'active' || RECOVERY_PREVIEW || OWNER_ACCEPTANCE_PREVIEW;
 
 export function restoreQuote(attempt: Attempt, deal: Deal) {
   const { board } = attempt, policy = deal.recovery;

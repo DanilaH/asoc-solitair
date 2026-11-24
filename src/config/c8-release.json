@@ -1,0 +1,33 @@
+{
+  "id": "c8-release-v1",
+  "contentVersion": 8,
+  "rulesVersion": 3,
+  "saveSchemaVersion": 1,
+  "balanceVersion": 3,
+  "policies": {
+    "issuance": "c8-core-r1",
+    "difficulty": "c8-budget-r2",
+    "recovery": 1,
+    "lives": 1,
+    "economy": "existing-balance-v3",
+    "advertising": "existing-placement-gates"
+  },
+  "capabilities": {
+    "generation": "active",
+    "difficulty": "active",
+    "equality": "qa",
+    "orderedKeys": "active",
+    "bonusSlots": "active",
+    "frozenBoundPuzzleGoldenStarter": "qa",
+    "manualJoker": "active",
+    "randomJoker": "active",
+    "stockRestore": "active",
+    "earnedUnlimited": "active",
+    "newUnlimited": "pending",
+    "lives": "active",
+    "proofShuffle": "qa",
+    "advertising": "existing-gates",
+    "purchases": "off",
+    "retention": "pending"
+  }
+}

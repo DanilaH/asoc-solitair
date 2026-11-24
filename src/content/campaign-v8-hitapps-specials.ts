@@ -1,7 +1,8 @@
+import { LEGACY_OWNER_PREVIEW } from '../domain/types';
 import { decodeRoute } from './campaign-v8-dealer';
 import type { Card, Deal } from '../domain/types';
 
-export const HITAPPS_SPECIALS_PREVIEW = import.meta.env?.VITE_C8_OWNER_PREVIEW === 'specials';
+export const HITAPPS_SPECIALS_PREVIEW = LEGACY_OWNER_PREVIEW === 'specials';
 const card = (id: string, category: string, text: string, extra: Partial<Card> = {}): Card =>
   ({ id, category, text, explanation: text, ...extra });
 

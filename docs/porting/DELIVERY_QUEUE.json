@@ -1,5 +1,42 @@
 {
   "schema": "asoc-autonomous-delivery-queue-v1",
+  "deliveryBrief": {
+    "asOf": "2026-11-24",
+    "codeRef": "c4215e18d54927a5ac73a350876f29852aa36861",
+    "docsBasisRef": "23f04d32f00ca4cb8bd569e8802a75343e48bd3c",
+    "auditRef": "docs/porting/DEVELOPER_AUDIT_2026-11-24.md",
+    "masterRef": "docs/porting/CORE_ADS_RELEASE_TZ_2026-11-24.md",
+    "streamRefs": [
+      "docs/porting/CORE_RELEASE_IMPLEMENTATION_TZ_2026-11-24.md",
+      "docs/porting/ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24.md",
+      "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
+    ],
+    "state": "PLANNED_IMPLEMENTATION",
+    "note": "B0 includes core C1 once; all source IDs, packet owners and implementation/acceptance statuses are preserved. Scope and evidence boundaries are defined in the linked audit and briefs."
+  },
+  "researchMethod": {
+    "decisionDate": "2026-11-24",
+    "decisionRef": "docs/porting/RESEARCH_METHOD_2026-11-24.md",
+    "kitGuidanceRef": "06a01d5c1f7af3cdf8013c9ce0f6a691d086af78",
+    "briefTemplate": "docs/porting/RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md",
+    "sourceEvidenceRepository": "DanilaH/mini-games-kit",
+    "sourceEvidenceVisibility": "private",
+    "implementationBasis": "Own implementation based on inspected original code and recovered architecture; no clean-room isolation required."
+  },
+  "releaseScope": {
+    "decisionDate": "2026-11-24",
+    "decisionRef": "docs/porting/OWNER_AD_RELEASE_2026-11-24.md",
+    "nearTermGoal": "Integrated core and all approved advertising; real-money purchases unavailable",
+    "realMoneyPurchases": "BLOCKED_EXTERNAL",
+    "liveIapRequiredForFirstRelease": false,
+    "softCurrencyPurchasesRetained": true,
+    "advertisingAcceptanceRequired": true,
+    "preserveAllSourceFeatures": true,
+    "returnToPaidActivation": "When purchase connectivity becomes available, verify provider and entitlement/restore/refund prerequisites; do not reopen the seven already-approved directions.",
+    "nonIapWork": "Core, lives, recovery, free rewards and advertising must not require merchant/checkout activation. The payment blocker applies to monetary acquisition channels, not entire commercial families; retain independent work from P22-P25.",
+    "capabilityMappingRef": "docs/porting/PRODUCT_CAPABILITY_RECHECK_2026-11-24.md",
+    "scopeInterpretation": "Multiple source IDs can map to one product capability with versioned rules and preserved provenance. Source inventory and packet counts are not counts of mandatory separate release features; acceptance applies to the selected product scenarios without deleting the full roadmap."
+  },
   "asOf": "2026-11-21",
   "sourcePin": {
     "repo": "DanilaH/asoc-solitair",

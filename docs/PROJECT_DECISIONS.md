@@ -2,6 +2,10 @@
 
 The authoritative decision log is [DECISIONS.md](../DECISIONS.md); current delivery and evidence are in [SESSION_HANDOFF.md](SESSION_HANDOFF.md). This file is a navigation bridge, not another decision history.
 
+**Current research-method decision · 24 November:** follow [source code and architecture → our implementation](porting/RESEARCH_METHOD_2026-11-24.md), the exact kit method pin `06a01d5c1f7af3cdf8013c9ce0f6a691d086af78`, and the [implementation-brief template](porting/RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md). Relevant original fragments belong in private kit evidence; this public consumer carries our own code and links. Clean-room isolation is not required. This method pin is independent of the runtime/general guidance snapshots below and changes no feature status.
+
+For current product scope use [core and advertising without an IAP dependency](porting/OWNER_AD_RELEASE_2026-11-24.md), [source-to-product grouping](porting/PRODUCT_CAPABILITY_RECHECK_2026-11-24.md) and [delivery progress](porting/DELIVERY_PROGRESS.md). The dated C6/C7/C8 snapshots below retain their historical meaning and do not override these later owner decisions or claim current branch integration.
+
 - Platform: portrait Android/RuStore; browser is the development/audit surface.
 - Main baseline: game0.17.1/code26, rules/content/balance3/6/3. Content7 feature candidate:0.18.0/code27,3/7/3, eighty new immutable IDs; original80, C6 fifteen and daily28 remain addressable for historical attempts/Undo. See the Content7 acceptance file, not historical CI claims below.
 - **Active but unmerged C8 development (21 November):** 0.20.3/code44 on [PR #68](https://github.com/DanilaH/asoc-solitair/pull/68), Q1 campaign audit on [PR #70](https://github.com/DanilaH/asoc-solitair/pull/70); [Q2 acceptance protocol](qa/content-v8/Q2_HUMAN_ACCEPTANCE_AND_Q1_FOLLOWUP_2026-11-21.md) is not a completed phone test. Distinguish this from the accepted 0.17.1 main baseline. All 114 source IDs still belong to the roadmap; ledger statuses on Q1 are 39 implemented-unverified, 5 in-progress, 47 roadmapped, 13 evidence-gap, 9 blocked, 1 deferred, 0 accepted.

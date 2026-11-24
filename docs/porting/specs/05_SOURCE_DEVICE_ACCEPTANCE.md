@@ -1,8 +1,10 @@
-**P36 supplemental native source 22.11:** [AZUR original CheckAvailableMoves and Hint/Validator two Joker predicates](../../qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md) are static on exact original 1.3.3.8 ELF. The optional GameManager delegate identity and original screen/offer still require live original ARM64 device; do not infer loss or IAP from code alone. Current product chosen safe hint remains adapted, and status 115 source/38 packets unaffected.
+**P36 supplemental native source 22.11:** [AZUR original CheckAvailableMoves and Hint/Validator two Joker predicates](../../qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md) are static on exact original 1.3.3.8 ELF. The optional GameManager delegate identity remains unresolved: recover it through authenticated type/callsite evidence or original execution; actual screen/offer activation still requires full original-client observation. Do not infer loss or IAP from the unresolved callback. Current product chosen safe hint remains adapted, and status 115 source/38 packets unaffected.
 
 # Technical Spec 05 — source runtime, physical Android, release acceptance
 
 **P02, P36, P37; acceptance for all development packets.** See [Q2 human playtest](../../qa/content-v8/Q2_HUMAN_ACCEPTANCE_AND_Q1_FOLLOWUP_2026-11-21.md), [Q2 isolated control #73](https://github.com/DanilaH/asoc-solitair/pull/73), [Q1c route-cost evidence](../../qa/content-v8/Q1C_FINITE_COST_DEEP_RECONCILIATION_2026-11-21.md), [Hitapps original runtime oracle](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-18-hitapps-runtime-oracle/README.md), [AZUR corrected original runtime oracle](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-20-azur-runtime-oracle/README.md).
+
+**Метод исследования и переноса · 24.11.2026:** [текущий метод](../RESEARCH_METHOD_2026-11-24.md) и [шаблон передачи](../RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md) разрешают опираться на прочитанный исходный код и архитектуру без clean-room изоляции. Релевантный точный вывод инструментов сохраняется с provenance в private mini-games-kit; вывод инструмента, реконструированный псевдокод и собственная реализация явно разделены. Границы доказательств ниже не повышают ни один фактический статус и не заменяют Android/SDK-приёмку.
 
 ## Evidence tiers — never collapse them
 
@@ -10,6 +12,7 @@
 | --- | --- | --- |
 | SOURCE_VIDEO / ASSET / METADATA | Exact frame, packaged asset or metadata | Native action, active original server config or final stock |
 | NATIVE_STATIC | Authenticated native branch/opcode and source gate | Running original Android, real user eligibility |
+| NATIVE_ISOLATED | Identified original machine-code functions executed with recorded inputs, ABI, harness and controlled dependencies/shims | Full original client, actual SDK/remote behavior, unexecuted branches or human/device acceptance |
 | PRODUCT_MODEL | Own rules, saved state, oracle, simulated callbacks | Original binary parity, human difficulty or real ad fill |
 | P4/P5_CHOICE | Replayable second winning route / stratified bounded sample | Global optimal regret, all alternatives safe, player quality |
 | WEB_TOUCH | Correct content8 preview plus real Playwright pointer actions | Android haptics, OS lifecycle and SDK callbacks |
@@ -19,6 +22,8 @@
 | LIVE_COMMERCE | Verified merchant invoices/receipts/reversals and settled money | Real money earned from ad/purchase requests or mock |
 
 A source ID may have an ENGINEERING_VERIFIED implementation yet still NEEDS_DEVICE or SOURCE_GAP. Don't promote it to ACCEPTED until the declared source/product/human acceptance conditions are actually fulfilled.
+
+NATIVE_ISOLATED requires execution of the authenticated original function bodies, not a rewrite of their logic in our Python/TypeScript model. Record the original-file hash and function boundaries, runner/emulator and ABI, initialized state, replaced host calls/shims, inputs, reached paths and observed outputs. Static excerpt/opcode checks remain NATIVE_STATIC; executing researcher pseudocode remains PRODUCT_MODEL. A comparison against an isolated original function supports only those tested cases and boundaries. Full original-client runs, real Android SDK callbacks and human playtests retain their separate gates.
 
 ## P02 — Q2 human acceptance and Q3 genuine SDK observation
 
@@ -34,7 +39,7 @@ If phone is unavailable, finish independent web/QA fixture tests and produce APK
 
 ## P36 — two genuine original Hitapps/AZUR runs, plus Unico original capture
 
-**Only an authorized isolated Android environment** with matching original binary; never inspect source on the owner's daily personal phone, commit vendor binary/assets to public repo, or collect actual user credentials, commercial account data or proprietary card text.
+**Full original-client captures** use an authorized isolated Android environment with the matching original binary, not the owner's daily personal phone. Static analysis and NATIVE_ISOLATED execution of original functions are separate valid research routes and do not require a claim that the full Android client ran. Keep relevant exact decompiler/disassembler excerpts in the designated private mini-games-kit evidence annex with hashes, tool/version, method/RVA, boundaries and source-feature links; developers may read them as the basis of their own implementation. Do not publish vendor binaries/assets, whole content banks, personal identifiers or credentials in this public consumer repository. Source excerpts, reconstructed pseudocode and product code must stay explicitly distinguishable.
 
 **Hitapps:** com.hitappsgames.wordsolitaire 1.26.2/code3742 original XAPK SHA256 22aaff3a6d5b70f217b8feb7348538f5ab3352d4e8c766406cbddcbcd71e49f0; ARM32. Use mini-games-kit prepared capture scripts and exact XAPK verifier. For at least two original level/restart episodes capture build+locale+source level config, active feature/segment/penalty/seed flags, original candidate Priority/EasyDeals/Equality selection, original afterShuffle+afterFinal numeric stock/tableau, complete board and move budget. Static source proof exists; genuinely executed original sessions are **0** so far. Real config and first actual special-card appearance remain unknown.
 
@@ -42,11 +47,11 @@ If phone is unavailable, finish independent web/QA fixture tests and produce APK
 
 **Unico:** video evidence only, exact original APK not available. Acquire and authenticate original package before calling Magnet, loss/redeal or DailyPuzzle rules source-exact. A video tooltip alone does not establish a helper action. If original APK/device absent, record external gap and proceed with source-shaped/adapted product work from other packages.
 
-Original trace evidence requires source SHA, original package/version/locale, timestamps and anonymous numeric cards/offsets, source model replay and falsification checks. Do not upload copyrighted source content, user identifiers or secrets.
+Original trace evidence requires source SHA, original package/version/locale, timestamps and anonymous numeric cards/offsets, plus replay/comparison and falsification checks appropriate to its evidence tier. Relevant exact tool-output excerpts belong in the designated private research annex under the current method, with public consumer links and our own implementation here. Do not include user identifiers or secrets; this evidence permission does not authorize shipping vendor source files or assets as product code/content.
 
 ## P37 — product release, honest ledger and kit impact
 
-Every release snapshots **all 114** pinned source IDs with source proof tier, current implementation, exact PR+commit, test evidence, Android/P6/original-runtime and live-money statuses, unknowns and next action. A partial implementation passes ENGINEERING_VERIFIED only if actual unit/infrastructure/game-logic/Web preview tests are green at the exact HEAD; a source-original parity claim needs authentic original original-client results. Formal statuses do not mean 0 currently functional features.
+Every release snapshots **all IDs in the current pinned source inventory (115 at the 24.11.2026 method adoption)** with source proof tier, current implementation, exact PR+commit, test evidence, Android/P6/original-runtime and live-money statuses, unknowns and next action. A partial implementation passes ENGINEERING_VERIFIED only if actual unit/infrastructure/game-logic/Web preview tests are green at the exact HEAD. State the boundary of any source comparison: static contract, tested original-function cases, or full-client behavior. Isolated original-function agreement is not full-client parity; a full-client claim needs authentic original-client observations. Formal statuses do not mean 0 currently functional features.
 
 ### Exact commands
 

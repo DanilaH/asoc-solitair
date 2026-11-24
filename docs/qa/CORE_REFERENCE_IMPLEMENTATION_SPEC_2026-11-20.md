@@ -1,5 +1,7 @@
 # Association Solitaire — полное ТЗ переноса core gameplay из Hitapps / AZUR / Unico
 
+**Уточнение метода · 24.11.2026:** применять [метод исследования и переноса](../porting/RESEARCH_METHOD_2026-11-24.md) и [шаблон ТЗ](../porting/RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md). Core строится собственной реализацией непосредственно на основе изученного кода и архитектуры оригинала, без clean-room изоляции. Точный вывод инструментов хранится с provenance в закрытом source-evidence приложении kit; consumer содержит собственный код/ассеты и ссылки. Исторические source findings и UNKNOWN ниже не повышаются до runtime parity из-за смены метода.
+
 **Дата:** 20.11.2026  
 **Источник продукта:** `DanilaH/asoc-solitair` — development `feat/c8-onboarding-dealer-20261119`, baseline `bf26fe7280b05c458e12626590bbe5cf789c6788` на момент аудита. `game/main 19ea067f1788f9aabdabf819c6008e15475b22be` — старый C6. Разработка Content8: [PR #41](https://github.com/DanilaH/asoc-solitair/pull/41). [PR #42](https://github.com/DanilaH/asoc-solitair/pull/42) — **исследовательское ТЗ Equality**, не реализованный runtime.  
 **Исследовательский исходник:** [mini-games-kit core audit PR #78 (merged)](https://github.com/DanilaH/mini-games-kit/pull/78) и [доказательства](https://github.com/DanilaH/mini-games-kit/blob/3f18a9e915a8414b8b10f645bf9e76ef4a30e3ac/research/games/association-solitaire/2026-11-20-core-source-proof/README.md); source inventory **114** IDs (including the AZUR art and locale preload study in #56) и [consumer ledger](../porting/ADOPTION_LEDGER.json). Research guidance revision и runtime kit dependency — **разные pin**; это ТЗ не обновляет SDK.
@@ -13,8 +15,9 @@
 | `ASSET_VERIFIED` | исходные authenticated LevelBundle / LevelConfig значения | Итоговая выбранная генератором раздача или online override |
 | `VIDEO_OBSERVED` | конкретное действие/экран/результат | Точный seed/RNG, payout policy, SDK callback |
 | `MODEL_PARITY` | две свои модели или наш engine+oracle дали одинаковый replay | Сопоставление с запущенным оригинальным APK |
+| `NATIVE_ISOLATED` | именно оригинальные функции исполнены в ограниченном harness; указаны синтетические входы, shims, покрытые ветви и ограничения | Запуск полного оригинального клиента, live config/SDK или тест собственной модели |
 | `GAME_IMPLEMENTED` | изменение есть в точном коде/коммите | Плейтест на телефоне или коммерческий успех |
-| `ORIGINAL_RUNTIME_PARITY` | точные оригинальные build/config/seed и сравнённые состояния **реально выполняемого** оригинала | Невозможно получить из статического отчёта |
+| `ORIGINAL_RUNTIME_PARITY` | точные оригинальные build/config/seed и сравнённые состояния **реально выполняемого полного клиента/APK** | Невозможно получить из статического отчёта или одного изолированного вызова функции |
 | `UNKNOWN` | конкретно указана отсутствующая проверка | Можно подменить произвольной эвристикой и объявить копию |
 
 **Первоисточники:**
@@ -47,7 +50,7 @@ Reference source LevelConfig / LevelBundle (source hash, local override, remote 
 
 **ВАЖНО:** native Hitapps `RunForNewLevel` (`Initial→Shuffle→Final`) и `BuildSimulatedPlan` (candidate search + delegated `RunShufflePhase` BEFORE scoring + `RunFinalPhase` afterward) — **разные ветви**. Не упрощать их до «после рандома включить все эффекты». `LevelType` flags и `Applied/Failed` результаты хранить отдельно от вероятности победы.
 
-Core должен быть построен на **нашем чистом коде**, а не копировании стороннего Unity/IL2CPP. Для опубликованных уровней итоговый `Deal` заморожен; тяжёлый solver/генератор выполняется offline или отдельным worker, а не во время жеста на UI-thread.
+Core должен быть построен на **нашей реализации, непосредственно основанной на изученном декомпилированном/native коде и архитектуре оригинала**. Для каждого переносимого механизма ТЗ связывает исходное доказательство (доступную выдержку либо подтверждённое наблюдение) с алгоритмом, ответственностью компонентов, структурами данных, владением состоянием и порядком вызовов, затем с отличиями consumer и проверкой адаптации. Выдержки хранятся в закрытом kit по действующему методу; готовые сторонние Unity/IL2CPP файлы и бинарники в продукт не включаются. Для опубликованных уровней итоговый `Deal` заморожен; тяжёлый solver/генератор выполняется offline или отдельным worker, а не во время жеста на UI-thread.
 
 ## 2. Блок R — точность обычных правил и cost model
 

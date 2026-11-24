@@ -1,3 +1,11 @@
+# 2026-11-24 — Source code and architecture as research and implementation evidence
+
+After reviewing mini-games-kit's new method, the owner instructed: «давай исправь расхождения и будем делать тз». Adopt the [Solitaire research-method contract](docs/porting/RESEARCH_METHOD_2026-11-24.md), based on exact kit guidance `06a01d5c1f7af3cdf8013c9ce0f6a691d086af78` (PR #139 was open, not merged into main, at adoption).
+
+Our implementation may directly use inspected decompiled/native source and recovered architectural techniques as its basis; clean-room isolation is not required. Relevant exact source excerpts belong in the verified private mini-games-kit research reports, with build/SHA/tool/method/bounds provenance and sourceFeatureIds. The public game keeps its own implementation, words, assets and audio, plus links and adaptation/acceptance rationale. This supersedes the previous blanket source-excerpt/decompilation bans for owner-authorized research. Preserve historical quotations and findings without pretending they were rerun.
+
+Use the [brief template](docs/porting/RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md). Keep original tool output, researcher pseudocode and product code separate, and distinguish static proof, own models, isolated execution of original functions and full original-app execution. Runtime kit, general guidance and source-inventory pins remain independent. This documentation decision does not activate SDK/ads, change saves or balance, or raise feature statuses. The [core-and-advertising release plan](docs/porting/OWNER_AD_RELEASE_2026-11-24.md), all 115 source IDs/38 packets and complete roadmap remain in force.
+
 # 2026-11-18 — Content7 offline campaign authoring
 
 The owner-approved Content7 spec and80-row plan replace campaign selection with80 distinct immutable IDs while preserving all historical definitions and attempt ownership. Content7 changes content only: rules3/balance3, helper unlocks3/4/8, canonical rewards, daily rotation, compact geometry/art/audio/native SDK settings remain. The5-level cycle starts6: PEAK, REST, BASE, BASE, BASE; first ordered30, first keys49, final80 ordinary. No runtime director/RNG, added economy or paywall.

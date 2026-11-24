@@ -1,5 +1,15 @@
 # Association Solitaire — полная дорожная карта переноса исследованных систем
 
+**Метод переноса · 24.11.2026:** применять [принятый владельцем метод](RESEARCH_METHOD_2026-11-24.md) и [шаблон ТЗ](RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md). Собственная реализация опирается непосредственно на изученный код и архитектуру оригинала, без clean-room изоляции; релевантные точные выдержки и provenance хранятся в закрытой исследовательской части kit. Датированные снимки ниже сохраняют свою доказательную силу и ограничения: обновление метода не повышает статусы, не меняет source pin и не исключает системы из дорожной карты.
+
+**Действующие уточнения владельца · 24.11.2026:** [первый выпуск — кор и рекламная монетизация](OWNER_AD_RELEASE_2026-11-24.md), с **одной продуктовой рекламной паузой** на основе AdsBreak и Coffee Break. Денежный канал покупки недоступен и не блокирует независимые игровые монеты, бесплатный прогресс, рекламу и права с определённым non-IAP источником. Платёжные возможности сохраняются для будущей активации. Приёмка SDK/баланса/UX/Android выбранного состава обязательна; это уточнение не подтверждает реализацию.
+
+## Как связаны общий scope и ближайший выпуск
+
+[Матрица source → capability → stage](PRODUCT_CAPABILITY_RECHECK_2026-11-24.md) отделяет исследованные источники от наших продуктовых возможностей и этапов включения. Все **115 source IDs и 38 пакетов** остаются в общей дорожной карте. Эти числа не задают 115 самостоятельных функций/экранов и не означают, что весь реестр обязан быть включён в первый выпуск. Один продуктовый контракт может учитывать несколько источников, сохраняя различия и evidence gaps. Принятое объединение AdsBreak/Coffee Break в одну рекламную паузу не удаляет ни один source ID и не объявляет точную копию двух оригиналов.
+
+Ближайший состав определяется [решением 24.11](OWNER_AD_RELEASE_2026-11-24.md) и проверяется через [P37](P37_RELEASE_ACCEPTANCE.md). Независимые части коммерческих семейств — бесплатная дорожка, накопление, монетная или рекламная выдача — не получают merchant-блокер автоматически из-за наличия в той же семье платного товара. Денежный канал сохраняет собственные будущие gates; non-IAP право требует явного источника и самостоятельных проверок. Статусы кода, включения и приёмки раздельны. Датированные снимки и исторические числа ниже сохранены, их нельзя выдавать за готовность текущего HEAD.
+
 **19 ноября 2026 · Owner scope: full reference-system adoption, staged implementation · research/program document, NO game runtime edits in this PR.**
 
 This is the **single product-facing stage map** of all currently inventoried Hitapps/AZUR/Unico systems. The source inventory [mini-games-kit](https://github.com/DanilaH/mini-games-kit/blob/7f91abfd824162780a6567c6823b95864142957c/research/games/association-solitaire/porting/SOURCE_FEATURES.json), this [consumer ledger](ADOPTION_LEDGER.json), and the [full source evidence audit](https://github.com/DanilaH/mini-games-kit/blob/c751ae5e20cf5d466d4f2b4eb1ed504f0a220395/research/games/association-solitaire/porting/FULL_REFERENCE_AUDIT_2026-11-19.md) must be reconciled before any implementation.
@@ -171,15 +181,15 @@ Continue +10, coin +moves, rewards multipliers, offer variants, correct no-fill 
 
 ### E2. Контекстные рекламные возможности (5)
 
-In-game interstitial gates/caps, Coffee Break offer, banner, exact impression-level revenue attribution.
+Одна продуктовая рекламная пауза с gates/caps, баннер и фактический impression-level revenue. AdsBreak и Coffee Break остаются разными источниками требований к этой паузе; отдельный Coffee Break экран или второй показ из числа source ID не следует. Условия награды и отказа определяются продуктовым контрактом, исходные неизвестные сохраняются.
 
 | Source feature ID | Actual status | Next implementation or evidence action |
 | --- | --- | --- |
-| `hitapps-adbreak` | `ROADMAPPED` | Prototype in-level configurable opportunities/cooldowns with valid SDK impression attribution |
+| `hitapps-adbreak` | `ROADMAPPED` | Сопоставить source gates/caps с единой продуктовой рекламной паузой по решению 24.11; проверить opportunity/shown/cooldown и сохранение поля. Исторический статус этой строки не повышается документационной правкой. |
 | `hitapps-ingame-banner` | `IMPLEMENTED_UNVERIFIED` | Phone/RuStore safe-area+SDK ready/impression test; compare original placement and day mode |
 | `azur-fullscreen-ads-clock` | `IMPLEMENTED_UNVERIFIED` | Reconcile actual shown-vs-attempt clock and in-level cooldown with native flow |
 | `azur-ad-revenue-attribution` | `ROADMAPPED` | Verify ILRD/currency+placements in target ad provider, not revenue from click |
-| `unico-coffee-break` | `ROADMAPPED` | Study exact observed break context; design separate optional break/reward and native ad return preservation |
+| `unico-coffee-break` | `ROADMAPPED` | Сохранить наблюдения и неизвестные исходного Coffee Break; сопоставить с той же единой рекламной паузой, без отдельной обязательной UI-копии. Собственные условия награды — PRODUCT_ADAPTED, native return и сохранения требуют проверки. |
 
 ### E3. Коммерческая витрина и предложения (18)
 
@@ -274,7 +284,9 @@ Every PR in this implementation program must report feature IDs, original refere
 
 **Quality:** Independent simulator/bot + actual player visible decisions. Bound solver timeout is UNKNOWN, not mathematically unwinnable; `SourceEquality` late bot failure is NOT proof of an impossible board. Protect content IDs, migration, Undo, advertising native earned receipts, and result wallets. For game modification, use original independently authored assets/text/code; test human and platform constraints.
 
-**Commercial:** Original hidden server rates and ad activation are unknown. Measure real eligible/offered/SDK shown/impression/earned +10/apply/recovered/won/return, never infer earnings from request. Paid IAP remains BLOCKED for missing authorized store billing and payout proof, not OWNER_EXCLUDED. Do not make the PR34/35 feel candidates a blanket reason to omit monetization or meta.
+**Commercial:** Original hidden server rates and ad activation are unknown. Measure real eligible/offered/SDK shown/impression/earned +10/apply/recovered/won/return, never infer earnings from request. Paid IAP remains BLOCKED for missing authorized store billing and payout proof, not OWNER_EXCLUDED. This gate applies to actual monetary operations, not automatically to a family's free progression, soft-currency or rewarded paths. The first advertising release does not wait for live IAP; each included path still needs a defined product contract and its own acceptance. Do not make the PR34/35 feel candidates a blanket reason to omit monetization or meta.
+
+**Source parity and release acceptance:** P36 remains the original-runtime research track. Unknown source details cannot become SOURCE_EXACT through naming or source-count coverage. A specific unresolved rule/entitlement/safety dependency can block an included capability; incomplete research of an unrelated source does not automatically block a validated PRODUCT_ADAPTED release capability. All selected release rules, solvability, saves, SDK and device checks remain required.
 
 **Backlog governance:** change `SOURCE_FEATURES.json` in kit and `ADOPTION_LEDGER.json` in game together for every discovered system. After implementation, update both roadmap and ledger to `IMPLEMENTED_UNVERIFIED` or `ACCEPTED` with evidence. Owner alone can exclude a roadmap entry. Previous `HOLD/REJECT` archived notes remain historical, not controlling policy.
 
@@ -300,3 +312,4 @@ Every PR in this implementation program must report feature IDs, original refere
 **P0 original AZUR sprite-pack and localized count audit (20.11 kit PR #88):** Verified 90 UnityFS art sets/490 sprites, 89/90 art size parity with English and Russian word counts; set385 has one extra sprite conditionally affecting source levels44/884/1290/1974. Native level preload and localized count call sites now source-confirmed. All 33 theme dictionaries have 4539 IDs; EN/RU member counts differ in 1357 themes. The new independent B1 lifecycle item `azur-async-theme-art-preload` brings the complete map to **114/114**, no owner exclusions. Packaged != successfully loaded live; do not alter published C8 deals from this research alone.
 
 **P0 runtime instrumentation evidence gate (20.11, mini-games-kit PR #90):** Exact original AZUR XAPK metadata/ARM64 IL2CPP field ABI and dynamic exports now source-verified, opt-in local Frida numeric state capture authored, synthetic comparator tested, **but original Android process/seed outputs/board was not run or observed**. 114/114 systems unchanged, source tiers retained; actual two or more original level snapshots still prerequisite. This research update does not alter the Hitapps C8 dealer or existing saves.
+

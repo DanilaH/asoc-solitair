@@ -243,19 +243,25 @@
     {
       "id": "hitapps-stock-restore",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore.",
+      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore. Исчерпанный повтор показан на поле. Штатное восстановление доступно с той же ценой, SaveStore и Undo.",
       "nextAction": "Design true rule difference and migration before free/paid restore; don't sell existing free behavior Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "reason": "Existing free recycle contract requires a substantive rule/economy redesign",
       "stage": "E1",
-      "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md"
+      "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md",
+      "evidenceRefs": [
+        "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
+      ]
     },
     {
       "id": "hitapps-revive-offers",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore.",
+      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore. Continue после истёкшего Unlimited сохраняет согласованные фазу и бюджет Undo; codec восстанавливает уже записанные active/parked состояния.",
       "nextAction": "Compare coin/rewarded/segment options and save/device flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E1",
-      "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md"
+      "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md",
+      "evidenceRefs": [
+        "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
+      ]
     },
     {
       "id": "azur-coin-moves",
@@ -398,12 +404,13 @@
     {
       "id": "hitapps-puzzle-event",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P27 retains its own opt-in seven-day event, two tokens per unique campaign win and six fragment prices. MVP U5 explicitly excludes Picture from generic legacy milestone claims: existing save.picture token/gallery access and claimPicture prerequisites remain authoritative, including after earning expires. New ordinary Picture creation is still off; old earned tokens/parts/final rights are preserved.",
+      "currentImplementation": "P27 retains its own opt-in seven-day event, two tokens per unique campaign win and six fragment prices. MVP U5 explicitly excludes Picture from generic legacy milestone claims: existing save.picture token/gallery access and claimPicture prerequisites remain authoritative, including after earning expires. New ordinary Picture creation is still off; old earned tokens/parts/final rights are preserved. Обычный альбом объясняет доступный расход старых жетонов и отдельный claim иллюстрации.",
       "nextAction": "Complete final-branch browser/physical saved-Picture compatibility beside historical LiveOps rewards, especially completed wins with missing parts. Continue full source picture journey/reward comparison under P27; no generic claim may bypass fragment prerequisites.",
       "stage": "F1",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
-        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
+        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
+        "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
       "implementationBranch": "feat/c8-mvp-cohesion-20261124"
@@ -411,14 +418,15 @@
     {
       "id": "azur-daily-tasks",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "MVP U2/U3 retain the own four-task UTC schedule, frozen day/week definitions, common grant inventory and weekly 5-medal/20-coin milestone. Shared state drives Home/day/week readiness and reset times. The ordinary tasks dialog exposes only completed unclaimed older task/milestone records, claims their original IDs/frozen prizes, and assigns old task medals to the original week. Current incomplete and completed/claimed states are explicit; a finished weekly meter no longer advertises another reward above its cap.",
+      "currentImplementation": "MVP U2/U3 retain the own four-task UTC schedule, frozen day/week definitions, common grant inventory and weekly 5-medal/20-coin milestone. Shared state drives Home/day/week readiness and reset times. The ordinary tasks dialog exposes only completed unclaimed older task/milestone records, claims their original IDs/frozen prizes, and assigns old task medals to the original week. Current incomplete and completed/claimed states are explicit; a finished weekly meter no longer advertises another reward above its cap. Новые дни прежней QA-недели получают ordinary-цели без IAP, исходные дни и недельные призы сохранены. На 80/80 новые first-clear-цели заменяет достижимый сбор темы.",
       "nextAction": "Complete final-branch browser/physical rollover, old task-to-old-week claim, duplicate and failure/reload acceptance; local retention suite passed 27 cases in c8-release-v1. Full R1/R2 source28, composite prizes, five milestones and 3-of-4 chest remain roadmap. Kit141/143 conditional1210/960 is not a live paywall, and video is not MakePurchase.",
       "stage": "F1",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
         "docs/porting/PR201_RECHECK_2026-11-24.md",
-        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
+        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
+        "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
       "implementationBranch": "feat/c8-mvp-cohesion-20261124"
     },
@@ -494,14 +502,15 @@
     {
       "id": "hitapps-lives",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "MVP C3 retains ordinary C8 candidate policy: 3 lives, one free refill per 5 minutes and 50-coin/RV alternatives. Ordinary retry/new-attempt UI explains the once-per-exhaustion charge when starting the next attempt; Home or Daily switching alone does not charge. Zero-resource UI retains the actual free timer and offers Daily only after its existing unlock. Atomic retry uses the existing loss identity.",
+      "currentImplementation": "MVP C3 retains ordinary C8 candidate policy: 3 lives, one free refill per 5 minutes and 50-coin/RV alternatives. Ordinary retry/new-attempt UI explains the once-per-exhaustion charge when starting the next attempt; Home or Daily switching alone does not charge. Zero-resource UI retains the actual free timer and offers Daily only after its existing unlock. Atomic retry uses the existing loss identity. Native snapshot различает активный запрос, earned и достоверное отсутствие. Запись выдачи предшествует ACK; естественный таймер применяется до видео.",
       "nextAction": "Complete final-branch browser/physical duplicate, reload, zero-resource, cancel and rewarded lifecycle acceptance. Do not retune 3/5min/50coin policy through this task. Source loss/regen/live parameters, SDK delivery and human numeric acceptance remain separate.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
       "evidenceRefs": [
         "docs/porting/PR201_RECHECK_2026-11-24.md",
-        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
+        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
+        "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
       "implementationBranch": "feat/c8-mvp-cohesion-20261124"
     },
@@ -714,14 +723,15 @@
     {
       "id": "azur-unlimited-moves-offer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "MVP F2 retains the ordinary 120-coin/60-second candidate and previously earned contracts. Android timed acquisition requires a fresh usable native recovery-clock reading before debit or consumption; a failed acquisition no longer creates a page-clock timed right. Incomparable saved page/native anchors expire conservatively while active/parked finite budgets, Undo and won/indefinite semantics are preserved.",
+      "currentImplementation": "MVP F2 retains the ordinary 120-coin/60-second candidate and previously earned contracts. Android timed acquisition requires a fresh usable native recovery-clock reading before debit or consumption; a failed acquisition no longer creates a page-clock timed right. Incomparable saved page/native anchors expire conservatively while active/parked finite budgets, Undo and won/indefinite semantics are preserved. Добавлен отсчёт в счётчике ходов. Continue и codec согласуют фазу и бюджет после expiry.",
       "nextAction": "Complete final-branch CI and physical native-clock failure, background/process restart and rollback acceptance. Verify no debit or earned-right consumption on failed acquisition and no extension of incomparable old timers. Candidate value/balance and source lifetime/acquisition policy remain unaccepted; keep full P19 source work.",
       "stage": "E1",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
       "evidenceRefs": [
         "docs/porting/PR201_RECHECK_2026-11-24.md",
-        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
+        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
+        "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
       "implementationBranch": "feat/c8-mvp-cohesion-20261124"
     },
@@ -1226,9 +1236,12 @@
       "id": "azur-greedy-hint-order",
       "stage": "D2",
       "status": "ROADMAPPED",
-      "currentImplementation": "C8 resolveHint uses independently verified winning continuation/solver, not the original AZUR five-stage first-success greedy MoveHintSystem; this is an intentional PRODUCT_ADAPTED policy.",
+      "currentImplementation": "C8 resolveHint uses independently verified winning continuation/solver, not the original AZUR five-stage first-success greedy MoveHintSystem; this is an intentional PRODUCT_ADAPTED policy. Собственный Hint на замках/Puzzle ищет выигрыш по штатным командам и точному ключу доски. Воспроизведены законные выигрышные пути обеих аудиторских позиций L17/L26.",
       "nextAction": "P04 source native upgraded kit PR #98: exact MoveHintSystem Joker useless predicate (wouldUncoverHidden, alternative movable nonJoker, prior foundation) distinct from MoveValidator.HasAnyValidMove Joker predicate (CountJokersOnBoard>1 bypass, hidden previous/source, foundation). Native 5-stage hint class priority unchanged; keep current safe solver-backed Hint PRODUCT_ADAPTED, optional independently tested diagnostic and original Android P36 still needed. Issue #123 and docs/qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md.",
-      "evidenceRef": "docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md"
+      "evidenceRef": "docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md",
+      "evidenceRefs": [
+        "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
+      ]
     }
   ],
   "auditRevision": "2026-11-24-mvp-cohesion-local-implementation",

@@ -62,6 +62,11 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
     for (const board of [attempt.board, ...attempt.undo]) {
       board.rulesVersion ??= rules;
       if (boardRules(board) !== rules) throw Error('Отмена меняет правила попытки');
+      // 0.20.4 could add Continue's budget to an expired Unlimited snapshot
+      // without changing its phase. Both the live and parked codecs still validate the board.
+      if (attempt.continued === true && attempt.unlimited?.expired === true &&
+          board.phase === 'exhausted' && board.movesLeft === BALANCE.continueMoves &&
+          board.retainedMoves === undefined) board.phase = 'playing';
     }
   }
   if (legacy || previous) save.profile.jokers ??= BALANCE.initialJokers;

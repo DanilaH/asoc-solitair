@@ -31,9 +31,9 @@ final class RewardJournal {
         }
     }
     void record(JSONObject receipt) throws Exception {
-        JSONObject existing = pending();
-        if (existing != null) throw new IllegalStateException("Previous SDK event still pending");
-        // Keep exact receipt process-wide across Activity destruction if the disk is temporarily unavailable.
+        // show() verifies both journals are empty before admitting one SDK session.
+        // Capture before any new I/O so transient disk errors do not lose this callback.
+        if (unconfirmed.containsKey(path)) throw new IllegalStateException("Previous SDK event still pending");
         unconfirmed.put(path, receipt);
         persist(receipt);
     }

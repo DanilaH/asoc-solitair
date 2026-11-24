@@ -31,7 +31,7 @@ const relief16 = findDeal('campaign-c8-wave-016-relief-r2-c8-core-r1-rights-r1')
 type Report = { event: string; params: Record<string, string | number | boolean> };
 type ClockReading = { fail: boolean; boot: number; elapsed: number };
 type NativeClockFixture = ClockReading & { sampledAt: number; reads: number };
-type NativeStorageFixture = { fail: boolean; writes: number; failures: number };
+type NativeStorageFixture = { fail: boolean; writes: number; failures: number; breakTransition?: boolean; blockedRead?: boolean };
 
 function profile(deal: Deal = content8Dealer[3], id = 'mvp-core-campaign'): Save {
   const save = freshSave(deal, id);
@@ -98,11 +98,20 @@ async function observeAnalytics(page: Page, initialClock?: ClockReading) {
           if (plugin === 'App') return { isActive: true };
           if (plugin === 'SolitaireAudio') return { focused: true };
           if (plugin === 'SolitaireStorage') {
-            if (method === 'get') return { value: localStorage.getItem(options.key) };
+            if (method === 'get') {
+              if (storage.blockedRead) throw Error('Fixture read-back unavailable');
+              return { value: localStorage.getItem(options.key) };
+            }
             if (method === 'set') {
               storage.writes++;
               if (storage.fail) { storage.failures++; throw Error('Fixture storage temporarily unavailable'); }
+              const previous = localStorage.getItem(options.key);
               localStorage.setItem(options.key, options.value);
+              if (storage.breakTransition && previous &&
+                  JSON.parse(previous).attempt.dealId !== JSON.parse(options.value).attempt.dealId) {
+                storage.breakTransition = false; storage.blockedRead = true; storage.failures++;
+                throw Error('Fixture lost response after saving a different deal');
+              }
             }
             if (method === 'remove') localStorage.removeItem(options.key);
             if (method === 'readRecoveryClock') {
@@ -588,4 +597,88 @@ test('failed persistence of timed expiry backs off instead of spinning and resto
   await move(page, level16, { type: 'draw' });
   expect((await read(page)).attempt.board.movesLeft).toBe(level16.initial.movesLeft! - 2);
   expect((await read(page)).profile.coins).toBe(paidCoins);
+});
+
+for (const direction of ['to-daily', 'to-campaign', 'level-picker'] as const) {
+  test(`rebinds the board to a saved deal after ambiguous ${direction} transition`, async ({ page }) => {
+    const daily = dailyForDay(DAY);
+    const campaign = content8Dealer[3];
+    const save = direction === 'to-campaign' ? profile(daily, 'audit-active-daily') : profile(campaign);
+    if (direction === 'to-campaign') {
+      save.parked = { campaign: profile(campaign).attempt };
+      save.platform!.completedCampaign = profile(campaign).platform!.completedCampaign;
+    }
+    await observeAnalytics(page);
+    await seedHome(page, save);
+    await page.evaluate(() => {
+      (window as typeof window & { mvpNativeStorage: NativeStorageFixture }).mvpNativeStorage.breakTransition = true;
+    });
+    if (direction === 'level-picker') {
+      await page.locator('#level-picker-open').tap();
+      await page.locator('#level-2').tap();
+    } else {
+      await page.locator(direction === 'to-daily' ? '#daily-play' : '#home-play').tap();
+    }
+    const retry = page.locator('#save-retry');
+    await expect(retry).toBeVisible();
+    await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', save.attempt.dealId);
+    const committed = (await read(page)).attempt;
+    expect(committed.dealId).not.toBe(save.attempt.dealId);
+    await page.evaluate(() => {
+      (window as typeof window & { mvpNativeStorage: NativeStorageFixture }).mvpNativeStorage.blockedRead = false;
+    });
+    if (direction === 'to-campaign') {
+      // An unrelated settings write can confirm the earlier commit.
+      await page.locator('#menu').tap();
+      await page.locator('#haptics').uncheck();
+    } else await retry.tap();
+    const target = findDeal(committed.dealId)!;
+    await gameReady(page, target);
+    await expect(page.locator('#play-screen')).toBeVisible();
+    await expect(retry).toBeHidden();
+    const ready = await read(page);
+    expect(ready.attempt).toEqual(committed);
+    await move(page, target, target.winningPath[0]);
+    expect((await read(page)).attempt.undo.at(-1)).toEqual(committed.board);
+  });
+}
+
+test('shows timed Unlimited and makes free stock recovery reachable on the board', async ({ page }) => {
+  const touched = profile(level16, 'audit-timer-stock');
+  let save = touched;
+  while (save.attempt.board.stock.length || save.attempt.board.recyclesLeft) {
+    const next = dispatch(save, { type: save.attempt.board.stock.length ? 'draw' : 'recycle' }, level16);
+    if (!next.accepted) throw Error(next.reason);
+    save = next.next;
+  }
+  expect(save.attempt.board.phase).toBe('playing');
+  save.profile.coins = 120;
+  await page.setViewportSize({ width: 320, height: 568 });
+  await seedHome(page, save);
+  await page.locator('#home-play').tap();
+  await gameReady(page, level16);
+  await expect(page.locator('#stock-recovery')).toContainText('Повторы колоды исчерпаны');
+  const restore = page.locator('#stock-recovery-button');
+  await expect(restore).toHaveText('Восстановить бесплатно');
+  expect(await restore.evaluate(button => {
+    const r = button.getBoundingClientRect();
+    const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+    return button === hit || button.contains(hit);
+  })).toBe(true);
+  await page.locator('#wallet-open').tap();
+  await page.locator('#unlimited-preview').tap();
+  if (await page.locator('#helpers').isVisible()) await page.locator('#helper-return').tap();
+  await expect(page.locator('#moves')).toHaveText('∞');
+  const caption = page.locator('#moves-caption');
+  await expect(caption).toHaveText(/^(1:00|0:5[0-9])$/);
+  const before = await caption.textContent();
+  await page.clock.runFor(2100);
+  await expect(caption).not.toHaveText(before!);
+  await restore.tap();
+  await expect.poll(async () => (await read(page)).attempt.stockRestores).toBe(1);
+  await expect(restore).toBeHidden();
+  await page.locator('#undo').tap();
+  await expect(restore).toHaveText('Восстановить · 60 монет');
+  await expect(restore).toBeDisabled();
+  expect((await read(page)).profile.coins).toBe(0);
 });

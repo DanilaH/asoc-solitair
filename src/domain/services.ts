@@ -67,7 +67,7 @@ export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
 }): 'applied' | 'already-applied' {
   if (receipt.placement === 'life-refill') {
     // The consumed request nonce is the durable exact-once authority, even if a late receipt is restamped.
-    return settleLifeVideo(save, receipt.attempt, receipt.dealId) ? 'applied' : 'already-applied';
+    return settleLifeVideo(save, receipt.attempt, receipt.dealId, options?.offerNow) ? 'applied' : 'already-applied';
   }
   const state = platformState(save);
   if (state.receipts.includes(receipt.id)) return 'already-applied';
@@ -127,7 +127,11 @@ function resumeAttempt(save: Save, channel?: 'coins' | 'earned') {
   attempt.board.phase = 'playing';
   if (attempt.telemetry) attempt.telemetry.finished = false;
   // Undo can restore the cards, while the acquired move budget is kept.
-  for (const board of attempt.undo) if (board.movesLeft !== null) board.movesLeft += BALANCE.continueMoves;
+  for (const board of attempt.undo) {
+    if (board.movesLeft === null) continue;
+    board.movesLeft += BALANCE.continueMoves;
+    if (board.phase === 'exhausted') board.phase = 'playing';
+  }
   save.revision++;
 }
 export function purchaseHelper(save: Save, helper: 'hint' | 'undo' | 'joker'): boolean {

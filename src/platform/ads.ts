@@ -7,11 +7,12 @@ export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: Rewar
 export interface AdOutcome { shown: boolean; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
 export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean; campaignApproved?: boolean; livesApproved?: boolean; offersApproved?: boolean }
 export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string }
+interface PendingLife { id: string; dealId: string }
 export interface AdsBridge {
   status(): Promise<AdStatus>;
   prepareInterstitial(): Promise<void>;
   show(request: AdRequest): Promise<AdOutcome>;
-  pending(): Promise<{ receipts: unknown[] }>;
+  pending(): Promise<{ receipts: unknown[]; activeLife?: PendingLife | null }>;
   acknowledge(options: { id: string }): Promise<void>;
   pendingShown(): Promise<{ shown: unknown | null }>;
   acknowledgeShown(options: { id: string }): Promise<void>;
@@ -30,6 +31,8 @@ export function createAds(options: {
   commit(receipt: EarnedReceipt): Promise<ReceiptCommitResult>;
   commitShown(shown: FullscreenShown): Promise<ReceiptCommitResult>;
   beforeShow(request: AdRequest): Promise<void>;
+  pendingLife?(): PendingLife | undefined;
+  retireLife?(request: PendingLife): Promise<void>;
   onStatus(status: AdStatus): void;
   onEvent(event: AdEvent): void;
 }, bridge?: AdsBridge) {
@@ -57,9 +60,17 @@ export function createAds(options: {
     if (recoveryFlight) return recoveryFlight;
     recoveryFlight = (async () => {
       try {
+        const life = options.pendingLife?.();
         const result = await native.pending();
         if (!alive) return;
-        for (const value of result.receipts) { if (!alive) return; await queue.deliver(parseReceipt(value)); }
+        const receipts = result.receipts.map(parseReceipt);
+        for (const receipt of receipts) { if (!alive) return; await queue.deliver(receipt); }
+        // Only a successful native snapshot can establish that the authorization
+        // cannot earn a reward. Older bridges omit activeLife, so keep their request.
+        if (alive && life && result.activeLife === null && !receipts.some(receipt =>
+            receipt.placement === 'life-refill' && receipt.attempt === life.id && receipt.dealId === life.dealId)) {
+          await options.retireLife?.(life);
+        }
       } catch { /* Retry in the background, retaining the exact native receipt. */ }
       finally { recoveryFlight = undefined; }
     })();

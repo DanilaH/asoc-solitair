@@ -101,9 +101,10 @@ export function cancelLifeVideo(save: Save, id: string) {
   delete save.campaignLives!.pending;
   save.revision++;
 }
-export function settleLifeVideo(save: Save, id: string, dealId: string) {
+export function settleLifeVideo(save: Save, id: string, dealId: string, now?: number) {
   const lives = save.campaignLives;
   if (!lives || !matchesLifeVideo(save, id, dealId)) return false;
+  if (now !== undefined) refreshCampaignLives(save, now);
   delete lives.pending;
   lives.lastEarned = { id, dealId };
   if (lives.remaining < LIVES_RULES.max) addLife(lives);

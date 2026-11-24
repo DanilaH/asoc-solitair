@@ -420,7 +420,10 @@ try {
     },
     destroy() {},
   } : undefined);
-  const setInput = () => scene?.setEnabled(screen === 'game' && ready && !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
+  let transitionPresentation: { resumeId?: string } | undefined;
+  let sceneGeneration = 0;
+  const setInput = () => scene?.setEnabled(screen === 'game' && ready && $('#app').dataset.presentedDeal === save.attempt.dealId &&
+    !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
   const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && !adFree(save, Date.now(), 'banner') && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
   store.onChange = value => {
     // A previously ambiguous write can become confirmed during a later recovery.
@@ -429,7 +432,18 @@ try {
       confirmMonthlyBonuses(deferredMonthlyConfirmation.grants);
       deferredMonthlyConfirmation = undefined;
     }
-    save = value; wallet?.sync(value.profile.coins, presentingCommand); deal = findDeal(value.attempt.dealId)!; telemetry.sync(); if (!pendingWrites) { renderHud(); renderHome(); } updateBanner(); scheduleRecoveryClock();
+    const changedDeal = value.attempt.dealId !== save.attempt.dealId;
+    const changedAttempt = value.attempt.id !== save.attempt.id;
+    save = value; deal = findDeal(value.attempt.dealId)!;
+    if (scene && (changedDeal || (changedAttempt && transitionPresentation))) {
+      const animate = transitionPresentation?.resumeId !== value.attempt.id;
+      transitionPresentation = undefined;
+      presentLevelStart(animate);
+    }
+    wallet?.sync(value.profile.coins, presentingCommand);
+    telemetry.sync();
+    if (!pendingWrites) { renderHud(); renderHome(); }
+    setInput(); updateBanner(); scheduleRecoveryClock();
   };
   function clearRecoveryClock() {
     clearTimeout(recoveryClock); recoveryClock = undefined; recoveryTimerAt = undefined;
@@ -500,7 +514,15 @@ try {
   }
   const storefront = createStorefront(store);
   if (STOREFRONT_PREVIEW) void storefront.refresh().catch(() => undefined);
+  let lifeVideoInFlight: string | undefined;
   const ads = createAds({
+    pendingLife: () => lifeVideoInFlight ? undefined : save.campaignLives?.pending,
+    async retireLife(request) {
+      if (lifeVideoInFlight || !matchesLifeVideo(save, request.id, request.dealId)) return;
+      await store.mutate(next => {
+        if (!lifeVideoInFlight && matchesLifeVideo(next, request.id, request.dealId)) cancelLifeVideo(next, request.id);
+      });
+    },
     activity: runtime.activity,
     async beforeShow(request) {
       await store.mutate(next => {
@@ -642,14 +664,33 @@ try {
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   const hasTransfer = new WeakMap<Save['attempt']['board'], boolean>();
+  function renderUnlimitedTime() {
+    const timed = save.attempt.unlimited;
+    const left = timed && save.attempt.board.phase === 'playing'
+      ? unlimitedRemaining(timed, Date.now(), recoveryTime.read()) : undefined;
+    const caption = $('#moves-caption');
+    if (left === undefined || save.attempt.board.movesLeft !== null || recoveryClockBlocked()) {
+      caption.textContent = 'Ходы'; caption.removeAttribute('aria-label'); return;
+    }
+    const seconds = Math.ceil(left / 1000);
+    caption.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+    caption.setAttribute('aria-label', `Без лимита, осталось ${seconds} секунд`);
+  }
   function renderHud() {
     updateRecoveryBlock();
+    renderUnlimitedTime();
     $('#campaign-store-open').hidden = !STOREFRONT_PREVIEW;
     $('#coffee-open').hidden = !coffeePreview() || (deal.campaignLevel ?? 0) < 16 || save.attempt.board.phase !== 'playing';
     const restore = $<HTMLButtonElement>('#restore-stock'), price = restoreQuote(save.attempt, deal);
     restore.hidden = !recoveryEnabled() || price === undefined;
     restore.disabled = price === undefined || save.profile.coins < price || saving;
     restore.textContent = price ? `Восстановить колоду · ${price} монет` : 'Восстановить колоду · бесплатно';
+    const stockRecovery = $<HTMLButtonElement>('#stock-recovery-button');
+    $('#stock-recovery').hidden = screen !== 'game' || save.attempt.board.phase !== 'playing' ||
+      save.attempt.board.recyclesLeft !== 0 || save.attempt.board.stock.length > 0 || save.attempt.board.waste.length === 0;
+    stockRecovery.hidden = restore.hidden;
+    stockRecovery.disabled = restore.disabled || serviceBusy || store.needsRecovery || recoveryClockBlocked();
+    stockRecovery.textContent = price ? `Восстановить · ${price} монет` : 'Восстановить бесплатно';
     const unlimited = $<HTMLButtonElement>('#unlimited-preview');
     unlimited.disabled = saving || serviceBusy || store.needsRecovery;
     const purchase = recoveryEnabled() && quotePurchasedUnlimited(save, deal, unlimitedAccount(), Date.now());
@@ -1224,7 +1265,7 @@ try {
     if (!$<HTMLDialogElement>('#daily-tasks-dialog').open) return;
     const taskNames: Record<string, string> = {
       DailyLogin: 'Зайти в игру', DrawCards: 'Взять карты из колоды', ExecuteMoves: 'Сделать ходы',
-      CollectThemes: 'Собрать темы', CompleteLevels: 'Впервые пройти уровни', WinNoHints: 'Пройти без подсказок',
+      CollectThemes: 'Собрать темы', CompleteLevels: 'Впервые пройти уровни', WinNoHints: 'Впервые пройти раздачу без подсказок',
       UseHints: 'Использовать подсказки', CollectDailyBonuses: 'Забрать бонус дня',
       UseDefinitions: 'Открыть объяснения', UseJokers: 'Применить Джокеры', UseRollbacks: 'Отменить ходы',
       UseShuffles: 'Перемешать колоду', EarnCoins: 'Заработать монеты', BuyExtraMoves: 'Продолжить игру',
@@ -1337,9 +1378,9 @@ try {
     if (!$<HTMLDialogElement>('#picture-dialog').open) return;
     $('#picture-title').textContent = PICTURE_TITLE;
     $('#picture-status').textContent = gallery ? 'Иллюстрация сохранена в альбоме.' : `Жетоны · ${tokens}  •  Открыто ${parts.length} из ${PICTURE_PRICES.length}`;
-    $('#picture-prize').textContent = gallery ? '' : pictureClosed(save, Date.now())
-      ? 'Событие завершилось. Заработанные жетоны можно потратить.'
-      : 'За первую победу на каждом уровне — 2 жетона и 3 монеты.';
+    $('#picture-prize').textContent = gallery ? '' : PICTURE_PREVIEW && !pictureClosed(save, Date.now())
+      ? 'За первую победу на каждом уровне — 2 жетона и 3 монеты.'
+      : 'Открывайте фрагменты за сохранённые жетоны. Соберите все части, чтобы забрать иллюстрацию.';
     const claim = $<HTMLButtonElement>('#picture-claim');
     claim.hidden = !complete || gallery;
     claim.disabled = saving || serviceBusy;
@@ -1580,7 +1621,7 @@ try {
     renderHud(); renderHome(); updateBanner();
   }
   async function activateMode(mode: 'campaign' | 'daily', oldDaily = false, replaceConfirmed = false) {
-    if (!ready || saving || serviceBusy) return;
+    if (!ready || saving || serviceBusy || store.needsRecovery) return;
     const target = mode === 'daily' ? oldDaily && dailyAttempt(save) ? findDeal(dailyAttempt(save)!.dealId)! : dailyForDay(localDay()) : campaignAttempt(save) ? findDeal(campaignAttempt(save)!.dealId)! : campaignDeals[0];
     const previousDaily = dailyAttempt(save);
     const previousTarget = mode === 'daily' ? previousDaily : campaignAttempt(save);
@@ -1590,12 +1631,13 @@ try {
     try {
       clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined; activeHint = undefined;
       clearTimeout(outcomeTimer); clearTimeout(guideTimer); setInspect(false);
+      transitionPresentation = { resumeId: previousTarget?.id };
       await write(next => switchMode(next, mode, target, crypto.randomUUID()));
-      const animateEntry = !previousTarget || previousTarget.id !== save.attempt.id;
-      outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false'; screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
-      scene?.setDeal(deal, animateEntry);
     } catch { message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
-    finally { serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome(); }
+    finally {
+      if (!store.needsRecovery) transitionPresentation = undefined;
+      serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome();
+    }
   }
   dismissDifficulty = () => {
     const from = difficultyRequest?.returnTo;
@@ -1610,13 +1652,16 @@ try {
     difficultyRequest = undefined;
     if (level) void openLevel(level, true, false);
   }, domOptions);
-  function presentLevelStart() {
+  function presentLevelStart(animate: boolean) {
+    sceneGeneration++;
     outcomeViewed = false; ready = false; $('#app').dataset.ready = 'false';
+    runtime.activity.setBlocked('level-transition', true);
+    closeDialogs();
     screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
-    scene?.setDeal(deal, true);
+    setInput(); scene?.setDeal(deal, animate);
   }
   async function openLevel(level: number, confirmed = false, announce = true, redeal?: { attemptId: string; dealId: string }) {
-    if (!alive || !ready || saving || serviceBusy || level < 1 || level > unlockedLevel(save)) return;
+    if (!alive || !ready || saving || serviceBusy || store.needsRecovery || level < 1 || level > unlockedLevel(save)) return;
     if (redeal && (redeal.attemptId !== save.attempt.id || campaignRedeal(save.attempt)?.id !== redeal.dealId)) return;
     const target = campaignDeals[level - 1];
     const campaign = campaignAttempt(save);
@@ -1648,6 +1693,7 @@ try {
       try {
         clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined;
         clearTimeout(outcomeTimer); clearTimeout(guideTimer); activeHint = undefined; setInspect(false);
+        transitionPresentation = {};
         started = await write(next => {
           const previous = campaignAttempt(next);
           const previousDeal = previous && findDeal(previous.dealId);
@@ -1666,10 +1712,12 @@ try {
         if (started) {
           if (redeal) telemetry.track('level_restart');
           offerFact({ trigger: OfferTrigger.LevelStarted, key: 'start' });
-          presentLevelStart();
         }
       } catch { failed = true; if (!redeal) message('Не удалось сохранить переход. Попробуйте ещё раз.', true); }
-      finally { serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome(); }
+      finally {
+        if (!store.needsRecovery) transitionPresentation = undefined;
+        serviceBusy = false; if (ready) runtime.activity.setBlocked('level-transition', false); renderHud(); renderHome();
+      }
       if (blockedLives) { blockedLifeLevel = level; retryLifeRestart = false; openLives(); return; }
       if (redeal && !started) {
         if (save.attempt.board.phase === 'playing') showGame();
@@ -1718,10 +1766,13 @@ try {
       $('#word-title').textContent = content.title; $('#word-description').textContent = content.description ?? '';
       openDialog('#inspect-dialog');
     },
-    ready(active, newDeal) {
+    ready(active, newDeal, renderedDealId) {
       scene = active;
+      const generation = sceneGeneration;
       active.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
-        ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true'; $('#app').dataset.presentedDeal = deal.id;
+        if (generation !== sceneGeneration || renderedDealId !== save.attempt.dealId) return;
+        $('#app').dataset.presentedDeal = renderedDealId;
+        ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true';
         if (firstLaunch) { firstLaunch = false; showGame(); active.presentDeal(); announceDeal(); }
         else if (screen === 'game') { if (newDeal) announceDeal(); showGuidance(); }
         if (screen === 'game' && save.attempt.board.phase !== 'playing') outcome();
@@ -2053,18 +2104,21 @@ try {
     closeDialogs();
     serviceBusy = true;
     runtime.activity.setBlocked('level-transition', true);
-    let started = false;
     try {
-      started = await write(next => {
+      transitionPresentation = {};
+      await write(next => {
         if (next.attempt.id !== expected || next.attempt.dealId !== oldDeal.id) return false;
         const selected = localizedCampaignDeal(next, target);
         if (selected.id === oldDeal.id) return false;
         beginDeal(next, selected, crypto.randomUUID(), oldDeal);
         return true;
       });
-      if (started) presentLevelStart();
     } catch { message('Не удалось сохранить новую раздачу.', true); }
-    finally { serviceBusy = false; if (!started) runtime.activity.setBlocked('level-transition', false); }
+    finally {
+      if (!store.needsRecovery) transitionPresentation = undefined;
+      serviceBusy = false;
+      if (ready) runtime.activity.setBlocked('level-transition', false);
+    }
   }, domOptions);
   $('#replace-daily-yes').addEventListener('click', () => { void activateMode('daily', false, true); }, domOptions);
   $('#replay').addEventListener('click', () => { void replay(); }, domOptions);
@@ -2074,13 +2128,13 @@ try {
     if (!quote) return;
     serviceBusy = true; closeDialogs(); runtime.activity.setBlocked('level-transition', true);
     try {
+      transitionPresentation = {};
       const status = await write(next => commitAdaptiveRetry(next, quote, crypto.randomUUID(), Date.now()));
       if (status === 'started') {
         clearTimeout(workerDeadline); workerDeadline = undefined; worker?.terminate(); worker = undefined;
         clearTimeout(outcomeTimer); clearTimeout(guideTimer); activeHint = undefined; setInspect(false);
         telemetry.track('level_restart');
         offerFact({ trigger: OfferTrigger.LevelStarted, key: 'start' });
-        presentLevelStart();
       } else if (status === 'lives') {
         blockedLifeLevel = quote.level; retryLifeRestart = false; openLives();
       } else outcome();
@@ -2089,6 +2143,7 @@ try {
       $('#result-continue-error').textContent = store.needsRecovery ? 'Проверьте, сохранилась ли новая попытка.' : 'Не удалось сохранить новую попытку. Попробуйте ещё раз.';
       $('#result-continue-error').hidden = false;
     } finally {
+      if (!store.needsRecovery) transitionPresentation = undefined;
       serviceBusy = false;
       if (ready) runtime.activity.setBlocked('level-transition', false);
       if (alive) { renderHud(); renderHome(); }
@@ -2277,14 +2332,18 @@ try {
     credit.disabled = count >= LIVES_RULES.max || saving || serviceBusy;
     $<HTMLButtonElement>('#campaign-life-video').disabled = !livesVideoApproved() || !ads.status.rewarded || count >= LIVES_RULES.max ||
       Boolean(data?.pending) || saving || serviceBusy || Boolean(save.attempt.daily);
+    $('#campaign-life-recovery').hidden = !data?.pending;
     $('#campaign-life-retry').hidden = !count || (!retryLifeRestart && blockedLifeLevel === undefined);
   }
   function openLives() {
     if (!LIVES_PREVIEW) return;
     renderLives(); openDialog('#campaign-lives');
+    if (save.campaignLives?.pending && !lifeVideoInFlight) void ads.recover();
   }
-  const lifeTick = LIVES_PREVIEW ? setInterval(() => {
+  const recoveryHudTick = LIVES_PREVIEW || RECOVERY_GAMEPLAY ? setInterval(() => {
     if (!alive) return;
+    if (screen === 'game' && save.attempt.unlimited && !save.attempt.unlimited.expired) renderUnlimitedTime();
+    if (!LIVES_PREVIEW) return;
     const at = save.campaignLives?.refillAt;
     if (!saving && at !== undefined && Date.now() >= at) {
       void write(next => refreshCampaignLives(next, Date.now())).catch(() => undefined);
@@ -2309,15 +2368,18 @@ try {
   $('#campaign-life-video').addEventListener('click', async () => {
     if (!LIVES_PREVIEW || !livesVideoApproved() || saving || serviceBusy) return;
     const id = crypto.randomUUID(), source = deal.id;
-    serviceBusy = true;
+    serviceBusy = true; lifeVideoInFlight = id;
     try {
       if (!await write(next => authorizeLifeVideo(next, Date.now(), id, livesVideoApproved()))) return;
       closeDialogs();
       await ads.show({ kind: 'rewarded', mode: 'campaign', placement: 'life-refill', attempt: id, dealId: source });
       await ads.recover();
-      await write(next => cancelLifeVideo(next, id));
     } catch { message('Не удалось подтвердить восстановление жизни.', true); }
-    finally { serviceBusy = false; if (alive) openLives(); }
+    finally {
+      lifeVideoInFlight = undefined;
+      if (save.campaignLives?.pending?.id === id) await ads.recover();
+      serviceBusy = false; if (alive) openLives();
+    }
   }, domOptions);
   function eventRewardLabel(reward: EventReward) {
     return (['coins', 'hints', 'undos', 'jokers'] as const).filter(key => (reward[key] ?? 0) > 0)
@@ -2488,8 +2550,8 @@ try {
     } catch { message('Проверьте сохранение перед новым запросом.', true); }
     finally { serviceBusy = false; renderHud(); }
   }, domOptions);
-  $('#restore-stock').addEventListener('click', async () => {
-    if (!recoveryEnabled() || saving || serviceBusy || recoveryClockBlocked()) return;
+  async function restoreStock() {
+    if (!recoveryEnabled() || saving || serviceBusy || store.needsRecovery || recoveryClockBlocked()) return;
     const source = deal, cost = restoreQuote(save.attempt, source);
     if (cost === undefined) return;
     const quote = { attemptId: save.attempt.id, revision: save.revision, cost };
@@ -2499,7 +2561,10 @@ try {
         if (save.attempt.board.phase === 'exhausted') outcome();
       }
     } catch { message('Не удалось сохранить восстановление колоды.', true); }
-  }, domOptions);
+  }
+  for (const selector of ['#restore-stock', '#stock-recovery-button']) {
+    $(selector).addEventListener('click', () => { void restoreStock(); }, domOptions);
+  }
   $('#unlimited-preview').addEventListener('click', async () => {
     if (!recoveryEnabled() || !deal.recovery || saving || serviceBusy) return;
     const source = deal, attemptId = save.attempt.id, accountId = unlimitedAccount();
@@ -2626,18 +2691,17 @@ try {
     const error = $('#result-continue-error');
     try {
       await write(() => undefined);
-      if (save.attempt.board.phase === 'playing') {
-        closeDialogs();
-        if ($('#app').dataset.presentedDeal !== deal.id) {
-          runtime.activity.setBlocked('level-transition', true);
-          presentLevelStart();
-        } else { scene?.sync(); telemetry.sync(); }
+      if (ready && save.attempt.board.phase === 'playing') {
+        closeDialogs(); scene?.sync(); telemetry.sync();
       }
       error.hidden = true;
     } catch { error.textContent = 'Пока не удалось проверить сохранение.'; error.hidden = false; }
   }, domOptions);
   $('#save-retry').addEventListener('click', async () => {
-    try { await write(() => undefined); scene?.sync(); message('Сохранение проверено. Можно продолжать.'); }
+    try {
+      await write(() => undefined);
+      if (ready) { scene?.sync(); message('Сохранение проверено. Можно продолжать.'); }
+    }
     catch { message('Пока не удалось проверить сохранение. Попробуйте ещё раз.', true); }
     renderHud();
   }, domOptions);
@@ -2669,7 +2733,7 @@ try {
   offerFact({ trigger: OfferTrigger.SessionStarted, key: 'session' });
   const cleanup = () => {
     if (!alive) return; clearPraise(); clearActionFeedback(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
-    telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearInterval(lifeTick); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
+    telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearInterval(recoveryHudTick); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     finishRewardClaim();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
     clearTimeout(themeExpiry); worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);

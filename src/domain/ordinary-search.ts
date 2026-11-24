@@ -1,4 +1,4 @@
-import { applyBoard, packet, sourceCards } from './engine';
+import { applyBoard, boardKey, legalCommands, packet, sourceCards } from './engine';
 import type { Board, BoardCommand, Deal, Location } from './types';
 
 /** Symmetry-pruned actions for the ordinary, unlocked reference slice. */
@@ -35,7 +35,10 @@ const key = (board: Board) => JSON.stringify([
   board.recyclesLeft ?? null,
 ]);
 
-export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allowLower = true, deadline = Infinity) {
+export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allowLower = true, deadline = Infinity,
+  mode?: 'full-board') {
+  const identity = mode === 'full-board' ? boardKey : key;
+  const actions = mode === 'full-board' ? legalCommands : referenceActions;
   const heap: Node[] = [], seen = new Map<string, number>();
   const weights = new Map<string, number>();
   for (const card of Object.values(deal.cards)) weights.set(card.category, (weights.get(card.category) ?? 0) + 1);
@@ -50,7 +53,7 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
       + board.tableau.filter(group => group.length).length * .6 + steps * .78;
   };
   function push(node: Node) {
-    const id = key(node.board);
+    const id = identity(node.board);
     if ((seen.get(id) ?? Infinity) <= node.steps) return;
     seen.set(id, node.steps);
     let i = heap.length;
@@ -80,14 +83,14 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
   let visited = 0;
   while (heap.length && visited < cap && performance.now() < deadline) {
     const node = pop();
-    if ((seen.get(key(node.board)) ?? Infinity) < node.steps) continue;
+    if ((seen.get(identity(node.board)) ?? Infinity) < node.steps) continue;
     visited++;
     if (node.board.phase === 'won') {
       const path: BoardCommand[] = [];
       for (let n: Node = node; n.parent; n = n.parent) path.push(n.action!);
       return { status: 'FOUND' as const, path: path.reverse(), visited };
     }
-    for (const action of referenceActions(node.board, deal)) {
+    for (const action of actions(node.board, deal)) {
       if (!allowLower && action.type === 'transfer' && action.to.kind === 'tableau') continue;
       const result = applyBoard(node.board, action, deal);
       if (typeof result === 'string') throw Error(result);

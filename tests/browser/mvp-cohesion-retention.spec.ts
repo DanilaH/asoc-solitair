@@ -291,6 +291,7 @@ test('legacy claims list only earned LiveOps while Picture retains its separate 
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   await expect(page.locator('#campaign-liveops-open')).toBeHidden();
   await page.locator('#picture-home').tap();
+  await expect(page.locator('#picture-prize')).toContainText('за сохранённые жетоны');
   await expect(page.locator('#picture-claim')).toBeHidden();
   expect((await read(page)).profile.coins).toBe(baseline + 17);
   expect((await read(page)).events?.events).toHaveLength(2);

@@ -86,7 +86,7 @@ export function quoteUnlimitedAccess(save: Save, deal: Deal, now: number, readin
   const { attempt } = save;
   const access = attempt.unlimitedAccess;
   if (!access || access.consumed || access.expired || attempt.unlimited || !unlimitedEligible(attempt, deal) ||
-      !Number.isSafeInteger(now) || !unlimitedRemaining(access, now, reading)) return;
+      !Number.isSafeInteger(now) || (!reading && now < access.issuedAt) || !unlimitedRemaining(access, now, reading)) return;
   return access;
 }
 
@@ -154,7 +154,7 @@ export function validUnlimitedClock(right: TimedRight) {
 export function unlimitedRemaining(right: TimedRight, now: number, reading?: ClockReading) {
   if (right.until === undefined || right.expired) return;
   const anchor = right.clock;
-  if (now < right.issuedAt && (!anchor || reading?.timeline !== anchor.timeline)) return 0;
+  if (reading && now < right.issuedAt && (!anchor || reading.timeline !== anchor.timeline)) return 0;
   if (anchor?.timeline.startsWith('android-') && reading && reading.timeline !== anchor.timeline) {
     // Across a reboot there is no comparable offline elapsed clock.
     return 0;

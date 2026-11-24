@@ -84,12 +84,13 @@ it('leaves a historical indefinite right in place and handles a changed Android 
 });
 
 it('uses the time left on an unspent earned right without starting a new timer', () => {
-  const save = freshSave(recoveryDeal, 'earned-clock');
-  expect(grantUnlimitedAccess(save, recoveryDeal, { version: 1, id: 'earned', attemptId: save.attempt.id,
+  const deal = { ...recoveryDeal, id: 'regression-earned-clock' };
+  const save = freshSave(deal, 'earned-clock');
+  expect(grantUnlimitedAccess(save, deal, { version: 1, id: 'earned', attemptId: save.attempt.id,
     source: 'rewarded', issuedAt: 10_000, until: 16_000 })).toBe(true);
   expireUnlimited(save, 10_000, { timeline: 'android-17', elapsed: 100 });
-  const reloaded = decodeSave(JSON.stringify(save), recoveryDeal);
-  expect(useUnlimitedAccess(reloaded, recoveryDeal, 'earned', 9_000, { timeline: 'android-17', elapsed: 4100 })).toBe(true);
+  const reloaded = decodeSave(JSON.stringify(save), deal);
+  expect(useUnlimitedAccess(reloaded, deal, 'earned', 9_000, { timeline: 'android-17', elapsed: 4100 })).toBe(true);
   expect(unlimitedRemaining(reloaded.attempt.unlimited!, 9_000, { timeline: 'android-17', elapsed: 4100 })).toBe(2000);
   expect(expireUnlimited(save, 9000, { timeline: 'android-17', elapsed: 6100 })).toBe(true);
   expect(save.attempt.unlimitedAccess?.expired).toBe(true);

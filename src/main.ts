@@ -598,10 +598,11 @@ try {
     const hintUnlocked = helperUnlocked(save, 'hint', deal), undoUnlocked = helperUnlocked(save, 'undo', deal);
     $('#hint').hidden = !hintUnlocked; $('#undo').hidden = !undoUnlocked;
     $('#hint-offer').hidden = !hintUnlocked || Boolean(helperFocus && helperFocus !== 'hint'); $('#undo-offer').hidden = !undoUnlocked || Boolean(helperFocus && helperFocus !== 'undo');
+    const hasContextOffers = productOfferEnabled && !save.attempt.daily && (deal.campaignLevel ?? 0) >= 3;
     const jokerUnlocked = helperUnlocked(save, 'joker', deal);
     $('#joker').hidden = !jokerUnlocked; $('#joker-offer').hidden = !jokerUnlocked || Boolean(helperFocus && helperFocus !== 'joker');
     $('#joker-count').textContent = String(save.profile.jokers); $('#joker-stock').textContent = String(save.profile.jokers);
-    $<HTMLButtonElement>('#buy-joker').disabled = serviceBusy || saving || (!productOfferEnabled && save.profile.coins < BALANCE.helperPrices.joker);
+    $<HTMLButtonElement>('#buy-joker').disabled = serviceBusy || saving || (!hasContextOffers && save.profile.coins < BALANCE.helperPrices.joker);
     $<HTMLButtonElement>('#wallet-open').disabled = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
     $('.wallet-plus').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
     $('#helpers-open').hidden = !hintUnlocked && !undoUnlocked && !jokerUnlocked;
@@ -688,7 +689,7 @@ try {
     $('#hint-stock').textContent = String(save.profile.hints); $('#undo-stock').textContent = String(save.profile.undos);
     for (const helper of ['hint', 'undo'] as const) {
       $<HTMLButtonElement>(`#buy-${helper}`).disabled = serviceBusy || saving ||
-        (!productOfferEnabled && save.profile.coins < BALANCE.helperPrices[helper]);
+        (!hasContextOffers && save.profile.coins < BALANCE.helperPrices[helper]);
       $<HTMLButtonElement>(`#video-${helper}`).disabled = serviceBusy || !ads.status.rewarded;
       $(`#video-${helper}`).hidden = !ads.status.rewarded;
     }

@@ -1,0 +1,46 @@
+{
+  "engine": "Actual pinned Playwright1.56.1 ClockController, exact D production checkpoint callback",
+  "scope": "Deterministic overlapping _runTo host-completion order; demonstrates unsafe realtime+fastForward premise. Browser trace lacks saving/controller internals, so exact occurrence cannot be uniquely attributed.",
+  "concurrent": {
+    "first": {
+      "ticks": 5100,
+      "saved": 5100
+    },
+    "rewound": 100,
+    "second": {
+      "ticks": 5100,
+      "saved": 5100
+    },
+    "events": [
+      {
+        "kind": "frame",
+        "ticks": 100
+      },
+      {
+        "kind": "checkpoint",
+        "ticks": 5100,
+        "activeMs": 5100
+      }
+    ]
+  },
+  "pausedSequentialRunFor": {
+    "before": 5000,
+    "after": 10000,
+    "events": [
+      {
+        "kind": "frame",
+        "ticks": 100
+      },
+      {
+        "kind": "checkpoint",
+        "ticks": 5000,
+        "activeMs": 5000
+      },
+      {
+        "kind": "checkpoint",
+        "ticks": 10000,
+        "activeMs": 10000
+      }
+    ]
+  }
+}

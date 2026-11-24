@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -55,6 +57,8 @@ jobs:
       - run: npm run qa:prototypes:validate
       - run: npx playwright install --with-deps chromium
       - run: npm run qa:layout
+      - name: Check the compact result action before the full browser suite
+        run: npx playwright test tests/browser/ui-coherence.spec.ts --grep 'dialog actions stay reachable before scroll at 320x480'
       - run: npm run test:browser
       - run: npm run qa:content7
         env:
@@ -65,7 +69,39 @@ jobs:
           ASOC_AD_MODE: disabled
         run: |
           npm run build
-          npm run test:browser -- tests/browser/integrated-release.spec.ts
+          npm run test:browser -- tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-evidence
+          path: |
+            test-results/
+            .recording/layout-audit/
+            .recording/content7-ui/
+            .recording/content7-recordings/
+            .authoring/content8/campaign-decisions.json
+            .authoring/content8/campaign-decision-cost.json
+            .authoring/content8/campaign-unknown-transfer-deep.json
+          retention-days: 7
+  previews:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Restore the accepted pinned dependency cache without writing private source back
+        uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/.npm
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
+          ASOC_KIT_OFFLINE_CACHE: '1'
+      - run: npx playwright install --with-deps chromium
       - name: Verify the Content 8 preview with actual touch input
         if: startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || startsWith(github.head_ref || github.ref_name, 'docs/c8-') || github.base_ref == 'feat/c8-onboarding-dealer-20261119'
         env:
@@ -145,16 +181,45 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: browser-evidence
+          name: previews-evidence
           path: |
             test-results/
-            .recording/layout-audit/
-            .recording/content7-ui/
-            .recording/content7-recordings/
             .authoring/hitapps/balance.json
-            .authoring/content8/campaign-decisions.json
-            .authoring/content8/campaign-decision-cost.json
-            .authoring/content8/campaign-unknown-transfer-deep.json
+          retention-days: 7
+  cohesion:
+    runs-on: ubuntu-24.04
+    env:
+      VITE_ASOC_PROFILE: c8-release-v1
+      ASOC_AD_MODE: disabled
+      ASOC_MVP_DEMO: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/.npm
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
+          ASOC_KIT_OFFLINE_CACHE: '1'
+      - run: npm test -- --reporter=default --reporter=json --outputFile=.recording/mvp-unit-results.json
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Verify saved rights and reward lifecycle through ordinary touch UI
+        run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts --output=test-results/mvp-cohesion
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mvp-cohesion-evidence
+          path: |
+            test-results/mvp-cohesion/
+            .recording/mvp-unit-results.json
+            dist/release-manifest.json
           retention-days: 7
   android:
     runs-on: ubuntu-24.04
@@ -230,6 +295,7 @@ jobs:
         env:
           ASOC_AD_MODE: disabled
           ASOC_UNSIGNED_CHECK: '1'
+      - run: python3 tools/qa/verify-release-apk.py native/android/app/build/outputs/apk/release/app-release-unsigned.apk
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -239,4 +305,6 @@ jobs:
             dist/release-manifest.json
             native/android/app/build/outputs/apk/**/*.apk
             native/android/app/build/outputs/mapping/release/
+            native/android/app/build/test-results/testDebugUnitTest/
+            native/android/app/build/reports/tests/testDebugUnitTest/
           retention-days: 7

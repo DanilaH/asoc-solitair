@@ -1,4 +1,5 @@
 import { unlockedLevel } from '../progression';
+import { hasFutureShuffleUse } from '../shuffle-progression';
 import type { Save } from '../types';
 import { grantEventPrize, type TaskPrize } from './daily-tasks';
 
@@ -32,6 +33,41 @@ export interface DailyBonus {
   revealed: number[];
   won?: number;
   claimed?: true;
+}
+
+export interface DailyBonusState {
+  phase: 'unavailable' | 'locked' | 'future' | 'available' | 'playing' | 'ready' | 'claimed' | 'expired';
+  roundId?: string;
+  prize?: TaskPrize;
+  revealedCount: number;
+  nextResetAt?: number;
+  availableAt?: number;
+  /** There is a useful action: start, resume, or collect a saved prize. */
+  canOpen: boolean;
+  canStartRound: boolean;
+  canReveal: boolean;
+  canClaim: boolean;
+}
+
+/** Read-only state shared by Home, contextual offers, the dialog, and commands.
+ * A future saved date takes precedence over every won/claimed presentation.
+ */
+export function dailyBonusState(save: Save, now: number): DailyBonusState {
+  const round = save.dailyBonus;
+  const base = { roundId: round?.roundId, revealedCount: round?.revealed.length ?? 0,
+    canOpen: false, canStartRound: false, canReveal: false, canClaim: false };
+  if (!Number.isSafeInteger(now) || now < 0 || now > 8.64e15 - DAY) return { ...base, phase: 'unavailable' };
+  const today = dayAt(now), nextResetAt = (today + 1) * DAY;
+  const timed = { ...base, nextResetAt };
+  if (round && round.day > today) return { ...timed, phase: 'future', availableAt: round.day * DAY };
+  if (unlockedLevel(save) < 2) return { ...timed, phase: 'locked' };
+  if (!round) return { ...timed, phase: 'available', canOpen: true, canStartRound: true };
+  if (round.won !== undefined && !round.claimed) {
+    return { ...timed, phase: 'ready', prize: { ...round.columns[round.won] }, canOpen: true, canClaim: true };
+  }
+  if (round.day < today) return { ...timed, phase: round.claimed ? 'available' : 'expired', canOpen: true, canStartRound: true };
+  if (round.claimed) return { ...timed, phase: 'claimed' };
+  return { ...timed, phase: 'playing', canOpen: true, canReveal: true };
 }
 
 const natural = (n: number) => Number.isSafeInteger(n) && n >= 0;
@@ -75,12 +111,12 @@ export function weightedBonusPrize(pool: readonly WeightedPrize[], random: (size
 
 export function openDailyBonusRound(save: Save, now: number, roundId: string, random: (size: number) => number,
   catalog: DailyBonus['catalog'] = 'offline-r1') {
-  const day = dayAt(now), previous = save.dailyBonus;
-  if (!natural(now) || unlockedLevel(save) < 2 || (previous && day < previous.day)) return;
-  if (previous && (previous.day === day || (previous.won !== undefined && !previous.claimed))) return previous;
+  const state = dailyBonusState(save, now), day = dayAt(now), previous = save.dailyBonus;
+  if (state.phase === 'unavailable' || state.phase === 'locked' || state.phase === 'future') return;
+  if (previous && !state.canStartRound) return previous;
   if (!/^[a-zA-Z0-9_-]{1,100}$/.test(roundId)) return;
   const pool = catalog === 'offline-r1'
-    ? offlinePool.filter(prize => prize.kind !== 'Shuffle' || unlockedLevel(save) >= 30)
+    ? offlinePool.filter(prize => prize.kind !== 'Shuffle' || hasFutureShuffleUse(save))
     : AZUR_BONUS_POOL;
   const columns: TaskPrize[] = [];
   for (let i = 0; i < 4; i++) {
@@ -100,7 +136,7 @@ export function openDailyBonusRound(save: Save, now: number, roundId: string, ra
 
 export function revealDailyBonusCard(save: Save, roundId: string, index: number, now: number) {
   const round = save.dailyBonus;
-  if (!round || roundId !== round.roundId || !natural(now) || dayAt(now) !== round.day || round.won !== undefined ||
+  if (!round || roundId !== round.roundId || !dailyBonusState(save, now).canReveal ||
       round.revealed.includes(index) || !natural(index) || index >= round.slots.length) return false;
   round.revealed.push(index);
   const won = winner(round);
@@ -111,7 +147,7 @@ export function revealDailyBonusCard(save: Save, roundId: string, index: number,
 export function claimDailyBonus(save: Save, roundId: string, now: number) {
   const round = save.dailyBonus;
   if (!round || roundId !== round.roundId || round.claimed || round.won === undefined ||
-      !natural(now) || dayAt(now) < round.day || unlockedLevel(save) < 2 || !validDailyBonus(round)) return;
+      !dailyBonusState(save, now).canClaim || !validDailyBonus(round)) return;
   const prize = round.columns[round.won];
   if (!grantEventPrize(save, prize)) return;
   round.claimed = true;

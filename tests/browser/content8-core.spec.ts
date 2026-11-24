@@ -1148,7 +1148,7 @@ test('the same-layout replay keeps its original cards and a budget-only variant 
   await page.reload();
   await openGame(page, budgetOnly);
   await expect(page.locator('#result-redeal')).toBeHidden();
-  await expect(page.locator('#replay')).toHaveText('Ещё раз');
+  await expect(page.locator('#replay')).toHaveText('Тот же расклад');
 });
 
 test('a reconciled alternate-deal save presents the committed board exactly once', async ({ page }) => {

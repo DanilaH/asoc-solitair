@@ -12,6 +12,8 @@
     "interactionFeedback": "azur-feel-r1",
     "lives": 1,
     "chargedShuffleLevel": 30,
+    "chargedShuffleLevels": [30, 33, 36, 39],
+    "shuffleProgression": "c8-shuffle-progression-r1",
     "economy": "c8-non-iap-rights-r1",
     "extraHelpers": { "randomJokerCoins": 250, "unlimitedCoins": 120, "unlimitedMs": 60000 },
     "advertising": "single-placement-pause-r1"

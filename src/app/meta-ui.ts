@@ -12,7 +12,7 @@ export function renderMeta(save: Save, busy: boolean) {
   $('#app').dataset.back = cosmeticUnlocked(save, 'cardBack') ? save.settings.cardBack ?? 'classic' : 'classic';
   const basicReady = campaignCount(save) >= 2;
   $('.daily-card').hidden = !basicReady && !daily && meta.dailyDates.length === 0;
-  $('#win-cycle-open').hidden = n === 0; $('#looks-open').hidden = n === 0; $('#appearance-open').hidden = n === 0;
+  $('#win-cycle-open').hidden = n === 0 || n >= CAMPAIGN_LENGTH; $('#appearance-open').hidden = n === 0;
   $('#win-cycle-pips').innerHTML = pips(meta.winCycle);
   $('#cycle-reward').textContent = `+${BALANCE.meta.cycleCoins} монет и подсказка`;
   $('#calendar-reward-copy').textContent = `За день — ${BALANCE.meta.dailyCoins} монет. Серия из 3 дней: +${BALANCE.meta.day3Coins}. За 7 дней, затем каждые 7: +${BALANCE.meta.day7Coins} и отмена. Пропуск сбрасывает серию.`;
@@ -22,7 +22,7 @@ export function renderMeta(save: Save, busy: boolean) {
   $('#milestone-fill').style.width = `${n >= CAMPAIGN_LENGTH ? 100 : n % 10 * 10}%`; $('#milestone-progress').textContent = n >= CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : target > CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : `${n % 10} / 10`;
   $('#daily-date').textContent = new Date(`${today}T12:00:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
   $('#daily-status').textContent = done ? `Готово · серия ${currentDailyStreak(save, today)} дн.` : daily?.daily?.dayId === today && daily.board.phase === 'playing' ? 'Продолжить' : '';
-  $('#daily-play').setAttribute('aria-label', done ? 'Повторить задание дня без награды' : 'Играть в задание дня');
+  $('#daily-play').setAttribute('aria-label', done ? 'Повторить ежедневный уровень без награды' : 'Играть в ежедневный уровень');
   $<HTMLButtonElement>('#daily-play').disabled = busy;
   $('#daily-resume-old').hidden = !daily || daily.daily?.dayId === today || daily.board.phase === 'won';
   $('#daily-resume-old').textContent = daily?.daily ? `Доиграть ${new Date(daily.daily.dayId + 'T12:00:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })} · тренировка` : '';

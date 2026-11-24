@@ -412,6 +412,7 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 .sheet-actions>.text-button{padding:6px}
 #result .sheet-heading{padding:0}
 #result .sheet-body{padding-bottom:3px}
+#result>#unlock-reward{flex-shrink:0}
 #result .sheet-actions{gap:9px}
 #result-redeal small{display:block;font-size:12px}
 #result-copy:empty{display:none}
@@ -599,3 +600,26 @@ html[data-reduced=true] .coin-debit{animation:none}
   padding: .35rem;
   line-height: 1.15;
 }
+
+/* Saved stock and dated rewards use the same compact, scrollable sheets. */
+.inventory-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 14px}
+.inventory-list>div{padding:9px 10px;border:1px solid #d8dccd;border-radius:11px;background:#edf0e5}
+.inventory-list dt{font-size:13px;font-weight:800;line-height:1.35;color:#416b73}
+.inventory-list dd{font-size:11px;line-height:1.4;margin:4px 0 0;color:#617974}
+#helper-inventory h3{margin:5px 0;font-size:16px}
+#home .activity-entry{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;min-height:56px;padding:10px 13px;font-size:14px}
+#home .activity-entry small{font-size:11px;font-weight:600;line-height:1.4;color:#617974}
+#campaign-monthly-bonus{width:calc(100% - 20px);margin:4px 0 9px;font-size:11px;line-height:1.45;text-align:center;color:#617974}
+.monthly-confirmation{font-size:12px;line-height:1.45;color:#416b73;white-space:pre-line}
+#campaign-monthly-confirmation{width:calc(100% - 20px);margin:4px 0 7px;text-align:center}
+#daily-tasks-dialog .sheet-body section{padding:10px 0;border-bottom:1px solid #d8dccd}
+#daily-tasks-dialog .sheet-body section>strong{display:block;font-size:14px;line-height:1.4;margin-bottom:7px}
+#daily-tasks-dialog .sheet-body h3{font-size:16px;margin:15px 0 7px}
+#daily-tasks-dialog .sheet-body button{min-height:44px;white-space:normal}
+#daily-tasks-day-status,#daily-tasks-medals,#daily-bonus-status,#shop-claim-status,#shop-video-status,#shuffle-stock-note{font-size:13px;line-height:1.5}
+#result-new-attempt small{display:block;font-size:12px;font-weight:600;line-height:1.35;margin-top:3px}
+#result-life-note{font-size:12px;line-height:1.4;margin:2px 4px}
+@media(max-width:360px){.inventory-list{grid-template-columns:1fr}.inventory-list>div{padding:7px 9px}}
+
+#recovery-clock-status{position:absolute;inset:0;margin:0;padding:6px 12px;display:flex;align-items:center;border-radius:11px;background:#154e52;color:#fff3d6;font-size:13px;line-height:1.35;z-index:3}
+#app[data-recovery-clock=true] #lesson-note,#app[data-recovery-clock=true] #no-transfer,#app[data-recovery-clock=true] #praise,#app[data-recovery-clock=true] #message{visibility:hidden}

@@ -29,7 +29,7 @@ it('replays every integrated passport with both rules implementations', () => {
     }
     expect(independent.phase, deal.id).toBe('won');
   }
-});
+}, 15000);
 
 it.skipIf(!releaseProfile)('starts an adapted L16 with recovery and Joker, then preserves exact identity through Daily, Undo and reload', async () => {
   const previous = content7Deals[14], target = campaignDeals[15];

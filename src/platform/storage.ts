@@ -2,6 +2,7 @@ import { validProductOffers } from '../domain/commerce/product-offers';
 import { validCombo } from '../domain/events/combo';
 import { validDailyBonus } from '../domain/events/daily-bonus';
 import { validUnlimitedAccess, validUnlimitedClock } from '../domain/campaign-recovery';
+import { migrateRandomJokerRights, validRandomJokerAccess, validRandomJokerRights } from '../domain/random-joker-rights';
 import { validLavaRun } from '../domain/events/campaign-liveops';
 import { validCampaignLives } from '../domain/campaign-lives';
 import { validStoreProgress } from '../domain/commerce/storefront';
@@ -37,7 +38,7 @@ export function createStorage(bridge?: StorageBridge): StorageAdapter {
 const natural = (n: unknown) => Number.isSafeInteger(n) && (n as number) >= 0;
 const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every(s => typeof s === 'string' && s.length <= 200) && new Set(v).size === v.length;
 export type DealSource = Deal | ((id: string) => Deal | undefined);
-export function decodeSave(raw: string, source: DealSource): Save {
+export function decodeSave(raw: string, source: DealSource, migrateRights = true): Save {
   const save = JSON.parse(raw) as Save;
   const deal = typeof source === 'function' ? source(save.attempt?.dealId) : source;
   if (!deal) throw Error('Неизвестная раздача. Сохранение оставлено без изменений.');
@@ -176,10 +177,14 @@ export function decodeSave(raw: string, source: DealSource): Save {
       ([save.attempt.board, ...save.attempt.undo].some(board => board.retainedMoves !== undefined) && (!unlimited || unlimited.expired))) {
     throw Error('Повреждён договор восстановления');
   }
+  if (save.randomJokers !== undefined && !validRandomJokerRights(save.randomJokers))
+    throw Error('Повреждён запас случайных Джокеров');
   const jokerAccess = save.attempt.randomJokerAccess;
-  if (jokerAccess !== undefined && (!jokerAccess || jokerAccess.version !== 1 || jokerAccess.source !== 'coins' ||
-    !/^[a-zA-Z0-9_-]{1,100}$/.test(jokerAccess.id) || !natural(jokerAccess.issuedAt) ||
-    !natural(jokerAccess.cost) || deal.extraHelpers?.randomJokerCoins !== jokerAccess.cost ||
+  const jokerOwner = save.randomJokers?.grants.find(grant => grant.id === jokerAccess?.id);
+  const sameProvenance = jokerOwner && jokerAccess && jokerOwner.source === jokerAccess.source &&
+    jokerOwner.cost === jokerAccess.cost && jokerOwner.issuedAt === jokerAccess.issuedAt;
+  if (jokerAccess !== undefined && (!validRandomJokerAccess(jokerAccess) || deal.extraHelpers?.randomJokerCoins === undefined ||
+    (deal.extraHelpers.randomJokerCoins !== jokerAccess.cost && !sameProvenance) ||
     (jokerAccess.consumed !== undefined && (jokerAccess.consumed !== true || save.attempt.randomJokerUsed !== true)))) {
     throw Error('Повреждён заряд случайного Джокера');
   }
@@ -212,7 +217,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
     if (save.parked[active]) throw Error('Два активных состояния режима');
     for (const [mode, attempt] of Object.entries(save.parked)) {
       if (!['daily', 'campaign'].includes(mode) || !attempt || Boolean(attempt.daily) !== (mode === 'daily') || attempt.id === save.attempt.id) throw Error('Повреждён резерв попытки');
-      save.parked[mode as 'campaign'|'daily'] = decodeSave(JSON.stringify({ ...save, attempt, parked: undefined }), source).attempt;
+      save.parked[mode as 'campaign'|'daily'] = decodeSave(JSON.stringify({ ...save, attempt, parked: undefined }), source, false).attempt;
     }
   }
   if (save.meta) {
@@ -235,6 +240,7 @@ export function decodeSave(raw: string, source: DealSource): Save {
     throw Error('Повреждена выплата победы');
   }
   if (save.attempt.payout && (!Array.isArray(save.attempt.payout) || save.attempt.payout.some(r => !strings([r.key]) || !natural(r.coins) || !['win', 'campaign_milestone', 'campaign_win_cycle', 'daily_completion', 'daily_streak_milestone', 'golden_cards'].includes(r.reason) || typeof r.label !== 'string' || r.label.length > 200 || (r.hints !== undefined && !natural(r.hints)) || (r.undos !== undefined && !natural(r.undos))))) throw Error('Повреждён результат');
+  if (migrateRights) migrateRandomJokerRights(save);
   return save;
 }
 

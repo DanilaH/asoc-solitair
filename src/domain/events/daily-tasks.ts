@@ -322,3 +322,49 @@ export function currentTasks(save: Save) {
   const day = week?.days.find(day => day.utc === journal.lastUtc);
   if (week && day) return { week, day };
 }
+
+export type PendingTaskReward = {
+  kind: 'task'; key: string; utc: string; weekStart: string; id: string; task: DayTask; prizes: TaskPrize[];
+} | {
+  kind: 'milestone'; key: string; weekStart: string; id: string; milestone: WeekMilestone; prizes: TaskPrize[];
+};
+
+/** Existing frozen rights only. No schedule, grant, or current-catalog substitution. */
+export function pendingTaskRewards(save: Save): PendingTaskReward[] {
+  const rewards: PendingTaskReward[] = [];
+  for (const week of save.dailyTasks?.weeks ?? []) {
+    for (const day of week.days) for (const task of day.tasks) {
+      if (!task.claimed && task.progress >= task.target) rewards.push({ kind: 'task', key: `task:${day.utc}:${task.id}`,
+        utc: day.utc, weekStart: week.startUtc, id: task.id, task: structuredClone(task),
+        prizes: structuredClone([task.prize, ...(task.bonus ? [task.bonus] : [])]) });
+    }
+    for (const milestone of week.milestones) {
+      if (week.totalMedals >= milestone.medals && !week.claimedMilestones.includes(milestone.id)) {
+        rewards.push({ kind: 'milestone', key: `weekly:${week.startUtc}:${milestone.id}`, weekStart: week.startUtc,
+          id: milestone.id, milestone: structuredClone(milestone),
+          prizes: structuredClone([milestone.prize, ...(milestone.bundle ?? [])]) });
+      }
+    }
+  }
+  return rewards.sort((a, b) => (a.kind === 'task' ? a.utc : a.weekStart).localeCompare(b.kind === 'task' ? b.utc : b.weekStart) || a.key.localeCompare(b.key));
+}
+
+export function taskRewardState(save: Save, now: number) {
+  const utc = utcKey(now), journal = save.dailyTasks;
+  const clock = !utc ? 'invalid' : !journal ? 'empty' : journal.lastUtc > utc ? 'future' : journal.lastUtc < utc ? 'stale' : 'current';
+  const weekStart = utc ? weekOf(utc) : undefined;
+  // A saved future day must not masquerade as today's assignment after clock rollback.
+  const week = clock !== 'future' ? journal?.weeks.find(item => item.startUtc === weekStart) : undefined;
+  const today = week?.days.find(day => day.utc === utc);
+  const ready = pendingTaskRewards(save);
+  const previous = utc && weekStart ? ready.filter(reward => reward.kind === 'task' ? reward.utc < utc : reward.weekStart < weekStart) : [];
+  const currentReady = clock === 'future' ? [] : ready.filter(reward => reward.kind === 'task' ? reward.utc === utc : reward.weekStart === weekStart);
+  return {
+    clock, today, week, previous, readyCount: previous.length + currentReady.length,
+    todayCompleted: today?.tasks.filter(task => task.progress >= task.target).length ?? 0,
+    todayTotal: today?.tasks.length ?? 0,
+    nextDayAt: utc ? parseUtc(utc) + DAY : undefined,
+    nextWeekAt: weekStart ? parseUtc(weekStart) + 7 * DAY : undefined,
+    availableAt: clock === 'future' && journal ? parseUtc(journal.lastUtc) : undefined,
+  };
+}

@@ -1,3 +1,19 @@
+# Current work · MVP cohesion implementation · 24 November 2026
+
+Owner: «Возьми ты в работу это». Implementation branch `feat/c8-mvp-cohesion-20261124`, [PR203](https://github.com/DanilaH/asoc-solitair/pull/203), version **0.20.4 / Android code 45**. The branch starts from docs PR202 `c85fdc772cfcf07acd6289aa8c1519f55df38e09`. F1–F3, C1–C3 and U1–U5 are implemented; read the [implementation and exact evidence](qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md).
+
+**Checked integrated checkpoint `0fcba27fc99296fb0e922a7f274474a94d69951e`: [CI run 45408510186](https://github.com/DanilaH/asoc-solitair/actions/runs/45408510186) passed 490 unit tests / 1 skip, all 50 ordinary UI cases, Android native JUnit (14 tests), debug signing and release R8.** Both actual APKs identify this head and version/code; their complete 212-file web payloads and accepted debug certificate were independently verified. This is a checkpoint, not evidence for later code changes. Final newer-head results and exact artifacts are attached to **PR203**; consult its current checks before reporting acceptance or repeating work.
+
+Initial L30 Shuffle has a full positive proof at **prefix 0 / seed 7**, with 113 moves under the unchanged 124-move budget and production + independent replay to WON. All 14 future wrappers have positive reachable fixtures; their separate initial seed 0 check reports **5 SOLVED / 9 bounded UNKNOWN**. Arbitrary-seed success is not promised. Scheduler, repeat Definition and frozen bundle regressions are included in the checked profile.
+
+The full default browser suite on the earlier `d4b412` checkpoint found two viewport failures of one 320×480 earned-cosmetic action. The current follow-up pins that action outside the scrollable result body, supplies a visible own-code Shuffle icon, and puts the addressed empty-Definition source on the initial helper viewport. Existing hit checks remain intact; a fast compact gate precedes the complete browser suite. These visual changes require their own exact-head CI and records in PR203.
+
+Final scoped follow-up adds post-commit monthly confirmation (including an old ready month at 80/80) and ordinary C8 phone/compact banner-reserve DOM/raster/touch evidence. The latest full checkpoint `ffa457d` passed the 284-case default browser suite but failed the repeated integrated native-clock telemetry wait in two viewports; that failure must be resolved and rerun before final acceptance. See PR203 for the final exact head and artifacts; do not deliver a prior checkpoint as the finished candidate.
+
+**Remaining external acceptance:** physical Android, live advertising SDK/AppMetrica ingestion and human economy/UX. Preserve all **115 source IDs / 38 packets / 15 commercial families**, immutable old deals and the complete roadmap. No IAP/live activation, source-parity upgrade, owner exclusion or old-branch merge follows from this implementation or its engineering checks.
+
+---
+
 ## 24 November 2026 — audited developer brief ready
 
 **READ FIRST:** [current code audit](porting/DEVELOPER_AUDIT_2026-11-24.md) and [integrated core/ads brief](porting/CORE_ADS_RELEASE_TZ_2026-11-24.md). Actual code remains PR190 `c4215e18d54927a5ac73a350876f29852aa36861` (0.20.3/code44); documentation baseline is PR194 `23f04d3`. Both web/Android jobs at [45220990653](https://github.com/DanilaH/asoc-solitair/actions/runs/45220990653) are green, but that APK uses an isolated specials/feel/victory QA profile. Ordinary release workflow still defaults to C7. Start the single B0/C1 profile+composition+manifest package, then the remaining core/ads/retention deltas. Refresh HEAD before coding.

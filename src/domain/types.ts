@@ -87,6 +87,10 @@ export interface CampaignIssuance {
   equality: 'unknown-cohort' | 'not-eligible';
 }
 type UnlimitedClock = { timeline: string; elapsed: number; wall: number };
+export interface RecoveryClockReading { timeline: string; elapsed: number; native?: true }
+export interface RandomJokerAccess {
+  version: 1; id: string; source: 'coins'; cost: number; issuedAt: number; consumed?: true;
+}
 
 export interface Attempt {
   id: string; dealId: string; board: Board; undo: Board[];
@@ -97,7 +101,7 @@ export interface Attempt {
   sourceDifficulty?: CampaignOutcome;
   jokerUsed?: boolean;
   randomJokerUsed?: true;
-  randomJokerAccess?: { version: 1; id: string; source: 'coins'; cost: number; issuedAt: number; consumed?: true };
+  randomJokerAccess?: RandomJokerAccess;
   lostLife?: true;
   adBreakShown?: true;
   coffeeRequested?: true;
@@ -164,6 +168,8 @@ export interface Save {
   picture?: PictureState;
   dailyTasks?: DailyTaskJournal;
   dailyBonus?: DailyBonus;
+  /** Separate paid-with-coins rights; unused grants outlive any one attempt. */
+  randomJokers?: { version: 1; grants: RandomJokerAccess[] };
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';

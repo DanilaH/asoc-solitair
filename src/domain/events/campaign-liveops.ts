@@ -1,10 +1,28 @@
-import { eventKey, observeEvents, recordEventWin, settledFirstWin, type EventDefinition } from './ledger';
+import { claimMilestone, eventKey, observeEvents, recordEventWin, settledFirstWin, type EventDefinition } from './ledger';
 import type { Deal, Save } from '../types';
 
 const DAY = 86_400_000, WEEK = 7 * DAY, MONDAY_EPOCH = 4 * DAY, GRACE = 4 * WEEK;
 const race = 'hitapps-weekend-race', lava = 'hitapps-lava-quest', gold = 'hitapps-gold-rush-event';
 export const liveOpsTitles = { [race]: 'Гонка выходного дня', [lava]: 'Лавовое испытание', [gold]: 'Золотая лихорадка' } as const;
 export type LiveOpsSource = keyof typeof liveOpsTitles;
+
+/** Compatibility claims never create a new occurrence or include Picture's separate owner. */
+export function legacyLiveOpsRewards(save: Save) {
+  return (save.events?.events ?? []).flatMap(record => {
+    const source = record.definition.sourceFeatureId;
+    if (!Object.hasOwn(liveOpsTitles, source)) return [];
+    return record.definition.milestones.filter(milestone => milestone.threshold <= record.wins.length && !record.claimed.includes(milestone.id))
+      .map(milestone => ({ eventKey: eventKey(record.definition), source: source as LiveOpsSource,
+        title: liveOpsTitles[source as LiveOpsSource], id: milestone.id, threshold: milestone.threshold,
+        progress: record.wins.length, endedAt: record.definition.schedule.end, reward: { ...milestone.reward } }));
+  }).sort((a, b) => a.endedAt - b.endedAt || a.eventKey.localeCompare(b.eventKey) || a.id.localeCompare(b.id));
+}
+
+export function claimLegacyLiveOpsReward(save: Save, key: string, id: string): boolean {
+  const record = save.events?.events.find(event => eventKey(event.definition) === key);
+  if (!record || !Object.hasOwn(liveOpsTitles, record.definition.sourceFeatureId)) return false;
+  return claimMilestone(save, key, id);
+}
 
 export function liveOpsDefinitions(now: number): EventDefinition[] {
   if (!Number.isSafeInteger(now) || now < 0 || now > 8.64e15 - WEEK) return [];

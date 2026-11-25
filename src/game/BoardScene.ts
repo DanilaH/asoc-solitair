@@ -1171,8 +1171,28 @@ export class BoardScene extends Phaser.Scene {
   public setInspect(value: boolean): void { this.inspectMode = value; this.clearHint(); this.cancel(); }
   public clearHint(): void { this.hintTweens.forEach(t => t.stop()); this.hintTweens = []; this.hintObjects.forEach(o => o.destroy()); this.hintObjects = []; }
   public hint(action: BoardCommand): void { this.cancel(); this.demonstrate(action, false); }
+  public guidanceReady(action: BoardCommand): boolean {
+    if (!this.world || !this.enabled || this.inspectMode) return false;
+    const board = this.options.getSave().attempt.board;
+    if (action.type !== 'transfer') return this.enteringCards.size === 0 && performance.now() >= this.stockBusyUntil &&
+      typeof applyBoard(board, action, this.options.deal) !== 'string';
+    if (!this.canDrop(action.from, action.to)) return false;
+    const source = sourceCards(board, action.from, this.options.deal);
+    const target = this.metrics.targets.find(t => same(t.location, action.to));
+    if (!target || !source.length) return false;
+    for (const id of [...source, ...(action.to.kind === 'foundation' ? board.foundations[action.to.index].slice(-1) : board.tableau[action.to.index].slice(-1))]) {
+      const view = this.views.get(id);
+      if (!view?.node.visible || !view.face.visible || this.enteringCards.has(id) ||
+          this.tweens.isTweening(view.node) || this.tweens.isTweening(view.face)) return false;
+    }
+    const last = this.views.get(source.at(-1)!)!.node;
+    const hitSource = this.hitSource(last.x, last.y), hitTarget = this.hitTarget(target.x, target.y);
+    return Boolean(hitSource && hitTarget && same(hitSource, action.from) && same(hitTarget.location, action.to));
+  }
   /** One action at a time, following the real board; cosmetic and non-blocking. */
-  public teach(action: BoardCommand): void { this.demonstrate(action, true); }
+  public teach(action: BoardCommand): void {
+    if (this.guidanceReady(action)) this.demonstrate(action, true);
+  }
   private demonstrate(action: BoardCommand, teaching: boolean): void {
     this.clearHint();
     if (!this.enabled || this.press || this.selected || this.inspectMode) return;

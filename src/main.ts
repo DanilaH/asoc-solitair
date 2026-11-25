@@ -14,7 +14,7 @@ import { availableEvents, claimMilestone, eventKey, type EventReward } from './d
 import { createStorefront } from './platform/storefront';
 import { claimShopProgress, freeCampaignBonusState, PASS_GOAL, PIGGY_LIMIT, productLabels, recordFreeCampaignClear, recordStoreClear, settleFreeCampaignBonus, showProductGoods, storefrontView, STOREFRONT_PREVIEW, type FreeCampaignBonusGrant } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
-import { adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee } from './domain/campaign-advertising';
+import { AD_BREAK_GAP_MS, adBreakBlocker, adFree, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee } from './domain/campaign-advertising';
 import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, requiresNativeRecoveryClock, restoreCampaignStock, restoreQuote, unlimitedRemaining, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
 import { allowsRandomJoker, buyRandomJokerAccess, placeRandomJoker, randomJokerCount, randomJokerReady, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
@@ -385,6 +385,11 @@ try {
   const approvedOffers = () => testSdk() || (ads.status.mode === 'live' && ads.status.offersApproved === true);
   const livesVideoApproved = () => releaseProfile && testSdk() || (ads.status.mode === 'live' && ads.status.livesApproved === true);
   let adBreakTimer: ReturnType<typeof setTimeout> | undefined;
+  let adBreakAttempt: string | undefined;
+  const AD_BREAK_IDLE_MS = 1800;
+  let adBreakHold = 0, adBreakRetryAt = 0;
+  let lastAdBreakReason = '';
+  const activePointers = new Set<number>();
   const campaignAdsApproved = () => releaseProfile && testSdk() || (ads.status.mode === 'live' && ads.status.campaignApproved === true);
   const coffeePreview = () => !releaseProfile && (ADS_CONTROLS_PREVIEW || campaignAdsApproved());
   let recoveryClock: ReturnType<typeof setTimeout> | undefined;
@@ -405,6 +410,50 @@ try {
   }
   let banner: NativeBanner | undefined;
   const launchedAt = Date.now();
+  function setAdBreakReason(reason: string) {
+    if (lastAdBreakReason === reason) return;
+    lastAdBreakReason = reason;
+    telemetry.track('ad_event', { format: 'interstitial', placement: 'ads-break', phase: reason });
+  }
+  function scheduleAdBreak(delay = 0) {
+    if (!alive || adBreakTimer !== undefined || screen !== 'game' || runtime.activity.isBlocked() ||
+      !adBreakAttempt || save.attempt.id !== adBreakAttempt) return;
+    adBreakTimer = setTimeout(() => {
+      adBreakTimer = undefined;
+      if (!alive || screen !== 'game' || runtime.activity.isBlocked() || save.attempt.id !== adBreakAttempt) return;
+      const now = Date.now(), remainingIdle = Math.max(adBreakHold, adBreakRetryAt) - performance.now();
+      const idle = !saving && !serviceBusy && !inspectMode && !activePointers.size && remainingIdle <= 0 &&
+        !currentLesson()?.accepts && !ruleIntroduction(save, deal) && Boolean(scene?.idleForAd());
+      const blocker = adBreakBlocker(save, deal, now, launchedAt, campaignAdsApproved(), idle);
+      if (blocker) {
+        setAdBreakReason(blocker);
+        if (blocker === 'cadence') {
+          const next = Math.max(launchedAt, save.platform?.lastFullscreenAt ?? 0) + AD_BREAK_GAP_MS;
+          const untilOpen = next - now;
+          if (untilOpen <= BALANCE.ads.fullscreenGapMs) void ads.prepareInterstitial();
+          scheduleAdBreak(untilOpen > BALANCE.ads.fullscreenGapMs ? untilOpen - BALANCE.ads.fullscreenGapMs : untilOpen);
+        } else if (blocker === 'busy') scheduleAdBreak(Math.max(250, remainingIdle));
+        return;
+      }
+      if (!document.hasFocus()) { setAdBreakReason('focus'); return; }
+      if (!ads.status.interstitial || ads.status.interstitialLoaded === false) {
+        setAdBreakReason('waiting-load');
+        void ads.prepareInterstitial();
+        scheduleAdBreak(15_000);
+        return;
+      }
+      setAdBreakReason('eligible');
+      const attempt = adBreakAttempt!;
+      adBreakRetryAt = performance.now() + 30_000;
+      void ads.show({ kind: 'interstitial', placement: 'ads-break', mode: 'campaign', attempt, dealId: deal.id }).then(result => {
+        if (adBreakAttempt !== attempt) return;
+        if (result.shown) {
+          adBreakAttempt = undefined;
+          lastAdBreakReason = '';
+        } else scheduleAdBreak(30_000);
+      });
+    }, delay);
+  }
   const telemetry = createTelemetry(() => save, runtime.activity, AZUR_VICTORY_QA ? {
     track(event, params) {
       if (validEvent(event, params)) document.dispatchEvent(new CustomEvent('solitaire:qa-analytics', { detail: { event, params } }));
@@ -415,7 +464,16 @@ try {
   let sceneGeneration = 0;
   const setInput = () => scene?.setEnabled(screen === 'game' && ready && $('#app').dataset.presentedDeal === save.attempt.dealId &&
     !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
-  const updateBanner = () => banner?.setEligible(Boolean(screen === 'game' && ads.status.banner && !adFree(save, Date.now(), 'banner') && deal.campaignLevel !== undefined && deal.campaignLevel >= BALANCE.ads.bannerFromLevel), runtime.activity.isBlocked());
+  function updateBanner() {
+    const eligible = ads.status.banner && !adFree(save, Date.now(), 'banner') &&
+      (releaseProfile ? unlockedLevel(save) >= BALANCE.ads.bannerFromLevel :
+        screen === 'game' && (deal.campaignLevel ?? 0) >= BALANCE.ads.bannerFromLevel);
+    const blocked = runtime.activity.getBlockReasons().some(reason => reason !== 'screen' && reason !== 'level-transition');
+    const intro = screen === 'game' ? ruleIntroduction(save, deal) : undefined;
+    const teaching = screen === 'game' && (Boolean(currentLesson()?.accepts) || Boolean(intro && !dismissedRules.has(ruleIntroMarker(intro, deal))));
+    const result = screen === 'game' && save.attempt.board.phase !== 'playing';
+    banner?.setEligible(eligible, blocked || teaching || result);
+  }
   store.onChange = value => {
     // A previously ambiguous write can become confirmed during a later recovery.
     // Keep only its transient presentation; SaveStore still owns every reward.
@@ -425,6 +483,9 @@ try {
     }
     const changedDeal = value.attempt.dealId !== save.attempt.dealId;
     const changedAttempt = value.attempt.id !== save.attempt.id;
+    if (changedAttempt) {
+      clearTimeout(adBreakTimer); adBreakTimer = undefined; adBreakAttempt = undefined;
+    }
     save = value; deal = findDeal(value.attempt.dealId)!;
     if (scene && (changedDeal || (changedAttempt && transitionPresentation))) {
       const animate = transitionPresentation?.resumeId !== value.attempt.id;
@@ -585,9 +646,19 @@ try {
       if (runtime.activity.getBlockReasons().every(r => r === 'modal')) { scene?.sync(); if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs(); }
       return result;
     },
-    onStatus() { renderLives(); renderHud(); updateBanner(); if ((deal.campaignLevel ?? 0) > BALANCE.ads.interstitialAfterLevel) void ads.prepareInterstitial(); },
+    onStatus() {
+      renderLives(); renderHud(); updateBanner();
+      if ((deal.campaignLevel ?? 0) > BALANCE.ads.interstitialAfterLevel) void ads.prepareInterstitial();
+      scheduleAdBreak();
+    },
     onEvent(event) {
-      telemetry.track('ad_event', { format: event.kind, phase: event.phase });
+      const placement = event.placement ?? (event.kind === 'banner' ? 'campaign-banner' :
+        event.kind === 'interstitial' ? 'shared-preload' : 'unspecified');
+      telemetry.track('ad_event', { format: event.kind, phase: event.phase, placement });
+      if (event.kind === 'interstitial' && event.phase === 'loaded' && adBreakAttempt) {
+        clearTimeout(adBreakTimer); adBreakTimer = undefined; scheduleAdBreak(250);
+      }
+      if (event.kind === 'banner' && event.phase === 'load_error') banner?.retryAfterLoadError();
     },
   });
   if (ads.bridge) banner = new NativeBanner(ads.bridge, $('#banner-slot'));
@@ -629,6 +700,16 @@ try {
   let activeHint: { key: string; action: BoardCommand } | undefined;
   let lessonSave: Save | undefined;
   let instruction: ReturnType<typeof lesson>;
+  let lessonNote: { copy?: string; action?: BoardCommand } = {};
+  let pendingGuide: (() => void) | undefined;
+  function syncLessonNote() {
+    const { copy, action } = lessonNote;
+    const visible = Boolean(copy && (!action || (ready && screen === 'game' &&
+      $('#app').dataset.presentedDeal === save.attempt.dealId && !runtime.activity.isBlocked() && scene?.guidanceReady(action))));
+    const text = visible ? copy! : '';
+    if ($('#lesson-copy').textContent !== text) $('#lesson-copy').textContent = text;
+    $('#lesson-note').hidden = !visible;
+  }
   const currentLesson = () => {
     if (save !== lessonSave) { lessonSave = save; instruction = lesson(save, deal); }
     return instruction;
@@ -773,8 +854,8 @@ try {
       : instruction?.copy ?? (binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
         : ice ? 'Соберите тему, чтобы снять один слой льда.'
         : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : goldNote ?? boosterNote);
-    if ($('#lesson-copy').textContent !== (note ?? '')) $('#lesson-copy').textContent = note ?? '';
-    $('#lesson-note').hidden = !note;
+    lessonNote = { copy: note, action: instruction?.copy ? instruction.action : undefined };
+    syncLessonNote();
     $<HTMLButtonElement>('#joker').disabled = recoveryClockBlocked() || board.phase !== 'playing' || Boolean(save.attempt.jokerUsed) || saving ||
       Boolean(instruction?.accepts && instruction.attention !== 'joker');
     $('#joker').classList.toggle('attention', instruction?.attention === 'joker');
@@ -1190,15 +1271,11 @@ try {
       };
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, before, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
-      if (boardCommand && campaignAdsApproved()) {
-        const attempt = save.attempt.id, revision = save.revision;
-        clearTimeout(adBreakTimer);
-        adBreakTimer = setTimeout(() => {
-          if (!alive || saving || serviceBusy || screen !== 'game' || runtime.activity.isBlocked() ||
-              save.attempt.id !== attempt || save.revision !== revision ||
-              !eligibleAdBreak(save, deal, Date.now(), launchedAt, campaignAdsApproved(), Boolean(scene?.idleForAd()))) return;
-          void ads.show({ kind: 'interstitial', placement: 'ads-break', mode: 'campaign', attempt, dealId: deal.id });
-        }, 1800);
+      if (boardCommand && campaignAdsApproved() && (deal.campaignLevel ?? 0) >= 16) {
+        if (adBreakAttempt !== save.attempt.id) { lastAdBreakReason = ''; adBreakRetryAt = 0; }
+        adBreakAttempt = save.attempt.id;
+        adBreakHold = performance.now() + AD_BREAK_IDLE_MS;
+        scheduleAdBreak(AD_BREAK_IDLE_MS);
       }
       if (coveredWaste)
         message('Подходящая карта теперь под верхней картой сброса. Её можно вернуть на новом круге.');
@@ -1669,22 +1746,33 @@ try {
   })(); };
   document.querySelectorAll('[data-lesson-close]').forEach(button => button.addEventListener('click', () => dismissRule?.(), domOptions));
   function showGuidance(animate = true, idle = false) {
-    clearTimeout(guideTimer);
+    clearTimeout(guideTimer); pendingGuide = undefined;
+    updateBanner();
     if (maybeIntroduceRule()) return;
     const instruction = currentLesson();
     if (animate && instruction?.action && !inspectMode) {
       const attemptId = save.attempt.id, revision = save.revision;
-      guideTimer = setTimeout(() => {
-        if (alive && screen === 'game' && !runtime.activity.isBlocked() && save.attempt.id === attemptId && save.revision === revision) {
-          game?.loop.wake(); scene?.teach(instruction.action!);
+      const demonstrate = () => {
+        if (!alive || screen !== 'game' || runtime.activity.isBlocked() || save.attempt.id !== attemptId || save.revision !== revision || inspectMode) {
+          pendingGuide = undefined;
+          return;
         }
+        if (scene?.guidanceReady(instruction.action!)) {
+          pendingGuide = undefined;
+          repaintFrames = Math.max(repaintFrames, 2);
+          scene.teach(instruction.action!);
+        }
+      };
+      guideTimer = setTimeout(() => {
+        pendingGuide = demonstrate;
+        game?.loop.wake();
       }, instruction.accepts ? 450 : idle ? 6000 : instruction.delay ?? 650);
     }
   }
   function showGame() {
     clearPraise(); message(''); screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false;
     runtime.activity.setBlocked('screen', false); renderHud();
-    repaintFrames = Math.max(repaintFrames, 2); resizeToRoot(); game?.loop.wake(); scene?.sync(); showGuidance();
+    repaintFrames = Math.max(repaintFrames, 2); resizeToRoot(); game?.loop.wake(); scene?.sync(); showGuidance(); scheduleAdBreak();
     if (save.attempt.board.phase !== 'playing') outcome();
   }
   function goHome() {
@@ -1845,6 +1933,7 @@ try {
         if (generation !== sceneGeneration || renderedDealId !== save.attempt.dealId) return;
         $('#app').dataset.presentedDeal = renderedDealId;
         ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true';
+        if ((deal.campaignLevel ?? 0) > BALANCE.ads.interstitialAfterLevel) void ads.prepareInterstitial();
         if (firstLaunch) { firstLaunch = false; showGame(); active.presentDeal(); announceDeal(); }
         else if (screen === 'game') { if (newDeal) announceDeal(); showGuidance(); }
         if (screen === 'game' && save.attempt.board.phase !== 'playing') outcome();
@@ -1899,6 +1988,10 @@ try {
 
     }
     const blocked = runtime.activity.isBlocked();
+    if (blocked) {
+      clearTimeout(adBreakTimer); adBreakTimer = undefined;
+      activePointers.clear();
+    } else scheduleAdBreak();
     if (runtime.activity.getBlockReasons().some(reason => reason !== 'shuffle')) cancelShuffle?.();
     setInput(); updateBanner();
     if (screen === 'game' && runtime.activity.getBlockReasons().every(r => r === 'modal') && ready) {
@@ -1921,6 +2014,8 @@ try {
     else renderer.loop.wake();
   });
   renderer.events.on(Phaser.Core.Events.POST_RENDER, () => {
+    if (lessonNote.action) syncLessonNote();
+    pendingGuide?.();
     if (repaintFrames > 0) {
       repaintFrames--;
       if (!runtime.activity.isBlocked()) return;
@@ -1930,9 +2025,21 @@ try {
   // Input and explicit UI changes wake the sleeping renderer before visual work.
   const wake = () => { if (save.attempt.daily && $('#app').dataset.practice !== String(training())) renderHud(); if (!runtime.activity.isBlocked()) renderer.loop.wake(); };
   root.addEventListener('pointerdown', () => { wake(); if (!runtime.activity.isBlocked()) showGuidance(true, true); }, domOptions); root.addEventListener('pointermove', wake, domOptions);
-  document.addEventListener('pointerdown', wake, { ...domOptions, capture: true });
+  document.addEventListener('pointerdown', event => {
+    activePointers.add(event.pointerId);
+    adBreakHold = performance.now() + AD_BREAK_IDLE_MS;
+    wake();
+  }, { ...domOptions, capture: true });
+  const releaseAdPointer = (event: PointerEvent) => {
+    activePointers.delete(event.pointerId);
+    adBreakHold = performance.now() + AD_BREAK_IDLE_MS;
+    scheduleAdBreak(AD_BREAK_IDLE_MS);
+  };
+  document.addEventListener('pointerup', releaseAdPointer, { ...domOptions, capture: true });
+  document.addEventListener('pointercancel', releaseAdPointer, { ...domOptions, capture: true });
+  window.addEventListener('focus', () => scheduleAdBreak(), domOptions);
   window.addEventListener('pointercancel', () => scene?.cancel(), domOptions);
-  window.addEventListener('blur', () => scene?.cancel(), domOptions);
+  window.addEventListener('blur', () => { activePointers.clear(); scene?.cancel(); }, domOptions);
   document.addEventListener('keydown', event => { if (event.key === 'Escape') { scene?.cancel(); setInspect(false); } }, domOptions);
   dialogs.forEach(dialog => dialog.addEventListener('cancel', event => { event.preventDefault(); dismissDialog(dialog); }, domOptions));
   document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach(button => button.addEventListener('click', () => {

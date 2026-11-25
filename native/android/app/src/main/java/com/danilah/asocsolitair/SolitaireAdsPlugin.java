@@ -37,6 +37,7 @@ public class SolitaireAdsPlugin extends Plugin {
     private RewardJournal journal, shownJournal;
     private Session session;
     private final android.view.ViewTreeObserver.OnWindowFocusChangeListener focusListener = focused -> {
+        if (!focused) hide();
         if (focused && session != null && session.invoked && !session.shown) checkUnshown(session);
     };
     private static final class Session {
@@ -72,15 +73,23 @@ public class SolitaireAdsPlugin extends Plugin {
     }
     private boolean available(String kind) { return ready && !destroyed && !unit(kind).isEmpty(); }
     private void event(String kind, String phase) {
+        String placement = session != null && session.kind.equals(kind) ? session.placement : null;
+        event(kind, phase, placement);
+    }
+    private void event(String kind, String phase, @Nullable String placement) {
         if (destroyed) return;
-        JSObject e = new JSObject(); e.put("kind", kind); e.put("phase", phase); notifyListeners("adEvent", e);
+        if (BuildConfig.AD_MODE.equals("test"))
+            android.util.Log.d("SolitaireAds", kind + " " + (placement == null ? "shared" : placement) + " " + phase);
+        JSObject e = new JSObject(); e.put("kind", kind); e.put("phase", phase);
+        if (placement != null) e.put("placement", placement);
+        notifyListeners("adEvent", e);
     }
     private void impression(Session s, @Nullable ImpressionData data) {
         if (session != s || s.impressionCapture != null) return;
         s.impressionCapture = recordImpression(s.kind, s.placement, s.id, data);
     }
     private RevenueDelivery.Capture recordImpression(String kind, String placement, String id, @Nullable ImpressionData data) {
-        event(kind, "impression");
+        event(kind, "impression", placement);
         if (!BuildConfig.CAMPAIGN_ADS_APPROVED || destroyed || data == null) return null;
         try {
             JSONObject raw = new JSONObject(data.getRawData());
@@ -117,6 +126,7 @@ public class SolitaireAdsPlugin extends Plugin {
             revenue.put("durableAccepted", diagnostics.durableAccepted); revenue.put("durableDuplicates", diagnostics.durableDuplicates);
             result.put("revenueProcess", revenue);
         }
+        result.put("interstitialLoaded", interstitial != null);
         result.put("banner", available("banner")); result.put("rewarded", available("rewarded")); result.put("interstitial", available("interstitial")); call.resolve(result);
     }); }
     @PluginMethod public void prepareInterstitial(PluginCall call) { handler.post(() -> {
@@ -285,7 +295,7 @@ public class SolitaireAdsPlugin extends Plugin {
         resolve(s.call, s.shown, outcome);
     }
     @PluginMethod public void measureBanner(PluginCall call) { handler.post(() -> {
-        if (!available("banner") || background || session!=null) { call.resolve(); return; }
+        if (!available("banner") || background || session!=null || !getActivity().hasWindowFocus()) { call.resolve(); return; }
         try {
             View web=getBridge().getWebView(); FrameLayout parent=(FrameLayout)getActivity().findViewById(android.R.id.content);
             double viewport=call.getDouble("viewportWidth",0.0), slot=call.getDouble("slotWidth",0.0), left=call.getDouble("slotX",0.0);
@@ -310,15 +320,29 @@ public class SolitaireAdsPlugin extends Plugin {
             JSObject root=new JSObject(); root.put("width",parent.getWidth()); root.put("height",parent.getHeight()); o.put("root",root);
             JSObject padding=new JSObject(); padding.put("left",parent.getPaddingLeft()); padding.put("top",parent.getPaddingTop()); o.put("parentPadding",padding);
             JSObject safe=new JSObject(); safe.put("left",parent.getPaddingLeft()); safe.put("top",parent.getPaddingTop()); safe.put("right",parent.getPaddingRight()); safe.put("bottom",parent.getPaddingBottom()); o.put("safeInsets",safe);
-            o.put("adHeight",h); call.resolve(o);
+            o.put("adHeight",h);
+            if (BuildConfig.AD_MODE.equals("test"))
+                android.util.Log.d("SolitaireAds", "banner measure cssViewport=" + viewport + " cssSlotX=" + left +
+                        " cssSlotWidth=" + slot + " nativeWidth=" + width + " nativeHeight=" + h + " density=" +
+                        getContext().getResources().getDisplayMetrics().density + " web=" + o.optJSONObject("webView") + " safe=" + safe);
+            call.resolve(o);
         } catch (Exception e) { call.reject("Banner measurement failed"); }
     }); }
     private JSObject rect(int x,int y,int width,int height) { JSObject r=new JSObject(); r.put("x",x);r.put("y",y);r.put("width",width);r.put("height",height);return r; }
+    static long bannerCounter(Object value) {
+        if (!(value instanceof Number)) return -1;
+        double number = ((Number) value).doubleValue();
+        if (!Double.isFinite(number) || number < 0 || number > 9007199254740991L || number != Math.rint(number)) return -1;
+        return ((Number) value).longValue();
+    }
     @PluginMethod public void placeBanner(PluginCall call) { handler.post(() -> {
-        long generation=call.getLong("generation",0L);
+        long generation = bannerCounter(call.getData().opt("generation"));
+        if (generation < 0) { call.reject("Invalid banner generation"); return; }
+        if (generation <= bannerGeneration) { call.resolve(); return; }
+        bannerGeneration = generation;
         JSObject placement=call.getObject("placement");
-        if (generation<bannerGeneration || banner==null || placement==null || !placement.optString("kind").equals("place") || background || session!=null || destroyed) { call.resolve(); return; }
-        bannerGeneration=generation;
+        if (banner==null || placement==null || !placement.optString("kind").equals("place") ||
+                background || session!=null || destroyed || !getActivity().hasWindowFocus()) { hide(); call.resolve(); return; }
         try {
             JSONObject r=placement.getJSONObject("rect"); FrameLayout parent=(FrameLayout)getActivity().findViewById(android.R.id.content);
             int x=r.getInt("x"),y=r.getInt("y"),width=r.getInt("width"),height=r.getInt("height");
@@ -326,12 +350,20 @@ public class SolitaireAdsPlugin extends Plugin {
             if (width<=0 || height<=0 || x<parent.getPaddingLeft() || y<parent.getPaddingTop() || x+width>parent.getWidth()-parent.getPaddingRight() || y+height>parent.getHeight()-parent.getPaddingBottom() || x<w[0]-p[0] || y<w[1]-p[1] || x+width>w[0]-p[0]+web.getWidth() || y+height>w[1]-p[1]+web.getHeight() || width!=bannerWidth || height<banner.getMeasuredHeight()) { hide(); call.resolve();return; }
             FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(width,height,Gravity.TOP|Gravity.LEFT);
             lp.leftMargin=x-parent.getPaddingLeft();lp.topMargin=y-parent.getPaddingTop();
-            if (banner.getParent()==null) parent.addView(banner,lp); else banner.setLayoutParams(lp);
+            if (banner.getParent()==null) parent.addView(banner,lp);
+            else if (banner.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+                FrameLayout.LayoutParams previous = (FrameLayout.LayoutParams) banner.getLayoutParams();
+                if (previous.width != lp.width || previous.height != lp.height ||
+                        previous.leftMargin != lp.leftMargin || previous.topMargin != lp.topMargin) banner.setLayoutParams(lp);
+            }
             bannerWanted=true;banner.setVisibility(bannerLoaded?View.VISIBLE:View.INVISIBLE);
+            if (BuildConfig.AD_MODE.equals("test"))
+                android.util.Log.d("SolitaireAds", "banner placed generation=" + generation +
+                        " view=" + System.identityHashCode(banner) + " rect=" + r);
             if (!bannerLoaded && android.os.SystemClock.elapsedRealtime()>=bannerRetryAt) {
                 bannerRetryAt=Long.MAX_VALUE; final BannerAdView target=banner;
                 target.setBannerAdEventListener(new BannerAdEventListener() {
-                    public void onAdLoaded() { if (banner!=target || destroyed) return; bannerLoaded=true;target.setVisibility(bannerWanted && !background && session==null?View.VISIBLE:View.INVISIBLE);event("banner","loaded"); }
+                    public void onAdLoaded() { if (banner!=target || destroyed) return; bannerLoaded=true;target.setVisibility(bannerWanted && !background && session==null && getActivity().hasWindowFocus()?View.VISIBLE:View.INVISIBLE);event("banner","loaded"); }
                     public void onAdFailedToLoad(@NonNull AdRequestError error) { if (banner!=target || destroyed) return;bannerRetryAt=android.os.SystemClock.elapsedRealtime()+60000;event("banner","load_error"); }
                     public void onAdClicked() {}
                     public void onImpression(@Nullable ImpressionData data) { if (banner==target) recordImpression("banner", "campaign-banner", UUID.randomUUID().toString(), data); }
@@ -342,7 +374,12 @@ public class SolitaireAdsPlugin extends Plugin {
         } catch (Exception e) { hide();call.reject("Banner placement failed"); }
     }); }
     private void hide() { bannerWanted=false; if (banner!=null) banner.setVisibility(View.INVISIBLE); }
-    @PluginMethod public void hideBanner(PluginCall call) { handler.post(() -> { bannerGeneration=Math.max(bannerGeneration,call.getLong("generation",bannerGeneration));hide();call.resolve(); }); }
+    @PluginMethod public void hideBanner(PluginCall call) { handler.post(() -> {
+        long generation = bannerCounter(call.getData().opt("generation"));
+        if (generation < 0) { call.reject("Invalid banner generation"); return; }
+        if (generation >= bannerGeneration) { bannerGeneration = generation; hide(); }
+        call.resolve();
+    }); }
     private void destroyBanner() { if (banner!=null) { banner.setBannerAdEventListener(null);if (banner.getParent() instanceof FrameLayout) ((FrameLayout)banner.getParent()).removeView(banner);banner.destroy();banner=null; } bannerLoaded=false;bannerRetryAt=0; }
     @Override protected void handleOnPause() { background = true; hide(); if (session != null && !session.invoked) finish(session, "cancelled"); }
     @Override protected void handleOnResume() { background = false; if (session != null && session.invoked && !session.shown) handler.postDelayed(() -> { if (session != null) checkUnshown(session); }, 200); }

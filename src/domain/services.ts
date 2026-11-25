@@ -140,10 +140,10 @@ export function purchaseHelper(save: Save, helper: 'hint' | 'undo' | 'joker'): b
   save.profile.coins -= cost; save.profile[helper === 'hint' ? 'hints' : helper === 'undo' ? 'undos' : 'jokers']++; save.revision++; return true;
 }
 export function interstitialEligible(save: Save, level: number, mode: 'campaign' | 'daily', now: number, launchedAt: number): boolean {
-  const state = platformState(save);
-  return mode === 'campaign' && level > BALANCE.ads.interstitialAfterLevel &&
+  const state = save.platform;
+  return Boolean(state && mode === 'campaign' && level > BALANCE.ads.interstitialAfterLevel &&
     state.winsSinceInterstitial >= BALANCE.ads.winsPerInterstitial &&
-    now >= state.lastFullscreenAt && now - Math.max(state.lastFullscreenAt, launchedAt) >= BALANCE.ads.fullscreenGapMs;
+    now >= state.lastFullscreenAt && now - Math.max(state.lastFullscreenAt, launchedAt) >= BALANCE.ads.fullscreenGapMs);
 }
 export function markCampaignWin(save: Save, dealId: string, level?: number): import('./types').RewardGrant[] {
   // Control deal/replays are not new campaign progress.

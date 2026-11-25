@@ -38,14 +38,21 @@ export function adFree(save: Save, now: number, placement: 'interstitial'|'banne
     .some(item => item.good.type === 'no-ads' && (placement === 'interstitial' || item.good.placements === 'banner-and-interstitial'));
 }
 
-const MIN_LEVEL = 16, GAP = 180_000;
+const MIN_LEVEL = 16;
+export const AD_BREAK_GAP_MS = 180_000;
+export function adBreakBlocker(save: Save, deal: Deal, now: number, launchedAt: number, approved: boolean, idle: boolean) {
+  const level = deal.campaignLevel, attempt = save.attempt;
+  if (!approved) return 'policy';
+  if (level === undefined || level < MIN_LEVEL || attempt.daily || attempt.dealId !== deal.id) return 'campaign';
+  if (deal.difficultyTier === 'superhard') return 'difficulty';
+  if (!attempt.telemetry?.started || attempt.board.phase !== 'playing' || (attempt.board.movesLeft ?? 0) <= 10) return 'board';
+  if (attempt.adBreakShown || save.campaignAds?.shownLevels.includes(level)) return 'shown';
+  if (adFree(save, now)) return 'entitlement';
+  if (now - Math.max(launchedAt, save.platform?.lastFullscreenAt ?? 0) < AD_BREAK_GAP_MS) return 'cadence';
+  if (!idle) return 'busy';
+}
 export function eligibleAdBreak(save: Save, deal: Deal, now: number, launchedAt: number, approved: boolean, idle: boolean) {
-  const level = deal.campaignLevel;
-  return Boolean(approved && idle && level !== undefined && level >= MIN_LEVEL && deal.difficultyTier !== 'superhard' &&
-    save.attempt.dealId === deal.id && !save.attempt.daily && save.attempt.telemetry?.started &&
-    save.attempt.board.phase === 'playing' && (save.attempt.board.movesLeft ?? 0) > 10 &&
-    !save.attempt.adBreakShown && !save.campaignAds?.shownLevels.includes(level) && !adFree(save, now) &&
-    now - Math.max(launchedAt, save.platform?.lastFullscreenAt ?? 0) >= GAP);
+  return adBreakBlocker(save, deal, now, launchedAt, approved, idle) === undefined;
 }
 export function recordAdBreakShown(save: Save, level: number) {
   save.attempt.adBreakShown = true;

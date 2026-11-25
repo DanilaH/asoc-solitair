@@ -40,8 +40,8 @@
   "asOf": "2026-11-21",
   "sourcePin": {
     "repo": "DanilaH/asoc-solitair",
-    "sourceInventoryRef": "adb0657facebf8b5e3ed22369305ba509c988626",
-    "sourceInventoryBlob": "79a44a8b1c0ec98a6b6bde9b1fbd4071cad1af6d",
+    "sourceInventoryRef": "af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a",
+    "sourceInventoryBlob": "29ddea6086c46c5581702cb0001536e6666b7626",
     "baselineContent8Head": "e092ba156eebb5ebc703d89e4e98bf657bbd6f14",
     "gameVersion": "0.20.3 Content8 preview",
     "runtimeKitCommit": "a9325265e87583a4872cf6a158e1e881a0d7508e"
@@ -1114,5 +1114,17 @@
       "BLOCKED": 9,
       "EVIDENCE_GAP": 11
     }
+  },
+  "researchConsolidation": {
+    "report": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
+    "sourcePR": 151,
+    "sourceRef": "af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a",
+    "consumerCodeRef": "b3180bbe2f2f39b5428e664c19a6c56cde63aed2",
+    "previousPin": {
+      "ref": "adb0657facebf8b5e3ed22369305ba509c988626",
+      "blob": "79a44a8b1c0ec98a6b6bde9b1fbd4071cad1af6d",
+      "url": "https://github.com/DanilaH/mini-games-kit/blob/adb0657facebf8b5e3ed22369305ba509c988626/research/games/association-solitaire/porting/SOURCE_FEATURES.json"
+    },
+    "scope": "Research/doc synchronization; package states/owners and runtime pin unchanged"
   }
 }

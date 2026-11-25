@@ -85,7 +85,7 @@ footer button[aria-pressed=true] .helper-icon{outline:3px solid #f7d69e}
 @keyframes helper-attention{50%{transform:translateY(-3px);box-shadow:0 0 0 5px #f7d69e66}
 }
 .bottom-note{height:8px;flex-shrink:0}
-#banner-slot{height:60px;flex-shrink:0;width:100%;background:#164e58}
+#banner-slot{height:60px;flex-shrink:0;width:min(100%,496px);align-self:center;background:transparent}
 #save-retry{margin:0;flex-shrink:0}
 
 /* Keep the emblem/title and event shortcuts in separate compact groups. */

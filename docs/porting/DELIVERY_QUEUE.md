@@ -1,5 +1,7 @@
 ## Актуальное поручение после аудита · 24.11.2026
 
+**25.11 · [Исследовательский pin](https://github.com/DanilaH/mini-games-kit/blob/af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a/research/games/association-solitaire/porting/SOURCE_FEATURES.json)** и [actual PR208](RESEARCH_CONSOLIDATION_2026-11-25.md) уточняют исторические описания. Source-only P29/P30 gaps не означают отсутствие работающих ordinary Bonus/Combo. Все 38 packet owners/dependencies/states сохранены; runtime pin прежний.
+
 [Основное ТЗ](CORE_ADS_RELEASE_TZ_2026-11-24.md) и [аудит actual code](DEVELOPER_AUDIT_2026-11-24.md) задают следующие scoped PR поверх `c4215e1`. **Начать с одной общей задачи B0/C1**: профиль C8, композиция готовых систем, воспроизводимая сборка и manifest. Затем core C2–C5, все согласованные рекламные сценарии/экономика, точечные retention-исправления и новые source-policy пакеты, общая Android/SDK/балансная приёмка. Нельзя заново реализовывать готовые системы только из-за исторического названия пакета.
 
 Полная таблица в §8 основного ТЗ связывает все 38 Pxx и 115 source IDs с этапом и следующим действием. Владение IDs, dependencies и статусы ниже сохраняются; следование новой последовательности не означает, что каждый прежний BLOCKED_EXTERNAL блокирует бесплатную/рекламную часть семейства. Денежный IAP остаётся отдельным будущим каналом. Этот docs-only handoff не повышает инженерный статус.

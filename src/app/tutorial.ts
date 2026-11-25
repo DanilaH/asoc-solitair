@@ -1,8 +1,9 @@
-import { legalCommands, sameBoardCommand, sourceCards } from '../domain/engine';
+import { applyBoard, legalCommands, sameBoardCommand, sourceCards } from '../domain/engine';
 import { knownContinuation } from '../domain/solver';
 import { completedLevels, freeHintDemo, markTutorial, seenTutorial } from '../domain/progression';
 import { bonusKinds, bonusOffer, pilesFor } from '../domain/bonus-slots';
 import type { Board, BoardCommand, Command, Deal, Save } from '../domain/types';
+import { authoredLessonAction, usesAuthoredLesson } from './c8-tutorial';
 
 type Skill = 'category' | 'match' | 'stock';
 const marker = (skill: Skill) => `learn:${skill}`;
@@ -59,12 +60,14 @@ export interface Guidance {
 function openingLesson(save: Save, deal: Deal): Guidance | undefined {
   const board = save.attempt.board;
   const seen = (key: string) => seenTutorial(save, key);
-  const step = () => knownContinuation(board, deal)?.[0];
+  const authored = usesAuthoredLesson(deal);
+  const authoredStep = authoredLessonAction(board, deal);
+  const step = () => authored ? authoredStep : knownContinuation(board, deal)?.[0];
   const exact = (copy: string, action: BoardCommand): Guidance =>
     ({ copy, action, accepts: command => isBoardCommand(command) && sameBoardCommand(action, command) });
   const guide = (copy: string, accepts: (action: BoardCommand) => boolean) => {
     const preferred = step();
-    const action = preferred && accepts(preferred) ? preferred : legalCommands(board, deal).find(accepts);
+    const action = preferred && accepts(preferred) ? preferred : authored && preferred ? undefined : legalCommands(board, deal).find(accepts);
     return action ? exact(copy, action) : undefined;
   };
   const button = (copy: string, attention: NonNullable<Guidance['attention']>, type: Command['type']): Guidance =>
@@ -76,6 +79,7 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
       if (!seen('learn:stock')) {
         const next = step();
         if (next?.type === 'transfer') return exact('Сделайте показанный перенос. Затем откроем колоду.', next);
+        if (next?.type === 'recycle') return exact('Верните сброс в колоду.', next);
         return guide('Нажмите на колоду, чтобы открыть карту.', action => action.type === 'draw');
       }
       break;
@@ -93,7 +97,9 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
       if (seen('hint-practiced')) break;
       if (save.attempt.lessonHint) {
         const action = save.attempt.lessonHint;
-        return exact(action.type === 'transfer' ? 'Сделайте показанный перенос.' : 'Нажмите на показанную колоду.', action);
+        if (typeof applyBoard(board, action, deal) !== 'string')
+          return exact(action.type === 'transfer' ? 'Сделайте показанный перенос.' : 'Нажмите на показанную колоду.', action);
+        return;
       }
       return button('Нажмите «Подсказка». Первый раз бесплатно.', 'hint', 'hint');
     case 'undo':
@@ -132,14 +138,22 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
       if (seen('learn:ordered')) break;
       const action = step();
       if (!action) break;
-      const opening = action.type === 'transfer' && sourceCards(board, action.from, deal).some(id => deal.cards[id].ordered);
-      return exact(opening ? 'Положите «Будни» в верхний слот.' : 'Начните с понедельника, карты №1.', action);
+      if (action.type === 'draw') return exact('Откройте карту из колоды.', action);
+      if (action.type === 'recycle') return exact('Верните сброс в колоду.', action);
+      const cards = sourceCards(board, action.from, deal).map(id => deal.cards[id]);
+      const leader = cards.find(card => card.ordered && card.leader);
+      if (leader && action.to.kind === 'foundation') return exact(`Положите «${leader.text}» в верхний слот.`, action);
+      const ordered = cards.find(card => card.rank === 1);
+      if (ordered && action.to.kind === 'foundation') return exact(`Добавьте «${ordered.text}», карту №1.`, action);
+      return exact('Переложите отмеченную карту.', action);
     }
     case 'keys': {
       if (seen('learn:keys')) break;
       const action = step();
       if (!action) break;
-      return exact(`Сделайте отмеченный ход. Найдено ${board.keys?.length ?? 0} из ${deal.lock?.requiredKeys.length ?? 3}.`, action);
+      if (action.type === 'draw') return exact('Откройте карту из колоды.', action);
+      if (action.type === 'recycle') return exact('Верните сброс в колоду.', action);
+      return exact(`Переложите отмеченную карту. Ключи: ${board.keys?.length ?? 0}/${deal.lock?.requiredKeys.length ?? 3}.`, action);
     }
   }
 }

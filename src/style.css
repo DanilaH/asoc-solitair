@@ -347,6 +347,8 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 #game-root{touch-action:none}
 #dock{justify-content:center;gap:6px}
 #dock button{width:min(15vw,72px);min-width:48px}
+#dock #proof-shuffle{min-width:64px}
+#proof-shuffle-label{white-space:nowrap}
 #dock #inspect{width:48px;height:48px;display:grid;place-items:center;align-self:center}
 .inspect-icon{display:grid;place-items:center;width:100%;height:100%;border-radius:14px;border:1px solid #94b8b4;background:#195966;color:#fff7e1;font-size:24px}
 #inspect:is([aria-pressed=true],[data-peeking=true]) .inspect-icon{background:#f5e6bd;color:#284b56;border-color:#fff2cf}
@@ -637,12 +639,13 @@ html[data-reduced=true] .coin-debit{animation:none}
 #daily-bonus-dialog h2{padding-inline-end:44px;margin-bottom:5px}
 #daily-bonus-status{min-height:3em;margin:0 0 8px}
 .daily-bonus-cards{gap:6px}
-.daily-bonus-card{display:grid;place-content:center;justify-items:center;height:clamp(48px,12dvh,68px);padding:4px;border:1px solid #845287;border-radius:9px;background:#60416f url('/art/generated/card-back-classic.webp') center/100% 100% no-repeat;color:#294d5d;font-size:12px;line-height:1.12;text-align:center}
+.daily-bonus-card{display:grid;place-content:center;justify-items:center;height:clamp(48px,11dvh,68px);padding:4px;border:1px solid #845287;border-radius:9px;background:#60416f url('/art/generated/card-back-classic.webp') center/100% 100% no-repeat;color:#294d5d;font-size:12px;line-height:1.12;text-align:center}
 .daily-bonus-card[data-revealed=true]{background:#fff1d4;border-color:#c4ab85}
 .daily-bonus-card[data-revealed=true]:disabled{opacity:1}
 .daily-bonus-card small{margin-top:3px;font-size:12px;font-weight:850;font-variant-numeric:tabular-nums}
 .daily-bonus-card[data-matched=true]{border-color:#976625;background:#ffebbc}
 .daily-bonus-card[data-won=true]{box-shadow:inset 0 0 0 2px #a76516;color:#563513}
 #daily-bonus-error{color:#8c2924;margin:5px 0}
-#daily-bonus-dialog .sheet-actions{grid-template-columns:minmax(0,1fr) auto;gap:7px;padding-top:9px}
-#daily-bonus-dialog .sheet-actions [data-close]:only-child{grid-column:1/-1}
+#daily-bonus-dialog .sheet-actions{grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr);gap:7px;padding-top:9px}
+#daily-bonus-dialog .sheet-actions:has(#daily-bonus-new[hidden]):has(#daily-bonus-claim[hidden]){grid-template-columns:1fr}
+#daily-bonus-dialog .sheet-actions button{font-size:15px;padding-inline:5px}

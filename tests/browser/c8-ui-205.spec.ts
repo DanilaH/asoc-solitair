@@ -134,6 +134,8 @@ test('C8 viewport matrix and exact L16 and L30 comparisons', async ({ browser, r
         const card = cardMetrics(deal);
         const reader = await touchable(page, '#inspect', 48);
         expect(reader.y - reader.height / 2).toBeGreaterThanOrEqual(area.y + area.height - 1);
+        const shuffleLabel = await page.locator('#proof-shuffle-label').boundingBox();
+        if (shuffleLabel) expect(shuffleLabel.y + shuffleLabel.height).toBeLessThanOrEqual(height);
         expect(await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('text-size-adjust'))).toBe('100%');
         const offers = [];
         for (const offer of model.offers) {
@@ -238,6 +240,9 @@ test('compact Home, helpers and a committed Bonus reveal are reachable through r
     await capture(page, info, 'daily-bonus-' + (opened + 1));
   }
   const claim = await touchable(page, '#daily-bonus-claim');
+  const lastCard = (await cards.last().boundingBox())!;
+  const bonusBody = (await dialog.locator('.sheet-body').boundingBox())!;
+  expect(lastCard.y + lastCard.height).toBeLessThanOrEqual(bonusBody.y + bonusBody.height + 1);
   await page.touchscreen.tap(claim.x, claim.y);
   await expect.poll(async () => (await read(page)).dailyBonus?.claimed).toBe(true);
   const after = (await read(page)).profile.coins;

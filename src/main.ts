@@ -716,8 +716,12 @@ try {
     shuffle.hidden = !deal.shufflePreview && !deal.shufflePolicy;
     shuffle.disabled = !canShuffle(save, deal) || saving || shuffling || recoveryClockBlocked();
     shuffle.setAttribute('aria-busy', String(shuffling));
-    $('#proof-shuffle-label').textContent = shuffling ? 'Ищу…' : save.attempt.shuffleUsed ? 'Использовано' :
-      deal.shuffleCost ? `Перемешать · ${save.dailyTasks?.inventory.shuffles ?? 0}` : 'Перемешать';
+    $('#proof-shuffle-label').textContent = shuffling ? 'Ищу…' : save.attempt.shuffleUsed ? 'Использовано' : 'Перемешать';
+    const shuffleCount = $('#proof-shuffle-count');
+    shuffleCount.hidden = !deal.shuffleCost || save.attempt.shuffleUsed === true;
+    shuffleCount.textContent = String(save.dailyTasks?.inventory.shuffles ?? 0);
+    if (shuffleCount.hidden) shuffle.removeAttribute('aria-describedby');
+    else shuffle.setAttribute('aria-describedby', shuffleCount.id);
     $('#game').dataset.exhausted = String(board.phase === 'exhausted');
     if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
     $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;

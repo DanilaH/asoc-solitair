@@ -117,7 +117,8 @@ test('L30 grants its first Shuffle after an already claimed Bonus and commits a 
   await page.locator('#home-play').tap();
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
   await expect(page.locator('#proof-shuffle')).toBeEnabled();
-  await expect(page.locator('#proof-shuffle-label')).toHaveText('Перемешать · 1');
+  await expect(page.locator('#proof-shuffle-label')).toHaveText('Перемешать');
+  await expect(page.locator('#proof-shuffle-count')).toHaveText('1');
   await expect(page.locator('#proof-shuffle svg')).toBeVisible();
   await expect(page.locator('#proof-shuffle svg')).not.toHaveCSS('color', 'rgba(0, 0, 0, 0)');
   const reserved = await bannerReserve(page, info, 'banner-layout-before');

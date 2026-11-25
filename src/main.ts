@@ -47,7 +47,7 @@ import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-s
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
-import { BOTTOM_DECK_MARGIN, CARD_H, boardFrame, layout } from './game/layout';
+import { CARD_H, GRID_GAP, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
 import { cardReader } from './game/card-reader';
@@ -175,7 +175,7 @@ function peekCard(id: string | null, previewOnly = false) {
   if (artwork) { image.src = artwork; image.alt = card.text; } else image.removeAttribute('src');
   const zone = $('#inspect').getBoundingClientRect();
   panel.style.left = `${Math.max(10, Math.min(innerWidth - Math.min(280, innerWidth - 20) - 10, zone.right + 9))}px`;
-  panel.style.top = `${Math.min(innerHeight - 230, Math.max(10, zone.bottom + 10))}px`;
+  panel.style.top = `${Math.max(10, zone.top - panel.offsetHeight - 9)}px`;
 }
 function clearPraise() {
   if (praiseAnimation) { praiseAnimation.onfinish = null; praiseAnimation.cancel(); praiseAnimation = undefined; }
@@ -191,34 +191,25 @@ function showPraise(text: string) {
   ], { duration: reduced ? 450 : 900, fill: 'both' });
   praiseAnimation.onfinish = clearPraise;
 }
-function positionDeckTools(save: Save) {
+function positionBonusSlots(save: Save) {
   const rect = $('#game-root').getBoundingClientRect(); if (!rect.width || !rect.height) return;
-  const tools = $('.deck-tools'), app = $('#app');
-  const frame = boardFrame(rect.width, rect.height, app.dataset.deckRow as 'top' | 'bottom', deal);
-  const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
-  const bottom = app.dataset.deckRow === 'bottom' && hasDeck;
-  const right = app.dataset.deckEdge === 'left' || (!hasDeck && app.dataset.deckRow === 'bottom');
-  // The moves counter shares the deck row, on the side free of stock and the waste fan.
-  // A full foundation row needs its entire width when the deck is at the bottom.
-  const top = bottom ? rect.height - (CARD_H + BOTTOM_DECK_MARGIN) * frame.unit : 20 * frame.unit;
-  tools.style.transformOrigin = right ? 'top right' : 'top left';
-  tools.style.transform = `scale(${frame.unit})`;
-  tools.style.top = `${top}px`;
-  tools.style.left = right ? 'auto' : '0'; tools.style.right = right ? '0' : 'auto';
+  const frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, deal);
   const offers = deal.bonusSlots && ready && screen === 'game' && save.attempt.board.phase === 'playing'
     ? layout(save.attempt.board, deal, frame, save.settings.deckSide, save.settings.deckPosition).offers : [];
   for (const kind of bonusKinds) {
     const button = $(`#bonus-${kind}`), offer = offers.find(target => target.kind === kind);
     button.hidden = !offer;
     if (offer) {
-      const slotWidth = offer.width * frame.unit;
-      // Keep the bonus hit area inside the field; the gap to the preceding
-      // slot leaves room for the minimum touch width on short screens.
-      const touchWidth = Math.max(44, slotWidth);
-      const left = frame.offsetX + (offer.x - offer.width / 2) * frame.unit;
-      button.style.left = `${Math.min(left, rect.width - touchWidth)}px`;
-      button.style.top = `${offer.y * frame.unit}px`;
-      button.style.setProperty('--bonus-width', `${touchWidth}px`);
+      const width = offer.width * frame.unit;
+      const touchWidth = Math.min(Math.max(44, width), width + GRID_GAP * frame.unit);
+      const faceLeft = frame.offsetX + (offer.x - offer.width / 2) * frame.unit;
+      const left = Math.max(0, Math.min(faceLeft, rect.width - touchWidth));
+      button.style.left = `${left}px`;
+      button.style.top = `${(offer.y - CARD_H / 2) * frame.unit}px`;
+      button.style.width = `${touchWidth}px`;
+      button.style.setProperty('--bonus-width', `${width}px`);
+      button.style.setProperty('--bonus-face-left', `${faceLeft - left}px`);
+      button.style.height = `${CARD_H * frame.unit}px`;
     }
   }
 }
@@ -725,8 +716,12 @@ try {
     shuffle.hidden = !deal.shufflePreview && !deal.shufflePolicy;
     shuffle.disabled = !canShuffle(save, deal) || saving || shuffling || recoveryClockBlocked();
     shuffle.setAttribute('aria-busy', String(shuffling));
-    $('#proof-shuffle-label').textContent = shuffling ? 'Ищу…' : save.attempt.shuffleUsed ? 'Использовано' :
-      deal.shuffleCost ? `Перемешать · ${save.dailyTasks?.inventory.shuffles ?? 0}` : 'Перемешать';
+    $('#proof-shuffle-label').textContent = shuffling ? 'Ищу…' : save.attempt.shuffleUsed ? 'Использовано' : 'Перемешать';
+    const shuffleCount = $('#proof-shuffle-count');
+    shuffleCount.hidden = !deal.shuffleCost || save.attempt.shuffleUsed === true;
+    shuffleCount.textContent = String(save.dailyTasks?.inventory.shuffles ?? 0);
+    if (shuffleCount.hidden) shuffle.removeAttribute('aria-describedby');
+    else shuffle.setAttribute('aria-describedby', shuffleCount.id);
     $('#game').dataset.exhausted = String(board.phase === 'exhausted');
     if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
     $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;
@@ -755,7 +750,7 @@ try {
     const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
     $('#app').dataset.deckEdge = hasDeck ? save.settings.deckSide ?? 'right' : 'right';
     $('#app').dataset.deckRow = hasDeck ? save.settings.deckPosition ?? 'top' : 'top';
-    positionDeckTools(save);
+    positionBonusSlots(save);
     if (deal.bonusSlots) renderBonusSheet();
     const instruction = screen === 'game' ? currentLesson() : undefined;
     const ice = screen === 'game' && board.phase === 'playing' &&
@@ -916,20 +911,34 @@ try {
     const visible = unlockedLevel(save) >= 2;
     $('#helper-inventory').hidden = !visible || Boolean(helperFocus || helperResource);
     if (!visible) return;
-    const rows: Array<[string, number, string]> = [
-      ...(['hint', 'undo', 'joker'] as const).map(helper => [
-        { hint: 'Подсказки', undo: 'Отмены', joker: 'Ручные Джокеры' }[helper],
-        save.profile[{ hint: 'hints', undo: 'undos', joker: 'jokers' }[helper] as 'hints'|'undos'|'jokers'],
-        helperUnlocked(save, helper, deal) ? 'Доступны в партии' : 'Сохранены · откроются на уровне ' + HELPER_UNLOCK[helper],
-      ] as [string, number, string]),
-      ['Объяснения', definitionCount(save), 'Через просмотр слова на доске'],
-      ['Перемешивания', save.dailyTasks?.inventory.shuffles ?? 0, 'Уровни ' + SHUFFLE_LEVELS.join(', ')],
-      ['Случайные Джокеры', randomJokerCount(save), 'Отдельный заряд · применяется на уровне 16'],
+    const playing = save.attempt.board.phase === 'playing';
+    const rows = [
+      { name: 'Подсказки', count: save.profile.hints, source: 'Награды и монеты', usable: playing && helperUnlocked(save, 'hint', deal),
+        condition: helperUnlocked(save, 'hint', deal) ? 'Показывают ход на поле' : `С уровня ${HELPER_UNLOCK.hint}` },
+      { name: 'Отмены', count: save.profile.undos, source: 'Награды и монеты', usable: playing && helperUnlocked(save, 'undo', deal) && Boolean(save.attempt.undo.length),
+        condition: !helperUnlocked(save, 'undo', deal) ? `С уровня ${HELPER_UNLOCK.undo}` : 'После первого хода' },
+      { name: 'Ручные Джокеры', count: save.profile.jokers, source: 'Награды и монеты', usable: playing && helperUnlocked(save, 'joker', deal) && !save.attempt.jokerUsed,
+        condition: helperUnlocked(save, 'joker', deal) ? 'Один на раздачу' : `С уровня ${HELPER_UNLOCK.joker}` },
+      { name: 'Объяснения', count: definitionCount(save), source: 'Бонус дня и задания', usable: playing,
+        condition: 'В просмотре слова через Aa' },
+      { name: 'Перемешивания', count: save.dailyTasks?.inventory.shuffles ?? 0, source: 'Награды', usable: playing && canShuffle(save, deal),
+        condition: 'Уровни ' + SHUFFLE_LEVELS.join(', ') },
+      { name: 'Случайные Джокеры', count: randomJokerCount(save), source: 'Монеты за отдельный заряд', usable: playing && canRequestRandomJoker(),
+        condition: 'На уровне 16, один на раздачу' },
     ];
-    $('#helper-inventory-list').replaceChildren(...rows.map(([name, count, note]) => {
-      const row = document.createElement('div'), title = document.createElement('dt'), detail = document.createElement('dd');
-      title.textContent = name + ' · ' + count; detail.textContent = note; row.append(title, detail); return row;
-    }));
+    function renderRows(group: string, list: string, usable: boolean) {
+      const entries = rows.filter(row => (row.usable && row.count > 0) === usable);
+      $(group).hidden = !entries.length;
+      $(list).replaceChildren(...entries.map(({ name, count, source, condition }) => {
+        const row = document.createElement('div'), title = document.createElement('dt');
+        const detail = document.createElement('dd'), quantity = document.createElement('span');
+        title.textContent = name; quantity.textContent = String(count); title.append(quantity);
+        detail.textContent = condition + ' · ' + source;
+        row.append(title, detail); return row;
+      }));
+    }
+    renderRows('#helper-inventory-now', '#helper-inventory-list', true);
+    renderRows('#helper-inventory-future', '#helper-inventory-later', false);
     const count = save.dailyTasks?.inventory.shuffles ?? 0, shuffleNote = $('#shuffle-stock-note');
     shuffleNote.hidden = !count && unlockedLevel(save) < SHUFFLE_LEVELS[0];
     shuffleNote.textContent = count ? 'В запасе ' + count + ' перемешиваний. ' +
@@ -1265,6 +1274,7 @@ try {
   function renderTasks() {
     const now = Date.now(), state = taskRewardState(save, now), busy = saving || serviceBusy || store.needsRecovery;
     $('#daily-tasks-open').hidden = !TASKS_PREVIEW || (releaseTasks || sourceDailyTasks) && unlockedLevel(save) < 2;
+    $('#daily-tasks-open').dataset.rewardReady = String(state.readyCount > 0);
     $('#daily-tasks-home-status').textContent = state.readyCount ? 'Забрать награды · ' + state.readyCount
       : state.clock === 'future' ? 'Доступно ' + resetText(state.availableAt)
         : state.todayTotal ? (state.todayCompleted === state.todayTotal ? 'Сегодня выполнено · новые ' + resetText(state.nextDayAt) : 'Выполнено ' + state.todayCompleted + '/' + state.todayTotal) : 'Новые задания ' + resetText(state.nextDayAt);
@@ -1360,29 +1370,72 @@ try {
   }
   function renderDailyBonus() {
     const state = dailyBonusState(save, Date.now());
-    $('#daily-bonus-open').hidden = !dailyBonusEnabled || unlockedLevel(save) < 2;
+    const entry = $('#daily-bonus-open');
+    entry.hidden = !dailyBonusEnabled || unlockedLevel(save) < 2;
+    entry.dataset.rewardReady = String(state.canClaim);
     $('#daily-bonus-home-status').textContent = bonusStatusText();
     if (!$<HTMLDialogElement>('#daily-bonus-dialog').open) return;
-    const round = save.dailyBonus;
-    $('#daily-bonus-status').textContent = state.phase === 'playing' ? 'Откройте три карты с одинаковым призом'
-      : state.phase === 'ready' && state.prize ? 'Ваш приз · ' + prizeLabel(state.prize)
+
+    const round = save.dailyBonus, counts = new Map<number, number>();
+    for (const index of round?.revealed ?? []) {
+      const column = round!.slots[index];
+      counts.set(column, (counts.get(column) ?? 0) + 1);
+    }
+    const status = $('#daily-bonus-status'), best = Math.max(0, ...counts.values());
+    status.textContent = state.phase === 'playing'
+      ? 'Открывайте карточки, пока не соберёте три одинаковых приза.' + (best ? ` · ${best}/3` : '')
+      : state.phase === 'ready' && state.prize ? '3/3 · Ваш приз — ' + prizeLabel(state.prize)
         : state.phase === 'expired' ? 'День закончился. Можно открыть новый бонус.'
           : state.canStartRound && round?.claimed ? 'Бонус получен. Доступен новый бонус дня.' : bonusStatusText();
     const claim = $<HTMLButtonElement>('#daily-bonus-claim'), next = $<HTMLButtonElement>('#daily-bonus-new');
-    claim.hidden = !state.canClaim; claim.disabled = saving || serviceBusy || store.needsRecovery;
-    next.hidden = !state.canStartRound; next.disabled = saving || serviceBusy || store.needsRecovery;
-    $('#daily-bonus-cards').replaceChildren(...(round?.slots ?? []).map((column, index) => {
-      const button = document.createElement('button'); button.type = 'button'; button.className = 'secondary';
+    const pending = saving || serviceBusy || store.needsRecovery;
+    claim.hidden = !state.canClaim; claim.disabled = pending;
+    next.hidden = !state.canStartRound; next.disabled = pending;
+    const grid = $('#daily-bonus-cards'), roundId = round?.roundId ?? '';
+    if (grid.dataset.roundId !== roundId) {
+      grid.dataset.roundId = roundId;
+      $('#daily-bonus-error').hidden = true;
+      grid.replaceChildren(...(round?.slots ?? []).map((_, index) => {
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'daily-bonus-card'; button.dataset.revealed = 'false';
+        button.addEventListener('click', async () => {
+          if (saving || serviceBusy || store.needsRecovery || button.disabled) return;
+          const error = $('#daily-bonus-error');
+          error.hidden = true;
+          try {
+            const accepted = await write(next => revealDailyBonusCard(next, roundId, index, Date.now()));
+            if (!accepted || !button.isConnected || !$<HTMLDialogElement>('#daily-bonus-dialog').open) return;
+            if (!reducedMotion()) button.animate(
+              [{ transform: 'rotateY(80deg)' }, { transform: 'rotateY(0deg)' }],
+              { duration: 220, easing: 'ease-out' });
+            if (save.dailyBonus?.won !== undefined) claim.focus({ preventScroll: true });
+            else if (document.activeElement === button || document.activeElement === document.body) {
+              grid.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus({ preventScroll: true });
+            }
+          } catch {
+            error.textContent = 'Не удалось сохранить открытие карты. Повторите попытку.';
+            error.hidden = false;
+          }
+        });
+        return button;
+      }));
+    }
+    for (const [index, child] of Array.from(grid.children).entries()) {
+      const button = child as HTMLButtonElement, column = round!.slots[index];
       const revealed = round!.revealed.includes(index);
-      button.textContent = revealed ? prizeLabel(round!.columns[column]) : 'Открыть';
-      button.disabled = saving || serviceBusy || store.needsRecovery || revealed || !state.canReveal;
-      button.setAttribute('aria-label', revealed ? prizeLabel(round!.columns[column]) : 'Открыть карту ' + (index + 1));
-      button.addEventListener('click', () => {
-        if (!saving && !serviceBusy) void write(next => revealDailyBonusCard(next, round!.roundId, index, Date.now()))
-          .catch(() => message('Не удалось сохранить открытие карты.', true));
-      });
-      return button;
-    }));
+      const label = revealed ? prizeLabel(round!.columns[column]) : 'Открыть карту ' + (index + 1);
+      button.disabled = revealed || !state.canReveal;
+      button.setAttribute('aria-disabled', String(button.disabled || pending));
+      button.setAttribute('aria-label', revealed ? label + ` · ${counts.get(column)}/3` : label);
+      button.dataset.revealed = String(revealed);
+      button.dataset.matched = String(revealed && (counts.get(column) ?? 0) > 1);
+      button.dataset.won = String(revealed && column === round!.won);
+      if (revealed) {
+        const title = document.createElement('strong'), progress = document.createElement('small');
+        title.textContent = label; progress.textContent = `${counts.get(column)}/3`;
+        button.replaceChildren(title, progress);
+      }
+    }
   }
 
   const showPicture = () => PICTURE_PREVIEW || Boolean(save.picture);
@@ -1806,7 +1859,7 @@ try {
   let boardSize = '';
   function resizeToRoot() {
     if (!ready || screen !== 'game' || !game?.isBooted) return;
-    const next = size(); positionDeckTools(save);
+    const next = size(); positionBonusSlots(save);
     // ResizeObserver can report an unchanged rounded backing size. Emitting a
     // scene resize for that notification would cancel a perfectly valid drag.
     const rect = root.getBoundingClientRect(), key = [rect.x, rect.y, rect.width, rect.height].join(':');
@@ -1815,7 +1868,7 @@ try {
     boardSize = key;
     repaintFrames = Math.max(repaintFrames, 2);
     if (resized) { game.scale.setZoom(next.rect.width / next.backing.width); game.scale.resize(next.backing.width, next.backing.height); }
-    else { scene?.cancel(); scene?.sync(); }
+    else scene?.settleMotion();
     game.loop.wake();
     if (ready && screen === 'game') showGuidance();
   }
@@ -1973,7 +2026,10 @@ try {
           $('#daily-bonus-status').textContent = bonusClaimMessage(granted);
           message(bonusClaimMessage(granted));
         }
-      } catch { message('Не удалось сохранить ежедневный бонус.', true); }
+      } catch {
+        const error = $('#daily-bonus-error');
+        error.textContent = 'Не удалось сохранить награду.'; error.hidden = false;
+      }
     }, domOptions);
   }
   if (TASKS_PREVIEW) {

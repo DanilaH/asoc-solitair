@@ -71,7 +71,7 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
     ({ copy, attention, accepts: command => command.type === type });
   switch (deal.training) {
     case 'first':
-      if (!seen('learn:category')) return guide('Положите карту темы в верхний слот.', action => skillFor(board, action, deal) === 'category');
+      if (!seen('learn:category')) return guide('Перетащите карту темы в верхний слот или нажмите на карту, затем на слот.', action => skillFor(board, action, deal) === 'category');
       if (!seen('learn:match')) return guide('Соедините показанные карты одной темы.', action => skillFor(board, action, deal) === 'match');
       if (!seen('learn:stock')) {
         const next = step();

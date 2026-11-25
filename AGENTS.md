@@ -1,5 +1,9 @@
 # Project contract
 
+## Owner layout decision — issue 205, 25 November 2026
+
+Work from [PR #204](https://github.com/DanilaH/asoc-solitair/pull/204) at `5039f1fbafcfebc399e36141826cc9ca6a59fe5d`. [Issue #205](https://github.com/DanilaH/asoc-solitair/issues/205) and the [C8 field contract](docs/qa/content-v8/C8_UI_205.md) supersede the old requirement to stretch each row across the screen. Every row starts on the same left-aligned grid. Cards, wells and offered slots use 138:166 with the same pitch. Reserve both bonus slots before purchase. Deck position and side affect only stock and waste. Verify geometry and raw taps on the release profile, with Android and live SDK evidence reported separately. KIT IMPACT is REUSE. Keep the configured runtime pin.
+
 ## Current implementation candidate — 25 November 2026
 
 The owner assigned the final PR204 audit delta and Android acceptance. The candidate is [draft PR #204](https://github.com/DanilaH/asoc-solitair/pull/204), branch `feat/c8-audit-203-recovery`, profile `c8-release-v1`, version 0.20.4/code45. Resolve the candidate SHA from the PR head and compare it with the exact CI checkout and embedded APK manifest. See [audit fixes](docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md) and the [final Android acceptance runbook](docs/qa/mvp-20261124/ANDROID_ACCEPTANCE_PR204.md). The baseline in `main` remains 0.17.1/code26. Device/live SDK/human acceptance are open. Retain the entire source roadmap and immutable historical deals; older assignments below are historical contracts.

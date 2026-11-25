@@ -25,9 +25,15 @@ for (const deal of [introDeal, ...legacyCampaignDeals, ...openingDeals, ...campa
     const { width, height } = cardMetrics(deal);
     for (const side of ['left', 'right'] as const) for (const position of ['top', 'bottom'] as const) {
       const frame = boardFrame(540, 565, position, deal), geometry = layout(board, deal, frame, side, position);
+      const bottomDeckTop = geometry.stock.y - height / 2;
       for (const pose of geometry.poses) {
         if (pose.x - width / 2 < -.01 || pose.x + width / 2 > frame.width + .01 || pose.y - height / 2 < 0 || pose.y + height / 2 > frame.height + .01) throw Error(`${deal.id}: out-of-board card ${pose.id} (${position}/${side})`);
-        if (position === 'bottom' && (deal.initial.stock.length || deal.initial.waste.length) && board.tableau.some(col => col.includes(pose.id)) && pose.y + height / 2 > geometry.stock.y - height / 2 - 27.99) throw Error(`${deal.id}: tableau covers bottom deck`);
+        // The compact contract reserves ten units at the bottom deck. This
+        // clearance includes the shadow below the last card in each pile.
+        if (position === 'bottom' && (deal.initial.stock.length || deal.initial.waste.length) &&
+          board.tableau.some(col => col.includes(pose.id)) && pose.y + height / 2 > bottomDeckTop - 9.99) {
+          throw Error(`${deal.id}: tableau intrudes into the bottom deck clearance`);
+        }
       }
     }
   };

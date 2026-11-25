@@ -143,9 +143,14 @@ test('an ordered upper leader has one legible rule label without a fraction over
   const deal = campaignDeals[22], state = dispatch(freshSave(deal, 'ordered-label'), deal.winningPath[0], deal).next;
   await seed(page, deal, state); const { g, point, f } = await geometry(page, deal), leader = Object.values(deal.cards).find(c => c.ordered && c.leader)!, p = point(g.poses.find(p => p.id === leader.id)!);
   const { data, info } = await sharp(await page.screenshot({ scale: 'css' })).extract({ left: Math.round(p.x - 29 * f.unit), top: Math.round(p.y - cardMetrics(deal).height / 2 * f.unit + 7 * f.unit), width: Math.round(58 * f.unit), height: Math.round(22 * f.unit) }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  let darkFraction = 0;
-  for (let i = 0; i < data.length; i += info.channels) if (data[i] < 175 && data[i + 1] < 139 && data[i + 2] < 110) darkFraction++;
-  expect(darkFraction, 'No dark 0/7 digits collide with the lighter rule label').toBeLessThan(5);
+  let labelInk = 0, fractionInk = 0;
+  for (let i = 0; i < data.length; i += info.channels) {
+    const [r, g, b] = data.subarray(i, i + 3);
+    if (b > r + 12 && g > r + 10) labelInk++;
+    if (Math.abs(r - 161) <= 9 && Math.abs(g - 126) <= 9 && Math.abs(b - 93) <= 9) fractionInk++;
+  }
+  expect(labelInk, 'The dark teal rule label is painted').toBeGreaterThan(3);
+  expect(fractionInk, 'No ochre counter collides with the rule label').toBeLessThan(5);
 });
 
 test('a final key keeps its visible lock destination, and early Undo cancels the whole presentation', async ({ page }) => {

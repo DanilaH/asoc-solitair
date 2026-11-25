@@ -137,6 +137,8 @@ const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...cont
   ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...integratedCampaignDeals, ...coreSpecialDeals, ...content8DirectorDeals, ...lateAdaptiveDeals, ...hitappsDirectorDeals.map(entry => entry.deal), equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
+/** Includes every campaign definition that can be restored from a saved Deal ID. */
+export const savedDealDefinitions = () => all.values();
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
   dealId = releaseSourceById.get(dealId) ?? dealId;
   const previewIds = CONTENT8_PREVIEW ? variants.get(base.campaignLevel)?.ids : undefined;

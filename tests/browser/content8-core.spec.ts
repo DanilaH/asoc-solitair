@@ -781,8 +781,8 @@ for (const side of ['left', 'right'] as const) {
 
     const field = page.locator('#game-root');
     const area = (await field.boundingBox())!;
-    const badge = (await page.locator('#inspect').boundingBox())!;
-    const overlay = await page.addStyleTag({ content: '.deck-tools { visibility: hidden !important; }' });
+    const badge = (await page.locator('.moves').boundingBox())!;
+    const overlay = await page.addStyleTag({ content: '.moves { visibility: hidden !important; }' });
     const screenshot = await field.screenshot({ scale: 'css' });
     await overlay.evaluate(style => style.parentNode?.removeChild(style));
     const { data, info } = await sharp(screenshot).removeAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -803,7 +803,7 @@ for (const side of ['left', 'right'] as const) {
 }
 
 for (const [side, row] of [['right', 'top'], ['left', 'bottom']] as const) {
-  test(`wide ${row}-${side} board paints at both edges and draws at the edge after resize`, async ({ page }) => {
+  test(`wide ${row}-${side} board stays left aligned and draws at the deck edge after resize`, async ({ page }) => {
     const deal = content8Wave.find(deal => deal.campaignLevel === 31)!;
     let save = freshSave(deal, 'board-full-width');
     for (const command of deal.winningPath) {
@@ -826,7 +826,6 @@ for (const [side, row] of [['right', 'top'], ['left', 'bottom']] as const) {
       const frame = boardFrame(area.width, area.height, row, deal);
       const geometry = layout(save.attempt.board, deal, frame, side, row);
       const foundationY = geometry.targets.find(slot => slot.location.kind === 'foundation')!.y * frame.unit;
-      const tableauY = geometry.targets.filter(slot => slot.location.kind === 'tableau').at(-1)!.y * frame.unit;
       const stockY = (geometry.stock.y + geometry.stock.thickness / 2) * frame.unit;
       const edgePixels = async () => {
         const { data, info } = await sharp(await field.screenshot({ scale: 'css' })).removeAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -840,8 +839,9 @@ for (const [side, row] of [['right', 'top'], ['left', 'bottom']] as const) {
           }
           return pixels;
         };
-        return [count(5, foundationY, cream), count(info.width - 12, foundationY, cream),
-          count(info.width - 12, tableauY, cream), count(side === 'left' ? 5 : info.width - 12, stockY, back)];
+        const sharedAxis = geometry.targets.find(slot => slot.location.kind === 'foundation')!.x;
+        expect(geometry.targets.find(slot => slot.location.kind === 'tableau')!.x).toBe(sharedAxis);
+        return [count(5, foundationY, cream), count(side === 'left' ? 5 : info.width - 12, stockY, back)];
       };
       await expect.poll(async () => Math.min(...await edgePixels())).toBeGreaterThan(10);
       const before = await read(page);

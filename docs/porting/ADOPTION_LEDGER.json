@@ -17,6 +17,15 @@
     "implementationEvidenceRef": "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md",
     "implementationPullRequest": "https://github.com/DanilaH/asoc-solitair/pull/204"
   },
+  "c8Ui205": {
+    "issue": "https://github.com/DanilaH/asoc-solitair/issues/205",
+    "base": "5039f1fbafcfebc399e36141826cc9ca6a59fe5d",
+    "implementationBranch": "feat/c8-ui-grid-205",
+    "scope": "PRODUCT_ADAPTED",
+    "features": ["azur-stock-side-setting", "azur-extra-foundation", "azur-bonus-lower-column", "azur-card-dictionary", "hitapps-mixed-word-image-cards", "ui-motion-audio-coin", "azur-card-animation-controller", "azur-coin-flight-animator", "azur-victory-reward-sequencer", "azur-button-haptic-feedback", "azur-shuffle-animation-controller", "azur-daily-bonus"],
+    "evidenceRef": "docs/qa/content-v8/C8_UI_205.md",
+    "openAcceptance": ["physical Android", "live advertising", "human playtest", "original runtime parity"]
+  },
   "integratedReleaseCandidate": {
     "profile": "c8-release-v1",
     "packet": "B0/C1",
@@ -285,7 +294,7 @@
     {
       "id": "azur-extra-foundation",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fourth/fifth upper foundation at levels 22/40 with coin or earned video, legal category moves, persistent opening, Hint and post-transfer practice.",
+      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fourth/fifth upper foundation at levels 22/40 with coin or earned video, legal category moves, persistent opening, Hint and post-transfer practice. C8 issue 205 uses a reserved upper grid cell with the same 138:166 proportions before and after purchase and Undo.",
       "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/60",
       "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
@@ -434,7 +443,7 @@
     {
       "id": "azur-daily-bonus",
       "status": "ROADMAPPED",
-      "currentImplementation": "MVP U1 uses one shared Daily Bonus lifecycle for Home, Helpers, dialog, reveal and claim. The own UTC-day four-prize/12-card first-triple round remains persisted and separate from Daily Level/Tasks. An unfinished old round becomes expired and requires an explicit new round; old won prizes remain claimable without replacement, future-dated saves remain guarded, and the next current round is an explicit action after an old claim. C2 changes only new-draw Shuffle eligibility; existing frozen prizes survive.",
+      "currentImplementation": "MVP U1 uses one shared Daily Bonus lifecycle for Home, Helpers, dialog, reveal and claim. The own UTC-day four-prize/12-card first-triple round remains persisted and separate from Daily Level/Tasks. An unfinished old round becomes expired and requires an explicit new round; old won prizes remain claimable without replacement, future-dated saves remain guarded, and the next current round is an explicit action after an old claim. C2 changes only new-draw Shuffle eligibility; existing frozen prizes survive. C8 issue 205 presents existing card backs, reveals only committed prizes, and shows per-prize matches and saved claim availability.",
       "nextAction": "Complete final-branch browser/physical midnight/background, old-won/future-date and duplicate/failure/reload acceptance; the local retention suite passed 27 cases in c8-release-v1. Preserve source-complete R3 work in RETENTION_SOURCE_DELTA_TZ_2026-11-24 and kit135/136. Current pool, schedule and weights remain an own adaptation, not ORIGINAL_RUNTIME parity.",
       "stage": "F1",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
@@ -547,7 +556,7 @@
     {
       "id": "ui-motion-audio-coin",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game has its own UI/audio/coin feedback but AZUR source research only verified metadata names, not native animation timing",
+      "currentImplementation": "Game has its own UI/audio/coin feedback but AZUR source research only verified metadata names, not native animation timing C8 issue 205 reuses the existing runtime with shared card and touch geometry.",
       "nextAction": "Compare actual 1× device footage to game; track child IDs for CardAnimator/coin flights/victory/buttons/shuffle separately",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/36",
       "stage": "D2"
@@ -682,7 +691,7 @@
     {
       "id": "azur-card-dictionary",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/game/card-reader.ts offers own explanations, not exact AZUR presentation/content",
+      "currentImplementation": "src/game/card-reader.ts offers own explanations, not exact AZUR presentation/content C8 issue 205 uses a 48 CSS px Aa button in the dock and keeps word inspection available on compact layouts.",
       "nextAction": "Compare on-device card readability, foreign/ambiguous semantics and text visibility",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -698,7 +707,7 @@
     {
       "id": "azur-stock-side-setting",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Settings have mirrored stock/waste positions (existing compact meta)",
+      "currentImplementation": "Settings have mirrored stock/waste positions (existing compact meta) C8 issue 205 retains all four stock placements and puts both play rows on one compact left-aligned grid.",
       "nextAction": "Test both deck sides with tall stock, ads banner and active/parked game saves",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -1001,7 +1010,7 @@
     {
       "id": "hitapps-mixed-word-image-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Every newly authored CORE-3 layout across 16–80 mixes one whole picture category using original art with word categories. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
+      "currentImplementation": "Every newly authored CORE-3 layout across 16–80 mixes one whole picture category using original art with word categories. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md. C8 issue 205 scales the full card uniformly and uses the existing words and picture art.",
       "nextAction": "Evaluate card recognition and text fit on physical Android at five-column peaks.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
@@ -1032,7 +1041,7 @@
     {
       "id": "azur-card-animation-controller",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game scene implements card move/flip/feedback motions, but not native AZUR timing/easing equivalence. QA использует существующую точку контакта для принятого перемещения. См. docs/qa/AZUR_FEEL_QA.md.",
+      "currentImplementation": "Game scene implements card move/flip/feedback motions, but not native AZUR timing/easing equivalence. QA использует существующую точку контакта для принятого перемещения. См. docs/qa/AZUR_FEEL_QA.md. C8 issue 205 uses the same card aspect ratio for dealt, dragged, hinted and settling cards.",
       "nextAction": "Map source/target animation interruption and cancellation on phone; metadata alone is not exact native implementation",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -1040,7 +1049,7 @@
     {
       "id": "azur-coin-flight-animator",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/app/wallet-presentation.ts visual coin flights with persisted-domain rewards. Отдельная метка показывает подтверждённое списание рядом с балансом. См. docs/qa/UX_WALLET_PROGRESS.md. QA ограничивает Light-intent по прилёту при отдельной настройке вибрации. См. docs/qa/AZUR_FEEL_QA.md.",
+      "currentImplementation": "src/app/wallet-presentation.ts visual coin flights with persisted-domain rewards. Отдельная метка показывает подтверждённое списание рядом с балансом. См. docs/qa/UX_WALLET_PROGRESS.md. QA ограничивает Light-intent по прилёту при отдельной настройке вибрации. См. docs/qa/AZUR_FEEL_QA.md. C8 issue 205 preserves the existing coin renderer and its committed reward triggers.",
       "nextAction": "Compare timeout, landing and duplicate callbacks with original UI reference; physical Android audio pending",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -1048,7 +1057,7 @@
     {
       "id": "azur-victory-reward-sequencer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md. QA проверяет раздельный предпобедный бонус, получить, прилёт и Next после подтверждённого SaveStore. См. docs/qa/AZUR_FEEL_QA.md. P20/P37 изолированно проверяет источник формулы 25/50/100/200 и +5 за остаток. См. docs/qa/AZUR_VICTORY_QA.md.",
+      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md. QA проверяет раздельный предпобедный бонус, получить, прилёт и Next после подтверждённого SaveStore. См. docs/qa/AZUR_FEEL_QA.md. P20/P37 изолированно проверяет источник формулы 25/50/100/200 и +5 за остаток. См. docs/qa/AZUR_VICTORY_QA.md. C8 issue 205 retains the committed result and Next sequence.",
       "nextAction": "Replay skip/background/reopen/win/reward/Next with actual saved wallet and 320px UI",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -1056,7 +1065,7 @@
     {
       "id": "azur-button-haptic-feedback",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game button feedback/native haptic service exists; exact AZUR press states not compared. Проверочный профиль различает Light добора и Heavy-intent отказа, используя собственный Android bridge. См. docs/qa/AZUR_FEEL_QA.md.",
+      "currentImplementation": "Game button feedback/native haptic service exists; exact AZUR press states not compared. Проверочный профиль различает Light добора и Heavy-intent отказа, используя собственный Android bridge. См. docs/qa/AZUR_FEEL_QA.md. C8 issue 205 classifies tap displacement in CSS pixels and retains the existing native feedback bridge.",
       "nextAction": "Test press/release/exit scale/sound/haptics alignment on signed Android",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -1064,7 +1073,7 @@
     {
       "id": "azur-shuffle-animation-controller",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "The existing product Shuffle feedback remains after confirmed save and respects reduced motion. MVP C2 extends the compatible hidden-pool wrapper map to L30/33/36/39; success still requires proof and committed inventory/board changes. UNKNOWN or failed commit is not a successful Shuffle animation or charge. Legacy stock-only preview remains separate.",
+      "currentImplementation": "The existing product Shuffle feedback remains after confirmed save and respects reduced motion. MVP C2 extends the compatible hidden-pool wrapper map to L30/33/36/39; success still requires proof and committed inventory/board changes. UNKNOWN or failed commit is not a successful Shuffle animation or charge. Legacy stock-only preview remains separate. C8 issue 205 verifies the active release-profile Shuffle capability against its current card grid.",
       "nextAction": "Check committed feedback/Undo warning on the final Android candidate, including canceled proof and failed save. Source GameController/ShuffleAnimationController order is documented in kit PR96/issue104; exact original frames, RNG and runtime parity remain open.",
       "stage": "D1",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -1131,7 +1140,7 @@
     {
       "id": "azur-bonus-lower-column",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fifth lower tableau at levels 30/40 with coin or earned video, legal temporary storage, verified Hint continuation, persistent opening and post-transfer practice.",
+      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fifth lower tableau at levels 30/40 with coin or earned video, legal temporary storage, verified Hint continuation, persistent opening and post-transfer practice. C8 issue 205 uses a reserved lower grid cell with the same 138:166 proportions before and after purchase and Undo.",
       "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/60",
       "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",

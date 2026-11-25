@@ -143,8 +143,9 @@ test('L2 can inspect an earned locked Joker without unlocking use, buying it, or
   await page.locator('#daily-bonus-dialog .sheet-actions [data-close]').tap();
   await openHelpers(page);
   await expect(page.locator('#helper-inventory')).toBeVisible();
-  await expect(page.locator('#helper-inventory-list')).toContainText(/Джокер/i);
-  await expect(page.locator('#helper-inventory-list')).toContainText(/8/);
+  const lockedJoker = page.locator('#helper-inventory-later > div').filter({ hasText: 'Ручные Джокеры' });
+  await expect(lockedJoker.locator('dt span')).toHaveText(String(jokers + 1));
+  await expect(lockedJoker.locator('dd')).toContainText('С уровня 8');
   await expect(page.locator('#joker-offer')).toBeHidden();
   await expect(page.locator('#joker')).toBeHidden();
   expect((await read(page)).profile.coins).toBe(save.profile.coins);
@@ -467,7 +468,7 @@ test('repeated empty Definition after a manual wallet visit keeps its Bonus guid
   await expect(copy).toContainText(/монеты/);
   await expect(copy).not.toContainText(/Объяснения/);
   await expect(page.locator('#helper-inventory')).toBeVisible();
-  await expect(page.locator('#helper-inventory-list')).toContainText(/Объяснения · 0/);
+  await expect(page.locator('#helper-inventory-later > div').filter({ hasText: 'Объяснения' }).locator('dt span')).toHaveText('0');
   const manual = await read(page);
   expect(manual.productOffers?.reservation?.resource).toBeUndefined();
   await page.locator('#helpers .sheet-body').evaluate(node => { node.scrollTop = node.scrollHeight; });

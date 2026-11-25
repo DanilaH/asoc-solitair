@@ -210,14 +210,24 @@ jobs:
       - run: npm test -- --reporter=default --reporter=json --outputFile=.recording/mvp-unit-results.json
       - run: npm run build
       - run: npx playwright install --with-deps chromium
+      - name: Audit all retained and issued Deal geometries in the C8 release profile
+        shell: bash
+        env:
+          ASOC_QA_C8_GEOMETRY: '1'
+        run: npx vitest run tests/unit/c8-ui-geometry.test.ts --disableConsoleIntercept | tee .recording/c8-grid.txt
+      - name: Audit C8 release geometry and capture its UI
+        run: npx playwright test tests/browser/c8-ui-205.spec.ts --project=compact --output=test-results/c8-ui
       - name: Verify saved rights and reward lifecycle through ordinary touch UI
         run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts --output=test-results/mvp-cohesion
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: mvp-cohesion-evidence
+          if-no-files-found: error
           path: |
             test-results/mvp-cohesion/
+            test-results/c8-ui/
+            .recording/c8-grid.txt
             .recording/mvp-unit-results.json
             dist/release-manifest.json
           retention-days: 7
@@ -273,7 +283,7 @@ jobs:
             exit 0
           fi
           grep -q 'https://repo.maven.apache.org/maven2' "$RUNNER_TEMP/asoc-gradle.log"
-          ASOC_MAVEN_CENTRAL_MIRROR=1 ./gradlew --no-daemon testDebugUnitTest assembleDebug
+          ASOC_MAVEN_CENTRAL_MIRROR=1 ./gradlew --no-daemon --init-script ci-maven-mirror.gradle testDebugUnitTest assembleDebug
           echo 'ASOC_MAVEN_CENTRAL_MIRROR=1' >> "$GITHUB_ENV"
         working-directory: native/android
         env:
@@ -290,7 +300,7 @@ jobs:
         env:
           ASOC_AD_MODE: disabled
           ASOC_APK_VARIANT: release
-      - run: ./gradlew --no-daemon assembleRelease
+      - run: ./gradlew --no-daemon --init-script ci-maven-mirror.gradle assembleRelease
         working-directory: native/android
         env:
           ASOC_AD_MODE: disabled

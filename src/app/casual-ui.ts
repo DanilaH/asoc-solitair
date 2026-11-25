@@ -3,7 +3,8 @@ export const casualIcons = {
   medal: 'art/ui/medal.webp', task: 'art/ui/task.webp', daily: 'art/generated/daily.webp',
   looks: 'art/generated/looks.webp', hint: 'art/generated/hint.webp', undo: 'art/generated/undo.webp',
   joker: 'art/generated/joker.webp', cycle: 'art/generated/cycle.webp', key: 'art/generated/key.webp',
-  book: 'art/generated/book.webp', lock: 'art/generated/lock.webp', milestone: 'art/generated/milestone.webp',
+  dailyDeal: 'art/ui/daily-deal.webp', draw: 'art/ui/draw-stack.webp', link: 'art/ui/category-link.webp',
+  album: 'art/ui/keepsake-album.webp', book: 'art/generated/book.webp', lock: 'art/generated/lock.webp', milestone: 'art/generated/milestone.webp',
 };
 type Icon = keyof typeof casualIcons;
 
@@ -21,7 +22,10 @@ export function prizeIcon(kind: string): HTMLImageElement { return casualIcon(pr
 export function prizeToken(prize: { kind: string; quantity: number }): HTMLElement {
   const span = document.createElement('span');
   span.className = 'prize-token';
-  span.append(prizeIcon(prize.kind), document.createTextNode('+' + prize.quantity.toLocaleString('ru-RU')));
+  const value = document.createElement('span');
+  value.className = 'prize-count';
+  value.textContent = '+' + prize.quantity.toLocaleString('ru-RU');
+  span.append(prizeIcon(prize.kind), value);
   return span;
 }
 
@@ -61,7 +65,7 @@ export function configureCasualHome(allowLevelPicker: boolean) {
   const shortcuts = document.createElement('nav');
   shortcuts.className = 'casual-shortcuts'; shortcuts.setAttribute('aria-label', 'Занятия');
   const entries = [
-    ['daily-play', 'daily', 'На день'], ['calendar-open', 'daily', 'Календарь'],
+    ['daily-play', 'dailyDeal', 'Раздача'], ['calendar-open', 'daily', 'Календарь'],
     ['daily-bonus-open', 'gift', 'Бонус дня'], ['daily-tasks-open', 'task', 'Задания'],
     ['appearance-open', 'looks', 'Ваш стол'],
   ] as const;
@@ -72,15 +76,49 @@ export function configureCasualHome(allowLevelPicker: boolean) {
     item.prepend(casualIcon(icon), Object.assign(document.createElement('strong'), { className: 'casual-short-label', textContent: label }));
     shortcuts.append(item);
   }
-  for (const id of ['picture-home', 'campaign-liveops-open']) {
-    const item = button(id);
-    item.classList.add('casual-legacy');
-    shortcuts.append(item);
-  }
+  const archive = document.createElement('nav');
+  archive.className = 'casual-archive';
+  archive.setAttribute('aria-label', 'Сохранённые занятия');
+  for (const id of ['picture-home', 'campaign-liveops-open', 'daily-resume-old']) archive.append(button(id));
   button('win-cycle-open').append(casualIcon('gift'));
-  tray.append(button('win-cycle-open'), button('home-play'), shortcuts, button('daily-resume-old'),
+  tray.append(button('win-cycle-open'), button('home-play'), shortcuts, archive,
     button('campaign-monthly-confirmation'), button('campaign-monthly-bonus'));
   if (allowLevelPicker) tray.append(button('level-picker-open'));
   button('wallet-anchor').after(button('campaign-lives-open'));
   home.append(tray);
+}
+
+export function configureCasualDialogs() {
+  const icons: Record<string, Icon> = {
+    settings: 'looks', helpers: 'hint', 'campaign-lives': 'heart', calendar: 'daily',
+    appearance: 'looks', 'cycle-info': 'gift', 'picture-dialog': 'album', 'bonus-offer': 'link',
+    'inspect-dialog': 'book', 'daily-tasks-dialog': 'task', 'daily-bonus-dialog': 'gift',
+    'campaign-liveops': 'medal', 'random-joker-warning': 'joker', 'shuffle-warning': 'cycle',
+  };
+  for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog')) {
+    if (dialog.id === 'result') continue;
+    dialog.classList.add('casual-dialog');
+    const title = document.getElementById(dialog.getAttribute('aria-labelledby') ?? '');
+    const icon = icons[dialog.id];
+    if (!title || !icon) continue;
+    const heading = document.createElement('div');
+    heading.className = 'casual-dialog-title';
+    title.before(heading);
+    heading.append(casualIcon(icon), title);
+  }
+}
+
+const progressKey = 'asoc-solitaire.task-presentation.v1';
+
+export function taskProgressBaseline(key: string, actual: number) {
+  try {
+    const stored: unknown = JSON.parse(localStorage.getItem(progressKey) ?? '[]');
+    const entries: [string, number][] = Array.isArray(stored) ? stored.filter(entry =>
+      Array.isArray(entry) && typeof entry[0] === 'string' && Number.isSafeInteger(entry[1]) && entry[1] >= 0) : [];
+    const before = entries.find(([id]) => id === key)?.[1] ?? 0;
+    localStorage.setItem(progressKey, JSON.stringify([...entries.filter(([id]) => id !== key), [key, actual]].slice(-64)));
+    return Math.min(before, actual);
+  } catch {
+    return actual;
+  }
 }

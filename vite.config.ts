@@ -9,6 +9,14 @@ export default defineConfig(({ mode }) => {
     if (legacy.length) throw Error(`Product profile cannot be combined with QA flags: ${legacy.join(', ')}`);
   }
   return {
+    plugins: env.VITE_ASOC_PROFILE ? [{
+      name: 'c8-startup-shell',
+      transformIndexHtml: {
+        order: 'pre',
+        handler: html => html.replace('<html lang="ru">', '<html lang="ru" data-c8-loading>')
+          .replace('src="/src/main.ts"', 'src="/src/boot.ts"'),
+      },
+    }] : [],
     base: './', resolve: { dedupe: ['phaser'] },
     build: { target: 'es2022', chunkSizeWarningLimit: 1800 },
   };

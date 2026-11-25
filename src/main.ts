@@ -14,7 +14,7 @@ import { availableEvents, claimMilestone, eventKey, type EventReward } from './d
 import { createStorefront } from './platform/storefront';
 import { claimShopProgress, freeCampaignBonusState, PASS_GOAL, PIGGY_LIMIT, productLabels, recordFreeCampaignClear, recordStoreClear, settleFreeCampaignBonus, showProductGoods, storefrontView, STOREFRONT_PREVIEW, type FreeCampaignBonusGrant } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
-import { AD_BREAK_GAP_MS, adBreakBlocker, adFree, coffeeBlocker, coffeeEligibleAt, releaseAdCadence, releaseLevelAdEligible, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee } from './domain/campaign-advertising';
+import { AD_BREAK_GAP_MS, adBreakBlocker, adFree, coffeeBlocker, coffeeEligibleAt, releaseAdCadence, releasePlacementEligible, type CampaignInterstitialPlacement, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee } from './domain/campaign-advertising';
 import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, requiresNativeRecoveryClock, restoreCampaignStock, restoreQuote, unlimitedRemaining, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
 import { allowsRandomJoker, buyRandomJokerAccess, placeRandomJoker, randomJokerCount, randomJokerReady, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
@@ -33,7 +33,7 @@ import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } f
 import { WalletPresentation } from './app/wallet-presentation';
 import { ContinueCheck } from './app/continue-check';
 import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
-import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, ruleIntroMarker, type RuleIntro } from './app/tutorial';
+import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, ruleIntroMarker, specialRuleNote, type RuleIntro } from './app/tutorial';
 import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import { AZUR_VICTORY_DEFAULTS, AZUR_VICTORY_QA, AZUR_VICTORY_SAVE_KEY, quoteVictoryReward, victoryDifficulty } from './domain/azur-victory-reward';
@@ -64,7 +64,8 @@ import type { Save, Result } from './domain/types';
 import './style.css';
 import './art.css';
 import './casual.css';
-import { casualIcon, configureCasualHome, prizeIcon, prizeToken, progressTrack, videoGlyph, winStamps } from './app/casual-ui';
+import { finishStartup, showStartupFailure } from './app/startup';
+import { casualIcon, configureCasualDialogs, configureCasualHome, prizeIcon, prizeToken, progressTrack, taskProgressBaseline, videoGlyph, winStamps } from './app/casual-ui';
 
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 const azurInteractionFeedback = releaseProfile?.capabilities.drawInvalidCoinFeedback === 'active' ||
@@ -78,6 +79,7 @@ if (casual) {
   document.documentElement.dataset.casual = 'true';
   $('#app').dataset.casual = 'true';
   configureCasualHome(qaLevelPicker);
+  configureCasualDialogs();
   $('.result-star').replaceChildren(Object.assign(new Image(), { src: 'art/ui/reward-emblem.webp', alt: '' }));
   $('#result-earnings span').replaceChildren(casualIcon('coin'));
   for (const icon of ['hint', 'undo', 'joker'] as const) {
@@ -142,7 +144,8 @@ function cancelCoins(settle = true) {
 function clearDialogs(preserveCoins = false) {
   // Discard presentation before its top-layer owner closes.
   cancelCoins(!preserveCoins); wallet?.clearDebit(); clearActionFeedback(); restoreWallet();
-  document.body.append($('#coin-layer')); dialogs.forEach(d => d.close());
+  document.body.append($('#coin-layer'));
+  dialogs.forEach(d => { d.close(); d.querySelector('.reward-counts')?.remove(); });
   returnToDialog = undefined;
 }
 function closeDialogs() {
@@ -347,27 +350,31 @@ try {
   const victoryParticles = document.createElement('span');
   victoryParticles.className = 'victory-particles'; victoryParticles.hidden = true;
   victoryParticles.setAttribute('aria-hidden', 'true');
-  $('#game').append(victoryParticles);
+  $('#app').append(victoryParticles);
+  let demonstratedWin: string | undefined;
+  let lastWinningAction: BoardCommand | undefined;
   function celebrateBoard(from: BoardCommand | undefined) {
-    if (!casual || reducedMotion() || screen !== 'game' || runtime.activity.isBlocked()) return;
+    if (!casual || reducedMotion() || screen !== 'game' || runtime.activity.isBlocked() ||
+        demonstratedWin === save.attempt.id) return;
+    demonstratedWin = save.attempt.id;
     const target = from?.type === 'transfer' ? scene?.geometry().targets.find(
       item => item.location.kind === from.to.kind && item.location.index === from.to.index) : undefined;
     const origin = $('#game-root').getBoundingClientRect();
     const frame = boardFrame(origin.width, origin.height, save.settings.deckPosition, deal);
-    const x = target ? frame.offsetX + target.x * frame.unit : origin.width * .5;
-    const y = target ? target.y * frame.unit : origin.height * .4;
+    const x = origin.x + (target ? frame.offsetX + target.x * frame.unit : origin.width * .5);
+    const y = origin.y + (target ? target.y * frame.unit : origin.height * .4);
     victoryParticles.style.left = x + 'px'; victoryParticles.style.top = y + 'px';
-    const burst = Array.from({ length: 12 }, (_, i) => {
-      const particle = document.createElement('i'), angle = Math.PI * i / 6;
-      particle.style.setProperty('--dx', Math.cos(angle) * (42 + i % 3 * 22) + 'px');
-      particle.style.setProperty('--dy', Math.sin(angle) * (35 + i % 3 * 17) + 'px');
+    const burst = Array.from({ length: 18 }, (_, i) => {
+      const particle = document.createElement('i'), angle = 2 * Math.PI * i / 18;
+      particle.style.setProperty('--dx', Math.cos(angle) * (57 + i % 3 * 24) + 'px');
+      particle.style.setProperty('--dy', Math.sin(angle) * (48 + i % 3 * 21) + 'px');
       particle.style.setProperty('--turn', (i * 41) + 'deg');
       return particle;
     });
     victoryParticles.replaceChildren(...burst);
     victoryParticles.hidden = false;
-    animateActionFeedback(victoryParticles, 'victory-board', [{ opacity: .2 }, { opacity: 1, offset: .27 }, { opacity: 0 }], 410);
-    victoryBeatUntil = performance.now() + 360;
+    animateActionFeedback(victoryParticles, 'victory-board', [{ opacity: .6 }, { opacity: 1, offset: .18 }, { opacity: .94, offset: .5 }, { opacity: 0 }], 540);
+    victoryBeatUntil = performance.now() + 460;
     const animation = actionFeedback.get(victoryParticles);
     const hide = () => { if (!actionFeedback.has(victoryParticles) || actionFeedback.get(victoryParticles) === animation) victoryParticles.hidden = true; };
     void animation?.finished.then(hide, hide);
@@ -407,7 +414,21 @@ try {
       rewardClaimTimer = setTimeout(() => { cancelCoins(); finishRewardClaim(); }, 1300);
       const layer = $('#coin-layer'), origin = $('#result-total');
       $('#result').append(layer);
-      wallet?.collect(origin, undefined, finishRewardClaim);
+      const gift = casual ? save.attempt.payout?.find(reward => reward.reason === 'campaign_win_cycle') : undefined;
+      const giftOrigin = $('#result-bonus');
+      if (gift && giftOrigin.getClientRects().length) {
+        const marker = $('#result-meta .win-stamps .casual-icon');
+        const rect = giftOrigin.getBoundingClientRect();
+        animateRewardProgress(giftOrigin);
+        if (marker) playPrizeFlight(rect, marker, casualIcon('gift'));
+        if (gift.hints) {
+          const before = { ...save, profile: { ...save.profile, hints: save.profile.hints - gift.hints } };
+          presentRewardDeltas('#result', rect, before);
+        }
+        const cycleCoins = Math.min(wallet?.pending ?? 0, gift.coins);
+        wallet?.collect(origin, (wallet?.pending ?? 0) - cycleCoins);
+        wallet?.collect(giftOrigin, cycleCoins, finishRewardClaim);
+      } else wallet?.collect(origin, undefined, finishRewardClaim);
     }
     return true;
   }
@@ -444,7 +465,9 @@ try {
   let adBreakTimer: ReturnType<typeof setTimeout> | undefined;
   let adBreakAttempt: string | undefined;
   const AD_BREAK_IDLE_MS = casual ? 130 : 1800;
-  let transitionAdTarget: number | undefined;
+  let transitionAd: { level: number; placement: CampaignInterstitialPlacement } | undefined;
+  let themeAdAttempt: string | undefined;
+  let freshEndAttempt: string | undefined;
   let fullscreenRetryAt = 0;
   const coffeeLabel = Object.assign(document.createElement('span'), { className: 'coffee-pause-label', textContent: 'Рекламная пауза', hidden: true });
   coffeeLabel.setAttribute('role', 'status');
@@ -487,6 +510,12 @@ try {
       const idle = !saving && !serviceBusy && !store.needsRecovery && !inspectMode && !activePointers.size && remainingIdle <= 0
         && (!save.attempt.daily || !training()) &&
         !currentLesson()?.accepts && !ruleIntroduction(save, deal) && Boolean(scene?.idleForAd());
+      if (themeAdAttempt === save.attempt.id) {
+        if (!idle) { scheduleAdBreak(Math.max(250, remainingIdle)); return; }
+        themeAdAttempt = undefined;
+        void showTransitionAd(deal.campaignLevel, 'theme').then(() => scheduleAdBreak());
+        return;
+      }
       const blocker = casual ? coffeeBlocker(save, deal, now, launchedAt, campaignAdsApproved(), idle)
         : adBreakBlocker(save, deal, now, launchedAt, campaignAdsApproved(), idle);
       if (blocker) {
@@ -535,7 +564,7 @@ try {
     !saving && !runtime.activity.isBlocked() && !store.needsRecovery);
   function updateBanner() {
     const eligible = ads.status.banner && !adFree(save, Date.now(), 'banner') &&
-      (releaseProfile ? unlockedLevel(save) >= BALANCE.ads.bannerFromLevel :
+      (releaseProfile ? unlockedLevel(save) >= releaseAdCadence.banner.minimumLevel :
         screen === 'game' && (deal.campaignLevel ?? 0) >= BALANCE.ads.bannerFromLevel);
     const blocked = runtime.activity.getBlockReasons().some(reason => reason !== 'screen' && reason !== 'level-transition');
     const intro = screen === 'game' ? ruleIntroduction(save, deal) : undefined;
@@ -553,7 +582,7 @@ try {
     const changedDeal = value.attempt.dealId !== save.attempt.dealId;
     const changedAttempt = value.attempt.id !== save.attempt.id;
     if (changedAttempt) {
-      clearTimeout(adBreakTimer); adBreakTimer = undefined; adBreakAttempt = undefined;
+      clearTimeout(adBreakTimer); adBreakTimer = undefined; adBreakAttempt = undefined; themeAdAttempt = undefined;
     }
     save = value; deal = findDeal(value.attempt.dealId)!;
     if (scene && (changedDeal || (changedAttempt && transitionPresentation))) {
@@ -681,8 +710,9 @@ try {
         }
         if (request.kind === 'interstitial') {
           const level = findDeal(request.dealId)?.campaignLevel;
-          const permitted = casual ? campaignAdsApproved() && transitionAdTarget !== undefined &&
-            releaseLevelAdEligible(next, transitionAdTarget, Date.now(), launchedAt) :
+          const permitted = casual ? campaignAdsApproved() && transitionAd !== undefined &&
+            transitionAd.placement === request.placement &&
+            releasePlacementEligible(next, transitionAd.level, transitionAd.placement, Date.now(), launchedAt) :
             attempt.board.phase === 'won' && level !== undefined &&
             interstitialEligible(next, level, request.mode, Date.now(), launchedAt);
           if (!permitted) throw Error('Показ недоступен');
@@ -927,7 +957,7 @@ try {
       : nextBooster === 'hammer' ? 'Молоток в слоте темы откроет карту в столбце.' : undefined;
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
       ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.'
-      : instruction?.copy ?? (binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
+      : instruction?.copy ?? (casual && screen === 'game' ? specialRuleNote(save, deal)?.copy : binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
         : ice ? 'Соберите тему, чтобы снять один слой льда.'
         : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : goldNote ?? boosterNote);
     lessonNote = { copy: note, action: instruction?.copy ? instruction.action : undefined };
@@ -1009,6 +1039,7 @@ try {
     continueButton.className = canBuyContinue || retryVideo || store.needsRecovery ? 'secondary' : 'primary';
     continueButton.textContent = credits > 0 ? '+10 ходов · использовать запас' : retryVideo ? 'Повторить запрос видео' : '+10 ходов · видео';
     $('#result').dataset.continueStatus = proofStatus ?? '';
+    if (casual) coinButton.className = canBuyContinue ? 'primary' : 'secondary';
     const continueNote = $('#result-continue-note');
     continueNote.hidden = !proofStatus;
     continueNote.textContent = proofStatus === 'CHECKING' ? 'Проверяем, хватит ли ещё 10 ходов.'
@@ -1016,7 +1047,7 @@ try {
       : proofStatus === 'UNKNOWN' ? 'Путь к победе за 10 ходов не подтверждён.'
       : proofStatus === 'PROVEN_RECOVERABLE' ? videoFailed && !credits
         ? 'Видео сейчас недоступно.' : showCoinOffer && !canBuyContinue
-          ? 'На +10 ходов не хватает монет.' : 'Из этой позиции можно выиграть за 10 ходов или меньше.'
+          ? 'На +10 ходов не хватает монет.' : casual ? '' : 'Из этой позиции можно выиграть за 10 ходов или меньше.'
       : '';
     const undoRecovery = board.phase === 'exhausted' && !save.attempt.lostLife && save.attempt.undo.length > 0 && (save.profile.undos > 0 || save.profile.coins >= BALANCE.helperPrices.undo || ads.status.rewarded);
     const resultRetry = $<HTMLButtonElement>('#result-save-retry');
@@ -1091,7 +1122,9 @@ try {
         const detail = document.createElement('dd'), quantity = document.createElement('span');
         title.textContent = name; quantity.textContent = String(count); title.append(quantity);
         if (casual) {
-          title.prepend(casualIcon(icon));
+          const label = document.createElement('b');
+          label.textContent = name;
+          title.replaceChildren(casualIcon(icon), quantity, label);
           detail.textContent = condition;
         } else detail.textContent = condition + ' · ' + source;
         row.append(title, detail); return row;
@@ -1151,6 +1184,23 @@ try {
     const holdingCategory = !reducedMotion() && scene?.holdingCollection && performance.now() < collectionDeadline;
     if (save.attempt.board.phase === 'won' && (holdingCategory || wallet?.settling || !reducedMotion() && performance.now() < victoryBeatUntil)) {
       outcomeTimer = setTimeout(() => outcome(collectionDeadline), 32); return;
+    }
+    if (save.attempt.board.phase === 'won' && freshFeelWin === save.attempt.id && !reducedMotion() &&
+        demonstratedWin !== save.attempt.id && !runtime.activity.isBlocked()) {
+      celebrateBoard(lastWinningAction);
+      if (performance.now() < victoryBeatUntil) {
+        outcomeTimer = setTimeout(() => outcome(collectionDeadline), 32);
+        return;
+      }
+    }
+    if (casual && !releaseAdCadence.interstitial.levelStart && freshEndAttempt === save.attempt.id &&
+        screen === 'game' && !runtime.activity.isBlocked()) {
+      freshEndAttempt = undefined;
+      const attempt = save.attempt.id;
+      void showTransitionAd(deal.campaignLevel, 'level-end').then(() => {
+        if (alive && screen === 'game' && attempt === save.attempt.id) outcome(collectionDeadline);
+      });
+      return;
     }
     // A local result coin layer must join the dialog's top layer to stay visible.
     $('#result').dataset.won = String(save.attempt.board.phase === 'won');
@@ -1355,7 +1405,7 @@ try {
       const coreCoins = result.events.filter(e => e.type === 'coins').reduce((n,e) => n + (e.amount ?? 0), 0);
       const freshWin = before.phase === 'playing' && save.attempt.board.phase === 'won' &&
         (casual || azurInteractionFeedback && !reducedMotion() && !save.attempt.daily && deal.campaignLevel !== undefined);
-      if (freshWin) freshFeelWin = save.attempt.id;
+      if (freshWin) { freshFeelWin = save.attempt.id; lastWinningAction = boardCommand; }
       const movesBonus = freshWin && !casual
         ? sourceReward?.bonus ?? BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0)
         : 0;
@@ -1378,10 +1428,12 @@ try {
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, before, play: present } : undefined);
       if (cmd.type !== 'transfer') present();
       const trigger = releaseAdCadence.coffee;
+      if (casual && releaseAdCadence.interstitial.theme && !save.attempt.daily && save.attempt.board.phase === 'playing' &&
+          result.events.some(event => event.type === 'complete')) themeAdAttempt = save.attempt.id;
       const coffeeTrigger = boardCommand && (trigger.triggerMove && boardCommand.type !== 'recycle' ||
         trigger.triggerRecycle && boardCommand.type === 'recycle' ||
         trigger.triggerCategory && result.events.some(event => event.type === 'complete'));
-      if (boardCommand && campaignAdsApproved() && (casual ? coffeeTrigger && unlockedLevel(save) >= trigger.unlockLevel : (deal.campaignLevel ?? 0) >= 16)) {
+      if (boardCommand && campaignAdsApproved() && (casual ? themeAdAttempt === save.attempt.id || coffeeTrigger && unlockedLevel(save) >= trigger.unlockLevel : (deal.campaignLevel ?? 0) >= 16)) {
         if (adBreakAttempt !== save.attempt.id) { lastAdBreakReason = ''; adBreakRetryAt = 0; }
         adBreakAttempt = save.attempt.id;
         adBreakHold = performance.now() + AD_BREAK_IDLE_MS;
@@ -1393,6 +1445,7 @@ try {
           (save.meta!.winCycle !== metaBefore?.winCycle || save.meta!.cycles !== metaBefore?.cycles ||
            save.meta!.dailyStreak !== metaBefore?.dailyStreak)) pendingRewardProgress = save.attempt.id;
       if (save.attempt.board.phase !== 'playing') {
+        if (before.phase === 'playing') freshEndAttempt = save.attempt.id;
         const delay = reducedMotion() ? 100 : save.attempt.board.phase === 'won' ? 0 : 465;
         const collectionDeadline = hasCoinFlight ? Infinity : performance.now() + 720;
         clearTimeout(outcomeTimer); outcomeTimer = setTimeout(() => outcome(collectionDeadline), delay);
@@ -1458,12 +1511,15 @@ try {
     if (bought) logTaskAction(next, 'BuyBoosters', 'wallet');
     return bought;
   }
-  const seenTaskProgress = new Map<string, number>();
   let tasksEntering = false;
-  function playPrizeFlight(from: DOMRect, target: HTMLElement, image: HTMLImageElement) {
+  function playPrizeFlight(from: DOMRect, target: HTMLElement, image: HTMLImageElement, landed?: () => void) {
     const owner = target.closest<HTMLDialogElement>('dialog[open]');
-    if (!casual || !owner || !target.isConnected || reducedMotion()) { animateRewardProgress(target); return; }
     const to = target.getBoundingClientRect();
+    const viewport = owner?.getBoundingClientRect();
+    const visible = viewport && to.width && to.height &&
+      to.top >= viewport.top && to.bottom <= viewport.bottom && to.top >= 0 && to.bottom <= innerHeight &&
+      (from.width || from.height);
+    if (!casual || !owner || !target.isConnected || !visible || reducedMotion()) { landed?.(); return; }
     image.classList.add('casual-flight');
     image.style.left = (from.x + from.width / 2 - 14) + 'px';
     image.style.top = (from.y + from.height / 2 - 14) + 'px';
@@ -1474,7 +1530,44 @@ try {
       { transform: `translate(${dx * .34}px,${dy * .25 - 18}px) scale(1.24)`, opacity: 1, offset: .38 },
       { transform: `translate(${dx}px,${dy}px) scale(.75)`, opacity: .5 },
     ], 440);
-    void actionFeedback.get(image)?.finished.then(() => { image.remove(); if (owner.open) animateRewardProgress(target); }, () => image.remove());
+    const complete = () => { image.remove(); landed?.(); };
+    void actionFeedback.get(image)?.finished.then(() => { complete(); if (owner.open) animateRewardProgress(target); }, complete);
+  }
+  function rewardBalances(state: Save) {
+    return {
+      Coins: state.profile.coins, MoveHint: state.profile.hints, Undo: state.profile.undos, Joker: state.profile.jokers,
+      Definition: state.dailyTasks?.inventory.definitions ?? 0, Shuffle: state.dailyTasks?.inventory.shuffles ?? 0,
+    };
+  }
+  function presentRewardDeltas(selector: string, from: DOMRect, before: Save) {
+    if (!casual) return;
+    const owner = $<HTMLDialogElement>(selector);
+    if (!owner.open) return;
+    const host = owner.querySelector('.sheet-heading') ?? owner;
+    let counters = host.querySelector<HTMLElement>('.reward-counts');
+    if (!counters) {
+      counters = document.createElement('div');
+      counters.className = 'reward-counts';
+      counters.setAttribute('role', 'status');
+      host.append(counters);
+    }
+    const previous = rewardBalances(before), current = rewardBalances(save);
+    for (const [kind, total] of Object.entries(current)) {
+      const delta = total - previous[kind as keyof typeof previous];
+      if (delta <= 0) continue;
+      const counter = document.createElement('span');
+      counter.dataset.rewardCounter = kind;
+      counter.setAttribute('aria-label', prizeLabel({ kind, quantity: total }) + ', получено ' + delta);
+      const count = document.createElement('strong');
+      count.textContent = total.toLocaleString('ru-RU');
+      counter.append(prizeIcon(kind), count);
+      const existing = counters.querySelector(`[data-reward-counter="${kind}"]`);
+      if (existing) existing.replaceWith(counter); else counters.append(counter);
+      if (!reducedMotion()) {
+        count.textContent = (total - delta).toLocaleString('ru-RU');
+        playPrizeFlight(from, counter, prizeIcon(kind), () => { count.textContent = total.toLocaleString('ru-RU'); });
+      }
+    }
   }
   function renderTasks() {
     const now = Date.now(), state = taskRewardState(save, now), busy = saving || serviceBusy || store.needsRecovery;
@@ -1513,6 +1606,13 @@ try {
       : 'Новая неделя — ' + resetText(state.nextWeekAt);
     if (casual && week) {
       const track = progressTrack(week.totalMedals, cap);
+      if (tasksEntering) {
+        const previous = taskProgressBaseline('week:' + week.startUtc + ':' + week.catalog, week.totalMedals);
+        if (previous < week.totalMedals && cap > 0 && !reducedMotion()) {
+          animateActionFeedback(track.firstElementChild as HTMLElement, 'weekly-progress',
+            [{ width: Math.min(100, previous / cap * 100) + '%' }, { width: Math.min(100, week.totalMedals / cap * 100) + '%' }], 440);
+        }
+      }
       medals.setAttribute('aria-label', medals.textContent ?? '');
       const value = document.createElement('span'); value.textContent = legacyWeek ? String(week.totalMedals) : Math.min(week.totalMedals, cap) + '/' + cap;
       value.append(track);
@@ -1539,24 +1639,28 @@ try {
       button.addEventListener('click', async () => {
         if (saving || serviceBusy) return;
         try {
-          const origin = button.getBoundingClientRect();
+          const origin = button.getBoundingClientRect(), previousSave = save;
           if (!await write(next => claimTask(next, utc, task.id))) return;
           const recorded = save.dailyTasks?.weeks.find(item => item.startUtc === weekStart);
           if (!$<HTMLDialogElement>('#daily-tasks-dialog').open) return;
-          if (recorded && recorded.totalMedals > before) playPrizeFlight(origin, medals.querySelector('img') ?? medals, prizeIcon('Medals'));
-          else if (casual) playPrizeFlight(origin, $('#daily-tasks-title'), prizeIcon(task.prize.kind));
+          if (recorded && recorded.totalMedals > before) {
+            if (casual) taskProgressBaseline('week:' + recorded.startUtc + ':' + recorded.catalog, recorded.totalMedals);
+            playPrizeFlight(origin, medals, prizeIcon('Medals'));
+          }
+          presentRewardDeltas('#daily-tasks-dialog', origin, previousSave);
         } catch { message('Не удалось сохранить награду.', true); }
       });
       if (casual) {
-        const key = utc + ':' + task.id, previous = seenTaskProgress.get(key);
         const progress = progressTrack(task.progress, task.target);
-        const kindIcon = task.kind === 'DailyLogin' ? 'task' : task.kind === 'EarnCoins' ? 'coin' :
-          task.kind === 'UseHints' ? 'hint' : task.kind === 'UseRollbacks' ? 'undo' : 'looks';
-        if (tasksEntering && previous !== undefined && previous < task.progress && !reducedMotion()) {
+        const kindIcon = task.kind === 'DrawCards' ? 'draw' : task.kind === 'ExecuteMoves' ? 'dailyDeal' :
+          task.kind === 'CollectThemes' ? 'link' : task.kind === 'EarnCoins' ? 'coin' :
+          task.kind === 'UseHints' ? 'hint' : task.kind === 'UseRollbacks' ? 'undo' : 'task';
+        const previous = tasksEntering || task.claimed
+          ? taskProgressBaseline(utc + ':' + task.id + ':' + task.target, task.progress) : task.progress;
+        if (tasksEntering && previous < task.progress && !reducedMotion()) {
           const fill = progress.firstElementChild as HTMLElement;
           animateActionFeedback(fill, 'task-progress', [{ width: previous / task.target * 100 + '%' }, { width: Math.min(100, task.progress / task.target * 100) + '%' }], 420);
         }
-        if (tasksEntering || task.claimed) seenTaskProgress.set(key, task.progress);
         const copy = document.createElement('span'); copy.append(label, progress);
         row.append(casualIcon(kindIcon), copy, button);
       } else row.append(label, button);
@@ -1566,6 +1670,19 @@ try {
     weekly.hidden = !week || week.catalog === 'azur-compiled-r1';
     const single = week?.milestones.find(entry => entry.id === 'week');
     const weeklyClaimed = Boolean(week?.claimedMilestones.includes('week'));
+    if (casual) {
+      const heading = $('#daily-tasks-dialog .sheet-heading');
+      const readyRow = $('#daily-tasks-ready');
+      const ready = !weekly.hidden && Boolean(single && week && week.totalMedals >= single.medals && !weeklyClaimed);
+      readyRow.hidden = !ready;
+      if (ready) {
+        if (!readyRow.contains(weekly)) readyRow.append(medals, weekly);
+        if (readyRow.parentElement !== heading) heading.append(readyRow);
+      } else if (readyRow.contains(weekly)) {
+        $('#daily-tasks-week-title').after(medals);
+        $('#daily-tasks-milestones').after(weekly);
+      }
+    }
     weekly.disabled = busy || !week || !single || week.totalMedals < single.medals || weeklyClaimed;
     weekly.textContent = weeklyClaimed ? 'Бонус недели получен · следующая неделя ' + resetText(state.nextWeekAt)
       : single ? 'Получить бонус недели · ' + [single.prize, ...(single.bundle ?? [])].map(prizeLabel).join(' + ') : 'Бонус недели';
@@ -1575,7 +1692,10 @@ try {
       claim.textContent = entry.medals + ' мед. · ' + (claimed ? 'Получено' : [entry.prize, ...(entry.bundle ?? [])].map(prizeLabel).join(' + '));
       claim.disabled = busy || claimed || week.totalMedals < entry.medals;
       claim.addEventListener('click', () => {
-        if (!saving && !serviceBusy) void write(next => claimTaskMilestone(next, week.startUtc, entry.id))
+        if (saving || serviceBusy) return;
+        const origin = claim.getBoundingClientRect(), previousSave = save;
+        void write(next => claimTaskMilestone(next, week.startUtc, entry.id))
+          .then(granted => { if (granted) presentRewardDeltas('#daily-tasks-dialog', origin, previousSave); })
           .catch(() => message('Не удалось сохранить награду.', true));
       });
       return claim;
@@ -1589,7 +1709,9 @@ try {
       claim.textContent = 'Получить · ' + reward.prizes.map(prizeLabel).join(' + ');
       claim.addEventListener('click', () => {
         if (saving || serviceBusy) return;
+        const origin = claim.getBoundingClientRect(), previousSave = save;
         void write(next => reward.kind === 'task' ? claimTask(next, reward.utc, reward.id) : claimTaskMilestone(next, reward.weekStart, reward.id))
+          .then(granted => { if (granted) presentRewardDeltas('#daily-tasks-dialog', origin, previousSave); })
           .catch(() => message('Не удалось сохранить награду.', true));
       });
       row.append(title, claim); return row;
@@ -1688,6 +1810,7 @@ try {
     const home = $('#picture-home'), result = $('#picture-result');
     home.hidden = !showPicture();
     home.textContent = parts.length ? `Альбом · ${parts.length}/${PICTURE_PRICES.length}` : 'Альбом';
+    if (casual) home.prepend(casualIcon('album'));
     result.hidden = !showPicture() || save.attempt.board.phase !== 'won' || Boolean(save.attempt.daily);
     result.textContent = picture?.lastWinAttempt === save.attempt.id ? 'Альбом · +2 жетона и 3 монеты' : 'Альбом';
     if (!$<HTMLDialogElement>('#picture-dialog').open) return;
@@ -1815,21 +1938,24 @@ try {
       message('Сейчас видео недоступно. Попробуйте позже.', true);
     restoreRewardedResult();
   }
-  async function showTransitionAd(target?: number) {
+  async function showTransitionAd(target?: number, placement: CampaignInterstitialPlacement = 'level-start') {
     const now = Date.now(), level = deal.campaignLevel;
-    if (casual ? target === undefined || !campaignAdsApproved() || !releaseLevelAdEligible(save, target, now, launchedAt) :
+    if (casual ? target === undefined || !campaignAdsApproved() ||
+      !releasePlacementEligible(save, target, placement, now, launchedAt) :
       screen !== 'game' || save.attempt.board.phase !== 'won' || level === undefined ||
       adFree(save, now) || !interstitialEligible(save, level, 'campaign', now, launchedAt)) return;
-    if (!ads.status.interstitial || performance.now() < fullscreenRetryAt) return;
+    if (!ads.status.interstitial || !document.hasFocus() || store.needsRecovery ||
+        performance.now() < fullscreenRetryAt) return;
+    if (ads.status.interstitialLoaded === false) { void ads.prepareInterstitial(); return; }
     if (screen === 'home' && runtime.activity.getBlockReasons().every(reason => reason === 'screen')) {
       runtime.activity.setBlocked('screen', false);
     }
     try {
-      transitionAdTarget = target;
-      const result = await ads.show({ kind: 'interstitial', placement: 'continue', attempt: save.attempt.id, dealId: deal.id, mode: 'campaign' });
+      if (target !== undefined) transitionAd = { level: target, placement };
+      const result = await ads.show({ kind: 'interstitial', placement: casual ? placement : 'continue', attempt: save.attempt.id, dealId: deal.id, mode: 'campaign' });
       if (!result.shown) fullscreenRetryAt = performance.now() + 30_000;
     } finally {
-      transitionAdTarget = undefined;
+      transitionAd = undefined;
       if (screen === 'home') runtime.activity.setBlocked('screen', true);
     }
   }
@@ -1852,6 +1978,15 @@ try {
     monthlyText.textContent = monthly.phase === 'claimed' ? 'Бонус месяца · +10 монет получено'
       : monthly.phase === 'ready' ? 'Бонус месяца · 10 монет ожидают сохранения'
         : 'Бонус месяца · ' + Math.min(monthly.clears, monthly.goal) + '/' + monthly.goal + ' новых уровней · +10 монет';
+    if (casual && !monthlyText.hidden) {
+      const accessible = monthlyText.textContent ?? '';
+      monthlyText.setAttribute('aria-label', accessible);
+      const value = document.createElement('span');
+      value.textContent = monthly.phase === 'claimed' ? 'Получено' : monthly.phase === 'ready' ? 'Готово' :
+        Math.min(monthly.clears, monthly.goal) + '/' + monthly.goal;
+      monthlyText.replaceChildren(casualIcon('gift'), value, progressTrack(monthly.clears, monthly.goal),
+        prizeToken({ kind: 'Coins', quantity: 10 }));
+    }
     if (LIVEOPS_PREVIEW && unlockedLevel(save) >= 16) prewarmLiveOps();
     $('#app').dataset.palette = cosmeticUnlocked(save, 'palette') ? save.settings.palette ?? 'green' : 'green';
     $('#app').dataset.back = cosmeticUnlocked(save, 'cardBack') ? save.settings.cardBack ?? 'classic' : 'classic';
@@ -1871,8 +2006,12 @@ try {
     const finished = casual && !current && completed === CAMPAIGN_LENGTH;
     $('#home-play').hidden = finished && (!campaign || outcomeViewed);
     $('.casual-tray')?.toggleAttribute('data-campaign-finished', finished);
-    $('#home-play').replaceChildren(document.createTextNode(finished ? 'Итоги' : parts[0]), Object.assign(document.createElement('small'),
-      { textContent: (parts[1] ?? (casual ? 'Последняя раздача' : 'Кампания')) + (homeDifficulty ? ' · ' + homeDifficulty : '') }));
+    const level = Object.assign(document.createElement('small'), { textContent: parts[1] ?? (casual ? 'Последняя раздача' : 'Кампания') });
+    if (homeDifficulty) {
+      if (casual) level.append(Object.assign(document.createElement('span'), { className: 'difficulty-chip', textContent: homeDifficulty }));
+      else level.textContent += ' · ' + homeDifficulty;
+    }
+    $('#home-play').replaceChildren(document.createTextNode(finished ? 'Итоги' : parts[0]), level);
     $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy;
     const focusId = campaign?.id ?? 'new';
     if (chapterAttemptId !== focusId) {
@@ -2120,7 +2259,7 @@ try {
       active.game.events.once(Phaser.Core.Events.POST_RENDER, () => {
         if (generation !== sceneGeneration || renderedDealId !== save.attempt.dealId) return;
         $('#app').dataset.presentedDeal = renderedDealId;
-        ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true';
+        ready = true; resizeToRoot(); runtime.activity.setBlocked('level-transition', false); telemetry.ready(); setInput(); updateBanner(); renderHud(); renderHome(); $('#loading').hidden = true; $('#app').dataset.ready = 'true'; finishStartup();
         if ((deal.campaignLevel ?? 0) >= (casual ? releaseAdCadence.interstitial.minimumLevel - 1 : BALANCE.ads.interstitialAfterLevel + 1)) void ads.prepareInterstitial();
         if (firstLaunch) { firstLaunch = false; showGame(); active.presentDeal(); announceDeal(); }
         else if (screen === 'game') { if (newDeal) announceDeal(); showGuidance(); }
@@ -2305,7 +2444,7 @@ try {
     }, domOptions);
     $('#daily-bonus-claim').addEventListener('click', async () => {
       if (saving || !save.dailyBonus) return;
-      const id = save.dailyBonus.roundId, origin = $('#daily-bonus-claim').getBoundingClientRect();
+      const id = save.dailyBonus.roundId, origin = $('#daily-bonus-claim').getBoundingClientRect(), previousSave = save;
       try {
         const granted = await write(next => {
           const now = Date.now();
@@ -2318,7 +2457,7 @@ try {
         });
         if (granted) {
           $('#daily-bonus-status').textContent = casual ? 'Приз получен' : bonusClaimMessage(granted);
-          if (casual) playPrizeFlight(origin, $('#daily-bonus-title'), prizeIcon(granted.kind));
+          if (casual) presentRewardDeltas('#daily-bonus-dialog', origin, previousSave);
           else message(bonusClaimMessage(granted));
         }
       } catch {
@@ -2344,10 +2483,9 @@ try {
     $('#daily-tasks-weekly').addEventListener('click', () => {
       const week = taskRewardState(save, Date.now()).week;
       if (week && !saving && !serviceBusy) {
-        const origin = $('#daily-tasks-weekly').getBoundingClientRect();
+        const origin = $('#daily-tasks-weekly').getBoundingClientRect(), previousSave = save;
         void write(next => claimTaskMilestone(next, week.startUtc, 'week')).then(granted => {
-          if (granted && casual && $<HTMLDialogElement>('#daily-tasks-dialog').open)
-            playPrizeFlight(origin, $('#daily-tasks-medals img:last-child'), casualIcon('gift'));
+          if (granted) presentRewardDeltas('#daily-tasks-dialog', origin, previousSave);
         }).catch(() => message('Не удалось сохранить награду.', true));
       }
     }, domOptions);
@@ -2360,7 +2498,14 @@ try {
       $('#picture-grid').append(button);
       button.addEventListener('click', () => {
         if (saving || serviceBusy) return;
-        void write(next => revealPicturePart(next, part)).catch(() => message('Не удалось сохранить фрагмент.', true));
+        void write(next => revealPicturePart(next, part)).then(opened => {
+          if (!casual || !opened || reducedMotion() || !$<HTMLDialogElement>('#picture-dialog').open) return;
+          animateActionFeedback(button, 'album-reveal', [
+            { background: '#eecf83', opacity: 1 },
+            { background: '#f5e3a6', opacity: .3, transform: 'scale(.9)', offset: .66 },
+            { background: 'transparent', opacity: 1, transform: 'none' },
+          ], 370);
+        }).catch(() => message('Не удалось сохранить фрагмент.', true));
       }, domOptions);
     }
     for (const selector of ['#picture-home', '#picture-result']) $(selector).addEventListener('click', () => { void showPictureDialog(); }, domOptions);
@@ -2372,7 +2517,10 @@ try {
     for (const selector of ['#picture-close', '#picture-done']) $(selector).addEventListener('click', () => closeDialogs(), domOptions);
     $('#picture-claim').addEventListener('click', () => {
       if (saving || serviceBusy) return;
-      void write(next => claimPicture(next, Date.now())).catch(() => message('Не удалось сохранить награду.', true));
+      const origin = $('#picture-claim').getBoundingClientRect(), previousSave = save;
+      void write(next => claimPicture(next, Date.now()))
+        .then(granted => { if (granted) presentRewardDeltas('#picture-dialog', origin, previousSave); })
+        .catch(() => message('Не удалось сохранить награду.', true));
     }, domOptions);
   }
   if (rewardOffersEnabled) {
@@ -2421,7 +2569,15 @@ try {
     }, domOptions);
   }
   $('#result-home').addEventListener('click', goHome, domOptions);
-  $('#levels-open').addEventListener('click', goHome, domOptions);
+  $('#levels-open').addEventListener('click', async () => {
+    if (!casual) { goHome(); return; }
+    if (screen !== 'game' || saving || serviceBusy || store.needsRecovery) return;
+    const level = deal.campaignLevel;
+    serviceBusy = true;
+    goHome();
+    try { await showTransitionAd(level, 'menu'); }
+    finally { serviceBusy = false; if (alive) renderHome(); }
+  }, domOptions);
   $('#switch-confirm').addEventListener('click', () => { const level = requestedLevel; requestedLevel = undefined; if (level) void openLevel(level, true); }, domOptions);
   $('#menu').addEventListener('click', () => { $<HTMLDetailsElement>('#pause-options').open = screen === 'home'; openDialog('#settings'); }, domOptions);
   $('#pause-options').addEventListener('toggle', () => { const expanded = $<HTMLDetailsElement>('#pause-options').open;
@@ -2696,7 +2852,12 @@ try {
     home.hidden = !LIVES_PREVIEW;
     const legacy = legacyLiveOpsRewards(save);
     $('#campaign-liveops-open').hidden = !LIVEOPS_PREVIEW && !legacy.length;
-    $('#campaign-liveops-open').textContent = LIVEOPS_PREVIEW ? 'События кампании' : 'Награды прошлых событий · ' + legacy.length;
+    const eventEntry = $('#campaign-liveops-open');
+    eventEntry.textContent = LIVEOPS_PREVIEW ? 'События кампании' : 'Награды прошлых событий · ' + legacy.length;
+    if (casual) {
+      eventEntry.setAttribute('aria-label', eventEntry.textContent);
+      eventEntry.replaceChildren(casualIcon('medal'), document.createTextNode('События · ' + legacy.length));
+    }
     if (casual) {
       home.replaceChildren(casualIcon('heart'), Object.assign(document.createElement('strong'), { textContent: String(count) }),
         Object.assign(document.createElement('span'), { textContent: '+' }));
@@ -2747,8 +2908,15 @@ try {
   for (const [selector, method] of [['#campaign-life-coin', 'coins'], ['#campaign-life-credit', 'credit']] as const) {
     $(selector).addEventListener('click', async () => {
       if (!LIVES_PREVIEW || saving || serviceBusy) return;
-      const revision = save.revision;
-      try { await write(next => refillCampaignLife(next, { revision, method, now: Date.now() })); renderLives(); }
+      const revision = save.revision, origin = $(selector).getBoundingClientRect();
+      try {
+        const refilled = await write(next => refillCampaignLife(next, { revision, method, now: Date.now() }));
+        renderLives();
+        if (casual && refilled) {
+          const heart = [...$('#campaign-lives-status').querySelectorAll<HTMLElement>('.life-pip:not(.spent)')].at(-1);
+          if (heart) playPrizeFlight(origin, heart, casualIcon('heart'));
+        }
+      }
       catch { message('Не удалось сохранить жизнь.', true); }
     }, domOptions);
   }
@@ -2836,7 +3004,12 @@ try {
     const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button');
     if (!button?.dataset.claim || !button.dataset.eventKey || saving || serviceBusy) return;
     const { claim, eventKey: key } = button.dataset;
-    try { await write(next => LIVEOPS_PREVIEW ? claimMilestone(next, key, claim) : claimLegacyLiveOpsReward(next, key, claim)); paintLiveOps(); }
+    const origin = button.getBoundingClientRect(), previousSave = save;
+    try {
+      const granted = await write(next => LIVEOPS_PREVIEW ? claimMilestone(next, key, claim) : claimLegacyLiveOpsReward(next, key, claim));
+      paintLiveOps();
+      if (granted) presentRewardDeltas('#campaign-liveops', origin, previousSave);
+    }
     catch { message('Не удалось сохранить награду события.', true); }
   }, domOptions);
   function renderCampaignShop() {
@@ -3137,15 +3310,7 @@ try {
   import.meta.hot?.dispose(cleanup);
 } catch (error) {
   runtime.destroy(); game && destroyRenderer(game);
-  $('#app').hidden = true; $('#app').inert = true; $('#game-surface').hidden = true;
-  const alert = document.createElement('div'); alert.className = 'fatal'; alert.setAttribute('role', 'alert');
-  const title = document.createElement('h2'); title.textContent = 'Не удалось открыть партию';
-  const copy = document.createElement('p'); copy.textContent = 'Попробуйте загрузить игру ещё раз. Сохранение остаётся на устройстве.';
-  const retry = document.createElement('button'); retry.id = 'startup-retry'; retry.className = 'primary'; retry.textContent = 'Повторить загрузку';
-  retry.addEventListener('click', () => { retry.disabled = true; retry.textContent = 'Загружаем…'; alert.setAttribute('aria-busy', 'true'); location.reload(); }, { once: true });
-  const details = document.createElement('details'), summary = document.createElement('summary'), detail = document.createElement('p');
-  summary.textContent = 'Технические сведения'; detail.textContent = error instanceof Error ? error.message : String(error);
-  details.append(summary, detail); alert.append(title, copy, retry, details); document.body.append(alert); retry.focus(); console.error(error);
+  showStartupFailure(error);
 }
 
 }

@@ -243,7 +243,7 @@ export class BoardScene extends Phaser.Scene {
       const title = categoryCaption(card.text);
       caption = this.label(0, 0, title, 28, '#294d5d', this.cardH - 72).setOrigin(.5);
       content.add(caption);
-      strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
+      strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: releaseProfile ? '#483b36' : '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
     } else if (image) {
       const size = Math.min(104, this.cardW - 22);
@@ -263,7 +263,7 @@ export class BoardScene extends Phaser.Scene {
       strip = this.add.image(0, -this.cardH / 2 + 11, image).setDisplaySize(18, 18); face.add(strip); strip.setVisible(false);
     } else {
       caption = this.label(0, 0, card.text, 29, '#294d5d', this.cardH - 72); caption.setOrigin(.5); content.add(caption);
-      strip = this.add.text(0, 0, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: '#79909c' }).setOrigin(.5);
+      strip = this.add.text(0, 0, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: releaseProfile ? '#39505d' : '#79909c' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 14) / strip.width)); face.add(strip); strip.setVisible(false);
     }
     if (card.keyId) {
@@ -382,7 +382,14 @@ export class BoardScene extends Phaser.Scene {
         .setDisplaySize(this.cardW, this.cardH).setTint(ink ? 0xd8ceff : 0xffffff)
         .setAlpha(ink ? upper ? .8 : .62 : upper ? 1 : .85);
     }
-    if (!board.stock.length && board.waste.length) this.slots.fillStyle(0xd2e8db, .08).fillCircle(this.metrics.stock.x, this.metrics.stock.y, 35);
+    const { stock } = this.metrics;
+    const deck = this.options.deal.initial;
+    if (releaseProfile && !board.stock.length && (deck.stock.length || deck.waste.length)) {
+      const recyclable = board.waste.length && board.recyclesLeft !== 0;
+      const x = stock.x - this.cardW / 2, y = stock.y - this.cardH / 2;
+      this.slots.fillStyle(0x071e2a, recyclable ? .5 : .33).fillRoundedRect(x, y, this.cardW, this.cardH, 10);
+      this.slots.lineStyle(2, 0xc3e5d8, recyclable ? .58 : .3).strokeRoundedRect(x, y, this.cardW, this.cardH, 10);
+    } else if (!board.stock.length && board.waste.length) this.slots.fillStyle(0xd2e8db, .08).fillCircle(stock.x, stock.y, 35);
   }
   public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand, feedback?: ContactFeedback, returningIds: readonly string[] = []): void {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;

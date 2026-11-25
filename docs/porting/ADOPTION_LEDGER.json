@@ -711,7 +711,7 @@
     {
       "id": "hitapps-ingame-banner",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Campaign banner remains eligible at level 3. P21 tests a separate banner impression path that never consumes fullscreen cooldown. See docs/porting/P21_AD_PLACEMENTS.md. Игровой runtime и native callback подключены под отдельным разрешением. Новый показ и фактический ILRD ещё не приняты на телефоне.",
+      "currentImplementation": "C8 test r3 unlocks the shared banner at level 2 with the lesson and lifecycle guards. Device creative/view continuity is pending. P21 tests a separate banner impression path that never consumes fullscreen cooldown. See docs/porting/P21_AD_PLACEMENTS.md. Игровой runtime и native callback подключены под отдельным разрешением. Новый показ и фактический ILRD ещё не приняты на телефоне.",
       "nextAction": "Phone/RuStore safe-area+SDK ready/impression test; compare original placement and day mode Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
       "stage": "E2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
@@ -793,7 +793,7 @@
     {
       "id": "azur-fullscreen-ads-clock",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Issue #210 trial reuses the P01 durable shown journal and the P20 quote binding. The C8 transition to L3+ uses 120-second startup and last-shown guards. Coffee and rewarded share the persisted fullscreen clock. The test candidate has no wins prerequisite. See docs/qa/issue-210/ANDROID_ADS_CHECK.md.",
+      "currentImplementation": "Issue #210 trial reuses the P01 durable shown journal and the P20 quote binding. The C8 transition to L3+ uses 120-second startup and last-shown guards. The audit adds Settings→Home and mutually exclusive start/end with optional theme in source-shaped-pause-r3. Evidence: mini-games-kit f4542d287d17fc085eb2e8e874bd49415a2dedfd, bounded NATIVE_STATIC. Coffee and rewarded share the persisted fullscreen clock. The test candidate has no wins prerequisite. See docs/qa/issue-210/ANDROID_ADS_CHECK.md.",
       "nextAction": "Verify signed device impressions, L2→L3 and retry transitions, both rewarded callback orders and shared cadence after reload, background and no-fill. Continue source entry and remote cadence research separately.",
       "stage": "E2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",

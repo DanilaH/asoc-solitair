@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { dailyForDay } from '../../src/content/daily';
 import { content8Dealer } from '../../src/content/campaign-v8-dealer';
-import { coffeeBlocker, releaseLevelAdEligible, validCampaignAds } from '../../src/domain/campaign-advertising';
+import { coffeeBlocker, releaseLevelAdEligible, releasePlacementEligible, releaseAdCadence, validCampaignAds } from '../../src/domain/campaign-advertising';
 import { freshSave } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import { applyFullscreenShown, parseFullscreenShown, parseReceipt, platformState } from '../../src/domain/services';
@@ -44,3 +44,27 @@ for (const mode of ['campaign', 'daily'] as const) {
     expect(save.attempt.adBreakShown).toBeUndefined();
   });
 }
+
+it('routes AZUR placements through one clock and keeps start and end complementary', () => {
+  const save = freshSave(content8Dealer[2], 'placement-r3');
+  const startup = 1_000, available = 121_000;
+  expect(releaseAdCadence.banner.minimumLevel).toBe(2);
+  const policy = releaseAdCadence.interstitial;
+  expect(releasePlacementEligible(save, 2, 'menu', available, startup)).toBe(false);
+  expect(releasePlacementEligible(save, 3, 'menu', available - 1, startup)).toBe(false);
+  expect(releasePlacementEligible(save, 3, 'menu', available, startup)).toBe(true);
+  expect(releasePlacementEligible(save, 3, 'level-start', available, startup)).toBe(true);
+  expect(releasePlacementEligible(save, 3, 'level-end', available, startup)).toBe(false);
+  expect(releasePlacementEligible(save, 3, 'theme', available, startup)).toBe(false);
+  const testing = { ...policy, levelStart: false, theme: true };
+  expect(releasePlacementEligible(save, 3, 'level-start', available, startup, testing)).toBe(false);
+  expect(releasePlacementEligible(save, 3, 'level-end', available, startup, testing)).toBe(true);
+  expect(releasePlacementEligible(save, 3, 'theme', available, startup, testing)).toBe(true);
+  const identity = { schema: 1, id: 'show-menu', attempt: save.attempt.id, dealId: save.attempt.dealId,
+    mode: 'campaign', kind: 'interstitial', placement: 'menu', shownAt: available };
+  expect(() => parseReceipt(identity)).toThrow();
+  expect(() => parseFullscreenShown({ ...identity, mode: 'daily' })).toThrow();
+  expect(applyFullscreenShown(save, parseFullscreenShown(identity))).toBe('applied');
+  expect(releasePlacementEligible(save, 3, 'level-start', available + 1000, startup)).toBe(false);
+  expect(releasePlacementEligible(save, 3, 'level-start', available + 120_000, startup)).toBe(true);
+});

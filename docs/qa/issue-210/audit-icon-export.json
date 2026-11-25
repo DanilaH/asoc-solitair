@@ -1,0 +1,81 @@
+{
+  "master": "exec-29368492-0c7a-4242-85e3-480207af218e.png",
+  "sha256": "a88056448a1644ddef58073a7016670ebd77800aed5ec45cf4706de3f805c021",
+  "size": [
+    1289,
+    1221
+  ],
+  "format": "WebP RGBA 128×128, 116px content, quality 88",
+  "references": [
+    "public/art/ui/reward-emblem.webp",
+    "public/art/ui/gift.webp",
+    "public/art/ui/task.webp"
+  ],
+  "prompt": "Four separate transparent UI sprites in the established Card Table B style. Cream cards with teal rim and sun, fan of gold-rimmed indigo deck cards, joined cards with teal ribbon, and an opened teal album with gold clasp. No branding, labels, backdrop or border.",
+  "exports": [
+    {
+      "file": "public/art/ui/daily-deal.webp",
+      "quadrant": [
+        0,
+        0,
+        644,
+        610
+      ],
+      "alphaBounds": [
+        98,
+        95,
+        533,
+        538
+      ],
+      "sha256": "885989582026e7ddd6ba848c26fc389f0d35888beb27b81b825a9721aa712048"
+    },
+    {
+      "file": "public/art/ui/draw-stack.webp",
+      "quadrant": [
+        644,
+        0,
+        1288,
+        610
+      ],
+      "alphaBounds": [
+        0,
+        149,
+        557,
+        499
+      ],
+      "sha256": "b6c59bab2a591d0281c6133c6b680c7451fb49f5d6f849c30b264909b5a5a905"
+    },
+    {
+      "file": "public/art/ui/category-link.webp",
+      "quadrant": [
+        0,
+        610,
+        644,
+        1220
+      ],
+      "alphaBounds": [
+        52,
+        76,
+        591,
+        505
+      ],
+      "sha256": "af9a860ac06c5cd061b20aab17720badc0a3db9e8893aae43366a98c8fca9cbe"
+    },
+    {
+      "file": "public/art/ui/keepsake-album.webp",
+      "quadrant": [
+        644,
+        610,
+        1288,
+        1220
+      ],
+      "alphaBounds": [
+        16,
+        85,
+        574,
+        501
+      ],
+      "sha256": "92953633cbd6f828aa495f74701f432e9b4c54b29c6784b0fe26525768e8a3b1"
+    }
+  ]
+}

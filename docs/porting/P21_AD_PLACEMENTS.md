@@ -53,3 +53,8 @@ AdsBreak планируется после сохранённого хода и 
 ## Owner clarification · 25 November · #210
 
 The C8 test candidate uses the `source-shaped-pause-r2` configuration in `src/config/c8-release.json`. AZUR compiled defaults motivate the L3 and 120-second transition policy. Two pauses in one Unico Daily motivate repeatability and a 180-second starting gap. Hitapps source motivates configurable triggers, remaining steps and difficulty limits. Active original remote values and Unico's +3 reward grant contract are open evidence. Own Coffee stays an interstitial pause and does not mint coins. Campaign and Daily share the same persisted last confirmed fullscreen; no-fill changes the request backoff only. Device gates remain in [the #210 runbook](../qa/issue-210/ANDROID_ADS_CHECK.md).
+
+
+## Дополнение независимого аудита PR211
+
+[AZUR NATIVE_STATIC на SHA-подтверждённом оригинале](https://github.com/DanilaH/mini-games-kit/blob/f4542d287d17fc085eb2e8e874bd49415a2dedfd/research/games/association-solitaire/2026-11-25-azur-ad-director-unlimited/README.md) устанавливает отдельную точку меню, взаимно исключающие start/end, выключенную по умолчанию точку темы и bundled порог баннера L2. В `source-shaped-pause-r3` обычный C8 проверяет текущий уровень для меню и целевой для перехода. Все точки используют те же разрешения, готовность native SDK и durable fullscreen clock. Тестовые defaults — start включён, end и theme выключены. Обучение сохраняет защиту от баннера и рекламных пауз. Зарегистрированная схема Unlimited остаётся предметом P19/P25.

@@ -1,9 +1,9 @@
 import { Capacitor, registerPlugin, type PluginListenerHandle } from '@capacitor/core';
 import { DurableReceiptQueue, type ReceiptCommitResult, type GameplayActivityCoordinator } from '@danilah/mini-games-kit/platform';
 import type { NativeBannerPlacement, NativeBannerPlacementInput } from '@danilah/mini-games-kit/layout';
-import { parseFullscreenShown, parseReceipt, type EarnedReceipt, type FullscreenShown, type RewardPlacement } from '../domain/services';
+import { parseFullscreenShown, parseReceipt, type EarnedReceipt, type FullscreenShown, type AdPlacement } from '../domain/services';
 
-export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: RewardPlacement; attempt: string; dealId: string; mode: 'campaign' | 'daily' }
+export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: AdPlacement; attempt: string; dealId: string; mode: 'campaign' | 'daily' }
 export interface AdOutcome { shown: boolean; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
 export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean; interstitialLoaded?: boolean; campaignApproved?: boolean; livesApproved?: boolean; offersApproved?: boolean }
 export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string; placement?: string }

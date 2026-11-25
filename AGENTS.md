@@ -4,7 +4,7 @@
 
 [Issue #210](https://github.com/DanilaH/asoc-solitair/issues/210) starts from PR208 and upstreams the PR209 research doc delta. Keep the approved C8 grid, frozen deal bank, receipts, art and product behavior. Start with [the composition review](docs/qa/issue-210/COMPOSITION_REVIEW.md) and parallel FTUE/ads engineering. After owner composition approval, use the vertical slice before scaling the art. [Android ads acceptance](docs/qa/issue-210/ANDROID_ADS_CHECK.md) distinguishes actual SDK, runtime and physical checks. The 115 sources, 38 packets, 15 commerce families and the runtime pin remain in force.
 
-Owner approved Card Table B with animated reward feedback. The updated #210 ad direction supersedes the old fixed L16/one-Coffee/three-wins limits for the ordinary test candidate. See [P21](docs/porting/P21_AD_PLACEMENTS.md). Keep live/provider gates and the separate earned-receipt path.
+Owner approved Card Table B with animated reward feedback and assigned the [independent PR211 audit](https://github.com/DanilaH/asoc-solitair/issues/210#issuecomment-7168310228). The runtime kit remains a9325265. Incremental P21 source evidence is pinned to [kit f4542d28](https://github.com/DanilaH/mini-games-kit/blob/f4542d287d17fc085eb2e8e874bd49415a2dedfd/research/games/association-solitaire/2026-11-25-azur-ad-director-unlimited/README.md), alongside the consolidated research snapshot below. The updated #210 ad direction supersedes the old fixed L16/one-Coffee/three-wins limits for the ordinary test candidate. See [P21](docs/porting/P21_AD_PLACEMENTS.md). Keep live/provider gates and the separate earned-receipt path.
 
 ## Research consolidation — 25 November 2026
 

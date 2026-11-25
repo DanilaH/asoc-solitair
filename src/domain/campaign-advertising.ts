@@ -75,8 +75,19 @@ export function coffeeBlocker(save: Save, deal: Deal, now: number, launchedAt: n
 export function coffeeEligibleAt(save: Save, launchedAt: number, policy: CoffeePolicy = releaseAdCadence.coffee) {
   return Math.max(launchedAt + policy.startupMs, (save.platform?.lastFullscreenAt ?? 0) + policy.spacingMs);
 }
-export function releaseLevelAdEligible(save: Save, target: number, now: number, launchedAt: number) {
-  const policy = releaseAdCadence.interstitial;
+export const campaignInterstitialPlacements = ['menu', 'level-start', 'level-end', 'theme'] as const;
+export type CampaignInterstitialPlacement = typeof campaignInterstitialPlacements[number];
+export function isCampaignInterstitial(placement: string): placement is CampaignInterstitialPlacement {
+  return (campaignInterstitialPlacements as readonly string[]).includes(placement);
+}
+
+export function releasePlacementEligible(save: Save, level: number, placement: CampaignInterstitialPlacement,
+  now: number, launchedAt: number, policy = releaseAdCadence.interstitial) {
+  if (placement === 'theme' && !policy.theme || placement === 'level-start' && !policy.levelStart ||
+      placement === 'level-end' && policy.levelStart) return false;
+  return releaseLevelAdEligible(save, level, now, launchedAt, policy);
+}
+export function releaseLevelAdEligible(save: Save, target: number, now: number, launchedAt: number, policy = releaseAdCadence.interstitial) {
   return !save.attempt.daily && target >= policy.minimumLevel && !adFree(save, now) &&
     now >= Math.max(launchedAt + policy.startupMs, (save.platform?.lastFullscreenAt ?? 0) + policy.spacingMs);
 }

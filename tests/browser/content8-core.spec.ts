@@ -1215,7 +1215,7 @@ test('reward offer preview keeps the normal victory and grants only a matching e
   await expect.poll(async () => (await adControls(page)).length).toBe(2);
   const [first, second] = await adControls(page);
   expect(second).toEqual(first);
-  const receipt: EarnedReceipt = { schema: 1, id: 'p20-earned-win', placement: second.placement,
+  const receipt: EarnedReceipt = { schema: 1, id: 'p20-earned-win', placement: second.placement as EarnedReceipt['placement'],
     attempt: second.attempt, dealId: second.dealId, mode: 'campaign' };
   await page.evaluate(value => {
     const mock = (window as unknown as { adTestControls: AdTestControls }).adTestControls;

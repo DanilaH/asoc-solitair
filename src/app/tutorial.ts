@@ -4,6 +4,10 @@ import { completedLevels, freeHintDemo, markTutorial, seenTutorial } from '../do
 import { bonusKinds, bonusOffer, pilesFor } from '../domain/bonus-slots';
 import type { Board, BoardCommand, Command, Deal, Save } from '../domain/types';
 import { authoredLessonAction, usesAuthoredLesson } from './c8-tutorial';
+import { frozenLayers } from '../domain/frozen-cards';
+import { isBoundCard } from '../domain/bound-cards';
+import { isPictureJoined } from '../domain/puzzle-pairs';
+import { releaseProfile } from '../config/profile';
 
 type Skill = 'category' | 'match' | 'stock';
 const marker = (skill: Skill) => `learn:${skill}`;
@@ -33,7 +37,45 @@ export function recordLearning(save: Save, before: Board, action: BoardCommand, 
   if (deal.training === 'keys' && deal.lock?.requiredKeys.every(key => save.attempt.board.keys?.includes(key)))
     markTutorial(save, 'learn:keys');
   if (deal.campaignLevel && deal.campaignLevel <= 2) markTutorial(save, marker(skillFor(before, action, deal)));
+  if (!releaseProfile) return;
+  const after = save.attempt.board;
+  const earlier = new Set(before.collected);
+  const newlyCollected = (id: string) => !earlier.has(id) && after.collected.includes(id);
+  if (Object.keys(deal.frozen?.layers ?? {}).some(id => frozenLayers(after, deal, id) < frozenLayers(before, deal, id)))
+    markTutorial(save, 'learn:frozen');
+  if (Object.keys(deal.bound?.scissorsByCard ?? {}).some(id => isBoundCard(before, deal, id) && !isBoundCard(after, deal, id)))
+    markTutorial(save, 'learn:bound');
+  if (deal.puzzle?.pairs.some(pair => newlyCollected(pair.top) || !isPictureJoined(before, pair) && isPictureJoined(after, pair)))
+    markTutorial(save, 'learn:puzzle');
+  if (deal.golden?.ids.some(newlyCollected)) markTutorial(save, 'learn:golden');
+  for (const [id, booster] of Object.entries(deal.starter?.cards ?? {})) {
+    if (action.type === 'transfer' && action.to.kind === 'foundation' && sourceCards(before, action.from, deal).includes(id))
+      markTutorial(save, 'learn:' + booster);
+  }
+
 }
+/** First encounter copy follows the actual exposed card rather than a level number. */
+export function specialRuleNote(save: Save, deal: Deal): { kind: string; copy: string } | undefined {
+  const board = save.attempt.board;
+  if (board.phase !== 'playing') return;
+  const visible = (id: string) => board.faceUp.includes(id) && !board.collected.includes(id);
+  const seen = (kind: string) => seenTutorial(save, 'learn:' + kind);
+  if (!seen('frozen') && Object.keys(deal.frozen?.layers ?? {}).some(id => visible(id) && frozenLayers(board, deal, id)))
+    return { kind: 'frozen', copy: 'Соберите тему, чтобы снять слой льда.' };
+  if (!seen('bound') && Object.keys(deal.bound?.scissorsByCard ?? {}).some(id => visible(id) && isBoundCard(board, deal, id)))
+    return { kind: 'bound', copy: 'Ножницы в верхнем слоте разрежут связь.' };
+  if (!seen('puzzle') && deal.puzzle?.pairs.some(({ top, bottom }) => visible(top) || visible(bottom)))
+    return { kind: 'puzzle', copy: 'Соедините половинки в столбце, затем перенесите пару в тему.' };
+  if (!seen('golden') && deal.golden?.ids.some(visible))
+    return { kind: 'golden', copy: 'Соберите золотые карты и выиграйте, чтобы получить бонус.' };
+  const starter = Object.entries(deal.starter?.cards ?? {}).find(([id, kind]) =>
+    !seen(kind) && visible(id) && !board.foundations.some(pile => pile.includes(id)));
+  if (!starter) return;
+  const kind = starter[1];
+  return { kind, copy: kind === 'magnet' ? 'Магнит в слоте темы притянет карту из колоды.' :
+    'Молоток в слоте темы откроет скрытую карту.' };
+}
+
 export type RuleIntro = 'joker' | 'ordered' | 'keys';
 export function ruleIntroMarker(rule: RuleIntro, deal: Deal): string {
   const keys = deal.lock?.requiredKeys.length;

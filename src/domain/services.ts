@@ -1,5 +1,5 @@
 import { matchesLifeShow, settleLifeVideo } from './campaign-lives';
-import { recordAdBreakShown, recordCoffeeDisplay, settleCoffee } from './campaign-advertising';
+import { isCampaignInterstitial, recordAdBreakShown, recordCoffeeDisplay, settleCoffee, type CampaignInterstitialPlacement } from './campaign-advertising';
 import { campaignRewards } from './meta';
 import { isOfferPlacement, offerShowContext, settleRewardOffer, type OfferPlacement } from './reward-offers';
 import { BALANCE } from './balance';
@@ -11,7 +11,9 @@ import { requiresContinueProof, verifiesContinue, type ContinueProof } from './c
 
 export type RewardPlacement = 'hint' | 'undo' | 'continue' | 'ads-break' | 'coffee-break' | 'life-refill' | BonusPlacement | OfferPlacement;
 export interface EarnedReceipt { schema: 1; id: string; attempt: string; dealId: string; mode: 'campaign' | 'daily'; placement: RewardPlacement }
-export interface FullscreenShown extends EarnedReceipt {
+export type AdPlacement = RewardPlacement | CampaignInterstitialPlacement;
+export interface FullscreenShown extends Omit<EarnedReceipt, 'placement'> {
+  placement: AdPlacement;
   kind: 'rewarded' | 'interstitial';
   shownAt: number;
 }
@@ -19,24 +21,25 @@ export function platformState(save: Save): PlatformState {
   return save.platform ??= { receipts: [], continuedAttempts: [], continueCredits: 0, completedCampaign: [], winsSinceInterstitial: 0, lastFullscreenAt: 0 };
 }
 export function parseReceipt(value: unknown): EarnedReceipt {
-  return parseAdIdentity(value, false);
+  return parseAdIdentity(value, false) as EarnedReceipt;
 }
-function parseAdIdentity(value: unknown, allowDailyPause: boolean): EarnedReceipt {
+function parseAdIdentity(value: unknown, interstitial: boolean): Omit<EarnedReceipt, 'placement'> & { placement: AdPlacement } {
   if (!value || typeof value !== 'object') throw Error('Invalid receipt');
   const r = value as Record<string, unknown>;
+  const placement = String(r.placement), campaignAd = interstitial && isCampaignInterstitial(placement);
   if (r.schema !== 1 || typeof r.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.id) ||
     typeof r.attempt !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.attempt) ||
     typeof r.dealId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.dealId) ||
-    (!['hint', 'undo', 'continue', 'ads-break', 'coffee-break', 'life-refill', ...Object.values(bonusPlacements)].includes(String(r.placement)) && !isOfferPlacement(String(r.placement))) ||
+    (!['hint', 'undo', 'continue', 'ads-break', 'coffee-break', 'life-refill', ...Object.values(bonusPlacements)].includes(String(r.placement)) && !isOfferPlacement(placement) && !campaignAd) ||
     !['campaign', 'daily'].includes(String(r.mode)) ||
-    ((r.placement === 'ads-break' && !allowDailyPause || r.placement === 'coffee-break' || r.placement === 'life-refill' || bonusKindFor(String(r.placement)) || isOfferPlacement(String(r.placement))) && r.mode !== 'campaign')) throw Error('Invalid receipt');
-  return { schema: 1, id: r.id, attempt: r.attempt, dealId: r.dealId, placement: r.placement as RewardPlacement, mode: r.mode as EarnedReceipt['mode'] };
+    ((campaignAd || r.placement === 'ads-break' && !interstitial || r.placement === 'coffee-break' || r.placement === 'life-refill' || bonusKindFor(String(r.placement)) || isOfferPlacement(String(r.placement))) && r.mode !== 'campaign')) throw Error('Invalid receipt');
+  return { schema: 1, id: r.id, attempt: r.attempt, dealId: r.dealId, placement: r.placement as AdPlacement, mode: r.mode as EarnedReceipt['mode'] };
 }
 export function parseFullscreenShown(value: unknown): FullscreenShown {
   const { kind, shownAt } = (value ?? {}) as Partial<FullscreenShown>;
   const receipt = parseAdIdentity(value, kind === 'interstitial');
   if (typeof shownAt !== 'number' || !Number.isSafeInteger(shownAt) || shownAt <= 0 ||
-    (kind !== 'rewarded' && (kind !== 'interstitial' || receipt.placement !== 'ads-break' && (receipt.mode !== 'campaign' || receipt.placement !== 'continue')))) {
+    (kind !== 'rewarded' && (kind !== 'interstitial' || receipt.placement !== 'ads-break' && (receipt.mode !== 'campaign' || receipt.placement !== 'continue' && !isCampaignInterstitial(receipt.placement))))) {
     throw Error('Invalid fullscreen display');
   }
   return { ...receipt, kind, shownAt };

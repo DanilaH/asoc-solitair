@@ -27,7 +27,10 @@ export function renderMeta(save: Save, busy: boolean) {
   $('#milestone-fill').style.width = `${n >= CAMPAIGN_LENGTH ? 100 : n % 10 * 10}%`; $('#milestone-progress').textContent = n >= CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : target > CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : `${n % 10} / 10`;
   $('#daily-date').textContent = new Date(`${today}T12:00:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
   $('#daily-status').textContent = done ? `Готово · серия ${currentDailyStreak(save, today)} дн.` : daily?.daily?.dayId === today && daily.board.phase === 'playing' ? 'Продолжить' : '';
-  $('#daily-play').setAttribute('aria-label', done ? 'Повторить ежедневный уровень без награды' : 'Играть в ежедневный уровень');
+  const dailyStarted = daily?.daily?.dayId === today && daily.board.phase === 'playing';
+  $('#daily-play').dataset.dailyState = done ? 'complete' : dailyStarted ? 'started' : 'ready';
+  $('#daily-play').setAttribute('aria-label', done ? 'Повторить ежедневный уровень без награды' :
+    dailyStarted ? 'Продолжить ежедневный уровень' : 'Играть в ежедневный уровень');
   $<HTMLButtonElement>('#daily-play').disabled = busy;
   $('#daily-resume-old').hidden = !daily || daily.daily?.dayId === today || daily.board.phase === 'won';
   $('#daily-resume-old').textContent = daily?.daily ? `Доиграть ${new Date(daily.daily.dayId + 'T12:00:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })} · тренировка` : '';
@@ -42,7 +45,11 @@ export function renderMeta(save: Save, busy: boolean) {
     cell.textContent = String(day); cell.className = `calendar-day${complete ? ' complete' : ''}${id === today ? ' today' : ''}${dayNumber(id) > dayNumber(today) ? ' future' : ''}`;
     cell.setAttribute('aria-label', `${id}${complete ? ', выполнено' : id === today ? ', сегодня' : ''}`); grid.append(cell);
   }
-  $('#appearance-preview').dataset.palette = save.settings.palette ?? 'green'; $('#appearance-preview').dataset.back = save.settings.cardBack ?? 'classic';
+  const preview = $('#appearance-preview');
+  preview.dataset.palette = save.settings.palette ?? 'green';
+  preview.dataset.back = save.settings.cardBack ?? 'classic';
+  preview.dataset.deckSide = save.settings.deckSide ?? 'right';
+  preview.dataset.deckPosition = save.settings.deckPosition ?? 'top';
   for (const button of document.querySelectorAll<HTMLButtonElement>('button[data-palette], button[data-card-back]')) {
     const kind = button.dataset.palette ? 'palette' : 'cardBack', value = button.dataset.palette ?? button.dataset.cardBack!;
     const unlocked = value === 'green' || value === 'classic' || cosmeticUnlocked(save, kind);

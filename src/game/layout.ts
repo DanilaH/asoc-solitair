@@ -5,18 +5,40 @@ export const WIDTH = 540;
 export const CARD_W = 138;
 export const CARD_H = 166;
 export const BOTTOM_DECK_MARGIN = 12;
+export const GRID_GAP = 14;
+export const DECK_TOP = 20;
+const MAX_STOCK_THICKNESS = 18;
+const FOUNDATION_TITLE = 26;
+const ROW_GAP = 14;
+export const TAP_SLOP_CSS = 10;
+/** A logical distance is a tap only while it remains below 10 CSS px. */
+export const exceedsTapSlop = (dx: number, dy: number, cssUnit: number) =>
+  Math.hypot(dx, dy) * cssUnit >= TAP_SLOP_CSS;
 export const slotCount = (deal: Deal, kind: BonusKind) =>
   pilesFor(deal.initial, kind).length + Number(Boolean(bonusOffer(deal, kind)));
 const columnCount = (deal: Deal) => Math.max(slotCount(deal, 'tableau'), slotCount(deal, 'foundation'));
-export function cardMetrics(deal: Deal) {
-  const columns = columnCount(deal);
-  const width = columns < 4 ? CARD_W : columns === 4 ? 124 : Math.floor((WIDTH - (columns - 1) * 14) / columns);
-  return { width, height: CARD_H };
-}
-/** Reserve enough logical height even when a real native banner shortens the canvas. */
+/** One logical card material, including all overlays and temporary copies.
+ * Fit the complete reserved grid with a uniform world scale, not a narrower card.
+ */
+export function cardMetrics(_deal: Deal) { return { width: CARD_W, height: CARD_H }; }
+const gridWidth = (deal?: Deal) => {
+  const columns = deal ? columnCount(deal) : 3;
+  return Math.max(WIDTH, columns * CARD_W + Math.max(0, columns - 1) * GRID_GAP);
+};
+const hasStockRow = (deal?: Deal) => !deal || Boolean(deal.initial.stock.length || deal.initial.waste.length);
+const foundationTop = (bottom: boolean, hasDeck: boolean) => bottom ? FOUNDATION_TITLE + 4
+  : hasDeck ? DECK_TOP + CARD_H + FOUNDATION_TITLE + 4 : DECK_TOP + 132 + FOUNDATION_TITLE + 4;
+const bottomReserve = (bottom: boolean) => bottom ? BOTTOM_DECK_MARGIN + CARD_H + MAX_STOCK_THICKNESS + ROW_GAP : 12;
+/** Fit width and structural row height plus a small authored-stack allowance.
+ * Only immutable deal geometry and the usable viewport affect scale. Stock
+ * counts, bonus purchases, packet lengths and Undo never change the axes.
+ */
 export function boardFrame(width: number, height: number, deckPosition: 'top' | 'bottom' = 'top', deal?: Deal) {
-  const hasDeck = !deal || Boolean(deal.initial.stock.length || deal.initial.waste.length);
-  const unit = Math.min(width / WIDTH, height / (deckPosition === 'bottom' && hasDeck ? 680 : 650));
+  const hasDeck = hasStockRow(deal), bottom = deckPosition === 'bottom' && hasDeck;
+  const initialDepth = deal ? Math.max(1, ...deal.initial.tableau.map(pile => pile.length)) : 6;
+  const strips = Math.max(30, Math.min(80, (initialDepth - 1) * 8));
+  const neededHeight = foundationTop(bottom, hasDeck) + CARD_H * 2 + ROW_GAP + strips + bottomReserve(bottom);
+  const unit = Math.min(width / gridWidth(deal), height / neededHeight);
   return { unit, offsetX: 0, width: width / unit, height: height / unit };
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
@@ -54,17 +76,15 @@ export function layout(board: Board, deal: Deal, frame: Pick<ReturnType<typeof b
   const poses: Pose[] = [], targets: Target[] = [], offers: BonusTarget[] = [];
   let joker: { x: number; y: number; depth: number } | undefined;
   const { width: cardW, height: cardH } = cardMetrics(deal);
-  const { width, height } = typeof frame === 'number' ? { width: WIDTH, height: frame } : frame;
-  const columns = columnCount(deal);
-  const deckGap = columns >= 4 ? (WIDTH - cardW * columns) / (columns - 1) : 14;
-  const center = (kind: BonusKind, index: number) => {
-    const last = slotCount(deal, kind) - 1;
-    return last > 0 ? cardW / 2 + index * (width - cardW) / last : width / 2;
-  };
+  const { width, height } = typeof frame === 'number' ? { width: gridWidth(deal), height: frame } : frame;
+  const deckGap = GRID_GAP;
+  // Both rows share a left origin and pitch, irrespective of their own length.
+  // The immutable grid width includes the unpurchased bonus slots.
+  const center = (index: number) => cardW / 2 + index * (cardW + GRID_GAP);
   const hasDeck = Boolean(deal.initial.stock.length || deal.initial.waste.length);
   const bottom = deckPosition === 'bottom' && hasDeck;
   const left = deckSide === 'left' && hasDeck;
-  const deckY = bottom ? height - cardH / 2 - BOTTOM_DECK_MARGIN : cardH / 2 + 20;
+  const deckY = bottom ? height - cardH / 2 - BOTTOM_DECK_MARGIN : cardH / 2 + DECK_TOP;
   const originalStock = deal.initial.stock.length + deal.initial.waste.length;
   const thickness = board.stock.length > 1 ? 3 + 15 * Math.min(1, (board.stock.length - 1) / Math.max(1, originalStock - 1)) : 0;
   const stock = { x: left ? cardW / 2 : width - cardW / 2, y: deckY - thickness, thickness };
@@ -73,16 +93,16 @@ export function layout(board: Board, deal: Deal, frame: Pick<ReturnType<typeof b
   // Preserve earlier positions while the initial three-card fan is opening.
   const fanWidth = Math.max(0, Math.min(3, board.waste.length) - 1) * fanStep;
   const waste = { x: stock.x + (left ? 1 : -1) * (cardW + deckGap + fanWidth), y: deckY };
-  const top = cardH / 2 + (bottom ? 30 : hasDeck ? cardH + 54 : 185);
+  const top = cardH / 2 + foundationTop(bottom, hasDeck);
   board.foundations.forEach((ids, index) => {
-    const x = center('foundation', index);
+    const x = center(index);
     targets.push({ location: { kind: 'foundation', index }, x, y: top, width: cardW + 8, height: cardH + 8 });
     ids.forEach((id, i) => poses.push({ id, x, y: top, depth: 20 + i, faceUp: true }));
   });
-  const tableauBottom = bottom ? stock.y - cardH / 2 - 28 : height - 12;
-  const tableauY = Math.min(top + cardH + (bottom ? 30 : 44), tableauBottom - cardH / 2);
+  const tableauBottom = height - bottomReserve(bottom);
+  const tableauY = top + cardH + ROW_GAP;
   board.tableau.forEach((_, index) => {
-    const x = center('tableau', index);
+    const x = center(index);
     let y = tableauY;
     const entries: (string | null)[] = [...tableauPresentation(board, deal, index)];
     if (board.joker?.column === index) entries.splice(board.joker.boundary, 0, null);
@@ -105,7 +125,7 @@ export function layout(board: Board, deal: Deal, frame: Pick<ReturnType<typeof b
   for (const kind of bonusKinds) {
     const offer = bonusOffer(deal, kind);
     if (offer && pilesFor(board, kind).length === offer.index) offers.push({
-      kind, x: center(kind, offer.index), y: kind === 'foundation' ? top : tableauY, width: cardW,
+      kind, x: center(offer.index), y: kind === 'foundation' ? top : tableauY, width: cardW,
     });
   }
   return { poses, targets, offers, stock, waste, joker };

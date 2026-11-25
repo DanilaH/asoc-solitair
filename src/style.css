@@ -3,7 +3,7 @@
 :root{font-family:Nunito,Arial,sans-serif;color:#46636d;background:#153d43;font-synthesis:none}
 
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;overscroll-behavior:none}
+html,body{margin:0;min-height:100%;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,input{-webkit-tap-highlight-color:transparent}
 button{font:inherit;font-weight:800;cursor:pointer;color:inherit;touch-action:manipulation;transition:transform .12s ease,filter .12s ease}
 button:active:not(:disabled){transform:translateY(2px) scale(.97);filter:brightness(1.04)}
@@ -629,3 +629,16 @@ html[data-reduced=true] .coin-debit{animation:none}
 #stock-recovery{position:relative;z-index:1;grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 9px;padding:2px 4px 5px;color:#ffdda6;font-size:11px;text-align:center}
 #stock-recovery-button.secondary{margin:0;min-height:28px;width:auto;padding:3px 9px;font-size:11px}
 #app[data-lesson=true] #feedback-row:has(#stock-recovery:not([hidden])){height:auto;min-height:70px}
+
+/* #205: cell-aligned bonus controls; ordinary touch controls are not board-scaled. */
+.board-bonus{height:var(--bonus-height,52px);width:var(--bonus-width,44px);min-width:0;min-height:0;border-radius:8px}
+.board-bonus:active:not(:disabled){transform:translateY(-50%);filter:brightness(1.08)}
+#stock-recovery-button.secondary,#restore-stock{min-height:44px}
+#stock-recovery-button.secondary{font-size:12px}
+@media(max-height:540px){
+  #app:not([data-lesson=true]) #feedback-row:not(:has(#stock-recovery:not([hidden]))){min-height:28px}
+  #dock{height:64px;padding-top:0}
+  #dock button{height:60px;gap:3px;font-size:10px}
+  #dock .helper-icon{height:45px;width:45px}
+  .bottom-note{height:0}
+}

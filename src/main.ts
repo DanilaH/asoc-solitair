@@ -47,7 +47,7 @@ import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-s
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
-import { BOTTOM_DECK_MARGIN, CARD_H, boardFrame, layout } from './game/layout';
+import { BOTTOM_DECK_MARGIN, CARD_H, DECK_TOP, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
 import { cardReader } from './game/card-reader';
@@ -200,9 +200,11 @@ function positionDeckTools(save: Save) {
   const right = app.dataset.deckEdge === 'left' || (!hasDeck && app.dataset.deckRow === 'bottom');
   // The moves counter shares the deck row, on the side free of stock and the waste fan.
   // A full foundation row needs its entire width when the deck is at the bottom.
-  const top = bottom ? rect.height - (CARD_H + BOTTOM_DECK_MARGIN) * frame.unit : 20 * frame.unit;
-  tools.style.transformOrigin = right ? 'top right' : 'top left';
-  tools.style.transform = `scale(${frame.unit})`;
+  const toolWidth = Math.max(44, 90 * frame.unit), toolHeight = Math.max(44, 132 * frame.unit);
+  const top = bottom ? rect.height - BOTTOM_DECK_MARGIN * frame.unit - Math.max(CARD_H * frame.unit, toolHeight) : DECK_TOP * frame.unit;
+  tools.style.transform = 'none';
+  tools.style.setProperty('--moves-width', `${toolWidth}px`);
+  tools.style.setProperty('--moves-height', `${toolHeight}px`);
   tools.style.top = `${top}px`;
   tools.style.left = right ? 'auto' : '0'; tools.style.right = right ? '0' : 'auto';
   const offers = deal.bonusSlots && ready && screen === 'game' && save.attempt.board.phase === 'playing'
@@ -212,13 +214,12 @@ function positionDeckTools(save: Save) {
     button.hidden = !offer;
     if (offer) {
       const slotWidth = offer.width * frame.unit;
-      // Keep the bonus hit area inside the field; the gap to the preceding
-      // slot leaves room for the minimum touch width on short screens.
-      const touchWidth = Math.max(44, slotWidth);
+      // The reserved cell, visible material and hit area share the same bounds.
       const left = frame.offsetX + (offer.x - offer.width / 2) * frame.unit;
-      button.style.left = `${Math.min(left, rect.width - touchWidth)}px`;
+      button.style.left = `${left}px`;
       button.style.top = `${offer.y * frame.unit}px`;
-      button.style.setProperty('--bonus-width', `${touchWidth}px`);
+      button.style.setProperty('--bonus-width', `${slotWidth}px`);
+      button.style.setProperty('--bonus-height', `${CARD_H * frame.unit}px`);
     }
   }
 }

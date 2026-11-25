@@ -6,7 +6,7 @@ import { frozenLayers } from '../domain/frozen-cards';
 import { isBoundCard } from '../domain/bound-cards';
 import { isPictureJoined, picturePair, puzzleHalf } from '../domain/puzzle-pairs';
 import type { BoardCommand, Command, Deal, GameEvent, Location, Save } from '../domain/types';
-import { boardFrame, cardMetrics, dragTarget, dropTarget, layout, slotCount, tableauPresentation } from './layout';
+import { boardFrame, cardMetrics, dragTarget, dropTarget, exceedsTapSlop, layout, slotCount, tableauPresentation } from './layout';
 import { bonusKinds } from '../domain/bonus-slots';
 import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
@@ -1021,15 +1021,10 @@ export class BoardScene extends Phaser.Scene {
     return hit({ x, y }) || Boolean(!fingerOnly && node && hit(node));
   }
   private move(pointer: BoardPointer) {
-    if (this.enabled && this.press?.inspectOnly && this.press.pointerId===pointer.id && pointer.isDown) {
-      const {x,y}=this.point(pointer);
-      this.press.moved ||= Math.hypot(x-this.press.x,y-this.press.y)>11;
-      return;
-    }
-    if (!this.enabled || !this.press?.poses.length || this.press.pointerId !== pointer.id || this.press.target || !pointer.isDown) return;
+    if (!this.enabled || !this.press || this.press.pointerId !== pointer.id || !pointer.isDown) return;
     const { x, y } = this.point(pointer), press = this.press, firstMove = !press.moved;
-    if (Math.hypot(x - press.x, y - press.y) > 11) press.moved = true;
-    if (!press.moved) return;
+    press.moved ||= exceedsTapSlop(x - press.x, y - press.y, this.cssUnit);
+    if (press.inspectOnly || press.stock || press.target || press.jokerColumn !== undefined || !press.poses.length || !press.moved) return;
     this.dragPointer = pointer;
     if (press.liftedAt === undefined) {
       press.liftedAt = performance.now(); this.showcaseUnderLift(press);
@@ -1070,39 +1065,43 @@ export class BoardScene extends Phaser.Scene {
     if (this.press && this.press.pointerId !== pointer.id) return;
     const press = this.press;
     const point = this.point(pointer);
-    const drop = press?.moved ? this.currentDrop(point.x, point.y) : null;
+    const tap = Boolean(press && !press.moved && !exceedsTapSlop(point.x - press.x, point.y - press.y, this.cssUnit));
+    const dragged = press?.liftedAt !== undefined;
+    const drop = dragged ? this.currentDrop(point.x, point.y) : null;
     const valid = drop && press?.from && this.canDrop(press.from, drop.location);
-    const reader = Boolean(press?.moved && (this.overReader(point.x, point.y, true) || this.overReader(point.x, point.y) && !valid));
+    const reader = Boolean(dragged && (this.overReader(point.x, point.y, true) || this.overReader(point.x, point.y) && !valid));
     this.press = null;
     this.dragPointer = undefined;
     this.dragCount.setVisible(false);
     if (!this.enabled || !press) return;
     if (press.inspectOnly) {
-      if (!press.moved && Math.hypot(point.x-press.x,point.y-press.y)<11 && press.inspectId) this.inspectClick={id:press.inspectId,attempt:this.options.getSave().attempt.id};
+      if (tap && press.inspectId) this.inspectClick={id:press.inspectId,attempt:this.options.getSave().attempt.id};
       return;
     }
-    this.pendingReturn = press.moved ? press : null;
+    this.pendingReturn = dragged ? press : null;
     const { x, y } = this.point(pointer);
     if (reader && press.inspectId) { this.cancel(press); this.options.peek?.(press.inspectId, !press.from); return; }
     if (press.jokerColumn !== undefined) {
       const target = this.hitTarget(x, y);
-      if (Math.hypot(x - press.x, y - press.y) < 11 && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
+      if (tap && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
         this.jokerSelecting = false; this.options.jokerMode?.(false); this.options.command({ type: 'place-joker', column: press.jokerColumn });
       } else this.cancel();
       return;
     }
     if (press.stock) {
-      if (inside(x, y, this.stockTarget) && Math.hypot(x - press.x, y - press.y) < 11) {
+      if (tap && inside(x, y, this.stockTarget)) {
         this.selected = null; this.options.command({ type: this.options.getSave().attempt.board.stock.length ? 'draw' : 'recycle' });
       }
       return;
     }
     if (press.target) {
       const released = this.hitTarget(x, y);
-      if (!released || !same(press.target.location, released.location) || Math.hypot(x - press.x, y - press.y) >= 11) {
+      if (!tap || !released || !same(press.target.location, released.location)) {
         this.cancel(); return;
       }
     }
+    // An up beyond the slop without a delivered move is not a tap or a drag.
+    if (!tap && !dragged) { this.cancel(press); return; }
     const target = press.target ?? drop;
     if (press.from && target && !same(press.from, target.location)) {
       this.selected = null; this.options.command({ type: 'transfer', from: press.from, to: target.location });

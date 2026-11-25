@@ -751,7 +751,12 @@ test('a bonus slot preview tap cannot also confirm a purchase on the wider layou
   await page.setViewportSize({ width: 600, height: 450 });
   await page.locator('#banner-slot').evaluate(slot => { slot.removeAttribute('hidden'); slot.style.height = '60px'; });
   const bonus = page.locator('#bonus-tableau');
-  await expect.poll(() => bonus.evaluate(button => button.getBoundingClientRect().width)).toBe(44);
+  await expect.poll(() => bonus.evaluate(button => button.getBoundingClientRect().width)).toBeGreaterThanOrEqual(44);
+  const compactArea = (await page.locator('#game-root').boundingBox())!;
+  const compactFrame = boardFrame(compactArea.width, compactArea.height, save.settings.deckPosition, deal);
+  const bonusRect = (await bonus.boundingBox())!;
+  expect(Math.abs(bonusRect.width - 138 * compactFrame.unit)).toBeLessThanOrEqual(1);
+  expect(Math.abs(bonusRect.height - 166 * compactFrame.unit)).toBeLessThanOrEqual(1);
   expect(await bonus.evaluate(button => button.scrollWidth <= button.clientWidth + 1)).toBe(true);
   await page.locator('#banner-slot').evaluate(slot => { slot.setAttribute('hidden', ''); slot.style.removeProperty('height'); });
   await page.setViewportSize({ width: 520, height: 700 });
@@ -803,7 +808,7 @@ for (const side of ['left', 'right'] as const) {
 }
 
 for (const [side, row] of [['right', 'top'], ['left', 'bottom']] as const) {
-  test(`wide ${row}-${side} board paints at both edges and draws at the edge after resize`, async ({ page }) => {
+  test(`wide ${row}-${side} board paints a compact shared grid and draws at the chosen stock edge after resize`, async ({ page }) => {
     const deal = content8Wave.find(deal => deal.campaignLevel === 31)!;
     let save = freshSave(deal, 'board-full-width');
     for (const command of deal.winningPath) {
@@ -827,6 +832,9 @@ for (const [side, row] of [['right', 'top'], ['left', 'bottom']] as const) {
       const geometry = layout(save.attempt.board, deal, frame, side, row);
       const foundationY = geometry.targets.find(slot => slot.location.kind === 'foundation')!.y * frame.unit;
       const tableauY = geometry.targets.filter(slot => slot.location.kind === 'tableau').at(-1)!.y * frame.unit;
+      // Independent shared pitch from the owner's fixed card ratio and gap.
+      const lastFoundationLeft = Math.round((save.attempt.board.foundations.length - 1) * 152 * frame.unit);
+      const lastTableauLeft = Math.round((save.attempt.board.tableau.length - 1) * 152 * frame.unit);
       const stockY = (geometry.stock.y + geometry.stock.thickness / 2) * frame.unit;
       const edgePixels = async () => {
         const { data, info } = await sharp(await field.screenshot({ scale: 'css' })).removeAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -840,8 +848,8 @@ for (const [side, row] of [['right', 'top'], ['left', 'bottom']] as const) {
           }
           return pixels;
         };
-        return [count(5, foundationY, cream), count(info.width - 12, foundationY, cream),
-          count(info.width - 12, tableauY, cream), count(side === 'left' ? 5 : info.width - 12, stockY, back)];
+        return [count(5, foundationY, cream), count(lastFoundationLeft + 5, foundationY, cream),
+          count(lastTableauLeft + 5, tableauY, cream), count(side === 'left' ? 5 : info.width - 12, stockY, back)];
       };
       await expect.poll(async () => Math.min(...await edgePixels())).toBeGreaterThan(10);
       const before = await read(page);

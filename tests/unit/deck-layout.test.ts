@@ -53,7 +53,7 @@ it('three-card waste and the full stock stack stay clear of an occupied foundati
   }
 });
 
-it('fits five individually tappable columns and spans the field with either foundation count', () => {
+it('fits five individually tappable columns on a common left-aligned pitch with either foundation count', () => {
   const source = content8Dealer.find(d => d.initial.tableau.length === 4 && d.initial.stock.length >= 28)!;
   const initial = structuredClone(source.initial);
   initial.tableau.push(initial.stock.splice(0, 23));
@@ -73,16 +73,16 @@ it('fits five individually tappable columns and spans the field with either foun
       expect(tableau).toHaveLength(5);
       for (const slots of [tableau, foundations]) {
         expect(slots[0].x).toBeCloseTo(metrics.width / 2);
-        expect(slots.at(-1)!.x).toBeCloseTo(frame.width - metrics.width / 2);
-        const pitch = (frame.width - metrics.width) / (slots.length - 1);
-        slots.forEach((slot, i) => expect(slot.x).toBeCloseTo(slots[0].x + i * pitch));
+        const pitch = 138 + 14;
+        slots.forEach((slot, i) => expect(slot.x).toBeCloseTo(69 + i * pitch));
+        expect(slots.at(-1)!.x + metrics.width / 2).toBeLessThanOrEqual(frame.width + .01);
       }
       for (const t of targets) {
         expect(dropTarget(targets, t.x, t.y, 0)).toEqual(t);
         const hitWidth = Math.min(screen.width, (t.x + t.width / 2) * frame.unit) - Math.max(0, (t.x - t.width / 2) * frame.unit);
         expect(hitWidth).toBeGreaterThanOrEqual(44);
       }
-      const floor = row === 'bottom' ? stock.y - metrics.height / 2 - 28 : frame.height - 12;
+      const floor = row === 'bottom' ? frame.height - 12 - 166 - 18 - 28 : frame.height - 12;
       for (const pose of poses) {
         expect((pose.x - metrics.width / 2) * frame.unit).toBeGreaterThanOrEqual(0);
         expect((pose.x + metrics.width / 2) * frame.unit).toBeLessThanOrEqual(screen.width + .01);

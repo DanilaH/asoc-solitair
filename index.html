@@ -8,17 +8,11 @@
     <div class="brand-scene"><img class="linked-emblem" src="art/ui/linked-cards.webp" alt="Две связанные по смыслу карточки"><h1><small>СОЛИТЁР</small>Ассоциаций</h1></div>
 
     <div class="home-scroll"><div class="home-stage">
-
-    <div class="home-shortcuts">
-    <section class="daily-card" aria-label="Ежедневный уровень"><button id="daily-play"><span class="event-medal" aria-hidden="true">▦</span><strong>Ежедневный уровень</strong><small id="daily-date"></small><small id="daily-status"></small></button><button id="calendar-open" class="calendar-link">Календарь</button></section>
-    <button id="win-cycle-open" class="cycle-card"><span class="event-medal"><img src="art/generated/cycle.webp" alt=""></span><strong>Пять побед</strong><span aria-hidden="true" id="win-cycle-pips" class="cycle-pips"></span><small id="win-cycle-count" class="cycle-status">0 / 5 новых побед</small><small id="cycle-reward" class="sr-only">+20 монет и подсказка</small></button>
-    </div>
-    </div>
-    <button id="daily-resume-old" class="calendar-link" hidden></button>
-    <button id="appearance-open" class="milestone-card"><span class="milestone-gem" aria-hidden="true">✦</span><span class="milestone-details"><strong id="milestone-title">Веха 10</strong><span class="milestone-track"><i id="milestone-fill"></i></span><small id="milestone-copy">Стол «Чернила»</small></span><small id="milestone-progress">0 / 10</small></button>
-    <button id="campaign-lives-open" class="secondary" hidden></button><button id="campaign-liveops-open" class="secondary" hidden>События кампании</button><button id="picture-home" class="secondary" hidden>Альбом</button><button id="daily-bonus-open" class="secondary activity-entry" hidden><span>Бонус дня</span><small id="daily-bonus-home-status"></small></button><button id="daily-tasks-open" class="secondary activity-entry" hidden><span>Задания</span><small id="daily-tasks-home-status"></small></button>
-    </div><div class="home-actions"><p id="campaign-monthly-confirmation" class="small monthly-confirmation" data-monthly-confirmation role="status" hidden></p><p id="campaign-monthly-bonus" class="small monthly-bonus" role="status" hidden></p><div class="campaign-context"><strong>Кампания</strong><span id="home-progress"></span></div><button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
-    <button id="level-picker-open" class="levels-link">Выбрать уровень</button></div>
+      <section class="home-group home-shortcuts" aria-labelledby="home-daily-title"><h2 id="home-daily-title">Каждый день</h2><section class="daily-card" aria-label="Ежедневный уровень"><button id="daily-play"><span class="event-medal" aria-hidden="true">▦</span><strong>Ежедневный уровень</strong><small id="daily-date"></small><small id="daily-status"></small></button><button id="calendar-open" class="calendar-link">Календарь</button></section><button id="daily-resume-old" class="calendar-link" hidden></button><button id="daily-bonus-open" class="secondary activity-entry" hidden><span>Бонус дня</span><small id="daily-bonus-home-status"></small></button><button id="daily-tasks-open" class="secondary activity-entry" hidden><span>Задания</span><small id="daily-tasks-home-status"></small></button></section>
+      <section class="home-group" aria-labelledby="home-progress-title"><h2 id="home-progress-title">Прогресс и оформление</h2><button id="win-cycle-open" class="cycle-card"><span class="event-medal"><img src="art/generated/cycle.webp" alt=""></span><strong>Пять побед</strong><span aria-hidden="true" id="win-cycle-pips" class="cycle-pips"></span><small id="win-cycle-count" class="cycle-status">0 / 5 новых побед</small><small id="cycle-reward" class="sr-only">+20 монет и подсказка</small></button><button id="appearance-open" class="milestone-card"><span class="milestone-gem" aria-hidden="true">✦</span><span class="milestone-details"><strong id="milestone-title">Веха 10</strong><span class="milestone-track"><i id="milestone-fill"></i></span><small id="milestone-copy">Стол «Чернила»</small></span><small id="milestone-progress">0 / 10</small></button></section>
+      <section class="home-group" aria-labelledby="home-events-title"><h2 id="home-events-title">События кампании</h2><button id="campaign-lives-open" class="secondary" hidden></button><button id="campaign-liveops-open" class="secondary" hidden>События кампании</button><button id="picture-home" class="secondary" hidden>Альбом</button></section>
+    </div></div><div class="home-actions"><p id="campaign-monthly-confirmation" class="small monthly-confirmation" data-monthly-confirmation role="status" hidden></p><p id="campaign-monthly-bonus" class="small monthly-bonus" role="status" hidden></p><div class="campaign-context"><strong>Кампания</strong><span id="home-progress"></span></div><button id="home-play" class="home-primary">Играть<small>Уровень 1</small></button>
+    <button id="level-picker-open" class="levels-link">Выбрать уровень</button><div class="home-ready"><button id="home-bonus-ready" class="secondary" hidden>Забрать бонус дня</button><button id="home-tasks-ready" class="secondary" hidden>Забрать награды</button></div></div>
   </section>
   <div id="play-screen" hidden>
   <div class="level"><span id="level-number">УРОВЕНЬ 1</span><span id="unlimited-countdown" role="timer" aria-label="Осталось времени без лимита" hidden>Без лимита <strong></strong></span><h1>Найдите общее</h1></div>
@@ -103,7 +97,7 @@
 </dialog>
 <dialog id="daily-bonus-dialog" class="sheet" aria-labelledby="daily-bonus-title">
   <div class="sheet-heading"><button class="close" data-close aria-label="Закрыть">×</button><h2 id="daily-bonus-title">Бонус дня</h2><p id="daily-bonus-status" role="status"></p></div>
-  <div class="sheet-body"><div id="daily-bonus-cards" class="daily-bonus-cards"></div></div>
+  <div class="sheet-body"><p id="daily-bonus-match" class="bonus-match" role="status" hidden></p><div id="daily-bonus-cards" class="daily-bonus-cards"></div></div>
   <div class="sheet-actions"><button id="daily-bonus-new" class="primary" hidden>Открыть новый бонус</button><button id="daily-bonus-claim" class="primary" hidden>Забрать бонус</button><button class="secondary" data-close>Закрыть</button></div>
 </dialog>
 <dialog id="daily-tasks-dialog" class="sheet" aria-labelledby="daily-tasks-title">

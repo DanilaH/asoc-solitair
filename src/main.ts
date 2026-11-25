@@ -47,7 +47,7 @@ import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-s
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
-import { BOTTOM_DECK_MARGIN, CARD_H, boardFrame, layout } from './game/layout';
+import { BOTTOM_DECK_MARGIN, CARD_H, DECK_TOP, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
 import { cardReader } from './game/card-reader';
@@ -200,9 +200,11 @@ function positionDeckTools(save: Save) {
   const right = app.dataset.deckEdge === 'left' || (!hasDeck && app.dataset.deckRow === 'bottom');
   // The moves counter shares the deck row, on the side free of stock and the waste fan.
   // A full foundation row needs its entire width when the deck is at the bottom.
-  const top = bottom ? rect.height - (CARD_H + BOTTOM_DECK_MARGIN) * frame.unit : 20 * frame.unit;
-  tools.style.transformOrigin = right ? 'top right' : 'top left';
-  tools.style.transform = `scale(${frame.unit})`;
+  const toolWidth = Math.max(44, 90 * frame.unit), toolHeight = Math.max(44, 132 * frame.unit);
+  const top = bottom ? rect.height - BOTTOM_DECK_MARGIN * frame.unit - Math.max(CARD_H * frame.unit, toolHeight) : DECK_TOP * frame.unit;
+  tools.style.transform = 'none';
+  tools.style.setProperty('--moves-width', `${toolWidth}px`);
+  tools.style.setProperty('--moves-height', `${toolHeight}px`);
   tools.style.top = `${top}px`;
   tools.style.left = right ? 'auto' : '0'; tools.style.right = right ? '0' : 'auto';
   const offers = deal.bonusSlots && ready && screen === 'game' && save.attempt.board.phase === 'playing'
@@ -212,13 +214,12 @@ function positionDeckTools(save: Save) {
     button.hidden = !offer;
     if (offer) {
       const slotWidth = offer.width * frame.unit;
-      // Keep the bonus hit area inside the field; the gap to the preceding
-      // slot leaves room for the minimum touch width on short screens.
-      const touchWidth = Math.max(44, slotWidth);
+      // The reserved cell, visible material and hit area share the same bounds.
       const left = frame.offsetX + (offer.x - offer.width / 2) * frame.unit;
-      button.style.left = `${Math.min(left, rect.width - touchWidth)}px`;
+      button.style.left = `${left}px`;
       button.style.top = `${offer.y * frame.unit}px`;
-      button.style.setProperty('--bonus-width', `${touchWidth}px`);
+      button.style.setProperty('--bonus-width', `${slotWidth}px`);
+      button.style.setProperty('--bonus-height', `${CARD_H * frame.unit}px`);
     }
   }
 }
@@ -916,19 +917,30 @@ try {
     const visible = unlockedLevel(save) >= 2;
     $('#helper-inventory').hidden = !visible || Boolean(helperFocus || helperResource);
     if (!visible) return;
-    const rows: Array<[string, number, string]> = [
-      ...(['hint', 'undo', 'joker'] as const).map(helper => [
-        { hint: 'Подсказки', undo: 'Отмены', joker: 'Ручные Джокеры' }[helper],
-        save.profile[{ hint: 'hints', undo: 'undos', joker: 'jokers' }[helper] as 'hints'|'undos'|'jokers'],
-        helperUnlocked(save, helper, deal) ? 'Доступны в партии' : 'Сохранены · откроются на уровне ' + HELPER_UNLOCK[helper],
-      ] as [string, number, string]),
-      ['Объяснения', definitionCount(save), 'Через просмотр слова на доске'],
-      ['Перемешивания', save.dailyTasks?.inventory.shuffles ?? 0, 'Уровни ' + SHUFFLE_LEVELS.join(', ')],
-      ['Случайные Джокеры', randomJokerCount(save), 'Отдельный заряд · применяется на уровне 16'],
+    const active = save.attempt.board.phase === 'playing';
+    const rows: Array<[string, number, string, boolean]> = [
+      ...(['hint', 'undo', 'joker'] as const).map(helper => {
+        const count = save.profile[{ hint: 'hints', undo: 'undos', joker: 'jokers' }[helper] as 'hints'|'undos'|'jokers'];
+        const unlocked = helperUnlocked(save, helper, deal);
+        const applicable = active && unlocked && (helper !== 'undo' || save.attempt.undo.length > 0)
+          && (helper !== 'joker' || !save.attempt.jokerUsed);
+        return [
+          { hint: 'Подсказки', undo: 'Отмены', joker: 'Ручные Джокеры' }[helper], count,
+          !unlocked ? 'Сохранены · откроются на уровне ' + HELPER_UNLOCK[helper]
+            : !count ? 'Нет зарядов · можно пополнить' : applicable ? 'Доступны в партии' : 'Для подходящей партии или хода',
+          applicable && count > 0,
+        ] as [string, number, string, boolean];
+      }),
+      ['Объяснения', definitionCount(save), 'Через просмотр слова на доске', active && definitionCount(save) > 0],
+      ['Перемешивания', save.dailyTasks?.inventory.shuffles ?? 0, 'Уровни ' + SHUFFLE_LEVELS.join(', '), canShuffle(save, deal) && (save.dailyTasks?.inventory.shuffles ?? 0) > 0],
+      ['Случайные Джокеры', randomJokerCount(save), 'Отдельный заряд · применяется на уровне 16', canRequestRandomJoker() && randomJokerCount(save) > 0],
     ];
-    $('#helper-inventory-list').replaceChildren(...rows.map(([name, count, note]) => {
+    $('#helper-inventory-list').replaceChildren(...rows.sort((a, b) => Number(b[3]) - Number(a[3])).map(([name, count, note, available]) => {
       const row = document.createElement('div'), title = document.createElement('dt'), detail = document.createElement('dd');
-      title.textContent = name + ' · ' + count; detail.textContent = note; row.append(title, detail); return row;
+      row.dataset.available = String(available);
+      title.textContent = name + ' · ' + count;
+      detail.textContent = (available ? 'Сейчас · ' : 'Запас · ') + note;
+      row.append(title, detail); return row;
     }));
     const count = save.dailyTasks?.inventory.shuffles ?? 0, shuffleNote = $('#shuffle-stock-note');
     shuffleNote.hidden = !count && unlockedLevel(save) < SHUFFLE_LEVELS[0];
@@ -1265,6 +1277,10 @@ try {
   function renderTasks() {
     const now = Date.now(), state = taskRewardState(save, now), busy = saving || serviceBusy || store.needsRecovery;
     $('#daily-tasks-open').hidden = !TASKS_PREVIEW || (releaseTasks || sourceDailyTasks) && unlockedLevel(save) < 2;
+    const readyTasks = $('#home-tasks-ready');
+    readyTasks.hidden = $('#daily-tasks-open').hidden || state.readyCount === 0;
+    readyTasks.textContent = 'Забрать награды · ' + state.readyCount;
+    $<HTMLButtonElement>('#home-tasks-ready').disabled = busy;
     $('#daily-tasks-home-status').textContent = state.readyCount ? 'Забрать награды · ' + state.readyCount
       : state.clock === 'future' ? 'Доступно ' + resetText(state.availableAt)
         : state.todayTotal ? (state.todayCompleted === state.todayTotal ? 'Сегодня выполнено · новые ' + resetText(state.nextDayAt) : 'Выполнено ' + state.todayCompleted + '/' + state.todayTotal) : 'Новые задания ' + resetText(state.nextDayAt);
@@ -1362,27 +1378,66 @@ try {
     const state = dailyBonusState(save, Date.now());
     $('#daily-bonus-open').hidden = !dailyBonusEnabled || unlockedLevel(save) < 2;
     $('#daily-bonus-home-status').textContent = bonusStatusText();
+    $('#home-bonus-ready').hidden = $('#daily-bonus-open').hidden || !state.canClaim;
+    $<HTMLButtonElement>('#home-bonus-ready').disabled = saving || serviceBusy || store.needsRecovery;
     if (!$<HTMLDialogElement>('#daily-bonus-dialog').open) return;
     const round = save.dailyBonus;
-    $('#daily-bonus-status').textContent = state.phase === 'playing' ? 'Откройте три карты с одинаковым призом'
+    $('#daily-bonus-status').textContent = state.phase === 'playing' ? 'Открывайте карточки, пока не соберёте три одинаковых приза.'
       : state.phase === 'ready' && state.prize ? 'Ваш приз · ' + prizeLabel(state.prize)
         : state.phase === 'expired' ? 'День закончился. Можно открыть новый бонус.'
           : state.canStartRound && round?.claimed ? 'Бонус получен. Доступен новый бонус дня.' : bonusStatusText();
     const claim = $<HTMLButtonElement>('#daily-bonus-claim'), next = $<HTMLButtonElement>('#daily-bonus-new');
     claim.hidden = !state.canClaim; claim.disabled = saving || serviceBusy || store.needsRecovery;
     next.hidden = !state.canStartRound; next.disabled = saving || serviceBusy || store.needsRecovery;
-    $('#daily-bonus-cards').replaceChildren(...(round?.slots ?? []).map((column, index) => {
-      const button = document.createElement('button'); button.type = 'button'; button.className = 'secondary';
+    const grid = $('#daily-bonus-cards');
+    const match = $('#daily-bonus-match');
+    const counts = new Map<number, number>();
+    for (const index of round?.revealed ?? []) {
+      const column = round!.slots[index];
+      counts.set(column, (counts.get(column) ?? 0) + 1);
+    }
+    const best = Math.max(0, ...counts.values());
+    match.hidden = !round;
+    const progressText = 'Совпадения: ' + best + '/3';
+    if (match.textContent !== progressText) match.textContent = progressText;
+    // Reconcile by persisted round identity. Tick and unrelated HUD renders must
+    // not replace focused buttons or replay a reveal animation.
+    const roundId = round?.roundId ?? '';
+    if (grid.dataset.roundId !== roundId) {
+      grid.dataset.roundId = roundId;
+      grid.replaceChildren(...(round?.slots ?? []).map((_, index) => {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'secondary bonus-card';
+        button.addEventListener('click', () => {
+          if (!saving && !serviceBusy) void write(next => revealDailyBonusCard(next, roundId, index, Date.now()))
+            .catch(() => message('Не удалось сохранить открытие карты.', true));
+        });
+        return button;
+      }));
+    }
+    const icons: Record<string, string> = { Coins: '✦', MoveHint: '!', Undo: '↶', Medals: '★',
+      Joker: '♛', Definition: 'Aa', Shuffle: '⇄', CardBack: '▣', RandomBoostersChest: '◆' };
+    (round?.slots ?? []).forEach((column, index) => {
+      const button = grid.children[index] as HTMLButtonElement;
       const revealed = round!.revealed.includes(index);
-      button.textContent = revealed ? prizeLabel(round!.columns[column]) : 'Открыть';
+      const previous = button.dataset.revealed;
+      if (previous !== String(revealed)) {
+        button.dataset.revealed = String(revealed);
+        const icon = document.createElement('span'); icon.className = 'bonus-card-icon'; icon.setAttribute('aria-hidden', 'true');
+        const copy = document.createElement('span'); copy.className = 'bonus-card-copy';
+        if (revealed) {
+          const prize = round!.columns[column];
+          icon.textContent = icons[prize.kind] ?? '✦'; copy.textContent = prizeLabel(prize);
+          if (previous === 'false' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !save.settings.reducedMotion) {
+            button.animate([{ transform: 'scale(.92)', opacity: .65 }, { transform: 'scale(1)', opacity: 1 }], { duration: 180, easing: 'ease-out' });
+          }
+        } else { icon.textContent = '?'; copy.textContent = 'Открыть'; }
+        button.replaceChildren(icon, copy);
+      }
+      const count = revealed ? counts.get(column) ?? 0 : 0;
+      if (revealed) button.dataset.match = String(count); else delete button.dataset.match;
       button.disabled = saving || serviceBusy || store.needsRecovery || revealed || !state.canReveal;
-      button.setAttribute('aria-label', revealed ? prizeLabel(round!.columns[column]) : 'Открыть карту ' + (index + 1));
-      button.addEventListener('click', () => {
-        if (!saving && !serviceBusy) void write(next => revealDailyBonusCard(next, round!.roundId, index, Date.now()))
-          .catch(() => message('Не удалось сохранить открытие карты.', true));
-      });
-      return button;
-    }));
+      button.setAttribute('aria-label', revealed ? prizeLabel(round!.columns[column]) + ', ' + count + ' из 3' : 'Открыть карту ' + (index + 1));
+    });
   }
 
   const showPicture = () => PICTURE_PREVIEW || Boolean(save.picture);
@@ -1948,7 +2003,7 @@ try {
         }
       } catch { message('Не удалось открыть ежедневный бонус.', true); }
     }
-    $('#daily-bonus-open').addEventListener('click', () => { void showDailyBonus(); }, domOptions);
+    for (const selector of ['#daily-bonus-open', '#home-bonus-ready']) $(selector).addEventListener('click', () => { void showDailyBonus(); }, domOptions);
     $('#context-bonus-open').addEventListener('click', () => { void showDailyBonus(true); }, domOptions);
     $('#daily-bonus-new').addEventListener('click', async () => {
       if (saving || serviceBusy || !dailyBonusState(save, Date.now()).canStartRound) return;
@@ -1977,7 +2032,7 @@ try {
     }, domOptions);
   }
   if (TASKS_PREVIEW) {
-    $('#daily-tasks-open').addEventListener('click', async () => {
+    for (const selector of ['#daily-tasks-open', '#home-tasks-ready']) $(selector).addEventListener('click', async () => {
       if (saving || serviceBusy) return;
       try {
         await write(next => {

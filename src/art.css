@@ -113,3 +113,23 @@ dialog .small{color:#6c8180}
 .flying-coin{border:0;border-radius:0;background:url('/art/generated/coin.webp') center/contain no-repeat;box-shadow:none;color:transparent}
 @media(max-height:700px){footer .helper-icon::after{inset:7px}.event-medal{font-size:0}}
 @media(max-height:590px){.event-medal{font-size:0}.helper-offer h3{font-size:16px;padding-left:27px}.helper-offer h3 span{font-size:10px}}
+
+/* Measured CSS hit target, not a scaled-down logical card. */
+#app .deck-tools .moves{width:var(--moves-width,44px);height:var(--moves-height,44px);min-height:var(--moves-height,44px);
+  padding:2px 3px 16px;justify-content:flex-start;border-radius:10px}
+#app .deck-tools .moves>span{font-size:11px;line-height:12px;color:#345863}
+#app .deck-tools .moves strong{font-size:18px;line-height:19px}
+#app .deck-tools .move-track{width:80%;height:3px;margin-top:0}
+#app .deck-tools #inspect:before{display:none}
+#app .deck-tools #inspect .inspect-icon{font-size:14px;line-height:15px;height:15px;bottom:1px;color:#294d5d}
+#app .deck-tools .moves:has(#inspect[aria-pressed=true]){outline:2px solid #ffe8a9}
+
+/* #205: retain the warm materials; raise foreground contrast at both gradient stops. */
+.primary,.home-primary{color:#30160e;text-shadow:none}
+#home .home-primary small{color:inherit}
+.levels-link,.text-button,.daily-card small,.calendar-link,.home-status,dialog .small{color:#3c5e5b}
+#app .deck-tools .moves{padding:1px 3px 12px;--moves-font:clamp(9px,calc(var(--moves-height,44px) * .17),15px)}
+#app .deck-tools .moves>span{font-size:var(--moves-font);line-height:1.05}
+#app .deck-tools .moves strong{font-size:clamp(13px,calc(var(--moves-height,44px) * .29),38px);line-height:1.05}
+#app .deck-tools .move-track{height:2px;margin:1px 0 0}
+#app .deck-tools #inspect .inspect-icon{font-size:clamp(11px,calc(var(--moves-height,44px) * .2),27px);line-height:1;height:auto;bottom:2px}

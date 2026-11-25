@@ -930,6 +930,7 @@ export class BoardScene extends Phaser.Scene {
   private showPraise(text: string) { this.options.praise(text); }
   private point(pointer: BoardPointer) { return { x: (pointer.x - this.world.x) / this.unit, y: (pointer.y - this.world.y) / this.unit }; }
   private get cssUnit() { return this.unit * this.scale.zoom; }
+  private exceedsTapThreshold(dx: number, dy: number) { return Math.hypot(dx, dy) * this.cssUnit > 10; }
   private destroyCue(cue: Phaser.GameObjects.Container) { this.tweens.killTweensOf([cue, ...cue.list]); cue.destroy(true); }
   private cue(x: number, y: number, color: number, shake = false, delay = 0) {
     while (this.cues.length >= 4) this.destroyCue(this.cues.shift()!);
@@ -1023,12 +1024,12 @@ export class BoardScene extends Phaser.Scene {
   private move(pointer: BoardPointer) {
     if (this.enabled && this.press?.inspectOnly && this.press.pointerId===pointer.id && pointer.isDown) {
       const {x,y}=this.point(pointer);
-      this.press.moved ||= Math.hypot(x-this.press.x,y-this.press.y)>11;
+      this.press.moved ||= this.exceedsTapThreshold(x-this.press.x,y-this.press.y);
       return;
     }
     if (!this.enabled || !this.press?.poses.length || this.press.pointerId !== pointer.id || this.press.target || !pointer.isDown) return;
     const { x, y } = this.point(pointer), press = this.press, firstMove = !press.moved;
-    if (Math.hypot(x - press.x, y - press.y) > 11) press.moved = true;
+    if (this.exceedsTapThreshold(x - press.x, y - press.y)) press.moved = true;
     if (!press.moved) return;
     this.dragPointer = pointer;
     if (press.liftedAt === undefined) {
@@ -1070,6 +1071,10 @@ export class BoardScene extends Phaser.Scene {
     if (this.press && this.press.pointerId !== pointer.id) return;
     const press = this.press;
     const point = this.point(pointer);
+    if (press && this.exceedsTapThreshold(point.x - press.x, point.y - press.y) && !press.moved) {
+      this.press = null; this.dragPointer = undefined; this.dragCount.setVisible(false);
+      this.cancel(press); return;
+    }
     const drop = press?.moved ? this.currentDrop(point.x, point.y) : null;
     const valid = drop && press?.from && this.canDrop(press.from, drop.location);
     const reader = Boolean(press?.moved && (this.overReader(point.x, point.y, true) || this.overReader(point.x, point.y) && !valid));
@@ -1078,7 +1083,7 @@ export class BoardScene extends Phaser.Scene {
     this.dragCount.setVisible(false);
     if (!this.enabled || !press) return;
     if (press.inspectOnly) {
-      if (!press.moved && Math.hypot(point.x-press.x,point.y-press.y)<11 && press.inspectId) this.inspectClick={id:press.inspectId,attempt:this.options.getSave().attempt.id};
+      if (!press.moved && !this.exceedsTapThreshold(point.x-press.x,point.y-press.y) && press.inspectId) this.inspectClick={id:press.inspectId,attempt:this.options.getSave().attempt.id};
       return;
     }
     this.pendingReturn = press.moved ? press : null;
@@ -1086,20 +1091,20 @@ export class BoardScene extends Phaser.Scene {
     if (reader && press.inspectId) { this.cancel(press); this.options.peek?.(press.inspectId, !press.from); return; }
     if (press.jokerColumn !== undefined) {
       const target = this.hitTarget(x, y);
-      if (Math.hypot(x - press.x, y - press.y) < 11 && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
+      if (!this.exceedsTapThreshold(x - press.x, y - press.y) && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
         this.jokerSelecting = false; this.options.jokerMode?.(false); this.options.command({ type: 'place-joker', column: press.jokerColumn });
       } else this.cancel();
       return;
     }
     if (press.stock) {
-      if (inside(x, y, this.stockTarget) && Math.hypot(x - press.x, y - press.y) < 11) {
+      if (inside(x, y, this.stockTarget) && !this.exceedsTapThreshold(x - press.x, y - press.y)) {
         this.selected = null; this.options.command({ type: this.options.getSave().attempt.board.stock.length ? 'draw' : 'recycle' });
       }
       return;
     }
     if (press.target) {
       const released = this.hitTarget(x, y);
-      if (!released || !same(press.target.location, released.location) || Math.hypot(x - press.x, y - press.y) >= 11) {
+      if (!released || !same(press.target.location, released.location) || this.exceedsTapThreshold(x - press.x, y - press.y)) {
         this.cancel(); return;
       }
     }

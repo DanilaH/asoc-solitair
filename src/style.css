@@ -527,12 +527,12 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 #home .looks-card{min-height:44px;padding:3px 8px;justify-content:flex-start}
 #home .looks-card .event-medal{width:36px;height:36px}
 #home .home-stage{padding-bottom:3px}
-#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden]){justify-content:center;padding-bottom:12vh}
-#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden]) .home-scroll{display:none}
-#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden])>.brand-scene{flex-direction:column;padding-bottom:25px}
-#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden])>.brand-scene .linked-emblem{width:130px;height:112px}
-#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden])>.brand-scene h1{font-size:34px}
-@media(max-height:540px){#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden])>.brand-scene .linked-emblem{width:90px;height:78px}#home:has(#win-cycle-open[hidden]):has(.daily-card[hidden]){padding-bottom:4vh}}
+#home:not(:has(.home-group > :is(button,section):not([hidden]))){justify-content:center;padding-bottom:12vh}
+#home:not(:has(.home-group > :is(button,section):not([hidden]))) .home-scroll{display:none}
+#home:not(:has(.home-group > :is(button,section):not([hidden])))>.brand-scene{flex-direction:column;padding-bottom:25px}
+#home:not(:has(.home-group > :is(button,section):not([hidden])))>.brand-scene .linked-emblem{width:130px;height:112px}
+#home:not(:has(.home-group > :is(button,section):not([hidden])))>.brand-scene h1{font-size:34px}
+@media(max-height:540px){#home:not(:has(.home-group > :is(button,section):not([hidden])))>.brand-scene .linked-emblem{width:90px;height:78px}#home:not(:has(.home-group > :is(button,section):not([hidden]))){padding-bottom:4vh}}
 .wallet:disabled{opacity:1;filter:none}
 @media(max-height:540px){#home>.brand-scene{padding:1px 0 2px}#home .home-actions{margin-bottom:6px}#home .home-primary{min-height:58px}}
 
@@ -642,3 +642,37 @@ html[data-reduced=true] .coin-debit{animation:none}
   #dock .helper-icon{height:45px;width:45px}
   .bottom-note{height:0}
 }
+
+/* #205: semantic home groups; hiding empty sections never hides owned rights. */
+#home .home-stage{gap:12px}
+#home .home-group{display:flex;flex-direction:column;gap:8px;width:100%}
+#home .home-group:not(:has(> :is(button,section):not([hidden]))){display:none}
+#home .home-group h2{font-size:13px;font-weight:800;color:#3c5e5b;margin:3px 2px 0}
+#home .home-group .milestone-card{margin:0}
+#home .home-ready{display:flex;gap:6px;width:calc(100% - 20px);margin-top:6px}
+#home .home-ready:not(:has(button:not([hidden]))){display:none}
+#home .home-ready button{flex:1;min-width:0;min-height:44px;padding:5px 8px;margin:0;font-size:12px;background:#fce4a8;color:#493b22;border-color:#d7b56e}
+#home .activity-entry small,#campaign-monthly-bonus,.inventory-list dd{color:#405c58;font-size:12px}
+#home .daily-card small,#home #cycle-reward,#home .milestone-details small{font-size:12px}
+#home #cycle-reward{color:#694b29}
+#home .cycle-card .cycle-status,.campaign-context span{color:#405c58}
+#wallet-anchor,#wallet-open{min-height:44px}
+.inventory-list>div[data-available="true"]{border-color:#91b7a6;background:#e8f2e9}
+.inventory-list>div[data-available="false"]{background:#f1ede4;border-color:#d8d1c6}
+.board-bonus span{font-size:clamp(12px,calc(var(--bonus-height,52px) * .4),25px);line-height:1}
+.board-bonus{overflow-wrap:anywhere}
+#daily-bonus-dialog .sheet-body{padding:0 2px 5px}
+#daily-bonus-dialog .sheet-heading h2{margin-bottom:5px}
+#daily-bonus-status{margin:4px 0 6px}
+.bonus-match{margin:0 0 6px;color:#345d5b;font-size:13px;font-weight:850;text-align:center}
+.daily-bonus-cards{gap:6px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.daily-bonus-cards button.bonus-card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;min-height:44px;height:clamp(44px,calc((100dvh - 270px) / 4),84px);margin:0;padding:4px 2px 3px;border-radius:9px;overflow:hidden;box-shadow:none;font-size:11px;line-height:1.1;overflow-wrap:anywhere}
+.daily-bonus-cards button[data-revealed="false"]{background:#235e63 url('art/generated/card-back-classic-012.webp') center/100% 100% no-repeat;border:1px solid #b2c5b3;color:#fff4d8;text-shadow:0 1px 2px #12383d}
+.daily-bonus-cards button[data-revealed="true"]{background:#fff6df;border:1px solid #c9b38b;color:#34545a;text-shadow:none;filter:none;opacity:1}
+.daily-bonus-cards button[data-match="2"],.daily-bonus-cards button[data-match="3"]{border:2px solid #ad7835;background:#ffebae}
+.daily-bonus-cards button[data-match="3"]{border-color:#387b59;background:#e3f0cf}
+.bonus-card-icon{font-size:clamp(14px,3.8vw,24px);font-weight:900;line-height:1}
+.bonus-card-copy{font-weight:800;max-width:100%}
+#daily-bonus-dialog .sheet-actions{grid-template-columns:1fr 1fr;gap:7px;padding-top:8px}
+#daily-bonus-dialog .sheet-actions button{width:auto;min-width:0;padding:6px;font-size:12px}
+@media(max-height:540px){#daily-bonus-dialog.sheet[open]{padding:12px;max-height:calc(100dvh - 16px)}#home .home-group{gap:6px}#home .home-stage{gap:8px}#home .home-actions{margin-bottom:5px}}

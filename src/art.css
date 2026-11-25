@@ -123,3 +123,13 @@ dialog .small{color:#6c8180}
 #app .deck-tools #inspect:before{display:none}
 #app .deck-tools #inspect .inspect-icon{font-size:14px;line-height:15px;height:15px;bottom:1px;color:#294d5d}
 #app .deck-tools .moves:has(#inspect[aria-pressed=true]){outline:2px solid #ffe8a9}
+
+/* #205: retain the warm materials; raise foreground contrast at both gradient stops. */
+.primary,.home-primary{color:#30160e;text-shadow:none}
+#home .home-primary small{color:inherit}
+.levels-link,.text-button,.daily-card small,.calendar-link,.home-status,dialog .small{color:#3c5e5b}
+#app .deck-tools .moves{padding:1px 3px 12px;--moves-font:clamp(9px,calc(var(--moves-height,44px) * .17),15px)}
+#app .deck-tools .moves>span{font-size:var(--moves-font);line-height:1.05}
+#app .deck-tools .moves strong{font-size:clamp(13px,calc(var(--moves-height,44px) * .29),38px);line-height:1.05}
+#app .deck-tools .move-track{height:2px;margin:1px 0 0}
+#app .deck-tools #inspect .inspect-icon{font-size:clamp(11px,calc(var(--moves-height,44px) * .2),27px);line-height:1;height:auto;bottom:2px}

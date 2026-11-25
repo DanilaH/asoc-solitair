@@ -1129,6 +1129,8 @@ export class BoardScene extends Phaser.Scene {
           this.tweens.add({ targets: view.node, scaleX: 1.025, scaleY: 1.025, duration: 95, ease: 'Cubic.easeOut' });
         }
         view.shadow.setPosition(0, 3).setScale(1.035);
+        this.focus.lineStyle(4, 0xffe2a1, 1).strokeRoundedRect(
+          view.node.x - this.cardW / 2 + 2, view.node.y - this.cardH / 2 + 2, this.cardW - 4, this.cardH - 4, 12);
       }
     }
     if (hover && this.selected) {

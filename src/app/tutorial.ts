@@ -71,7 +71,7 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
     ({ copy, attention, accepts: command => command.type === type });
   switch (deal.training) {
     case 'first':
-      if (!seen('learn:category')) return guide('Положите карту темы в верхний слот.', action => skillFor(board, action, deal) === 'category');
+      if (!seen('learn:category')) return guide('Коснитесь темы, затем верхнего слота. Или перетащите.', action => skillFor(board, action, deal) === 'category');
       if (!seen('learn:match')) return guide('Соедините показанные карты одной темы.', action => skillFor(board, action, deal) === 'match');
       if (!seen('learn:stock')) {
         const next = step();
@@ -170,5 +170,5 @@ export function lesson(save: Save, deal: Deal): Guidance | undefined {
   if (!deal.campaignLevel || deal.campaignLevel > 2 || completedLevels(save) >= deal.campaignLevel) return;
   if ((['category', 'match', 'stock'] as const).every(skill => seenTutorial(save, marker(skill)))) return;
   const action = knownContinuation(save.attempt.board, deal)?.[0] ?? legalCommands(save.attempt.board, deal)[0];
-  return action ? { action, delay: seenTutorial(save, marker(skillFor(save.attempt.board, action, deal))) ? 6000 : 650 } : undefined;
+  return action ? { action, copy: action.type === 'transfer' ? 'Коснитесь карты, затем места назначения. Или перетащите.' : undefined, delay: seenTutorial(save, marker(skillFor(save.attempt.board, action, deal))) ? 6000 : 650 } : undefined;
 }

@@ -781,8 +781,8 @@ for (const side of ['left', 'right'] as const) {
 
     const field = page.locator('#game-root');
     const area = (await field.boundingBox())!;
-    const badge = (await page.locator('#inspect').boundingBox())!;
-    const overlay = await page.addStyleTag({ content: '.deck-tools { visibility: hidden !important; }' });
+    const badge = (await page.locator('.moves').boundingBox())!;
+    const overlay = await page.addStyleTag({ content: '.moves { visibility: hidden !important; }' });
     const screenshot = await field.screenshot({ scale: 'css' });
     await overlay.evaluate(style => style.parentNode?.removeChild(style));
     const { data, info } = await sharp(screenshot).removeAlpha().raw().toBuffer({ resolveWithObject: true });

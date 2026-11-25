@@ -227,7 +227,7 @@ export class BoardScene extends Phaser.Scene {
     const image = cardArtwork(card, this.options.deal);
     const half = puzzleHalf(this.options.deal, id);
     if (card.leader) {
-      if (card.ordered) content.add(this.label(0, -this.cardH / 2 + 11, 'ПО ПОРЯДКУ', 14, '#6f4a31'));
+      if (card.ordered) content.add(this.label(0, -this.cardH / 2 + 11, 'ПО ПОРЯДКУ', 14, '#294d5d'));
       else {
         const x = -this.cardW / 2 + 12, y = -this.cardH / 2 + 12;
         const crown = this.add.graphics(); content.add(crown);

@@ -523,11 +523,12 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 .level-button:is([data-tier=hard],[data-tier=superhard]){border-color:var(--tier-edge)}
 .tier-dot{position:absolute;left:3px;top:3px;font-size:9px;line-height:14px;min-width:14px;border-radius:7px;background:var(--tier-bg);color:var(--tier-fg);font-weight:900}
 
-.board-bonus{position:absolute;z-index:1;display:grid;place-content:center;place-items:center;
-  width:var(--bonus-width,44px);padding:0 1px;gap:2px;border:1px dashed #e4ce91;border-radius:12px;background:#195b5c;color:#fff3d6;
-  font-size:clamp(10px,calc(var(--bonus-width,44px) / 4.4),13px);font-weight:850;line-height:1;touch-action:manipulation}
-.board-bonus span{font-size:25px;line-height:20px;pointer-events:none}
-.board-bonus:active{background:#2b7372}
+.board-bonus{position:absolute;z-index:1;border:0;border-radius:12px;padding:0;background:none;color:#fff3d6;touch-action:manipulation}
+.board-bonus-face{position:absolute;inset:0 auto 0 var(--bonus-face-left,0px);display:grid;place-content:center;place-items:center;
+  width:var(--bonus-width,44px);padding:0 1px;gap:2px;border:1px dashed #e4ce91;border-radius:12px;background:#195b5c;
+  font-size:clamp(9px,calc(var(--bonus-width,44px) / 4.4),13px);font-weight:850;line-height:1;pointer-events:none}
+.board-bonus-face span{font-size:25px;line-height:20px}
+.board-bonus:active .board-bonus-face{background:#2b7372}
 .board-bonus:focus-visible{outline:2px solid #fff0af;outline-offset:2px}
 #bonus-title{font-size:clamp(21px,6.8vw,28px)}
 #bonus-error{color:#8c2924}
@@ -615,7 +616,15 @@ html[data-reduced=true] .coin-debit{animation:none}
 .campaign-context span,#home .cycle-card .cycle-status,#home .activity-entry small,#home .milestone-card{color:#4b6863}
 #home .daily-card .calendar-link{top:50%;translate:0 -50%;width:77px;min-height:48px;font-size:12px}
 #home .levels-link,.close{min-height:44px}
-@media(max-height:540px){.home-group{gap:6px;padding-block:5px 9px}#home .home-actions .levels-link{margin:0}}
+@media(max-height:540px){
+  #home>.brand-scene{margin:0;padding:0}
+  #home>.brand-scene .linked-emblem{width:29px;height:29px}
+  #home .home-actions{margin:2px 0 4px;padding-top:2px}
+  #home .home-actions .levels-link{margin:0}
+  #home .home-group{gap:5px;padding-block:4px 7px}
+  #home .home-group :is(.cycle-card,.milestone-card){min-height:48px}
+  #home .home-group .daily-card{min-height:54px;padding-block:4px}
+}
 
 .inventory-list{grid-template-columns:1fr;gap:5px;margin:4px 0 10px}
 .inventory-list dt{display:flex;justify-content:space-between;gap:8px;color:#294d5d}

@@ -5,6 +5,8 @@ import { chromium, type Page } from '@playwright/test';
 import { preview } from 'vite';
 import { campaignDeals } from '../src/content/campaign';
 import { dailyForDay } from '../src/content/daily';
+import { releaseProfile } from '../src/config/profile';
+import { ruleIntroduction } from '../src/app/tutorial';
 import { dispatch, freshSave } from '../src/domain/engine';
 import type { Save } from '../src/domain/types';
 // This audit reads rendered DOM and screenshots. It deliberately does not use
@@ -109,7 +111,17 @@ try {
    await load(page,seed(25));await page.locator('#home-play').tap();
    for(const id of ['settings','settings-expanded','appearance','helpers','level-picker','calendar','cycle-info','restart-confirm','replace-daily','switch-level','inspect-dialog','result','result-exhausted','learn-joker','learn-ordered','learn-keys']){
     const dialogId=id.startsWith('result')?'result':id.startsWith('learn-')?'learn-rule':id.startsWith('settings')?'settings':id;
-    if (id.startsWith('learn-')) { const index = ({'learn-joker':7,'learn-ordered':29,'learn-keys':48} as Record<string,number>)[id]; await load(page,seed(index)); await page.locator('#home-play').tap();if(id==='learn-joker')await page.locator('#joker').tap();await page.locator('#learn-rule[open]').waitFor(); }
+    if (id.startsWith('learn-')) {
+      let index = ({ 'learn-joker': 7, 'learn-ordered': 29, 'learn-keys': 48 } as Record<string, number>)[id];
+      if (releaseProfile && id !== 'learn-joker') {
+        index = campaignDeals.findIndex((deal, i) => ruleIntroduction(seed(i), deal) === id.slice(6));
+        if (index < 0) throw Error('Missing C8 tutorial fixture: ' + id);
+      }
+      await load(page, seed(index));
+      await page.locator('#home-play').tap();
+      if (id === 'learn-joker' && !await page.locator('#learn-rule').isVisible()) await page.locator('#joker').tap();
+      await page.locator('#learn-rule[open]').waitFor();
+    }
     if(dialogId==='result'){
      const index=id==='result-exhausted'?16:19;let state=seed(index);state.meta!.winCycle=4;
      if(id!=='result-exhausted')for(const cmd of campaignDeals[index].winningPath)state=dispatch(state,cmd,campaignDeals[index]).next;

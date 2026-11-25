@@ -137,12 +137,16 @@ test('C8 viewport matrix and exact L16 and L30 comparisons', async ({ browser, r
         expect(await page.locator('html').evaluate(node => getComputedStyle(node).getPropertyValue('text-size-adjust'))).toBe('100%');
         const offers = [];
         for (const offer of model.offers) {
-          const box = (await page.locator('#bonus-' + offer.kind).boundingBox())!;
+          const button = page.locator('#bonus-' + offer.kind);
+          const box = (await button.locator('.board-bonus-face').boundingBox())!;
+          const hit = (await button.boundingBox())!;
           expect(Math.abs(box.height - 166 / 138 * box.width)).toBeLessThan(1);
           const center = point(offer);
           expect(Math.abs(box.x + box.width / 2 - center.x)).toBeLessThan(1);
           expect(Math.abs(box.y + box.height / 2 - center.y)).toBeLessThan(1);
-          offers.push({ kind: offer.kind, box });
+          expect(hit.width).toBeGreaterThanOrEqual(box.width - .1);
+          expect(hit.width - box.width).toBeLessThanOrEqual(14 * frame.unit + .1);
+          offers.push({ kind: offer.kind, box, hit });
         }
         const upper = model.targets.filter(target => target.location.kind === 'foundation').map(point);
         const lower = model.targets.filter(target => target.location.kind === 'tableau').map(point);

@@ -47,7 +47,7 @@ import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-s
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
-import { CARD_H, boardFrame, layout } from './game/layout';
+import { CARD_H, GRID_GAP, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
 import { categoryCaption } from './game/captions';
 import { cardReader } from './game/card-reader';
@@ -200,9 +200,15 @@ function positionBonusSlots(save: Save) {
     const button = $(`#bonus-${kind}`), offer = offers.find(target => target.kind === kind);
     button.hidden = !offer;
     if (offer) {
-      button.style.left = `${frame.offsetX + (offer.x - offer.width / 2) * frame.unit}px`;
+      const width = offer.width * frame.unit;
+      const touchWidth = Math.min(Math.max(44, width), width + GRID_GAP * frame.unit);
+      const faceLeft = frame.offsetX + (offer.x - offer.width / 2) * frame.unit;
+      const left = Math.max(0, Math.min(faceLeft, rect.width - touchWidth));
+      button.style.left = `${left}px`;
       button.style.top = `${(offer.y - CARD_H / 2) * frame.unit}px`;
-      button.style.setProperty('--bonus-width', `${offer.width * frame.unit}px`);
+      button.style.width = `${touchWidth}px`;
+      button.style.setProperty('--bonus-width', `${width}px`);
+      button.style.setProperty('--bonus-face-left', `${faceLeft - left}px`);
       button.style.height = `${CARD_H * frame.unit}px`;
     }
   }

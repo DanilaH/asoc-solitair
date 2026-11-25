@@ -4,7 +4,7 @@ import { bonusKinds, bonusOffer, pilesFor } from '../domain/bonus-slots';
 export const WIDTH = 540;
 export const CARD_W = 138;
 export const CARD_H = 166;
-const GAP = 14;
+export const GRID_GAP = 14;
 const FAN_STEP = 32;
 const TOP_MARGIN = 5;
 const BOTTOM_MARGIN = 12;
@@ -29,8 +29,8 @@ function minimumHeight(deck: boolean, bottom: boolean) {
 export function boardFrame(width: number, height: number, deckPosition: 'top' | 'bottom' = 'top', deal: Deal) {
   const deck = hasDeck(deal);
   const columns = columnCount(deal);
-  const gridWidth = columns * CARD_W + Math.max(0, columns - 1) * GAP;
-  const fanWidth = deck ? 2 * CARD_W + GAP + 2 * FAN_STEP : 0;
+  const gridWidth = columns * CARD_W + Math.max(0, columns - 1) * GRID_GAP;
+  const fanWidth = deck ? 2 * CARD_W + GRID_GAP + 2 * FAN_STEP : 0;
   const unit = Math.min(width / Math.max(gridWidth, fanWidth), height / (minimumHeight(deck, deckPosition === 'bottom') + pileRoom(deal)));
   return { unit, offsetX: 0, width: width / unit, height: height / unit };
 }
@@ -70,7 +70,7 @@ export function layout(board: Board, deal: Deal, frame: Pick<ReturnType<typeof b
   let joker: { x: number; y: number; depth: number } | undefined;
   const cardW = CARD_W, cardH = CARD_H;
   const { width, height } = typeof frame === 'number' ? { width: WIDTH, height: frame } : frame;
-  const center = (index: number) => cardW / 2 + index * (cardW + GAP);
+  const center = (index: number) => cardW / 2 + index * (cardW + GRID_GAP);
   const deck = hasDeck(deal), bottom = deckPosition === 'bottom' && deck;
   const left = deckSide === 'left' && deck;
   const spacing = Math.min(14, Math.max(0, (height - minimumHeight(deck, bottom) - pileRoom(deal)) / 4));
@@ -81,7 +81,7 @@ export function layout(board: Board, deal: Deal, frame: Pick<ReturnType<typeof b
   // The first card lands beside the stock; further draws open away from it.
   // Preserve earlier positions while the initial three-card fan is opening.
   const fanWidth = Math.max(0, Math.min(3, board.waste.length) - 1) * FAN_STEP;
-  const waste = { x: stock.x + (left ? 1 : -1) * (cardW + GAP + fanWidth), y: deckY };
+  const waste = { x: stock.x + (left ? 1 : -1) * (cardW + GRID_GAP + fanWidth), y: deckY };
   const top = cardH / 2 + TOP_MARGIN + FOUNDATION_TAB + spacing + (deck && !bottom ? STOCK_DEPTH + cardH + DECK_GAP : 0);
   board.foundations.forEach((ids, index) => {
     const x = center(index);

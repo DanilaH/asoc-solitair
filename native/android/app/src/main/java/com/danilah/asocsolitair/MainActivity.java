@@ -2,6 +2,7 @@ package com.danilah.asocsolitair;
 
 import com.getcapacitor.BridgeActivity;
 import android.os.Bundle;
+import android.content.res.Configuration;
 import android.view.View;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -16,6 +17,7 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(SolitaireStoragePlugin.class);
         registerPlugin(SolitaireAudioPlugin.class);
         super.onCreate(savedInstanceState);
+        enforceGameTextZoom();
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView()).setAppearanceLightStatusBars(false);
         WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView()).setAppearanceLightNavigationBars(false);
@@ -27,5 +29,20 @@ public class MainActivity extends BridgeActivity {
             return WindowInsetsCompat.CONSUMED;
         });
         ViewCompat.requestApplyInsets(content);
+    }
+    private void enforceGameTextZoom() {
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            getBridge().getWebView().getSettings().setTextZoom(100);
+        }
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        enforceGameTextZoom();
+    }
+
+    @Override public void onConfigurationChanged(Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        enforceGameTextZoom();
     }
 }

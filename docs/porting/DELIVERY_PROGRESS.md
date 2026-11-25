@@ -1,5 +1,9 @@
 # Content8+ · фактический журнал автономной разработки
 
+## 25.11 · Консолидация исследований (docs only)
+
+[Kit PR151](https://github.com/DanilaH/mini-games-kit/blob/af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a/research/games/association-solitaire/CURRENT.md) — source pin `af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a`, blob `29ddea6086c46c5581702cb0001536e6666b7626`. [Сверка PR208](RESEARCH_CONSOLIDATION_2026-11-25.md) на `b3180bbe2f2f39b5428e664c19a6c56cde63aed2`: Bonus, Combo, компонентный x3/x5 уже подключены. Остатки source lifecycle сохранены, 115 IDs / 38 пакетов. Исходный CI кита 45594363530 остановился до runner, не принят; runtime и UI не изменены. Состояния пакетов ниже сохранены.
+
 ## 25.11 · Текущий кандидат PR204
 
 Ветка `feat/c8-audit-203-recovery`, профиль `c8-release-v1`, версия **0.20.4/code45**. Таймер Unlimited вынесен из масштабируемого поля. Смешанная неделя помечена как сохранённая от прежней версии, с датой старта обычного бонуса и пояснением к назначенным first-clear заданиям. Точный HEAD, CI и APK фиксируются в [PR204](https://github.com/DanilaH/asoc-solitair/pull/204). [Регрессии](../qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md) · [Физическая и live-приёмка](../qa/mvp-20261124/ANDROID_ACCEPTANCE_PR204.md). PR остаётся draft, `main` содержит 0.17.1/code26.

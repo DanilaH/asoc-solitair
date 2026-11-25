@@ -19,8 +19,8 @@ interface Options {
   inputRoot?(): HTMLElement; boardBounds?(): { x: number; y: number; width: number; height: number };
   readerZone?(): DOMRect; peek?(id: string | null, previewOnly?: boolean): void;
 }
-interface BoardPointer { id: number; x: number; y: number; primaryDown: boolean; isDown: boolean }
-interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; inspectOnly?: boolean; liftedAt?: number; motion?: { x: number; at: number; tilt: number }; jokerColumn?: number }
+interface BoardPointer { id: number; x: number; y: number; clientX: number; clientY: number; primaryDown: boolean; isDown: boolean }
+interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; clientX: number; clientY: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; inspectOnly?: boolean; liftedAt?: number; motion?: { x: number; at: number; tilt: number }; jokerColumn?: number }
 interface FoundationSurface { view: CardView; frontId: string }
 interface CoveredFace { frontId: string; strip: boolean }
 interface CollectionView { node: Phaser.GameObjects.Container; targets: Phaser.GameObjects.GameObject[]; timers: Phaser.Time.TimerEvent[]; sparks: Phaser.GameObjects.Image[]; readableUntil?: number }
@@ -30,6 +30,9 @@ type RevealSource = (cards: readonly Phaser.GameObjects.Container[], offsetX?: n
 const inside = (x: number, y: number, target: { x: number; y: number; width: number; height: number }) =>
   Math.abs(x - target.x) <= target.width / 2 && Math.abs(y - target.y) <= target.height / 2;
 const same = (a: Location, b: Location) => a.kind === b.kind && a.index === b.index;
+const TAP_SLOP_CSS_PX = 10;
+const exceededTapSlop = (press: CardPress, pointer: BoardPointer) =>
+  Math.hypot(pointer.clientX - press.clientX, pointer.clientY - press.clientY) > TAP_SLOP_CSS_PX;
 
 /** The model is already committed before any visual transition begins. */
 export class BoardScene extends Phaser.Scene {
@@ -157,7 +160,7 @@ export class BoardScene extends Phaser.Scene {
     }
     this.foundationArt = this.add.graphics().setDepth(200);
     this.foundationTitles = Array.from({ length: slotCount(this.options.deal, 'foundation') }, () =>
-      this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold', color: '#886347' }).setOrigin(.5).setDepth(201));
+      this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '19px', fontStyle: 'bold', color: '#62402b' }).setOrigin(.5).setDepth(201));
     this.world.add([this.foundationArt, ...this.foundationTitles]);
     const gold = this.add.image(0, 0, 'art-card-category').setDisplaySize(this.cardW, this.cardH);
     this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.add.image(0, 5, 'art-joker').setDisplaySize(78, 78)]).setVisible(false);
@@ -173,10 +176,10 @@ export class BoardScene extends Phaser.Scene {
     // Capture one native pointer from the board. Movement and release belong to
     // the viewport, including header/dock and the old canvas edges.
     const input = this.options.inputRoot?.() ?? this.game.canvas, controller = new AbortController();
-    const pointer = (event: PointerEvent): BoardPointer => ({ id: event.pointerId, x: event.clientX / this.scale.zoom, y: event.clientY / this.scale.zoom, primaryDown: event.isPrimary && event.button === 0, isDown: event.buttons !== 0 });
     const localPointer = (event: PointerEvent) => {
-      const p = pointer(event), rect = this.game.canvas.getBoundingClientRect();
-      p.x -= rect.left / this.scale.zoom; p.y -= rect.top / this.scale.zoom; return p;
+      const { clientX, clientY } = event, rect = this.game.canvas.getBoundingClientRect();
+      return { id: event.pointerId, x: (clientX - rect.left) / this.scale.zoom, y: (clientY - rect.top) / this.scale.zoom,
+        clientX, clientY, primaryDown: event.isPrimary && event.button === 0, isDown: event.buttons !== 0 };
     };
     input.addEventListener('pointerdown', event => {
       if (!event.isPrimary || event.button !== 0 || !this.enabled) return;
@@ -194,7 +197,7 @@ export class BoardScene extends Phaser.Scene {
     const cancel = (event: PointerEvent) => { if (this.press?.pointerId === event.pointerId) this.cancel(); };
     window.addEventListener('pointercancel', cancel, { signal: controller.signal });
     input.addEventListener('lostpointercapture', cancel, { signal: controller.signal });
-    const resize = () => { if (this.frameKey === this.frameIdentity()) return; this.clearHint(); this.clearFeedback(); this.cancel(); this.sync([], false); };
+    const resize = () => { if (this.frameKey !== this.frameIdentity()) this.settleMotion(); };
     this.scale.on('resize', resize);
     this.events.once('shutdown', () => { controller.abort(); this.options.peek?.(null); this.presentedDealId = undefined; this.scale.off('resize', resize); this.clearHint(); this.clearFeedback(); this.foundationFaces.clear(); this.views.clear(); this.input.removeAllListeners(); });
     this.presentedDealId = this.options.deal.id;
@@ -202,7 +205,7 @@ export class BoardScene extends Phaser.Scene {
     this.options.ready(this, newDeal, this.options.deal.id);
   }
   private label(x: number, y: number, text: string, size: number, color: string, maxHeight = Infinity) {
-    const label = this.add.text(x, y, cardCaption(text, this.cardW < 125 && text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size * Math.min(1, this.cardW / 125)}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: this.cardW - 18 } }).setOrigin(.5, 0);
+    const label = this.add.text(x, y, cardCaption(text, text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: this.cardW - 18 } }).setOrigin(.5, 0);
     label.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, label.width), maxHeight / Math.max(1, label.height)));
     return label;
   }
@@ -224,18 +227,14 @@ export class BoardScene extends Phaser.Scene {
     const image = cardArtwork(card, this.options.deal);
     const half = puzzleHalf(this.options.deal, id);
     if (card.leader) {
-      if (card.ordered) content.add(this.label(0, -this.cardH / 2 + 11, 'ПО ПОРЯДКУ', 11, '#b2916e'));
+      if (card.ordered) content.add(this.label(0, -this.cardH / 2 + 11, 'ПО ПОРЯДКУ', 14, '#6f4a31'));
       else {
         const x = -this.cardW / 2 + 12, y = -this.cardH / 2 + 12;
         const crown = this.add.graphics(); content.add(crown);
         crown.fillStyle(0xd0a16b).beginPath().moveTo(x, y).lineTo(x + 5, y + 7).lineTo(x + 9, y - 2).lineTo(x + 13, y + 7).lineTo(x + 18, y).lineTo(x + 16, y + 15).lineTo(x + 2, y + 15).closePath().fillPath();
       }
       const title = categoryCaption(card.text);
-      if (this.cardW < 124) caption = this.label(0, 0, title, 24, '#294d5d', this.cardH - 72).setOrigin(.5);
-      else {
-        caption = this.add.text(0, 0, title, { fontFamily: 'Nunito, Arial', fontSize: '24px', fontStyle: 'bold', color: '#294d5d', align: 'center' }).setOrigin(.5);
-        caption.setScale(Math.max(.74, Math.min(1, (this.cardW - 18) / caption.width)));
-      }
+      caption = this.label(0, 0, title, 28, '#294d5d', this.cardH - 72).setOrigin(.5);
       content.add(caption);
       strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
@@ -256,7 +255,7 @@ export class BoardScene extends Phaser.Scene {
       content.add(illustration);
       strip = this.add.image(0, -this.cardH / 2 + 11, image).setDisplaySize(18, 18); face.add(strip); strip.setVisible(false);
     } else {
-      caption = this.label(0, 0, card.text, card.text.length > 11 ? 23 : 26, '#294d5d', this.cardH - 72); caption.setOrigin(.5); content.add(caption);
+      caption = this.label(0, 0, card.text, 29, '#294d5d', this.cardH - 72); caption.setOrigin(.5); content.add(caption);
       strip = this.add.text(0, 0, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: '#79909c' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 14) / strip.width)); face.add(strip); strip.setVisible(false);
     }
@@ -373,7 +372,7 @@ export class BoardScene extends Phaser.Scene {
       const x = target.x, y = lifted ? this.metrics.poses.find(p => p.id === ids[0])!.y : returning ? returning.y : target.y;
       const ink = this.options.getSave().settings.palette === 'ink';
       this.slotViews.get(`${target.location.kind}:${index}`)!.setVisible(true).setPosition(x, y)
-        .setDisplaySize(this.cardW - 4, this.cardH - 4).setTint(ink ? 0xd8ceff : 0xffffff)
+        .setDisplaySize(this.cardW, this.cardH).setTint(ink ? 0xd8ceff : 0xffffff)
         .setAlpha(ink ? upper ? .8 : .62 : upper ? 1 : .85);
     }
     if (!board.stock.length && board.waste.length) this.slots.fillStyle(0xd2e8db, .08).fillCircle(this.metrics.stock.x, this.metrics.stock.y, 35);
@@ -982,17 +981,18 @@ export class BoardScene extends Phaser.Scene {
     // Settle the cosmetic lock before deciding which visible card was touched.
     this.clearKeys();
     const { x, y } = this.point(pointer), board = this.options.getSave().attempt.board;
+    const origin = { pointerId: pointer.id, x, y, clientX: pointer.clientX, clientY: pointer.clientY, moved: false };
     this.options.peek?.(null);
     const source = this.hitSource(x, y);
     if (this.jokerSelecting) {
       const target = this.hitTarget(x, y);
-      this.press = { pointerId: pointer.id, toggle: false, from: null, x, y, moved: false, stock: false, target: null, poses: [], jokerColumn: target?.location.kind === 'tableau' ? target.location.index : -1 }; return;
+      this.press = { ...origin, toggle: false, from: null, stock: false, target: null, poses: [], jokerColumn: target?.location.kind === 'tableau' ? target.location.index : -1 }; return;
     }
     if (this.inspectMode) {
       const pose = this.hitCard(x, y);
       // Capture this gesture and open on release. Opening a modal under a held
       // finger can send its release/click straight into the new close button.
-      if (pose) this.press = {pointerId:pointer.id,toggle:false,from:null,x,y,moved:false,stock:false,target:null,poses:[],inspectId:pose.id,inspectOnly:true};
+      if (pose) this.press = { ...origin, toggle: false, from: null, stock: false, target: null, poses: [], inspectId: pose.id, inspectOnly: true };
       return;
     }
     if (board.phase !== 'playing') return;
@@ -1004,7 +1004,7 @@ export class BoardScene extends Phaser.Scene {
     const stock = Boolean(board.stock.length || board.waste.length) && !chosenTarget && inside(x, y, this.stockTarget);
     if (stock && performance.now() < this.stockBusyUntil) return;
     const ids = from ? sourceCards(board, from, this.options.deal) : card ? [card.id] : [];
-    this.press = { pointerId: pointer.id, toggle: Boolean(source && this.selected && same(source, this.selected)), from, x, y, moved: false, stock, inspectId: card?.id,
+    this.press = { ...origin, toggle: Boolean(source && this.selected && same(source, this.selected)), from, stock, inspectId: card?.id,
       target: chosenTarget, poses: this.metrics.poses.filter(p => ids.includes(p.id)).map(p => ({ ...p, x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y })) };
     if (source && !chosenTarget) { this.selected = source; this.options.sound('lift'); this.drawFocus(); }
   }
@@ -1021,15 +1021,11 @@ export class BoardScene extends Phaser.Scene {
     return hit({ x, y }) || Boolean(!fingerOnly && node && hit(node));
   }
   private move(pointer: BoardPointer) {
-    if (this.enabled && this.press?.inspectOnly && this.press.pointerId===pointer.id && pointer.isDown) {
-      const {x,y}=this.point(pointer);
-      this.press.moved ||= Math.hypot(x-this.press.x,y-this.press.y)>11;
-      return;
-    }
-    if (!this.enabled || !this.press?.poses.length || this.press.pointerId !== pointer.id || this.press.target || !pointer.isDown) return;
-    const { x, y } = this.point(pointer), press = this.press, firstMove = !press.moved;
-    if (Math.hypot(x - press.x, y - press.y) > 11) press.moved = true;
-    if (!press.moved) return;
+    const press = this.press;
+    if (!this.enabled || !press || press.pointerId !== pointer.id || !pointer.isDown) return;
+    press.moved ||= exceededTapSlop(press, pointer);
+    if (!press.moved || !press.poses.length || press.target) return;
+    const { x, y } = this.point(pointer), firstMove = press.liftedAt === undefined;
     this.dragPointer = pointer;
     if (press.liftedAt === undefined) {
       press.liftedAt = performance.now(); this.showcaseUnderLift(press);
@@ -1070,43 +1066,46 @@ export class BoardScene extends Phaser.Scene {
     if (this.press && this.press.pointerId !== pointer.id) return;
     const press = this.press;
     const point = this.point(pointer);
-    const drop = press?.moved ? this.currentDrop(point.x, point.y) : null;
+    const tap = press && !press.moved && !exceededTapSlop(press, pointer);
+    const dragged = press?.liftedAt !== undefined;
+    if (dragged) this.move({ ...pointer, isDown: true });
+    const drop = dragged ? this.currentDrop(point.x, point.y) : null;
     const valid = drop && press?.from && this.canDrop(press.from, drop.location);
-    const reader = Boolean(press?.moved && (this.overReader(point.x, point.y, true) || this.overReader(point.x, point.y) && !valid));
+    const reader = dragged && (this.overReader(point.x, point.y, true) || this.overReader(point.x, point.y) && !valid);
     this.press = null;
     this.dragPointer = undefined;
     this.dragCount.setVisible(false);
     if (!this.enabled || !press) return;
     if (press.inspectOnly) {
-      if (!press.moved && Math.hypot(point.x-press.x,point.y-press.y)<11 && press.inspectId) this.inspectClick={id:press.inspectId,attempt:this.options.getSave().attempt.id};
+      if (tap && press.inspectId) this.inspectClick = { id: press.inspectId, attempt: this.options.getSave().attempt.id };
       return;
     }
-    this.pendingReturn = press.moved ? press : null;
+    this.pendingReturn = dragged ? press : null;
     const { x, y } = this.point(pointer);
     if (reader && press.inspectId) { this.cancel(press); this.options.peek?.(press.inspectId, !press.from); return; }
     if (press.jokerColumn !== undefined) {
       const target = this.hitTarget(x, y);
-      if (Math.hypot(x - press.x, y - press.y) < 11 && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
+      if (tap && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
         this.jokerSelecting = false; this.options.jokerMode?.(false); this.options.command({ type: 'place-joker', column: press.jokerColumn });
       } else this.cancel();
       return;
     }
     if (press.stock) {
-      if (inside(x, y, this.stockTarget) && Math.hypot(x - press.x, y - press.y) < 11) {
+      if (tap && inside(x, y, this.stockTarget)) {
         this.selected = null; this.options.command({ type: this.options.getSave().attempt.board.stock.length ? 'draw' : 'recycle' });
       }
       return;
     }
     if (press.target) {
       const released = this.hitTarget(x, y);
-      if (!released || !same(press.target.location, released.location) || Math.hypot(x - press.x, y - press.y) >= 11) {
+      if (!tap || !released || !same(press.target.location, released.location)) {
         this.cancel(); return;
       }
     }
     const target = press.target ?? drop;
     if (press.from && target && !same(press.from, target.location)) {
       this.selected = null; this.options.command({ type: 'transfer', from: press.from, to: target.location });
-    } else if (press.moved || !press.from || press.toggle) this.cancel(press);
+    } else if (!tap || !press.from || press.toggle) this.cancel(press);
     else this.drawFocus();
   }
   private targetLight(target: Target, valid = true, progress = 1) {
@@ -1121,6 +1120,11 @@ export class BoardScene extends Phaser.Scene {
       this.targetLight(t);
     }
     if (this.selected && !this.press?.moved) {
+      const source = this.selected;
+      const frontId = sourceCards(this.options.getSave().attempt.board, source, this.options.deal).at(-1);
+      const front = frontId && this.views.get(frontId)?.node;
+      if (front) this.focus.lineStyle(2 / this.cssUnit, 0xffe5a7).strokeRoundedRect(
+        front.x - this.cardW / 2 + 3, front.y - this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
       for (const id of sourceCards(this.options.getSave().attempt.board, this.selected, this.options.deal)) {
         const view = this.views.get(id)!;
         this.tweens.killTweensOf([view.face, view.back]);

@@ -53,8 +53,8 @@ async function audit(page: Page, state: string, home = false) {
  found.forEach(reason=>issues.push({state,reason}));
  await page.screenshot({path:`${output}/${state}.png`,scale:'css'});
  if(!home){
-  const raster = await page.evaluate(()=>{const canvas=document.querySelector('#game-root')!.getBoundingClientRect();return {width:canvas.width,height:canvas.height,controls:[...document.querySelectorAll('.deck-tools .moves,#inspect')].map(e=>{const r=e.getBoundingClientRect();return {name:e.id||e.className,x:r.x-canvas.x,y:r.y-canvas.y,width:r.width,height:r.height}})};});
-  await page.locator('.deck-tools, #inspect').evaluateAll(es=>es.forEach(e=>(e as HTMLElement).style.visibility='hidden'));
+  const raster = await page.evaluate(()=>{const canvas=document.querySelector('#game-root')!.getBoundingClientRect();return {width:canvas.width,height:canvas.height,controls:[...document.querySelectorAll('.moves,#inspect')].map(e=>{const r=e.getBoundingClientRect();return {name:e.id||e.className,x:r.x-canvas.x,y:r.y-canvas.y,width:r.width,height:r.height}})};});
+  await page.locator('.moves, #inspect').evaluateAll(es=>es.forEach(e=>(e as HTMLElement).style.visibility='hidden'));
   const pixels = await page.locator('#game-root').screenshot({path:`${output}/${state}-raster.png`,scale:'css'});
   // Transfer the PNG as ordinary local HTTP bytes; decode pixels with the browser.
   await page.route('http://127.0.0.1:4195/qa-raster.png', route=>route.fulfill({body:pixels,contentType:'image/png',headers:{'Cache-Control':'no-store'}}), {times:1});
@@ -78,7 +78,7 @@ async function audit(page: Page, state: string, home = false) {
     return found;
   },raster.controls);
   rasterIssues.push(...collisions.map(c=>({state,...c})));
-  await page.locator('.deck-tools, #inspect').evaluateAll(es=>es.forEach(e=>(e as HTMLElement).style.removeProperty('visibility')));
+  await page.locator('.moves, #inspect').evaluateAll(es=>es.forEach(e=>(e as HTMLElement).style.removeProperty('visibility')));
   captures.push({state,...raster});
  }
 }

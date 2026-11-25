@@ -15,7 +15,7 @@ async function paint(page: Page) {
 async function handPixels(page: Page, reference: Awaited<ReturnType<typeof paint>>) {
   const { data, info } = await paint(page), rect = (await page.locator('#game-root').boundingBox())!;
   expect([info.width, info.height]).toEqual([reference.info.width, reference.info.height]);
-  const controls = await page.locator('.deck-tools, #inspect').evaluateAll(es => es.map(e => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; }));
+  const controls = await page.locator('.moves, #inspect').evaluateAll(es => es.map(e => { const r = e.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; }));
   let count = 0;
   for (let i = 0; i < data.length; i += info.channels) {
     const x = i / info.channels % info.width + rect.x, y = Math.floor(i / info.channels / info.width) + rect.y;

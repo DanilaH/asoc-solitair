@@ -100,14 +100,13 @@ test('inspection stays separate from foundations for every deck side and row, an
   }
 });
 
-test('reader is part of the moves tile and visible helpers stay centered as they unlock', async ({ page }) => {
+test('reader has an independent touch area and visible helpers stay centered as they unlock', async ({ page }) => {
   for(const level of [2,6,26]) {
     await seed(page,campaignDeals[level],s=>{s.platform!.completedCampaign=campaignDeals.slice(0,level).map(d => campaignId(d.campaignLevel!));});
-    const tile=(await page.locator('.deck-tools .moves').boundingBox())!,reader=(await page.locator('#inspect').boundingBox())!;
-    expect(Math.abs(tile.x+tile.width/2-reader.x-reader.width/2)).toBeLessThan(.75);
-    expect(reader.x).toBeGreaterThanOrEqual(tile.x);expect(reader.y).toBeGreaterThanOrEqual(tile.y);
-    expect(reader.x+reader.width).toBeLessThanOrEqual(tile.x+tile.width+.75);expect(reader.y+reader.height).toBeLessThanOrEqual(tile.y+tile.height+.75);
-    expect(Math.min(reader.width,reader.height)).toBeGreaterThan(44);
+    const field = (await page.locator('#game-root').boundingBox())!;
+    const reader = (await page.locator('#inspect').boundingBox())!;
+    expect(reader.y).toBeGreaterThanOrEqual(field.y + field.height);
+    expect(Math.min(reader.width,reader.height)).toBeGreaterThanOrEqual(48);
     const buttons=await page.locator('#dock button:visible').all(),rects=await Promise.all(buttons.map(b=>b.boundingBox()));
     expect(rects.length).toBeGreaterThan(0);const left=Math.min(...rects.map(r=>r!.x)),right=Math.max(...rects.map(r=>r!.x+r!.width));
     expect(Math.abs((left+right)/2-page.viewportSize()!.width/2)).toBeLessThan(.75);

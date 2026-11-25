@@ -1,6 +1,6 @@
 @font-face{font-family:Nunito;src:url('/fonts/nunito.ttf') format('truetype');font-weight:200 1000;font-style:normal;font-display:swap}
 
-:root{font-family:Nunito,Arial,sans-serif;color:#46636d;background:#153d43;font-synthesis:none}
+:root{font-family:Nunito,Arial,sans-serif;color:#46636d;background:#153d43;font-synthesis:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;overscroll-behavior:none}
@@ -45,7 +45,7 @@ header{height:58px;flex-shrink:0;display:flex;align-items:center;gap:9px;padding
 @media(max-width:360px){header{gap:7px}.streak-row{gap:5px}.streak{gap:2px}.streak i{width:13px}}
 
 #play-screen{display:flex;flex:1;flex-direction:column;min-height:0}
-.level{height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:10px;color:#acd1cf;font-size:9px;letter-spacing:.6px;text-align:center}
+.level{min-height:25px;flex-shrink:0;display:flex;align-items:center;gap:8px;color:#acd1cf;font-size:12px;letter-spacing:.6px;text-align:center}
 .level h1{display:none}
 #level-number{font-weight:800}
 #unlimited-countdown{display:inline-flex;align-items:baseline;gap:4px;color:#ffebc8;font-size:12px;line-height:15px;letter-spacing:normal;white-space:nowrap}
@@ -60,17 +60,13 @@ main{position:relative;flex:1;min-height:0;touch-action:none}
 :root[data-reduced=true] #game[data-exhausted=true] #game-root{transition:none}
 canvas{display:block!important;width:100%!important;height:100%!important;touch-action:none}
 #loading{position:absolute;inset:0;display:grid;place-items:center;color:#d6e8df;font-size:18px;pointer-events:none}
-.deck-tools{position:absolute;top:12px;left:0;display:flex;gap:13px;align-items:flex-start;z-index:1;pointer-events:none}
-.deck-tools button{pointer-events:auto}
-.moves{width:60px;min-height:80px;display:flex;flex-direction:column;align-items:center;padding:7px 8px 9px;border:2px solid #e4f0e1;border-radius:13px;background:linear-gradient(#dfebe0,#bdd4cf);box-shadow:0 3px 0 #8daab3;color:#376c75}
-.moves>span{font-size:10px;font-weight:900;color:#6f9797}
-.moves strong{width:100%;text-align:center;font-variant-numeric:tabular-nums;font-size:29px;line-height:32px;font-weight:900}
-.moves[data-urgency=low] strong{color:#a83c33}
-.moves[data-urgency=critical] strong,.moves[data-urgency=lost] strong{color:#902c28}
-.moves[data-urgency=low] .move-track i,.moves[data-urgency=critical] .move-track i{background:#ba4841}
-.move-track{width:36px;height:4px;border-radius:4px;background:#89b9b64d;margin-top:8px;overflow:hidden}
-.move-track i{display:block;height:100%;background:#e5b884;transition:width .2s}
-#app[data-deck-edge=left] .deck-tools{left:auto;right:0;flex-direction:row-reverse}
+.moves{display:flex;align-items:center;gap:5px;margin-left:auto;padding:0 7px;border-radius:7px;color:#294d5d;background:#f2ead6;min-height:23px}
+.moves>span{font-size:12px;font-weight:800;letter-spacing:0}
+.moves strong{min-width:2.5ch;text-align:center;font-variant-numeric:tabular-nums;font-size:16px;line-height:1.2;font-weight:900}
+.moves:is([data-urgency=low],[data-urgency=critical],[data-urgency=lost]) strong{color:#902c28}
+.move-track{width:18px;height:4px;border-radius:4px;overflow:hidden;background:#c4d3cf}
+.move-track i{display:block;height:100%;background:#a06823;transition:width .2s}
+.moves:is([data-urgency=low],[data-urgency=critical]) .move-track i{background:#a83c33}
 
 #message{min-height:26px;flex-shrink:0;margin:0;padding:4px 8px;text-align:center;font-size:10px;line-height:15px;color:#b3d3ce;overflow-wrap:anywhere}
 #message:empty{visibility:hidden}
@@ -232,15 +228,11 @@ to{opacity:1}
 .fatal{position:fixed;inset:20px;max-width:450px;margin:auto;height:fit-content;background:#fff9e9;color:#52717a;padding:25px;border-radius:20px;z-index:200}
 
 @media(max-height:700px){header{height:49px}
-.level{height:15px}
 footer{height:78px}
 footer button{height:68px;font-size:9px;gap:6px}
 footer .helper-icon{width:52px;height:52px;border-radius:17px}
 footer svg{width:33px;height:33px}
-.moves{width:54px;min-height:73px;padding:5px 7px 7px}
-.moves strong{font-size:26px;line-height:29px}
-.deck-tools{gap:10px;top:9px}
-#message{min-height:23px;font-size:9px;line-height:14px}
+#message{min-height:23px;font-size:12px;line-height:15px}
 .bottom-note{height:4px}
 }
 
@@ -255,24 +247,6 @@ footer svg{width:33px;height:33px}
 }
 html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=true] *:after,html[data-reduced=true] dialog::backdrop{animation:none!important;transition:none!important}
 
-
-/* DOM controls use the same logical-to-CSS scale as the rendered board. */
-#app .deck-tools{gap:20px;transform-origin:top left;width:max-content;flex-direction:row}
-
-#app[data-deck-edge=left] .deck-tools,#app[data-deck-row=bottom] .deck-tools{transform-origin:top right;flex-direction:row-reverse}
-
-#app .deck-tools .moves{width:90px;min-height:120px;padding:10px 12px 13px;border-width:3px;border-radius:20px}
-
-#app .deck-tools .moves>span{font-size:15px}
-
-#app .deck-tools .moves strong{font-size:44px;line-height:47px}
-
-#app .deck-tools .move-track{width:54px;height:6px;margin-top:10px}
-
-#dock #inspect{width:52px;flex-shrink:0}
-.inspect-icon{display:grid;place-items:center;width:44px;height:59px;border:1px solid #8eb8b366;border-radius:15px;background:#1c626c55;color:#cce1dc;font-size:22px}
-#inspect[aria-pressed=true] .inspect-icon{background:#f5e6bd;color:#386772;border-color:#fff2cf}
-@media(max-height:700px){.inspect-icon{height:52px}}
 
 #feedback-row{position:relative;flex-shrink:0;min-height:42px;display:grid;align-items:center}
 
@@ -306,7 +280,7 @@ html[data-reduced=true] *,html[data-reduced=true] *:before,html[data-reduced=tru
 .home-primary{min-height:59px;font-size:22px}
 .levels-link{min-height:44px;padding:5px}
 .linked-emblem{width:120px;height:104px}
-#feedback-row{min-height:39px}
+#feedback-row{height:48px;min-height:48px}
 #praise{font-size:18px}
 }
 
@@ -371,17 +345,13 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 /* One viewport surface: board geometry stays compact, a held card can cross it. */
 #game-surface{position:fixed;inset:0;z-index:5;pointer-events:none;overflow:visible}
 #game-root{touch-action:none}
-.deck-tools .moves{position:relative}
-#app .deck-tools .moves{height:132px;min-height:132px;padding:8px 10px 41px}
-#app .deck-tools .moves>span{font-size:14px;line-height:16px}
-#app .deck-tools .moves strong{font-size:38px;line-height:40px}
-#app .deck-tools .move-track{height:4px;margin-top:5px}
-.deck-tools #inspect{position:absolute;inset:0;z-index:2;width:100%;height:100%;padding:0;border:0;border-radius:17px;background:transparent;color:#466e77}
-.deck-tools #inspect:before{content:'';position:absolute;left:10px;right:10px;bottom:48px;height:1px;background:#b69b6c55}
-#inspect .inspect-icon{position:absolute;left:0;right:0;bottom:10px;display:grid;place-items:center;background:none;border:0;width:auto;height:32px;font-size:28px;line-height:1;font-weight:800;color:inherit}
-.deck-tools .moves:has(#inspect[aria-pressed=true],#inspect[data-peeking=true]){outline:3px solid #ffe8a9;outline-offset:1px}
-#dock{justify-content:center}
-#dock:has(#proof-shuffle:not([hidden])) button{width:min(21vw,72px)}
+#dock{justify-content:center;gap:6px}
+#dock button{width:min(15vw,72px);min-width:48px}
+#dock #inspect{width:48px;height:48px;display:grid;place-items:center;align-self:center}
+.inspect-icon{display:grid;place-items:center;width:100%;height:100%;border-radius:14px;border:1px solid #94b8b4;background:#195966;color:#fff7e1;font-size:24px}
+#inspect:is([aria-pressed=true],[data-peeking=true]) .inspect-icon{background:#f5e6bd;color:#284b56;border-color:#fff2cf}
+@media(max-width:360px){.level{gap:5px;letter-spacing:0}.move-track{display:none}#dock{gap:5px}#dock button{width:54px}}
+@media(max-height:700px){#dock{height:63px}#dock button:not(#inspect){height:59px;gap:4px;font-size:11px}#dock .helper-icon{width:45px;height:45px;border-radius:14px}}
 #inspect-peek{position:fixed;z-index:10;width:min(280px,calc(100vw - 20px));padding:16px 18px;border:2px solid #fffaee;border-radius:17px;background:#fff9ed;color:#345d6b;box-shadow:0 5px 0 #a3adb9,0 10px 30px #062d4366;pointer-events:none}
 #peek-title{display:block;font-size:20px;line-height:1.15;overflow-wrap:anywhere}
 #peek-description{font-size:13px;line-height:1.4;margin:9px 0 0}
@@ -553,8 +523,8 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 .level-button:is([data-tier=hard],[data-tier=superhard]){border-color:var(--tier-edge)}
 .tier-dot{position:absolute;left:3px;top:3px;font-size:9px;line-height:14px;min-width:14px;border-radius:7px;background:var(--tier-bg);color:var(--tier-fg);font-weight:900}
 
-.board-bonus{position:absolute;z-index:1;transform:translateY(-50%);display:grid;place-content:center;place-items:center;
-  height:52px;width:var(--bonus-width,44px);min-width:44px;padding:0 1px;gap:2px;border:1px dashed #e4ce91;border-radius:12px;background:#195b5c;color:#fff3d6;
+.board-bonus{position:absolute;z-index:1;display:grid;place-content:center;place-items:center;
+  width:var(--bonus-width,44px);padding:0 1px;gap:2px;border:1px dashed #e4ce91;border-radius:12px;background:#195b5c;color:#fff3d6;
   font-size:clamp(10px,calc(var(--bonus-width,44px) / 4.4),13px);font-weight:850;line-height:1;touch-action:manipulation}
 .board-bonus span{font-size:25px;line-height:20px;pointer-events:none}
 .board-bonus:active{background:#2b7372}
@@ -626,6 +596,44 @@ html[data-reduced=true] .coin-debit{animation:none}
 #recovery-clock-status{position:absolute;inset:0;margin:0;padding:6px 12px;display:flex;align-items:center;border-radius:11px;background:#154e52;color:#fff3d6;font-size:13px;line-height:1.35;z-index:3}
 #app[data-recovery-clock=true] #lesson-note,#app[data-recovery-clock=true] #no-transfer,#app[data-recovery-clock=true] #praise,#app[data-recovery-clock=true] #message{visibility:hidden}
 
-#stock-recovery{position:relative;z-index:1;grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 9px;padding:2px 4px 5px;color:#ffdda6;font-size:11px;text-align:center}
-#stock-recovery-button.secondary{margin:0;min-height:28px;width:auto;padding:3px 9px;font-size:11px}
-#app[data-lesson=true] #feedback-row:has(#stock-recovery:not([hidden])){height:auto;min-height:70px}
+#stock-recovery{grid-area:1/1;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;color:#ffdda6;font-size:12px;line-height:1.15;text-align:center}
+#stock-recovery-button.secondary{margin:0;min-height:44px;width:auto;padding:3px 9px;font-size:12px}
+#feedback-row:has(#stock-recovery:not([hidden])) :is(#lesson-note,#message,#no-transfer,#praise){visibility:hidden}
+#feedback-row:has(#stock-recovery:not([hidden])):has(#message.error:not(:empty)) #stock-recovery span{visibility:hidden}
+#feedback-row:has(#stock-recovery:not([hidden])) #message.error:not(:empty){visibility:visible;width:42%;padding:0;z-index:2;font-size:12px;line-height:1.1}
+
+/* Home keeps the campaign action above the scrollable activities. */
+.home-group{display:grid;gap:8px;padding:8px 0 12px}
+.home-group:not(:has(button:not([hidden]))),.home-daily-rewards:not(:has(button:not([hidden]))){display:none}
+.home-group h2{margin:0 3px;font-size:15px;line-height:1.3}
+.home-daily-rewards{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:8px}
+#home .home-group .activity-entry{margin:0;min-height:50px;justify-content:center}
+#home .activity-entry[data-reward-ready=true]{border-color:#b57523;background:#ffedba;color:#513513}
+#home .activity-entry[data-reward-ready=true] small{color:#694312;font-weight:850}
+#home .home-group :is(.cycle-card,.milestone-card){min-height:52px;margin:0}
+#home .cycle-card{grid-template-columns:36px minmax(0,1fr)}
+.campaign-context span,#home .cycle-card .cycle-status,#home .activity-entry small,#home .milestone-card{color:#4b6863}
+#home .daily-card .calendar-link{top:50%;translate:0 -50%;width:77px;min-height:48px;font-size:12px}
+#home .levels-link,.close{min-height:44px}
+@media(max-height:540px){.home-group{gap:6px;padding-block:5px 9px}#home .home-actions .levels-link{margin:0}}
+
+.inventory-list{grid-template-columns:1fr;gap:5px;margin:4px 0 10px}
+.inventory-list dt{display:flex;justify-content:space-between;gap:8px;color:#294d5d}
+.inventory-list dt span{font-variant-numeric:tabular-nums}
+.inventory-list dd{margin:2px 0 0;font-size:12px;color:#48635e}
+#helper-inventory h4{font-size:13px;margin:8px 0 0}
+#helpers .helper-offer button:not([hidden]){min-height:44px}
+
+#daily-bonus-dialog .sheet-heading{padding-right:0}
+#daily-bonus-dialog h2{padding-inline-end:44px;margin-bottom:5px}
+#daily-bonus-status{min-height:3em;margin:0 0 8px}
+.daily-bonus-cards{gap:6px}
+.daily-bonus-card{display:grid;place-content:center;justify-items:center;height:clamp(48px,12dvh,68px);padding:4px;border:1px solid #845287;border-radius:9px;background:#60416f url('/art/generated/card-back-classic.webp') center/100% 100% no-repeat;color:#294d5d;font-size:12px;line-height:1.12;text-align:center}
+.daily-bonus-card[data-revealed=true]{background:#fff1d4;border-color:#c4ab85}
+.daily-bonus-card[data-revealed=true]:disabled{opacity:1}
+.daily-bonus-card small{margin-top:3px;font-size:12px;font-weight:850;font-variant-numeric:tabular-nums}
+.daily-bonus-card[data-matched=true]{border-color:#976625;background:#ffebbc}
+.daily-bonus-card[data-won=true]{box-shadow:inset 0 0 0 2px #a76516;color:#563513}
+#daily-bonus-error{color:#8c2924;margin:5px 0}
+#daily-bonus-dialog .sheet-actions{grid-template-columns:minmax(0,1fr) auto;gap:7px;padding-top:9px}
+#daily-bonus-dialog .sheet-actions [data-close]:only-child{grid-column:1/-1}

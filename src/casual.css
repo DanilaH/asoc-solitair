@@ -1,13 +1,14 @@
 /* C8 Card Table. Gameplay measurements remain owned by the board stylesheet. */
 [data-casual] .casual-icon{width:28px;height:28px;object-fit:contain;flex:none;vertical-align:middle}
-[data-casual][data-screen=home]{background:radial-gradient(ellipse at 50% 22%,#267f80 0,#155861 62%,#144753);color:#fff4d7;padding-inline:0}
-[data-casual][data-screen=home] header{height:52px;flex-direction:row;justify-content:flex-start;gap:8px;padding:4px 10px}
-[data-casual][data-screen=home] #menu{order:3;margin-left:auto;border-radius:14px;background:#fff7e5}
-[data-casual][data-screen=home] .hamburger,[data-casual][data-screen=home] .hamburger::before,[data-casual][data-screen=home] .hamburger::after{background:#2d6268}
-[data-casual][data-screen=home] .wallet{height:42px;background:#104a56;font-size:16px;color:#fff7e5;border:1px solid #4a8289}
-[data-casual][data-screen=home] #home{display:flex;overflow:hidden;padding:0;gap:0}
+#app[data-casual][data-screen=home]{background:radial-gradient(ellipse at 50% 22%,#267f80 0,#155861 62%,#144753);color:#fff4d7;padding-inline:0}
+#app[data-casual][data-screen=home] header{height:52px;flex-direction:row;justify-content:flex-start;gap:8px;padding:4px 10px}
+#app[data-casual][data-screen=home] #menu{border-radius:14px;background:#fff7e5;margin-right:auto}
+#app[data-casual][data-screen=home] #wallet-anchor{order:1}
+#app[data-casual][data-screen=home] .hamburger,#app[data-casual][data-screen=home] .hamburger::before,#app[data-casual][data-screen=home] .hamburger::after{background:#2d6268}
+#app[data-casual][data-screen=home] .wallet{height:42px;background:#104a56;font-size:16px;color:#fff7e5;border:1px solid #4a8289}
+#app[data-casual][data-screen=home] #home{display:flex;overflow:hidden;padding:0;gap:0}
 [data-casual] #home .home-actions,[data-casual] #home .home-scroll{display:none}
-[data-casual] #home .brand-scene{position:relative;isolation:isolate;min-height:94px;flex:1;display:grid;align-content:start;justify-items:center;gap:0;padding:0;order:0}
+[data-casual] #home .brand-scene{position:relative;isolation:isolate;min-height:94px;flex:1;display:grid;align-content:start;justify-content:stretch;justify-items:center;gap:0;padding:0;order:0}
 [data-casual] .brand-scene::before{content:'';position:absolute;inset:34% 6% -18%;background:radial-gradient(ellipse at center top,#5fb5a543,transparent 67%);border-radius:60% 60% 0 0;border-top:1px solid #8bc2bc55;z-index:-1}
 [data-casual] #home .brand-scene h1{position:relative;grid-row:1;text-align:center;font-size:clamp(21px,6vw,33px);color:#fff2d6;margin:0;line-height:1.05}
 [data-casual] #home .brand-scene h1 small{display:block;margin:0 0 3px;color:#f4eacf;font-size:11px;letter-spacing:.18em}
@@ -18,7 +19,7 @@
 #app[data-casual]:not([data-screen=home]) #campaign-lives-open{display:none}
 .casual-tray{order:1;position:relative;color:#254d58;background:linear-gradient(#fffaf0,#f1e4cc);border-radius:22px 22px 0 0;padding:6px 10px 9px;box-shadow:0 -2px 8px #072b3880;display:grid;gap:7px}
 .casual-tray[data-campaign-finished]:not(:has(#home-play:not([hidden])))::before{content:'Кампания пройдена';text-align:center;font-size:21px;font-weight:1000}
-[data-casual] .casual-tray #home-play{margin:0;min-height:52px;box-shadow:0 3px #ae5b46;font-size:20px;line-height:1.02;border-color:#ffd8b5;background:linear-gradient(#ffa989,#ef7d5f);color:#41261c;padding:6px 4px;font-weight:1000}
+[data-casual] .casual-tray #home-play{width:100%;margin:0;min-height:52px;box-shadow:0 3px #ae5b46;font-size:20px;line-height:1.02;border-color:#ffd8b5;background:linear-gradient(#ffa989,#ef7d5f);color:#41261c;padding:6px 4px;font-weight:1000}
 [data-casual] .casual-tray #home-play small{display:block;margin-top:3px;color:#61382b;font-size:12px;font-weight:800}
 .casual-shortcuts{display:grid;grid-template-columns:repeat(auto-fit,minmax(54px,1fr));gap:5px;align-items:stretch}
 [data-casual] .casual-shortcuts button{width:auto;min-width:0;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center;padding:3px 2px;position:relative;border:1px solid #e1ccaa;border-radius:11px;background:#fff7e4;box-shadow:0 2px #dbc4a2;color:#244c57}
@@ -28,7 +29,7 @@
 [data-casual] .casual-shortcuts button[data-reward-ready=true]::after{content:'';width:11px;height:11px;border:2px solid #fff6df;background:#ac472d;border-radius:50%;position:absolute;top:2px;right:2px;animation:card-table-ready .32s cubic-bezier(.18,.9,.26,1.4)}
 [data-casual] .casual-shortcuts .casual-legacy{font-size:11px;line-height:1.12}
 [data-casual] .casual-tray #daily-resume-old{min-height:44px;width:100%;text-align:center;margin:0;font-size:12px;line-height:1.1}
-[data-casual] .casual-tray #win-cycle-open{display:flex;justify-content:center;align-items:center;gap:7px;padding:0;min-height:44px;width:100%;border:0;background:none;color:#345760;box-shadow:none;margin:0}
+[data-casual] .casual-tray #win-cycle-open{display:flex;flex-direction:row;justify-content:center;align-items:center;gap:7px;padding:0;min-height:44px;width:100%;border:0;background:none;color:#345760;box-shadow:none;margin:0}
 [data-casual] #win-cycle-open>.event-medal,[data-casual] #win-cycle-open>strong{display:none}
 [data-casual] #win-cycle-open .cycle-pips{margin:0;gap:5px}
 [data-casual] #win-cycle-open .cycle-status{white-space:nowrap;font-size:12px;font-variant-numeric:tabular-nums}

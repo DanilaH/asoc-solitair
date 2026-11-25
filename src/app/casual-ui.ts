@@ -67,6 +67,7 @@ export function configureCasualHome(allowLevelPicker: boolean) {
   ] as const;
   for (const [id, icon, label] of entries) {
     const item = button(id);
+    if (id === 'calendar-open') item.textContent = '';
     item.classList.add('casual-shortcut');
     item.prepend(casualIcon(icon), Object.assign(document.createElement('strong'), { className: 'casual-short-label', textContent: label }));
     shortcuts.append(item);

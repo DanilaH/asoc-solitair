@@ -58,6 +58,9 @@ for (const [width, height, reserve] of [[320, 480, true], [360, 640, false]] as 
     await expect(page.locator('#home')).toBeVisible();
     await expect(page.locator('#level-picker-open')).toBeHidden();
     await expect(page.locator('#campaign-lives-open')).toBeVisible();
+    await expect(page.locator('#calendar-open')).toHaveText('Календарь');
+    const homeColor = await page.locator('#app').evaluate(app => getComputedStyle(app).backgroundImage);
+    expect(homeColor).toContain('rgb(38, 127, 128)');
     await capture(page, info, 'home');
     await rawTap(page, '#daily-tasks-open');
     await expect(page.locator('#daily-tasks-dialog')).toBeVisible();
@@ -90,12 +93,14 @@ for (const [width, height, reserve] of [[320, 480, true], [360, 640, false]] as 
     await expect(page.locator('#next-level')).toHaveText('Забрать');
     await expect(page.locator('#result-meta')).toHaveAttribute('aria-label', 'Пять побед: 5 из 5');
     await expect(page.locator('#replay')).toBeHidden();
+    const won = await read(page);
+    const regular = won.attempt.payout!.filter(item => item.reason !== 'campaign_win_cycle').reduce((total, item) => total + item.coins, 0);
+    await expect(page.locator('#result-total')).toHaveText('+' + regular);
     await capture(page, info, 'victory');
-    const paid = (await read(page)).profile.coins;
     await rawTap(page, '#next-level');
     await expect(page.locator('#next-level')).toHaveText('Дальше');
     await expect(page.locator('#next-level')).toBeEnabled();
-    expect((await read(page)).profile.coins).toBe(paid);
+    expect((await read(page)).profile.coins).toBe(won.profile.coins);
     await capture(page, info, 'claimed');
   });
 }

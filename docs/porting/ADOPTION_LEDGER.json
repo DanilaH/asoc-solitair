@@ -264,7 +264,7 @@
     {
       "id": "hitapps-adbreak",
       "status": "ROADMAPPED",
-      "currentImplementation": "P21 offline disabled placement model binds request/show to the current level and caps real show events by difficulty and attempt. See docs/porting/P21_AD_PLACEMENTS.md. Игровой runtime и native callback подключены под отдельным разрешением. Новый показ и фактический ILRD ещё не приняты на телефоне.",
+      "currentImplementation": "Issue #210 uses one repeatable AdsBreak/Coffee placement in campaign and eligible Daily in the C8 SDK test build. It checks the saved board and shared fullscreen clock at a safe boundary. Remaining move percentage and difficulty caps are optional config; active source values are unknown. See docs/porting/P21_AD_PLACEMENTS.md. Device impression and ILRD are open.",
       "nextAction": "Prototype in-level configurable opportunities/cooldowns with valid SDK impression attribution Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Current source does not prove the in-level live placement; issue #80 prevents treating attempted show as actual display.",
       "stage": "E2"
     },
@@ -793,8 +793,8 @@
     {
       "id": "azur-fullscreen-ads-clock",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P01 persists bound SDK onAdShown through a separate durable journal. Ordinary rewarded identity works; the 24 November code audit reproduced a P20 quote-nonce mismatch in applyFullscreenShown, so P20 shows do not currently advance shared cadence. Existing shown/earned journals are reused, not replaced.",
-      "nextAction": "ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24 section4.1: persist request nonce-to-game-attempt/deal/mode/placement binding through earned settlement; verify both callback orders, duplicates, relaunch and RV-to-interstitial/pause interval. Then real signed Android SDK/cadence QA. Source entry/remote cadence remains separate.",
+      "currentImplementation": "Issue #210 trial reuses the P01 durable shown journal and the P20 quote binding. The C8 transition to L3+ uses 120-second startup and last-shown guards. Coffee and rewarded share the persisted fullscreen clock. The test candidate has no wins prerequisite. See docs/qa/issue-210/ANDROID_ADS_CHECK.md.",
+      "nextAction": "Verify signed device impressions, L2→L3 and retry transitions, both rewarded callback orders and shared cadence after reload, background and no-fill. Continue source entry and remote cadence research separately.",
       "stage": "E2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "implementationBriefRef": "docs/porting/ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24.md"

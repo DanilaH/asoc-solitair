@@ -82,7 +82,7 @@ it('fits five individually tappable columns on a common left-aligned pitch with 
         const hitWidth = Math.min(screen.width, (t.x + t.width / 2) * frame.unit) - Math.max(0, (t.x - t.width / 2) * frame.unit);
         expect(hitWidth).toBeGreaterThanOrEqual(44);
       }
-      const floor = row === 'bottom' ? frame.height - 12 - 166 - 18 - 14 : frame.height - 12;
+      const floor = row === 'bottom' ? frame.height - 12 - 166 - 18 - 28 : frame.height - 12;
       for (const pose of poses) {
         expect((pose.x - metrics.width / 2) * frame.unit).toBeGreaterThanOrEqual(0);
         expect((pose.x + metrics.width / 2) * frame.unit).toBeLessThanOrEqual(screen.width + .01);

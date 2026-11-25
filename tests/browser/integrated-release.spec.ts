@@ -14,7 +14,7 @@ import { boardFrame, layout } from '../../src/game/layout';
 import { move, read } from './wallet-fixture';
 
 test.skip(!process.env.VITE_ASOC_PROFILE, 'Requires the explicit integrated release build');
-if (process.env.ASOC_RELEASE_DEMO === '1') test.use({ video: 'on' });
+if (process.env.ASOC_RELEASE_DEMO === '1' || process.env.ASOC_MVP_DEMO === '1' || process.env.ASOC_UI_205_BASELINE === '1') test.use({ video: 'on' });
 
 test('L15 to adaptive L16 through the normal campaign UI, then reopen and retain Undo', async ({ page }) => {
   const level = content8Dealer[14];

@@ -1,5 +1,9 @@
 # Content8+ · фактический журнал автономной разработки
 
+## 25.11 · PR206 / #205 UI/UX/feel
+
+Stacked draft [PR206](https://github.com/DanilaH/asoc-solitair/pull/206) from exact PR204 `5039f1fbafcfebc399e36141826cc9ca6a59fe5d`. Fixed shared compact 138×166 grid, reserved bonus cells, font policy, CSS-space input, home/inventory/Bonus presentation. Version 0.20.5/code46; no content/rules/economy changes. [Acceptance dossier](../qa/mvp-20261125/UI_UX_FEEL_205.md). Intermediate C8 CI 503 unit pass and 144,892 geometry samples at 2308d60; final exact CI/visual/Android gates still open. Existing packet statuses unchanged; no source exclusions.
+
 ## 25.11 · Текущий кандидат PR204
 
 Ветка `feat/c8-audit-203-recovery`, профиль `c8-release-v1`, версия **0.20.4/code45**. Таймер Unlimited вынесен из масштабируемого поля. Смешанная неделя помечена как сохранённая от прежней версии, с датой старта обычного бонуса и пояснением к назначенным first-clear заданиям. Точный HEAD, CI и APK фиксируются в [PR204](https://github.com/DanilaH/asoc-solitair/pull/204). [Регрессии](../qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md) · [Физическая и live-приёмка](../qa/mvp-20261124/ANDROID_ACCEPTANCE_PR204.md). PR остаётся draft, `main` содержит 0.17.1/code26.

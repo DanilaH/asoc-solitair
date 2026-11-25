@@ -10,6 +10,8 @@ export const DECK_TOP = 20;
 const MAX_STOCK_THICKNESS = 18;
 const FOUNDATION_TITLE = 26;
 const ROW_GAP = 14;
+const BOTTOM_DECK_GAP = 28;
+const MIN_CONTROL_CSS = 44;
 export const TAP_SLOP_CSS = 10;
 /** A logical distance is a tap only while it remains below 10 CSS px. */
 export const exceedsTapSlop = (dx: number, dy: number, cssUnit: number) =>
@@ -26,9 +28,10 @@ const gridWidth = (deal?: Deal) => {
   return Math.max(WIDTH, columns * CARD_W + Math.max(0, columns - 1) * GRID_GAP);
 };
 const hasStockRow = (deal?: Deal) => !deal || Boolean(deal.initial.stock.length || deal.initial.waste.length);
-const foundationTop = (bottom: boolean, hasDeck: boolean) => bottom ? FOUNDATION_TITLE + 4
-  : hasDeck ? DECK_TOP + CARD_H + FOUNDATION_TITLE + 10 : DECK_TOP + 132 + FOUNDATION_TITLE + 4;
-const bottomReserve = (bottom: boolean) => bottom ? BOTTOM_DECK_MARGIN + CARD_H + MAX_STOCK_THICKNESS + ROW_GAP : 12;
+const foundationTop = (bottom: boolean, hasDeck: boolean, unit = 1) => bottom ? FOUNDATION_TITLE + 4
+  : DECK_TOP + Math.max(hasDeck ? CARD_H : 132, MIN_CONTROL_CSS / unit) + FOUNDATION_TITLE + 10;
+const bottomReserve = (bottom: boolean, unit = 1) => bottom
+  ? BOTTOM_DECK_MARGIN + Math.max(CARD_H + MAX_STOCK_THICKNESS, MIN_CONTROL_CSS / unit) + BOTTOM_DECK_GAP : 12;
 /** Fit width and structural row height plus a small authored-stack allowance.
  * Only immutable deal geometry and the usable viewport affect scale. Stock
  * counts, bonus purchases, packet lengths and Undo never change the axes.
@@ -37,8 +40,13 @@ export function boardFrame(width: number, height: number, deckPosition: 'top' | 
   const hasDeck = hasStockRow(deal), bottom = deckPosition === 'bottom' && hasDeck;
   const initialDepth = deal ? Math.max(1, ...deal.initial.tableau.map(pile => pile.length)) : 6;
   const strips = Math.max(30, Math.min(80, (initialDepth - 1) * 8));
+  const deckSize = bottom ? CARD_H + MAX_STOCK_THICKNESS : hasDeck ? CARD_H : 132;
   const neededHeight = foundationTop(bottom, hasDeck) + CARD_H * 2 + ROW_GAP + strips + bottomReserve(bottom);
-  const unit = Math.min(width / gridWidth(deal), height / neededHeight);
+  const fixedHeight = neededHeight - deckSize;
+  // H >= fixedHeight*u + max(deckSize*u, 44 CSS px). Both inequalities
+  // hold even when a short native viewport makes cards smaller than the HUD.
+  const unit = Math.min(width / gridWidth(deal), height / neededHeight,
+    Math.max(1, height - MIN_CONTROL_CSS) / fixedHeight);
   return { unit, offsetX: 0, width: width / unit, height: height / unit };
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
@@ -72,11 +80,12 @@ export function dragTarget(targets: Target[], finger: { x: number; y: number }, 
   const near = dropTarget(targets, finger.x, finger.y, tolerance);
   return near && valid(near) ? near : directCard ?? directFinger ?? near;
 }
-export function layout(board: Board, deal: Deal, frame: Pick<ReturnType<typeof boardFrame>, 'width' | 'height'> | number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; offers: BonusTarget[]; stock: { x: number; y: number; thickness: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
+export function layout(board: Board, deal: Deal, frame: (Pick<ReturnType<typeof boardFrame>, 'width' | 'height'> & { unit?: number }) | number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; offers: BonusTarget[]; stock: { x: number; y: number; thickness: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
   const poses: Pose[] = [], targets: Target[] = [], offers: BonusTarget[] = [];
   let joker: { x: number; y: number; depth: number } | undefined;
   const { width: cardW, height: cardH } = cardMetrics(deal);
   const { width, height } = typeof frame === 'number' ? { width: gridWidth(deal), height: frame } : frame;
+  const unit = typeof frame === 'number' ? 1 : frame.unit ?? 1;
   const deckGap = GRID_GAP;
   // Both rows share a left origin and pitch, irrespective of their own length.
   // The immutable grid width includes the unpurchased bonus slots.
@@ -93,13 +102,13 @@ export function layout(board: Board, deal: Deal, frame: Pick<ReturnType<typeof b
   // Preserve earlier positions while the initial three-card fan is opening.
   const fanWidth = Math.max(0, Math.min(3, board.waste.length) - 1) * fanStep;
   const waste = { x: stock.x + (left ? 1 : -1) * (cardW + deckGap + fanWidth), y: deckY };
-  const top = cardH / 2 + foundationTop(bottom, hasDeck);
+  const top = cardH / 2 + foundationTop(bottom, hasDeck, unit);
   board.foundations.forEach((ids, index) => {
     const x = center(index);
     targets.push({ location: { kind: 'foundation', index }, x, y: top, width: cardW + 8, height: cardH + 8 });
     ids.forEach((id, i) => poses.push({ id, x, y: top, depth: 20 + i, faceUp: true }));
   });
-  const tableauBottom = height - bottomReserve(bottom);
+  const tableauBottom = height - bottomReserve(bottom, unit);
   const tableauY = top + cardH + ROW_GAP;
   board.tableau.forEach((_, index) => {
     const x = center(index);

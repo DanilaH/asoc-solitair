@@ -667,7 +667,7 @@ html[data-reduced=true] .coin-debit{animation:none}
 .bonus-match{margin:0 0 6px;color:#345d5b;font-size:13px;font-weight:850;text-align:center}
 .daily-bonus-cards{gap:6px;grid-template-columns:repeat(3,minmax(0,1fr))}
 .daily-bonus-cards button.bonus-card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;min-height:44px;height:clamp(44px,calc((100dvh - 270px) / 4),84px);margin:0;padding:4px 2px 3px;border-radius:9px;overflow:hidden;box-shadow:none;font-size:11px;line-height:1.1;overflow-wrap:anywhere}
-.daily-bonus-cards button[data-revealed="false"]{background:#235e63 url('art/generated/card-back-classic-012.webp') center/100% 100% no-repeat;border:1px solid #b2c5b3;color:#fff4d8;text-shadow:0 1px 2px #12383d}
+.daily-bonus-cards button[data-revealed="false"]{background:#235e63 url('/art/generated/card-back-classic-012.webp') center/100% 100% no-repeat;border:1px solid #b2c5b3;color:#fff4d8;text-shadow:0 1px 2px #12383d}
 .daily-bonus-cards button[data-revealed="true"]{background:#fff6df;border:1px solid #c9b38b;color:#34545a;text-shadow:none;filter:none;opacity:1}
 .daily-bonus-cards button[data-match="2"],.daily-bonus-cards button[data-match="3"]{border:2px solid #ad7835;background:#ffebae}
 .daily-bonus-cards button[data-match="3"]{border-color:#387b59;background:#e3f0cf}

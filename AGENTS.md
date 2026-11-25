@@ -1,5 +1,9 @@
 # Project contract
 
+## Current developer assignment — issue #205, 25 November 2026
+
+Implement [issue #205](https://github.com/DanilaH/asoc-solitair/issues/205) in [draft PR206](https://github.com/DanilaH/asoc-solitair/pull/206), stacked exactly on PR204 `5039f1fbafcfebc399e36141826cc9ca6a59fe5d`. Read [UI/UX/feel evidence and open gates](docs/qa/mvp-20261125/UI_UX_FEEL_205.md). Profile `c8-release-v1`; new test candidate version 0.20.5/code46. Preserve rules, all immutable content, economics and runtime kit pin. Owner supersedes previous full-width row stretching: compact left-aligned shared 138:166 grid, stable bonus reserve. Physical Android/live and human review remain open. Historical candidate below is baseline, not latest head.
+
 ## Current implementation candidate — 25 November 2026
 
 The owner assigned the final PR204 audit delta and Android acceptance. The candidate is [draft PR #204](https://github.com/DanilaH/asoc-solitair/pull/204), branch `feat/c8-audit-203-recovery`, profile `c8-release-v1`, version 0.20.4/code45. Resolve the candidate SHA from the PR head and compare it with the exact CI checkout and embedded APK manifest. See [audit fixes](docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md) and the [final Android acceptance runbook](docs/qa/mvp-20261124/ANDROID_ACCEPTANCE_PR204.md). The baseline in `main` remains 0.17.1/code26. Device/live SDK/human acceptance are open. Retain the entire source roadmap and immutable historical deals; older assignments below are historical contracts.

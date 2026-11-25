@@ -285,8 +285,8 @@
     {
       "id": "azur-extra-foundation",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fourth/fifth upper foundation at levels 22/40 with coin or earned video, legal category moves, persistent opening, Hint and post-transfer practice.",
-      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
+      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fourth/fifth upper foundation at levels 22/40 with coin or earned video, legal category moves, persistent opening, Hint and post-transfer practice. #205 offer and acquired foundation share the same reserved 138:166 cell, existing purchase owner retained. Draft PR206.",
+      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/60",
       "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
       "stage": "D1"
@@ -434,8 +434,8 @@
     {
       "id": "azur-daily-bonus",
       "status": "ROADMAPPED",
-      "currentImplementation": "MVP U1 uses one shared Daily Bonus lifecycle for Home, Helpers, dialog, reveal and claim. The own UTC-day four-prize/12-card first-triple round remains persisted and separate from Daily Level/Tasks. An unfinished old round becomes expired and requires an explicit new round; old won prizes remain claimable without replacement, future-dated saves remain guarded, and the next current round is an explicit action after an old claim. C2 changes only new-draw Shuffle eligibility; existing frozen prizes survive.",
-      "nextAction": "Complete final-branch browser/physical midnight/background, old-won/future-date and duplicate/failure/reload acceptance; the local retention suite passed 27 cases in c8-release-v1. Preserve source-complete R3 work in RETENTION_SOURCE_DELTA_TZ_2026-11-24 and kit135/136. Current pool, schedule and weights remain an own adaptation, not ORIGINAL_RUNTIME parity.",
+      "currentImplementation": "MVP U1 uses one shared Daily Bonus lifecycle for Home, Helpers, dialog, reveal and claim. The own UTC-day four-prize/12-card first-triple round remains persisted and separate from Daily Level/Tasks. An unfinished old round becomes expired and requires an explicit new round; old won prizes remain claimable without replacement, future-dated saves remain guarded, and the next current round is an explicit action after an old claim. C2 changes only new-draw Shuffle eligibility; existing frozen prizes survive. #205 12 stable saved-round cards, hidden prizes not exposed in DOM, visible persisted match count, one ready shortcut; no RNG/claim rules changed. Draft PR206.",
+      "nextAction": "Complete final-branch browser/physical midnight/background, old-won/future-date and duplicate/failure/reload acceptance; the local retention suite passed 27 cases in c8-release-v1. Preserve source-complete R3 work in RETENTION_SOURCE_DELTA_TZ_2026-11-24 and kit135/136. Current pool, schedule and weights remain an own adaptation, not ORIGINAL_RUNTIME parity.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "stage": "F1",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -547,8 +547,8 @@
     {
       "id": "ui-motion-audio-coin",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game has its own UI/audio/coin feedback but AZUR source research only verified metadata names, not native animation timing",
-      "nextAction": "Compare actual 1× device footage to game; track child IDs for CardAnimator/coin flights/victory/buttons/shuffle separately",
+      "currentImplementation": "Game has its own UI/audio/coin feedback but AZUR source research only verified metadata names, not native animation timing. #205 selected-source contour and scale-independent tap slop; existing animation/audio/reward sequencing not replaced. Draft PR206.",
+      "nextAction": "Compare actual 1× device footage to game; track child IDs for CardAnimator/coin flights/victory/buttons/shuffle separately.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/36",
       "stage": "D2"
     },
@@ -682,8 +682,8 @@
     {
       "id": "azur-card-dictionary",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/game/card-reader.ts offers own explanations, not exact AZUR presentation/content",
-      "nextAction": "Compare on-device card readability, foreign/ambiguous semantics and text visibility",
+      "currentImplementation": "src/game/card-reader.ts offers own explanations, not exact AZUR presentation/content. #205 Aa physical control min44 CSS, CSS-space gesture threshold, existing Definition owner unchanged. Draft PR206.",
+      "nextAction": "Compare on-device card readability, foreign/ambiguous semantics and text visibility.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
@@ -698,8 +698,8 @@
     {
       "id": "azur-stock-side-setting",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Settings have mirrored stock/waste positions (existing compact meta)",
-      "nextAction": "Test both deck sides with tall stock, ads banner and active/parked game saves",
+      "currentImplementation": "Settings have mirrored stock/waste positions (existing compact meta). #205 compact shared pitch, stable reserved deck row, preserved mirrored stock/waste edge. Draft PR206.",
+      "nextAction": "Test both deck sides with tall stock, ads banner and active/parked game saves.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
@@ -1001,8 +1001,8 @@
     {
       "id": "hitapps-mixed-word-image-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Every newly authored CORE-3 layout across 16–80 mixes one whole picture category using original art with word categories. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
-      "nextAction": "Evaluate card recognition and text fit on physical Android at five-column peaks.",
+      "currentImplementation": "Every newly authored CORE-3 layout across 16–80 mixes one whole picture category using original art with word categories. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md. #205 uniform 138:166 card material with own existing image/caption art. Draft PR206.",
+      "nextAction": "Evaluate card recognition and text fit on physical Android at five-column peaks.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
@@ -1032,40 +1032,40 @@
     {
       "id": "azur-card-animation-controller",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game scene implements card move/flip/feedback motions, but not native AZUR timing/easing equivalence. QA использует существующую точку контакта для принятого перемещения. См. docs/qa/AZUR_FEEL_QA.md.",
-      "nextAction": "Map source/target animation interruption and cancellation on phone; metadata alone is not exact native implementation",
+      "currentImplementation": "Game scene implements card move/flip/feedback motions, but not native AZUR timing/easing equivalence. QA использует существующую точку контакта для принятого перемещения. См. docs/qa/AZUR_FEEL_QA.md. #205 same uniform card material for temporary moving cards; existing timing retained. Draft PR206.",
+      "nextAction": "Map source/target animation interruption and cancellation on phone; metadata alone is not exact native implementation.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
     {
       "id": "azur-coin-flight-animator",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "src/app/wallet-presentation.ts visual coin flights with persisted-domain rewards. Отдельная метка показывает подтверждённое списание рядом с балансом. См. docs/qa/UX_WALLET_PROGRESS.md. QA ограничивает Light-intent по прилёту при отдельной настройке вибрации. См. docs/qa/AZUR_FEEL_QA.md.",
-      "nextAction": "Compare timeout, landing and duplicate callbacks with original UI reference; physical Android audio pending",
+      "currentImplementation": "src/app/wallet-presentation.ts visual coin flights with persisted-domain rewards. Отдельная метка показывает подтверждённое списание рядом с балансом. См. docs/qa/UX_WALLET_PROGRESS.md. QA ограничивает Light-intent по прилёту при отдельной настройке вибрации. См. docs/qa/AZUR_FEEL_QA.md. #205 no reward or timing changes; visual regression required on compact field. Draft PR206.",
+      "nextAction": "Compare timeout, landing and duplicate callbacks with original UI reference; physical Android audio pending.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
     {
       "id": "azur-victory-reward-sequencer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md. QA проверяет раздельный предпобедный бонус, получить, прилёт и Next после подтверждённого SaveStore. См. docs/qa/AZUR_FEEL_QA.md. P20/P37 изолированно проверяет источник формулы 25/50/100/200 и +5 за остаток. См. docs/qa/AZUR_VICTORY_QA.md.",
-      "nextAction": "Replay skip/background/reopen/win/reward/Next with actual saved wallet and 320px UI",
+      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md. QA проверяет раздельный предпобедный бонус, получить, прилёт и Next после подтверждённого SaveStore. См. docs/qa/AZUR_FEEL_QA.md. P20/P37 изолированно проверяет источник формулы 25/50/100/200 и +5 за остаток. См. docs/qa/AZUR_VICTORY_QA.md. #205 result lifecycle retained; compact viewport visual evidence required. Draft PR206.",
+      "nextAction": "Replay skip/background/reopen/win/reward/Next with actual saved wallet and 320px UI.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
     {
       "id": "azur-button-haptic-feedback",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game button feedback/native haptic service exists; exact AZUR press states not compared. Проверочный профиль различает Light добора и Heavy-intent отказа, используя собственный Android bridge. См. docs/qa/AZUR_FEEL_QA.md.",
-      "nextAction": "Test press/release/exit scale/sound/haptics alignment on signed Android",
+      "currentImplementation": "Game button feedback/native haptic service exists; exact AZUR press states not compared. Проверочный профиль различает Light добора и Heavy-intent отказа, используя собственный Android bridge. См. docs/qa/AZUR_FEEL_QA.md. #205 CSS-space pointer slop; unchanged haptic service; device acceptance pending. Draft PR206.",
+      "nextAction": "Test press/release/exit scale/sound/haptics alignment on signed Android.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "stage": "D2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
     },
     {
       "id": "azur-shuffle-animation-controller",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "The existing product Shuffle feedback remains after confirmed save and respects reduced motion. MVP C2 extends the compatible hidden-pool wrapper map to L30/33/36/39; success still requires proof and committed inventory/board changes. UNKNOWN or failed commit is not a successful Shuffle animation or charge. Legacy stock-only preview remains separate.",
-      "nextAction": "Check committed feedback/Undo warning on the final Android candidate, including canceled proof and failed save. Source GameController/ShuffleAnimationController order is documented in kit PR96/issue104; exact original frames, RNG and runtime parity remain open.",
+      "currentImplementation": "The existing product Shuffle feedback remains after confirmed save and respects reduced motion. MVP C2 extends the compatible hidden-pool wrapper map to L30/33/36/39; success still requires proof and committed inventory/board changes. UNKNOWN or failed commit is not a successful Shuffle animation or charge. Legacy stock-only preview remains separate. #205 stable axes for charged shuffle, no source/economy policy change; regression pending. Draft PR206.",
+      "nextAction": "Check committed feedback/Undo warning on the final Android candidate, including canceled proof and failed save. Source GameController/ShuffleAnimationController order is documented in kit PR96/issue104; exact original frames, RNG and runtime parity remain open.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "stage": "D1",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
@@ -1131,8 +1131,8 @@
     {
       "id": "azur-bonus-lower-column",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fifth lower tableau at levels 30/40 with coin or earned video, legal temporary storage, verified Hint continuation, persistent opening and post-transfer practice.",
-      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
+      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fifth lower tableau at levels 30/40 with coin or earned video, legal temporary storage, verified Hint continuation, persistent opening and post-transfer practice. #205 offer and acquired tableau use the shared pitch and stable reservation; no extra debit or Undo-policy change. Draft PR206.",
+      "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.  Verify exact PR206 C8 CI/real raster, signed APK and outstanding physical Android gates; see docs/qa/mvp-20261125/UI_UX_FEEL_205.md. Existing evidence/status is not upgraded.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/60",
       "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
       "stage": "D1"

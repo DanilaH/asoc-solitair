@@ -210,6 +210,8 @@ jobs:
       - run: npm test -- --reporter=default --reporter=json --outputFile=.recording/mvp-unit-results.json
       - run: npm run build
       - run: npx playwright install --with-deps chromium
+      - name: Record exact PR204 baseline at the two owner-specified viewport sizes
+        run: node tools/qa/record-205-baseline.mjs
       - name: Verify saved rights and reward lifecycle through ordinary touch UI
         run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts --output=test-results/mvp-cohesion
       - uses: actions/upload-artifact@v4
@@ -218,6 +220,7 @@ jobs:
           name: mvp-cohesion-evidence
           path: |
             test-results/mvp-cohesion/
+            test-results/ui-205-before/
             .recording/mvp-unit-results.json
             dist/release-manifest.json
           retention-days: 7

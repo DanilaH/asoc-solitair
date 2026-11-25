@@ -1181,7 +1181,11 @@ export class BoardScene extends Phaser.Scene {
     const source = sourceCards(board, action.from, this.options.deal);
     const target = this.metrics.targets.find(t => same(t.location, action.to));
     if (!target || !source.length) return false;
-    for (const id of [...source, ...(action.to.kind === 'foundation' ? board.foundations[action.to.index].slice(-1) : board.tableau[action.to.index].slice(-1))]) {
+    const { kind, index } = action.to;
+    if (kind === 'foundation' && (this.collections.has(index) || this.foundationSurfaces.has(index))) return false;
+    // Foundations display the current member above the category card.
+    const front = kind === 'foundation' ? this.foundationFaces.get(index) : board.tableau[index].at(-1);
+    for (const id of front ? [...source, front] : source) {
       const view = this.views.get(id);
       if (!view?.node.visible || !view.face.visible || this.enteringCards.has(id) ||
           this.tweens.isTweening(view.node) || this.tweens.isTweening(view.face)) return false;

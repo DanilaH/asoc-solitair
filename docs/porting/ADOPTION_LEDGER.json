@@ -22,9 +22,27 @@
     "base": "5039f1fbafcfebc399e36141826cc9ca6a59fe5d",
     "implementationBranch": "feat/c8-ui-grid-205",
     "scope": "PRODUCT_ADAPTED",
-    "features": ["azur-stock-side-setting", "azur-extra-foundation", "azur-bonus-lower-column", "azur-card-dictionary", "hitapps-mixed-word-image-cards", "ui-motion-audio-coin", "azur-card-animation-controller", "azur-coin-flight-animator", "azur-victory-reward-sequencer", "azur-button-haptic-feedback", "azur-shuffle-animation-controller", "azur-daily-bonus"],
+    "features": [
+      "azur-stock-side-setting",
+      "azur-extra-foundation",
+      "azur-bonus-lower-column",
+      "azur-card-dictionary",
+      "hitapps-mixed-word-image-cards",
+      "ui-motion-audio-coin",
+      "azur-card-animation-controller",
+      "azur-coin-flight-animator",
+      "azur-victory-reward-sequencer",
+      "azur-button-haptic-feedback",
+      "azur-shuffle-animation-controller",
+      "azur-daily-bonus"
+    ],
     "evidenceRef": "docs/qa/content-v8/C8_UI_205.md",
-    "openAcceptance": ["physical Android", "live advertising", "human playtest", "original runtime parity"]
+    "openAcceptance": [
+      "physical Android",
+      "live advertising",
+      "human playtest",
+      "original runtime parity"
+    ]
   },
   "integratedReleaseCandidate": {
     "profile": "c8-release-v1",
@@ -161,9 +179,9 @@
   },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/adb0657facebf8b5e3ed22369305ba509c988626/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "79a44a8b1c0ec98a6b6bde9b1fbd4071cad1af6d",
-  "sourceInventoryRef": "adb0657facebf8b5e3ed22369305ba509c988626",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "29ddea6086c46c5581702cb0001536e6666b7626",
+  "sourceInventoryRef": "af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
@@ -303,10 +321,13 @@
     {
       "id": "azur-win-multiplier",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P20 preview has alternative x3/x5/flat policies and one settledWins guard; current multiplication uses base win plus remaining-moves bonus. PR190 adds isolated AZUR base/move-bonus QA with a persisted total, while displayed components are reconstructed from current policy. It is not an immutable breakdown or an integrated live post-win path.",
-      "nextAction": "ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24 section4.2: persist immutable base/move/other components and policy, connect one selected offer, source-shaped extra=(factor-1)*tierBase, and separate eligible-offer schedule from shown and earned. Kit133 source evidence does not imply schedule rollback on any SDK no-fill; real SDK/economy QA remains.",
+      "currentImplementation": "Ordinary C8 uses persisted attempt.victory rewardKey/tierBase/movesBonus/policy, selectedWinMultiplier and amount=(factor-1)*tierBase. main.ts render/prepare uses integratedOffers. Schedule selected by balanceVersion+campaignLevel and increments on first offer authorization (not proof of native RegisterVictory parity). Legacy total multiplier separate.",
+      "nextAction": "Validate persisted breakdown and receipt/shown/earned/no-fill/reload on Android; compare source eligibility timing/replay key versus own prepare-time schedule, active config and human balance. Do not repeat base-only multiplier implementation.",
       "stage": "E1",
-      "implementationBriefRef": "docs/porting/ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24.md"
+      "implementationBriefRef": "docs/porting/ADS_ECONOMY_IMPLEMENTATION_TZ_2026-11-24.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/201",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-victory-claim-multipliers/README.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "hitapps-golden-cards",
@@ -337,9 +358,11 @@
       "id": "hitapps-frozen",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P10 PRODUCT_ADAPTED preview uses per-card starting layers and thaws one layer per completed category. Immutable Deal ID, two dual-engine winning routes and browser Undo/relaunch. Evidence: docs/porting/P10_FROZEN_CARDS.md. В проверочном поле подтверждены 1–3 слоя адаптированного льда. Отдельная модель следов хранит параметры оригинала и два вида снятия. В интерфейсе снятый слой отмечается на затронутой карте. См. docs/qa/UX_ACTION_FEEDBACK.md.",
-      "nextAction": "Track body-level predicates and original Android under P36. Independent versioned playback and product preview are recorded for #174. Kit #125 confirms access to the exact XAPK. Complete native transition predicates and original physical Android comparison in P36.",
+      "nextAction": "#129 proves conditional IsPositiveMove branches, not full thaw schedule. Trace producer/destination meaning/MeltOneLayer order/cost/Undo and original device. Preserve adapted historical Deals.",
       "stage": "D1",
-      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md"
+      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-frozen-positive/README.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "hitapps-bound",
@@ -429,7 +452,7 @@
       "id": "azur-daily-tasks",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "MVP U2/U3 retain the own four-task UTC schedule, frozen day/week definitions, common grant inventory and weekly 5-medal/20-coin milestone. Shared state drives Home/day/week readiness and reset times. The ordinary tasks dialog exposes only completed unclaimed older task/milestone records, claims their original IDs/frozen prizes, and assigns old task medals to the original week. Current incomplete and completed/claimed states are explicit; a finished weekly meter no longer advertises another reward above its cap. Новые дни прежней QA-недели получают ordinary-цели без IAP, исходные дни и недельные призы сохранены. На 80/80 новые first-clear-цели заменяет достижимый сбор темы. Интерфейс поясняет срок уже заданных first-clear условий и дату перехода со старой недели на обычный бонус.",
-      "nextAction": "Complete final-branch browser/physical rollover, old task-to-old-week claim, duplicate and failure/reload acceptance; local retention suite passed 27 cases in c8-release-v1. Full R1/R2 source28, composite prizes, five milestones and 3-of-4 chest remain roadmap. Kit141/143 conditional1210/960 is not a live paywall, and video is not MakePurchase.",
+      "nextAction": "Retain ordinary tasks and saved source-week migration. #138/141/143 prove 28 tuples, 5 milestones, exact chest pool Hint/Undo/Definition/Shuffle (not Joker), saved roll reuse and medals on claim; 1210/960 conditional. Full R1/R2 remains. Trace other medal writes/remote/day and claim lifecycle; physical acceptance open. Video is not MakePurchase.",
       "stage": "F1",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -438,13 +461,15 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/18e6dd93c4a9b759ce1c9e1d154dd93be50725cb/research/games/association-solitaire/2026-11-24-azur-medal-award-paths/README.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "azur-daily-bonus",
-      "status": "ROADMAPPED",
-      "currentImplementation": "MVP U1 uses one shared Daily Bonus lifecycle for Home, Helpers, dialog, reveal and claim. The own UTC-day four-prize/12-card first-triple round remains persisted and separate from Daily Level/Tasks. An unfinished old round becomes expired and requires an explicit new round; old won prizes remain claimable without replacement, future-dated saves remain guarded, and the next current round is an explicit action after an old claim. C2 changes only new-draw Shuffle eligibility; existing frozen prizes survive. C8 issue 205 presents existing card backs, reveals only committed prizes, and shows per-prize matches and saved claim availability.",
-      "nextAction": "Complete final-branch browser/physical midnight/background, old-won/future-date and duplicate/failure/reload acceptance; the local retention suite passed 27 cases in c8-release-v1. Preserve source-complete R3 work in RETENTION_SOURCE_DELTA_TZ_2026-11-24 and kit135/136. Current pool, schedule and weights remain an own adaptation, not ORIGINAL_RUNTIME parity.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "MVP U1 uses one shared Daily Bonus lifecycle for Home, Helpers, dialog, reveal and claim. The own UTC-day four-prize/12-card first-triple round remains persisted and separate from Daily Level/Tasks. An unfinished old round becomes expired and requires an explicit new round; old won prizes remain claimable without replacement, future-dated saves remain guarded, and the next current round is an explicit action after an old claim. C2 changes only new-draw Shuffle eligibility; existing frozen prizes survive. C8 issue 205 presents existing card backs, reveals only committed prizes, and shows per-prize matches and saved claim availability. Ordinary releaseTasks enables DailyBonus; main.ts opens offline-r1 rounds; separate azur-compiled-r1 source catalog retained. Ref PR203/PR204 and current PR208.",
+      "nextAction": "Complete device lifecycle, claim/no-repeat and UI acceptance. Compare original helper unlocks, server day, shared RNG order and actual rewards; preserve R3 source scope. Candidate-weight math is not real win odds.",
       "stage": "F1",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -452,7 +477,10 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/203",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-dailybonus-weighted-pool/README.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "hitapps-weekend-race",
@@ -722,13 +750,16 @@
     },
     {
       "id": "azur-combo-streak",
-      "status": "EVIDENCE_GAP",
-      "currentImplementation": "PR201 includes an ordinary versioned C8 Combo candidate and retained first-win-cycle/legacy P30 paths. The candidate is a product adaptation; kit142/144 typed MoveSummary and original reward/reset/deferred-Moves source findings do not by themselves establish full consumer/original runtime parity.",
-      "nextAction": "Retain current Combo in the first-release composition and measure replay income/value under MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24 V1. Full RETENTION_SOURCE_DELTA_TZ_2026-11-24 R4 typed flags, five source stages and durable deferred Moves stay in the full roadmap with exact source provenance and UNKNOWN boundaries; do not reopen all of it as an extra first-release gate.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Ordinary C8 fresh campaign attempts at L5+ use azur-combo-candidate-r1, thresholds 4..8 and coins 2/4/7/10/15. engine.ts constructs typed flags from own transfer/Joker-buffer/legalCommands/waste state; comboDisposition resets before advances. Transfer-edge dedupe across Undo and finite fifth-stage completion are own rules. Legacy streak preserved; no double series.",
+      "nextAction": "Trace original producers, wildcard/skip/recycle/Undo/invalid effects, stage-after-fifth and pending Moves grant/discard/commit. Compare own producer and preserve versioned saves; measure human economy. No automatic source-policy switch.",
       "stage": "F2",
-      "reason": "Typed handler flags, reset precedence and compiled reward track are now NATIVE_STATIC. Original event producers, full wildcard/Undo/recycle mapping, later-stage/live configuration and original-runtime behavior remain unverified.",
+      "reason": "Native handler/reward track established; original producer and deferred Moves lifecycle still unknown. Product candidate implemented, not source accepted.",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md"
+      "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/201",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-combo-series-original/README.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "azur-unlimited-moves-offer",
@@ -800,9 +831,11 @@
     {
       "id": "unico-coffee-break",
       "status": "ROADMAPPED",
-      "currentImplementation": "P21 offline optional 3-coin Coffee Break uses a distinct exactly-once earned receipt; no new in-game placement is active. See docs/porting/P21_AD_PLACEMENTS.md. Игровой runtime и native callback подключены под отдельным разрешением. Новый показ и фактический ILRD ещё не приняты на телефоне.",
-      "nextAction": "Study exact observed break context; design separate optional break/reward and native ad return preservation Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
-      "stage": "E2"
+      "currentImplementation": "Owner decision 24.11 maps Coffee Break and Hitapps AdsBreak to one C8 ad-pause capability. main.ts schedules ads-break only when eligible and board idle. Separate coffeePreview disabled under releaseProfile; optional rewarded coins distinct. S3 +3 observed after interruption; opt-in/format unknown.",
+      "nextAction": "Recover original interruption trigger/type/award; compare shared product pause. SDK/ILRD/native return acceptance. Do not re-add duplicate Coffee UI or infer opt-in from video.",
+      "stage": "E2",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "unico-daily-fortune",
@@ -1034,9 +1067,11 @@
       "id": "azur-remaining-moves-coin-bonus",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P20 verifies the ordinary +2 coins per remaining move and excludes unrelated grants from the bonus multiplier. See docs/porting/P20_REWARD_OFFERS.md.",
-      "nextAction": "Check own multiplier/economy and baseline reward integrity; do not label adapted coefficient exact AZUR copy Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
+      "nextAction": "#132 authentic native compiled +5 and bases25/50/100/200; own +2/base25 deliberate, separate source QA. Human balance/reward distribution, no automatic live numeric change.",
       "stage": "E1",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/1139017f488c7c3b1993e7be1ee7ec5601c713fc/research/games/association-solitaire/2026-11-23-azur-victory-reward-native/README.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "azur-card-animation-controller",
@@ -1057,18 +1092,22 @@
     {
       "id": "azur-victory-reward-sequencer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Game result/coin flight/Next staging implemented; original AZUR native order unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md. QA проверяет раздельный предпобедный бонус, получить, прилёт и Next после подтверждённого SaveStore. См. docs/qa/AZUR_FEEL_QA.md. P20/P37 изолированно проверяет источник формулы 25/50/100/200 и +5 за остаток. См. docs/qa/AZUR_VICTORY_QA.md. C8 issue 205 retains the committed result and Next sequence.",
+      "currentImplementation": "Game result/coin flight/Next staging implemented; source #131 now proves coin-landing Sound(3) → RevealNextLevelRoutine and conditional resume reveal; full timing/cancel order remains unknown. Результат отмечает прогресс цикла или серии дня из подтверждённого сохранения. См. docs/qa/UX_WALLET_PROGRESS.md. QA проверяет раздельный предпобедный бонус, получить, прилёт и Next после подтверждённого SaveStore. См. docs/qa/AZUR_FEEL_QA.md. P20/P37 изолированно проверяет источник формулы 25/50/100/200 и +5 за остаток. См. docs/qa/AZUR_VICTORY_QA.md. C8 issue 205 retains the committed result and Next sequence.",
       "nextAction": "Replay skip/background/reopen/win/reward/Next with actual saved wallet and 320px UI",
       "stage": "D2",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-ui-feel-native/README.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "azur-button-haptic-feedback",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Game button feedback/native haptic service exists; exact AZUR press states not compared. Проверочный профиль различает Light добора и Heavy-intent отказа, используя собственный Android bridge. См. docs/qa/AZUR_FEEL_QA.md. C8 issue 205 classifies tap displacement in CSS pixels and retains the existing native feedback bridge.",
-      "nextAction": "Test press/release/exit scale/sound/haptics alignment on signed Android",
+      "nextAction": "Compare scoped #131 native Light accepted/draw, Medium forced, Heavy reject to existing bridge; measure actual scale/audio/haptic latency/intensity and interruptions on signed Android.",
       "stage": "D2",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-ui-feel-native/README.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "azur-shuffle-animation-controller",
@@ -1184,27 +1223,33 @@
       "id": "hitapps-puzzle-top-bottom-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P12 PRODUCT_ADAPTED top/bottom pairs join in tableau before entering the foundation together. Old deals remain unchanged. See docs/porting/P12_PUZZLE_PAIRS.md. Собственная иллюстрация из двух карт проходит совместно с Ordered другой категории. Отдельно проверены ненулевой tag, идентичность и порядок исхода сборки. Иллюстрация соединяется при контакте карт. См. docs/qa/UX_ACTION_FEEDBACK.md.",
-      "nextAction": "Trace PuzzleTop/PuzzleBottom distribution, stock placements, move legality and interactions; then implement clean-room additional card types with verifier D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md. Kit #125 confirms access to the exact XAPK. Complete native transition predicates and original physical Android comparison in P36.",
+      "nextAction": "#125 IsMatchingPair proves nonzero equal tags, not top/bottom order. Trace callers/distribution/assembly/cost/Undo and original device. Preserve adapted old IDs.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",
-      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md"
+      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-public-acquisition/P11_P12_ORIGINAL_NUMERIC_PREDICATES_2026-11-23.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "hitapps-bound-scissors-pattern",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P11 PRODUCT_ADAPTED scissors release a separately bound card on a legal move into the foundation. Native reveal/cost/target remain unknown. See docs/porting/P11_BOUND_SCISSORS.md. Раздельные числовые ветки 0/1/2/retry проверены на двух целях. Известная зависимость с Frozen проходит отрицательные проверки авторинга. Отклик показывает фактически снятую связь на карте. См. docs/qa/UX_ACTION_FEEDBACK.md.",
-      "nextAction": "Recover actual native scissors reveal/remove, layer and move-cost rules for BoundPattern; create specified Rules/Undo/Solver/teaching test upon proof D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md. Kit #125 confirms access to the exact XAPK. Complete native transition predicates and original physical Android comparison in P36.",
+      "nextAction": "#125 proves numeric revealed-scissors dispatch 0 discard/1 cut/2 stop/other retry; unknown evaluator/target, cost, exact enum ownership and runtime. Compare adapted cut/discard/unbound.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",
-      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md"
+      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-public-acquisition/P11_P12_ORIGINAL_NUMERIC_PREDICATES_2026-11-23.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "unico-magnet-helper",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "P17 isolated PRODUCT_ADAPTED trial models a legal one-move transfer from buried visible waste to an open foundation with its own attempt receipt and Undo. See docs/porting/P17_UNICO_MAGNET.md. The shipped app has no Unico Magnet; the Hitapps starter card and AZUR Joker remain distinct. P36 recorded the missing original Android trace in docs/porting/P36_ORIGINAL_RUNTIME.md.",
-      "nextAction": "Acquire verified Unico APK/runtime; reproduce magnet card source/target and unlock semantics, then implement distinct helper; video shows level4 tooltip but not action D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
+      "nextAction": "Signed public Unico 1.1.10/code37 candidate and native catalog #128/130 exist. Establish publisher trust or owner-installed splits; recover exact source/target/cost/Undo/unlock. No source tier upgrade from method names.",
       "stage": "D1",
-      "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity"
+      "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",
+      "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
     },
     {
       "id": "azur-tutorial-preset-deal",
@@ -1254,7 +1299,7 @@
       ]
     }
   ],
-  "auditRevision": "2026-11-24-mvp-cohesion-local-implementation",
+  "auditRevision": "2026-11-25-research-consolidation",
   "roadmapRef": "docs/porting/IMPLEMENTATION_ROADMAP_2026-11-19.md",
   "mvpCohesionCandidate20261124": {
     "branch": "feat/c8-mvp-cohesion-20261124",
@@ -1293,5 +1338,20 @@
       "monthlyConfirmation": "Original earned month and +10 shown only after confirmed SaveStore commit; late ambiguous recovery uses exact committed Save; no repeat after reload",
       "integratedBannerReserve": "Ordinary c8-release-v1 phone/compact: test-injected 60px DOM reserve, layout/hit JSON, PNG/video, real Shuffle/draw/Undo; not native SDK evidence"
     }
+  },
+  "researchConsolidation": {
+    "sourcePR": "https://github.com/DanilaH/mini-games-kit/pull/151",
+    "sourceRef": "af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a",
+    "sourceBlob": "29ddea6086c46c5581702cb0001536e6666b7626",
+    "previousPin": {
+      "ref": "adb0657facebf8b5e3ed22369305ba509c988626",
+      "blob": "79a44a8b1c0ec98a6b6bde9b1fbd4071cad1af6d",
+      "url": "https://github.com/DanilaH/mini-games-kit/blob/adb0657facebf8b5e3ed22369305ba509c988626/research/games/association-solitaire/porting/SOURCE_FEATURES.json"
+    },
+    "consumerCodeRef": "b3180bbe2f2f39b5428e664c19a6c56cde63aed2",
+    "consumerPR": "https://github.com/DanilaH/asoc-solitair/pull/208",
+    "report": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
+    "sourceCI": "Initial run 45594363530: zero runner steps; acceptance pending",
+    "runtimeKitUnchanged": "a9325265e87583a4872cf6a158e1e881a0d7508e"
   }
 }

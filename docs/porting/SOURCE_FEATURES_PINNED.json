@@ -2,8 +2,8 @@
   "schema": "reference-feature-inventory-v1",
   "id": "association-solitaire-hitapps-azur-unico-20261119",
   "sourceCatalog": "https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/README.md",
-  "scope": "Reviewed original AZUR XAPK ARM64 core code and 2,000 source rows, plus native-source Hitapps exact-build reports and Unico video. Every known core source system retained; remote and original Android runtime remain UNKNOWN.",
-  "coverageStatus": "SOURCE_CORE_114_RECONCILED_NOT_VENDOR_RUNTIME_EXHAUSTIVE",
+  "scope": "Full-spectrum inventory of 115 registered Hitapps, AZUR and Unico mechanisms, exact-build static/asset evidence, video observations, independent models and explicitly untrusted Unico candidate. Not exhaustive original-runtime/remote coverage.",
+  "coverageStatus": "SOURCE_115_CONSOLIDATED_NOT_VENDOR_RUNTIME_EXHAUSTIVE",
   "producer": "DanilaH/mini-games-kit",
   "features": [
     {
@@ -126,11 +126,11 @@
     {
       "id": "azur-win-multiplier",
       "name": "AZUR optional post-win x3/x5 rewarded multiplier",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-victory-claim-multipliers/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "monetization",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "Video shows x3 and temporary x5 CTA; successful earned ad or multiplier scope NOT observed"
+      "knownLimit": "Original AZUR 1.3.3.8 SHA-verified native: compiled defaults claim3/x5factor5/x5maxDifficulty3/x5eligibleFrequency3, x5 counter PlayerPrefs persists, claim extra=(factor-1)*coinsReward tier base EXCLUDING remaining-moves bonus; earned vs ad-closed callbacks distinct. Remote active config, actual Android ad earned, SDK receipt and payer cohorts UNKNOWN. Own P20 multipliers use product total and are PRODUCT_ADAPTED."
     },
     {
       "id": "hitapps-golden-cards",
@@ -162,20 +162,20 @@
     {
       "id": "hitapps-frozen",
       "name": "Hitapps frozen card modifier",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-frozen-positive/README.md",
       "evidenceTier": "NATIVE_STATIC",
       "surface": "core",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Native FrozenCard applier conditions and Failed bits found; exact activation/postFinal board UNKNOWN"
+      "knownLimit": "Native FrozenCard applier conditions and Failed bits found; exact activation/postFinal board UNKNOWN Original authenticated ARM32 #129 IsPositiveMove: first Joker false; starter uses boosterSpendsMove; numeric discriminator 2 depends on index/previous Joker and placeOnJokerPositive, discriminator 3 true, fallback placeOnJokerPositive. Full thaw schedule and destination labels UNKNOWN. Earlier evidence: https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md."
     },
     {
       "id": "hitapps-bound",
       "name": "Hitapps bound card modifier",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-public-acquisition/P11_P12_ORIGINAL_NUMERIC_PREDICATES_2026-11-23.md",
       "evidenceTier": "NATIVE_STATIC",
       "surface": "core",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Native BoundCard applier conditions and Failed bits found; exact activation/postFinal board UNKNOWN"
+      "knownLimit": "Native BoundCard applier conditions and Failed bits found; exact activation/postFinal board UNKNOWN Original #125 reveals numeric scissors dispatch: 0 DiscardScissors, 1 Cut, 2 return, other retry. Exact target-evaluator identity, gesture, cost and Undo UNKNOWN. Earlier evidence: https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md."
     },
     {
       "id": "hitapps-magnet-hammer",
@@ -252,20 +252,20 @@
     {
       "id": "azur-daily-tasks",
       "name": "AZUR task kinds, daily tasks and weekly milestones",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
-      "evidenceTier": "ASSET_VERIFIED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/18e6dd93c4a9b759ce1c9e1d154dd93be50725cb/research/games/association-solitaire/2026-11-24-azur-medal-award-paths/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "16 task kinds and nine rewards from metadata; 4/day 7day are local defaults, active schedules/payouts unknown"
+      "knownLimit": "AZUR 1.3.3.8 original SHA-verified BuildTasksForBalanceDay has exact 7×4=28 task rows with per-task targets, medals and resource extras: max1210 medals; MakePurchase day6=250, without it max960<1000 milestone; BuyExtraMoves/BuyBoosters/MakePurchase task classes total480, without them max730. Exact source 5 chest milestones at 50/100/300/600/1000, 12/3 booster chest, shared claim commit/reload. This is compiled local schedule ONLY; remote active schedule, additional source medal grants, successful real IAP/user cohorts and original Android runtime UNKNOWN. Own daily/weekly preview PRODUCT_ADAPTED. New 2026-11-24 SHA-pinned source audit: DailyTasksEventData.totalMedals starts at 0 and ClaimTask increments only when task kind reward Medals6 is actually claimed, then TryCommitClaim. AddMedalsForCheat has one original direct BL caller DevToolsController.AddMedals; GrantTaskMedals has no direct BL callers and equivalent logic is inlined in ClaimTask. No other ordinary medal source established in this source pass; indirect writes, remote/server hydrated events and real Android/SDK remain UNKNOWN. Evidence: research/games/association-solitaire/2026-11-24-azur-medal-award-paths/README.md. Consolidated #138/#141: exact chest pool [1,2,3,4] = MoveHint, Undo, Definition, Shuffle, not Joker; 3 distinct selected without replacement, 12/3=4 each. Fresh event saves the selection, Ensure reuses a correctly sized list, normal preview and grant read it; missing or malformed list fallback may reroll. Crash-atomicity UNKNOWN. Compiled unlock fallbacks level 2/event day 1; active server config UNKNOWN. See 2026-11-23-azur-dailytasks-chest/README.md and 2026-11-23-azur-dailytasks-seven-day/README.md. Earlier evidence: https://github.com/DanilaH/mini-games-kit/blob/research/azur-dailytasks-seven-day-28-source-20261123/research/games/association-solitaire/2026-11-23-azur-dailytasks-seven-day/README.md."
     },
     {
       "id": "azur-daily-bonus",
       "name": "AZUR day-keyed card-choice daily bonus",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
-      "evidenceTier": "ASSET_VERIFIED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-dailybonus-weighted-pool/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "Day-keyed card-choice state and prefab confirmed; live reward odds/claims not replayed Original native BuildShuffledColumnIndices and WeightedPick each call shared Unity Random.Range; real opening order relative to game dealer remains UNKNOWN."
+      "knownLimit": "Authentic AZUR 1.3.3.8: DailyBonus weighted 16-row source table (raw weights sum93 if all unlocked), four non-conflicting prize columns, >2 revealed same source column to win, 5-field saved round, maxReachedLevel helper unlock gates and separate source day-key claim/cache/save. Conditional all-unlocked model is NOT live drop/win odds; exact helper minimum levels, UI cell count, source RNG state, server-day, actual probabilities, original device/ads unknown. Original BuildShuffledColumnIndices and WeightedPick call shared Unity Random.Range; ordering relative to deal generation UNKNOWN."
     },
     {
       "id": "hitapps-weekend-race",
@@ -355,7 +355,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico video S3 (build unverified)",
-      "knownLimit": "S3 distinct task and win streak screens; win-loss resets and grants not exercised"
+      "knownLimit": "S3 distinct task and win streak screens; win-loss resets and grants not exercised #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "ui-motion-audio-coin",
@@ -540,11 +540,11 @@
     {
       "id": "azur-combo-streak",
       "name": "AZUR ComboStreak progression",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-combo-series-original/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "Official changelog confirms feature category; exact event rules not reproduced Original ComboSeriesBalance.PickRandomTrack native direct call to shared Unity Random.Range is verified, but actual streak reward/reset/live event remains UNKNOWN."
+      "knownLimit": "Original AZUR 1.3.3.8 SHA-verified ARM64/metadata: compiled fallback feature unlock5, slots4..8, one parsed 5-step source reward track 2/4/7/10/15 coins; StartLevelSeries→PickRandomTrack→BuildSeries, completion increments stage and slot count. NEW 2026-11-24 typed MoveSummary source proof: five byte fields IsCardRelocation(bit0), IsDeckDraw(bit8), InvolvesWildCard(bit16), PlacedOnCardOrFoundation(bit24), SkippedPlayableWasteCard(bit32), with original ctor MethodDef413. IsProductiveMove requires relocation+placed without wild `(flags&0x01010001)==0x01000001`; HandleMoveExecuted resets on draw+skippedPlayable `(flags&0x100000100)==0x100000100` BEFORE productivity, invalid moves have separate reset. Original reward enum Coins/Hint/Undo/Definition/Shuffle/Joker/Moves; Moves type6 accumulates pending +0x48 and separate commit, not immediate grant. Actual board-event producer/gesture mapping, wild meaning, Undo/recycle, active remote track, stage after fifth, original device/runtime/animation and live rewards remain UNKNOWN. Own current Hitapps-style streak PRODUCT_ADAPTED. Evidence: research/games/association-solitaire/2026-11-24-azur-combo-movesummary-typed-flags/README.md. Original PickRandomTrack uses shared Unity RNG; actual producer paths and global RNG consumption remain UNKNOWN. Older consumer statements are historical, see CURRENT.md."
     },
     {
       "id": "azur-unlimited-moves-offer",
@@ -557,12 +557,12 @@
     },
     {
       "id": "azur-offer-campaign",
-      "name": "AZUR OfferCampaignService level/date/context-gated commercial campaigns",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
-      "evidenceTier": "METADATA",
+      "name": "AZUR OfferCampaignService native contextual event dispatcher, source-qualified eligibility and presentation gates",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/c76c5b842d76462ad53fa1338a8feb09aae48c12/research/games/association-solitaire/2026-11-22-azur-welcome-milestone/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "NotifyTrigger/CanShow names; actual trigger logic and remote active campaign unknown"
+      "knownLimit": "Original ARM64/IL2CPP authenticates eight direct NotifyTrigger callers for seven source enum trigger values: SessionStarted0, LevelStarted1, LevelCompleted2 (passes currentLevel-1), LevelFailed3, NoValidMoves4, OutOfCoins5 and OutOfBooster6 from both Definition and Hint; Manual7 has enum entry but direct caller not identified. Native NotifyTrigger calls IsTriggerEligibleForDefinition, CanActivate, CanShow, TryPresent; CanActivate compiled gates are player level, session count, time since install, purchased-product veto, activation/show counts and cooldown; CanShow independently gates active-not-expired state, repeat show cooldown, level and show limits; these are conditional gates, NOT original runtime active campaigns, on-screen paid offers, provider checkouts or source SKU/price verification. Native original Android and remote cohorts unknown. Subsequent original native selection: numeric priority DESC, ordinal campaignId ASC tie; NotifyTrigger calls List.Sort; TryPresent selects registered windowId presenter with global OnOfferShowRequested fallback, then only on TRUE presenter return activates if needed, increments in-activation and total shows, timestamps and persists state. HandlePurchaseSucceeded branches to HandlePurchase; matching productIds deactivate eligible active campaigns. These are source-static callbacks, not observed successful UI, vendor priority values, live checkout, actual provider receipt verification or crash-atomic rights. Source embedded Welcome definition is conditionally upserted by ConfigureDefinitions/GetDefinitions; priority=5000, max total 2 shows/2 activations, both trigger lists [OutOfCoins5,SessionStarted0]. RegisterDefaultPresenters makes 3 calls, source handlers include booster coins, booster hint/shop, WelcomeWindow. Offer campaign runtime serialization uses authenticated Unity JsonUtility.ToJson→PlayerPrefs.SetString/Save, Load uses PlayerPrefs.GetString; not remotely trusted IAP."
     },
     {
       "id": "azur-fullscreen-ads-clock",
@@ -598,7 +598,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "ads",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Video shows in-game break with +3 coin after return; cannot equate with opt-in rewarded"
+      "knownLimit": "Video shows in-game break with +3 coin after return; cannot equate with opt-in rewarded #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "unico-daily-fortune",
@@ -607,7 +607,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Video shows option; reward probability and redemption not verified"
+      "knownLimit": "Video shows option; reward probability and redemption not verified #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "unico-rewarded-theme",
@@ -616,7 +616,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Try Now with video badge observed; exact entitlement and ad callback unknown"
+      "knownLimit": "Try Now with video badge observed; exact entitlement and ad callback unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "unico-vip",
@@ -625,7 +625,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "commerce",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "VIP offer in video but no successful payment/receipt or platform policy"
+      "knownLimit": "VIP offer in video but no successful payment/receipt or platform policy #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "unico-redeal-restart",
@@ -634,7 +634,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "core",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Video shows changed visible cards and budget on next daily attempt; exact randomization/relief cause unknown"
+      "knownLimit": "Video shows changed visible cards and budget on next daily attempt; exact randomization/relief cause unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "unico-double-reward",
@@ -643,7 +643,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "monetization",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Button on result; actual rewarded grant/bonus multiplication not shown"
+      "knownLimit": "Button on result; actual rewarded grant/bonus multiplication not shown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "unico-daily-puzzles",
@@ -652,7 +652,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Daily puzzle observed; actual recurring bank/rotation unknown"
+      "knownLimit": "Daily puzzle observed; actual recurring bank/rotation unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "unico-loss-dialog",
@@ -661,7 +661,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "ux",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Screen seen; exactly +10 for 1500 or video in sample, not default for our economy"
+      "knownLimit": "Screen seen; exactly +10 for 1500 or video in sample, not default for our economy #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "azur-structured-long-campaign",
@@ -679,7 +679,7 @@
       "evidenceTier": "METADATA",
       "surface": "commerce",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "Handler method names exist but crash-atomic reward persistence not proven"
+      "knownLimit": "Handler method names exist but crash-atomic reward persistence not proven Original WelcomeOfferWindow purchaseSucceeded/restored/failed each guard IsRelevantWelcomeOfferProduct, clear UI waiting and restore interactivity; source UpdatePurchaseFlowTimeout uses max(configTimeout,5s). This is NOT verified provider receipt, grant/ack or crash-safe financial ledger; see kit source milestone original native report."
     },
     {
       "id": "unico-themes-and-skins",
@@ -688,7 +688,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Visible theme selection; store unlock and permanent grant conditions unknown"
+      "knownLimit": "Visible theme selection; store unlock and permanent grant conditions unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
     },
     {
       "id": "azur-iap-product-catalog",
@@ -711,11 +711,11 @@
     {
       "id": "azur-iap-no-ads",
       "name": "AZUR standalone and mixed-bundle ad-removal entitlements",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
-      "evidenceTier": "ASSET_VERIFIED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-noads-native/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
-      "knownLimit": "Two standalone No Ads entries plus NoAds/NoAds+More helper SKU titles; actual entitlement scope/callbacks not traced"
+      "knownLimit": "Original AZUR 1.3.3.8 SHA-verified ARM64: IsAdsDisplayAllowed checks platform flag and !persisted PlayerData.IsAdsRemoved; ordinary banner + interstitial routes call it, rewarded eligibility separate (no direct NoAds call). PurchaseRewardHandler.TryHandleNoAdsFallback conditionally calls SetAdsRemoved(true), MarkPackageAsGiven and MarkOfferPurchased. Live SKU entitlements, signed purchase receipt, refunds and active ad configs UNKNOWN. Consumer distinct interstitial-only scope PRODUCT_ADAPTED."
     },
     {
       "id": "azur-iap-coin-packs",
@@ -747,11 +747,11 @@
     {
       "id": "azur-iap-welcome-offer",
       "name": "AZUR Welcome Offer SKU separate from Hitapps starter offer",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
-      "evidenceTier": "ASSET_VERIFIED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/c76c5b842d76462ad53fa1338a8feb09aae48c12/research/games/association-solitaire/2026-11-22-azur-welcome-milestone/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
-      "knownLimit": "One local product ID; runtime onboarding offer and granted rewards UNKNOWN"
+      "knownLimit": "Exact AZUR original ARM64 proves CONDITIONAL OfferCampaignService.EnsureWelcomeOfferDefinitions native built-in with priority=5000, maxTotalShows=2, maxTotalActivations=2, two 2-item activation/display arrays [OutOfCoins=5,SessionStarted=0], no default show cooldown, plus WelcomeOfferWindow UI routes for succeeded/restored/failed SKU matching and >=5s purchase-flow timeout. Actual enabled state, lifetime, productIDs, original Android display, provider receipts and reward contents are UNKNOWN. Local IAP asset has Welcome concept but storeIDs/payouts empty."
     },
     {
       "id": "azur-iap-unlimited-moves-tiers",
@@ -773,12 +773,12 @@
     },
     {
       "id": "azur-free-shop-coin-claim",
-      "name": "AZUR shop free 200-coin reward claim",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "name": "AZUR shop free 200-coin UTC-date claim and subsequent rewarded 400-coin offer",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/1a867be240cee70123e169ad510ae64535cf25e9/research/games/association-solitaire/2026-11-22-azur-native-free-vs-rewarded/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "economy",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
-      "knownLimit": "Video shows 845→1045 after free store offer; ad watched/eligibility/cooldown not shown"
+      "knownLimit": "Original ARM64 verifies separate free +200 and earned +400 callbacks, UTC day key, source-compiled reward cap 10/UTC date and 300s gap. Owner original video S2 confirms +200 wallet and next video+400 UI only. Actual live remote config, SDK reward callbacks, original platform clock-fraud and 400 earned payout NOT executed."
     },
     {
       "id": "azur-variable-category-sizes",
@@ -819,11 +819,11 @@
     {
       "id": "azur-remaining-moves-coin-bonus",
       "name": "AZUR leftover moves to reward currency conversion at victory",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/1139017f488c7c3b1993e7be1ee7ec5601c713fc/research/games/association-solitaire/2026-11-23-azur-victory-reward-native/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "economy",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
-      "knownLimit": "Three observed wins imply 5 coins per remaining move; inference from displayed balances not native backend formula"
+      "knownLimit": "Three observed wins imply 5 coins per remaining move; inference from displayed balances not native backend formula Original SHA-bound #132 verifies compiled defaults remaining-move reward enabled, coefficient 5, difficulty base tiers 25/50/100/200, fallback 100, AddCoins before presentation. Actual enabled flags, difficulty cohort, original Android and live economy UNKNOWN. Earlier evidence: https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md."
     },
     {
       "id": "azur-card-animation-controller",
@@ -850,7 +850,7 @@
       "evidenceTier": "METADATA",
       "surface": "feel",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
-      "knownLimit": "VictoryPanelController lifecycle method names verified; not proof of native execution ordering or actual timing"
+      "knownLimit": "VictoryPanelController lifecycle method names verified; not proof of native execution ordering or actual timing Later #131 narrow NATIVE_STATIC proof: coin landing Sound(3) then RevealNextLevelRoutine, conditional foreground ForceRevealNextLevel; one video corroboration. Full controller remains metadata-tier; actual durations/cancel paths UNKNOWN."
     },
     {
       "id": "azur-button-haptic-feedback",
@@ -859,7 +859,7 @@
       "evidenceTier": "METADATA",
       "surface": "feel",
       "originalBuild": "AZUR Word Solitaire Categories 1.3.3.8/code244 (XAPK SHA256 4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4)",
-      "knownLimit": "ButtonScaleTween/WorldPressScaleTween/AudioHapticService metadata only, not native measured tactile latency"
+      "knownLimit": "ButtonScaleTween/WorldPressScaleTween/AudioHapticService metadata only, not native measured tactile latency Later #131 narrow NATIVE_STATIC proof: Light on normal PlaceCards/draw, Medium on forced placement, Heavy on rejected drag. Full ButtonScaleTween/WorldPressScaleTween remains metadata-tier; timings and measured physical intensity UNKNOWN."
     },
     {
       "id": "azur-shuffle-animation-controller",
@@ -912,7 +912,7 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "core",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/5022d48a273c92e40708233f4fc61fadd7b08751/research/games/association-solitaire/2026-11-22-azur-useful-moves/README.md",
-      "knownLimit": "GameManager.CheckAvailableMoves after native DrawCardFromDeck/MoveCard checks NOT victory, MoveValidator.HasAnyValidMove FALSE and MovesSystem.HasMovesLeft TRUE before optional delegate field +0x70, separate from CheckDefeat at budget exhaustion. MoveValidator Joker useless predicate includes >1 Joker bypass/hidden-source/foundation fallback and differs from hint. Actual delegate subscriber/early no-valid UI/remote state UNKNOWN and original Android unexecuted.",
+      "knownLimit": "GameManager.CheckAvailableMoves after native DrawCardFromDeck/MoveCard checks NOT victory, MoveValidator.HasAnyValidMove FALSE and MovesSystem.HasMovesLeft TRUE before optional delegate field +0x70, separate from CheckDefeat at budget exhaustion. MoveValidator Joker useless predicate includes >1 Joker bypass/hidden-source/foundation fallback and differs from hint. Actual delegate subscriber/early no-valid UI/remote state UNKNOWN and original Android unexecuted. Source-verified commercial downstream: GameController subscribes and forwards no-valid delegate to GameUIController.HandleNoValidMoves, which calls OfferCampaignService.NotifyTrigger(NoValidMoves=4, GetCurrentLevel) while budget positive; separate from LevelFailed. See original new native chain at commit dad3b36ddf176386289f3236c2ec4d8b469ba14e.",
       "originalBuild": "AZUR 1.3.3.8/code244"
     },
     {
@@ -972,19 +972,19 @@
     {
       "id": "hitapps-puzzle-top-bottom-cards",
       "name": "Hitapps special PuzzleTop/PuzzleBottom/Joker card type distribution (beyond ordinary words)",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "core",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-17-hitapps-allcards/README.md",
-      "knownLimit": "CardType enum/proven source empty puzzle branch; 21 bundled levels excluded from ordinary parity due to special cards. Exact puzzle-card placement/interaction not reconstructed",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-public-acquisition/P11_P12_ORIGINAL_NUMERIC_PREDICATES_2026-11-23.md",
+      "knownLimit": "CardType enum/proven source empty puzzle branch; 21 bundled levels excluded from ordinary parity due to special cards. Exact puzzle-card placement/interaction not reconstructed Original IsMatchingPair verifies equality of two nonzero +6 numeric tags, not orientation/category/adjacency/cost/UI; full placement and assembly lifecycle UNKNOWN. Earlier evidence: https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-17-hitapps-allcards/README.md.",
       "originalBuild": "Hitapps 1.26.2/code3742"
     },
     {
       "id": "hitapps-bound-scissors-pattern",
       "name": "Hitapps bound-card pattern includes scissors as separate release element",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "core",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md",
-      "knownLimit": "BoundCardPattern{id,boundCards,scissors} verified as config fields; scissors interaction, activation, moves cost and complete native rule UNKNOWN",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-public-acquisition/P11_P12_ORIGINAL_NUMERIC_PREDICATES_2026-11-23.md",
+      "knownLimit": "BoundCardPattern{id,boundCards,scissors} verified as config fields; scissors interaction, activation, moves cost and complete native rule UNKNOWN Exact native revealed-scissors dispatch 0 discard/1 cut/2 stop/other retry; full target legality, pattern semantics, enum names and runtime UNKNOWN. Earlier evidence: https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-17-hitapps-shuffle-features/README.md.",
       "originalBuild": "Hitapps 1.26.2/code3742"
     },
     {
@@ -993,7 +993,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "core",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "knownLimit": "S3 video shows level4 Magnet tooltip and glowing slot click instruction; actual activation, target selection, card movement and native algorithm NOT observed",
+      "knownLimit": "S3 video shows level4 Magnet tooltip and glowing slot click instruction; actual activation, target selection, card movement and native algorithm NOT observed #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier.",
       "originalBuild": "Unico S3 recorded video; native build not authenticated"
     },
     {
@@ -1042,5 +1042,5 @@
       "knownLimit": "Native FindAvailableMove five-class priority and MoveHintSystem.IsUselessJokerColumnToColumnMove are distinct from MoveValidator.IsUselessJokerColumnToColumnMove. Hint filters wouldUncoverHidden, alternate non-Joker stack and previous foundation opportunity; precise original Android chosen hint and live user outcome not fully recovered; source result not a winning-path proof. Numeric original native 17 method / 19 opcode / 14 call proof; PRODUCT_ADAPTED solver-backed consumer route remains default."
     }
   ],
-  "auditRevision": "2026-11-22-azur-useful-joker-no-valid-move-native-v16"
+  "auditRevision": "2026-11-25-solitaire-source-consolidation-v21"
 }

@@ -6,6 +6,7 @@ import { campaignId } from '../../src/domain/progression';
 import { openPictureEvent } from '../../src/domain/events/picture';
 import { observeEvents, recordEventWin, type EventDefinition } from '../../src/domain/events/ledger';
 import type { Save } from '../../src/domain/types';
+import { move } from './wallet-fixture';
 
 test.skip(process.env.VITE_ASOC_PROFILE !== 'c8-release-v1', 'Requires the ordinary C8 release profile');
 const now = Date.UTC(2026, 10, 25, 12);
@@ -101,11 +102,12 @@ for (const [width, height, reserve] of [[320, 480, 90], [360, 640, 0]] as const)
     await open(page, '#daily-play', '#replace-daily');
     await capture(page, info, '#replace-daily', 'replace-daily', '#replace-daily-yes');
     await page.locator('#replace-daily button[data-close]').tap();
-    const inGame = dispatch(profile(), deal.winningPath[0], deal).next;
+    const inGame = profile();
     inGame.settings.deckPosition = 'bottom';
     inGame.settings.deckSide = 'left';
     await load(page, inGame);
     await open(page, '#home-play', '#play-screen');
+    await move(page, deal, deal.winningPath[0]);
     await open(page, '#menu', '#settings');
     await capture(page, info, '#settings', 'pause', '#settings-done');
     await page.locator('#pause-options summary').tap();

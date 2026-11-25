@@ -53,7 +53,7 @@ it('three-card waste and the full stock stack stay clear of an occupied foundati
   }
 });
 
-it('fits five individually tappable columns and spans the field with either foundation count', () => {
+it('fits five individually tappable columns with a shared compact grid and either foundation count', () => {
   const source = content8Dealer.find(d => d.initial.tableau.length === 4 && d.initial.stock.length >= 28)!;
   const initial = structuredClone(source.initial);
   initial.tableau.push(initial.stock.splice(0, 23));
@@ -65,6 +65,7 @@ it('fits five individually tappable columns and spans the field with either foun
     initial.foundations = Array.from({ length: count }, () => []);
     const deal = { ...source, initial };
     const metrics = cardMetrics(deal);
+    expect(metrics.width / metrics.height).toBeCloseTo(138 / 166);
     for (const side of ['left', 'right'] as const) for (const row of ['top', 'bottom'] as const) {
       const frame = boardFrame(screen.width, screen.height, row, deal);
       const { poses, targets, stock } = layout(initial, deal, frame, side, row);
@@ -73,8 +74,8 @@ it('fits five individually tappable columns and spans the field with either foun
       expect(tableau).toHaveLength(5);
       for (const slots of [tableau, foundations]) {
         expect(slots[0].x).toBeCloseTo(metrics.width / 2);
-        expect(slots.at(-1)!.x).toBeCloseTo(frame.width - metrics.width / 2);
-        const pitch = (frame.width - metrics.width) / (slots.length - 1);
+        expect(slots.at(-1)!.x + metrics.width / 2).toBeLessThanOrEqual(frame.width + .01);
+        const pitch = metrics.width + Math.min(14, (540 - metrics.width * Math.max(5, count)) / (Math.max(5, count) - 1));
         slots.forEach((slot, i) => expect(slot.x).toBeCloseTo(slots[0].x + i * pitch));
       }
       for (const t of targets) {

@@ -1,12 +1,12 @@
 /* C8 Card Table. Gameplay measurements remain owned by the board stylesheet. */
 [data-casual] .casual-icon{width:28px;height:28px;object-fit:contain;flex:none;vertical-align:middle}
-#app[data-casual][data-screen=home]{background:radial-gradient(ellipse at 50% 22%,#267f80 0,#155861 62%,#144753);color:#fff4d7;padding-inline:0}
-#app[data-casual][data-screen=home] header{height:52px;flex-direction:row;justify-content:flex-start;gap:8px;padding:4px 10px}
+#app[data-casual][data-screen=home]{background:radial-gradient(ellipse at 50% 22%,#267f80 0,#155861 62%,#144753);color:#fff4d7}
+#app[data-casual][data-screen=home] header{height:52px;flex-direction:row;justify-content:flex-start;gap:8px;padding:4px 0}
 #app[data-casual][data-screen=home] #menu{border-radius:14px;background:#fff7e5;margin-right:auto}
 #app[data-casual][data-screen=home] #wallet-anchor{order:1}
 #app[data-casual][data-screen=home] .hamburger,#app[data-casual][data-screen=home] .hamburger::before,#app[data-casual][data-screen=home] .hamburger::after{background:#2d6268}
 #app[data-casual][data-screen=home] .wallet{height:42px;background:#104a56;font-size:16px;color:#fff7e5;border:1px solid #4a8289}
-#app[data-casual][data-screen=home] #home{display:flex;overflow:hidden;padding:0;gap:0}
+#app[data-casual][data-screen=home] #home{display:flex;overflow:hidden;margin-inline:-12px;padding:0;gap:0}
 [data-casual] #home .home-actions,[data-casual] #home .home-scroll{display:none}
 [data-casual] #home .brand-scene{position:relative;isolation:isolate;min-height:94px;flex:1;display:grid;align-content:start;justify-content:stretch;justify-items:center;gap:0;padding:0;order:0}
 [data-casual] .brand-scene::before{content:'';position:absolute;inset:34% 6% -18%;background:radial-gradient(ellipse at center top,#5fb5a543,transparent 67%);border-radius:60% 60% 0 0;border-top:1px solid #8bc2bc55;z-index:-1}

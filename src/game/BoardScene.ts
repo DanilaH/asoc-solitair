@@ -1164,7 +1164,8 @@ export class BoardScene extends Phaser.Scene {
   public back(): boolean { if (!this.jokerSelecting && !this.press && !this.selected && !this.hintObjects.length) return false; this.clearHint(); this.cancel(); return true; }
   public idleForAd(): boolean {
     return !this.press && !this.selected && !this.pendingReturn && !this.dragPointer && !this.jokerSelecting &&
-      !this.inspectMode && !this.enteringCards.size && !this.collections.size && !this.keyFlights.length &&
+      !this.inspectMode && !this.enteringCards.size && !this.collections.size && !this.keyPresentation &&
+      !this.keyFlights.some(flight => flight.visible) &&
       ![...this.views.values()].some(view => this.tweens.isTweening(view.node));
   }
   public setEnabled(value: boolean): void { this.enabled = value; if (!value) { this.clearHint(); this.options.peek?.(null); if (this.press || this.selected || this.jokerSelecting) this.cancel(); } }
@@ -1172,7 +1173,7 @@ export class BoardScene extends Phaser.Scene {
   public clearHint(): void { this.hintTweens.forEach(t => t.stop()); this.hintTweens = []; this.hintObjects.forEach(o => o.destroy()); this.hintObjects = []; }
   public hint(action: BoardCommand): void { this.cancel(); this.demonstrate(action, false); }
   public guidanceReady(action: BoardCommand): boolean {
-    if (!this.world || !this.enabled || this.inspectMode) return false;
+    if (!this.world || !this.enabled) return false;
     const board = this.options.getSave().attempt.board;
     if (action.type !== 'transfer') return this.enteringCards.size === 0 && performance.now() >= this.stockBusyUntil &&
       typeof applyBoard(board, action, this.options.deal) !== 'string';

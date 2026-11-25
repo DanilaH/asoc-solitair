@@ -151,9 +151,10 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
       if (seen('learn:keys')) break;
       const action = step();
       if (!action) break;
-      if (action.type === 'draw') return exact('Откройте карту из колоды.', action);
-      if (action.type === 'recycle') return exact('Верните сброс в колоду.', action);
-      return exact(`Переложите отмеченную карту. Ключи: ${board.keys?.length ?? 0}/${deal.lock?.requiredKeys.length ?? 3}.`, action);
+      const count = `Ключи: ${board.keys?.length ?? 0} из ${deal.lock?.requiredKeys.length ?? 3}.`;
+      if (action.type === 'draw') return exact(`Откройте карту из колоды. ${count}`, action);
+      if (action.type === 'recycle') return exact(`Верните сброс в колоду. ${count}`, action);
+      return exact(`Переложите отмеченную карту. ${count}`, action);
     }
   }
 }

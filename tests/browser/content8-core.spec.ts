@@ -347,11 +347,11 @@ test('level 17 teaches the first ordered transfer and remembers accepted practic
   await touch(page, deal, { type: 'draw' });
   expect((await read(page)).attempt.board).toEqual(initial);
   await touch(page, deal, deal.winningPath[0]);
-  await expect(page.locator('#lesson-copy')).toContainText('понедельника');
+  await expect(page.locator('#lesson-copy')).toContainText('«Понедельник»');
   await page.reload();
   await openGame(page, deal);
   await expect(page.locator('#learn-rule')).toBeHidden();
-  await expect(page.locator('#lesson-copy')).toContainText('понедельника');
+  await expect(page.locator('#lesson-copy')).toContainText('«Понедельник»');
   await touch(page, deal, deal.winningPath[1]);
   await expect(page.locator('#lesson-note')).toBeHidden();
   expect((await read(page)).campaign?.tutorials).toContain('learn:ordered');

@@ -751,7 +751,12 @@ test('a bonus slot preview tap cannot also confirm a purchase on the wider layou
   await page.setViewportSize({ width: 600, height: 450 });
   await page.locator('#banner-slot').evaluate(slot => { slot.removeAttribute('hidden'); slot.style.height = '60px'; });
   const bonus = page.locator('#bonus-tableau');
-  await expect.poll(() => bonus.evaluate(button => button.getBoundingClientRect().width)).toBe(44);
+  await expect.poll(() => bonus.evaluate(button => button.getBoundingClientRect().width)).toBeGreaterThanOrEqual(44);
+  const compactArea = (await page.locator('#game-root').boundingBox())!;
+  const compactFrame = boardFrame(compactArea.width, compactArea.height, save.settings.deckPosition, deal);
+  const bonusRect = (await bonus.boundingBox())!;
+  expect(Math.abs(bonusRect.width - 138 * compactFrame.unit)).toBeLessThanOrEqual(1);
+  expect(Math.abs(bonusRect.height - 166 * compactFrame.unit)).toBeLessThanOrEqual(1);
   expect(await bonus.evaluate(button => button.scrollWidth <= button.clientWidth + 1)).toBe(true);
   await page.locator('#banner-slot').evaluate(slot => { slot.setAttribute('hidden', ''); slot.style.removeProperty('height'); });
   await page.setViewportSize({ width: 520, height: 700 });

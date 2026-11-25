@@ -1,3 +1,4 @@
+import './ui-ux-205.cases';
 import { coreSpecialDeals } from '../../src/content/campaign-v8-integrated-specials';
 import { content8Special } from '../../src/content/campaign-v8-special';
 import { expect, test } from '@playwright/test';

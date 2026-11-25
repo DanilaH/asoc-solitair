@@ -27,7 +27,7 @@ const gridWidth = (deal?: Deal) => {
 };
 const hasStockRow = (deal?: Deal) => !deal || Boolean(deal.initial.stock.length || deal.initial.waste.length);
 const foundationTop = (bottom: boolean, hasDeck: boolean) => bottom ? FOUNDATION_TITLE + 4
-  : hasDeck ? DECK_TOP + CARD_H + FOUNDATION_TITLE + 4 : DECK_TOP + 132 + FOUNDATION_TITLE + 4;
+  : hasDeck ? DECK_TOP + CARD_H + FOUNDATION_TITLE + 10 : DECK_TOP + 132 + FOUNDATION_TITLE + 4;
 const bottomReserve = (bottom: boolean) => bottom ? BOTTOM_DECK_MARGIN + CARD_H + MAX_STOCK_THICKNESS + ROW_GAP : 12;
 /** Fit width and structural row height plus a small authored-stack allowance.
  * Only immutable deal geometry and the usable viewport affect scale. Stock

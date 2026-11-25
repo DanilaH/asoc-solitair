@@ -1022,7 +1022,7 @@ export class BoardScene extends Phaser.Scene {
   }
   private move(pointer: BoardPointer) {
     if (!this.enabled || !this.press || this.press.pointerId !== pointer.id || !pointer.isDown) return;
-    const { x, y } = this.point(pointer), press = this.press, firstMove = !press.moved;
+    const { x, y } = this.point(pointer), press = this.press, firstMove = press.liftedAt === undefined;
     press.moved ||= exceedsTapSlop(x - press.x, y - press.y, this.cssUnit);
     if (press.inspectOnly || press.stock || press.target || press.jokerColumn !== undefined || !press.poses.length || !press.moved) return;
     this.dragPointer = pointer;

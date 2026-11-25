@@ -150,7 +150,7 @@ test('opens cards in Daily Bonus, resumes the same round and claims only once', 
   await cards.nth(chosen[1]).tap();
   await cards.nth(chosen[2]).tap();
   await page.locator('#daily-bonus-claim').tap();
-  await expect(page.locator('#daily-bonus-status')).toContainText('Получено');
+  await expect(page.locator('#daily-bonus-status')).toHaveText('Приз получен');
   await expect(page.locator('#daily-bonus-claim')).toBeHidden();
   expect((await read(page)).dailyBonus?.claimed).toBe(true);
 });

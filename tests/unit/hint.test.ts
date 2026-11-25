@@ -58,3 +58,26 @@ it('picture inspection stays a picture and ordered leaders keep their rank instr
   const d = campaignDeals[22], leader = Object.values(d.cards).find(c => c.leader)!;
   expect(cardReader(leader, d)).toEqual({ title: leader.text, description: leader.explanation });
 });
+
+it.each([
+  ['campaign-c8-special-017-core-special-r1', 1],
+  ['campaign-c8-special-026-core-special-r1', 4],
+] as const)('finds a proven hint on the audited deviation in %s', async (id, to) => {
+  const { findDeal } = await import('../../src/content/campaign');
+  const { findReferenceRoute } = await import('../../src/domain/ordinary-search');
+  const deal = findDeal(id)!;
+  const deviation = applyBoard(deal.initial,
+    { type: 'transfer', from: { kind: 'tableau', index: 0 }, to: { kind: 'tableau', index: to } }, deal);
+  if (typeof deviation === 'string') throw Error(deviation);
+  const hint = resolveHint(deviation.board, deal);
+  const certificate = findReferenceRoute(deal, deviation.board, 4000, true, Infinity, 'verified-specials');
+  if (certificate.status !== 'FOUND') throw Error('Expected a full winning route');
+  expect(hint).toEqual({ status: 'SOLVED', action: certificate.path[0] });
+  let board = deviation.board;
+  for (const action of certificate.path) {
+    const next = applyBoard(board, action, deal);
+    if (typeof next === 'string') throw Error(next);
+    board = next.board;
+  }
+  expect(board.phase).toBe('won');
+}, 15_000);

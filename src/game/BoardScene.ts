@@ -15,7 +15,7 @@ import { specialCardCues, type SpecialCardCue } from './special-card-feedback';
 interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text; puzzleLabel?: Phaser.GameObjects.Text; puzzleArt?: { half: Phaser.GameObjects.Image; full: Phaser.GameObjects.Image } }
 interface Options {
   deal: Deal; getSave(): Save; reducedMotion(): boolean; command(command: Command): void; sound(name: string): void; allows?(command: BoardCommand): boolean;
-  praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene, newDeal: boolean): void;
+  praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene, newDeal: boolean, dealId: string): void;
   inputRoot?(): HTMLElement; boardBounds?(): { x: number; y: number; width: number; height: number };
   readerZone?(): DOMRect; peek?(id: string | null, previewOnly?: boolean): void;
 }
@@ -199,7 +199,7 @@ export class BoardScene extends Phaser.Scene {
     this.events.once('shutdown', () => { controller.abort(); this.options.peek?.(null); this.presentedDealId = undefined; this.scale.off('resize', resize); this.clearHint(); this.clearFeedback(); this.foundationFaces.clear(); this.views.clear(); this.input.removeAllListeners(); });
     this.presentedDealId = this.options.deal.id;
     this.sync([], true);
-    this.options.ready(this, newDeal);
+    this.options.ready(this, newDeal, this.options.deal.id);
   }
   private label(x: number, y: number, text: string, size: number, color: string, maxHeight = Infinity) {
     const label = this.add.text(x, y, cardCaption(text, this.cardW < 125 && text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size * Math.min(1, this.cardW / 125)}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: this.cardW - 18 } }).setOrigin(.5, 0);
@@ -470,7 +470,7 @@ export class BoardScene extends Phaser.Scene {
       const height = font * 1.08;
       this.stockBadge.fillStyle(0x1c284c).fillRoundedRect(x - width / 2, y - height / 2, width, height, height / 2);
       this.stockBadge.lineStyle(2, 0xffdfa3).strokeRoundedRect(x - width / 2, y - height / 2, width, height, height / 2);
-    } else this.stockCount.setPosition(stock.x, stock.y).setFontSize(42).setText(board.waste.length ? '↻' : '');
+    } else this.stockCount.setPosition(stock.x, stock.y).setFontSize(42).setText(board.waste.length ? board.recyclesLeft === 0 ? '×' : '↻' : '');
     const root = this.options.inputRoot?.();
     if (root) root.dataset.stockCount = deckActive ? String(board.stock.length) : '';
     this.foundationArt.clear();

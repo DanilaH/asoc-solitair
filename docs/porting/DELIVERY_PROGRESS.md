@@ -1,6 +1,12 @@
 # Content8+ · фактический журнал автономной разработки
 
-## 24.11 · MVP cohesion: первый CI прошёл, проверка итогового head открыта
+## 25.11 · Текущий кандидат PR204
+
+Ветка `feat/c8-audit-203-recovery`, профиль `c8-release-v1`, версия **0.20.4/code45**. Таймер Unlimited вынесен из масштабируемого поля. Смешанная неделя помечена как сохранённая от прежней версии, с датой старта обычного бонуса и пояснением к назначенным first-clear заданиям. Точный HEAD, CI и APK фиксируются в [PR204](https://github.com/DanilaH/asoc-solitair/pull/204). [Регрессии](../qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md) · [Физическая и live-приёмка](../qa/mvp-20261124/ANDROID_ACCEPTANCE_PR204.md). PR остаётся draft, `main` содержит 0.17.1/code26.
+
+**24.11 · Независимый аудит PR203.** Исправлены Unlimited → Continue и чтение старых сохранений, жизненный цикл рекламной жизни, согласование поля при восстановлении записи, новая выдача заданий из старой source-недели и текст Picture. Добавлены отсчёт Unlimited, действие восстановления колоды и проверяемые Hint для позиций L17/L26. [Регрессии и физические гейты](../qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md).
+
+## 24.11 · Исторический checkpoint MVP cohesion в PR203
 
 На ветке `feat/c8-mvp-cohesion-20261124` реализованы F1–F3, C1–C3 и U1–U5 из [ТЗ](MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md). Изменения переданы в [PR203](https://github.com/DanilaH/asoc-solitair/pull/203). Основа — документационный PR202 `c85fdc772cfcf07acd6289aa8c1519f55df38e09`; проверенный runtime до реализации — PR201 `23e71a898fd69b86b702ce074621637bcf82432e`.
 

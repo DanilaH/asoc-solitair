@@ -241,7 +241,15 @@ public class SolitaireAdsPlugin extends Plugin {
     @PluginMethod public void pending(PluginCall call) { handler.post(() -> {
         try {
             JSONObject receipt = journal.pending(); JSArray receipts = new JSArray(); if (receipt != null) receipts.put(receipt);
-            JSObject result = new JSObject(); result.put("receipts", receipts); call.resolve(result);
+            JSObject result = new JSObject(); result.put("receipts", receipts);
+            if (session != null && session.placement.equals("life-refill")) {
+                JSObject active = new JSObject();
+                active.put("id", session.attempt); active.put("dealId", session.dealId);
+                result.put("activeLife", active);
+            } else {
+                result.put("activeLife", JSONObject.NULL);
+            }
+            call.resolve(result);
         } catch (Exception error) { call.reject("Earned receipt storage unavailable"); }
     }); }
     @PluginMethod public void acknowledge(PluginCall call) { handler.post(() -> {

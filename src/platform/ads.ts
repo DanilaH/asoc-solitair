@@ -7,11 +7,12 @@ export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: Rewar
 export interface AdOutcome { shown: boolean; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
 export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean; campaignApproved?: boolean; livesApproved?: boolean; offersApproved?: boolean }
 export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string }
+interface PendingLife { id: string; dealId: string }
 export interface AdsBridge {
   status(): Promise<AdStatus>;
   prepareInterstitial(): Promise<void>;
   show(request: AdRequest): Promise<AdOutcome>;
-  pending(): Promise<{ receipts: unknown[] }>;
+  pending(): Promise<{ receipts: unknown[]; activeLife?: PendingLife | null }>;
   acknowledge(options: { id: string }): Promise<void>;
   pendingShown(): Promise<{ shown: unknown | null }>;
   acknowledgeShown(options: { id: string }): Promise<void>;
@@ -30,6 +31,8 @@ export function createAds(options: {
   commit(receipt: EarnedReceipt): Promise<ReceiptCommitResult>;
   commitShown(shown: FullscreenShown): Promise<ReceiptCommitResult>;
   beforeShow(request: AdRequest): Promise<void>;
+  pendingLife?(): PendingLife | undefined;
+  retireLife?(request: PendingLife): Promise<void>;
   onStatus(status: AdStatus): void;
   onEvent(event: AdEvent): void;
 }, bridge?: AdsBridge) {
@@ -38,7 +41,7 @@ export function createAds(options: {
   let retryDelay = 1000;
   let status = disabledStatus;
   let listener: PluginListenerHandle | undefined;
-  let recoveryFlight: Promise<void> | undefined, shownFlight: Promise<void> | undefined, prepareFlight: Promise<void> | undefined, statusFlight: Promise<void> | undefined;
+  let recoveryFlight: Promise<void> | undefined, shownFlight: Promise<boolean> | undefined, prepareFlight: Promise<void> | undefined, statusFlight: Promise<void> | undefined;
   let retry: ReturnType<typeof setTimeout> | undefined;
   const queue = new DurableReceiptQueue<EarnedReceipt>({ commit: async r => {
     if (!alive) throw Error('Disposed receipt receiver');
@@ -57,21 +60,34 @@ export function createAds(options: {
     if (recoveryFlight) return recoveryFlight;
     recoveryFlight = (async () => {
       try {
+        const life = options.pendingLife?.();
         const result = await native.pending();
         if (!alive) return;
-        for (const value of result.receipts) { if (!alive) return; await queue.deliver(parseReceipt(value)); }
+        const receipts = result.receipts.map(parseReceipt);
+        for (const receipt of receipts) { if (!alive) return; await queue.deliver(receipt); }
+        // Only a successful native snapshot can establish that the authorization
+        // cannot earn a reward. Older bridges omit activeLife, so keep their request.
+        if (alive && life && result.activeLife === null && !receipts.some(receipt =>
+            receipt.placement === 'life-refill' && receipt.attempt === life.id && receipt.dealId === life.dealId)) {
+          // Shown cadence may still need this nonce after a process restart.
+          // Read again after any earlier lookup, which may have predated the show.
+          await shownFlight;
+          if (await recoverShown() && alive) await options.retireLife?.(life);
+        }
       } catch { /* Retry in the background, retaining the exact native receipt. */ }
       finally { recoveryFlight = undefined; }
     })();
     return recoveryFlight;
   }
-  function recoverShown(): Promise<void> {
-    if (!alive || !native) return Promise.resolve();
+  function recoverShown(): Promise<boolean> {
+    if (!alive || !native) return Promise.resolve(false);
     if (shownFlight) return shownFlight;
     shownFlight = (async () => {
       const { shown } = await native.pendingShown();
-      if (alive && shown !== null) await shownQueue.deliver(parseFullscreenShown(shown));
-    })().catch(() => undefined).finally(() => { shownFlight = undefined; });
+      if (!alive) return false;
+      if (shown !== null) await shownQueue.deliver(parseFullscreenShown(shown));
+      return true;
+    })().catch(() => false).finally(() => { shownFlight = undefined; });
     return shownFlight;
   }
   async function recover(): Promise<void> {

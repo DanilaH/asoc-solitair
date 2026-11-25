@@ -1,10 +1,10 @@
 # Project contract
 
-## Current implementation candidate — 24 November 2026
+## Current implementation candidate — 25 November 2026
 
-The owner assigned implementation of PR202 to the assistant. See [MVP cohesion implementation and evidence](docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md), branch `feat/c8-mvp-cohesion-20261124`, version0.20.4/code45. F1–F3/C1–C3/U1–U5 are implemented in this candidate; verify actual CI/APK evidence before upgrading engineering acceptance. Physical Android/live SDK/human economy acceptance remains separate. Retain the entire source roadmap and immutable historical deals. The older assignment below is the contract/baseline, not a request to repeat these changes.
+The owner assigned the final PR204 audit delta and Android acceptance. The candidate is [draft PR #204](https://github.com/DanilaH/asoc-solitair/pull/204), branch `feat/c8-audit-203-recovery`, profile `c8-release-v1`, version 0.20.4/code45. Resolve the candidate SHA from the PR head and compare it with the exact CI checkout and embedded APK manifest. See [audit fixes](docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md) and the [final Android acceptance runbook](docs/qa/mvp-20261124/ANDROID_ACCEPTANCE_PR204.md). The baseline in `main` remains 0.17.1/code26. Device/live SDK/human acceptance are open. Retain the entire source roadmap and immutable historical deals; older assignments below are historical contracts.
 
-## Current developer assignment — PR201 recheck, 24 November 2026
+## Historical developer assignment — PR201 recheck, 24 November 2026
 
 Read the [PR201 recheck and whole-product audit](docs/porting/PR201_RECHECK_2026-11-24.md) and [MVP fixes and cohesion implementation brief](docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md). Verified baseline: PR201 `23e71a898fd69b86b702ce074621637bcf82432e`, branch `feat/c8-release-audit-followup-20261124`. Refresh actual HEAD and implement only the remaining delta. PR196–201 already contain the integrated B0–B4 work; the earlier [core/ads brief](docs/porting/CORE_ADS_RELEASE_TZ_2026-11-24.md) remains its contract and history, not an instruction to repeat completed engineering.
 

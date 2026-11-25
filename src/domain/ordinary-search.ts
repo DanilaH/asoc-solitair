@@ -1,4 +1,4 @@
-import { applyBoard, packet, sourceCards } from './engine';
+import { applyBoard, boardKey, packet, sourceCards } from './engine';
 import type { Board, BoardCommand, Deal, Location } from './types';
 
 /** Symmetry-pruned actions for the ordinary, unlocked reference slice. */
@@ -28,14 +28,16 @@ export function referenceActions(board: Board, deal: Deal): BoardCommand[] {
   return out;
 }
 
-type Node = { board: Board; parent?: Node; action?: BoardCommand; steps: number; score: number };
+type Node = { key: string; board: Board; parent?: Node; action?: BoardCommand; steps: number; score: number };
 const key = (board: Board) => JSON.stringify([
   board.tableau.map(group => group.join(',')).sort(), board.foundations.map(group => group.join(',')).sort(),
   board.stock, board.waste, board.tableau.map(group => group.filter(id => board.faceUp.includes(id)).join(',')).sort(),
   board.recyclesLeft ?? null,
 ]);
 
-export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allowLower = true, deadline = Infinity) {
+export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allowLower = true, deadline = Infinity,
+  mode?: 'verified-specials') {
+  const identity = mode === 'verified-specials' ? boardKey : key;
   const heap: Node[] = [], seen = new Map<string, number>();
   const weights = new Map<string, number>();
   for (const card of Object.values(deal.cards)) weights.set(card.category, (weights.get(card.category) ?? 0) + 1);
@@ -49,10 +51,11 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
     return (board.collected.length + opened) * -6 + distance * .28 + board.stock.length * .19
       + board.tableau.filter(group => group.length).length * .6 + steps * .78;
   };
-  function push(node: Node) {
-    const id = key(node.board);
-    if ((seen.get(id) ?? Infinity) <= node.steps) return;
-    seen.set(id, node.steps);
+  function push(board: Board, steps: number, parent?: Node, action?: BoardCommand) {
+    const key = identity(board);
+    if ((seen.get(key) ?? Infinity) <= steps) return;
+    seen.set(key, steps);
+    const node: Node = { key, board, parent, action, steps, score: score(board, steps) };
     let i = heap.length;
     heap.push(node);
     while (i) {
@@ -76,11 +79,11 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
     }
     return top;
   }
-  push({ board: initial, steps: 0, score: score(initial, 0) });
+  push(initial, 0);
   let visited = 0;
   while (heap.length && visited < cap && performance.now() < deadline) {
     const node = pop();
-    if ((seen.get(key(node.board)) ?? Infinity) < node.steps) continue;
+    if ((seen.get(node.key) ?? Infinity) < node.steps) continue;
     visited++;
     if (node.board.phase === 'won') {
       const path: BoardCommand[] = [];
@@ -90,10 +93,13 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
     for (const action of referenceActions(node.board, deal)) {
       if (!allowLower && action.type === 'transfer' && action.to.kind === 'tableau') continue;
       const result = applyBoard(node.board, action, deal);
-      if (typeof result === 'string') throw Error(result);
+      if (typeof result === 'string') {
+        // Ordered ranks, locked targets and puzzle constraints can reject a proposal.
+        if (mode === 'verified-specials') continue;
+        throw Error(result);
+      }
       if (result.board.phase === 'exhausted') continue;
-      const steps = node.steps + 1;
-      push({ board: result.board, parent: node, action, steps, score: score(result.board, steps) });
+      push(result.board, node.steps + 1, node, action);
     }
   }
   return { status: (heap.length ? 'UNKNOWN' : 'NO_ROUTE_IN_PRUNED_GRAPH') as 'UNKNOWN' | 'NO_ROUTE_IN_PRUNED_GRAPH', visited };

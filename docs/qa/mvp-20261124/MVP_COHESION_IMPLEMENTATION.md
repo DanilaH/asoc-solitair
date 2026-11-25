@@ -1,5 +1,7 @@
 # MVP cohesion · реализация после PR201
 
+Исторический отчёт PR203. Текущий кандидат и итоговые проверки находятся в [PR204](https://github.com/DanilaH/asoc-solitair/pull/204) и [продолжении аудита](INDEPENDENT_AUDIT_FOLLOWUP.md).
+
 24 ноября 2026. Ветка `feat/c8-mvp-cohesion-20261124`. Версия кандидата **0.20.4 / Android code 45**.
 
 Основание: [ТЗ F1–F3, C1–C3, U1–U5, V1](../../porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md), [проверенная база PR201](../../porting/PR201_RECHECK_2026-11-24.md), docs PR202 `c85fdc772cfcf07acd6289aa8c1519f55df38e09`. Владелец поручил взять эту реализацию в работу. Это следующий delta в общей интегрированной ветке, без слияния старого PR-стека.

@@ -6,7 +6,7 @@ import { campaignId } from '../../src/domain/progression';
 import { platformState } from '../../src/domain/services';
 import { switchMode } from '../../src/domain/sessions';
 import { claimDailyBonus, dailyBonusState, openDailyBonusRound, revealDailyBonusCard } from '../../src/domain/events/daily-bonus';
-import { claimTask, claimTaskMilestone, pendingTaskRewards, recordTaskSignal, scheduleTasks, taskRewardState, type TaskTarget } from '../../src/domain/events/daily-tasks';
+import { acceptedTaskSignals, claimTask, claimTaskMilestone, pendingTaskRewards, recordTaskSignal, scheduleTasks, taskRewardState, updatePreviewTasks, releaseTasks, type TaskTarget } from '../../src/domain/events/daily-tasks';
 import { claimLegacyLiveOpsReward, legacyLiveOpsRewards } from '../../src/domain/events/campaign-liveops';
 import { eventKey, observeEvents, recordEventWin, type EventDefinition } from '../../src/domain/events/ledger';
 import { freeCampaignBonusState, recordFreeCampaignClear, settleFreeCampaignBonus } from '../../src/domain/commerce/storefront';
@@ -260,3 +260,59 @@ describe('earned retention rights through the authoritative SaveStore', () => {
   });
 });
 
+
+it('schedules ordinary new days in an old source week while carrying its frozen rewards', () => {
+  let save = profile(10);
+  updatePreviewTasks(save, now, true);
+  const original = save.dailyTasks!.weeks[0];
+  expect(original.catalog).toBe('azur-compiled-r1');
+  const earned = original.days[0].tasks[0];
+  earned.progress = earned.target;
+  const frozen = structuredClone(original);
+  save = decodeSave(JSON.stringify(save), findDeal);
+  for (const at of [now + DAY, now + 5 * DAY]) {
+    updatePreviewTasks(save, at);
+    expect(taskRewardState(save, at).today?.tasks.map(task => task.kind))
+      .toEqual(['DailyLogin', 'DrawCards', 'ExecuteMoves', expect.stringMatching(/^(WinNoHints|CompleteLevels|CollectThemes)$/)]);
+  }
+  expect(save.dailyTasks!.weeks[0].milestones).toEqual(frozen.milestones);
+  expect(save.dailyTasks!.weeks[0].days[0]).toEqual(frozen.days[0]);
+  expect(claimTask(save, frozen.days[0].utc, earned.id)).toBe(true);
+  expect(claimTask(save, frozen.days[0].utc, earned.id)).toBe(false);
+});
+
+it.skipIf(!releaseTasks)('issues a replayable assignment at 80/80 and never counts a replay as a first clear', () => {
+  const tuesday = now + DAY, date = '2026-11-24';
+  const deal = dailyForDay(date);
+  let save = profile(80);
+  switchMode(save, 'daily', deal, 'first-daily');
+  updatePreviewTasks(save, tuesday);
+  expect(taskRewardState(save, tuesday).today?.tasks.at(-1)?.kind).toBe('WinNoHints');
+  const hint = dispatch(save, { type: 'hint', action: deal.winningPath[0], revision: save.revision }, deal, date);
+  expect(hint.accepted).toBe(true);
+  save = hint.next;
+  save.attempt.verifiedTaskHints = 1;
+  const winDaily = () => {
+    for (const action of deal.winningPath) {
+      const result = dispatch(save, action, deal, date);
+      expect(result.accepted).toBe(true);
+      for (const signal of acceptedTaskSignals(save, result, action, deal)) recordTaskSignal(result.next, tuesday, signal);
+      save = result.next;
+    }
+  };
+  winDaily();
+  save = dispatch(save, { type: 'restart', attemptId: 'no-hint-replay' }, deal, date).next;
+  winDaily();
+  expect(taskRewardState(save, tuesday).today?.tasks.at(-1)).toMatchObject({ kind: 'WinNoHints', progress: 0 });
+
+  const endgame = profile(80);
+  platformState(endgame).completedCampaign.push(campaignId(80));
+  updatePreviewTasks(endgame, tuesday);
+  expect(taskRewardState(endgame, tuesday).today?.tasks.at(-1)).toMatchObject({
+    kind: 'CollectThemes', target: 1, prize: { kind: 'Medals', quantity: 2 },
+  });
+  updatePreviewTasks(endgame, tuesday + 2 * DAY);
+  expect(taskRewardState(endgame, tuesday + 2 * DAY).today?.tasks.at(-1)).toMatchObject({
+    kind: 'CollectThemes', prize: { kind: 'Undo', quantity: 1 },
+  });
+});

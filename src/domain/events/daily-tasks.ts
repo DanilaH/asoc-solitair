@@ -1,4 +1,5 @@
 import { releaseProfile } from '../../config/profile';
+import { CAMPAIGN_LENGTH, completedLevels } from '../progression';
 import { rewardOfferState } from '../reward-offers';
 import sourceRows from './azur-task-source.json' with { type: 'json' };
 import type { Command, Deal, Result, Save } from '../types';
@@ -295,21 +296,23 @@ function sourceMilestones(now: number): WeekMilestone[] {
   ];
 }
 
-export function updatePreviewTasks(save: Save, now: number): void {
+export function updatePreviewTasks(save: Save, now: number, useSourceCatalog = sourceTasks): void {
   const utc = utcKey(now);
   if (!utc) return;
   const day = new Date(now).getUTCDay();
   const weekStart = weekOf(utc);
-  const catalog = save.dailyTasks?.weeks.find(week => week.startUtc === weekStart)?.catalog ??
-    (sourceTasks ? 'azur-compiled-r1' : 'c8-task-base-r1');
+  const previousCatalog = save.dailyTasks?.weeks.find(week => week.startUtc === weekStart)?.catalog;
+  const catalog = useSourceCatalog ? previousCatalog ?? 'azur-compiled-r1' : 'c8-task-base-r1';
   if (catalog === 'azur-compiled-r1') {
     scheduleTasks(save, now, azurTaskDays[(day + 6) % 7], sourceMilestones(parseUtc(weekStart)), catalog);
     return;
   }
-  const last = releaseTasks && day % 3 === 2
-    ? { id: 'no-hint', kind: 'WinNoHints', target: 1, prize: { kind: 'Medals', quantity: 2 } } as const
-    : day % 2 ? earnedRows[3] : earnedRows[4];
-  scheduleTasks(save, now, [...earnedRows.slice(0, 3), last],
+  // Day rows are assigned once. Older days and their weekly prizes keep their saved terms.
+  const finishedCampaign = releaseTasks && completedLevels(save) === CAMPAIGN_LENGTH;
+  const fourth: TaskTarget = releaseTasks && day % 3 === 2
+    ? finishedCampaign ? earnedRows[3] : { id: 'no-hint', kind: 'WinNoHints', target: 1, prize: { kind: 'Medals', quantity: 2 } }
+    : day % 2 ? earnedRows[3] : finishedCampaign ? { ...earnedRows[4], id: 'theme-undo', kind: 'CollectThemes' } : earnedRows[4];
+  scheduleTasks(save, now, [...earnedRows.slice(0, 3), fourth],
     [{ id: 'week', medals: 5, prize: { kind: 'Coins', quantity: 20 } }], catalog);
 }
 

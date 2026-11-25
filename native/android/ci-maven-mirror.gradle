@@ -1,0 +1,17 @@
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+
+if (System.getenv('ASOC_MAVEN_CENTRAL_MIRROR') == '1') {
+    // The pinned Capacitor projects also declare Maven Central in their own
+    // buildscript blocks. Include those repositories in the mirror fallback.
+    def mirrorCentral = { repositories ->
+        repositories.withType(MavenArtifactRepository).configureEach { repository ->
+            if (repository.url?.host in ['repo.maven.apache.org', 'repo1.maven.org']) {
+                repository.setUrl('https://maven-central.storage-download.googleapis.com/maven2')
+            }
+        }
+    }
+    gradle.beforeProject { project ->
+        mirrorCentral(project.buildscript.repositories)
+        mirrorCentral(project.repositories)
+    }
+}

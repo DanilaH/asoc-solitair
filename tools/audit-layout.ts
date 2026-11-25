@@ -113,8 +113,10 @@ try {
     const dialogId=id.startsWith('result')?'result':id.startsWith('learn-')?'learn-rule':id.startsWith('settings')?'settings':id;
     if (id.startsWith('learn-')) {
       let index = ({ 'learn-joker': 7, 'learn-ordered': 29, 'learn-keys': 48 } as Record<string, number>)[id];
-      if (releaseProfile && id !== 'learn-joker') {
-        index = campaignDeals.findIndex((deal, i) => ruleIntroduction(seed(i), deal) === id.slice(6));
+      if (releaseProfile) {
+        index = campaignDeals.findIndex((deal, i) => id === 'learn-joker'
+          ? i >= 8 && deal.training !== 'joker' && !ruleIntroduction(seed(i), deal)
+          : ruleIntroduction(seed(i), deal) === id.slice(6));
         if (index < 0) throw Error('Missing C8 tutorial fixture: ' + id);
       }
       await load(page, seed(index));

@@ -283,7 +283,7 @@ jobs:
             exit 0
           fi
           grep -q 'https://repo.maven.apache.org/maven2' "$RUNNER_TEMP/asoc-gradle.log"
-          ASOC_MAVEN_CENTRAL_MIRROR=1 ./gradlew --no-daemon testDebugUnitTest assembleDebug
+          ASOC_MAVEN_CENTRAL_MIRROR=1 ./gradlew --no-daemon --init-script ci-maven-mirror.gradle testDebugUnitTest assembleDebug
           echo 'ASOC_MAVEN_CENTRAL_MIRROR=1' >> "$GITHUB_ENV"
         working-directory: native/android
         env:
@@ -300,7 +300,7 @@ jobs:
         env:
           ASOC_AD_MODE: disabled
           ASOC_APK_VARIANT: release
-      - run: ./gradlew --no-daemon assembleRelease
+      - run: ./gradlew --no-daemon --init-script ci-maven-mirror.gradle assembleRelease
         working-directory: native/android
         env:
           ASOC_AD_MODE: disabled

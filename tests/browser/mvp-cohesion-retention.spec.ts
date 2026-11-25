@@ -144,8 +144,8 @@ test('L2 can inspect an earned locked Joker without unlocking use, buying it, or
   await openHelpers(page);
   await expect(page.locator('#helper-inventory')).toBeVisible();
   const lockedJoker = page.locator('#helper-inventory-later > div').filter({ hasText: 'Ручные Джокеры' });
-  await expect(lockedJoker.locator('dt span')).toHaveText('8');
-  await expect(lockedJoker.locator('dd')).toContainText('С уровня');
+  await expect(lockedJoker.locator('dt span')).toHaveText(String(jokers + 1));
+  await expect(lockedJoker.locator('dd')).toContainText('С уровня 8');
   await expect(page.locator('#joker-offer')).toBeHidden();
   await expect(page.locator('#joker')).toBeHidden();
   expect((await read(page)).profile.coins).toBe(save.profile.coins);

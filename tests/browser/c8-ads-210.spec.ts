@@ -68,10 +68,10 @@ test('one banner slot survives Home to game and AdsBreak waits out a modal', asy
   await expect(page.locator('#play-screen')).toBeVisible();
   expect(await page.locator('#banner-slot').boundingBox()).toEqual(box);
   expect(await actions('hideBanner')).toHaveLength(0);
-  await page.clock.fastForward(181_000);
   await move(page,deal,deal.winningPath[0]);
   await page.locator('#menu').tap();
-  await page.clock.fastForward(3_000);
+  await expect(page.locator('#settings-done')).toBeVisible();
+  await page.clock.fastForward(181_000);
   expect(await actions('show')).toHaveLength(0);
   expect((await actions('hideBanner')).length).toBeGreaterThan(0);
   await page.locator('#settings-done').tap();

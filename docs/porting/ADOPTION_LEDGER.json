@@ -831,7 +831,7 @@
     {
       "id": "unico-coffee-break",
       "status": "ROADMAPPED",
-      "currentImplementation": "Owner decision 24.11 maps Coffee Break and Hitapps AdsBreak to one C8 ad-pause capability. main.ts schedules ads-break only when eligible and board idle. Separate coffeePreview disabled under releaseProfile; optional rewarded coins distinct. S3 +3 observed after interruption; opt-in/format unknown. Issue #210: the ordinary shared pause carries its pending opportunity to the next safe idle check and records reasons. See docs/qa/issue-210/ANDROID_ADS_CHECK.md for device evidence gates.",
+      "currentImplementation": "Owner decision 24.11 maps Coffee Break and Hitapps AdsBreak to one C8 ad-pause capability. main.ts schedules ads-break only when eligible and board idle. Separate coffeePreview disabled under releaseProfile; optional rewarded coins distinct. S3 +3 observed after interruption; opt-in/format unknown. Issue #210: the ordinary shared pause carries its pending opportunity to the next safe idle check and records reasons. See docs/qa/issue-210/ANDROID_ADS_CHECK.md for device evidence gates. Issue #210 B adds configurable source-shaped cadence with a shared confirmed-fullscreen clock and repeated Coffee across campaign/Daily. Exact live source configuration and Android SDK acceptance remain open.",
       "nextAction": "Recover original interruption trigger/type/award; compare shared product pause. SDK/ILRD/native return acceptance. Do not re-add duplicate Coffee UI or infer opt-in from video.",
       "stage": "E2",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",

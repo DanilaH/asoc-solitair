@@ -350,7 +350,7 @@ test('real-time draw, Undo, drag, result and Next on C8', async ({ page, context
   await expect(page.locator('#next-level')).toHaveText('Забрать');
   const claim = await touchable(page, '#next-level');
   await page.touchscreen.tap(claim.x, claim.y);
-  await expect(page.locator('#next-level')).toContainText('Уровень 17');
+  await expect(page.locator('#next-level')).toHaveText('Дальше');
   const next = await touchable(page, '#next-level');
   await page.touchscreen.tap(next.x, next.y);
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', dealAt(17).id);

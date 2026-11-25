@@ -106,7 +106,7 @@ public class SolitaireAdsPlugin extends Plugin {
             value.put("placement", placement); value.put("micros", micros); value.put("currency", currency);
             value.put("provider", "yandex-mobile-ads"); value.put("sdk", "8.6.0");
             value.put("sdkMode", BuildConfig.AD_MODE); value.put("build", BuildConfig.VERSION_NAME);
-            value.put("policy", "single-placement-pause-r1");
+            value.put("policy", "source-shaped-pause-r2");
             RevenueDelivery.Capture result = delivery.receive(id, value.toString());
             if (result == RevenueDelivery.Capture.CAPTURED) event(kind, "revenue_intake_pending");
             if (result == RevenueDelivery.Capture.INTAKE_FULL) event(kind, "revenue_intake_full");
@@ -162,12 +162,13 @@ public class SolitaireAdsPlugin extends Plugin {
         boolean offerAllowed = (testMode || BuildConfig.REWARD_OFFERS_ADS_APPROVED) && mode.equals("campaign") &&
             (placement.equals("win-double") || placement.equals("win-triple") || placement.equals("win-fivefold") ||
              placement.equals("win-flat") || placement.equals("shop-free-coins") || placement.equals("rewarded-theme"));
+        boolean pauseAllowed = (testMode || BuildConfig.CAMPAIGN_ADS_APPROVED) && placement.equals("ads-break");
         boolean campaignExtra = (testMode || BuildConfig.CAMPAIGN_ADS_APPROVED) && mode.equals("campaign");
         boolean rewardPlacement = ((testMode || BuildConfig.CAMPAIGN_LIVES_ADS_APPROVED) && mode.equals("campaign") && placement.equals("life-refill")) || (campaignExtra && placement.equals("coffee-break")) || offerAllowed || placement.equals("hint") || placement.equals("undo") || placement.equals("continue") ||
             (mode.equals("campaign") && (placement.equals("bonus-foundation") || placement.equals("bonus-tableau")));
         if ((!kind.equals("interstitial") && !kind.equals("rewarded")) ||
             !attempt.matches("[a-zA-Z0-9_-]{1,100}") || !dealId.matches("[a-zA-Z0-9_-]{1,100}") || (!mode.equals("campaign") && !mode.equals("daily")) ||
-            (kind.equals("rewarded") ? !rewardPlacement : (!placement.equals("continue") && !(campaignExtra && placement.equals("ads-break"))) || !mode.equals("campaign"))) {
+            (kind.equals("rewarded") ? !rewardPlacement : (!pauseAllowed && (!placement.equals("continue") || !mode.equals("campaign"))))) {
             call.reject("Invalid ad request"); return;
         }
         if (!available(kind) || session != null || background || !getActivity().hasWindowFocus()) { resolve(call, false, "unavailable"); return; }

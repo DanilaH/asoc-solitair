@@ -4,6 +4,8 @@
 
 [Issue #210](https://github.com/DanilaH/asoc-solitair/issues/210) starts from PR208 and upstreams the PR209 research doc delta. Keep the approved C8 grid, frozen deal bank, receipts, art and product behavior. Start with [the composition review](docs/qa/issue-210/COMPOSITION_REVIEW.md) and parallel FTUE/ads engineering. After owner composition approval, use the vertical slice before scaling the art. [Android ads acceptance](docs/qa/issue-210/ANDROID_ADS_CHECK.md) distinguishes actual SDK, runtime and physical checks. The 115 sources, 38 packets, 15 commerce families and the runtime pin remain in force.
 
+Owner approved Card Table B with animated reward feedback. The updated #210 ad direction supersedes the old fixed L16/one-Coffee/three-wins limits for the ordinary test candidate. See [P21](docs/porting/P21_AD_PLACEMENTS.md). Keep live/provider gates and the separate earned-receipt path.
+
 ## Research consolidation — 25 November 2026
 
 Read [current Solitaire research](https://github.com/DanilaH/mini-games-kit/blob/af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a/research/games/association-solitaire/CURRENT.md) and [consumer pin reconciliation](docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md). Exact research pin `af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a`, blob `29ddea6086c46c5581702cb0001536e6666b7626`, kit draft PR151. Research snapshot only; runtime dependency unchanged. Active UI candidate PR208 on feat/c8-ui-grid-205; resolve latest HEAD, retain issue205 requirements. Do not restart implemented ordinary Bonus/Combo/base-only multiplier. All 115 IDs/38 packets, seven owner decisions, IAP OFF and one AdsBreak/Coffee capability retained.

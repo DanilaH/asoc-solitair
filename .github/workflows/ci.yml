@@ -216,7 +216,9 @@ jobs:
           ASOC_QA_C8_GEOMETRY: '1'
         run: npx vitest run tests/unit/c8-ui-geometry.test.ts --disableConsoleIntercept | tee .recording/c8-grid.txt
       - name: Audit C8 release geometry and capture its UI
-        run: npx playwright test tests/browser/c8-ui-205.spec.ts tests/browser/c8-ftue-210.spec.ts tests/browser/c8-ads-210.spec.ts --project=compact --output=test-results/c8-ui
+        env:
+          ASOC_CASUAL_RECORD: '1'
+        run: npx playwright test tests/browser/c8-ui-205.spec.ts tests/browser/c8-ftue-210.spec.ts tests/browser/c8-ads-210.spec.ts tests/browser/c8-casual-210.spec.ts --project=compact --output=test-results/c8-ui
       - name: Verify saved rights and reward lifecycle through ordinary touch UI
         run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts --output=test-results/mvp-cohesion
       - uses: actions/upload-artifact@v4

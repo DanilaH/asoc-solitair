@@ -1,5 +1,5 @@
 import { matchesLifeShow, settleLifeVideo } from './campaign-lives';
-import { recordAdBreakShown, settleCoffee } from './campaign-advertising';
+import { recordAdBreakShown, recordCoffeeDisplay, settleCoffee } from './campaign-advertising';
 import { campaignRewards } from './meta';
 import { isOfferPlacement, offerShowContext, settleRewardOffer, type OfferPlacement } from './reward-offers';
 import { BALANCE } from './balance';
@@ -19,6 +19,9 @@ export function platformState(save: Save): PlatformState {
   return save.platform ??= { receipts: [], continuedAttempts: [], continueCredits: 0, completedCampaign: [], winsSinceInterstitial: 0, lastFullscreenAt: 0 };
 }
 export function parseReceipt(value: unknown): EarnedReceipt {
+  return parseAdIdentity(value, false);
+}
+function parseAdIdentity(value: unknown, allowDailyPause: boolean): EarnedReceipt {
   if (!value || typeof value !== 'object') throw Error('Invalid receipt');
   const r = value as Record<string, unknown>;
   if (r.schema !== 1 || typeof r.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.id) ||
@@ -26,21 +29,21 @@ export function parseReceipt(value: unknown): EarnedReceipt {
     typeof r.dealId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(r.dealId) ||
     (!['hint', 'undo', 'continue', 'ads-break', 'coffee-break', 'life-refill', ...Object.values(bonusPlacements)].includes(String(r.placement)) && !isOfferPlacement(String(r.placement))) ||
     !['campaign', 'daily'].includes(String(r.mode)) ||
-    ((r.placement === 'ads-break' || r.placement === 'coffee-break' || r.placement === 'life-refill' || bonusKindFor(String(r.placement)) || isOfferPlacement(String(r.placement))) && r.mode !== 'campaign')) throw Error('Invalid receipt');
+    ((r.placement === 'ads-break' && !allowDailyPause || r.placement === 'coffee-break' || r.placement === 'life-refill' || bonusKindFor(String(r.placement)) || isOfferPlacement(String(r.placement))) && r.mode !== 'campaign')) throw Error('Invalid receipt');
   return { schema: 1, id: r.id, attempt: r.attempt, dealId: r.dealId, placement: r.placement as RewardPlacement, mode: r.mode as EarnedReceipt['mode'] };
 }
 export function parseFullscreenShown(value: unknown): FullscreenShown {
-  const receipt = parseReceipt(value);
-  const { kind, shownAt } = value as Partial<FullscreenShown>;
+  const { kind, shownAt } = (value ?? {}) as Partial<FullscreenShown>;
+  const receipt = parseAdIdentity(value, kind === 'interstitial');
   if (typeof shownAt !== 'number' || !Number.isSafeInteger(shownAt) || shownAt <= 0 ||
-    (kind !== 'rewarded' && (kind !== 'interstitial' || receipt.mode !== 'campaign' || !['continue', 'ads-break'].includes(receipt.placement)))) {
+    (kind !== 'rewarded' && (kind !== 'interstitial' || receipt.placement !== 'ads-break' && (receipt.mode !== 'campaign' || receipt.placement !== 'continue')))) {
     throw Error('Invalid fullscreen display');
   }
   return { ...receipt, kind, shownAt };
 }
 
 /** The native journal owns one verified show until this independent effect is durable. */
-export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?: number): 'applied' | 'already-applied' {
+export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?: number, repeatableDeal?: Deal): 'applied' | 'already-applied' {
   const attempt = save.attempt;
   const verifiedLife = shown.placement === 'life-refill' && matchesLifeShow(save, shown.attempt, shown.dealId);
   const offerPlacement = isOfferPlacement(shown.placement);
@@ -58,7 +61,10 @@ export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?:
   state.lastFullscreenAt = shown.shownAt;
   state.fullscreenCadence = { version: 1, lastShownId: shown.id };
   if (shown.kind === 'interstitial') state.winsSinceInterstitial = 0;
-  if (shown.placement === 'ads-break' && level !== undefined) recordAdBreakShown(save, level);
+  if (shown.placement === 'ads-break' && shown.kind === 'interstitial') {
+    if (repeatableDeal) recordCoffeeDisplay(save, repeatableDeal);
+    else if (level !== undefined && shown.mode === 'campaign') recordAdBreakShown(save, level);
+  }
   return 'applied';
 }
 /** All effects and identities enter the same coordinated snapshot; Undo never owns these fields. */

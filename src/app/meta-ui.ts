@@ -11,7 +11,12 @@ export function renderMeta(save: Save, busy: boolean) {
   $('#app').dataset.palette = cosmeticUnlocked(save, 'palette') ? save.settings.palette ?? 'green' : 'green';
   $('#app').dataset.back = cosmeticUnlocked(save, 'cardBack') ? save.settings.cardBack ?? 'classic' : 'classic';
   const basicReady = campaignCount(save) >= 2;
-  $('.daily-card').hidden = !basicReady && !daily && meta.dailyDates.length === 0;
+  const noDaily = !basicReady && !daily && meta.dailyDates.length === 0;
+  $('.daily-card').hidden = noDaily;
+  if ($('#app').hasAttribute('data-casual')) {
+    $('#daily-play').hidden = noDaily;
+    $('#calendar-open').hidden = noDaily;
+  }
   $('#win-cycle-open').hidden = n === 0 || n >= CAMPAIGN_LENGTH; $('#appearance-open').hidden = n === 0;
   $('#win-cycle-pips').innerHTML = pips(meta.winCycle);
   $('#cycle-reward').textContent = `+${BALANCE.meta.cycleCoins} монет и подсказка`;

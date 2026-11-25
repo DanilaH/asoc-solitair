@@ -16,7 +16,15 @@
     "shuffleProgression": "c8-shuffle-progression-r1",
     "economy": "c8-non-iap-rights-r1",
     "extraHelpers": { "randomJokerCoins": 250, "unlimitedCoins": 120, "unlimitedMs": 60000 },
-    "advertising": "single-placement-pause-r1"
+    "advertising": "source-shaped-pause-r2",
+    "advertisingCadence": {
+      "interstitial": { "minimumLevel": 3, "startupMs": 120000, "spacingMs": 120000 },
+      "coffee": {
+        "unlockLevel": 3, "startupMs": 180000, "spacingMs": 180000,
+        "modes": ["campaign", "daily"], "triggerMove": true, "triggerCategory": true, "triggerRecycle": true,
+        "minRemainingStepsPercent": null, "maxByDifficulty": {}
+      }
+    }
   },
   "capabilities": {
     "generation": "active",

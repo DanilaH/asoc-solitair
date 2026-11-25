@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { releaseProfile } from '../config/profile';
 import { installSceneTextSharpness } from '@danilah/mini-games-kit/phaser';
 import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
@@ -52,6 +53,7 @@ export class BoardScene extends Phaser.Scene {
   private stockLayers: Phaser.GameObjects.Image[] = [];
   private stockBusyUntil = 0;
   private stockCount!: Phaser.GameObjects.Text;
+  private recycleIcon?: Phaser.GameObjects.Image;
   private stockBadge!: Phaser.GameObjects.Graphics;
   private collections = new Map<number, CollectionView>();
   private praiseIndex = 0;
@@ -124,6 +126,7 @@ export class BoardScene extends Phaser.Scene {
     this.tweens.add({ targets: cards, angle: 9, duration: 170, ease: 'Sine.easeInOut', yoyo: true });
   }
   public preload(): void {
+    if (releaseProfile && !this.textures.exists('recycle-icon')) this.load.svg('recycle-icon', 'art/ui/recycle.svg', { width: 96, height: 96 });
     if (!this.textures.exists('tutorial-hand')) this.load.image('tutorial-hand', 'art/ui/tutorial-hand.webp');
     for (const name of UI_ART) if (!this.textures.exists('art-' + name)) this.load.image('art-' + name, artUrl(name));
     for (const card of Object.values(this.options.deal.cards)) { const image = cardArtwork(card, this.options.deal); if (image && !this.textures.exists(image)) this.load.image(image, image); }
@@ -152,6 +155,10 @@ export class BoardScene extends Phaser.Scene {
     this.stockCount = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(.5).setDepth(38);
     this.stockBadge = this.add.graphics().setDepth(37);
     this.world.add([this.slots, ...this.stockLayers, this.stockArt, this.focus, this.stockBadge, this.stockCount]);
+    if (releaseProfile) {
+      this.recycleIcon = this.add.image(0, 0, 'recycle-icon').setDepth(38).setVisible(false);
+      this.world.add(this.recycleIcon);
+    }
     for (const kind of bonusKinds) {
       for (let index = 0; index < slotCount(this.options.deal, kind); index++) {
         const view = this.add.image(0, 0, `art-slot-${kind}`).setVisible(false).setDepth(0);
@@ -461,6 +468,8 @@ export class BoardScene extends Phaser.Scene {
     });
     this.stockArt.setDepth(8);
     this.stockBadge.clear();
+    const showRecycle = deckActive && !board.stock.length && board.waste.length > 0 && board.recyclesLeft !== 0;
+    this.recycleIcon?.setPosition(stock.x, stock.y).setDisplaySize(this.cardW * .53, this.cardW * .53).setVisible(showRecycle);
     if (board.stock.length) {
       const x = stock.x, y = stock.y + thickness - this.cardH / 2 + 36;
       const font = Math.max(31, 18 / this.cssUnit);
@@ -469,7 +478,7 @@ export class BoardScene extends Phaser.Scene {
       const height = font * 1.08;
       this.stockBadge.fillStyle(0x1c284c).fillRoundedRect(x - width / 2, y - height / 2, width, height, height / 2);
       this.stockBadge.lineStyle(2, 0xffdfa3).strokeRoundedRect(x - width / 2, y - height / 2, width, height, height / 2);
-    } else this.stockCount.setPosition(stock.x, stock.y).setFontSize(42).setText(board.waste.length ? board.recyclesLeft === 0 ? '×' : '↻' : '');
+    } else this.stockCount.setPosition(stock.x, stock.y).setFontSize(42).setText(board.waste.length ? board.recyclesLeft === 0 ? '×' : releaseProfile ? '' : '↻' : '');
     const root = this.options.inputRoot?.();
     if (root) root.dataset.stockCount = deckActive ? String(board.stock.length) : '';
     this.foundationArt.clear();

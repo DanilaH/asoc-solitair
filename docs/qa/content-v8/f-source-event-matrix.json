@@ -3,7 +3,7 @@
   "asOf": "2026-11-21",
   "source": {
     "kitRetentionEvidenceGitBlob": "a108bc5d843ea45ece26aed67e7ca4cb91735589",
-    "consumerSourceInventoryGitBlob": "72efdad46077213e1ce68475b004544fe9dfec75",
+    "consumerSourceInventoryGitBlob": "29ddea6086c46c5581702cb0001536e6666b7626",
     "originalHitappsXapkSha256": "22aaff3a6d5b70f217b8feb7348538f5ab3352d4e8c766406cbddcbcd71e49f0",
     "originalAzurXapkSha256": "4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4",
     "sourceTier": "REPORT_FROM_ORIGINAL_SHA_CHECKED_BINARIES_NOT_EXECUTED_THIS_TURN",
@@ -139,15 +139,15 @@
     {
       "id": "azur-daily-tasks",
       "stage": "F1",
-      "pinnedSourceTier": "ASSET_VERIFIED",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/18e6dd93c4a9b759ce1c9e1d154dd93be50725cb/research/games/association-solitaire/2026-11-24-azur-medal-award-paths/README.md",
       "consumerAuditStatus": "ROADMAPPED"
     },
     {
       "id": "azur-daily-bonus",
       "stage": "F1",
-      "pinnedSourceTier": "ASSET_VERIFIED",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-dailybonus-weighted-pool/README.md",
       "consumerAuditStatus": "ROADMAPPED"
     },
     {
@@ -258,8 +258,8 @@
     {
       "id": "azur-combo-streak",
       "stage": "F2",
-      "pinnedSourceTier": "METADATA",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-18-retention-loops/README.md",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-combo-series-original/README.md",
       "consumerAuditStatus": "EVIDENCE_GAP"
     },
     {

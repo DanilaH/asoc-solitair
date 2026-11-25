@@ -21,7 +21,7 @@
     <button id="level-picker-open" class="levels-link">Выбрать уровень</button></div>
   </section>
   <div id="play-screen" hidden>
-  <div class="level"><span id="level-number">УРОВЕНЬ 1</span><h1>Найдите общее</h1></div>
+  <div class="level"><span id="level-number">УРОВЕНЬ 1</span><span id="unlimited-countdown" role="timer" aria-label="Осталось времени без лимита" hidden>Без лимита <strong></strong></span><h1>Найдите общее</h1></div>
   <main id="game" aria-label="Карточное поле"><div id="game-root"></div>
     <button id="bonus-foundation" class="board-bonus" aria-label="Дополнительный слот для темы" hidden><span aria-hidden="true">+</span>Тема</button>
     <button id="bonus-tableau" class="board-bonus" aria-label="Дополнительный столбец" hidden><span aria-hidden="true">+</span>Столбец</button><div class="deck-tools"><div class="moves"><span id="moves-caption">Ходы</span><strong id="moves">32</strong><div class="move-track"><i id="move-fill"></i></div><button id="inspect" aria-label="Рассмотреть карту" aria-pressed="false"><span class="inspect-icon">Aa</span></button></div></div><div id="loading">Раскладываем карты…</div></main>
@@ -108,7 +108,7 @@
 </dialog>
 <dialog id="daily-tasks-dialog" class="sheet" aria-labelledby="daily-tasks-title">
   <div class="sheet-heading"><button class="close" data-close aria-label="Закрыть">×</button><h2 id="daily-tasks-title">Задания</h2></div>
-  <div class="sheet-body"><h3>Сегодня</h3><p id="daily-tasks-day-status" class="small" role="status"></p><div id="daily-tasks-list"></div><h3>Бонус недели</h3><p id="daily-tasks-medals" role="status"></p><div id="daily-tasks-milestones"></div><button id="daily-tasks-weekly" class="secondary" disabled>Получить 20 монет за 5 медалей</button><section id="daily-tasks-previous" hidden><h3>Награды прошлых дней</h3><div id="daily-tasks-previous-list"></div></section></div>
+  <div class="sheet-body"><h3>Сегодня</h3><p id="daily-tasks-day-status" class="small" role="status"></p><p id="daily-tasks-first-clear" class="small" hidden></p><div id="daily-tasks-list"></div><h3 id="daily-tasks-week-title">Бонус недели</h3><p id="daily-tasks-medals" role="status"></p><p id="daily-tasks-legacy-week" class="small" hidden></p><div id="daily-tasks-milestones"></div><button id="daily-tasks-weekly" class="secondary" disabled>Получить 20 монет за 5 медалей</button><section id="daily-tasks-previous" hidden><h3>Награды прошлых дней</h3><div id="daily-tasks-previous-list"></div></section></div>
   <div class="sheet-actions"><button class="secondary" data-close>Готово</button></div>
 </dialog>
 <script type="module" src="/src/main.ts"></script>

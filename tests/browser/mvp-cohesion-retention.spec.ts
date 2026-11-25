@@ -4,7 +4,7 @@ import { dispatch, freshSave } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import { platformState } from '../../src/domain/services';
 import { openDailyBonusRound, revealDailyBonusCard, claimDailyBonus } from '../../src/domain/events/daily-bonus';
-import { claimTask, claimTaskMilestone, recordTaskSignal, updatePreviewTasks, type TaskSignal } from '../../src/domain/events/daily-tasks';
+import { claimTask, claimTaskMilestone, recordTaskSignal, scheduleTasks, updatePreviewTasks, type TaskSignal } from '../../src/domain/events/daily-tasks';
 import { eventKey, observeEvents, recordEventWin, type EventDefinition } from '../../src/domain/events/ledger';
 import { openPictureEvent } from '../../src/domain/events/picture';
 import { rewardOfferState } from '../../src/domain/reward-offers';
@@ -189,6 +189,66 @@ test('ordinary Tasks UI claims yesterday, then its newly earned old-week milesto
 
 test.describe('local presentation of unchanged UTC reward periods', () => {
   test.use({ timezoneId: 'Asia/Yekaterinburg' });
+  test('explains a saved source week and first-clear deadline while preserving old rewards', async ({ page }, info) => {
+    const save = profile(), monday = '2026-11-23', tuesday = '2026-11-24';
+    updatePreviewTasks(save, Date.parse(monday), true);
+    const completedMonday: TaskSignal[] = [
+      { id: 'login', kind: 'DailyLogin', channel: 'login', amount: 1 },
+      { id: 'topics', kind: 'CollectThemes', channel: 'board', amount: 10 },
+      { id: 'hints', kind: 'UseHints', channel: 'helper', amount: 2 },
+      { id: 'earn', kind: 'EarnCoins', channel: 'wallet', amount: 100 },
+    ];
+    for (const signal of completedMonday) expect(recordTaskSignal(save, Date.parse(monday), signal)).toBe(true);
+    for (const id of ['azur-1-1', 'azur-1-2', 'azur-1-3']) expect(claimTask(save, monday, id)).toBe(true);
+    // This day was assigned in the C8 runtime before the profile reached 80/80.
+    expect(scheduleTasks(save, Date.parse(tuesday), [
+      { id: 'visit', kind: 'DailyLogin', target: 1, prize: { kind: 'Medals', quantity: 1 } },
+      { id: 'draw', kind: 'DrawCards', target: 1, prize: { kind: 'Coins', quantity: 10 } },
+      { id: 'moves', kind: 'ExecuteMoves', target: 4, prize: { kind: 'MoveHint', quantity: 1 } },
+      { id: 'no-hint', kind: 'WinNoHints', target: 1, prize: { kind: 'Medals', quantity: 2 } },
+    ], [], 'c8-task-base-r1')).toBe(true);
+    platformState(save).completedCampaign = Array.from({ length: 80 }, (_, index) => campaignId(index + 1));
+    const original = structuredClone(save.dailyTasks!.weeks[0]);
+    const firstClear = original.days.find(day => day.utc === tuesday)!.tasks.find(task => task.id === 'no-hint')!;
+    expect(firstClear).toMatchObject({ kind: 'WinNoHints', target: 1, progress: 0 });
+
+    await seedHome(page, save, Date.parse(tuesday) + DAY / 2);
+    await page.locator('#daily-tasks-open').tap();
+    const list = page.locator('#daily-tasks-list');
+    await expect(list.locator('[data-task=no-hint]')).toContainText('Впервые пройти раздачу без подсказок');
+    await expect(page.locator('#daily-tasks-first-clear')).toContainText('Условия действуют до обновления');
+    await expect(page.locator('#daily-tasks-day-status')).toContainText(/25\.11.*05:00/);
+    await expect(page.locator('#daily-tasks-week-title')).toHaveText('Неделя прежней версии');
+    await expect(page.locator('#daily-tasks-medals')).toHaveText('Медали недели · 30');
+    await expect(page.locator('#daily-tasks-legacy-week')).toContainText(/Обычный недельный бонус начнётся 30\.11.*05:00/);
+    await expect(page.locator('#daily-tasks-weekly')).toBeHidden();
+    if (process.env.ASOC_MVP_DEMO === '1') {
+      await page.locator('#daily-tasks-week-title').scrollIntoViewIfNeeded();
+      await info.attach('saved source week', { body: await page.screenshot(), contentType: 'image/png' });
+    }
+    const oldTask = page.locator('[data-reward-key="task:2026-11-23:azur-1-4"]');
+    await expect(oldTask).toContainText('25 мед.');
+    await oldTask.getByRole('button').tap();
+    await expect(page.locator('#daily-tasks-medals')).toHaveText('Медали недели · 55');
+    const milestone = page.locator('#daily-tasks-milestones').getByRole('button', { name: /^50 мед\./ });
+    await milestone.tap();
+    await expect(milestone).toHaveText('50 мед. · Получено');
+    const earned = (await read(page)).dailyTasks!.weeks[0];
+    expect(earned.milestones).toEqual(original.milestones);
+    expect(earned.claimedMilestones).toEqual(['source-50']);
+    expect(earned.days[1].tasks.find(task => task.id === 'no-hint')).toEqual(firstClear);
+
+    await page.clock.setSystemTime(new Date('2026-11-30T12:00:00Z'));
+    await page.reload();
+    await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+    await page.locator('#daily-tasks-open').tap();
+    await expect(page.locator('#daily-tasks-week-title')).toHaveText('Бонус недели');
+    await expect(page.locator('#daily-tasks-legacy-week')).toBeHidden();
+    await expect(page.locator('#daily-tasks-first-clear')).toBeHidden();
+    await expect(page.locator('#daily-tasks-medals')).toHaveText('Медали недели · 0/5');
+    expect((await read(page)).dailyTasks!.weeks[0]).toEqual(earned);
+  });
+
   test('shows a completed weekly bonus and local reset after all claims, without an open 12/5 goal', async ({ page }) => {
     const save = profile(), at = Date.UTC(2026, 10, 28, 12);
     for (let day = 23; day <= 28; day++) {

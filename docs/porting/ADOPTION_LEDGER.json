@@ -12,9 +12,10 @@
       "docs/porting/RETENTION_SOURCE_DELTA_TZ_2026-11-24.md"
     ],
     "state": "LOCAL_IMPLEMENTATION_PENDING_ACCEPTANCE",
-    "note": "The original codeRef/docsBasisRef retain planning provenance. B0-B4 are followed by local F1-F3/C1-C3/U1-U5 implementation on the named branch; final-branch CI/APK/browser, physical SDK and human acceptance remain pending. All source IDs, packet owners and existing implementation/acceptance statuses are preserved; product adaptation does not imply source parity.",
-    "implementationBranch": "feat/c8-mvp-cohesion-20261124",
-    "implementationEvidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
+    "note": "The original codeRef/docsBasisRef retain planning provenance. The candidate branch contains B0-B4, F1-F3/C1-C3/U1-U5, the independent-audit fixes and the compact-interface follow-up. Exact candidate HEAD, CI and APK are recorded in PR204. Physical SDK and human acceptance remain open. All source IDs, packet owners and existing implementation/acceptance statuses are preserved; product adaptation does not imply source parity.",
+    "implementationBranch": "feat/c8-audit-203-recovery",
+    "implementationEvidenceRef": "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md",
+    "implementationPullRequest": "https://github.com/DanilaH/asoc-solitair/pull/204"
   },
   "integratedReleaseCandidate": {
     "profile": "c8-release-v1",
@@ -198,7 +199,7 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-easy-deals",
@@ -213,7 +214,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-equality-paywall",
@@ -358,7 +359,7 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-joker",
@@ -413,12 +414,12 @@
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-daily-tasks",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "MVP U2/U3 retain the own four-task UTC schedule, frozen day/week definitions, common grant inventory and weekly 5-medal/20-coin milestone. Shared state drives Home/day/week readiness and reset times. The ordinary tasks dialog exposes only completed unclaimed older task/milestone records, claims their original IDs/frozen prizes, and assigns old task medals to the original week. Current incomplete and completed/claimed states are explicit; a finished weekly meter no longer advertises another reward above its cap. Новые дни прежней QA-недели получают ordinary-цели без IAP, исходные дни и недельные призы сохранены. На 80/80 новые first-clear-цели заменяет достижимый сбор темы.",
+      "currentImplementation": "MVP U2/U3 retain the own four-task UTC schedule, frozen day/week definitions, common grant inventory and weekly 5-medal/20-coin milestone. Shared state drives Home/day/week readiness and reset times. The ordinary tasks dialog exposes only completed unclaimed older task/milestone records, claims their original IDs/frozen prizes, and assigns old task medals to the original week. Current incomplete and completed/claimed states are explicit; a finished weekly meter no longer advertises another reward above its cap. Новые дни прежней QA-недели получают ordinary-цели без IAP, исходные дни и недельные призы сохранены. На 80/80 новые first-clear-цели заменяет достижимый сбор темы. Интерфейс поясняет срок уже заданных first-clear условий и дату перехода со старой недели на обычный бонус.",
       "nextAction": "Complete final-branch browser/physical rollover, old task-to-old-week claim, duplicate and failure/reload acceptance; local retention suite passed 27 cases in c8-release-v1. Full R1/R2 source28, composite prizes, five milestones and 3-of-4 chest remain roadmap. Kit141/143 conditional1210/960 is not a live paywall, and video is not MakePurchase.",
       "stage": "F1",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
@@ -428,7 +429,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-daily-bonus",
@@ -442,7 +443,7 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-weekend-race",
@@ -455,7 +456,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-lava-quest",
@@ -468,7 +469,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-daily-rewards",
@@ -512,7 +513,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-play-pass",
@@ -527,7 +528,7 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-rotating-offers",
@@ -570,7 +571,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-puzzle-gallery",
@@ -583,7 +584,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-cascade-events",
@@ -723,7 +724,7 @@
     {
       "id": "azur-unlimited-moves-offer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "MVP F2 retains the ordinary 120-coin/60-second candidate and previously earned contracts. Android timed acquisition requires a fresh usable native recovery-clock reading before debit or consumption; a failed acquisition no longer creates a page-clock timed right. Incomparable saved page/native anchors expire conservatively while active/parked finite budgets, Undo and won/indefinite semantics are preserved. Добавлен отсчёт в счётчике ходов. Continue и codec согласуют фазу и бюджет после expiry.",
+      "currentImplementation": "MVP F2 retains the ordinary 120-coin/60-second candidate and previously earned contracts. Android timed acquisition requires a fresh usable native recovery-clock reading before debit or consumption; a failed acquisition no longer creates a page-clock timed right. Incomparable saved page/native anchors expire conservatively while active/parked finite budgets, Undo and won/indefinite semantics are preserved. Отсчёт в строке уровня виден вне масштабируемого поля, в том числе при баннерном резерве. Continue и codec согласуют фазу и бюджет после expiry.",
       "nextAction": "Complete final-branch CI and physical native-clock failure, background/process restart and rollback acceptance. Verify no debit or earned-right consumption on failed acquisition and no extension of incomparable old timers. Candidate value/balance and source lifetime/acquisition policy remain unaccepted; keep full P19 source work.",
       "stage": "E1",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -733,7 +734,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-offer-campaign",
@@ -747,7 +748,7 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-fullscreen-ads-clock",
@@ -770,7 +771,7 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-cosmetics",
@@ -785,7 +786,7 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "unico-coffee-break",
@@ -829,7 +830,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "unico-double-reward",
@@ -851,7 +852,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "unico-loss-dialog",
@@ -875,7 +876,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-purchase-receipts",
@@ -897,7 +898,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-iap-product-catalog",
@@ -973,7 +974,7 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-free-shop-coin-claim",
@@ -986,7 +987,7 @@
       "evidenceRefs": [
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-variable-category-sizes",
@@ -1071,7 +1072,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "hitapps-invalid-transfer-feedback",
@@ -1092,7 +1093,7 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-localized-definition-packs",
@@ -1216,7 +1217,7 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-mvp-cohesion-20261124"
+      "implementationBranch": "feat/c8-audit-203-recovery"
     },
     {
       "id": "azur-art-sprite-wordcount-override",

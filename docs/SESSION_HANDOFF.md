@@ -1,4 +1,12 @@
-# Current work · MVP cohesion implementation · 24 November 2026
+# Current candidate · PR204 · 25 November 2026
+
+[Draft PR #204](https://github.com/DanilaH/asoc-solitair/pull/204), branch `feat/c8-audit-203-recovery`, `c8-release-v1`, **0.20.4/code45**. Resolve the exact candidate from the current PR HEAD. Match the exact CI checkout and signed APK manifest before handoff. The main baseline remains 0.17.1/code26.
+
+[Audit follow-up and UX delta](qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md) · [Android test/live and human acceptance runbook](qa/mvp-20261124/ANDROID_ACCEPTANCE_PR204.md). Physical-device, live ILRD and human acceptance remain open. Ads remain in scope with a single AdsBreak/Coffee pause. IAP is off. Keep all 115 source IDs, 38 packets and 15 commercial families on the roadmap.
+
+---
+
+# Historical checkpoint · MVP cohesion implementation · 24 November 2026
 
 Owner: «Возьми ты в работу это». Implementation branch `feat/c8-mvp-cohesion-20261124`, [PR203](https://github.com/DanilaH/asoc-solitair/pull/203), version **0.20.4 / Android code 45**. The branch starts from docs PR202 `c85fdc772cfcf07acd6289aa8c1519f55df38e09`. F1–F3, C1–C3 and U1–U5 are implemented; read the [implementation and exact evidence](qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md).
 

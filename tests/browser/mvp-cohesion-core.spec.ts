@@ -643,7 +643,7 @@ for (const direction of ['to-daily', 'to-campaign', 'level-picker'] as const) {
   });
 }
 
-test('shows timed Unlimited and makes free stock recovery reachable on the board', async ({ page }) => {
+test('shows a readable Unlimited timer and permits stock recovery at 320x480 with a banner', async ({ page }, info) => {
   const touched = profile(level16, 'audit-timer-stock');
   let save = touched;
   while (save.attempt.board.stock.length || save.attempt.board.recyclesLeft) {
@@ -653,28 +653,67 @@ test('shows timed Unlimited and makes free stock recovery reachable on the board
   }
   expect(save.attempt.board.phase).toBe('playing');
   save.profile.coins = 120;
-  await page.setViewportSize({ width: 320, height: 568 });
+  await page.setViewportSize({ width: 320, height: 480 });
   await seedHome(page, save);
   await page.locator('#home-play').tap();
   await gameReady(page, level16);
+  const banner = page.locator('#banner-slot');
+  const reserveBanner = () => banner.evaluate(slot => {
+    slot.removeAttribute('hidden');
+    slot.style.height = '60px';
+  });
+  await reserveBanner();
   await expect(page.locator('#stock-recovery')).toContainText('Повторы колоды исчерпаны');
   const restore = page.locator('#stock-recovery-button');
   await expect(restore).toHaveText('Восстановить бесплатно');
-  expect(await restore.evaluate(button => {
-    const r = button.getBoundingClientRect();
-    const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
-    return button === hit || button.contains(hit);
-  })).toBe(true);
+  const timer = page.locator('#unlimited-countdown');
+  await expect(timer).toBeHidden();
   await page.locator('#wallet-open').tap();
   await page.locator('#unlimited-preview').tap();
   if (await page.locator('#helpers').isVisible()) await page.locator('#helper-return').tap();
   await expect(page.locator('#moves')).toHaveText('∞');
-  const caption = page.locator('#moves-caption');
-  await expect(caption).toHaveText(/^(1:00|0:5[0-9])$/);
-  const before = await caption.textContent();
+  await expect(timer).toBeVisible();
+  await reserveBanner();
+  const value = timer.locator('strong');
+  await expect(value).toHaveText(/^(1:00|0:5[0-9])$/);
+  const before = await value.textContent();
   await page.clock.runFor(2100);
-  await expect(caption).not.toHaveText(before!);
-  await restore.tap();
+  await expect(value).not.toHaveText(before!);
+
+  // Measure the first viewport before touching Restore. Locator.tap can scroll.
+  const bounds = await page.evaluate(() => {
+    const rect = (selector: string) => document.querySelector(selector)!.getBoundingClientRect().toJSON();
+    const button = document.querySelector('#stock-recovery-button')!;
+    const restore = rect('#stock-recovery-button');
+    const center = { x: restore.x + restore.width / 2, y: restore.y + restore.height / 2 };
+    return {
+      scroll: [scrollX, scrollY, document.querySelector('#play-screen')!.scrollTop],
+      timer: rect('#unlimited-countdown'), value: rect('#unlimited-countdown strong'),
+      board: rect('#game-root'), restore, banner: rect('#banner-slot'), center,
+      hitsRestore: button.contains(document.elementFromPoint(center.x, center.y)),
+    };
+  });
+  expect(bounds.scroll).toEqual([0, 0, 0]);
+  expect(bounds.value.height).toBeGreaterThanOrEqual(15);
+  expect(bounds.value.width).toBeGreaterThanOrEqual(26);
+  expect(bounds.timer.left).toBeGreaterThanOrEqual(0);
+  expect(bounds.timer.right).toBeLessThanOrEqual(320);
+  expect(bounds.timer.top).toBeGreaterThanOrEqual(0);
+  expect(bounds.timer.bottom).toBeLessThanOrEqual(bounds.board.top + 1);
+  expect(bounds.banner.height).toBe(60);
+  expect(bounds.banner.bottom).toBeLessThanOrEqual(480);
+  expect(bounds.restore.top).toBeGreaterThanOrEqual(bounds.board.bottom - 1);
+  expect(bounds.restore.left).toBeGreaterThanOrEqual(0);
+  expect(bounds.restore.right).toBeLessThanOrEqual(320);
+  expect(bounds.restore.bottom).toBeLessThanOrEqual(bounds.banner.top);
+  expect(bounds.hitsRestore).toBe(true);
+  await info.attach('320x480 with countdown, Restore and 60px banner reserve', {
+    body: JSON.stringify(bounds), contentType: 'application/json',
+  });
+  if (process.env.ASOC_MVP_DEMO === '1') {
+    await info.attach('countdown and Restore', { body: await page.screenshot(), contentType: 'image/png' });
+  }
+  await page.touchscreen.tap(bounds.center.x, bounds.center.y);
   await expect.poll(async () => (await read(page)).attempt.stockRestores).toBe(1);
   await expect(restore).toBeHidden();
   await page.locator('#undo').tap();

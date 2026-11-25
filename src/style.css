@@ -45,9 +45,11 @@ header{height:58px;flex-shrink:0;display:flex;align-items:center;gap:9px;padding
 @media(max-width:360px){header{gap:7px}.streak-row{gap:5px}.streak{gap:2px}.streak i{width:13px}}
 
 #play-screen{display:flex;flex:1;flex-direction:column;min-height:0}
-.level{height:18px;flex-shrink:0;color:#acd1cf;font-size:9px;letter-spacing:.6px;text-align:center}
+.level{height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:10px;color:#acd1cf;font-size:9px;letter-spacing:.6px;text-align:center}
 .level h1{display:none}
 #level-number{font-weight:800}
+#unlimited-countdown{display:inline-flex;align-items:baseline;gap:4px;color:#ffebc8;font-size:12px;line-height:15px;letter-spacing:normal;white-space:nowrap}
+#unlimited-countdown strong{min-width:4ch;text-align:right;font-size:14px;font-variant-numeric:tabular-nums}
 #app[data-practice=true] #level-number{color:#f6ce99}
 main{position:relative;flex:1;min-height:0;touch-action:none}
 #game-root{position:absolute;inset:0}
@@ -616,7 +618,7 @@ html[data-reduced=true] .coin-debit{animation:none}
 #daily-tasks-dialog .sheet-body section>strong{display:block;font-size:14px;line-height:1.4;margin-bottom:7px}
 #daily-tasks-dialog .sheet-body h3{font-size:16px;margin:15px 0 7px}
 #daily-tasks-dialog .sheet-body button{min-height:44px;white-space:normal}
-#daily-tasks-day-status,#daily-tasks-medals,#daily-bonus-status,#shop-claim-status,#shop-video-status,#shuffle-stock-note{font-size:13px;line-height:1.5}
+#daily-tasks-day-status,#daily-tasks-medals,#daily-tasks-first-clear,#daily-tasks-legacy-week,#daily-bonus-status,#shop-claim-status,#shop-video-status,#shuffle-stock-note{font-size:13px;line-height:1.5}
 #result-new-attempt small{display:block;font-size:12px;font-weight:600;line-height:1.35;margin-top:3px}
 #result-life-note{font-size:12px;line-height:1.4;margin:2px 4px}
 @media(max-width:360px){.inventory-list{grid-template-columns:1fr}.inventory-list>div{padding:7px 9px}}

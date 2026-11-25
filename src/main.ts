@@ -674,13 +674,13 @@ try {
     const timed = save.attempt.unlimited;
     const left = timed && save.attempt.board.phase === 'playing'
       ? unlimitedRemaining(timed, Date.now(), recoveryTime.read()) : undefined;
-    const caption = $('#moves-caption');
-    if (left === undefined || save.attempt.board.movesLeft !== null || recoveryClockBlocked()) {
-      caption.textContent = 'Ходы'; caption.removeAttribute('aria-label'); return;
-    }
+    const countdown = $('#unlimited-countdown');
+    countdown.hidden = left === undefined || save.attempt.board.movesLeft !== null || recoveryClockBlocked();
+    if (countdown.hidden || left === undefined) return;
     const seconds = Math.ceil(left / 1000);
-    caption.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
-    caption.setAttribute('aria-label', `Без лимита, осталось ${seconds} секунд`);
+    const value = countdown.querySelector('strong')!;
+    const time = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+    if (value.textContent !== time) value.textContent = time;
   }
   function renderHud() {
     updateRecoveryBlock();
@@ -1280,9 +1280,22 @@ try {
     $('#daily-tasks-day-status').textContent = state.clock === 'future' ? 'Сохранены задания будущей даты. Доступно ' + resetText(state.availableAt) + '.'
       : state.todayTotal && state.todayCompleted === state.todayTotal ? 'Все задания выполнены. Новые — ' + resetText(state.nextDayAt) + '.'
         : 'Новые задания — ' + resetText(state.nextDayAt) + '.';
+    const firstClear = $('#daily-tasks-first-clear');
+    firstClear.hidden = !state.today?.tasks.some(task => task.progress < task.target &&
+      (task.kind === 'CompleteLevels' || task.kind === 'WinNoHints'));
+    firstClear.textContent = firstClear.hidden ? ''
+      : 'В заданиях на первое прохождение повторы не засчитываются. Условия действуют до обновления заданий.';
     const medals = $('#daily-tasks-medals'), week = state.week;
+    const legacyWeek = !sourceDailyTasks && week?.catalog === 'azur-compiled-r1';
+    const legacyNote = $('#daily-tasks-legacy-week');
+    $('#daily-tasks-week-title').textContent = legacyWeek ? 'Неделя прежней версии' : 'Бонус недели';
+    legacyNote.hidden = !legacyWeek;
+    legacyNote.textContent = legacyWeek
+      ? 'Здесь сохранены прежние пороги. С обычными заданиями этой недели часть наград может быть недоступна. Обычный недельный бонус начнётся ' + resetText(state.nextWeekAt) + '.'
+      : '';
     const cap = Math.max(0, ...(week?.milestones.map(entry => entry.medals) ?? []));
-    medals.textContent = week ? 'Медали недели · ' + Math.min(week.totalMedals, cap) + '/' + cap : 'Новая неделя — ' + resetText(state.nextWeekAt);
+    medals.textContent = week ? 'Медали недели · ' + (legacyWeek ? week.totalMedals : Math.min(week.totalMedals, cap) + '/' + cap)
+      : 'Новая неделя — ' + resetText(state.nextWeekAt);
     $('#daily-tasks-list').replaceChildren(...(state.today?.tasks ?? []).map(task => {
       const row = document.createElement('section'), label = document.createElement('strong'), button = document.createElement('button');
       const utc = state.today!.utc, weekStart = week!.startUtc, before = week!.totalMedals;

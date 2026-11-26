@@ -1,3 +1,5 @@
+> **26.11 source handoff:** [актуальное ТЗ](HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md) · [original evidence](https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md). Historical toy model below is retained, not original parity. New event implementation is locally actionable with explicit own config; exact runtime and owner/physical activation not claimed. Other package tasks untouched.
+
 # P31 · Гонка, Lava Quest, жизни, Gold Rush и подготовка
 
 ## Утверждение владельца 22.11.2026 — обязательно для будущей реализации

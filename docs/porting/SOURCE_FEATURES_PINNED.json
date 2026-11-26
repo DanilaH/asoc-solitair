@@ -274,16 +274,22 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Race/bot config and visible event, synchronous human multiplayer NOT proven and bot results vary by config"
+      "knownLimit": "Race/bot config and visible event, synchronous human multiplayer NOT proven and bot results vary by config 26.11 exact-source event pass: Implement sampled per-bot interval and cumulative progress with persistent plan, rank/result/claims; exact original comparator and finish predicate still open. Static original and 340 native kernel rows matched; exact RNG/shuffle/rank/claims remain partial. See 2026-11-26-hitapps-events-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md"
+      ]
     },
     {
       "id": "hitapps-lava-quest",
       "name": "Hitapps Lava Quest first-try win streak participant presentation",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "S1 shows stage participants and seven first-try wins requirement; actual participant reality/live payouts not verified"
+      "knownLimit": "S1 shows stage participants and seven first-try wins requirement; actual participant reality/live payouts not verified 26.11 exact-source event pass: Implement preselected finalists and memoized feasible dropout trajectory, loss reset/cooldown, per-finalist floor share and claim; preserve first-try and existing legacy claims. Static original and 48 native seed rows matched; bounds/split and full lifecycle static/model only. See 2026-11-26-hitapps-events-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md"
+      ]
     },
     {
       "id": "hitapps-daily-rewards",
@@ -385,10 +391,13 @@
       "id": "hitapps-gold-rush-event",
       "name": "Hitapps Gold Rush timed golden-card collection event",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "events",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "First-attempt x2 and 90-card/20000 visible example, not universal active event balance 26.11 exact compiled gold placement parameters, independent Unity RNG selection, health4, separate initial vs runtime hidden eligibility; actual event active amount, schedule, full health/bonus and economy remain unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/bbd57ddf0dbc0240f5b9e17c9f0822c5dc25a8cf/research/games/association-solitaire/2026-11-26-hitapps-golden-generator/README.md 26.11 recursive pass: separate GoldenCards runtime decay, activation, count and event numeric kernels now verified. No source proof of coin payout, event tier, first-attempt grant, real config or live schedule. Do not equate activated flag with money receipt. Evidence: https://github.com/DanilaH/mini-games-kit/tree/main/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/"
+      "knownLimit": "First-attempt x2 and 90-card/20000 visible example, not universal active event balance 26.11 exact compiled gold placement parameters, independent Unity RNG selection, health4, separate initial vs runtime hidden eligibility; actual event active amount, schedule, full health/bonus and economy remain unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/bbd57ddf0dbc0240f5b9e17c9f0822c5dc25a8cf/research/games/association-solitaire/2026-11-26-hitapps-golden-generator/README.md 26.11 recursive pass: separate GoldenCards runtime decay, activation, count and event numeric kernels now verified. No source proof of coin payout, event tier, first-attempt grant, real config or live schedule. Do not equate activated flag with money receipt. Evidence: https://github.com/DanilaH/mini-games-kit/tree/main/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/ 26.11 exact-source event pass: Integrate GoldenCard activation with shared Cascade token buffer, first-gold/difficulty plan, final multiplier/overflow and idempotent event reward; no analytics payout inference. Static original/model evidence; token execution matrices not reached. See 2026-11-26-hitapps-events-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md"
+      ]
     },
     {
       "id": "hitapps-puzzle-gallery",
@@ -403,10 +412,13 @@
       "id": "hitapps-cascade-events",
       "name": "Hitapps cascade-event orchestration and event hooks",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "events",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Native golden applier uses CascadeEventsHook; no full scheduler/remote config or cadence"
+      "knownLimit": "Native golden applier uses CascadeEventsHook; no full scheduler/remote config or cadence 26.11 exact-source event pass: Build single-active event lifecycle, weekly schedule with explicit own boundary, category/gold sources, tentative→final tokens, stage progression and claim queue. Static original/model evidence; token execution matrices not reached. See 2026-11-26-hitapps-events-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md"
+      ]
     },
     {
       "id": "hitapps-digging-event",

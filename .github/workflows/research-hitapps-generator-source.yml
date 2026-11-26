@@ -110,31 +110,72 @@ jobs:
             fields=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
             if focus.search(tn) or any(focus.search(r['method']) for r in ms):
              print('COM_TYPE',json.dumps({'image':im,'type':tn,'fields':[f for f in fields if not f.startswith('__')],'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not ignore.search(r['method']) and not re.match('add_|remove_',r['method'])]},separators=(',',':')))
-          # first pass focuses logic rather than generated async/UI glue and avoids excessive disassembly logs.
+          focus={
+           "PiggyBankAvailabilityProvider":["EvaluateAvailability"],
+           "PiggyBankService":["ApplyCoinsProgressInternal","IsPurchaseAvailable","GetCoinsProgress","IsAvailableOnRevive"],
+           "PiggyBankLifecycleController":["EvaluateActivationInternal","TryResolveNextOfferState","CanActivateNextOfferInCurrentPeriod","SaveOffer","ApplyNewShow"],
+           "PiggyBankRewardProvider":["GetValidContent","GetNextAvailableOfferTypeIndex","GetNextAvailableOfferTypeIndexCycled","GetCurrentOfferContentRewards","GetAllCurrentRewards","GetPurchaseRewards","TryPinPurchase"],
+           "StarterOfferAvailabilityProvider":["EvaluateAvailability"],
+           "StarterOfferLifecycleController":["EvaluateActivationInternal","CanAdvanceToNextOffer","TryGetCurrentOfferData","ApplyNewShow","SaveOfferShow"],
+           "StarterOfferRewardProvider":["GetValidContent","TryGetFirstShowableOffer","GetNextAvailableOfferTypeIndex","GetPurchaseRewards","TryPinPurchase","GetCurrentExtraMovesBubble"],
+           "DecoyOfferAvailabilityProvider":["EvaluateAvailability"],
+           "DecoyOfferLifecycleController":["get_IsShowAllowedByTheNumberOfAttempts","EvaluateActivationInternal","ApplyShow","TryScheduleNextOffer"],
+           "DecoyOfferRewardProvider":["SelectBestContent","GetPurchaseRewards","TryPinPurchase"],
+           "BirthdayOfferAvailabilityProvider":["CanStartNewShow","IsAvailable","IsPurchased"],
+           "BirthdayOfferLifecycleController":["TryFindEligibleEditionForNewShow","IsEditionFresh","ApplyShow"],
+           "BirthdayOfferRewardProvider":["SelectBestContent","GetPurchaseRewards","TryPinPurchase"],
+           "BuyAllContentSelector":["TrySelectOptions"],
+           "BuyAllConfigParser":["ParseEvent","ParseOfferType"],
+           "BuyAllVariantSaveData":["ResetWindow"],
+           "BuyAllWindowLoop":["RunAsync"],
+           "OfferShowIterationDataExtensions":["GetShowTimes","FindEntry","RegisterShow"],
+           "RecentPayerDetector":["IsRecentPayer"],
+           "PayerRvLimitPolicyService":["RemainingToday","CanWatchNow","CommitOneWatch","IsOverrideActive","ResolveLimits","DailyResetIfNeeded"],
+           "PayerAwareRvLimitExtensions":["CommitEffectiveWatch","IsEffectiveLimitReached","CanWatchEffective","GetEffectiveRemaining"],
+           "WinScreenRvRewardServiceEnable":["IsEnabled","IsAdsLimitNotReached","GetRewardResult","ApplyWatchedReward"],
+           "WinScreenRvRewardResult":["get_ExtraRewardCount",".ctor"],
+           "AdsBreakService":["IsInterLimitReached","IsAvailable"],
+           "AdsLimitationService":["IsLimitReached","Reset","RegisterShow"]
+          }
           for r in records:
-           tn=r['type'];mn=r['method'];a=int(r['rva'],16)
-           if not a or ignore.search(tn) or ignore.search(mn):continue
-           if not focus.search(tn) or re.search(r'View|Presenter|Animation|Binder|Installer|Payload|Factory|ConfigProvider|Cheat|Notifier|Tutorial|\.Abstractions?\.|Widget|Notification|^<',tn) or re.match(r'add_|remove_|get_|set_|\.ctor|\.cctor',mn):continue
+           key=r['type'].split('.')[-1];mn=r['method'];a=int(r['rva'],16)
+           if not a or mn not in focus.get(key,[]):continue
            i=bisect.bisect_right(starts,a)
            if i>=len(starts):continue
            b=starts[i]
-           if b-a<4 or b-a>0xc00:continue
+           if b<=a or b-a>0x4000:continue
            ins=instructions(a,b)
-           calls=[[hex(x.address),x.op_str,names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str)]
-           print('COM_METHOD',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':calls},separators=(',',':')))
-          for r in records:
-           tn=r['type'];mn=r['method'];a=int(r['rva'],16)
-           if not a or ignore.search(tn):continue
-           if not re.search(r'PiggyBank|StarterOffer|DecoyOffer|BirthdayOffer|BuyAll|PayerRvLimit|OfferShowIteration|WinScreenRvReward',tn,re.I):continue
-           if re.search(r'View|Presenter|Binder|Installer|Payload|Analytics|Notification|Widget|Formatter',tn,re.I):continue
-           if not re.search(r'Can|Eligible|Available|Unlock|Price|Cost|Add|Gain|Claim|Show|Purchase|Complete|Start|Reset|State|Iteration|Remaining|Limit|Progress|Reward|Get|MoveNext|\.ctor',mn,re.I):continue
-           i=bisect.bisect_right(starts,a)
-           if i>=len(starts):continue
-           b=starts[i]
-           if not 4<=b-a<=0x800:continue
-           ins=instructions(a,b)
-           calls=[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) and names_at(int(x.op_str[1:],16))]
-           facts=[[hex(x.address),x.mnemonic,x.op_str] for x in ins if x.mnemonic.startswith(('cmp','cmn','tst','teq','v','mov','add','sub','mul','rsb','and','orr','bic','eor','lsl','asr','lsr','ux','str','ldr','b')) and (x.mnemonic.startswith(('b','cmp','cmn','tst','v')) or re.search(r'#(?:0x[0-9a-f]+|[0-9]+)',x.op_str)) and not re.search(r'\bpc\b',x.op_str)]
-           if len(facts)<=110:print('COM_FOCUS',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'facts':facts,'calls':calls},separators=(',',':')))
-          print('PASS_COMMERCE_CATALOG')
+           facts=[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in ins]
+           print('COM_FULL',json.dumps({'type':r['type'],'method':mn,'a':hex(a),'b':hex(b),'facts':facts},separators=(',',':')))
+          # Exact source import resolution (reuse prior ELF relocation reader).
+          from capstone.arm import ARM_OP_IMM,ARM_OP_MEM
+          d.detail=True
+          def imm(w):return ((w>>4)&0xf000)|(w&0xfff)
+          def veneer(a):
+           w,x,y,z=[word(a+4*i) for i in range(4)]
+           if w&0xfff0f000==0xe300c000 and x&0xfff0f000==0xe340c000 and y==0xe08cc00f and z==0xe12fff1c:return (a+16+imm(w)+(imm(x)<<16))&0xffffffff
+           if w&0xff000000==0xea000000:return a+8+4*(((w&0xffffff)^0x800000)-0x800000)
+           return None
+          sh=struct.unpack_from('<I',e,32)[0];ents,n,si=struct.unpack_from('<HHH',e,46)
+          sections=[struct.unpack_from('<10I',e,sh+i*ents) for i in range(n)];st=sections[si];strings=e[st[4]:st[4]+st[5]]
+          def cstr(data,i):return data[i:data.index(b'\0',i)].decode('utf-8','replace')
+          byname={cstr(strings,x[0]):x for x in sections};ds=byname['.dynsym'];dt=sections[ds[6]];strs=e[dt[4]:dt[4]+dt[5]]
+          rel={}
+          for sec in sections:
+           if sec[1] not in (4,9) or sec[6]!=sections.index(ds):continue
+           for pos in range(sec[4],sec[4]+sec[5],sec[9]):
+            addr,info=struct.unpack_from('<II',e,pos);ix=info>>8;row=struct.unpack_from('<IIIBBH',e,ds[4]+ix*ds[9]);rel[addr]=cstr(strs,row[0])
+          def import_name(a):
+           ip=got=None
+           for x in instructions(a,a+16):
+            op=x.operands
+            if x.mnemonic=='add' and len(op)==3 and x.reg_name(op[0].reg)=='ip' and op[2].type==ARM_OP_IMM:
+             src=x.reg_name(op[1].reg)
+             if src=='pc':ip=x.address+8+op[2].imm
+             elif src=='ip' and ip is not None:ip+=op[2].imm
+            elif x.mnemonic.startswith('ldr') and len(op)==2 and op[1].type==ARM_OP_MEM and x.reg_name(op[0].reg)=='pc':
+             if x.reg_name(op[1].mem.base)=='ip' and ip is not None:got=(ip+op[1].mem.disp)&0xffffffff;break
+           return rel.get(got)
+          print('COM_ROUND',json.dumps({'address':'0x2b4a9a4','symbol':import_name(veneer(0x2b4a9a4))}))
+          print('PASS_COMMERCE_FOCUS')
           PY

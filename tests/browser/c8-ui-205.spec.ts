@@ -219,10 +219,13 @@ test('compact Home, helpers and a committed Bonus reveal are reachable through r
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   await touchable(page, '#home-play');
   await capture(page, info, 'home-320');
-  await page.locator('#wallet-open').tap();
+  await page.locator('#menu').tap();
+  if (!await page.locator('#helpers-open').isVisible()) await page.locator('#pause-options summary').tap();
+  await page.locator('#helpers-open').tap();
   await expect(page.locator('#helper-inventory-future')).toBeVisible();
   await capture(page, info, 'helpers-320');
   await page.locator('#helper-return').tap();
+  await page.locator('#settings-done').tap();
   const entry = await touchable(page, '#daily-bonus-open');
   await page.touchscreen.tap(entry.x, entry.y);
   const dialog = page.locator('#daily-bonus-dialog'), cards = dialog.locator('.daily-bonus-card');

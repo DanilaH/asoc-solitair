@@ -81,7 +81,7 @@ export function configureCasualHome(allowLevelPicker: boolean) {
   archive.setAttribute('aria-label', 'Сохранённые занятия');
   for (const id of ['picture-home', 'campaign-liveops-open', 'daily-resume-old']) archive.append(button(id));
   button('win-cycle-open').append(casualIcon('gift'));
-  tray.append(button('win-cycle-open'), button('home-play'), shortcuts, archive,
+  tray.append(button('win-cycle-open'), button('home-play'), button('home-unlock-track'), shortcuts, archive,
     button('campaign-monthly-confirmation'), button('campaign-monthly-bonus'));
   if (allowLevelPicker) tray.append(button('level-picker-open'));
   button('wallet-anchor').after(button('campaign-lives-open'));
@@ -90,7 +90,7 @@ export function configureCasualHome(allowLevelPicker: boolean) {
 
 export function configureCasualDialogs() {
   const icons: Record<string, Icon> = {
-    settings: 'looks', helpers: 'hint', 'campaign-lives': 'heart', calendar: 'daily',
+    settings: 'looks', helpers: 'hint', 'coins-dialog': 'coin', 'campaign-lives': 'heart', calendar: 'daily',
     appearance: 'looks', 'cycle-info': 'gift', 'picture-dialog': 'album', 'bonus-offer': 'link',
     'inspect-dialog': 'book', 'daily-tasks-dialog': 'task', 'daily-bonus-dialog': 'gift',
     'campaign-liveops': 'medal', 'random-joker-warning': 'joker', 'shuffle-warning': 'cycle',

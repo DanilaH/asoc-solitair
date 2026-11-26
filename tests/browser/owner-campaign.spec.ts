@@ -213,7 +213,7 @@ test('blocks an ordinary replay at zero lives and resumes after a saved coin ref
   await page.setViewportSize({ width: 320, height: 568 });
   const base = content8Wave[0], now = Date.now();
   const save = { ...fixture(15), attempt: freshSave(base, 'final-loss').attempt, contentVersion: 8,
-    campaignLives: { version: 1 as const, remaining: 1, observedAt: now, refillAt: now + 300_000, earnedCredits: 0 } };
+    campaignLives: { version: 2 as const, remaining: 1, observedAt: now, refillAt: now + 300_000, earnedCredits: 0 } };
   save.profile.coins = 150;
   save.attempt.board = { ...save.attempt.board, phase: 'exhausted', movesLeft: 0 };
   save.settings.reducedMotion = true;
@@ -225,7 +225,7 @@ test('blocks an ordinary replay at zero lives and resumes after a saved coin ref
   await expect(page.locator('#campaign-life-video')).toBeDisabled();
   await page.waitForTimeout(650);
   await page.locator('#campaign-life-coin').tap();
-  await expect(page.locator('#campaign-lives-status')).toHaveText('Жизни · 1 из 3');
+  await expect(page.locator('#campaign-lives-status')).toHaveText('Жизни · 1 из 5');
   expect((await read(page)).profile.coins).toBe(100);
   await page.locator('#campaign-life-retry').tap();
   await expect.poll(async () => (await read(page)).attempt.board.phase).toBe('playing');
@@ -239,7 +239,7 @@ test('keeps life refill, finite recovery and a closed storefront in the same ord
   const { recoveryDeal } = await import('../../src/content/campaign');
   const now = Date.now();
   const save = { ...fixture(15), attempt: freshSave(recoveryDeal, 'acceptance-loss').attempt, contentVersion: 8,
-    campaignLives: { version: 1 as const, remaining: 1, observedAt: now, refillAt: now + 300_000, earnedCredits: 0 } };
+    campaignLives: { version: 2 as const, remaining: 1, observedAt: now, refillAt: now + 300_000, earnedCredits: 0 } };
   save.profile.coins = 150;
   save.settings.reducedMotion = true;
   save.attempt.board = { ...save.attempt.board, phase: 'exhausted', movesLeft: 0 };

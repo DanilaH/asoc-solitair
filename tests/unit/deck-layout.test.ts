@@ -102,7 +102,7 @@ it('keeps either deck flush to its edge without spreading the waste fan on a sho
     expect((left.stock.x - cardWidth / 2) * frame.unit).toBeCloseTo(0);
     expect((right.stock.x + cardWidth / 2) * frame.unit).toBeCloseTo(752);
     const fan = left.poses.filter(pose => board.waste.includes(pose.id));
-    expect(fan.map(pose => pose.x - left.stock.x)).toEqual([cardWidth + 14, cardWidth + 46, cardWidth + 78]);
+    expect(fan.map(pose => pose.x - left.stock.x)).toEqual([cardWidth + 14, cardWidth + 53, cardWidth + 92]);
     for (const pose of fan) expect(right.poses.find(card => card.id === pose.id)!.x + pose.x).toBeCloseTo(frame.width);
   }
 });

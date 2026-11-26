@@ -1,6 +1,6 @@
 import { campaignCount, cosmeticUnlocked, currentDailyStreak, daysLabel, dayNumber, localDay } from '../domain/meta';
 import { BALANCE } from '../domain/balance';
-import { CAMPAIGN_LENGTH } from '../domain/progression';
+import { CAMPAIGN_LENGTH, dailyModeAvailable } from '../domain/progression';
 import type { Save } from '../domain/types';
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 export const campaignAttempt = (save: Save) => save.attempt.daily ? save.parked?.campaign : save.attempt;
@@ -10,8 +10,7 @@ export function renderMeta(save: Save, busy: boolean) {
   const meta = save.meta!, today = localDay(), done = meta.dailyDates.includes(today), daily = dailyAttempt(save), n = Math.min(CAMPAIGN_LENGTH, campaignCount(save)), target = (Math.floor(n / 10) + 1) * 10;
   $('#app').dataset.palette = cosmeticUnlocked(save, 'palette') ? save.settings.palette ?? 'green' : 'green';
   $('#app').dataset.back = cosmeticUnlocked(save, 'cardBack') ? save.settings.cardBack ?? 'classic' : 'classic';
-  const basicReady = campaignCount(save) >= 2;
-  const noDaily = !basicReady && !daily && meta.dailyDates.length === 0;
+  const noDaily = !dailyModeAvailable(save);
   $('.daily-card').hidden = noDaily;
   if ($('#app').hasAttribute('data-casual')) {
     $('#daily-play').hidden = noDaily;

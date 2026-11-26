@@ -51,7 +51,9 @@ async function seedHome(page: Page, save: Save, at = NOW) {
 async function openHelpers(page: Page) {
   if (await page.locator('#home').isVisible()) await page.locator('#home-play').tap();
   if (await page.locator('#difficulty-play').isVisible()) await page.locator('#difficulty-play').tap();
-  await page.locator('#wallet-open').tap();
+  await page.locator('#menu').tap();
+  await page.locator('#pause-options summary').tap();
+  await page.locator('#helpers-open').tap();
   await expect(page.locator('#helpers')).toBeVisible();
 }
 function winBonus(save: Save, at: number, joker = false) {
@@ -170,6 +172,7 @@ test('ordinary Tasks UI claims yesterday, then its newly earned old-week milesto
   await page.locator('#daily-tasks-open').tap();
   const previous = page.locator('#daily-tasks-previous-list');
   await expect(page.locator('#daily-tasks-previous')).toBeVisible();
+  await page.locator('#daily-tasks-archive-toggle').tap();
   await expect(previous.getByRole('button')).toHaveCount(1);
   await previous.getByRole('button').tap();
   await expect.poll(async () => (await read(page)).dailyTasks?.weeks.find(week => week.startUtc === '2026-11-16')?.totalMedals).toBe(5);
@@ -218,7 +221,7 @@ test.describe('local presentation of unchanged UTC reward periods', () => {
     const list = page.locator('#daily-tasks-list');
     await expect(list.locator('[data-task=no-hint]')).toContainText('Впервые пройти раздачу без подсказок');
     await expect(page.locator('#daily-tasks-first-clear')).toContainText('Условия действуют до обновления');
-    await expect(page.locator('#daily-tasks-day-status')).toContainText(/25\.11.*05:00/);
+    await expect(page.locator('#daily-tasks-day-status time')).toHaveText(/^(11|12):\d{2}:\d{2}$/);
     await expect(page.locator('#daily-tasks-week-title')).toHaveText('Неделя прежней версии');
     await expect(page.locator('#daily-tasks-medals')).toHaveText('30');
     await expect(page.locator('#daily-tasks-legacy-week')).toContainText(/Обычный недельный бонус начнётся 30\.11.*05:00/);
@@ -227,6 +230,7 @@ test.describe('local presentation of unchanged UTC reward periods', () => {
       await page.locator('#daily-tasks-week-title').scrollIntoViewIfNeeded();
       await info.attach('saved source week', { body: await page.screenshot(), contentType: 'image/png' });
     }
+    await page.locator('#daily-tasks-archive-toggle').tap();
     const oldTask = page.locator('[data-reward-key="task:2026-11-23:azur-1-4"]');
     await expect(oldTask).toContainText('25 мед.');
     await oldTask.getByRole('button').tap();
@@ -267,10 +271,10 @@ test.describe('local presentation of unchanged UTC reward periods', () => {
     expect(claimTaskMilestone(save, '2026-11-23', 'week')).toBe(true);
     const bonus = winBonus(save, at); claimDailyBonus(save, bonus.roundId, at);
     await seedHome(page, save, at);
-    await expect(page.locator('#daily-bonus-home-status')).toContainText('05:00');
+    await expect(page.locator('#daily-bonus-home-status')).toHaveText('Получено');
     await expect(page.locator('#daily-tasks-home-status')).toContainText(/выполнено/i);
     await page.locator('#daily-tasks-open').tap();
-    await expect(page.locator('#daily-tasks-day-status')).toContainText('05:00');
+    await expect(page.locator('#daily-tasks-day-status time')).toHaveText(/^(11|12):\d{2}:\d{2}$/);
     await expect(page.locator('#daily-tasks-dialog')).toContainText(/бонус недели получен/i);
     await expect(page.locator('#daily-tasks-medals')).not.toContainText(total + '/5');
     await expect(page.locator('#daily-tasks-previous')).toBeHidden();
@@ -307,6 +311,8 @@ test('settles an old monthly reward at endgame once, preserves cosmetics, and ke
   await page.locator('#appearance-done').tap();
   await openHelpers(page);
   await expect(page.locator('#campaign-store-open')).toBeHidden();
+  await page.locator('#helpers-coins-open').tap();
+  await expect(page.locator('#coins-dialog')).toBeVisible();
   await expect(page.locator('#shop-free-claim')).toBeVisible();
   await page.locator('#shop-free-claim').tap();
   await expect.poll(async () => (await read(page)).profile.coins).toBe(baseline + 40);
@@ -461,7 +467,7 @@ test('repeated empty Definition after a manual wallet visit keeps its Bonus guid
   expect(first.offerCampaigns!.accounts[0].campaigns.find(campaign => campaign.campaignId === 'c8-local-helper'))
     .toMatchObject({ activations: 1, shows: 1 });
   await page.locator('#helper-return').tap();
-  await page.locator('#wallet-open').tap();
+  await openHelpers(page);
   await expect.poll(async () => (await read(page)).productOffers?.reservation).toMatchObject({
     eventId: 'manual-wallet:' + save.attempt.id, surface: 'resources',
   });
@@ -474,6 +480,7 @@ test('repeated empty Definition after a manual wallet visit keeps its Bonus guid
   await page.locator('#helpers .sheet-body').evaluate(node => { node.scrollTop = node.scrollHeight; });
   await expect.poll(() => page.locator('#helpers .sheet-body').evaluate(node => node.scrollTop)).toBeGreaterThan(0);
   await page.locator('#helper-return').tap();
+  if (await page.locator('#settings').isVisible()) await page.locator('#settings-done').tap();
   await inspectEmptyDefinition();
   const point = await addressedContext();
   const screenshotPath = info.outputPath('definition-context.png');

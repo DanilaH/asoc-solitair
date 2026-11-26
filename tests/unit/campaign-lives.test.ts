@@ -10,7 +10,7 @@ it('atomically blocks a fresh campaign attempt at zero, and neither timeout nor 
   const deal = content8Wave[0], save = freshSave(deal, 'confirmed-loss');
   const now = 1_000;
   save.attempt.board = { ...save.attempt.board, movesLeft: 0, phase: 'exhausted' };
-  save.campaignLives = { version: 1, remaining: 1, observedAt: now, refillAt: now + LIVES_RULES.refillMs, earnedCredits: 0 };
+  save.campaignLives = { version: 2, remaining: 1, observedAt: now, refillAt: now + LIVES_RULES.refillMs, earnedCredits: 0 };
   expect(mayStartCampaignAttempt(save, save.attempt, now, true)).toBe(false);
   expect(mayStartCampaignAttempt(save, save.attempt, now+1, true)).toBe(false);
   expect(save.attempt.lostLife).toBe(true);
@@ -20,7 +20,7 @@ it('atomically blocks a fresh campaign attempt at zero, and neither timeout nor 
   expect(mayStartCampaignAttempt(save, save.attempt, now, true)).toBe(true);
   expect(authorizeLifeVideo(save, now, 'separate-opportunity', false)).toBe(false);
   expect(authorizeLifeVideo(save, now, 'separate-opportunity', true)).toBe(true);
-  refreshCampaignLives(save, now + LIVES_RULES.refillMs * 2);
+  refreshCampaignLives(save, now + LIVES_RULES.refillMs * (LIVES_RULES.max - 1));
   const receipt = { schema: 1, id: 'native', attempt: 'separate-opportunity', dealId: deal.id, mode: 'campaign', placement: 'life-refill' } as const;
   expect(applyReceipt(save, receipt)).toBe('applied');
   expect(applyReceipt(save, { ...receipt, id: 'restamped' })).toBe('already-applied');
@@ -37,7 +37,7 @@ it('keeps lifetime loss bookkeeping bounded after 10000 attempts', () => {
     mayStartCampaignAttempt(save, save.attempt, now, true);
     if ([0, 30, 180, 365, 1099, 9999].includes(i)) expect(JSON.stringify(save.campaignLives).length).toBeLessThan(200);
   }
-  expect(save.campaignLives?.remaining).toBe(2);
+  expect(save.campaignLives?.remaining).toBe(LIVES_RULES.max - 1);
 }, 20_000);
 
 it('keeps event occurrences distinct and preserves an earned unclaimed prize across rollover', () => {

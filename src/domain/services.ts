@@ -4,7 +4,7 @@ import { campaignRewards } from './meta';
 import { isOfferPlacement, offerShowContext, settleRewardOffer, type OfferPlacement } from './reward-offers';
 import { BALANCE } from './balance';
 import { campaignId } from './progression';
-import { CONTENT8_PREVIEW, type Deal, type PlatformState, type Save } from './types';
+import { CONTENT8_PREVIEW, type ContinueVideoQuote, type Deal, type PlatformState, type Save } from './types';
 import { recordCampaignOutcome } from './difficulty';
 import { bonusKindFor, bonusPlacements, openBonusSlot, type BonusPlacement } from './bonus-slots';
 import { requiresContinueProof, verifiesContinue, type ContinueProof } from './continuation';
@@ -52,7 +52,8 @@ export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?:
   const offerPlacement = isOfferPlacement(shown.placement);
   const verifiedOffer = offerPlacement && shown.kind === 'rewarded' && Boolean(offerShowContext(save, shown));
   if (offerPlacement && !verifiedOffer) return 'already-applied';
-  if (!verifiedLife && !verifiedOffer && (shown.attempt !== attempt.id || shown.dealId !== attempt.dealId || shown.mode !== (attempt.daily ? 'daily' : 'campaign'))) {
+  const verifiedContinue = shown.placement === 'continue' && shown.kind === 'rewarded' && Boolean(findContinueVideo(save, shown));
+  if (!verifiedLife && !verifiedOffer && !verifiedContinue && (shown.attempt !== attempt.id || shown.dealId !== attempt.dealId || shown.mode !== (attempt.daily ? 'daily' : 'campaign'))) {
     return 'already-applied';
   }
   const state = platformState(save);
@@ -72,7 +73,7 @@ export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?:
 }
 /** All effects and identities enter the same coordinated snapshot; Undo never owns these fields. */
 export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
-  deal?: Deal; onBonusUnlocked?: () => void; continueProof?: ContinueProof; offerNow?: number;
+  deal?: Deal; onBonusUnlocked?: () => void; continueProof?: ContinueProof; unrestrictedVideo?: boolean; offerNow?: number;
 }): 'applied' | 'already-applied' {
   if (receipt.placement === 'life-refill') {
     // The consumed request nonce is the durable exact-once authority, even if a late receipt is restamped.
@@ -83,11 +84,25 @@ export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
   if (receipt.placement === 'ads-break') return 'already-applied';
   if (receipt.placement === 'coffee-break') settleCoffee(save, receipt.attempt, receipt.dealId);
   else if (receipt.placement === 'continue') {
-    if (!state.continuedAttempts.includes(receipt.attempt)) {
-      state.continuedAttempts.push(receipt.attempt); state.continueCredits++;
-      // A late receipt must not mutate a different attempt. Its earned credit remains available.
-      if (save.attempt.id === receipt.attempt && save.attempt.dealId === receipt.dealId &&
-        receipt.mode === (save.attempt.daily ? 'daily' : 'campaign')) useContinue(save, options?.continueProof);
+    if (state.continuedAttempts.includes(receipt.attempt)) {
+      if (options?.unrestrictedVideo) return 'already-applied';
+      state.receipts.push(receipt.id); save.revision++;
+      return 'applied';
+    }
+    const quote = findContinueVideo(save, receipt);
+    if (options?.unrestrictedVideo && state.continueVideos && !quote) return 'already-applied';
+    state.continuedAttempts.push(receipt.attempt);
+    const active = sameContinueIdentity(receipt, continueIdentity(save));
+    if (quote) {
+      quote.status = 'credit';
+      if (active) useVideoContinue(save, options?.deal);
+    } else {
+      // Android may deliver a receipt from an older installation before the first versioned quote.
+      state.continueCredits++;
+      if (active) {
+        if (options?.unrestrictedVideo) useVideoContinue(save, options.deal);
+        else useContinue(save, options?.continueProof);
+      }
     }
   } else if (receipt.placement === 'hint' || receipt.placement === 'undo') {
     save.profile[receipt.placement === 'hint' ? 'hints' : 'undos'] += BALANCE.rewardedCharges[receipt.placement];
@@ -104,6 +119,52 @@ export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
   state.receipts.push(receipt.id); save.revision++;
   return 'applied';
 }
+function continueIdentity(save: Save): Omit<ContinueVideoQuote, 'status'> {
+  return { attempt: save.attempt.id, dealId: save.attempt.dealId, mode: save.attempt.daily ? 'daily' : 'campaign' };
+}
+function sameContinueIdentity(a: Omit<ContinueVideoQuote, 'status'>, b: Omit<ContinueVideoQuote, 'status'>) {
+  return a.attempt === b.attempt && a.dealId === b.dealId && a.mode === b.mode;
+}
+function findContinueVideo(save: Save, identity: Omit<ContinueVideoQuote, 'status'>) {
+  return save.platform?.continueVideos?.quotes.find(row => sameContinueIdentity(row, identity));
+}
+export function quoteContinueVideo(save: Save) {
+  if (!canResumeBoard(save) || save.platform?.continuedAttempts.includes(save.attempt.id)) return false;
+  const journal = platformState(save).continueVideos ??= { version: 1, quotes: [] };
+  const identity = continueIdentity(save);
+  if (!findContinueVideo(save, identity)) journal.quotes.push({ ...identity, status: 'pending' });
+  return true;
+}
+export function canShowContinueVideo(save: Save, identity: Omit<ContinueVideoQuote, 'status'>) {
+  return canResumeBoard(save) && sameContinueIdentity(identity, continueIdentity(save)) &&
+    findContinueVideo(save, identity)?.status === 'pending' && !save.platform?.continuedAttempts.includes(identity.attempt);
+}
+export function cancelContinueVideo(save: Save, identity: Omit<ContinueVideoQuote, 'status'>) {
+  const journal = save.platform?.continueVideos, quote = findContinueVideo(save, identity);
+  if (journal && quote?.status === 'pending') journal.quotes = journal.quotes.filter(row => row !== quote);
+}
+function earnedVideoCredit(save: Save) {
+  const attempt = continueIdentity(save);
+  const parkedIds = [save.parked?.campaign?.id, save.parked?.daily?.id];
+  const credits = save.platform?.continueVideos?.quotes.filter(quote => quote.status === 'credit');
+  return credits?.find(quote => sameContinueIdentity(quote, attempt)) ??
+    credits?.find(quote => quote.attempt !== attempt.attempt && !parkedIds.includes(quote.attempt));
+}
+export function hasVideoContinueCredit(save: Save) {
+  return Boolean(save.platform?.continueCredits || earnedVideoCredit(save));
+}
+export function useVideoContinue(save: Save, deal?: Deal): boolean {
+  const state = save.platform;
+  if (!state || !canResumeBoard(save) || deal?.id !== save.attempt.dealId) return false;
+  const quote = earnedVideoCredit(save);
+  if (quote && state.continueVideos) state.continueVideos.quotes = state.continueVideos.quotes.filter(row => row !== quote);
+  else if (state.continueCredits) state.continueCredits--;
+  else return false;
+  if (!state.continuedAttempts.includes(save.attempt.id)) state.continuedAttempts.push(save.attempt.id);
+  resumeAttempt(save, deal.recovery ? 'earned' : undefined);
+  return true;
+}
+
 export function useContinue(save: Save, proof?: ContinueProof): boolean {
   const state = save.platform, attempt = save.attempt;
   if (!state?.continueCredits || !canResume(save, proof)) return false;
@@ -115,17 +176,19 @@ export function useContinue(save: Save, proof?: ContinueProof): boolean {
 
 export function buyContinue(save: Save, proof: ContinueProof): boolean {
   if (!requiresContinueProof(save.attempt) || save.profile.coins < BALANCE.continueCoinPrice ||
-    save.platform?.continueCredits || !canResume(save, proof)) return false;
+    hasVideoContinueCredit(save) || !canResume(save, proof)) return false;
   save.profile.coins -= BALANCE.continueCoinPrice;
   // A receipt already earned from an earlier video remains payable as a credit.
   resumeAttempt(save, proof.deal.recovery ? 'coins' : undefined);
   return true;
 }
 
-function canResume(save: Save, proof?: ContinueProof): boolean {
+function canResumeBoard(save: Save): boolean {
   const attempt = save.attempt;
-  return !attempt.continued && !attempt.lostLife && attempt.board.phase === 'exhausted' && attempt.board.movesLeft === 0 &&
-    (!requiresContinueProof(attempt) || Boolean(proof && verifiesContinue(attempt, proof)));
+  return !attempt.continued && !attempt.lostLife && attempt.board.phase === 'exhausted' && attempt.board.movesLeft === 0;
+}
+function canResume(save: Save, proof?: ContinueProof): boolean {
+  return canResumeBoard(save) && (!requiresContinueProof(save.attempt) || Boolean(proof && verifiesContinue(save.attempt, proof)));
 }
 
 function resumeAttempt(save: Save, channel?: 'coins' | 'earned') {

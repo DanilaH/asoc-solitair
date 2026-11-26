@@ -1,5 +1,9 @@
 # Project contract
 
+## Owner follow-up · 26 November 2026
+
+Use [the post-playtest decision](https://github.com/DanilaH/asoc-solitair/issues/210#issuecomment-7185896846) and [implementation and verification notes](docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md). The candidate introduces action-bound Coffee, a tutorial exit guard, earned video Continue without a winning-route proof, layout-based retry, five lives and the versioned unlock track. Coin Continue retains its proof. The upper-slot threshold is L6. Keep the approved Card Table B, exact FTUE Deal IDs, all previous saves and the full research roadmap.
+
 ## Owner playtest · issue 210
 
 [Issue #210](https://github.com/DanilaH/asoc-solitair/issues/210) starts from PR208 and upstreams the PR209 research doc delta. Keep the approved C8 grid, frozen deal bank, receipts, art and product behavior. Start with [the composition review](docs/qa/issue-210/COMPOSITION_REVIEW.md) and parallel FTUE/ads engineering. After owner composition approval, use the vertical slice before scaling the art. [Android ads acceptance](docs/qa/issue-210/ANDROID_ADS_CHECK.md) distinguishes actual SDK, runtime and physical checks. The 115 sources, 38 packets, 15 commerce families and the runtime pin remain in force.

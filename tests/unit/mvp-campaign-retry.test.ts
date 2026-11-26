@@ -75,7 +75,7 @@ describe.skipIf(!releaseProfile)('explicit adaptive retry', () => {
     expect(await Promise.all([retry(), retry()])).toEqual(['started', 'stale']);
     expect(store.state.attempt.dealId).not.toBe(deal.id);
     expect(store.state.attempt.id).toBe('atomic-new-attempt');
-    expect(store.state.campaignLives?.remaining).toBe(2);
+    expect(store.state.campaignLives?.remaining).toBe(LIVES_RULES.max - 1);
     expect(store.state.attempt.director).toMatchObject({ restarts: 3, previousLosses: 3 });
     expect(store.state.attempt.sourceDifficulty).toEqual({ outcome: 'Restart', restarts: 3 });
     expect(store.state.attempt.issuance).toMatchObject({ dealId: quote.selected.id, source: 'budget-r2' });
@@ -89,7 +89,7 @@ describe.skipIf(!releaseProfile)('explicit adaptive retry', () => {
   it('records the last-life loss once and permits the same new-attempt request after the existing free timer', () => {
     const { save } = exhausted();
     save.profile.coins = save.profile.hints = save.profile.undos = save.profile.jokers = 0;
-    save.campaignLives = { version: 1, remaining: 1, observedAt: 100, refillAt: 100 + LIVES_RULES.refillMs, earnedCredits: 0 };
+    save.campaignLives = { version: 2, remaining: 1, observedAt: 100, refillAt: 100 + LIVES_RULES.refillMs, earnedCredits: 0 };
     const quote = quoteAdaptiveRetry(save)!;
     expect(commitAdaptiveRetry(save, quote, 'after-timer', 110)).toBe('lives');
     expect(save.attempt.id).toBe('exhausted-original');

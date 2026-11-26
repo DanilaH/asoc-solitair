@@ -312,7 +312,7 @@
     {
       "id": "azur-extra-foundation",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fourth/fifth upper foundation at levels 22/40 with coin or earned video, legal category moves, persistent opening, Hint and post-transfer practice. C8 issue 205 uses a reserved upper grid cell with the same 138:166 proportions before and after purchase and Undo.",
+      "currentImplementation": "New eligible C8 ordinary definitions offer an upper slot from L6 with a versioned Deal ID, reserved geometry and separate coin/rewarded paths. Historical definitions remain valid. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
       "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/60",
       "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
@@ -421,7 +421,7 @@
     {
       "id": "azur-difficulty-label",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Hard6/SuperHard11 in Next, picker and entry C8",
+      "currentImplementation": "C8 displays difficulty in Home, play HUD, Next and developer picker using the selected/current tier. It removes the intermediate mandatory difficulty dialog. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
       "nextAction": "Human/device check 320px, accessibility and perceived actual challenge",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "C1"
@@ -451,7 +451,7 @@
     {
       "id": "azur-daily-tasks",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "MVP U2/U3 retain the own four-task UTC schedule, frozen day/week definitions, common grant inventory and weekly 5-medal/20-coin milestone. Shared state drives Home/day/week readiness and reset times. The ordinary tasks dialog exposes only completed unclaimed older task/milestone records, claims their original IDs/frozen prizes, and assigns old task medals to the original week. Current incomplete and completed/claimed states are explicit; a finished weekly meter no longer advertises another reward above its cap. Новые дни прежней QA-недели получают ordinary-цели без IAP, исходные дни и недельные призы сохранены. На 80/80 новые first-clear-цели заменяет достижимый сбор темы. Интерфейс поясняет срок уже заданных first-clear условий и дату перехода со старой недели на обычный бонус.",
+      "currentImplementation": "C8 tasks unlock at L7 on the new schedule and retain earlier access on migrated accounts. Current and ready weekly rewards retain their own surface, and older claims live in a compact archive with a real rollover countdown. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
       "nextAction": "Retain ordinary tasks and saved source-week migration. #138/141/143 prove 28 tuples, 5 milestones, exact chest pool Hint/Undo/Definition/Shuffle (not Joker), saved roll reuse and medals on claim; 1210/960 conditional. Full R1/R2 remains. Trace other medal writes/remote/day and claim lifecycle; physical acceptance open. Video is not MakePurchase.",
       "stage": "F1",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
@@ -540,8 +540,8 @@
     {
       "id": "hitapps-lives",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "MVP C3 retains ordinary C8 candidate policy: 3 lives, one free refill per 5 minutes and 50-coin/RV alternatives. Ordinary retry/new-attempt UI explains the once-per-exhaustion charge when starting the next attempt; Home or Daily switching alone does not charge. Zero-resource UI retains the actual free timer and offers Daily only after its existing unlock. Atomic retry uses the existing loss identity. Native snapshot различает активный запрос, earned и достоверное отсутствие. Запись выдачи предшествует ACK; естественный таймер применяется до видео.",
-      "nextAction": "Complete final-branch browser/physical duplicate, reload, zero-resource, cancel and rewarded lifecycle acceptance. Do not retune 3/5min/50coin policy through this task. Source loss/regen/live parameters, SDK delivery and human numeric acceptance remain separate.",
+      "currentImplementation": "C8 lives v2 uses five slots, retaining deficit, refill clock and earned/pending rights. Refill is one life per five minutes, 50 coins or confirmed video. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
+      "nextAction": "Verify the v2 migration and real SDK lifecycle on Android. Original loss and regeneration parameters remain open.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
@@ -793,7 +793,7 @@
     {
       "id": "azur-fullscreen-ads-clock",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Issue #210 trial reuses the P01 durable shown journal and the P20 quote binding. The C8 transition to L3+ uses 120-second startup and last-shown guards. The audit adds Settings→Home and mutually exclusive start/end with optional theme in source-shaped-pause-r3. Evidence: mini-games-kit f4542d287d17fc085eb2e8e874bd49415a2dedfd, bounded NATIVE_STATIC. Coffee and rewarded share the persisted fullscreen clock. The test candidate has no wins prerequisite. See docs/qa/issue-210/ANDROID_ADS_CHECK.md.",
+      "currentImplementation": "C8 r4 uses the same durable actual-shown window for transition, pause and rewarded placements, with tutorial exit protection. A declined or unavailable request does not update cadence. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
       "nextAction": "Verify signed device impressions, L2→L3 and retry transitions, both rewarded callback orders and shared cadence after reload, background and no-fill. Continue source entry and remote cadence research separately.",
       "stage": "E2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
@@ -831,7 +831,7 @@
     {
       "id": "unico-coffee-break",
       "status": "ROADMAPPED",
-      "currentImplementation": "Owner decision 24.11 maps Coffee Break and Hitapps AdsBreak to one C8 ad-pause capability. main.ts schedules ads-break only when eligible and board idle. Separate coffeePreview disabled under releaseProfile; optional rewarded coins distinct. S3 +3 observed after interruption; opt-in/format unknown. Issue #210: the ordinary shared pause carries its pending opportunity to the next safe idle check and records reasons. See docs/qa/issue-210/ANDROID_ADS_CHECK.md for device evidence gates. Issue #210 B adds configurable source-shaped cadence with a shared confirmed-fullscreen clock and repeated Coffee across campaign/Daily. Exact live source configuration and Android SDK acceptance remain open.",
+      "currentImplementation": "C8 r4 conditions every repeated in-game pause on a newly saved eligible action, motion settlement, painted prelude and actual SDK readiness. The Unico S3 +3 grant remains a source gap. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
       "nextAction": "Recover original interruption trigger/type/award; compare shared product pause. SDK/ILRD/native return acceptance. Do not re-add duplicate Coffee UI or infer opt-in from video.",
       "stage": "E2",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
@@ -862,7 +862,7 @@
     {
       "id": "unico-redeal-restart",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Existing certified second-layout choice on L12–15 and immutable same-layout retry are retained. MVP C3 separately adds eligible L16+ new-attempt issuance through the current adaptive selector, presenting layout versus budget changes honestly and committing loss/history/life/passport together. It does not substitute the L12–15 alternate-layout helper for the larger bank.",
+      "currentImplementation": "C8 ordinary restart selects a different certified tableau/stock/faceUp layout of the same level when compatible, with atomic debit and issuance. Lesson, fixed Daily and uncovered cases retain their original layout. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
       "nextAction": "Complete final-branch browser and physical retry/choice acceptance, including legacy L12–15 and retained recovery/Random Joker rights. Capture original Unico Daily repeat conditions, randomization and budget before extending policy or claiming parity.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/64",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -1179,7 +1179,7 @@
     {
       "id": "azur-bonus-lower-column",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Content 8 preview 0.19.9 offers a separate fifth lower tableau at levels 30/40 with coin or earned video, legal temporary storage, verified Hint continuation, persistent opening and post-transfer practice. C8 issue 205 uses a reserved lower grid cell with the same 138:166 proportions before and after purchase and Undo.",
+      "currentImplementation": "New eligible ordinary definitions offer the lower column from L12 with separate count and compatibility checks. Existing authored first encounters and restore IDs are retained. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
       "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/60",
       "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
@@ -1254,7 +1254,7 @@
     {
       "id": "azur-tutorial-preset-deal",
       "status": "IN_PROGRESS",
-      "currentImplementation": "Offline tools/content/azur-preset.ts resolves negative category references and ordered columns and deck from the schema in kit PR #93. Level 1 eligibility plus enabled and valid preset gates the branch. Product validation requires the exact card partition. Other options use the existing ordinary AZUR dealer. content:azur-preset exports a versioned Russian Rules 3 example and verifies each of its 19 moves against the engine and independent oracle. Tests cover fallback, RNG calls and stock order. See docs/qa/content-v8/AZUR_PRESET_AUTHORING.md. Issue #210 first-clear C8 authored presets use seven versioned Deal IDs and preserve old definitions and Undo states. Each supported action is tied to an actual presented source/target and a verified state transition. See docs/qa/issue-210/FTUE_PRESETS.md.",
+      "currentImplementation": "The exact retained C8 preset IDs are protected from forced placements during first-use cues, special introductions and the subsequent ordinary-action guard. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
       "nextAction": "Verify the original Android first-level board, live tutorial activation and full native validator semantics. Current C8 first-clear activation is owner-authorized in PR211. Physical Android and independent human acceptance remain open.",
       "stage": "C1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/66"

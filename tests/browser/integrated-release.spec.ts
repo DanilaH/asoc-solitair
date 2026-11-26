@@ -8,7 +8,7 @@ import { content8Dealer } from '../../src/content/campaign-v8-dealer';
 import { campaignId } from '../../src/domain/progression';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { content8Wave } from '../../src/content/campaign-v8-dealer';
-import { hitappsDirectorDeals } from '../../src/content/campaign-v8-hitapps-director';
+import { findDeal } from '../../src/content/campaign';
 import { boardFrame, layout } from '../../src/game/layout';
 import { move, read } from './wallet-fixture';
 
@@ -37,10 +37,12 @@ test('L15 to adaptive L16 through the normal campaign UI, then reopen and retain
   await page.locator('#next-level').tap();
   const difficulty = page.locator('#difficulty-play');
   if (await difficulty.isVisible()) await difficulty.tap();
-  await expect.poll(async () => (await read(page)).attempt.dealId).toMatch(/-c8-core-r1-rights-r1$/);
+  await expect.poll(async () => (await read(page)).attempt.dealId).toMatch(/-c8-core-r1-rights-r1(?:-bonus-r2)?$/);
   const issued = (await read(page)).attempt;
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', issued.dealId);
-  await page.locator('#wallet-open').tap();
+  await page.locator('#menu').tap();
+  await page.locator('#pause-options summary').tap();
+  await page.locator('#helpers-open').tap();
   await expect(page.locator('#random-joker-open')).toBeVisible();
   const before = await read(page);
   await expect(page.locator('#random-joker-open')).toContainText('250 монет');
@@ -50,13 +52,15 @@ test('L15 to adaptive L16 through the normal campaign UI, then reopen and retain
   await page.locator('#random-joker-confirm').tap();
   await expect.poll(async () => (await read(page)).profile.coins).toBe(before.profile.coins - 250);
   expect((await read(page)).profile.jokers).toBe(before.profile.jokers);
-  await page.locator('#wallet-open').tap();
+  await page.locator('#menu').tap();
+  await page.locator('#pause-options summary').tap();
+  await page.locator('#helpers-open').tap();
   await page.locator('#random-joker-open').tap();
   await expect(page.locator('#random-joker-confirm')).toHaveText('Разместить');
   await page.locator('#random-joker-warning [data-close]').tap();
   if (await page.locator('#helpers').isVisible()) await page.locator('#helper-return').tap();
-  const baseId = issued.dealId.replace(/-c8-core-r1-rights-r1$/, '');
-  const base = hitappsDirectorDeals.find(entry => entry.deal.id === baseId)?.deal ?? content8Wave[0];
+  if (await page.locator('#settings').isVisible()) await page.locator('#settings-done').tap();
+  const base = findDeal(issued.dealId)!;
   const rect = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(rect.width, rect.height, save.settings.deckPosition, base);
   const stock = layout(issued.board, base, frame, save.settings.deckSide, save.settings.deckPosition).stock;
@@ -98,7 +102,7 @@ test('opens the Frozen teaching deal through Next and keeps the board and Undo a
   await expect.poll(async () => (await read(page)).attempt.board).toEqual(starting.board);
 });
 
-test('claims free shop coins through the ordinary helper panel on an offline build', async ({ page }) => {
+test('claims free shop coins through the wallet on an offline build', async ({ page }) => {
   const campaign = content8Wave[0];
   const save = freshSave(campaign, 'free-shop-coins');
   save.contentVersion = 8;
@@ -112,14 +116,18 @@ test('claims free shop coins through the ordinary helper panel on an offline bui
   await page.goto('/');
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   await page.locator('#home-play').tap();
-  await page.locator('#wallet-open').tap();
+  await page.locator('#menu').tap();
+  await page.locator('#pause-options summary').tap();
+  await page.locator('#helpers-open').tap();
   await expect(page.locator('#coffee-open')).toBeHidden();
-  await expect(page.locator('#shop-video-claim')).toBeDisabled();
+  await page.locator('#helpers-coins-open').tap();
+  await expect(page.locator('#coins-dialog')).toBeVisible();
+  await expect(page.locator('#shop-video-claim')).toBeHidden();
   await expect(page.locator('#shop-video-status')).not.toBeEmpty();
   await page.locator('#shop-free-claim').tap();
   await expect.poll(async () => (await read(page)).profile.coins).toBe(save.profile.coins + 30);
-  await expect(page.locator('#shop-free-claim')).toBeDisabled();
-  await expect(page.locator('#shop-free-claim')).toContainText('получены');
+  await expect(page.locator('#shop-free-claim')).toBeHidden();
+  await expect(page.locator('#shop-claim-status time')).toHaveText(/\d{2}:\d{2}:\d{2}/);
   await page.reload();
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   expect((await read(page)).profile.coins).toBe(save.profile.coins + 30);
@@ -193,6 +201,8 @@ test('uses both task Definition charges and opens normal offers when the stock i
   await expect(page.locator('#product-offer-helpers')).toContainText('Объяснения');
   await expect(page.locator('#product-offer-helpers')).toContainText('не гарантирован');
   await expect.poll(async () => (await read(page)).productOffers?.reservation).toMatchObject({ resource: 'definition', surface: 'definition' });
+  await page.locator('#helpers-coins-open').tap();
+  await expect(page.locator('#coins-dialog')).toBeVisible();
   await expect(page.locator('#shop-free-claim')).toBeVisible();
   await expect(page.locator('#shop-video-claim')).toBeDisabled();
   await expect(page.locator('#shop-video-status')).not.toBeEmpty();

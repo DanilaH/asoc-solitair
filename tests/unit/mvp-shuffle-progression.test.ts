@@ -78,7 +78,7 @@ describe.skipIf(!releaseProfile)('charged Shuffle progression', () => {
       const base = campaignDeals[level - 1], save = profile(base);
       save.difficultyPenalty = difficultyPenalty;
       const selected = selectCampaignDeal(save, base);
-      expect(selected.id).toMatch(/-shuffle-r2$/);
+      expect(selected.id).toMatch(/-shuffle-r2(?:-bonus-r2)?$/);
       expect(selected.shuffleCost).toBe('charge');
       expect(campaignIssuance(save, base, selected)?.dealId).toBe(selected.id);
     }

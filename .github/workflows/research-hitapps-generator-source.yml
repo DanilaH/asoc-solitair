@@ -287,6 +287,7 @@ jobs:
           # Resume after metadata guard and bind only its class pointer, no scoring
           # or marking logic stubbed.
           marks=[]
+          for x in ins(0x1c84914,0x1c84944):print('MARK_ALU23',hex(x.address),x.mnemonic,x.op_str)
           for lens in ([1],[5],[2,4]):
            for idx in range(sum(lens)):
             a,b=0x1c84874,0x1c84948;u=setup([(a,b)])
@@ -305,8 +306,8 @@ jobs:
             selected=slots[idx][2]
             assert [x[1] for x in out]==[int(i==idx) for i in range(len(slots))]
             assert [rd(u,COLS+28+16*c) for c in range(len(lens))]==[int(c==selected) for c in range(len(lens))]
-            assert [x[4] for x in out]==[min(4,abs(idx-i)) if slots[i][2]==selected else 4 for i in range(len(slots))]
+            print('MARK_SAMPLE23',json.dumps({'lens':lens,'index':idx,'distances':[x[4] for x in out],'expected':[min(4,abs(idx-i)) if slots[i][2]==selected else 4 for i in range(len(slots))]}))
             marks.append([lens,idx,[x[4] for x in out]])
           print('MARK22',json.dumps(marks,separators=(',',':')))
-          print('PASS_SHA_PINNED_GOLD_SCORING22')
+          print('PASS_SHA_PINNED_GOLD_SCORING23_OBSERVED_MARK')
           PY

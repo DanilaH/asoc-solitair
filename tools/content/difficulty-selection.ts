@@ -38,10 +38,11 @@ export function isLateLoss(run: Pick<PolicyRun, 'status' | 'steps'>, limit: numb
 export function simulatePolicy(deal: Deal, policy: SimulationPolicy): PolicyRun {
   let board = structuredClone(deal.initial);
   const path: BoardCommand[] = [];
+  let spent = 0;
   const choose = policy.start?.(deal) ?? policy.choose;
   const seen = new Set<string>();
   const result = (status: PolicyRun['status'], lossReason?: LossReason): PolicyRun => ({
-    policyId: policy.id, status, steps: path.length, path, ...(lossReason ? { lossReason } : {}),
+    policyId: policy.id, status, steps: spent, path, ...(lossReason ? { lossReason } : {}),
   });
   while (board.phase === 'playing') {
     if (policy.detectCycles) {
@@ -57,6 +58,7 @@ export function simulatePolicy(deal: Deal, policy: SimulationPolicy): PolicyRun 
     const next = applyBoard(board, command, deal);
     if (typeof next === 'string') return result('UNKNOWN');
     board = next.board;
+    spent += next.consumedMoves ?? 1;
     path.push(command);
   }
   return board.phase === 'won' ? result('WON') : result('LOST', 'budget');

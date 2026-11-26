@@ -1,6 +1,6 @@
 {
   "name": "asoc-solitair",
-  "version": "0.20.7",
+  "version": "0.20.8",
   "private": true,
   "type": "module",
   "engines": {
@@ -40,6 +40,8 @@
     "qa:campaign-decisions": "VITE_CONTENT8_PREVIEW=1 vite build --ssr tools/qa/audit-c8-campaign-decisions.ts --outDir .authoring/content8/decision-build && node .authoring/content8/decision-build/audit-c8-campaign-decisions.js",
     "qa:hitapps-balance": "vite build --ssr tools/qa/audit-hitapps-balance.ts --outDir .authoring/hitapps/audit && node .authoring/hitapps/audit/audit-hitapps-balance.js",
     "qa:hitapps-equality": "vite build --ssr tools/qa/verify-hitapps-equality.ts --outDir .authoring/hitapps/verify && node .authoring/hitapps/verify/verify-hitapps-equality.js",
+    "qa:hitapps-r4": "VITE_ASOC_PROFILE=c8-release-v1 vite build --ssr tools/qa/audit-hitapps-r4.ts --outDir .authoring/hitapps-r4-audit && node .authoring/hitapps-r4-audit/audit-hitapps-r4.js",
+    "qa:hitapps-source-r4": "vite build --ssr tools/qa/verify-hitapps-source-r4.ts --outDir .authoring/hitapps-r4-fixtures && node .authoring/hitapps-r4-fixtures/verify-hitapps-source-r4.js",
     "qa:porting": "node tools/qa/verify-porting-ledger.mjs",
     "qa:decision-cost": "node tools/qa/c8-decision-cost.mjs",
     "qa:decision-deep": "VITE_CONTENT8_PREVIEW=1 vite build --ssr tools/qa/deepen-c8-unknown-transfers.ts --outDir .authoring/content8/deep-build && node .authoring/content8/deep-build/deepen-c8-unknown-transfers.js"

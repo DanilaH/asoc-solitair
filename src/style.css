@@ -513,6 +513,10 @@ summary{cursor:pointer;font-weight:800;min-height:44px;padding:12px 3px;color:#5
 #app[data-lesson=true] #dock .attention .helper-icon{outline:2px solid #ffe4a4;outline-offset:2px}
 #lesson-note{position:absolute;inset:0;display:flex;align-items:center;margin:0 auto;width:min(100%,390px);border:1px solid #99c9be;border-radius:12px;background:#154e52;color:#fff3d6;padding:5px 11px}
 #lesson-note p{margin:0;font-size:18px;font-weight:800;line-height:1.1}
+#lesson-note:has(#source-special-actions:not([hidden])){gap:8px;justify-content:space-between}
+#source-special-actions:not([hidden]){display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;min-width:38%}
+#source-special-actions button{min-height:30px;padding:3px 8px;font-size:12px;line-height:1.12}
+#source-deal-list:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}
 #feedback-row>#message,#feedback-row>#no-transfer{grid-area:1/1}
 #feedback-row:has(#lesson-note:not([hidden])) :is(#message,#praise,#no-transfer){visibility:hidden}
 [data-tier=hard]{--tier-bg:#f6d3a7;--tier-edge:#a86c45;--tier-fg:#582d17;--tier-bright:#ffead3}

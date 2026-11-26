@@ -14,14 +14,16 @@ export function prepareGoldenDeal(base: Deal, previewId: string, sourceGate: { e
 
 export const goldenRewardKey = (deal: Deal) => `golden-cards:${deal.golden?.rewardGroup ?? deal.id}`;
 export const collectedGold = (board: Board, deal: Deal) =>
-  deal.golden?.ids.filter(id => board.collected.includes(id)).length ?? 0;
+  board.hitapps ? Object.values(board.hitapps.cards).filter(card => card.gold?.activated).length
+    : deal.golden?.ids.filter(id => board.collected.includes(id)).length ?? 0;
 
 export function claimGoldenCards(save: Save, deal: Deal): RewardGrant | undefined {
-  const gold = deal.golden, key = goldenRewardKey(deal);
-  if (!gold || deal.daily || save.attempt.daily || save.attempt.dealId !== deal.id ||
+  const coinsPerCard = deal.hitapps?.gold?.coinsPerActivation ?? deal.golden?.coinsPerCard;
+  const key = goldenRewardKey(deal);
+  if (coinsPerCard === undefined || deal.daily || save.attempt.daily || save.attempt.dealId !== deal.id ||
     save.attempt.board.phase !== 'won' || save.profile.rewards.includes(key)) return;
-  const coins = collectedGold(save.attempt.board, deal) * gold.coinsPerCard;
-  if (!Number.isSafeInteger(coins) || coins <= 0) return;
+  const coins = collectedGold(save.attempt.board, deal) * coinsPerCard;
+  if (!Number.isSafeInteger(coins) || coins <= 0 || !Number.isSafeInteger(save.profile.coins + coins)) return;
   save.profile.coins += coins;
   save.profile.rewards.push(key);
   return { key, reason: 'golden_cards', label: 'За золотые карты', coins };

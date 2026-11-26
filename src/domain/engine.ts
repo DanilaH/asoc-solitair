@@ -18,9 +18,10 @@ import { isBoundCard } from './bound-cards';
 import { puzzleError } from './puzzle-pairs';
 import { claimGoldenCards } from './golden-cards';
 import { hammerCard, matchingStock } from './starter-boosters';
+import { assertHitappsBoard, hitappsCommands, hitappsPacket, hitappsStateKey, hitappsStep } from './hitapps-board';
 
 export const STREAK = BALANCE.streak;
-export const boardRules = (board: Board): 2 | 3 => board.rulesVersion ?? RULES_VERSION;
+export const boardRules = (board: Board): 2 | 3 | 4 => board.rulesVersion ?? RULES_VERSION;
 export function freshAttempt(deal: Deal, id: string): Attempt {
   return { id, dealId: deal.id,
     ...(releaseProfile?.capabilities.retention === 'c8-retention-candidate-r1' ? { verifiedTaskHints: 0 } : {}),
@@ -34,6 +35,7 @@ export function freshSave(deal: Deal, id: string): Save {
     meta: { version: 1, winCycle: 0, cycles: 0, dailyDates: [], dailyStreak: 0 }, attempt: freshAttempt(deal, id), settings: { sfx: true, haptics: true, reducedMotion: false } };
 }
 export function packet(board: Board, index: number, deal: Deal): string[] {
+  if (board.rulesVersion === 4 && board.hitapps) return hitappsPacket({ ...board, hitapps: board.hitapps }, index, deal);
   const col = board.tableau[index];
   if (!col?.length || isLocked(board, index, deal)) return [];
   const boundary = board.joker?.column === index ? board.joker.boundary : 0;
@@ -46,8 +48,9 @@ export function packet(board: Board, index: number, deal: Deal): string[] {
     !puzzleError(deal, col.slice(start - 1), true)) start--;
   return col.slice(start);
 }
-export function sourceCards(board: Board, loc: Location, deal: Deal): string[] {
-  if (loc.kind === 'tableau') return packet(board, loc.index, deal);
+export function sourceCards(board: Board, loc: Location, deal: Deal, root?: number): string[] {
+  if (loc.kind === 'tableau') return board.hitapps && root !== undefined
+    ? hitappsPacket({ ...board, hitapps: board.hitapps }, loc.index, deal, root) : packet(board, loc.index, deal);
   if (loc.kind === 'waste') return board.waste.length ? [board.waste.at(-1)!] : [];
   return [];
 }
@@ -87,7 +90,10 @@ function reveal(board: Board, id: string | undefined, deal: Deal, events: GameEv
 
 
 /** Pure board transition, shared by play and validation. Never mutates the supplied board. */
-export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board: Board; events: GameEvent[] } | string {
+export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board: Board; events: GameEvent[]; consumedMoves?: number } | string {
+  if (input.rulesVersion === 4) return input.hitapps && deal.hitapps
+    ? hitappsStep({ ...input, hitapps: input.hitapps }, cmd, deal) : 'Повреждена версия правил';
+  if (cmd.type === 'transfer' && (cmd.root !== undefined || cmd.scissors)) return 'Действие недоступно для этой раздачи';
   if (input.phase !== 'playing') return 'Попытка уже завершена';
   const board = structuredClone(input);
   const events: GameEvent[] = [];
@@ -176,7 +182,7 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
 export function sameBoardCommand(a: BoardCommand, b: BoardCommand) {
   if (a.type !== 'transfer' || b.type !== 'transfer') return a.type === b.type;
   return a.from.kind === b.from.kind && a.from.index === b.from.index &&
-    a.to.kind === b.to.kind && a.to.index === b.to.index;
+    a.to.kind === b.to.kind && a.to.index === b.to.index && a.root === b.root && a.scissors === b.scissors;
 }
 
 export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', victoryReward?: VictoryRewardConfig): Result {
@@ -233,7 +239,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     recordEqualityOutcome(next, attempt);
     if (trackDifficulty && attempt.board.phase === 'exhausted') recordCampaignExhaustion(attempt);
     const combo = attempt.combo, before = input.attempt.board;
-    const relocation = cmd.type === 'transfer';
+    const relocation = cmd.type === 'transfer' && !cmd.scissors;
     const disposition = combo ? comboDisposition({
       IsCardRelocation: relocation, IsDeckDraw: cmd.type === 'draw',
       InvolvesWildCard: relocation && before.joker !== undefined &&
@@ -300,6 +306,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
 }
 
 export function legalCommands(board: Board, deal: Deal): BoardCommand[] {
+  if (board.rulesVersion === 4 && board.hitapps) return hitappsCommands({ ...board, hitapps: board.hitapps }, deal);
   const commands: BoardCommand[] = [];
   const sources: Location[] = board.tableau.map((_, index) => ({ kind: 'tableau', index }));
   sources.push({ kind: 'waste', index: 0 });
@@ -336,9 +343,15 @@ export function canReachTransfer(board: Board, deal: Deal): boolean {
 export function boardKey(board: Board): string {
   const identity: unknown[] = [boardRules(board), board.tableau, board.foundations, board.stock, board.waste, [...board.faceUp].sort(), [...board.collected].sort(), board.joker ?? null, [...(board.keys ?? [])].sort()];
   if (board.recyclesLeft !== undefined || board.retainedMoves !== undefined) identity.push(board.recyclesLeft, board.retainedMoves);
+  if (board.hitapps) identity.push(hitappsStateKey(board.hitapps));
   return JSON.stringify(identity);
 }
 export function assertBoard(board: Board, deal: Deal): void {
+  if (board.rulesVersion === 4) {
+    if (!board.hitapps || deal.initial.rulesVersion !== 4) throw Error('Отсутствует состояние специальных правил');
+    return assertHitappsBoard({ ...board, hitapps: board.hitapps }, deal);
+  }
+  if (board.hitapps || deal.hitapps) throw Error('Несовместимые правила попытки');
   if (board.rulesVersion !== undefined && board.rulesVersion !== 2 && board.rulesVersion !== 3) throw Error('Неизвестные правила попытки');
   if (deal.frozen) {
     const tableau = new Set(deal.initial.tableau.flat());

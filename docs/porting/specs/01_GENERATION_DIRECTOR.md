@@ -1,5 +1,10 @@
 # Technical Spec 01 — source dealer, adaptive director, Equality and long-tail content
 
+## Updated implementation entry · 26.11.2026
+
+[Unified generator/specials brief](../HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md) and [tested numeric model](https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/reference.mjs) are the authoritative next delta for P05–P14; all earlier packets remain. Source remote config is nonblocking UNKNOWN for own adaptation, no full original-client parity. Preserve #210 and Rules2/3. 
+
+
 **Research method · 24.11.2026:** follow the owner-adopted [research and porting method](../RESEARCH_METHOD_2026-11-24.md) and [implementation brief template](../RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md). Base our implementation directly on inspected original code and architecture; no clean-room separation is required. Keep relevant exact tool output and provenance in the private kit evidence annex. Document source components, data flow/state ownership, consumer differences and acceptance together; do not upgrade existing static/model evidence to isolated-native or full-original runtime evidence.
 
 **P05–P08, P33–P35**; origin: [full CORE reference source specification](../../qa/CORE_REFERENCE_IMPLEMENTATION_SPEC_2026-11-20.md), [B2 source→product](../../qa/content-v8/Q2_DIRECTOR_SOURCE_DELTA_2026-11-21.md), [B3 source→product](../../qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md), [G1 2000-stage/locale](../../qa/content-v8/G1_LOCALE_LONG_CAMPAIGN_AND_REMOTE_SOURCE_2026-11-21.md), [C8 full campaign Q1](../../qa/content-v8/Q1_CAMPAIGN_DECISIONS.md). Все исходные механики сохраняются, даже когда их origin runtime не восстановлен. Приведённые ниже статические исследования ARM32/ARM64 подтверждают `SOURCE_NATIVE_STATIC`, а не `SOURCE_EXACT_RELEASE`; реально выполненные isolated/full-client проверки фиксируются отдельно по действующему методу.

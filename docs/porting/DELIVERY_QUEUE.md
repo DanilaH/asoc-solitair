@@ -1,3 +1,7 @@
+## Новая консолидация · 26.11.2026
+
+Актуальная дельта: [единое ТЗ](HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md) и [исследовательские примеры](https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md). Read first after #210. Старые результаты — исторические, не повторять закрытую разработку. Отсутствие original live config не блокирует собственную versioned реализацию; physical Android/balance and actual source proof remain distinct. 
+
 ## Актуальное поручение после аудита · 24.11.2026
 
 **25.11 · [Исследовательский pin](https://github.com/DanilaH/mini-games-kit/blob/af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a/research/games/association-solitaire/porting/SOURCE_FEATURES.json)** и [actual PR208](RESEARCH_CONSOLIDATION_2026-11-25.md) уточняют исторические описания. Source-only P29/P30 gaps не означают отсутствие работающих ordinary Bonus/Combo. Все 38 packet owners/dependencies/states сохранены; runtime pin прежний.

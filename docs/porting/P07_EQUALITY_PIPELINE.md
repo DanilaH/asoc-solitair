@@ -1,5 +1,8 @@
 # P07 · Офлайн-фазы Equality
 
+> 26.11.2026: [new unified brief](HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md). Old `PAIR_TRANSFORM_UNKNOWN` is accurate for historical manifests only; the positive native pair exchange and strategy predicates are now recovered. Implement new versioned records; keep old archive and independent product proof. Unresolved source cases explicit, server values nonblocking for local development. No release activation by this note.
+
+
 [Исходный аудит B3](../qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md) сверили с текущим дилером, SaveStore и независимым oracle. `prepareEqualityPlan` принимает указанную версию конфигурации, положительный исходный seed, допустимый уровень, лимит и известный синтетический сегмент. Unknown-сегмент отклоняется, даже если он есть в whitelist.
 
 - Equality выбирает три разных индекса из того же продвинутого EmbeddedRandom. Priority и None этот шаг пропускают. Проверены 3, 4 и 5 столбцов.

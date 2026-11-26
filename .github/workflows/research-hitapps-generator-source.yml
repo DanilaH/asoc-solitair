@@ -138,57 +138,7 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # Native rule predicates and precise list-order anchors.
-          fieldtab=114085648
-          assert word(0x6bcb3d4)==TS//88 and word(0x6bcb3d8)==fieldtab
-          FD,FDS=struct.unpack_from('<II',md,64);DV,DVS=struct.unpack_from('<II',md,72)
-          defs={ix:(ty,di) for ix,ty,di in (struct.unpack_from('<iii',md,FD+i) for i in range(0,FDS,12))}
-          row=images['CoreGameplay.dll']
-          for i in range(row[2],row[2]+row[3]):
-           tr=struct.unpack_from('<22I',md,T+i*88);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-           if not re.search(r'(Fact|Request|Placement|Verdict|CardState|ChangedBy|DragRoot)',tn):continue
-           count=tr[17]&65535
-           if not count or count>40:continue
-           try: offsets=struct.unpack_from('<%di'%count,e,off(word(fieldtab+4*i),4*count))
-           except (ValueError,struct.error):continue
-           data=[]
-           for k in range(count):
-            ix=tr[8]+k;fn=name(struct.unpack_from('<I',md,F+ix*12)[0]);dv=defs.get(ix)
-            data.append([fn,offsets[k],None if not dv or not 0<=dv[1]<DVS else [dv[0],md[DV+dv[1]:DV+dv[1]+4].hex()]])
-           if any(x[2] for x in data) or 'PlacementCheck' in tn:print('FIELDS8',json.dumps({'type':tn,'fields':data},separators=(',',':')))
-          for a,rs in sorted(entries.items()):
-           if not any(re.search(r'PlayStackPlacementCheck|HomePlacementCheck|CardPlacementOperations|ContainerOperations|CardFactData|CardStateOperations',r['type']) for r in rs):continue
-           r=rs[0]; end=starts[bisect.bisect_right(starts,a)]
-           if not re.search(r'IsValid|Evaluate|TryPickDragRoot|IsAvailable|Get.*State|Can.*Move|\\.ctor|Changed|Fact|Placement',r['method']):continue
-           print('METHOD8',json.dumps({'rva':hex(a),'end':hex(end),'names':[x['type']+'.'+x['method'] for x in rs],'params':r['parameters']},separators=(',',':')))
-          # Resolve LDMIA operands at source and target list reads, and event enum dispatch.
-          for pc in [0x1d029d0,0x1d029e4,0x1d029ec,0x1d02a0c,0x1d02a78,0x1d02a7c,0x1d02a80,0x1d02ba8,0x1d02bb0,0x1d0379c,0x1d037a0,0x1d037a4,0x1d03820,0x1d03890,0x1d03894,0x1d03898,0x1d03978,0x1d026c8,0x1d02708,0x1d0272c]:
-           print('WORD8',hex(pc),hex(word(pc)))
-          # Directly bind calls in the two placement evaluators and their decision objects.
-          for a,rs in sorted(entries.items()):
-           r=rs[0]
-           if not re.search(r'PlayStackPlacementCheck|HomePlacementCheck|CardPlacementOperations|ContainerOperations',r['type']):continue
-           if r['method'] not in ('EvaluatePlayStackPlacement','EvaluateHomePlacement','TryPickDragRootCard','get_IsValidPlacement','.ctor'):continue
-           end=starts[bisect.bisect_right(starts,a)]
-           calls=[]
-           for pc in range(a,end,4):
-            if (d:=branch(pc)) is not None and word(pc)&0x1000000 and d not in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):
-             calls.append([hex(pc),hex(d),[q['type']+'.'+q['method'] for q in entries.get(d,[])]])
-           print('CALLS8',json.dumps({'name':r['type']+'.'+r['method'],'a':hex(a),'b':hex(end),'calls':calls},separators=(',',':')))
-          # Report only selected branch-local register and field anchors for the placement checks.
-          for a,rs in sorted(entries.items()):
-           r=rs[0]
-           if not re.search(r'PlayStackPlacementCheck|HomePlacementCheck',r['type']):continue
-           if r['method'] not in ('get_IsValidPlacement','.ctor'):continue
-           end=starts[bisect.bisect_right(starts,a)]
-           facts=[]
-           for pc in range(a,min(end,a+0x400),4):
-            z=fact(pc)
-            if z and (z[1] in ('branch','readHalf','writeHalf') or z[1] in ('read','write') and z[5] not in (0,4) and z[4]!=13 or z[1]=='alu' and (z[3] in (10,8) or z[3]==13 and isinstance(z[6],int))):facts.append(z)
-           print('CHECK8',json.dumps({'name':r['type']+'.'+r['method'],'facts':facts},separators=(',',':')))
-          print('PASS_SHA_PINNED_RULES8')
-          print('STATIC_ONLY_NO_RUNTIME_OR_REMOTE')
-          PY          # Execute ONLY small, leaf native predicates in a synthetic ARM memory map.
+          # Execute ONLY small, leaf native predicates in a synthetic ARM memory map.
           # No Android app, SDK, user records or real cohort is executed.
           import itertools, math
           from unicorn import Uc, UC_ARCH_ARM, UC_MODE_ARM, UC_HOOK_CODE

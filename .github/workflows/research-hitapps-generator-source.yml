@@ -116,10 +116,10 @@ jobs:
           # Source-pinned ARM32 bounded execution of numeric write slices and resolved accessor boundaries.
           from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
           from unicorn.arm_const import *
-          import itertools
+          import itertools,math
           B=0x11000000; STOP=B+0xf0000; OBJ=B+0x1000; DATA=B+0x2000; CFG=B+0x3000
           def setup(ranges):
-           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP)
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP);u.reg_write(UC_ARM_REG_FPEXC,0x40000000)
            pages=set()
            for a,b in ranges:
             for p in range(a&~4095,((b+4095)//4096)*4096,4096):
@@ -210,5 +210,45 @@ jobs:
            u=setup([(0x1fff74c,0x1fff7b4),(0x1ffe948,0x1ffe94c)])
            wq(u,DATA+0x18,deadline);args(u,OBJ,0,now,now>>32);run(u,0x1fff74c,STOP,calls={0x1ffe948:DATA});got=rr(u,UC_ARM_REG_R0);assert got==int(deadline!=0 and deadline<now),(now,deadline,got);resetday.append([now,deadline,got])
           out('DAY32',resetday)
+          def f32(x):return struct.unpack('<f',struct.pack('<f',x))[0]
+          def fbits(x):return struct.unpack('<I',struct.pack('<f',x))[0]
+          def fl(x):return struct.unpack('<f',struct.pack('<I',x))[0]
+          def ceilf(u):reg(u,UC_ARM_REG_R0,fbits(math.ceil(fl(rr(u,UC_ARM_REG_R0)))))
+          def powf(u):reg(u,UC_ARM_REG_R0,fbits(fl(rr(u,UC_ARM_REG_R0))**fl(rr(u,UC_ARM_REG_R1))))
+          # Both imported functions were resolved by earlier SHA-identical source runs.
+          revive=[]
+          for remaining,coef,cap in itertools.product((0,1,4,5,6,10,11,31,99),(.1,.25,.5,1,1.2,2.5),(0,5,10,20,100)):
+           u=setup([(0x205a5d0,0x205a618),(0x2b4a9a4,0x2b4a9a8)])
+           reg(u,UC_ARM_REG_R5,remaining);reg(u,UC_ARM_REG_R4,CFG);reg(u,UC_ARM_REG_S16,fbits(coef));wr(u,CFG+0x24,cap)
+           run(u,0x205a5d0,0x205a618,calls={0x2b4a9a4:ceilf})
+           got=rr(u,UC_ARM_REG_R0);ex=min(cap,5*math.ceil(f32(f32(f32(coef)*f32(remaining))/5)))
+           assert got==ex,(remaining,coef,cap,got,ex);revive.append([remaining,coef,cap,got])
+          out('REVIVE32',revive)
+          prices=[]
+          for count,base,inc in itertools.product((0,1,2,3,10),(0,50,300),(0,25,100)):
+           if count==0:
+            u=setup([(0x200db64,0x200dc00)]);wr(u,OBJ+0x1c,0);args(u,OBJ);run(u,0x200db64,STOP)
+           else:
+            u=setup([(0x200dbe8,0x200dbf4)]);reg(u,UC_ARM_REG_R4,CFG);reg(u,UC_ARM_REG_R6,base);reg(u,UC_ARM_REG_R7,count);wr(u,CFG+0x38,inc);run(u,0x200dbe8,0x200dbf4)
+           got=rr(u,UC_ARM_REG_R0);assert got==(0 if not count else base+(count-1)*inc);prices.append([count,base,inc,got])
+          out('RESTPRICE32',prices)
+          exponents=[]
+          for base,n,cap,coef in itertools.product((1,9,15,51,100),(0,1,2,4,8),(0,2,5),(1,1.15,1.5,2)):
+           u=setup([(0x1ffe3e4,0x1ffe440),(0x2b4c8d0,0x2b4c8d4)])
+           args(u,base,n,cap,fbits(coef))
+           run(u,0x1ffe3e4,0x1ffe440,skips={0x1ffe408:0x1ffe40c,0x1ffe414:0x1ffe43c},calls={0x2b4c8d0:powf})
+           got=fl(rr(u,UC_ARM_REG_S18));ex=f32(f32(base)*f32(f32(coef)**f32(min(n,cap))))
+           assert got==ex,(base,n,cap,coef,got,ex);exponents.append([base,n,cap,coef,got])
+          out('LIFEEXP32',exponents)
+          rounding=[]
+          for n in range(121):
+           u=setup([(0x1ffe4fc,0x1ffe51c)]);args(u,n);run(u,0x1ffe4fc,0x1ffe51c)
+           got=rr(u,UC_ARM_REG_R0);assert got==(n if n<10 else n//10*10);rounding.append([n,got])
+          out('LIFEROUND32',rounding)
+          resets=[]
+          for count,cost in itertools.product((0,1,3,100),(0,25,100)):
+           u=setup([(0x200e0c0,0x200e0cc)]);wr(u,OBJ+0x1c,count);wr(u,OBJ+0x18,cost);args(u,OBJ);run(u,0x200e0c0,STOP)
+           got=[rd(u,OBJ+0x1c),rd(u,OBJ+0x18)];assert got==[0,cost];resets.append([count,cost,*got])
+          out('RESTRESET32',resets)
           print('PASS_SHA_PINNED_RECOVERY_KERNELS32',json.dumps({k:len(v) for k,v in rows.items()}))
           PY

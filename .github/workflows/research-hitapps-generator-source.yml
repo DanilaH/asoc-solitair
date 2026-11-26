@@ -138,65 +138,93 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # Gold algorithm metadata and exact card eligibility, plus verdict call gates.
+          # Source gold scoring helpers, default values, and exact eligible positions.
           from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
           from capstone.arm import ARM_OP_MEM,ARM_OP_IMM
+          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
+          from unicorn.arm_const import *
+          import itertools,math
           dis=Cs(CS_ARCH_ARM,CS_MODE_ARM);dis.detail=True
           def ins(a,b):return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          fieldtab=114085648;assert word(0x6bcb3d8)==fieldtab
-          FD,FDS=struct.unpack_from('<II',md,64);DV,DVS=struct.unpack_from('<II',md,72)
-          defs={ix:(ty,di) for ix,ty,di in (struct.unpack_from('<iii',md,FD+i) for i in range(0,FDS,12))}
-          for im,row in images.items():
-           for t in range(row[2],row[2]+row[3]):
-            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if not re.search(r'GoldenCardGenerator|GoldenCardGeneration|GenerationParameters|GoldenCardBoard|GoldenCardCandidate|Golden.*Placement|Golden.*Strategy|Gold.*Generator',tn,re.I):continue
-            n=tr[17]&65535
-            try: fs=struct.unpack_from('<%di'%n,e,off(word(fieldtab+4*t),4*n)) if n else []
-            except (ValueError,struct.error):fs=[None]*n
-            fields=[]
-            for k in range(n):
-             ix=tr[8]+k;dv=defs.get(ix)
-             fields.append([name(struct.unpack_from('<I',md,F+12*ix)[0]),fs[k],None if not dv or not 0<=dv[1]<DVS else md[DV+dv[1]:DV+dv[1]+4].hex()])
-            methods=[]
-            for k in range(tr[16]&65535):
-             mr=struct.unpack_from('<7I4H',md,M+36*(tr[9]+k));rid=mr[6]&0xffffff
-             methods.append([name(mr[0]),rid,[name(struct.unpack_from('<I',md,P+12*(mr[4]+i))[0]) for i in range(mr[-1])]])
-            print('TYPE19',json.dumps({'image':im,'type':tn,'fields':fields,'methods':methods},separators=(',',':')))
-          def facts(label,a,b):
-           rows=[]
-           for x in ins(a,b):
-            m=x.mnemonic;p=x.op_str
-            if m.startswith(('cmp','tst','cmn','b','v','ldr','str','mov','add','sub','and','orr','bic','eor','mul','mla','ux','sx','clz','lsr','asr','rsb')):
-             if m=='bl' and p in ('#0x1a2677c','#0x1a26a2c','#0x1a26a30','#0x1a268f0','#0x1a26718','#0x1a268f4','#0x1a26a20'):continue
-             if m.startswith(('ldr','str')) and ('[pc' in p or '[sp' in p) and not m.startswith('ldrd'):continue
-             rows.append([hex(x.address),m,p])
-           print('FACT19',json.dumps({'label':label,'facts':rows},separators=(',',':')))
-          for a,b,label in [(0x1c834e8,0x1c83520,'generation-default'),(0x1c85f88,0x1c860d8,'gold-eligible'),(0x1c860d8,0x1c8614c,'gold-write'),(0x1c83350,0x1c8340c,'gold-board-filter'),(0x1c865b0,0x1c86624,'gold-live-eligible'),(0x1c7e09c,0x1c7e0ec,'play-ordinary'),(0x1c7e178,0x1c7e21c,'home-gates'),(0x1c7d71c,0x1c7d748,'puzzle-check'),(0x1c7db00,0x1c7db7c,'home-flag-construction')]:facts(label,a,b)
-          # Identify exact shared generic gold method boundaries from next prologue
-          # and known direct BL targets, rather than decoding a whole text segment.
-          a=0x2d1ea1c;b=a+0x2800;ops=ins(a,b)
-          returns=[]
-          for x in ops:
-           if (x.mnemonic=='pop' and 'pc' in x.op_str) or (x.mnemonic=='bx' and x.op_str=='lr'):returns.append(hex(x.address))
-          print('GEN_RET19',json.dumps(returns[:30]))
-          # Direct call targets with metadata when available.
-          for x in ops[:900]:
-           if x.mnemonic=='bl':
-            dst=x.operands[0].imm
-            if dst not in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20,0x1a60bf0,0x1a60c4c,0x1a60fcc):
-             print('GEN_EDGE19',hex(x.address),hex(dst),json.dumps([r['type']+'.'+r['method'] for r in entries.get(dst,[])]))
-          # Calls whose source logic is not an exact registered core method.
-          for a in (0x1c8eae4,0x1c8ec7c,0x1c8ef18,0x1c91644):
+          def desc(a):return [r['type']+'.'+r['method'] for r in entries.get(a,[])]
+          for a,rs in sorted(entries.items()):
+           for r in rs:
+            nm=r['type']+'.'+r['method']
+            if re.search(r'GoldenCardOperations|GenerationParameters|Penalty.*Golden|Golden.*Penalty',nm) or r['method'] in ('ComputeBoundStatus','CanPlaceMagnet','CanPlaceHammer'):
+             end=starts[bisect.bisect_right(starts,a)]
+             if end-a<=25000:print('MAP20',json.dumps({'name':nm,'a':hex(a),'b':hex(end),'params':r['parameters']},separators=(',',':')))
+          for a in (0x1c91360,0x1c90c58,0x1c908a4,0x1c90b10):
            cand=[]
            for b,rs in entries.items():
             if a==b or not any(r['image']=='CoreGameplay.dll' for r in rs):continue
-            end=starts[bisect.bisect_right(starts,b)]
-            count=min((end-b)//4,1300)
+            end=starts[bisect.bisect_right(starts,b)];count=min((end-b)//4,1500)
             if count<6 or sum(equivalent(a+4*i,b+4*i) for i in range(min(count,24)))<min(count,24)-3:continue
             tails=[i for i in range(count) if word(b+4*i)==0xe12fff1e or word(b+4*i)&0xffff8000==0xe8bd8000]
             n=tails[-1]+1 if tails else count
             diff=sum(not equivalent(a+4*i,b+4*i) for i in range(n))
             if diff<=max(3,n//8):cand.append([rs[0]['type']+'.'+rs[0]['method'],hex(b),n,diff])
-           print('BIND19',hex(a),json.dumps(sorted(cand,key=lambda z:z[3])[:5]))
-          print('PASS_SHA_PINNED_GOLD_DETAIL19')
+           print('BIND20',hex(a),json.dumps(sorted(cand,key=lambda z:z[3])[:5]))
+          # Read exact source default value-type return via actual native leaf.
+          B=0x11000000;STOP=B+0xf0000
+          u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(0x1c83000,4096)
+          u.mem_write(0x1c834e8,e[off(0x1c834e8,0x38):off(0x1c834e8,0x38)+0x38])
+          u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_R0,B);u.reg_write(UC_ARM_REG_LR,STOP)
+          u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_FPEXC,0x40000000)
+          u.emu_start(0x1c834e8,STOP,count=50)
+          assert u.reg_read(UC_ARM_REG_PC)==STOP
+          data=bytes(u.mem_read(B,20));print('DEFAULT20',json.dumps({'floats':list(struct.unpack('<4f',data[:16])),'distance':struct.unpack_from('<I',data,16)[0]}))
+          # Distinguish level authoring eligibility (hidden not required) from
+          # dynamic world eligibility (Hidden bit required), and actual gold health.
+          # Execute source card predicate including coordinate arrays; only the
+          # proven integer-array accessor and already-initialized metadata branch stubbed.
+          def rd(u,a):return struct.unpack('<I',bytes(u.mem_read(a,4)))[0]
+          def wr(u,a,v):u.mem_write(a,struct.pack('<I',v&0xffffffff))
+          CARD=B+0x1000;ABOVE=B+0x2000;BOARD=B+0x3000;LENS=B+0x4000;STARTS=B+0x5000;CARDS=B+0x6000
+          # Execute post-setup CanBeGolden using a synthetic value-type board.
+          cases=[]
+          for kind,puzzle,order,bound,aboveBound,pos in itertools.product((0,1,3,5),(0,1),(0,1),(0,1,2),(0,2),(0,1)):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.mem_map(0x1c85000,0x2000)
+           a,b=0x1c85fc0,0x1c860cc;u.mem_write(a,e[off(a,b-a):off(a,b-a)+b-a])
+           u.mem_map(0x3c72000,4096)
+           wr(u,BOARD,LENS);wr(u,BOARD+4,STARTS);wr(u,BOARD+8,CARDS)
+           wr(u,LENS+12,1);wr(u,LENS+16,2);wr(u,STARTS+12,1);wr(u,STARTS+16,0);wr(u,CARDS+12,2)
+           wr(u,CARDS+16,CARD);wr(u,CARDS+20,ABOVE)
+           def dto(k,p,o,bd):
+            v=bytearray(80);v[52]=k;v[53]=2;v[56]=bd;struct.pack_into('<ii',v,12,p,o);return bytes(v)
+           # Position0 target CARD and position1 target CARD in distinct fixtures.
+           u.mem_write(CARD,dto(kind,puzzle,order,bound));u.mem_write(ABOVE,dto(1,0,0,aboveBound))
+           if pos:wr(u,CARDS+16,ABOVE);wr(u,CARDS+20,CARD)
+           # Source reads r4=board, r6=column, sb=position; resume past prologue.
+           sp=B+0xe0000;u.reg_write(UC_ARM_REG_SP,sp)
+           # Stop before source epilogue at exact return instruction, capture r0.
+           u.reg_write(UC_ARM_REG_R4,BOARD);u.reg_write(UC_ARM_REG_R6,0);u.reg_write(UC_ARM_REG_R10,pos)
+           # The PC-relative read at 0x1c86058..64 only loads method metadata,
+           # skip that tiny init sequence, not the source card test.
+           st=[]
+           def hk(uc,pc,size,user):
+            if pc==0x1c86058:
+             uc.reg_write(UC_ARM_REG_PC,0x1c8605c)
+            elif pc==0x1c86060:
+             uc.reg_write(UC_ARM_REG_R2,0);uc.reg_write(UC_ARM_REG_PC,0x1c86068)
+            elif pc==0x3c72004:
+             assert uc.reg_read(UC_ARM_REG_R0)==LENS
+             uc.reg_write(UC_ARM_REG_R0,2);uc.reg_write(UC_ARM_REG_PC,uc.reg_read(UC_ARM_REG_LR))
+            elif pc in (0x1c86030,0x1c860c8):
+             st.append(pc);uc.emu_stop()
+            elif not a<=pc<b:raise RuntimeError('unexpected gold eligibility '+hex(pc))
+           u.hook_add(UC_HOOK_CODE,hk);u.emu_start(a,b,count=150)
+           assert len(st)==1,(st,hex(u.reg_read(UC_ARM_REG_PC)))
+           val=u.reg_read(UC_ARM_REG_R0)
+           expected=not(puzzle or order or bound) and (pos==1 or aboveBound==0)
+           assert bool(val)==bool(expected),(kind,puzzle,order,bound,aboveBound,pos,val,expected,st)
+           cases.append([kind,puzzle,order,bound,aboveBound,pos,int(bool(val))])
+          print('GOLD_ELIG20',json.dumps({'cases':len(cases),'mismatches':0,'scope':'post-init predicate with resolved integer-array accessor'}))
+          # Focused numerical scoring blocks from actual generic function. Report
+          # only VFP operators, branches, comparisons and mapped call sites.
+          a,b=0x2d1ea1c,0x2d1f474
+          for x in ins(a,b):
+           m=x.mnemonic;p=x.op_str
+           if m.startswith(('v','cmp','cmn','tst','b')) and not (m=='bl' and x.operands[0].imm in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20,0x1a60bf0,0x1a60c4c,0x1a60fcc)):
+            print('SCORE20',hex(x.address),m,p)
+          print('PASS_SHA_PINNED_GOLD_KERNELS20')
           PY

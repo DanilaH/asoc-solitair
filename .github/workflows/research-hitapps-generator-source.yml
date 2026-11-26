@@ -101,32 +101,114 @@ jobs:
            if op.startswith(('bl','b','cmp','cmn','tst','teq','ldr','str','mov','add','sub','and','orr','bic','eor','rsb','ux','lsl','asr','lsr','mvn','pop','push','stm','ldm','mul')):
             return [hex(x.address),op,x.op_str]
            return None
-          # Reconcile actual field rows and registered method entries. No source strings beyond symbolic names.
-          selected_type=re.compile(r'(\.LimitedLives\.Implementations\.(LimitedLivesModule|LifePurchaser|LimitLifeRestoreTimerController|NextDayWaiter)$|\.InfiniteLives\.Implementations\.(InfiniteLivesModule|DeferredInfiniteLivesAward|InfiniteLivesAwardService)$|\.Lives\.Implementations\.LivesService$|\.LivesSpendProvider$|\.LivesStorageHandler$|\.PaidRestoreStockService$|\.ReviveMovesOffer\.Internal\.(ReviveMovesCalculator|ReviveMovesOfferService|ReviveOfferTypeCalculator|ReviveMovesOfferProcessor|ReviveOfferContentSearcher)$|\.ExtraMovesBubble(Service|Policy|SaveData|PurchaseProcessor)$|\.MovesOfferData$|\.LivesData$|\.LivesConfig$|\.RevivesMovesOfferConfig$|\.PaidRestoreConfig$|\.LevelBootstrapper$|Core\.Systems\.(MoveCounterSystem|MoveOperations|StockOperations|GameplayStateOperations|GameplayStateSystem|GameplayStateLogicSystem|MovesOperations)$|\.LevelProgressData$|\.LevelProgress$|\.UserProgress$)',re.I)
-          method_pat=re.compile(r'(AddExtraMoves|AddMoves|SpendMoves|ConsumeMoves|GetMovesLeft|RemainingMoves|PendingRevive|SpendLife|ReserveLife|RestoreStock|OnLevelLost|OnLevelFailed|HandleContinue|OnContinueRequested|OnLevelWon|HandleTryAgain|LevelFinished|ResetMove|FreeRestore|MovesLeft|MovesLimit|GetSteps|SetSteps|ContinueGame)',re.I)
-          ignore=re.compile(r'Formatter|Migrator|\.Migration\.|\.Cheat|\.Sample\.|\.Analytics\.|\.AJson|ViewModel|\.Mock|\.Tests|\._1_13_0\.|IUserData|^<|__AJson|global::',re.I)
-          for im,types in wanted.items():
-           for tn,tr in types:
-            ms=[r for r in records if r['image']==im and r['type']==tn and r['rva']!='0x0']
-            if ignore.search(tn):continue
+          # Exact arithmetic and call-boundary source anchors; include VFP in these small methods.
+          for a,b,label in [(0x205a544,0x205a630,'revive-amount'),(0x1ffe3d8,0x1ffe53c,'life-price'),(0x200db64,0x200dc00,'restore-price'),(0x200e0c0,0x200e0d8,'restore-reset'),(0x20012f0,0x2001428,'time-refill'),(0x2000570,0x20005fc,'spend-life'),(0x2001824,0x20018e0,'restore-life'),(0x1fffe78,0x1ffff74,'recalculate-timer'),(0x1d75f5c,0x1d75f74,'apply-pending-moves'),(0x1f321a0,0x1f324ac,'bootstrap-restore'),(0x1f32b88,0x1f32e24,'bootstrap-fresh'),(0x1f26a48,0x1f26b90,'next-level'),(0x1f2702c,0x1f27118,'retry'),(0x1f27118,0x1f271c4,'reset-paid'),(0x1f3db38,0x1f3dd68,'stock-click'),(0x20666dc,0x20667b8,'bubble-clear'),(0x1ecc58c,0x1ecc5d0,'bubble-reset-intent')]:
+           print('ANCHOR32',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in instructions(a,b)]},separators=(',',':')))
+          # Identify other pool fields from metadata across original game types, not a named-method-only assumption.
+          for im,row in images.items():
+           if not re.match(r'^(Game\.|CoreGameplay|Assembly-CSharp|GameCore\.)',im):continue
+           for t in range(row[2],row[2]+row[3]):
+            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+            if re.search(r'Formatter|\.Migration|\._1_13_0\.|Cheat|\.Analytics\.|\.Tests|^<',tn):continue
             fields=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
-            if selected_type.search(tn) or any(method_pat.search(r['method']) for r in ms) or any(re.search(r'(extra|pending|move|life|restor|limit|continue)',f,re.I) for f in fields) and re.search(r'(Current|Core\.Entities|Progress|Reserve|Budget|Pool|State)',tn):
-             print('TYPE31',json.dumps({'image':im,'type':tn,'fields':fields,'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not ignore.search(r['method'])]},separators=(',',':')))
-          # Bound analysis: primary lifecycle bodies and arithmetic, avoid boilerplate serialization/UI/analytics.
-          focus=re.compile(r'^(Calculate|CalculateRestoredAmountOfLives|GetTimeToNextLifeRestore|SynchronizeLives|TryReduceLife|TryAddLife|TrySpendLife|TryPurchaseLife|RestoreLife|ResetLimits|ResetLimitsOnNewDay|NeedResetLimits|RecalculateNearestStartRestoreTime|SetNewStartRestoreTime|ClearSavedStartRestoreTime|GetPurchaseByCurrencyPrice|GetUtcTimeAtFullLivesRestored|AddInfiniteLivesFor|FinishInfiniteLives|SyncState|RestoreInfiniteLivesTimer|MarkLifeCanBeSpent|RemoveMarkLifeCanBeSpent|OnEvent|OnLevelValueChanged|Get|OnAdd|OnTrySpend|OnSetInfinite|HasInfiniteLives|TryPurchaseRestore|RefundRestore|CanAffordRestore|Reset|get_CurrentRestoreCost|get_IsFreeRestoreAvailable|get_IsLastFinishedRestoreFree|CalculateMovesToOffer|CanShow|TryGetPendingReviveMoves|TryResetPendingReviveMoves|OnOfferShown|OnOfferPurchased|ApplyMovesReward|CompletePurchase|CompleteCoinsOfferPurchase|EnsureSessionInitialized|IsRvDeniedByPolicy|CanTakeLifeByAds|IsAdsLimitNotReached|CanPurchaseLifeByCurrency|PayerForcesAlternativePayment|TryConsumePendingMoves|TryResetPendingMoves|ConfirmPurchase|GrantNow|RecordIntent|ClearIntent|ResetIntent|ApplyPendingBubbleMoves|ResolveMovesAmount|GetMovesAmount|SetRemainingCards|IsAwaitingStoreTooLong|IsBeyondReportingWindow|Increment|Update|HandleAddExtraMoves|HandleContinue|HandleTryAgain|OnLevelWon|OnLevelLost|OnLevelFailed|OnContinueRequested|GetStepsLimit|TryRestoreStock|RestoreStock)$')
-          seen=set()
-          for r in records:
-           tn=r['type'];mn=r['method'];a=int(r['rva'],16)
-           if not a or ignore.search(tn) or (tn,mn,a) in seen:continue
-           if not ((selected_type.search(tn) and focus.search(mn)) or method_pat.search(mn) and not re.search(r'(View|Presenter|Popup|Analytics|Track|Tutorial|\.Abstractions\.|\.Config)',tn) and not re.search(r'^get_|^set_|^add_|^remove_',mn)):continue
-           i=bisect.bisect_right(starts,a)
-           if i>=len(starts):continue
-           b=starts[i]
-           if b-a>0x1200 or b-a<4:continue
-           seen.add((tn,mn,a));ins=instructions(a,b)
-           calls=[[hex(x.address),hex(int(x.op_str[1:],16)),names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('bl') and x.op_str.startswith('#0x')]
-           # Numeric instruction anchors; strip metadata initialization and alignment noise from review.
-           facts=[f for x in ins if (f:=compact(x)) is not None and not (x.mnemonic=='streq' and x.address>=b-32)]
-           print('METHOD31',json.dumps({'type':tn,'method':mn,'params':r['parameters'],'a':hex(a),'b':hex(b),'calls':calls,'facts':facts},separators=(',',':')))
-          print('PASS_SHA_PINNED_RECOVERY_DEEP31')
+            matches=[f for f in fields if not f.startswith('__') and re.search(r'(extra.*move|move.*(pool|balance|bank|reserv|carry|remain|available|limit|purchas|add)|pending.*move|remaining.*(step|move)|reservedLives|LivesReservation|paidRestoreCount|restor.*count|step.*limit)',f,re.I)]
+            if matches:print('FIELD32',json.dumps({'image':im,'type':tn,'fields':matches},separators=(',',':')))
+          # Source-pinned ARM32 bounded execution of numeric write slices and resolved accessor boundaries.
+          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
+          from unicorn.arm_const import *
+          import itertools
+          B=0x11000000; STOP=B+0xf0000; OBJ=B+0x1000; DATA=B+0x2000; CFG=B+0x3000
+          def setup(ranges):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP)
+           pages=set()
+           for a,b in ranges:
+            for p in range(a&~4095,((b+4095)//4096)*4096,4096):
+             if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
+           return u
+          def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
+          def wh(u,p,v):u.mem_write(p,struct.pack('<H',v&65535))
+          def wb(u,p,v):u.mem_write(p,bytes([v&255]))
+          def wq(u,p,v):u.mem_write(p,struct.pack('<Q',v&0xffffffffffffffff))
+          def rd(u,p):return struct.unpack('<I',u.mem_read(p,4))[0]
+          def rh(u,p):return struct.unpack('<H',u.mem_read(p,2))[0]
+          def rb(u,p):return u.mem_read(p,1)[0]
+          def rq(u,p):return struct.unpack('<Q',u.mem_read(p,8))[0]
+          def rr(u,r):return u.reg_read(r)
+          def reg(u,r,v):u.reg_write(r,v&0xffffffff)
+          def args(u,*vs):
+           for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),vs):reg(u,r,v)
+          def run(u,a,end,skips=None,calls=None,stops=(),count=400):
+           skips=skips or {};calls=calls or {};trace=[]
+           def hook(uc,pc,size,user):
+            if pc in stops:trace.append(pc);uc.emu_stop();return
+            if pc in skips:
+             item=skips[pc]
+             if callable(item):item(uc)
+             else:reg(uc,UC_ARM_REG_PC,item)
+            elif pc in calls:
+             item=calls[pc];trace.append(pc)
+             if callable(item):item(uc)
+             else:reg(uc,UC_ARM_REG_R0,item)
+             reg(uc,UC_ARM_REG_PC,rr(uc,UC_ARM_REG_LR))
+           u.hook_add(UC_HOOK_CODE,hook);u.emu_start(a,end,count=count)
+           assert rr(u,UC_ARM_REG_PC)==end or rr(u,UC_ARM_REG_PC) in stops,(hex(a),hex(rr(u,UC_ARM_REG_PC)),trace)
+           return trace
+          rows={}
+          def out(k,v):rows[k]=v;print(k,json.dumps(v,separators=(',',':')))
+          moves=[]
+          for n in [0,1,2,99,65534,65535]:
+           u=setup([(0x1d02530,0x1d02548)]);wh(u,DATA+8,n);reg(u,UC_ARM_REG_R4,DATA);run(u,0x1d02530,0x1d02548);got=rh(u,DATA+8);assert got==max(1,(n+1)&65535);moves.append([n,got])
+          out('MOVE32',moves)
+          pending=[]
+          for limit,extra,prior in itertools.product((0,1,10,100,500),(0,1,5,20),(0,1,99)):
+           u=setup([(0x1d75f5c,0x1d75f74)]);wr(u,OBJ+0x30,limit);wr(u,OBJ+0x44,prior);args(u,OBJ,extra);run(u,0x1d75f5c,STOP);got=[rd(u,OBJ+0x30),rd(u,OBJ+0x44)];assert got==[limit+extra,0];pending.append([limit,extra,prior,*got])
+          out('PENDING32',pending)
+          bubble=[]
+          for flag,n,old in itertools.product((0,1),(-1,0,1,5,50),(0,1)):
+           u=setup([(0x2066648,0x20666c4),(0x2065224,0x2065228)]);wb(u,DATA+8,flag);wr(u,DATA+0xc,n);wb(u,OBJ+0x28,old);args(u,OBJ);run(u,0x2066648,STOP,calls={0x2065224:DATA});got=[rr(u,UC_ARM_REG_R0),rb(u,OBJ+0x28),rd(u,DATA+0xc),rb(u,DATA+8)];allowed=flag and n>=1;assert got==[n if allowed else 0,1 if allowed else old,n&0xffffffff,flag];bubble.append([flag,n,old,*got])
+          out('BUBBLE32',bubble)
+          reset=[]
+          for old in (0,1):
+           u=setup([(0x20666c4,0x20666dc)]);wb(u,OBJ+0x28,old);args(u,OBJ);run(u,0x20666c4,STOP,stops=(0x20666dc,));got=[rb(u,OBJ+0x28),int(rr(u,UC_ARM_REG_PC)==0x20666dc)];assert got==[0,old];reset.append([old,*got])
+          out('BUBBLERESET32',reset)
+          restock=[]
+          for count,enabled,success,cost in itertools.product((0,1,2,10),(0,1),(0,1),(0,100,350)):
+           u=setup([(0x200dcb0,0x200ddf8),(0x200d9b8,0x200d9bc),(0x200db64,0x200db68)])
+           wr(u,OBJ+0x1c,count);wr(u,OBJ+0x18,999);reg(u,UC_ARM_REG_R4,OBJ);reg(u,UC_ARM_REG_R8,cost)
+           # The original purchase gate invokes provider; start after method prologue, stop before epilogue.
+           def spend(uc):reg(uc,UC_ARM_REG_R8,cost);reg(uc,UC_ARM_REG_R0,success);reg(uc,UC_ARM_REG_PC,0x200dde0)
+           run(u,0x200dcb0,0x200ddf4,{0x200dcf0:spend},{0x200d9b8:enabled,0x200db64:cost})
+           got=[rr(u,UC_ARM_REG_R0),rd(u,OBJ+0x1c),rd(u,OBJ+0x18)]
+           ex=[1,count,0] if not enabled else [1,1,0] if count==0 else [success,count+success,cost]
+           assert got==ex,(got,ex);restock.append([count,enabled,success,cost,*got])
+          out('RESTOCK32',restock)
+          refund=[]
+          for count,enabled in itertools.product((0,1,2,10),(0,1)):
+           u=setup([(0x200de70,0x200de98),(0x200d9b8,0x200d9bc)]);wr(u,OBJ+0x1c,count);reg(u,UC_ARM_REG_R4,OBJ)
+           run(u,0x200de70,0x200de98,calls={0x200d9b8:enabled},stops=(0x200df98,))
+           got=[rd(u,OBJ+0x1c),int(rr(u,UC_ARM_REG_PC)==0x200de98)];ex=[count-1 if enabled and count>=1 else count,int(enabled and count>1)];assert got==ex;refund.append([count,enabled,*got])
+          out('REFUND32',refund)
+          clamp=[]
+          for old,amount,cap,add in itertools.product((0,1,3,5,10),(0,1,2,5),(1,3,5),(0,1)):
+           if add and old>=cap:continue # full-life early gate excluded from write slice
+           u=setup([(0x2000c14,0x2000c6c)] if add else [(0x2000704,0x200075c)])
+           if add:
+            reg(u,UC_ARM_REG_R5,old);reg(u,UC_ARM_REG_R7,cap);reg(u,UC_ARM_REG_R10,amount);reg(u,UC_ARM_REG_R8,DATA);run(u,0x2000c14,0x2000c6c)
+           else:
+            reg(u,UC_ARM_REG_R7,old);reg(u,UC_ARM_REG_R6,cap);reg(u,UC_ARM_REG_R8,amount);reg(u,UC_ARM_REG_R10,DATA);run(u,0x2000704,0x200075c)
+           got=rd(u,DATA+8);assert got==max(0,min(cap,old+amount if add else old-amount));clamp.append([old,amount,cap,add,got])
+          out('LIFECLAMP32',clamp)
+          infinite=[]
+          for now,prev,duration in itertools.product((100,2**32+100),(0,99,100,101,2**32+200),(1,60,3600)):
+           u=setup([(0x2005380,0x20053c8),(0x20047f4,0x20047f8)])
+           wq(u,DATA+0x28,prev);reg(u,UC_ARM_REG_R6,DATA);reg(u,UC_ARM_REG_R4,OBJ);reg(u,UC_ARM_REG_R5,now);reg(u,UC_ARM_REG_R7,now>>32);reg(u,UC_ARM_REG_R8,duration)
+           run(u,0x2005380,0x20053c8,calls={0x20047f4:DATA})
+           got=rq(u,DATA+0x28);ex=max(now,prev)+duration;assert got==ex,(now,prev,duration,got,ex);infinite.append([now,prev,duration,got])
+          out('INFINITE32',infinite)
+          resetday=[]
+          for now,deadline in itertools.product((0,100,101,2**32+100),(0,99,100,101,2**32+100)):
+           u=setup([(0x1fff74c,0x1fff7b4),(0x1ffe948,0x1ffe94c)])
+           wq(u,DATA+0x18,deadline);args(u,OBJ,0,now,now>>32);run(u,0x1fff74c,STOP,calls={0x1ffe948:DATA});got=rr(u,UC_ARM_REG_R0);assert got==int(deadline!=0 and deadline<now),(now,deadline,got);resetday.append([now,deadline,got])
+          out('DAY32',resetday)
+          print('PASS_SHA_PINNED_RECOVERY_KERNELS32',json.dumps({k:len(v) for k,v in rows.items()}))
           PY

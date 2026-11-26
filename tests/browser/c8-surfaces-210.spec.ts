@@ -75,7 +75,7 @@ for (const [width, height, reserve] of [[320, 480, 90], [360, 640, 0]] as const)
     openPictureEvent(loaded, now - 86_400_000);
     recordEventWin(loaded, [event], { id: 'campaign:20', campaignLevel: 20, mode: 'campaign' }, { localMs: now - 100 });
     observeEvents(loaded, [], { localMs: now });
-    loaded.campaignLives = { version: 1, remaining: 0, observedAt: now, refillAt: now + 60_000, earnedCredits: 0 };
+    loaded.campaignLives = { version: 2, remaining: 0, observedAt: now, refillAt: now + 60_000, earnedCredits: 0 };
     await load(page, loaded);
     if (reserve) await page.locator('#banner-slot').evaluate((element, height) => {
       element.removeAttribute('hidden');
@@ -84,11 +84,22 @@ for (const [width, height, reserve] of [[320, 480, 90], [360, 640, 0]] as const)
     await capture(page, info, '#app', 'home-parked-empty-lives', '#home-play');
     await open(page, '#campaign-lives-open', '#campaign-lives');
     await capture(page, info, '#campaign-lives', 'lives-zero', '#campaign-lives .close');
+    const separation = await page.locator('#campaign-lives-title').evaluate(title => {
+      const text = document.createRange();
+      text.selectNodeContents(title);
+      const wallet = document.querySelector('#lives-wallet-anchor #wallet-open')!.getBoundingClientRect();
+      return wallet.left - text.getBoundingClientRect().right;
+    });
+    expect(separation).toBeGreaterThanOrEqual(2);
+    await open(page, '#campaign-lives #wallet-open', '#coins-dialog');
+    await capture(page, info, '#coins-dialog', 'coins-from-lives', '#coins-return');
+    await page.locator('#coins-return').tap();
+    await expect(page.locator('#campaign-lives')).toBeVisible();
     await close(page, '#campaign-lives');
     for (const [control, dialog, name] of [
       ['#calendar-open', '#calendar', 'calendar'],
       ['#appearance-open', '#appearance', 'appearance-unlocked'],
-      ['#wallet-open', '#helpers', 'helpers'],
+      ['#wallet-open', '#coins-dialog', 'wallet'],
       ['#win-cycle-open', '#cycle-info', 'cycle'],
       ['#picture-home', '#picture-dialog', 'album-legacy'],
       ['#campaign-liveops-open', '#campaign-liveops', 'events-legacy'],
@@ -112,6 +123,10 @@ for (const [width, height, reserve] of [[320, 480, 90], [360, 640, 0]] as const)
     await capture(page, info, '#settings', 'pause', '#settings-done');
     await page.locator('#pause-options summary').tap();
     await capture(page, info, '#settings', 'pause-options', '#settings-done');
+    await open(page, '#helpers-open', '#helpers');
+    await capture(page, info, '#helpers', 'helpers', '#helper-return');
+    await page.locator('#helper-return').tap();
+    await expect(page.locator('#settings')).toBeVisible();
     await open(page, '#appearance-settings', '#appearance');
     await capture(page, info, '#appearance', 'deck-preview', '#appearance .close');
     await page.locator('#appearance-done').tap();

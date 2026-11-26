@@ -58,3 +58,8 @@ The C8 test candidate uses the `source-shaped-pause-r2` configuration in `src/co
 ## Дополнение независимого аудита PR211
 
 [AZUR NATIVE_STATIC на SHA-подтверждённом оригинале](https://github.com/DanilaH/mini-games-kit/blob/f4542d287d17fc085eb2e8e874bd49415a2dedfd/research/games/association-solitaire/2026-11-25-azur-ad-director-unlimited/README.md) устанавливает отдельную точку меню, взаимно исключающие start/end, выключенную по умолчанию точку темы и bundled порог баннера L2. В `source-shaped-pause-r3` обычный C8 проверяет текущий уровень для меню и целевой для перехода. Все точки используют те же разрешения, готовность native SDK и durable fullscreen clock. Тестовые defaults — start включён, end и theme выключены. Обучение сохраняет защиту от баннера и рекламных пауз. Зарегистрированная схема Unlimited остаётся предметом P19/P25.
+
+
+## Owner follow-up · 26 November · #210
+
+The `source-shaped-pause-r4` candidate replaces the old idle dispatch. A saved, newly accepted action opens one opportunity only after cadence, teaching and SDK readiness checks. Timers, resume and SDK callbacks can update readiness. The request waits for the motion of the same action and 850 ms of painted notice. The score and board persist through the fullscreen. See the [implementation and acceptance matrix](../qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md).

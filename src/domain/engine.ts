@@ -30,7 +30,7 @@ export function freshAttempt(deal: Deal, id: string): Attempt {
 }
 export function freshSave(deal: Deal, id: string): Save {
   return { schema: 1, rulesVersion: RULES_VERSION, contentVersion: CONTENT_VERSION, balanceVersion: BALANCE_VERSION,
-    revision: 0, profile: { coins: BALANCE.initialCoins, hints: BALANCE.initialHints, undos: BALANCE.initialUndos, jokers: BALANCE.initialJokers, rewards: [], wins: 0 },
+    revision: 0, ...(releaseProfile ? { unlockSchedule: { version: 1 as const } } : {}), profile: { coins: BALANCE.initialCoins, hints: BALANCE.initialHints, undos: BALANCE.initialUndos, jokers: BALANCE.initialJokers, rewards: [], wins: 0 },
     meta: { version: 1, winCycle: 0, cycles: 0, dailyDates: [], dailyStreak: 0 }, attempt: freshAttempt(deal, id), settings: { sfx: true, haptics: true, reducedMotion: false } };
 }
 export function packet(board: Board, index: number, deal: Deal): string[] {

@@ -65,7 +65,14 @@ async function audit(page: Page, state: string, home = false) {
     const bitmap=document.createElement('canvas');bitmap.width=image.width;bitmap.height=image.height;
     const ctx=bitmap.getContext('2d')!;ctx.drawImage(image,0,0);const rgba=ctx.getImageData(0,0,image.width,image.height).data;
     let cards=0,tabs=0;const w=image.width,h=image.height,seen=new Uint8Array(w*h),found:{reason:string;rendered:number[]}[]=[];
-    const kind=(i:number)=>Math.abs(rgba[i*4]-237)+Math.abs(rgba[i*4+1]-187)+Math.abs(rgba[i*4+2]-141)<15?1:rgba[i*4]>248&&rgba[i*4+1]>230&&rgba[i*4+2]>200?2:0;
+    const kind = (i: number) => {
+      const r = rgba[i * 4], g = rgba[i * 4 + 1], b = rgba[i * 4 + 2];
+      // Match both the older tab and the rounded, higher-contrast C8 label.
+      const oldTab = Math.abs(r - 237) + Math.abs(g - 187) + Math.abs(b - 141) < 15;
+      const currentTab = Math.abs(r - 255) + Math.abs(g - 219) + Math.abs(b - 172) < 15;
+      if (oldTab || currentTab) return 1;
+      return r > 248 && g > 230 && b > 200 ? 2 : 0;
+    };
     for(let start=0;start<w*h;start++){
       if(seen[start])continue;const color=kind(start);if(!color)continue;
       const todo=[start];seen[start]=1;let count=0,left=w,right=0,top=h,bottom=0;

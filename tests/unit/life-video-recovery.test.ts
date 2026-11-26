@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { GameplayActivityCoordinator, type StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { content8Wave } from '../../src/content/campaign-v8-dealer';
-import { authorizeLifeVideo, cancelLifeVideo, mayStartCampaignAttempt, refreshCampaignLives } from '../../src/domain/campaign-lives';
+import { authorizeLifeVideo, cancelLifeVideo, LIVES_RULES, mayStartCampaignAttempt, refreshCampaignLives } from '../../src/domain/campaign-lives';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { applyFullscreenShown, applyReceipt, type EarnedReceipt, type FullscreenShown } from '../../src/domain/services';
 import { createAds, type AdsBridge } from '../../src/platform/ads';
@@ -9,7 +9,7 @@ import { SaveStore } from '../../src/platform/storage';
 
 const deal = { ...content8Wave[0], id: 'regression-life-receipt' };
 const now = 1_000_000;
-function reachableTwoLives() {
+function reachableOneLifeDown() {
   let save = freshSave(deal, 'life-before-loss');
   while (save.attempt.board.phase === 'playing') {
     const result = dispatch(save, { type: save.attempt.board.stock.length ? 'draw' : 'recycle' }, deal);
@@ -19,7 +19,7 @@ function reachableTwoLives() {
   expect(save.attempt.board.phase).toBe('exhausted');
   expect(mayStartCampaignAttempt(save, save.attempt, now, true)).toBe(true);
   save = dispatch(save, { type: 'restart', attemptId: 'life-restarted' }, deal).next;
-  expect(save.campaignLives?.remaining).toBe(2);
+  expect(save.campaignLives?.remaining).toBe(LIVES_RULES.max - 1);
   return save;
 }
 function memory() {
@@ -35,7 +35,7 @@ function memory() {
 describe('life rewarded recovery', () => {
   it.each(['native-read', 'save-before-commit', 'save-after-commit'] as const)('preserves an earned life through %s failure before UI cancellation', async failure => {
     const mem = memory();
-    const store = new SaveStore(mem.adapter, deal, reachableTwoLives);
+    const store = new SaveStore(mem.adapter, deal, reachableOneLifeDown);
     await store.open();
     const id = 'life-authorized';
     await store.mutate(next => authorizeLifeVideo(next, now, id, true));
@@ -44,10 +44,10 @@ describe('life rewarded recovery', () => {
     let unavailable = false;
     const originalWrite = mem.adapter.setItem;
     mem.adapter.setItem = async (key, value) => {
-      if (failure === 'save-before-commit' && unavailable && JSON.parse(value).campaignLives.remaining === 3)
+      if (failure === 'save-before-commit' && unavailable && JSON.parse(value).campaignLives.remaining === LIVES_RULES.max)
         throw Error('temporary native save I/O failure before commit');
       await originalWrite(key, value);
-      if (failure === 'save-after-commit' && unavailable && JSON.parse(value).campaignLives.remaining === 3)
+      if (failure === 'save-after-commit' && unavailable && JSON.parse(value).campaignLives.remaining === LIVES_RULES.max)
         throw Error('lost native response after successful disk commit');
     };
     const acknowledge = vi.fn(async () => { receipt = undefined; });
@@ -78,20 +78,20 @@ describe('life rewarded recovery', () => {
       await ads.refresh(); await ads.recover();
       await ads.show({ kind: 'rewarded', mode: 'campaign', placement: 'life-refill', attempt: id, dealId: deal.id });
       await ads.recover();
-      expect(store.state.campaignLives?.remaining).toBe(failure === 'save-after-commit' ? 3 : 2);
+      expect(store.state.campaignLives?.remaining).toBe(failure === 'save-after-commit' ? LIVES_RULES.max : LIVES_RULES.max - 1);
       expect(receipt).toEqual(failure === 'save-after-commit' ? undefined : earned);
       if (receipt) expect(store.state.campaignLives?.pending?.id).toBe(id);
       uiOwnsRequest = false; unavailable = false;
       await ads.recover();
       expect(acknowledge).toHaveBeenCalledTimes(1);
       expect(receipt).toBeUndefined();
-      expect(store.state.campaignLives?.remaining, 'earned life must survive transient receipt/save failure').toBe(3);
+      expect(store.state.campaignLives?.remaining, 'earned life must survive transient receipt/save failure').toBe(LIVES_RULES.max);
     } finally { ads.destroy(); }
   });
 
   it.each(['never-shown', 'shown-without-earn'] as const)('reconciles a %s life request, preserving a pending cadence receipt', async phase => {
     const mem = memory();
-    const first = new SaveStore(mem.adapter, deal, reachableTwoLives);
+    const first = new SaveStore(mem.adapter, deal, reachableOneLifeDown);
     await first.open();
     expect(await first.mutate(next => authorizeLifeVideo(next, now, 'before-process-kill', true))).toBe(true);
     // Process stops after authorizing but before native.show. No receipt exists to settle it.
@@ -145,13 +145,13 @@ describe('life rewarded recovery', () => {
         expect(shown).toBeNull();
       }
       expect(reopened.state.campaignLives?.pending).toBeUndefined();
-      expect(reopened.state.campaignLives?.remaining).toBe(2);
+      expect(reopened.state.campaignLives?.remaining).toBe(LIVES_RULES.max - 1);
       expect(await reopened.mutate(next => authorizeLifeVideo(next, now + 1, 'next-life-video', true))).toBe(true);
     } finally { ads.destroy(); }
   });
 
   it('retains earned credit when the refill deadline passes during the video, independently of interval ordering', () => {
-    const before = reachableTwoLives();
+    const before = reachableOneLifeDown();
     const deadline = before.campaignLives!.refillAt!;
     expect(authorizeLifeVideo(before, deadline - 1_000, 'near-refill-deadline', true)).toBe(true);
     const earned: EarnedReceipt = { schema: 1, id: 'after-deadline-earned', attempt: 'near-refill-deadline',
@@ -161,9 +161,9 @@ describe('life rewarded recovery', () => {
     applyReceipt(intervalFirst, earned, { offerNow: deadline + 1_000 });
     applyReceipt(receiptFirst, earned, { offerNow: deadline + 1_000 });
     refreshCampaignLives(receiptFirst, deadline + 1_000);
-    expect(intervalFirst.campaignLives?.remaining).toBe(3);
+    expect(intervalFirst.campaignLives?.remaining).toBe(LIVES_RULES.max);
     expect(intervalFirst.campaignLives?.earnedCredits).toBe(1);
-    expect(receiptFirst.campaignLives?.remaining).toBe(3);
+    expect(receiptFirst.campaignLives?.remaining).toBe(LIVES_RULES.max);
     expect(receiptFirst.campaignLives?.earnedCredits,
       'natural refill and a genuinely earned life must both survive foreground callback ordering').toBe(1);
     expect(receiptFirst).toEqual(intervalFirst);

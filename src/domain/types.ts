@@ -117,6 +117,7 @@ export interface Attempt {
   verifiedTaskHints?: number;
   combo?: Combo;
   lessonHint?: BoardCommand;
+  teachingAds?: { version: 1; ordinary: number };
   daily?: { dayId: string; contentVersion: number };
   payout?: RewardGrant[];
   victory?: {
@@ -125,10 +126,14 @@ export interface Attempt {
   };
   telemetry?: { started: boolean; finished: boolean; activeMs: number };
 }
+export interface ContinueVideoQuote {
+  attempt: string; dealId: string; mode: 'campaign' | 'daily'; status: 'pending' | 'credit';
+}
 export interface PlatformState {
   receipts: string[];
   continuedAttempts: string[];
   continueCredits: number;
+  continueVideos?: { version: 1; quotes: ContinueVideoQuote[] };
   completedCampaign: string[];
   winsSinceInterstitial: number;
   lastFullscreenAt: number;
@@ -148,6 +153,7 @@ export interface Save {
   settings: { sfx: boolean; haptics: boolean; reducedMotion: boolean; palette?: 'green' | 'ink'; cardBack?: 'classic' | 'diamonds'; deckSide?: 'right' | 'left'; deckPosition?: 'top' | 'bottom'; contentLanguage?: 'ru' | 'en' };
   meta?: MetaState;
   parked?: { campaign?: Attempt; daily?: Attempt };
+  unlockSchedule?: { version: 1; legacyDaily?: true; legacyTasks?: true };
   platform?: PlatformState;
   campaign?: { version: 1; tutorials: string[] };
   difficultyHistory?: CampaignOutcome[];

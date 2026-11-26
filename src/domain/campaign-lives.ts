@@ -5,12 +5,12 @@ import type { Attempt, Save } from './types';
 
 export const LIVEOPS_PREVIEW = LEGACY_OWNER_PREVIEW === 'lives' || OWNER_ACCEPTANCE_PREVIEW;
 export const LIVES_PREVIEW = releaseProfile?.capabilities.lives === 'active' || LIVEOPS_PREVIEW;
-export const LIVES_RULES = { max: 3, refillMs: 5 * 60_000, coinPrice: 50 } as const;
+export const LIVES_RULES = { max: 5, refillMs: 5 * 60_000, coinPrice: 50 } as const;
 const natural = (n: unknown): n is number => Number.isSafeInteger(n) && (n as number) >= 0;
 const token = (value: unknown): value is string => typeof value === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(value);
 
 export interface CampaignLives {
-  version: 1;
+  version: 2;
   remaining: number;
   observedAt: number;
   refillAt?: number;
@@ -19,16 +19,28 @@ export interface CampaignLives {
   lastEarned?: { id: string; dealId: string };
 }
 
-export function validCampaignLives(data: CampaignLives) {
-  return Boolean(data && data.version === 1 && natural(data.remaining) && data.remaining <= LIVES_RULES.max &&
+type LegacyLives = Omit<CampaignLives, 'version'> & { version: 1 };
+
+function validLives(data: CampaignLives | LegacyLives, max: number) {
+  return Boolean(data && natural(data.remaining) && data.remaining <= max &&
     natural(data.observedAt) && natural(data.earnedCredits) &&
-    (data.remaining === LIVES_RULES.max ? data.refillAt === undefined : natural(data.refillAt) && data.refillAt > data.observedAt) &&
+    (data.remaining === max ? data.refillAt === undefined : natural(data.refillAt) && data.refillAt > data.observedAt) &&
     (data.pending === undefined || (data.pending && [data.pending.id, data.pending.attemptId, data.pending.dealId].every(token))) &&
     (data.lastEarned === undefined || (data.lastEarned && [data.lastEarned.id, data.lastEarned.dealId].every(token))));
 }
 
+export function validCampaignLives(data: CampaignLives) {
+  return data?.version === 2 && validLives(data, LIVES_RULES.max);
+}
+
+export function migrateCampaignLives(save: Save) {
+  const previous = save.campaignLives as CampaignLives | LegacyLives | undefined;
+  if (previous?.version !== 1 || !validLives(previous, 3)) return;
+  save.campaignLives = { ...previous, version: 2, remaining: previous.remaining + LIVES_RULES.max - 3 };
+}
+
 function lifeState(save: Save, now: number) {
-  return save.campaignLives ??= { version: 1, remaining: LIVES_RULES.max, observedAt: now, earnedCredits: 0 };
+  return save.campaignLives ??= { version: 2, remaining: LIVES_RULES.max, observedAt: now, earnedCredits: 0 };
 }
 export function refreshCampaignLives(save: Save, now: number) {
   if (!natural(now)) return;

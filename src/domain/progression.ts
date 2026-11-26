@@ -27,3 +27,13 @@ export const freeHintDemo = (save: Save, deal: Deal) => deal.campaignLevel === 3
   (!seenTutorial(save, 'hint-demo') || needsOpeningLesson(save, deal, 'hint', 'hint-practiced'));
 export const freeUndoPractice = (save: Save, deal: Deal) => save.profile.undos === 0 && needsOpeningLesson(save, deal, 'undo', 'undo-used');
 export const freeJokerPractice = (save: Save, deal: Deal) => save.profile.jokers === 0 && needsOpeningLesson(save, deal, 'joker', 'joker-buffer');
+
+export const RELEASE_UNLOCK = { bonus: 2, combo: 5, foundation: 6, daily: 6, tasks: 7, tableau: 12, recovery: 16 } as const;
+export function dailyModeAvailable(save: Save) {
+  const threshold = save.unlockSchedule?.legacyDaily || !save.unlockSchedule ? 3 : RELEASE_UNLOCK.daily;
+  return completedLevels(save) >= threshold - 1 || Boolean(save.attempt.daily || save.parked?.daily || save.meta?.dailyDates.length);
+}
+export function dailyTasksAvailable(save: Save) {
+  const threshold = save.unlockSchedule?.legacyTasks || !save.unlockSchedule ? 2 : RELEASE_UNLOCK.tasks;
+  return completedLevels(save) >= threshold - 1 || Boolean(save.dailyTasks);
+}

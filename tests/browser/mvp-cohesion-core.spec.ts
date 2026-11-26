@@ -27,7 +27,6 @@ if (process.env.ASOC_MVP_DEMO === '1') {
 const KEY = 'asoc-solitaire.save.v1', REPORTS = 'mvp-core-analytics-reports';
 const DAY = '2026-11-24', NOW = Date.UTC(2026, 10, 24, 12);
 const level16 = findDeal('campaign-c8-wave-016-c8-core-r1-rights-r1')!;
-const relief16 = findDeal('campaign-c8-wave-016-relief-r2-c8-core-r1-rights-r1')!;
 type Report = { event: string; params: Record<string, string | number | boolean> };
 type ClockReading = { fail: boolean; boot: number; elapsed: number };
 type NativeClockFixture = ClockReading & { sampledAt: number; reads: number };
@@ -55,11 +54,17 @@ async function seedHome(page: Page, save: Save, now = NOW, route = '/') {
 }
 
 async function home(page: Page) {
-  await page.locator('#menu').tap();
+  if (!await page.locator('#settings').isVisible()) await page.locator('#menu').tap();
+  if (!await page.locator('#levels-open').isVisible()) await page.locator('#pause-options summary').tap();
   await page.locator('#levels-open').tap();
   await expect(page.locator('#home')).toBeVisible();
 }
 
+async function openHelperMenu(page: Page) {
+  if (!await page.locator('#settings').isVisible()) await page.locator('#menu').tap();
+  if (!await page.locator('#helpers-open').isVisible()) await page.locator('#pause-options summary').tap();
+  await page.locator('#helpers-open').tap();
+}
 async function gameReady(page: Page, deal: Deal) {
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', deal.id);
@@ -269,7 +274,7 @@ test('Random Joker asks before payment and preserves its separate unused charge 
   await page.locator('#home-play').tap();
   await gameReady(page, level16);
   const before = await read(page), price = level16.extraHelpers!.randomJokerCoins!;
-  await page.locator('#wallet-open').tap();
+  await openHelperMenu(page);
   await page.locator('#random-joker-open').tap();
   await expect(page.locator('#random-joker-warning')).toBeVisible();
   await expect(page.locator('#random-joker-copy')).toContainText(String(price) + ' монет');
@@ -279,7 +284,7 @@ test('Random Joker asks before payment and preserves its separate unused charge 
   await page.locator('#random-joker-warning [data-close]').tap();
   expect((await read(page)).profile).toEqual(before.profile);
   expect((await read(page)).randomJokers).toBeUndefined();
-  if (!await page.locator('#helpers').isVisible()) await page.locator('#wallet-open').tap();
+  if (!await page.locator('#helpers').isVisible()) await openHelperMenu(page);
   await page.locator('#random-joker-open').tap();
   await page.locator('#random-joker-confirm').tap();
   await expect.poll(async () => (await read(page)).profile.coins).toBe(before.profile.coins - price);
@@ -290,6 +295,7 @@ test('Random Joker asks before payment and preserves its separate unused charge 
   expect(purchased.profile.jokers).toBe(before.profile.jokers);
   expect(purchased.attempt.board).toEqual(before.attempt.board);
   if (await page.locator('#helpers').isVisible()) await page.locator('#helper-return').tap();
+  if (await page.locator('#settings').isVisible()) await page.locator('#settings-done').tap();
   await page.locator('#menu').tap();
   await page.locator('#restart').tap();
   if (await page.locator('#restart-confirm').isVisible()) await page.locator('#restart-confirm-yes').tap();
@@ -315,7 +321,7 @@ test('Random Joker asks before payment and preserves its separate unused charge 
   expect(reopened.randomJokers).toEqual(rights);
   expect(reopened.profile).toEqual(purchased.profile);
   expect(reopened.attempt.board.joker).toBeUndefined();
-  await page.locator('#wallet-open').tap();
+  await openHelperMenu(page);
   await page.locator('#random-joker-open').tap();
   await expect(page.locator('#random-joker-confirm')).toHaveText('Разместить');
   await expect(page.locator('#random-joker-copy')).toContainText('очистит историю отмен');
@@ -334,69 +340,46 @@ function beforeThirdLoss(previousLosses = 2) {
   if (save.attempt.board.movesLeft !== 1 || save.attempt.board.phase !== 'playing') throw Error('Expected one remaining move');
   save.attempt.director = { restarts: previousLosses, previousLosses };
   save.attempt.sourceDifficulty = { outcome: 'Restart', restarts: previousLosses };
-  save.campaignLives = { version: 1, remaining: 3, observedAt: NOW, earnedCredits: 0 };
+  save.campaignLives = { version: 2, remaining: 5, observedAt: NOW, earnedCredits: 0 };
   save.profile.coins = 500;
   return save;
 }
 
 for (const choice of ['fixed', 'new'] as const) {
-  test(`L16 third loss offers honest budget relief; ${choice} retry spends one life and retains the chosen identity`, async ({ page }) => {
-    test.setTimeout(60_000);
+  test(`L16 third loss: ${choice} retry commits one life and the chosen identity`, async ({ page }) => {
     const save = beforeThirdLoss();
-    await seedHome(page, save);
+    await seedHome(page, save, NOW, '/?qa-levels=1');
     await page.locator('#home-play').tap();
     await gameReady(page, level16);
     await move(page, level16, losingPath[level16.initial.movesLeft! - 1]);
     await expect(page.locator('#result')).toBeVisible();
-    await expect(page.locator('#replay')).toHaveText('Тот же расклад');
-    await expect(page.locator('#result-new-attempt')).toBeVisible();
-    await expect(page.locator('#result-new-attempt small')).toHaveText('Больше ходов · лимит ' + relief16.initial.movesLeft);
+    await expect(page.locator('#replay')).toHaveText('Заново');
     await expect(page.locator('#result-life-note')).toContainText('одна жизнь');
     const lost = await read(page);
     expect(lost.attempt.board.phase).toBe('exhausted');
-    expect(lost.campaignLives?.remaining).toBe(3);
-    await page.locator(choice === 'fixed' ? '#replay' : '#result-new-attempt').tap();
+    expect(lost.campaignLives?.remaining).toBe(LIVES_RULES.max);
+    await page.locator(choice === 'fixed' ? '#result-redeal' : '#replay').tap();
     await expect.poll(async () => (await read(page)).attempt.id).not.toBe(lost.attempt.id);
-    const expected = choice === 'fixed' ? level16 : relief16;
+    const issued = await read(page), expected = findDeal(issued.attempt.dealId)!;
     await gameReady(page, expected);
-    const issued = await read(page);
     expect(issued.attempt.board).toEqual(expected.initial);
-    expect(issued.profile.coins).toBe(lost.profile.coins);
-    expect(issued.profile.jokers).toBe(lost.profile.jokers);
-    expect(issued.campaignLives?.remaining).toBe(2);
-    expect(issued.campaignLives?.refillAt! - issued.campaignLives!.observedAt).toBe(LIVES_RULES.refillMs);
+    expect(expected.campaignLevel).toBe(16);
+    if (choice === 'fixed') expect(expected.id).toBe(level16.id);
+    expect(issued.profile).toEqual(lost.profile);
+    expect(issued.campaignLives?.remaining).toBe(LIVES_RULES.max - 1);
     expect(issued.attempt.director).toMatchObject({ restarts: 3, previousLosses: 3 });
     if (choice === 'new') {
-      expect(issued.attempt.dealId).not.toBe(lost.attempt.dealId);
-      expect(issued.attempt.issuance).toMatchObject({ source: 'budget-r2', dealId: relief16.id });
-      expect(issued.attempt.board.tableau).toEqual(level16.initial.tableau);
-      expect(issued.attempt.board.movesLeft).toBeGreaterThan(level16.initial.movesLeft!);
-    } else expect(issued.attempt.dealId).toBe(lost.attempt.dealId);
+      expect(issued.attempt.issuance?.dealId).toBe(expected.id);
+      expect([issued.attempt.board.tableau, issued.attempt.board.stock, issued.attempt.board.faceUp])
+        .not.toEqual([level16.initial.tableau, level16.initial.stock, level16.initial.faceUp]);
+    }
     await page.reload();
     await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
     await page.locator('#home-play').tap();
     await gameReady(page, expected);
-    const reopened = await read(page);
-    expect(reopened.attempt.id).toBe(issued.attempt.id);
-    expect(reopened.attempt.board).toEqual(issued.attempt.board);
-    expect(reopened.attempt.issuance).toEqual(issued.attempt.issuance);
-    expect(reopened.profile).toEqual(issued.profile);
-    expect(reopened.campaignLives?.remaining).toBe(2);
+    expect((await read(page)).attempt).toMatchObject({ id: issued.attempt.id, board: issued.attempt.board });
   });
 }
-
-test('L16 below the third-loss threshold exposes fixed replay without promising an unavailable new attempt', async ({ page }) => {
-  const save = beforeThirdLoss(1);
-  await seedHome(page, save);
-  await page.locator('#home-play').tap();
-  await gameReady(page, level16);
-  await move(page, level16, losingPath[level16.initial.movesLeft! - 1]);
-  await expect(page.locator('#result')).toBeVisible();
-  await expect(page.locator('#replay')).toBeVisible();
-  await expect(page.locator('#result-new-attempt')).toBeHidden();
-  expect((await read(page)).attempt.dealId).toBe(level16.id);
-  expect((await read(page)).campaignLives?.remaining).toBe(3);
-});
 
 test('failed native clock at startup preserves an unused earned right, keeps finite play available and later activates only its original remainder', async ({ page }) => {
   test.setTimeout(60_000);
@@ -419,7 +402,7 @@ test('failed native clock at startup preserves an unused earned right, keeps fin
   const finite = (await read(page)).attempt;
   expect(finite.board.movesLeft).toBe(level16.initial.movesLeft! - 1);
   expect(finite.unlimitedAccess).toEqual(earned);
-  await page.locator('#wallet-open').tap();
+  await openHelperMenu(page);
   const readsBeforeRetry = await clockReads(page);
   await page.locator('#unlimited-preview').tap();
   await expect.poll(() => clockReads(page)).toBeGreaterThan(readsBeforeRetry);
@@ -444,7 +427,7 @@ test('failed native clock at startup preserves an unused earned right, keeps fin
   // The wall clock is now before issuance. The Android sample says forty of sixty seconds elapsed.
   await page.clock.setSystemTime(new Date(NOW - 10_000));
   await setNativeClock(page, { fail: false, boot: 7, elapsed: 90_000 });
-  await page.locator('#wallet-open').tap();
+  await openHelperMenu(page);
   await page.locator('#unlimited-preview').tap();
   await expect.poll(async () => (await read(page)).attempt.unlimitedAccess?.consumed).toBe(true);
   const activated = await read(page);
@@ -668,9 +651,10 @@ test('shows a readable Unlimited timer and permits stock recovery at 320x480 wit
   await expect(restore).toHaveText('Восстановить бесплатно');
   const timer = page.locator('#unlimited-countdown');
   await expect(timer).toBeHidden();
-  await page.locator('#wallet-open').tap();
+  await openHelperMenu(page);
   await page.locator('#unlimited-preview').tap();
   if (await page.locator('#helpers').isVisible()) await page.locator('#helper-return').tap();
+  if (await page.locator('#settings').isVisible()) await page.locator('#settings-done').tap();
   await expect(page.locator('#moves')).toHaveText('∞');
   await expect(timer).toBeVisible();
   await reserveBanner();

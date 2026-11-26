@@ -2,7 +2,8 @@ import early from './campaign-v8-hitapps-016.json' with { type: 'json' };
 import middle from './campaign-v8-hitapps-032.json' with { type: 'json' };
 import later from './campaign-v8-hitapps-049.json' with { type: 'json' };
 import final from './campaign-v8-hitapps-065.json' with { type: 'json' };
-import { content8Late, content8Wave, decodeRoute } from './campaign-v8-dealer';
+import retry from './campaign-v8-restart.json' with { type: 'json' };
+import { content8Dealer, content8Late, content8Wave, decodeRoute } from './campaign-v8-dealer';
 import type { Deal } from '../domain/types';
 
 export interface HitappsDirectorRecord {
@@ -22,8 +23,8 @@ export interface HitappsDirectorRecord {
   proof: string;
 }
 
-export const hitappsDirectorRecords = [...early, ...middle, ...later, ...final] as HitappsDirectorRecord[];
-const bases = new Map([...content8Wave, ...content8Late].map(base => [base.id, base]));
+export const hitappsDirectorRecords = [...early, ...middle, ...later, ...final, ...retry] as HitappsDirectorRecord[];
+const bases = new Map([...content8Dealer, ...content8Wave, ...content8Late].map(base => [base.id, base]));
 export const hitappsDirectorDeals = hitappsDirectorRecords.map(record => {
   const base = bases.get(record.baseId)!;
   const direction = record.direction === 'easy' ? 'relief' : record.direction;

@@ -1,3 +1,4 @@
+import { RELEASE_UNLOCK, unlockedLevel } from './progression';
 import { BALANCE } from './balance';
 import type { Deal, Save } from './types';
 
@@ -71,13 +72,15 @@ export function rewardOfferState(save: Save): RewardOffers {
   return save.rewardOffers ??= { version: 1, pending: [], settledWins: [], freeAfter: 0, themeUntil: 0, definitions: 1 };
 }
 
-export function canClaimShopCoins(save: Save, deal: Deal, now: number) {
-  return natural(now) && !save.attempt.daily && save.attempt.dealId === deal.id &&
-    (deal.campaignLevel ?? 0) >= 16 && save.attempt.board.phase === 'playing' &&
+export const COIN_WALLET_LEVEL = RELEASE_UNLOCK.recovery;
+export function canClaimShopCoins(save: Save, deal: Deal, now: number, wallet = false) {
+  const eligible = wallet ? unlockedLevel(save) >= COIN_WALLET_LEVEL :
+    !save.attempt.daily && save.attempt.dealId === deal.id && (deal.campaignLevel ?? 0) >= 16 && save.attempt.board.phase === 'playing';
+  return natural(now) && eligible &&
     utcDay(now) > (save.rewardOffers?.shop?.freeDay ?? -1);
 }
-export function claimShopCoins(save: Save, deal: Deal, now: number) {
-  if (!canClaimShopCoins(save, deal, now) || !natural(save.profile.coins + SHOP_COINS)) return false;
+export function claimShopCoins(save: Save, deal: Deal, now: number, wallet = false) {
+  if (!canClaimShopCoins(save, deal, now, wallet) || !natural(save.profile.coins + SHOP_COINS)) return false;
   const state = rewardOfferState(save);
   state.shop = { ...state.shop, version: 1, freeDay: utcDay(now) };
   save.profile.coins += SHOP_COINS;

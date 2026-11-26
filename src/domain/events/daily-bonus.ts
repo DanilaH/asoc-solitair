@@ -1,4 +1,4 @@
-import { unlockedLevel } from '../progression';
+import { RELEASE_UNLOCK, unlockedLevel } from '../progression';
 import { hasFutureShuffleUse } from '../shuffle-progression';
 import type { Save } from '../types';
 import { grantEventPrize, type TaskPrize } from './daily-tasks';
@@ -60,7 +60,7 @@ export function dailyBonusState(save: Save, now: number): DailyBonusState {
   const today = dayAt(now), nextResetAt = (today + 1) * DAY;
   const timed = { ...base, nextResetAt };
   if (round && round.day > today) return { ...timed, phase: 'future', availableAt: round.day * DAY };
-  if (unlockedLevel(save) < 2) return { ...timed, phase: 'locked' };
+  if (unlockedLevel(save) < RELEASE_UNLOCK.bonus) return { ...timed, phase: 'locked' };
   if (!round) return { ...timed, phase: 'available', canOpen: true, canStartRound: true };
   if (round.won !== undefined && !round.claimed) {
     return { ...timed, phase: 'ready', prize: { ...round.columns[round.won] }, canOpen: true, canClaim: true };

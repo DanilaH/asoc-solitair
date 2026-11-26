@@ -9,9 +9,9 @@ import { findDaily } from './daily';
 import { modifierDeals } from './modifiers';
 import data from './campaign.json' with { type: 'json' };
 import { coreSpecialBaseIds, coreSpecialDeals } from './campaign-v8-integrated-specials';
-import { content8Special } from './campaign-v8-special';
+import { content8Special, content8SpecialRestart } from './campaign-v8-special';
 import { c8TeachingPresets } from './campaign-v8-ftue';
-import { content8BonusDeals } from './campaign-v8-bonus';
+import { content8BonusDeals, progressiveBonusDeal } from './campaign-v8-bonus';
 import { content8FrozenDeal } from './campaign-v8-frozen';
 import { content8BoundDeal } from './campaign-v8-bound';
 import { HITAPPS_SPECIALS_PREVIEW, oneKeyDeal, picturedSpecialsDeal } from './campaign-v8-hitapps-specials';
@@ -76,7 +76,7 @@ export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
   : content7Deals;
 const adaptiveBases = [...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8Special, ...content8BonusDeals, ...coreSpecialDeals];
 const archivedAdaptive = adaptiveBank(adaptiveBases);
-const lateAdaptive = adaptiveBank(adaptiveBases, hitappsDirectorDeals);
+const lateAdaptive = adaptiveBank(adaptiveBases, hitappsDirectorDeals.filter(({ deal }) => !deal.id.endsWith('-restart-r1')));
 export const lateAdaptiveDeals = [...archivedAdaptive.values()].flatMap(({ tight, relief }) => tight ? [tight, relief] : [relief]);
 const jokerBase = content8Wave[0];
 export const randomJokerDeal: Deal = { ...jokerBase, id: jokerBase.id + '-random-joker-r1', randomJokerPreview: 1 };
@@ -93,12 +93,17 @@ const releaseDealBySource = new Map<string, Deal>();
 const releaseSourceById = new Map<string, string>();
 const recoveryBases = [recoveryBase, ...content8BonusDeals.filter(deal => deal.campaignLevel === 22 || deal.campaignLevel === 30)];
 const recoveryBaseIds = new Set(recoveryBases.map(deal => deal.id));
+const recoveryLevels = new Set(recoveryBases.map(deal => deal.campaignLevel));
 for (const source of [...recoveryBases, ...lateAdaptiveDeals, ...hitappsDirectorDeals.map(entry => entry.deal)]) {
-  if (!recoveryBaseIds.has(source.adaptive?.baseId ?? source.id)) continue;
+  if (!recoveryBaseIds.has(source.adaptive?.baseId ?? source.id) &&
+      !(source.id.endsWith('-restart-r1') && recoveryLevels.has(source.campaignLevel))) continue;
   const randomJoker = source.campaignLevel === recoveryBase.campaignLevel;
   const recycles = Math.max(1, source.winningPath.filter(command => command.type === 'recycle').length);
   const deal: Deal = {
     ...source, id: `${source.id}-${releaseConfig.policies.issuance}`,
+    ...(source.id.endsWith('-restart-r1') ? {
+      bonusSlots: recoveryBases.find(base => base.campaignLevel === source.campaignLevel)?.bonusSlots,
+    } : {}),
     initial: { ...source.initial, recyclesLeft: recycles },
     recovery: { ...recoveryDeal.recovery!, freeRecycles: recycles },
     recoveryPaths: undefined,
@@ -134,24 +139,41 @@ const progressionShuffleBySource = new Map([...content8Campaign, ...lateAdaptive
 export const integratedCampaignDeals = [...releaseDealBySource.values(), ...shuffleBySource.values(), ...rightsBySource.values(),
   ...progressionShuffleBySource.values()];
 
+const progressiveBonusBySource = new Map<string, Deal>();
+const bonusOrigin = new Map<string, string>();
+const authoredCampaignCandidates = [...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...integratedCampaignDeals,
+  ...coreSpecialDeals, ...content8DirectorDeals, ...lateAdaptiveDeals, ...hitappsDirectorDeals.map(entry => entry.deal),
+  ...content8Special, ...content8SpecialRestart, ...content8BonusDeals];
+for (const source of authoredCampaignCandidates) {
+  if ((source.campaignLevel ?? 0) > 80 || source.campaignLevel === 8 || source.campaignLevel === releaseConfig.policies.chargedShuffleLevel) continue;
+  const offered = progressiveBonusDeal(source);
+  if (offered !== source) {
+    progressiveBonusBySource.set(source.id, offered);
+    bonusOrigin.set(offered.id, source.id);
+  }
+}
 const teachingByLevel = new Map(c8TeachingPresets.map(({ deal, base }) => [base.campaignLevel!, { deal, base }]));
 const teachingOriginal = new Map(c8TeachingPresets.map(({ deal, base }) => [deal.id, base.id]));
 const all = new Map([...c8TeachingPresets.map(({ deal }) => deal), introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
-  ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...integratedCampaignDeals, ...coreSpecialDeals, ...content8DirectorDeals, ...lateAdaptiveDeals, ...hitappsDirectorDeals.map(entry => entry.deal), equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
+  ...authoredCampaignCandidates, ...progressiveBonusBySource.values(), equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 /** Includes every campaign definition that can be restored from a saved Deal ID. */
 export const savedDealDefinitions = () => all.values();
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
+  dealId = bonusOrigin.get(dealId) ?? dealId;
   dealId = teachingOriginal.get(dealId) ?? releaseSourceById.get(dealId) ?? dealId;
   const previewIds = CONTENT8_PREVIEW ? variants.get(base.campaignLevel)?.ids : undefined;
   if (CONTENT8_PREVIEW && dealId === recoveryDeal.id && base.id === recoveryBase.id) return true;
   if (CONTENT8_PREVIEW && dealId === randomJokerDeal.id && base.id === jokerBase.id) return true;
   if (CONTENT8_PREVIEW && isEqualityVariant(dealId, base.id)) return true;
+  if (CONTENT8_PREVIEW && dealId === base.id + '-restart-r1' && content8SpecialRestart.some(deal => deal.id === dealId)) return true;
   if (previewIds?.has(base.id) && previewIds.has(dealId)) return true;
   const adaptiveBase = CONTENT8_PREVIEW ? all.get(dealId)?.adaptive?.baseId : undefined;
   if (adaptiveBase && (adaptiveBase === base.id || sameLocalizedLevel(adaptiveBase, base))) return true;
   const sourceId = adaptiveBase ?? dealId;
+  if (adaptiveBase && base.bonusSlots && content8Campaign.find(item => item.campaignLevel === base.campaignLevel)?.id === adaptiveBase)
+    return true;
   const origin = coreSpecialBaseIds.get(sourceId);
   const baseOrigin = coreSpecialBaseIds.get(base.id);
   if ((origin || baseOrigin) && (origin ?? sourceId) === (baseOrigin ?? base.id)) return true;
@@ -165,20 +187,28 @@ export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): 
   if (!releaseProfile && RECOVERY_GAMEPLAY && base.id === recoveryBase.id) return recoveryDeal;
   if (RANDOM_JOKER_PREVIEW && base.id === jokerBase.id) return randomJokerDeal;
   const selected = localizedCampaignDeal(save, selectC8Deal(save, base, previous));
-  const previousSource = previous && releaseSourceById.get(previous.dealId);
+  const original = previous && (bonusOrigin.get(previous.dealId) ?? previous.dealId);
+  const previousSource = original && (releaseSourceById.get(original) ?? original);
   const candidate = selectAdaptiveDeal(save, selected, lateAdaptive, previousSource ? { ...previous!, dealId: previousSource } : previous);
   if (!releaseProfile) return candidate;
+  return composeReleaseDeal(candidate);
+}
+
+function composeReleaseDeal(candidate: Deal): Deal {
   const composed = releaseDealBySource.get(candidate.id) ?? candidate;
-  const withShuffle = releaseProfile.capabilities.proofShuffle === 'active'
+  const withShuffle = releaseProfile?.capabilities.proofShuffle === 'active'
     ? shuffleBySource.get(composed.id) ?? progressionShuffleBySource.get(composed.id) ?? composed : composed;
-  return releaseProfile.policies.economy === 'c8-non-iap-rights-r1' ? rightsBySource.get(withShuffle.id) ?? withShuffle : withShuffle;
+  const withRights = releaseProfile?.policies.economy === 'c8-non-iap-rights-r1'
+    ? rightsBySource.get(withShuffle.id) ?? withShuffle : withShuffle;
+  return progressiveBonusBySource.get(withRights.id) ?? withRights;
 }
 
 const directorRecordsById = new Map(hitappsDirectorRecords.map(record => [record.id, record]));
 
 export function campaignIssuance(save: Save, target: Deal, selected: Deal): CampaignIssuance | undefined {
   if (!releaseProfile || selected.campaignLevel === undefined) return;
-  const candidateId = releaseSourceById.get(selected.id) ?? selected.id;
+  const original = bonusOrigin.get(selected.id) ?? selected.id;
+  const candidateId = releaseSourceById.get(original) ?? original;
   const generated = directorRecordsById.get(candidateId);
   const source = generated ? 'certified-seed' : selected.adaptive ? 'budget-r2' :
     isC8DirectorVariant(candidateId, target.id) ? 'director-r1' : 'authored';
@@ -197,4 +227,31 @@ export function campaignRedeal(attempt: Attempt): Deal | undefined {
   if (!CONTENT8_PREVIEW || attempt.daily || attempt.board.phase !== 'exhausted' || attempt.board.movesLeft !== 0) return;
   const current = findDeal(attempt.dealId);
   if (current) return otherC8Layout(current);
+}
+
+
+export const layoutFingerprint = (deal: Deal) =>
+  JSON.stringify([deal.initial.tableau, deal.initial.stock, deal.initial.faceUp]);
+
+function ruleFamily(deal: Deal) {
+  return JSON.stringify([Object.keys(deal.cards).sort(), deal.lock?.requiredKeys.length, deal.frozen, deal.bound, deal.puzzle,
+    deal.golden, deal.starter, Boolean(deal.recovery), deal.extraHelpers, deal.shufflePolicy, deal.bonusSlots,
+    deal.initial.foundations.length, deal.initial.tableau.length, deal.difficultyTier]);
+}
+
+/** Pass only replay-certified layouts from the same campaign and rule family. */
+export function selectRetryLayout(save: Save, base: Deal, current: Deal): Deal | undefined {
+  const level = base.campaignLevel!;
+  const mastered = save.platform?.completedCampaign.includes(campaignId(level));
+  if (!mastered && (level <= 4 || teachingByLevel.has(level) ||
+      level === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1'))) return;
+  const desired = selectCampaignDeal(save, base, save.attempt);
+  const fingerprint = layoutFingerprint(current);
+  if (layoutFingerprint(desired) !== fingerprint) return desired;
+  const family = ruleFamily(desired), budget = desired.initial.movesLeft ?? 0;
+  const alternatives = [...new Map(authoredCampaignCandidates.filter(candidate => candidate.campaignLevel === level)
+    .map(composeReleaseDeal).map(candidate => [candidate.id, candidate])).values()]
+    .filter(candidate => ruleFamily(candidate) === family && layoutFingerprint(candidate) !== fingerprint);
+  alternatives.sort((a, b) => Math.abs((a.initial.movesLeft ?? 0) - budget) - Math.abs((b.initial.movesLeft ?? 0) - budget));
+  return alternatives[0];
 }

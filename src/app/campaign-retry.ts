@@ -1,4 +1,4 @@
-import { campaignDeals, campaignIssuance, findDeal, selectCampaignDeal } from '../content/campaign';
+import { campaignDeals, campaignIssuance, findDeal, layoutFingerprint, selectCampaignDeal, selectRetryLayout } from '../content/campaign';
 import { releaseProfile } from '../config/profile';
 import { beginDeal } from '../domain/campaign';
 import { mayStartCampaignAttempt } from '../domain/campaign-lives';
@@ -19,17 +19,25 @@ export function quoteAdaptiveRetry(save: Save): AdaptiveRetryQuote | undefined {
   if (!base) return;
   const selected = selectCampaignDeal(save, base, previous);
   if (selected.id === current.id) return;
-  const layout = (deal: Deal) => JSON.stringify([deal.initial.tableau, deal.initial.stock, deal.initial.faceUp]);
-  const changesLayout = layout(current) !== layout(selected);
+  const changesLayout = layoutFingerprint(current) !== layoutFingerprint(selected);
   if (!changesLayout && (selected.initial.movesLeft ?? 0) <= (current.initial.movesLeft ?? 0)) return;
   return { attemptId: previous.id, dealId: previous.dealId, level, selected, changesLayout };
 }
 
+export function quoteLayoutRetry(save: Save): AdaptiveRetryQuote | undefined {
+  const previous = save.attempt;
+  if (!releaseProfile || previous.daily || previous.board.phase !== 'exhausted' || previous.board.movesLeft !== 0) return;
+  const current = findDeal(previous.dealId), level = current?.campaignLevel;
+  if (!current || level === undefined || !campaignDeals[level - 1]) return;
+  const selected = selectRetryLayout(save, campaignDeals[level - 1], current);
+  if (selected) return { attemptId: previous.id, dealId: current.id, level, selected, changesLayout: true };
+}
+
 /** Invoke inside SaveStore.mutate: loss debit, history and new passport settle together. */
-export function commitAdaptiveRetry(save: Save, quote: AdaptiveRetryQuote, attemptId: string, now: number): 'started' | 'lives' | 'stale' {
+export function commitAdaptiveRetry(save: Save, quote: AdaptiveRetryQuote, attemptId: string, now: number, requote = quoteAdaptiveRetry): 'started' | 'lives' | 'stale' {
   if (!/^[A-Za-z0-9_-]{1,100}$/.test(attemptId) || attemptId === save.attempt.id ||
       !Number.isSafeInteger(now) || now < 0 || save.attempt.id !== quote.attemptId || save.attempt.dealId !== quote.dealId) return 'stale';
-  const current = quoteAdaptiveRetry(save);
+  const current = requote(save);
   if (!current || current.level !== quote.level || current.selected.id !== quote.selected.id) return 'stale';
   const previous = save.attempt, previousDeal = findDeal(previous.dealId)!;
   if (!mayStartCampaignAttempt(save, previous, now)) return 'lives';

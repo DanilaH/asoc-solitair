@@ -49,7 +49,7 @@ for (const target of campaignDeals) {
 }
 const free: Save = freshSave(campaignDeals[1], 'economy-free');
 free.profile.coins = 0;
-free.campaignLives = { version: 1, remaining: 0, observedAt: start, refillAt: start + LIVES_RULES.refillMs, earnedCredits: 0 };
+free.campaignLives = { version: 2, remaining: 0, observedAt: start, refillAt: start + LIVES_RULES.refillMs, earnedCredits: 0 };
 assert.equal(mayStartCampaignAttempt(free, undefined, start + LIVES_RULES.refillMs - 1), false);
 refreshCampaignLives(free, start + LIVES_RULES.refillMs);
 assert.equal(mayStartCampaignAttempt(free, undefined, start + LIVES_RULES.refillMs), true);

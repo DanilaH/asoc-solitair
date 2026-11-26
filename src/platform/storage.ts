@@ -4,7 +4,9 @@ import { validDailyBonus } from '../domain/events/daily-bonus';
 import { validUnlimitedAccess, validUnlimitedClock } from '../domain/campaign-recovery';
 import { migrateRandomJokerRights, validRandomJokerAccess, validRandomJokerRights } from '../domain/random-joker-rights';
 import { validLavaRun } from '../domain/events/campaign-liveops';
-import { validCampaignLives } from '../domain/campaign-lives';
+import { releaseProfile } from '../config/profile';
+import { dailyModeAvailable, dailyTasksAvailable } from '../domain/progression';
+import { migrateCampaignLives, validCampaignLives } from '../domain/campaign-lives';
 import { validStoreProgress } from '../domain/commerce/storefront';
 import { validCampaignAds } from '../domain/campaign-advertising';
 import { Capacitor, registerPlugin } from '@capacitor/core';
@@ -80,6 +82,9 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
       command.type === 'transfer' && location(command.from) && location(command.to)) ||
       typeof applyBoard(save.attempt.board, command, deal) === 'string') throw Error('Повреждена учебная подсказка');
   }
+  const teachingAds = save.attempt.teachingAds;
+  if (teachingAds !== undefined && (!teachingAds || teachingAds.version !== 1 ||
+      !natural(teachingAds.ordinary))) throw Error('Повреждена защита обучения');
   if (!natural(save.revision) || typeof save.attempt.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(save.attempt.id)) throw Error('Повреждён номер сохранения');
   for (const value of [save.profile.coins, save.profile.hints, save.profile.undos, save.profile.jokers, save.profile.wins, save.attempt.streak.coins]) if (!natural(value)) throw Error('Повреждён профиль');
   const streak = save.attempt.streak;
@@ -97,6 +102,12 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
   if (save.platform) {
     const p = save.platform;
     if (![p.receipts, p.continuedAttempts, p.completedCampaign].every(strings) || ![p.continueCredits, p.winsSinceInterstitial, p.lastFullscreenAt].every(natural)) throw Error('Повреждён журнал выдач');
+    const videos = p.continueVideos;
+    const validId = (id: unknown) => typeof id === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(id);
+    if (videos !== undefined && (!videos || videos.version !== 1 || !Array.isArray(videos.quotes) ||
+        !videos.quotes.every(row => row && validId(row.attempt) && validId(row.dealId) &&
+          ['campaign', 'daily'].includes(row.mode) && ['pending', 'credit'].includes(row.status)) ||
+        new Set(videos.quotes.map(row => row.attempt)).size !== videos.quotes.length)) throw Error('Повреждена история видео');
     const cadence = p.fullscreenCadence;
     if (cadence !== undefined && (!cadence || cadence.version !== 1 ||
       typeof cadence.lastShownId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(cadence.lastShownId) || p.lastFullscreenAt === 0)) {
@@ -201,6 +212,7 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
   if (save.attempt.daily && (save.attempt.daily.dayId !== deal.daily?.dayId || save.attempt.daily.contentVersion !== deal.daily?.contentVersion)) throw Error('Повреждена дата попытки');
   if (Boolean(save.attempt.daily) !== Boolean(deal.daily)) throw Error('Повреждён режим');
   if (save.lavaRun !== undefined && !validLavaRun(save.lavaRun)) throw Error('Повреждена серия события');
+  migrateCampaignLives(save);
   if ((save.campaignLives !== undefined && !validCampaignLives(save.campaignLives)) ||
       (save.attempt.lostLife !== undefined && (save.attempt.lostLife !== true || deal.daily || !deal.campaignLevel ||
         !save.campaignLives))) throw Error('Повреждены жизни кампании');
@@ -245,6 +257,13 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
     throw Error('Повреждена выплата победы');
   }
   if (save.attempt.payout && (!Array.isArray(save.attempt.payout) || save.attempt.payout.some(r => !strings([r.key]) || !natural(r.coins) || !['win', 'campaign_milestone', 'campaign_win_cycle', 'daily_completion', 'daily_streak_milestone', 'golden_cards'].includes(r.reason) || typeof r.label !== 'string' || r.label.length > 200 || (r.hints !== undefined && !natural(r.hints)) || (r.undos !== undefined && !natural(r.undos))))) throw Error('Повреждён результат');
+  if (save.unlockSchedule !== undefined && (!save.unlockSchedule || save.unlockSchedule.version !== 1 ||
+    [save.unlockSchedule.legacyDaily, save.unlockSchedule.legacyTasks].some(flag => flag !== undefined && flag !== true)))
+    throw Error('Повреждена история открытий');
+  if (releaseProfile && !save.unlockSchedule) {
+    const legacyDaily = dailyModeAvailable(save), legacyTasks = dailyTasksAvailable(save);
+    save.unlockSchedule = { version: 1, ...(legacyDaily ? { legacyDaily: true } : {}), ...(legacyTasks ? { legacyTasks: true } : {}) };
+  }
   if (migrateRights) migrateRandomJokerRights(save);
   return save;
 }

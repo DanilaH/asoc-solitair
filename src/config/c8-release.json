@@ -10,20 +10,21 @@
     "recovery": 1,
     "specials": "c8-core-special-r1",
     "interactionFeedback": "azur-feel-r1",
-    "lives": 1,
+    "lives": 2,
     "chargedShuffleLevel": 30,
     "chargedShuffleLevels": [30, 33, 36, 39],
     "shuffleProgression": "c8-shuffle-progression-r1",
     "economy": "c8-non-iap-rights-r1",
     "extraHelpers": { "randomJokerCoins": 250, "unlimitedCoins": 120, "unlimitedMs": 60000 },
-    "advertising": "source-shaped-pause-r3",
+    "advertising": "source-shaped-pause-r4",
     "advertisingCadence": {
       "interstitial": { "minimumLevel": 3, "startupMs": 120000, "spacingMs": 120000, "levelStart": true, "theme": false },
       "banner": { "minimumLevel": 2 },
       "coffee": {
         "unlockLevel": 3, "startupMs": 180000, "spacingMs": 180000,
         "modes": ["campaign", "daily"], "triggerMove": true, "triggerCategory": true, "triggerRecycle": true,
-        "minRemainingStepsPercent": null, "maxByDifficulty": {}
+        "minRemainingStepsPercent": null, "maxByDifficulty": {},
+        "noticeMs": 850, "settleTimeoutMs": 2500, "ordinaryActionsAfterLesson": 2
       }
     }
   },

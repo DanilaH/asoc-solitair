@@ -13,6 +13,8 @@ async function installBridge(page: Page, save: Save, filled = false) {
   await page.clock.install({ time: new Date(at) });
   await page.addInitScript(({ value, filled }) => {
     let sequence = 0, shown: object | null = null;
+    const coffee: { phase: string; reason?: string; now: number }[] = [];
+    document.addEventListener('solitaire:coffee', event => coffee.push((event as CustomEvent).detail));
     const record: { method: string; options: Record<string, string> }[] = [];
     const method = (name:string) => ({ name,rtype:'promise' });
     const headers = (name: string, list:string[], events=false) => ({
@@ -21,7 +23,7 @@ async function installBridge(page: Page, save: Save, filled = false) {
     const key = 'asoc-solitaire.save.v1';
     localStorage.setItem(key, JSON.stringify(value));
     Object.assign(window,{
-      androidBridge:{}, p0AdsTrace:record,
+      androidBridge:{}, p0AdsTrace:record, p0CoffeeTrace: coffee,
       Capacitor: {
         PluginHeaders:[
           headers('App',['getState'],true),
@@ -52,7 +54,10 @@ async function installBridge(page: Page, save: Save, filled = false) {
               shown = { ...options, schema: 1, id: 'transport-show-' + ++sequence, shownAt: Date.now() };
               return { shown: true, outcome: 'dismissed' };
             }
-            if(method==='measureBanner')return {webView:{x:0,y:0,width:360,height:640},root:{width:360,height:640},adHeight:50};
+            if (method === 'measureBanner') {
+              const width = Number(options.viewportWidth), height = innerHeight;
+              return { webView: { x: 0, y: 0, width, height }, root: { width, height }, adHeight: 50 };
+            }
           }
           return {};
         },
@@ -66,7 +71,7 @@ async function installBridge(page: Page, save: Save, filled = false) {
 }
 
 /** Observe the JS-to-native boundary. A no-fill response never counts as a display. */
-test('one banner slot survives Home to game and AdsBreak waits out a modal', async ({ page }) => {
+test('one banner slot survives Home to game and closing a modal cannot authorize Coffee', async ({ page }) => {
   const deal = findDeal('campaign-c8-wave-016-c8-core-r1-rights-r1')!;
   const save = freshSave(deal, 'asoc-ads-checkpoint');
   save.contentVersion = 8; save.settings.reducedMotion = true;
@@ -88,7 +93,12 @@ test('one banner slot survives Home to game and AdsBreak waits out a modal', asy
   expect(await actions('show')).toHaveLength(0);
   expect((await actions('hideBanner')).length).toBeGreaterThan(0);
   await page.locator('#settings-done').tap();
-  await page.clock.fastForward(3_000);
+  await page.clock.fastForward(300_000);
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  expect(await actions('show')).toHaveLength(0);
+  await move(page, deal, deal.winningPath[1]);
+  await expect(page.locator('.coffee-pause-label')).toBeVisible();
+  expect(await actions('show')).toHaveLength(0);
   await expect.poll(async () => (await actions('show')).length).toBe(1);
   expect((await actions('show'))[0].options).toMatchObject({kind:'interstitial',placement:'ads-break'});
   expect((await read(page)).attempt.adBreakShown).toBeUndefined();
@@ -107,10 +117,10 @@ for (const mode of ['campaign', 'daily'] as const) {
     await page.locator(mode === 'campaign' ? '#home-play' : '#daily-play').tap();
     await expect(page.locator('#play-screen')).toBeVisible();
     for (const [index, action] of deal.winningPath.slice(0, 3).entries()) {
+      await page.clock.fastForward(181_000);
+      expect(await calls('show')).toHaveLength(index);
       await move(page, deal, action);
       const before = await read(page);
-      expect(await calls('show')).toHaveLength(index);
-      await page.clock.fastForward(181_000);
       await expect.poll(async () => (await read(page)).campaignAds?.coffeeDisplays?.[0]?.count).toBe(index + 1);
       const after = await read(page);
       expect(after.attempt.id).toBe(before.attempt.id);
@@ -118,6 +128,11 @@ for (const mode of ['campaign', 'daily'] as const) {
       expect(after.profile.coins).toBe(before.profile.coins);
       expect((await calls('show'))[index].options).toMatchObject({ mode, placement: 'ads-break' });
     }
+    const trace = await page.evaluate(() => (window as unknown as { p0CoffeeTrace: { phase: string; now: number }[] }).p0CoffeeTrace);
+    const notices = trace.filter(row => row.phase === 'notice-painted');
+    const requests = trace.filter(row => row.phase === 'request');
+    expect(notices).toHaveLength(3);
+    expect(requests.every((row, index) => row.now - notices[index].now >= 850)).toBe(true);
   });
 }
 
@@ -150,7 +165,8 @@ test('Settings → Home shows menu interstitial only after the shared clock, wit
   expect((await read(page)).attempt.board).toEqual(board);
 });
 
-test('at L2 the banner stays behind the lesson guard and Next owns the L3 interstitial', async ({ page }) => {
+test('L2 teaching and the next L3 lesson suppress forced advertising even after cooldown', async ({ page }) => {
+  test.setTimeout(75_000);
   const deal = findDeal('campaign-c8-dealer-002')!;
   const save = freshSave(deal, 'start-ad-checkpoint');
   save.contentVersion = 8;
@@ -169,5 +185,5 @@ test('at L2 the banner stays behind the lesson guard and Next owns the L3 inters
   if (await page.locator('#next-level').textContent() === 'Забрать') await page.locator('#next-level').tap();
   await page.locator('#next-level').tap();
   await expect.poll(async () => (await read(page)).attempt.dealId).toBe('campaign-c8-dealer-003');
-  expect((await calls('show')).map(call => call.options.placement)).toEqual(['level-start']);
+  expect(await calls('show')).toHaveLength(0);
 });

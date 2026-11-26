@@ -168,7 +168,7 @@ export class BoardScene extends Phaser.Scene {
     }
     this.foundationArt = this.add.graphics().setDepth(200);
     this.foundationTitles = Array.from({ length: slotCount(this.options.deal, 'foundation') }, () =>
-      this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '19px', fontStyle: 'bold', color: '#62402b' }).setOrigin(.5).setDepth(201));
+      this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '22px', fontStyle: 'bold', color: '#462a25' }).setOrigin(.5).setDepth(201));
     this.world.add([this.foundationArt, ...this.foundationTitles]);
     const gold = this.add.image(0, 0, 'art-card-category').setDisplaySize(this.cardW, this.cardH);
     this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.add.image(0, 5, 'art-joker').setDisplaySize(78, 78)]).setVisible(false);
@@ -495,8 +495,10 @@ export class BoardScene extends Phaser.Scene {
       const leader = ids.map(id => this.options.deal.cards[id]).find(card => card.leader), title = this.foundationTitles[i];
       title.setVisible(Boolean(leader)); if (!leader) return;
       const { x, y } = target, total = Object.values(this.options.deal.cards).filter(card => card.category === leader.category && !card.leader).length, count = ids.length - 1;
-      this.foundationArt.fillStyle(0xedbb8d).fillRoundedRect(x - this.cardW / 2 + 5, y - this.cardH / 2 - 26, this.cardW - 10, 29, 7);
-      title.setText(categoryCaption(leader.text)).setPosition(x, y - this.cardH / 2 - 12).setScale(1);
+      const tabLeft = x - this.cardW / 2 + 2, tabTop = y - this.cardH / 2 - 29;
+      this.foundationArt.fillStyle(0xffdbac).fillRoundedRect(tabLeft, tabTop, this.cardW - 4, 28, 14);
+      this.foundationArt.lineStyle(1.5, 0xb98158).strokeRoundedRect(tabLeft, tabTop, this.cardW - 4, 28, 14);
+      title.setText(categoryCaption(leader.text)).setPosition(x, y - this.cardH / 2 - 15).setScale(1);
       title.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, title.width)));
       for (let dot = 0; dot < total; dot++) {
         const px = x + (dot - (total - 1) / 2) * Math.min(11, (this.cardW - 30) / Math.max(1, total));
@@ -630,11 +632,11 @@ export class BoardScene extends Phaser.Scene {
       const coveredCaption = band < this.cardH - 1;
       // Centre the preview in exposed paper, leaving both the rim and the
       // incoming card clear. A squeezed band yields no misleading fragment.
-      const previewRoom = Math.max(0, band - (rearWaste ? 16 : 20));
+      const previewRoom = Math.max(0, band - (rearWaste ? 10 : 20));
       if (view.strip instanceof Phaser.GameObjects.Text) {
-        view.strip.setFontSize(16).setText(rearWaste ? def.leader ? categoryCaption(def.text) : def.text : view.stripText!).setOrigin(.5).setScale(1);
-        view.strip.setScale(Math.min(1, (rearWaste ? this.cardH - 28 : this.cardW - 28) / Math.max(1, view.strip.width), previewRoom / Math.max(1, view.strip.height)));
-      } else if (view.strip) { const size = Math.min(rearWaste ? 16 : 22, previewRoom); view.strip.setDisplaySize(Math.max(1, size), Math.max(1, size)); }
+        view.strip.setFontSize(rearWaste ? 23 : 16).setColor(rearWaste ? '#2f2630' : releaseProfile ? '#483b36' : '#8c7257').setText(rearWaste ? def.leader ? categoryCaption(def.text) : def.text : view.stripText!).setOrigin(.5).setScale(1);
+        view.strip.setScale(Math.min(1, (rearWaste ? this.cardH - 18 : this.cardW - 28) / Math.max(1, view.strip.width), previewRoom / Math.max(1, view.strip.height)));
+      } else if (view.strip) { const size = Math.min(rearWaste ? 24 : 22, previewRoom); view.strip.setDisplaySize(Math.max(1, size), Math.max(1, size)); }
       if (view.strip) {
         const side = save.settings.deckSide === 'left' ? -1 : 1;
         view.strip.setAngle(rearWaste && view.strip instanceof Phaser.GameObjects.Text ? side * 90 : 0)
@@ -1183,7 +1185,7 @@ export class BoardScene extends Phaser.Scene {
   }
   public back(): boolean { if (!this.jokerSelecting && !this.press && !this.selected && !this.hintObjects.length) return false; this.clearHint(); this.cancel(); return true; }
   public idleForAd(): boolean {
-    return !this.press && !this.selected && !this.pendingReturn && !this.dragPointer && !this.jokerSelecting &&
+    return performance.now() >= this.stockBusyUntil && !this.press && !this.selected && !this.pendingReturn && !this.dragPointer && !this.jokerSelecting &&
       !this.inspectMode && !this.enteringCards.size && !this.collections.size && !this.keyPresentation &&
       !this.keyFlights.some(flight => flight.visible) &&
       ![...this.views.values()].some(view => this.tweens.isTweening(view.node));

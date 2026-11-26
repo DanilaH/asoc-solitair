@@ -101,33 +101,134 @@ jobs:
            if op.startswith(('bl','b','cmp','cmn','tst','teq','ldr','str','mov','add','sub','and','orr','bic','eor','rsb','ux','lsl','asr','lsr','mvn','pop','push','stm','ldm','mul')):
             return [hex(x.address),op,x.op_str]
            return None
-          families = {
-           'placement':r'(BoundOperations\.(ComputeBoundStatus|IsBoundCardAt|CanCut|CanUnbind|CanChooseForCut)|StarterBoosterOperations\.CanPlace|Placement.*\.(GetTopTargetOrder|TryGet|Evaluate|Resolve|Build|Create|IsLast|CanPlace)|.*\.IsLastCardInSourceCategory)',
-           'transitions':r'(FrozenCardOperations\.(MeltOneLayer|CanChangeThisMove|IsMeltableRightNow|WasRevealedThisMove|WasIceBrokenByBoosterHit)|FrozenCardLogicSystem\.Update|BoundOperations\.(Cut|Unbind|DiscardScissors|UseRevealedScissors)|PuzzleOperations\.(TryResolveTopPuzzlePair|AssembleTopPuzzlePair)|PuzzleCardLogicSystem\.(Update|AssembleTopPuzzlePairIfMatching)|LockerOperations\..*|Locker.*LogicSystem\.Update|Key.*LogicSystem\.Update)',
-           'patterns':r'LevelDataHandler\.(ApplyLockers|ApplyFrozenCards|ApplyBoundCards)$',
-           'gold':r'GoldenCard(Operations|LogicSystem|LevelOperations)\.(InitializeGoldenCards|ProcessUncoveredGoldenCards|DecreaseUncoveredGoldenCardsHealth|ActivateGoldenCardBonus|ActivateGoldenCardBonusesAroundPlacement|ActivateGoldenCardUnderJoker|GenerateGoldenCardsOnHiddenCards|GenerateGoldenCard|GenerateGoldenCards|Update|.*First.*|.*RunningOut.*)$',
-          }
+          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
+          from unicorn.arm_const import *
+          import itertools
+          B=0x11000000; STOP=B+0xf0000; W=B+0x1000; C=B+0x2000; L=B+0x3000; E=B+0x4000; G=B+0x5000
+          def setup(ranges):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP)
+           pages=set()
+           for a,b in ranges:
+            for p in range(a&~4095,((b+4095)//4096)*4096,4096):
+             if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
+           return u
+          def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
+          def wh(u,p,v):u.mem_write(p,struct.pack('<H',v&65535))
+          def wb(u,p,v):u.mem_write(p,bytes([v&255]))
+          def rr(u,r):return u.reg_read(r)
+          def reg(u,r,v):u.reg_write(r,v&0xffffffff)
+          def run(u,a,end,skips=None,calls=None,stops=(),count=400):
+           skips=skips or {};calls=calls or {}; trace=[]
+           def hook(uc,pc,size,user):
+            if pc in stops:trace.append(pc);uc.emu_stop();return
+            if pc in skips:
+             item=skips[pc]
+             if callable(item):item(uc)
+             else:reg(uc,UC_ARM_REG_PC,item)
+            elif pc in calls:
+             item=calls[pc];trace.append(pc)
+             if callable(item):item(uc)
+             else:reg(uc,UC_ARM_REG_R0,item)
+             reg(uc,UC_ARM_REG_PC,rr(uc,UC_ARM_REG_LR))
+           u.hook_add(UC_HOOK_CODE,hook)
+           u.emu_start(a,end,count=count)
+           assert rr(u,UC_ARM_REG_PC)==end or rr(u,UC_ARM_REG_PC) in stops,(hex(a),hex(rr(u,UC_ARM_REG_PC)),trace)
+           return trace
+          def args(u,*vs):
+           for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),vs):reg(u,r,v)
+          # Hammer: actual target predicate + actual Joker/starter getters; substitute only ECS lookup and list indexing.
+          hammer=[]
+          for typ,blocked,n,kind,hidden in itertools.product((0,1,2,3,4),(0,1),(0,1,3),range(7),(0,1)):
+           a=0x1c9bb88;b=0x1c9bd00
+           u=setup([(a,b),(0x1d31bb0,0x1d31bc0),(0x1d3cf0c,0x1d3cf24),(0x2b4c7b8,0x2b4c7c0),(0x3b40e44,0x3b40e48)])
+           wr(u,W+0x14,L);wr(u,W+8,L);wb(u,E+2,blocked);wb(u,E+3,typ);wr(u,E+8,G);wr(u,G+0xc,n)
+           wb(u,C+20,kind);wh(u,C+0x10,hidden);args(u,W,7,0)
+           run(u,a,STOP,{0x1c9bb9c:0x1c9bbe0,0x1c9bbfc:0x1c9bc1c,0x1c9bc70:0x1c9bc88,0x1c9bca0:0x1c9bcc0},{0x2b4c7b8:E,0x3b40e44:11,0x2b4c7bc:C})
+           got=rr(u,UC_ARM_REG_R0);expect=int(typ==2 and not blocked and n>0 and kind not in (2,5,6) and not hidden)
+           assert got==expect,(typ,blocked,n,kind,hidden,got,expect)
+           hammer.append([typ,blocked,n,kind,hidden,got])
+          print('HAMMER27',json.dumps(hammer,separators=(',',':')))
+          # Bound status initial gate/upper partner branch, native loop tested separately by supplying resolved neighboring cards.
+          bound=[]
+          for typ,flags,kind,found,other in itertools.product((0,1,2,3),(0,64,65),range(7),(0,1),(0,1,2)):
+           a=0x1c7b4d0;b=0x1c7b75c
+           u=setup([(a,b),(0x2b4c7bc,0x2b4c7c0),(0x1c8c8a8,0x1c8c8ac),(0x2b4c7b8,0x2b4c7bc)])
+           wr(u,W+8,L);wr(u,W+0x14,L);wb(u,C+0x16,typ);wh(u,C+0x10,flags);wb(u,C+20,kind);wb(u,E+0x17,other)
+           wr(u,G+8,L);wr(u,L+0xc,1);wh(u,C+0xc,0)
+           def partner(uc):
+            wh(uc,rr(uc,UC_ARM_REG_R2),12);reg(uc,UC_ARM_REG_R0,found)
+           def lookup(uc):reg(uc,UC_ARM_REG_R0,C if rr(uc,UC_ARM_REG_R1)==11 else E)
+           args(u,W,11,0)
+           def initial(uc):reg(uc,UC_ARM_REG_R7,11);reg(uc,UC_ARM_REG_R1,11);reg(uc,UC_ARM_REG_PC,0x1c7b580)
+           run(u,a,STOP,{0x1c7b4e8:0x1c7b538,0x1c7b55c:initial,0x1c7b5e0:0x1c7b5f8,0x1c7b62c:0x1c7b64c},{0x2b4c7bc:lookup,0x1c8c8a8:partner,0x2b4c7b8:G})
+           got=rr(u,UC_ARM_REG_R0);expect=(1 if other==1 else 3) if typ==2 and flags&64 and kind<=1 and found else 0
+           assert got==expect,(typ,flags,kind,found,other,got,expect)
+           bound.append([typ,flags,kind,found,other,got])
+          print('BOUND27',json.dumps(bound,separators=(',',':')))
+          # Frozen gates: actual CardEntity.IsFrozen (source) and native flag/time checks, with resolved locker/reveal inputs.
+          ice=[]
+          for layers,hidden,locked,same,reveal,unlocked in itertools.product((0,1,2,99),(0,1),(0,1),(0,1),(0,1),(0,1)):
+           a=0x1c81924;b=0x1c81a78
+           u=setup([(a,b),(0x1d32be4,0x1d32bf4),(0x2b4c7bc,0x2b4c7c0),(0x1c92488,0x1c9248c),(0x1c90158,0x1c9015c)])
+           wr(u,W+8,L);wb(u,C+0x19,layers);wh(u,C+0x10,hidden);wh(u,C+0x12,9 if same else 8);wb(u,C+0x15,reveal)
+           args(u,W,11,9)
+           def skip2(uc):reg(uc,UC_ARM_REG_R1,11);reg(uc,UC_ARM_REG_PC,0x1c81a3c)
+           run(u,a,STOP,{0x1c81940:0x1c81960,0x1c81980:0x1c819a0,0x1c819ec:0x1c81a14,0x1c81a24:skip2},{0x2b4c7bc:C,0x1c92488:locked,0x1c90158:unlocked})
+           got=rr(u,UC_ARM_REG_R0);expect=int(layers>0 and not hidden and not locked and not(same and reveal) and not unlocked)
+           assert got==expect,(layers,hidden,locked,same,reveal,unlocked,got,expect)
+           ice.append([layers,hidden,locked,same,reveal,unlocked,got])
+          print('ICE27',json.dumps(ice,separators=(',',':')))
+          # Collected-key transition: full source numeric write slice, stop before dependent unblocking dispatch.
+          keys=[]
+          for req,old,amount,flags in itertools.product((1,2,5),(0,1,3,65535),(0,1,2,4),(0,1,8,16)):
+           a=0x1c8890c;b=0x1c88998
+           u=setup([(a,b)]);wh(u,C+2,req);wh(u,C+4,old);wb(u,C+6,flags);wh(u,E+2,amount);wb(u,E+4,flags)
+           reg(u,UC_ARM_REG_R0,C);reg(u,UC_ARM_REG_R5,E);reg(u,UC_ARM_REG_R4,W)
+           trace=run(u,a,0x1c8898c,stops=(0x1c88948,0x1c8898c))
+           new=struct.unpack('<H',u.mem_read(C+4,2))[0];kf=u.mem_read(E+4,1)[0];lf=u.mem_read(C+6,1)[0];opened=int(rr(u,UC_ARM_REG_PC)==0x1c88948)
+           assert (new,kf,lf,opened)==((old+amount)&65535,flags|8,flags|8 if (old+amount)&65535>=req else flags,int((old+amount)&65535>=req))
+           keys.append([req,old,amount,flags,new,kf,lf,opened])
+          print('KEY27',json.dumps(keys,separators=(',',':')))
+          # Frozen pattern validate-before-commit branches: exact native branch snippets, candidate/duplicate index already resolved.
+          pat=[]
+          for found,dup in itertools.product((0,1),(-3,-1,0,1,99)):
+           a=0x1d38024;b=0x1d38060
+           u=setup([(a,b)]);args(u,C if found else 0)
+           def supplied(uc):reg(uc,UC_ARM_REG_R0,dup);reg(uc,UC_ARM_REG_PC,0x1d38054)
+           run(u,a,0x1d3805c,{0x1d38030:supplied},stops=(0x1d38200,0x1d3805c))
+           got=int(rr(u,UC_ARM_REG_PC)==0x1d3805c)
+           assert got==int(found and dup<0),(found,dup,got)
+           pat.append([found,dup,got])
+          print('PAT27',json.dumps(pat,separators=(',',':')))
+          # Golden health native gate with resolved active-lock/unlock exclusion tested separately.
+          gold=[]
+          for health,available,appeared,changed,reveal,opened in itertools.product((0,1,2,3,4),(0,1),(8,9),(8,9),(0,1),(0,1)):
+           # Start at positive-health test; use native gate branch after resolved ECS lookup.
+           a=0x1c83e38;b=0x1c83ee8
+           u=setup([(a,b),(0x1c90550,0x1c90554)])
+           wb(u,G+0x12,health);wh(u,G+0x14,appeared);wh(u,C+0x10,64 if available else 0);wh(u,C+0x12,changed);wb(u,C+0x15,reveal)
+           reg(u,UC_ARM_REG_R5,G);reg(u,UC_ARM_REG_R8,9);reg(u,UC_ARM_REG_R4,W)
+           def card(uc):reg(uc,UC_ARM_REG_R0,C);reg(uc,UC_ARM_REG_PC,0x1c83e88)
+           run(u,a,0x1c83ee8,{0x1c83e44:card},{0x1c90550:opened},stops=(0x1c83e9c,0x1c83ee8))
+           got=int(rr(u,UC_ARM_REG_PC)==0x1c83ee8)
+           expect=int(health>0 and available and appeared!=9 and not(changed==9 and reveal) and not opened)
+           assert got==expect,(health,available,appeared,changed,reveal,opened,got,expect)
+           # actual source decrement instruction slice, test only when allowed by gate
+           if got:
+            u=setup([(0x1c83ee8,0x1c83f04)]);wb(u,G+0x12,health);reg(u,UC_ARM_REG_R5,G);reg(u,UC_ARM_REG_R8,9)
+            run(u,0x1c83ee8,0x1c83f04)
+            assert u.mem_read(G+0x12,1)[0]==health-1
+           gold.append([health,available,appeared,changed,reveal,opened,got])
+          print('GOLD27',json.dumps(gold,separators=(',',':')))
+          print('PASS_SHA_PINNED_FOUR_FAMILY_NATIVE27')
+          # Recursively identify source AOT helper bodies and underlying placement/search, pattern, and gold event dispatch.
+          targets=r'(BoundOperations\.(TryGetAttachedUpperCard|TryFindUpperBlockAnchor)|FrozenCardOperations\.WasUnlockedThisTick|GoldenCardOperations\.(WasLockerOpenedThisMove|CanBeCollectedInOneMove|GetBonusActivatedGoldenCardCount)|StarterBoosterOperations\.(TryFindDirectLockerInteraction|TryFindMagnetTargetAndOrder|TryFindBySearchType|TryFindFromPlayStacks|TryFindFromDeck|IsValidMagnetTarget|MatchesOrderedMagnetTarget|IsCommonMagnetTarget|MatchesMagnetTargetType|ComputeRequiredMagnetOrder)|LevelDataHandler\.<ApplyBoundCards>g__TryFind|CardPlacementOperations\.Evaluate|CardEntity\.get_IsFrozen)'
           for r in records:
-           if r['rva']=='0x0':continue
-           label=r['type']+'.'+r['method']
-           matched=[k for k,pat in families.items() if re.search(pat,label)]
-           if not matched:continue
-           a=int(r['rva'],16);i=bisect.bisect_right(starts,a);b=starts[i] if i<len(starts) else a+4
-           if b-a>0x2400:print('SKIP_BOUND',label,hex(a),hex(b));continue
-           ins=instructions(a,b)
-           calls=[]
-           for x in ins:
-            if x.mnemonic.startswith('bl') and x.op_str.startswith('#0x'):
-             dest=int(x.op_str[1:],16);calls.append([hex(x.address),hex(dest),names_at(dest)])
-           # bounded facts emitted by family/method; return and compare branches, field access, caller identity
-           print('FAMILY26',json.dumps({'family':matched[0],'name':label,'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':calls,'facts':[f for x in ins if (f:=compact(x)) is not None]},separators=(',',':')))
-          # Explicit generic duplicate-search call target is not a registered MethodDef.
-          # Keep a bounded entry probe, not proof of equality semantics.
-          a=0x31d6014;b=a+0x180
-          print('DUP26',json.dumps({'a':hex(a),'b':hex(b),'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
-          # Metadata identity for all relevant operations; useful for recursive follow-up.
-          for r in records:
-           if re.search(r'(GoldenCard|FrozenCardOperations|BoundOperations|LockerOperations|StarterBoosterOperations|PuzzleOperations|Placement)',r['type']) and r['rva']!='0x0':
-            print('ID26',json.dumps(r,separators=(',',':')))
-          print('PASS_SHA_PINNED_FOUR_FAMILY_STATIC_SCAN26')
+           if not re.search(targets,r['type']+'.'+r['method']) or r['rva']=='0x0':continue
+           a=int(r['rva'],16);b=starts[bisect.bisect_right(starts,a)]
+           if b-a>0x1800:continue
+           print('DEEP27',json.dumps({'name':r['type']+'.'+r['method'],'a':hex(a),'b':hex(b),'params':r['parameters'],'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
+          for label,a,b in [('duplicate-inner',0x31e6d94,0x31e6f14),('gold-activate-around-clone',0x1cf5360,0x1cf54e0),('gold-process-clone',0x1cf5630,0x1cf5814),('gold-decrease-clone',0x1cf5814,0x1cf5b0c),('bound-partner-clone',0x1c8c8a8,0x1c8ca28)]:
+           print('DEEP27',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
+          print('PASS_DEEP27')
           PY

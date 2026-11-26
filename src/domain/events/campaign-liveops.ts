@@ -58,9 +58,7 @@ export function recordSourceGoldRush(before: Save, after: Save, deal: Deal, now:
   const period = liveOpsDefinitions(now).find(event => event.sourceFeatureId === gold);
   if (!settled || settled.mode !== 'campaign' || !period) return;
   const definition = { ...period, id: `r4-${period.id}`, version: 2 };
-  const time = { localMs: now };
-  observeEvents(after, [definition], time);
-  recordEventWin(after, [definition], { ...settled, id: `r4-gold:${after.attempt.id}:${deal.id}` }, time);
+  recordEventWin(after, [definition], settled, { localMs: now });
 }
 
 export function recordLiveOpsWin(before: Save, after: Save, deal: Deal, now: number) {

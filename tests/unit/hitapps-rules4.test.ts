@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { applyBoard, assertBoard, boardKey, dispatch, freshSave, legalCommands } from '../../src/domain/engine';
+import { claimLegacyLiveOpsReward, legacyLiveOpsRewards, recordSourceGoldRush } from '../../src/domain/events/campaign-liveops';
 import { Kind, sourceCard, type SourceKind } from '../../src/domain/hitapps-rules';
 import type { BoardCommand, Deal } from '../../src/domain/types';
 import { decodeSave } from '../../src/platform/storage';
@@ -120,6 +121,29 @@ describe('source Rules4 gameplay in the consumer', () => {
     expect(activation.board.hitapps!.cards.a1.gold).toMatchObject({ health: 0, activated: true });
     expect(activation.events).toContainEqual({ type: 'gold', cards: ['a1'], amount: 0, reason: 'activated' });
     expect(states.a1.gold).toEqual({ health: 4, appeared: 0, activated: false });
+  });
+
+  test('a settled Rules4 win with an activation grants one redeemable Gold Rush prize after reload', () => {
+    const { deal, states } = boardFor([['a0'], ['a1']]);
+    deal.hitapps!.gold = { first: 1, total: 1, coinsPerActivation: 1, eventKey: 'gold-r4-weekly-v1' };
+    deal.initial.hitapps!.generatedGold = 1;
+    states.a1.gold = { health: 4, appeared: 0, activated: false };
+    const now = Date.UTC(2026, 10, 26);
+    const start = freshSave(deal, 'rules4-gold-rush');
+    const before = dispatch(start, move(0, 0, true), deal).next;
+    recordSourceGoldRush(start, before, deal, now);
+    expect(legacyLiveOpsRewards(before)).toEqual([]);
+    const won = dispatch(before, move(1, 0, true), deal).next;
+    expect(won.attempt.payout?.some(reward => reward.reason === 'golden_cards' && reward.coins === 1)).toBe(true);
+    recordSourceGoldRush(before, won, deal, now);
+    recordSourceGoldRush(before, won, deal, now);
+    const restored = decodeSave(JSON.stringify(won), deal);
+    expect(legacyLiveOpsRewards(restored)).toEqual([expect.objectContaining({ id: 'gold-win', progress: 1, reward: { coins: 15 } })]);
+    const [prize] = legacyLiveOpsRewards(restored);
+    const coins = restored.profile.coins;
+    expect(claimLegacyLiveOpsReward(restored, prize.eventKey, prize.id)).toBe(true);
+    expect(claimLegacyLiveOpsReward(restored, prize.eventKey, prize.id)).toBe(false);
+    expect(restored.profile.coins).toBe(coins + 15);
   });
 
   test('failed pattern keeps its one reseed; source priority tie and hard simulation bound are independent', () => {

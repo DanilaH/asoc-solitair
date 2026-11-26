@@ -5,182 +5,6 @@ on:
 permissions:
   contents: read
 jobs:
-  inspect:
-    runs-on: ubuntu-latest
-    timeout-minutes: 6
-    steps:
-      - name: Verify original public build and inspect numeric source anchors
-        shell: bash
-        run: |
-          set -euo pipefail
-          umask 077
-          tmp="$(mktemp -d)"
-          trap 'rm -rf "$tmp"' EXIT
-          curl --fail --location --silent --show-error --retry 1 --max-time 100 'https://d.apkpure.net/b/XAPK/com.hitappsgames.wordsolitaire?versionCode=3742' -o "$tmp/source.xapk"
-          python3 -m pip install --quiet --disable-pip-version-check 'unicorn==2.1.4' 'capstone==5.0.6'
-          python3 - "$tmp/source.xapk" <<'PY'
-          import hashlib,struct,sys,zipfile,io,re,bisect,json
-          from pathlib import Path
-          raw=Path(sys.argv[1]).read_bytes()
-          assert len(raw)==287832513 and hashlib.sha256(raw).hexdigest()=='22aaff3a6d5b70f217b8feb7348538f5ab3352d4e8c766406cbddcbcd71e49f0'
-          with zipfile.ZipFile(io.BytesIO(raw)) as z:
-           with zipfile.ZipFile(io.BytesIO(z.read('com.hitappsgames.wordsolitaire.apk'))) as a: md=a.read('assets/bin/Data/Managed/Metadata/global-metadata.dat')
-           with zipfile.ZipFile(io.BytesIO(z.read('config.armeabi_v7a.apk'))) as a: e=a.read('lib/armeabi-v7a/libil2cpp.so')
-          assert hashlib.sha256(e).hexdigest()=='f25d9a988f6fa61eb201879f72c556a5875a4ac2c5f541670950589afbb51e26'
-          assert hashlib.sha256(md).hexdigest()=='47e2db3a792411193b25ed90c590facebcb3af861834eca90cb8e433a8e14aca'
-          assert struct.unpack_from('<II',md)==(0xfab11baf,31)
-          print('ORIGINAL XAPK AND BOTH PRIVATE NATIVE HASHES MATCH')
-          del raw
-          ph=struct.unpack_from('<I',e,28)[0];step,num=struct.unpack_from('<HH',e,42)
-          seg=[]
-          for j in range(num):
-           typ,fo,va,_,size,_,flags,_=struct.unpack_from('<8I',e,ph+j*step)
-           if typ==1:seg.append((fo,va,size,flags))
-          assert [va-fo for fo,va,_,_ in seg]==[0,0x4000,0x8000]
-          def off(va,n=4):
-           for fo,start,size,_ in seg:
-            if start<=va and va+n<=start+size:return fo+va-start
-           raise ValueError(hex(va))
-          def va(fo):
-           for start,v,size,_ in seg:
-            if start<=fo<start+size:return v+fo-start
-           raise ValueError(hex(fo))
-          def word(a):return struct.unpack_from('<I',e,off(a))[0]
-          S,SS=struct.unpack_from('<II',md,24);T,TS=struct.unpack_from('<II',md,160)
-          M,MS=struct.unpack_from('<II',md,48);I,IS=struct.unpack_from('<II',md,168)
-          F,FS=struct.unpack_from('<II',md,96);P,PS=struct.unpack_from('<II',md,88)
-          def name(ix):
-           if not 0<=ix<SS:return ''
-           p=S+ix;return md[p:md.index(b'\0',p,S+SS)].decode()
-          images={}
-          wanted={}
-          for j in range(IS//40):
-           row=struct.unpack_from('<10I',md,I+40*j);im=name(row[0]);images[im]=row
-           for t in range(row[2],row[2]+row[3]):
-            tr=struct.unpack_from('<22I',md,T+88*t)
-            tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if re.match(r'^(Game\.|CoreGameplay\.dll|Assembly-CSharp\.dll|GameCore\.)',im) and (re.search(r'(Streak|Combo|LevelSaveProgress|LevelProgressData|LevelLifecycleService|CardFactData|MoveFactData|MoveOperations|MoveCounterSystem|MoveRequest|GameplayContextFactory|CoreGameplayController|RewardProcessor|RewardType)',tn,re.I) or any(re.search(r'(Streak|Combo)',name(struct.unpack_from('<I',md,M+36*k)[0]),re.I) for k in range(tr[9],tr[9]+(tr[16]&65535)))):
-             wanted.setdefault(im,[]).append((tn,tr))
-          print('TARGET_IMAGES',list(wanted))
-          entries={};records=[];tables={}
-          for im,types in wanted.items():
-           row=images[im];pos=e.find(im.encode()+b'\0')
-           if pos<0:print('NO_MODULE_STRING',im);continue
-           marker=struct.pack('<I',va(pos));found=[]
-           for fo,v,size,_ in seg[1:]:
-            data=e[fo:fo+size];j=-1
-            while (j:=data.find(marker,j+1))>=0:
-             if j+12>size:continue
-             n,p=struct.unpack_from('<II',data,j+4)
-             if not 0<n<25000:continue
-             try: ptrs=struct.unpack_from('<%dI'%n,e,off(p,n*4))
-             except (ValueError,struct.error):continue
-             if all(a==0 or 0x148b0b0<=a<0x6a167d0 for a in ptrs):found.append((v+j,n,p,ptrs))
-           if len(found)!=1:print('AMBIGUOUS_MODULE',im,len(found));continue
-           descriptor,n,table,ptrs=found[0];tables[im]=[hex(descriptor),n,hex(table)]
-           for t in range(row[2],row[2]+row[3]):
-            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            for i in range(tr[9],tr[9]+(tr[16]&65535)):
-             mr=struct.unpack_from('<7I4H',md,M+36*i);rid=mr[6]&0xffffff
-             if not 0<rid<=n:continue
-             a=ptrs[rid-1];mn=name(mr[0])
-             rec={'image':im,'type':tn,'method':mn,'rid':rid,'rva':hex(a),'parameters':[name(struct.unpack_from('<I',md,P+12*(mr[4]+k))[0]) for k in range(mr[-1])]}
-             if a:entries.setdefault(a,[]).append(rec)
-             if any(tn==x[0] for x in types):records.append(rec)
-          print('MODULES',json.dumps(tables))
-          from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
-          d=Cs(CS_ARCH_ARM,CS_MODE_ARM)
-          starts=sorted(entries)
-          def instructions(a,b):
-           return list(d.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          def names_at(a):
-           return [x['type']+'.'+x['method'] for x in entries.get(a,[])][:2]
-          def compact(x):
-           # Numeric dataflow anchor; no original instruction bytes or decompiled source.
-           op=x.mnemonic
-           if op.startswith(('bl','b','cmp','cmn','tst','teq','ldr','str','mov','add','sub','and','orr','bic','eor','rsb','ux','lsl','asr','lsr','mvn','pop','push','stm','ldm','mul')):
-            return [hex(x.address),op,x.op_str]
-           return None
-          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
-          from unicorn.arm_const import *
-          import itertools,math
-          B=0x11000000; STOP=B+0xf0000; OBJ=B+0x1000; DATA=B+0x2000; CFG=B+0x3000
-          def setup(ranges):
-           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP);u.reg_write(UC_ARM_REG_FPEXC,0x40000000)
-           pages=set()
-           for a,b in ranges:
-            for p in range(a&~4095,((b+4095)//4096)*4096,4096):
-             if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
-           return u
-          def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
-          def wh(u,p,v):u.mem_write(p,struct.pack('<H',v&65535))
-          def wb(u,p,v):u.mem_write(p,bytes([v&255]))
-          def wq(u,p,v):u.mem_write(p,struct.pack('<Q',v&0xffffffffffffffff))
-          def rd(u,p):return struct.unpack('<I',u.mem_read(p,4))[0]
-          def rh(u,p):return struct.unpack('<H',u.mem_read(p,2))[0]
-          def rb(u,p):return u.mem_read(p,1)[0]
-          def rq(u,p):return struct.unpack('<Q',u.mem_read(p,8))[0]
-          def rr(u,r):return u.reg_read(r)
-          def reg(u,r,v):u.reg_write(r,v&0xffffffff)
-          def args(u,*vs):
-           for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),vs):reg(u,r,v)
-          def run(u,a,end,skips=None,calls=None,stops=(),count=400):
-           skips=skips or {};calls=calls or {};trace=[]
-           def hook(uc,pc,size,user):
-            if pc in stops:trace.append(pc);uc.emu_stop();return
-            if pc in skips:
-             item=skips[pc]
-             if callable(item):item(uc)
-             else:reg(uc,UC_ARM_REG_PC,item)
-            elif pc in calls:
-             item=calls[pc];trace.append(pc)
-             if callable(item):item(uc)
-             else:reg(uc,UC_ARM_REG_R0,item)
-             reg(uc,UC_ARM_REG_PC,rr(uc,UC_ARM_REG_LR))
-           u.hook_add(UC_HOOK_CODE,hook);u.emu_start(a,end,count=count)
-           assert rr(u,UC_ARM_REG_PC)==end or rr(u,UC_ARM_REG_PC) in stops,(hex(a),hex(rr(u,UC_ARM_REG_PC)),trace)
-           return trace
-          rows={}
-          def out(k,v):rows[k]=v;print(k,json.dumps(v,separators=(',',':')))
-          # Close downstream UI/coin/quest producers and snapshot storage, not just the isolated reducer.
-          for label,a,b in [('streak-view-update',0x1cf6920,0x1cf6e10),('streak-view-init',0x1cf6e10,0x1cf6f9c),('streak-view-state',0x1cf6f9c,0x1cf7218),('streak-stage-config',0x1cf7218,0x1cf72f4),('streak-view-delegate',0x1cf73cc,0x1cf7460),('quest-streak',0x1d07644,0x1d078b0),('quest-streak-size',0x1d078b0,0x1d079dc),('save-streak',0x1e6fdc0,0x1e6fe90),('load-streak',0x1e6fef0,0x1e6ff50),('win-loss',0x20b3244,0x20b34bc),('win-claim',0x20aff90,0x20b02c8),('win-buffer',0x20af6a8,0x20af770)]:
-           print('ANCHOR37',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in instructions(a,b)]},separators=(',',':')))
-          for a,rows0 in entries.items():
-           for r in rows0:
-            if not (re.search(r'Core\.(Systems\.(UndoOperations|UndoSystem|UndoCommitSystem|.*ObservableSystem)|Entities\.UndoSnapshot|Entities\.GameStateEntity)',r['type']) and re.search(r'Undo|Snapshot|Streak|Apply|Restore|Update|Reward',r['method'],re.I)):continue
-            j=bisect.bisect_right(starts,a)
-            if j>=len(starts):continue
-            b=starts[j]
-            if b-a<4 or b-a>0x1600:continue
-            ins=instructions(a,b)
-            print('UNDOOWNER37',json.dumps({'type':r['type'],'name':r['method'],'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':[[hex(x.address),x.op_str,names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str)],'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in ins if x.mnemonic.startswith(('ldr','str','vld','vst','ldm','stm','bl','b','cmp','mov'))]},separators=(',',':')))
-
-          # Trace the win-only streak settlement and actual total reconstruction.
-          for im,types in wanted.items():
-           for tn,tr in types:
-            if not re.search(r'WinCoinsAwarder|WinFlowRewardsCollectHandler|WinStreakPendingReward|CoinsContext|LevelSaveProgressService|InGameStreakViewSystem',tn):continue
-            for x in records:
-             if x['type']!=tn or x['image']!=im or x['rva']=='0x0':continue
-             if not re.search(r'AwardInGameStreakCoins|TryAddCoins|CollectAsync|TryAddWinStreakKeys|Cache|Take|GetInGameStreakSave|GetStreakStageConfig',x['method']):continue
-             a=int(x['rva'],16);j=bisect.bisect_right(starts,a)
-             if j>=len(starts):continue
-             b=starts[j]
-             if b-a>0x1400:continue
-             print('SETTLE38',json.dumps({'type':tn,'method':x['method'],'a':hex(a),'b':hex(b),'params':x['parameters'],'facts':[[hex(z.address),z.mnemonic,z.op_str,names_at(int(z.op_str[1:],16)) if z.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',z.op_str) else []] for z in instructions(a,b)]},separators=(',',':')))
-          # Discover named in-game coin accumulation APIs across all metadata, not just streak names.
-          for im,row in images.items():
-           if not re.match(r'^(Game\.|CoreGameplay\.dll|Assembly-CSharp)',im):continue
-           for t in range(row[2],row[2]+row[3]):
-            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            fs=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
-            ms=[]
-            for k in range(tr[9],tr[9]+(tr[16]&65535)):
-             mr=struct.unpack_from('<7I4H',md,M+36*k);mn=name(mr[0])
-             if re.search(r'InGameCoins|StreakCoins|StreakReward|CoinsForStreak|GetInGameStreak|StreakStageCompleted',mn):
-              ms.append([mn,mr[6]&0xffffff])
-            if ms or any(re.search(r'InGameCoins|StreakCoins|StreakReward|CoinsForStreak',f,re.I) for f in fs):print('COINOWNER38',json.dumps([im,tn,fs,ms],separators=(',',':')))
-          print('PASS_HITAPPS_SETTLE38')
-          PY
   azur:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -260,7 +84,10 @@ jobs:
            skips=skips or {}
            def hook(uc,pc,size,user):
             if pc in stops:uc.emu_stop();return
-            if pc in skips:uc.reg_write(UC_ARM64_REG_PC,skips[pc])
+            if pc in skips:
+             v=skips[pc]
+             if callable(v):v(uc)
+             else:uc.reg_write(UC_ARM64_REG_PC,v)
            u.hook_add(UC_HOOK_CODE,hook);u.emu_start(a,STOP,count=count)
            pc=u.reg_read(UC_ARM64_REG_PC);assert pc in stops,(hex(a),hex(pc))
            return u,pc
@@ -298,5 +125,45 @@ jobs:
           print('AZUR38_BUILD',json.dumps(rows,separators=(',',':')))
           for label,a,b in [('move-handler',0x269906c,0x26990dc),('add-progress',0x2698a24,0x2698b84),('buy-moves',0x26a92bc,0x26a936c),('complete-series',0x2698f24,0x269906c)]:
            print('AZUR38_ANCHOR',json.dumps({'name':label,'start':hex(a),'end':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in d.disasm(e[off(a,b-a):off(a,b-a)+b-a],a)]},separators=(',',':')))
-          print('PASS_AZUR38_NATIVE')
+
+          rows=[]
+          for unlocked,*flags in itertools.product((0,1),repeat=6):
+           f=sum(v<<(8*i) for i,v in enumerate(flags))
+           def unlock(u):
+            u.reg_write(UC_ARM64_REG_X0,unlocked);u.reg_write(UC_ARM64_REG_PC,0x2699080)
+           u,pc=probe(0x269906c,[STOP,0x2698f24,0x2698a24],{UC_ARM64_REG_X0:OBJ,UC_ARM64_REG_X1:f},{},skips={0x269907c:unlock})
+           got={STOP:0,0x2698f24:1,0x2698a24:2}[pc]
+           exp=0 if not unlocked else 1 if flags[1] and flags[4] else 2 if flags[0] and flags[3] and not flags[2] else 0
+           assert got==exp
+           if got==2:assert w(u,UC_ARM64_REG_X1)==1
+           rows.append([unlocked,*flags,got])
+          print('AZUR39_HANDLER',json.dumps(rows,separators=(',',':')))
+          rows=[]
+          for count,progress,amount in itertools.product((4,5,7,8),range(9),(-1,0,1,2,3,8)):
+           if progress>=count:continue
+           STAGE=B+0x4000
+           # Start after the amount guard, with original stage reference and absent observer callbacks.
+           def ref(u):
+            u.mem_write(OBJ+0x38,struct.pack('<Q',STAGE))
+            u.reg_write(UC_ARM64_REG_PC,0x2698a54)
+           # Exercise actual loop with synthetic completion callback that records and resets the stage.
+           completed=[0]
+           def complete(u):
+            completed[0]+=1
+            u.mem_write(STAGE+0x14,struct.pack('<I',0))
+            u.reg_write(UC_ARM64_REG_PC,0x2698ab0)
+           u,pc=probe(0x2698a24,[STOP],{UC_ARM64_REG_X0:OBJ,UC_ARM64_REG_X1:amount},{STAGE+0x14:progress,STAGE+0x18:count},skips={0x2698a38:lambda u:(u.mem_write(OBJ+0x38,struct.pack('<Q',STAGE)),u.reg_write(UC_ARM64_REG_PC,0x2698a38+4),u.reg_write(UC_ARM64_REG_X8,STAGE)),0x2698aac:complete},count=500)
+           got=rd(u,STAGE+0x14);n=completed[0];v=w(u,UC_ARM64_REG_X0)
+           total=progress+max(0,amount)
+           assert (got,n,v)==(total%count,total//count,int(total>=count)),(count,progress,amount,got,n,v)
+           rows.append([count,progress,amount,got,n,v])
+          print('AZUR39_PROGRESS',json.dumps(rows,separators=(',',':')))
+          rows=[]
+          for a,b,amount in itertools.product((0,1,20,100),(0,3,80),(-1,0,1,3,20)):
+           u,pc=probe(0x26a9328,[0x26a93c8,0x26a9360],{UC_ARM64_REG_X19:OBJ,UC_ARM64_REG_X20:amount},{OBJ+0x10:a,OBJ+0x14:b},skips={0x26a9334:0x26a933c})
+           got=[rd(u,OBJ+0x10),rd(u,OBJ+0x14)]
+           assert got==[a+max(0,amount),b+max(0,amount)]
+           rows.append([a,b,amount,*got])
+          print('AZUR39_BUDGET',json.dumps(rows,separators=(',',':')))
+          print('PASS_AZUR39_NATIVE')
           PY

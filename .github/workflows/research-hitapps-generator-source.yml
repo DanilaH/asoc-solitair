@@ -1,6 +1,6 @@
-name: Isolated reference generator inspection
+name: Isolated Hitapps meta reward research
 on:
-  push:
+  pull_request:
     branches: [research/hitapps-generator-native-20261126]
 permissions:
   contents: read
@@ -59,7 +59,7 @@ jobs:
            for t in range(row[2],row[2]+row[3]):
             tr=struct.unpack_from('<22I',md,T+88*t)
             tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if re.match(r'^(Game\.|CoreGameplay\.dll|Assembly-CSharp\.dll|GameCore\.)',im) and (re.search(r'(WeekendRace|RaceBot|RaceStage|RaceParticipant|RaceConfig|RaceData|RaceService|RaceProgress|LavaQuest|GoldRush|CascadeEvent|GoldCard|GoldenCard|EventWindow|LiveOpsService|RewardBuffer)',tn,re.I) or any(re.search(r'(WeekendRace|LavaQuest|GoldRush|CascadeEvent)',name(struct.unpack_from('<I',md,M+36*k)[0]),re.I) for k in range(tr[9],tr[9]+(tr[16]&65535)))):
+            if re.match(r'^(Game\.|CoreGameplay\.dll|Assembly-CSharp\.dll|GameCore\.)',im) and (re.search(r'(Digging|DigEvent|DigField|DigBoard|LuckyWheel|EndlessTreasure|MetaRegion|MetaBuilding|MetaUnlock|MetaStar|StarCurrency)',tn,re.I) or any(re.search(r'(Digging|DigEvent|DigField|DigBoard|LuckyWheel|EndlessTreasure|MetaRegion|MetaBuilding|MetaUnlock|MetaStar|StarCurrency)',name(struct.unpack_from('<I',md,M+36*k)[0]),re.I) for k in range(tr[9],tr[9]+(tr[16]&65535)))):
              wanted.setdefault(im,[]).append((tn,tr))
           print('TARGET_IMAGES',list(wanted))
           entries={};records=[];tables={}
@@ -101,197 +101,30 @@ jobs:
            if op.startswith(('bl','b','cmp','cmn','tst','teq','ldr','str','mov','add','sub','and','orr','bic','eor','rsb','ux','lsl','asr','lsr','mvn','pop','push','stm','ldm','mul')):
             return [hex(x.address),op,x.op_str]
            return None
-          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
-          from unicorn.arm_const import *
-          import itertools,math
-          B=0x11000000; STOP=B+0xf0000; OBJ=B+0x1000; DATA=B+0x2000; CFG=B+0x3000
-          def setup(ranges):
-           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP);u.reg_write(UC_ARM_REG_FPEXC,0x40000000)
-           pages=set()
-           for a,b in ranges:
-            for p in range(a&~4095,((b+4095)//4096)*4096,4096):
-             if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
-           return u
-          def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
-          def wh(u,p,v):u.mem_write(p,struct.pack('<H',v&65535))
-          def wb(u,p,v):u.mem_write(p,bytes([v&255]))
-          def wq(u,p,v):u.mem_write(p,struct.pack('<Q',v&0xffffffffffffffff))
-          def rd(u,p):return struct.unpack('<I',u.mem_read(p,4))[0]
-          def rh(u,p):return struct.unpack('<H',u.mem_read(p,2))[0]
-          def rb(u,p):return u.mem_read(p,1)[0]
-          def rq(u,p):return struct.unpack('<Q',u.mem_read(p,8))[0]
-          def rr(u,r):return u.reg_read(r)
-          def reg(u,r,v):u.reg_write(r,v&0xffffffff)
-          def args(u,*vs):
-           for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),vs):reg(u,r,v)
-          def run(u,a,end,skips=None,calls=None,stops=(),count=400):
-           skips=skips or {};calls=calls or {};trace=[]
-           def hook(uc,pc,size,user):
-            if pc in stops:trace.append(pc);uc.emu_stop();return
-            if pc in skips:
-             item=skips[pc]
-             if callable(item):item(uc)
-             else:reg(uc,UC_ARM_REG_PC,item)
-            elif pc in calls:
-             item=calls[pc];trace.append(pc)
-             if callable(item):item(uc)
-             else:reg(uc,UC_ARM_REG_R0,item)
-             reg(uc,UC_ARM_REG_PC,rr(uc,UC_ARM_REG_LR))
-           u.hook_add(UC_HOOK_CODE,hook);u.emu_start(a,end,count=count)
-           assert rr(u,UC_ARM_REG_PC)==end or rr(u,UC_ARM_REG_PC) in stops,(hex(a),hex(rr(u,UC_ARM_REG_PC)),trace)
-           return trace
-          rows={}
-          def out(k,v):rows[k]=v;print(k,json.dumps(v,separators=(',',':')))
-          # Exact source import resolution (reuse prior ELF relocation reader).
-          from capstone.arm import ARM_OP_IMM,ARM_OP_MEM
-          d.detail=True
-          def imm(w):return ((w>>4)&0xf000)|(w&0xfff)
-          def veneer(a):
-           w,x,y,z=[word(a+4*i) for i in range(4)]
-           if w&0xfff0f000==0xe300c000 and x&0xfff0f000==0xe340c000 and y==0xe08cc00f and z==0xe12fff1c:return (a+16+imm(w)+(imm(x)<<16))&0xffffffff
-           if w&0xff000000==0xea000000:return a+8+4*(((w&0xffffff)^0x800000)-0x800000)
-           return None
-          sh=struct.unpack_from('<I',e,32)[0];ents,n,si=struct.unpack_from('<HHH',e,46)
-          sections=[struct.unpack_from('<10I',e,sh+i*ents) for i in range(n)];st=sections[si];strings=e[st[4]:st[4]+st[5]]
-          def cstr(data,i):return data[i:data.index(b'\0',i)].decode('utf-8','replace')
-          byname={cstr(strings,x[0]):x for x in sections};ds=byname['.dynsym'];dt=sections[ds[6]];strs=e[dt[4]:dt[4]+dt[5]]
-          rel={}
-          for sec in sections:
-           if sec[1] not in (4,9) or sec[6]!=sections.index(ds):continue
-           for pos in range(sec[4],sec[4]+sec[5],sec[9]):
-            addr,info=struct.unpack_from('<II',e,pos);ix=info>>8;row=struct.unpack_from('<IIIBBH',e,ds[4]+ix*ds[9]);rel[addr]=cstr(strs,row[0])
-          def import_name(a):
-           ip=got=None
-           for x in instructions(a,a+16):
-            op=x.operands
-            if x.mnemonic=='add' and len(op)==3 and x.reg_name(op[0].reg)=='ip' and op[2].type==ARM_OP_IMM:
-             src=x.reg_name(op[1].reg)
-             if src=='pc':ip=x.address+8+op[2].imm
-             elif src=='ip' and ip is not None:ip+=op[2].imm
-            elif x.mnemonic.startswith('ldr') and len(op)==2 and op[1].type==ARM_OP_MEM and x.reg_name(op[0].reg)=='pc':
-             if x.reg_name(op[1].mem.base)=='ip' and ip is not None:got=(ip+op[1].mem.disp)&0xffffffff;break
-           return rel.get(got)
-          roundname=import_name(veneer(0x2b4a9b4))
-          print('BIND42',json.dumps({'round':roundname,'raceZero':word(0x20a5900),'boundsSentinel':hex(word(0x1ff8028))}))
-          assert roundname in ('roundf','floorf','ceilf'),roundname
-          def f32(x):return struct.unpack('<f',struct.pack('<f',x))[0]
-          def bits(x):return struct.unpack('<I',struct.pack('<f',x))[0]
-          def fl(x):return struct.unpack('<f',struct.pack('<I',x))[0]
-          def s32(x):return x if x<2**31 else x-2**32
-          def roundsrc(x):return (math.floor(x+0.5) if x>=0 else math.ceil(x-0.5)) if roundname=='roundf' else math.floor(x) if roundname=='floorf' else math.ceil(x)
-          def rndf(u):reg(u,UC_ARM_REG_R0,bits(roundsrc(fl(rr(u,UC_ARM_REG_R0)))))
-          def max32(u):reg(u,UC_ARM_REG_R0,max(s32(rr(u,UC_ARM_REG_R0)),s32(rr(u,UC_ARM_REG_R1))))
-          def readlist(u):
-           i=rr(u,UC_ARM_REG_R1);p=rd(u,rr(u,UC_ARM_REG_R0)+8);reg(u,UC_ARM_REG_R0,rd(u,p+0x10+4*i))
-          def writelist(u):
-           i=rr(u,UC_ARM_REG_R1);p=rd(u,rr(u,UC_ARM_REG_R0)+8);wr(u,p+0x10+4*i,rr(u,UC_ARM_REG_R2))
-          def jump(pc,r=None,v=None):
-           def fn(u):
-            if r is not None:reg(u,r,v)
-            reg(u,UC_ARM_REG_PC,pc)
-           return fn
-          # WeekendRace bot progress is an interval walk, not actual competitor network activity.
-          race=[]
-          for extras,mn,elapsed in itertools.product(([],[0],[2,4],[0,0,0],[.25,1.5,6.25]),(0,5,10),(0,.125,1,4.999,5,7,10,15,20,30,50,100)):
-           u=setup([(0x20a57ac,0x20a5914),(0x3d2065c,0x3d20660)])
-           L=B+0x4000;A=B+0x5000;M0=B+0x6000
-           wr(u,OBJ+0xc,DATA);wr(u,DATA+0x18,L);wr(u,DATA+0x2c,bits(mn));wr(u,L+8,A);wr(u,L+0xc,len(extras));wr(u,A+0xc,len(extras))
-           for i,v in enumerate(extras):wr(u,A+0x10+4*i,bits(v))
-           args(u,OBJ,bits(elapsed))
-           run(u,0x20a57ac,STOP,skips={0x20a57c4:0x20a57f4,0x20a5800:0x20a5804,0x20a5884:jump(0x20a5888,UC_ARM_REG_R2,M0)},calls={0x3d2065c:readlist},count=5000)
-           total=0.;ex=0
-           for v in [*extras,0]:
-            total=f32(total+f32(v+mn))
-            if total>f32(elapsed):break
-            ex+=1
-           got=rr(u,UC_ARM_REG_R0);assert got==ex,(extras,mn,elapsed,got,ex);race.append([extras,mn,elapsed,got])
-          out('RACEPROG42',race)
-          # Actual random partition loop, Unity random float result supplied; original remainder spreading and list writes executed.
-          intervals=[]
-          for stages,mn,total,mode in itertools.product((2,3,5,8),(5,10),(0,10,30,100,101.25),(0,1,2,3)):
-           u=setup([(0x20950c8,0x209521c),(0x2b4ad04,0x2b4ad08),(0x3d2065c,0x3d20660),(0x3d206a8,0x3d206ac)])
-           L=B+0x4000;A=B+0x5000;M0=B+0x6000
-           wr(u,L+8,A);wr(u,L+0xc,0);wr(u,A+0xc,stages-1)
-           lo,hi=struct.unpack('<II',struct.pack('<d',float(total)))
-           for regid,value in [(UC_ARM_REG_R4,L),(UC_ARM_REG_R5,lo),(UC_ARM_REG_R6,hi),(UC_ARM_REG_R9,stages),(UC_ARM_REG_R10,mn),(UC_ARM_REG_R11,stages-1)]:reg(u,regid,value)
-           # ARM sb=r9, sl=r10, fp=r11
-           draws=[]
-           def rand(u):
-            high=fl(rr(u,UC_ARM_REG_R1));ratio=(0,1,.5,.25)[mode];v=f32(high*ratio);draws.append([high,v]);reg(u,UC_ARM_REG_R0,bits(v))
-           run(u,0x20950c8,0x2095208,skips={0x20950d8:jump(0x20950e0,UC_ARM_REG_R8,M0),0x20951b0:jump(0x20951b4,UC_ARM_REG_R6,M0),0x20951bc:jump(0x20951c8,UC_ARM_REG_R7,M0)},calls={0x2b4ad04:rand,0x3d2065c:readlist,0x3d206a8:writelist},count=5000)
-           got=[fl(rd(u,A+0x10+4*i)) for i in range(stages-1)]
-           extra=max(0.,f32(f32(total)-f32(mn*stages)));expected=[]
-           for i in range(stages-1):
-            v=f32(extra*(0,1,.5,.25)[mode]);expected.append(v);extra=max(0.,f32(extra-v))
-           if extra>0:expected=[f32(v+f32(extra/f32(stages-1))) for v in expected]
-           assert got==expected and len(draws)==stages-1,(stages,mn,total,mode,got,expected,draws)
-           intervals.append([stages,mn,total,mode,draws,got])
-          out('RACEINTERVAL42',intervals)
-          seed=[]
-          for n,step in itertools.product((-2147483648,-100,-1,0,1,42,123456,2147483647),(0,1,2,7,100,-1)):
-           u=setup([(0x1ffb5d8,0x1ffb5fc)]);args(u,n,step);run(u,0x1ffb5d8,STOP);got=rr(u,UC_ARM_REG_R0)
-           x=s32((n+step)&0xffffffff)
-           for i in range(2):x=s32(((x^(x>>16))*0x45d9f3b)&0xffffffff)
-           ex=(x^(x>>16))&0xffffffff;assert got==ex;seed.append([n,step,got])
-          out('LAVASEED42',seed)
-          # Stage drop bound native function with resolved libc import and Math.Max helper.
-          def bounds_skips():
-           return {0x1ff7ed0:0x1ff7ef0,0x1ff7efc:0x1ff7f00,0x1ff7f08:0x1ff7f20,0x1ff7f50:jump(0x1ff7f54,UC_ARM_REG_R9,B+0x8000),0x1ff7f84:0x1ff7fac,0x1ff7fd4:0x1ff8000}
-          def modelbounds(lo,hi,remaining):
-           if remaining<=0:return [0,0]
-           a=roundsrc(f32(f32(remaining)*f32(lo)));b=roundsrc(f32(f32(remaining)*f32(hi)))
-           a=max(0,min(a,remaining));b=max(0,min(max(a,b),remaining));return [a,b]
-          bounds=[]
-          for lo,hi,remain in itertools.product((0,.05,.25,.5,.95,1,1.1),(.01,.25,.5,.9,1,1.2),(0,1,2,3,5,9,10,99,100,1000)):
-           u=setup([(0x1ff7eb0,0x1ff804c),(0x2b4a9b4,0x2b4a9b8),(0x1b78244,0x1b78248)])
-           args(u,bits(lo),bits(hi),remain,DATA);wr(u,rr(u,UC_ARM_REG_SP),DATA+4)
-           run(u,0x1ff7eb0,STOP,skips=bounds_skips(),calls={0x2b4a9b4:rndf,0x1b78244:max32})
-           got=[rd(u,DATA),rd(u,DATA+4)];ex=modelbounds(lo,hi,remain);assert got==ex,(lo,hi,remain,got,ex);bounds.append([lo,hi,remain,*got])
-          out('LAVABOUNDS42',bounds)
-          # Exact fallback uses equal integer quotient with earliest remainder distribution.
-          fallback=[]
-          for total,count in itertools.product((0,1,2,3,5,7,50,99,1000),(1,2,3,7,10)):
-           u=setup([(0x1ff8d74,0x1ff8e38),(0x1b23df4,0x1b23df8)])
-           args(u,total,count);wr(u,DATA+0xc,count)
-           run(u,0x1ff8d74,STOP,skips={0x1ff8d88:0x1ff8dac,0x1ff8dac:jump(0x1ff8dbc,UC_ARM_REG_R0,DATA)},calls={0x1b23df4:lambda u:reg(u,UC_ARM_REG_R0,rr(u,UC_ARM_REG_R0)//rr(u,UC_ARM_REG_R1))})
-           got=[rd(u,DATA+0x10+4*i) for i in range(count)];ex=[total//count+int(i<total%count) for i in range(count)];assert got==ex,(total,count,got,ex);fallback.append([total,count,got])
-          out('LAVAFALL42',fallback)
-          # Reward split actual float quotient and bound import, bot count + player.
-          splits=[]
-          for total,bots in itertools.product((0,1,2,3,5,7,10,100,101,1000,20000),(0,1,2,3,4,9,99,999)):
-           u=setup([(0x1fd98c0,0x1fd98f0),(0x2b4a9b4,0x2b4a9b8)])
-           reg(u,UC_ARM_REG_S20,total);reg(u,UC_ARM_REG_S16,bits(bots+1));reg(u,UC_ARM_REG_S18,word(0x1fd9a60))
-           run(u,0x1fd98c0,0x1fd98f0,calls={0x2b4a9b4:rndf})
-           got=s32(rr(u,UC_ARM_REG_R2));ex=roundsrc(f32(f32(total)/f32(bots+1)));assert got==ex,(total,bots,got,ex);splits.append([total,bots,got])
-          out('LAVASPLIT42',splits)
-          # Native state writes for complete step and loss, stop before icon/clock/save dependencies.
-          steps=[]
-          for passed,active,time in itertools.product((0,1,6,7,10),(0,1),(0,1,60,3600)):
-           for win in (0,1):
-            u=setup([(0x1fd5c70,0x1fd5c94)] if win else [(0x1fd74f0,0x1fd7510)])
-            wr(u,DATA+0x20,passed);wb(u,DATA+0x1c,active);wr(u,DATA+0x34,time);wr(u,OBJ+0x1c,CFG);wr(u,OBJ+0x18,CFG);reg(u,UC_ARM_REG_R4,OBJ)
-            reg(u,UC_ARM_REG_R5 if win else UC_ARM_REG_R6,DATA)
-            run(u,0x1fd5c70 if win else 0x1fd74f0,0x1fd5c94 if win else 0x1fd7510)
-            got=[rd(u,DATA+0x20),rb(u,DATA+0x1c),rd(u,DATA+0x34)];assert got==([passed+1,active,0] if win else [0,0,0]);steps.append([passed,active,time,win,*got])
-          out('LAVASTEP42',steps)
-          # Real Cascade final tokens routine including constructor (actual code) and level-token record writes.
-          tokens=[]
-          for old,stage,mult,apply in itertools.product((0,1,5,21,90),(0,1,7),(0,1,2,3,5),(0,1)):
-           u=setup([(0x21031c0,0x2103290),(0x2103a4c,0x2103a80)])
-           DOM=B+0x4000;M0=B+0x5000
-           wr(u,OBJ+8,DATA);wr(u,OBJ+0x10,DOM);wr(u,DOM+0x18,M0);wr(u,M0+0xc,mult);wr(u,DATA+8,old);wr(u,DATA+0x10,stage)
-           args(u,OBJ,apply);run(u,0x21031c0,STOP)
-           got=rr(u,UC_ARM_REG_R0);snapshot=[rd(u,DATA+0x2c),rd(u,DATA+0x30),rd(u,DATA+0x34),rb(u,DATA+0x38)]
-           assert got==(old*mult if apply else old) and snapshot==[stage,old,mult,apply],(old,stage,mult,apply,got,snapshot)
-           tokens.append([old,stage,mult,apply,got,*snapshot])
-          out('CASFINAL42',tokens)
-          base=[]
-          for units,rate in itertools.product((0,1,2,5,10,100),(0,1,2,5,20)):
-           u=setup([(0x21034f4,0x2103500)]);wr(u,OBJ+0xc,rate);args(u,OBJ,units);run(u,0x21034f4,STOP);got=rr(u,UC_ARM_REG_R0);assert got==units*rate;base.append([units,rate,got])
-          out('CASBASE42',base)
-          gate=[]
-          for blocked in range(2):
-           u=setup([(0x20fb0f4,0x20fb118)]);wr(u,OBJ+0x20,DATA);wb(u,DATA+0x29,blocked);args(u,OBJ);run(u,0x20fb0f4,STOP);got=rr(u,UC_ARM_REG_R0);assert got==1-blocked;gate.append([blocked,got])
-          out('CASGATE42',gate)
-          print('PASS_SHA_PINNED_EVENTS_KERNELS42',json.dumps({k:len(v) for k,v in rows.items()}))
+          ignore=re.compile(r'Formatter|Migrator|\.Migration\.|\.Cheat|\.Sample\.|\.Analytics\.|\.AJson|\.Mock|\.Tests|\._1_13_0\.|__AJson|global::',re.I)
+          focus=re.compile(r'(Digging|DigEvent|DigField|DigBoard|LuckyWheel|EndlessTreasure|MetaRegion|MetaBuilding|MetaUnlock|MetaStar|StarCurrency)',re.I)
+          for im,types in wanted.items():
+           for tn,tr in types:
+            if ignore.search(tn):continue
+            ms=[r for r in records if r['image']==im and r['type']==tn]
+            fields=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
+            if focus.search(tn) or any(focus.search(r['method']) for r in ms):
+             print('META_TYPE',json.dumps({'image':im,'type':tn,'fields':[f for f in fields if not f.startswith('__')],'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not ignore.search(r['method']) and not re.match('add_|remove_',r['method'])]},separators=(',',':')))
+          # first pass focuses logic rather than generated async/UI glue and avoids excessive disassembly logs.
+          for r in records:
+           tn=r['type'];mn=r['method'];a=int(r['rva'],16)
+           if not a or ignore.search(tn) or ignore.search(mn):continue
+           if not focus.search(tn) or re.search(r'View|Presenter|Animation|Binder|Installer|Payload|Factory|ConfigProvider|Cheat|Notifier|Tutorial|\.Abstractions?\.|Widget|Notification|^<',tn) or re.match(r'add_|remove_|get_|set_|\.ctor|\.cctor',mn):continue
+           i=bisect.bisect_right(starts,a)
+           if i>=len(starts):continue
+           b=starts[i]
+           if b-a<4 or b-a>0xc00:continue
+           ins=instructions(a,b)
+           calls=[[hex(x.address),x.op_str,names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str)]
+           print('META_METHOD',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':calls},separators=(',',':')))
+           if re.search(r'Generate|Random|Choose|Select|Weight|CanBuild|CanDig|CanSpin|Cost|Price|Calculate|GetReward|GetProgress|TrySpend|TryClaim|Advance|Complete|Unlock',mn,re.I):
+            # Only compact numeric control flow, no vendor files or raw instructions.
+            facts=[[hex(x.address),x.mnemonic,x.op_str] for x in ins if x.mnemonic in ('cmp','cmn','tst','teq','vcmp.f32','vcmp.f64','vadd.f32','vsub.f32','vmul.f32','vdiv.f32','vcmpe.f32','vcvt.s32.f32','vcvt.f32.s32') or (x.mnemonic.startswith(('mov','add','sub','mul','rsb','and','orr','bic','lsl','asr','lsr','str','ldr')) and re.search(r'#(?:0x[0-9a-f]+|[0-9]+)',x.op_str))]
+            if len(facts)<=45:print('META_NUMERIC',json.dumps({'type':tn,'method':mn,'a':hex(a),'facts':facts},separators=(',',':')))
+          print('PASS_SHA_PINNED_META_CATALOG')
           PY

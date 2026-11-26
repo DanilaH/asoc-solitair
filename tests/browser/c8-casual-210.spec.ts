@@ -93,6 +93,12 @@ for (const [width, height, reserve] of [[320, 480, true], [360, 640, false]] as 
   test(`Card Table ${width}×${height}: fifth win claim with an immediate next action`, async ({ page }, info) => {
     await show(page, nearWin(), width, height, reserve);
     await rawTap(page, '#home-play');
+    // The injected banner reserve and Home → field switch can resize the
+    // canvas in the same turn. Aim after its first settled paint.
+    const board = page.locator('#game-root');
+    await expect(board).toBeVisible();
+    await expect(board).toHaveAttribute('data-dealing', '0');
+    await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
     const rasterBeat = page.evaluate(() => new Promise<boolean>(resolve => {
       const until = performance.now() + 3500;
       function scan() {

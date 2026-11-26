@@ -198,7 +198,7 @@ jobs:
            wr(u,OBJ+0xc,DATA);wr(u,DATA+0x18,L);wr(u,DATA+0x2c,bits(mn));wr(u,L+8,A);wr(u,L+0xc,len(extras));wr(u,A+0xc,len(extras))
            for i,v in enumerate(extras):wr(u,A+0x10+4*i,bits(v))
            args(u,OBJ,bits(elapsed))
-           run(u,0x20a57ac,STOP,skips={0x20a57b4:0x20a57f4,0x20a5800:0x20a5804,0x20a5884:jump(0x20a5888,UC_ARM_REG_R2,M0)},calls={0x3d2065c:readlist},count=5000)
+           run(u,0x20a57ac,STOP,skips={0x20a57c4:0x20a57f4,0x20a5800:0x20a5804,0x20a5884:jump(0x20a5888,UC_ARM_REG_R2,M0)},calls={0x3d2065c:readlist},count=5000)
            total=0.;ex=0
            for v in [*extras,0]:
             total=f32(total+f32(v+mn))
@@ -260,7 +260,7 @@ jobs:
           splits=[]
           for total,bots in itertools.product((0,1,2,3,5,7,10,100,101,1000,20000),(0,1,2,3,4,9,99,999)):
            u=setup([(0x1fd98c0,0x1fd98f0),(0x2b4a9b4,0x2b4a9b8)])
-           reg(u,UC_ARM_REG_S20,total);reg(u,UC_ARM_REG_S16,bits(bots+1));reg(u,UC_ARM_REG_S18,0x80000000)
+           reg(u,UC_ARM_REG_S20,total);reg(u,UC_ARM_REG_S16,bits(bots+1));reg(u,UC_ARM_REG_S18,word(0x1fd9a60))
            run(u,0x1fd98c0,0x1fd98f0,calls={0x2b4a9b4:rndf})
            got=s32(rr(u,UC_ARM_REG_R2));ex=roundsrc(f32(f32(total)/f32(bots+1)));assert got==ex,(total,bots,got,ex);splits.append([total,bots,got])
           out('LAVASPLIT42',splits)

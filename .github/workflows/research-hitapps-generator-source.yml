@@ -154,7 +154,32 @@ jobs:
             if b-a<4 or b-a>0x1600:continue
             ins=instructions(a,b)
             print('UNDOOWNER37',json.dumps({'type':r['type'],'name':r['method'],'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':[[hex(x.address),x.op_str,names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str)],'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in ins if x.mnemonic.startswith(('ldr','str','vld','vst','ldm','stm','bl','b','cmp','mov'))]},separators=(',',':')))
-          print('PASS_SHA_PINNED_STREAK_SETTLEMENT37')
+
+          # Trace the win-only streak settlement and actual total reconstruction.
+          for im,types in wanted.items():
+           for tn,tr in types:
+            if not re.search(r'WinCoinsAwarder|WinFlowRewardsCollectHandler|WinStreakPendingReward|CoinsContext|LevelSaveProgressService|InGameStreakViewSystem',tn):continue
+            for x in records:
+             if x['type']!=tn or x['image']!=im or x['rva']=='0x0':continue
+             if not re.search(r'AwardInGameStreakCoins|TryAddCoins|CollectAsync|TryAddWinStreakKeys|Cache|Take|GetInGameStreakSave|GetStreakStageConfig',x['method']):continue
+             a=int(x['rva'],16);j=bisect.bisect_right(starts,a)
+             if j>=len(starts):continue
+             b=starts[j]
+             if b-a>0x1400:continue
+             print('SETTLE38',json.dumps({'type':tn,'method':x['method'],'a':hex(a),'b':hex(b),'params':x['parameters'],'facts':[[hex(z.address),z.mnemonic,z.op_str,names_at(int(z.op_str[1:],16)) if z.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',z.op_str) else []] for z in instructions(a,b)]},separators=(',',':')))
+          # Discover named in-game coin accumulation APIs across all metadata, not just streak names.
+          for im,row in images.items():
+           if not re.match(r'^(Game\.|CoreGameplay\.dll|Assembly-CSharp)',im):continue
+           for t in range(row[2],row[2]+row[3]):
+            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+            fs=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
+            ms=[]
+            for k in range(tr[9],tr[9]+(tr[16]&65535)):
+             mr=struct.unpack_from('<7I4H',md,M+36*k);mn=name(mr[0])
+             if re.search(r'InGameCoins|StreakCoins|StreakReward|CoinsForStreak|GetInGameStreak|StreakStageCompleted',mn):
+              ms.append([mn,mr[6]&0xffffff])
+            if ms or any(re.search(r'InGameCoins|StreakCoins|StreakReward|CoinsForStreak',f,re.I) for f in fs):print('COINOWNER38',json.dumps([im,tn,fs,ms],separators=(',',':')))
+          print('PASS_HITAPPS_SETTLE38')
           PY
   azur:
     runs-on: ubuntu-latest
@@ -219,5 +244,59 @@ jobs:
           print('AZUR37_NATIVE_PRODUCTIVE',json.dumps(rows,separators=(',',':')))
           for label,a,b in [('commit',0x2698678,0x2698770),('commit-all',0x2698770,0x2698880),('grant',0x2698b84,0x2698f24),('build',0x2697554,0x2697630),('sink',0x2621a44,0x2621ad4)]:
            print('AZUR37_ANCHOR',json.dumps({'name':label,'start':hex(a),'end':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in d.disasm(e[off(a,b-a):off(a,b-a)+b-a],a)]},separators=(',',':')))
-          print('PASS_AZUR37_EXACT_NATIVE')
+
+          # Execute original bounded ARM64 arithmetic and branches with explicit synthetic memory.
+          from unicorn import UC_HOOK_CODE
+          B=0x11000000;OBJ=B+0x1000;TRACK=B+0x3000;STOP=B+0xf000
+          def probe(a,stops,regs,fields,skips=None,count=200):
+           u=Uc(UC_ARCH_ARM64,UC_MODE_ARM);pages=set()
+           for v in [a,*stops]:
+            if B<=v<B+0x10000:continue
+            p=v&~4095
+            if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
+           u.mem_map(B,0x10000);u.reg_write(UC_ARM64_REG_SP,B+0xe000);u.reg_write(UC_ARM64_REG_LR,STOP)
+           for p,v in fields.items():u.mem_write(p,struct.pack('<I',v&0xffffffff))
+           for r,v in regs.items():u.reg_write(r,v&0xffffffffffffffff)
+           skips=skips or {}
+           def hook(uc,pc,size,user):
+            if pc in stops:uc.emu_stop();return
+            if pc in skips:uc.reg_write(UC_ARM64_REG_PC,skips[pc])
+           u.hook_add(UC_HOOK_CODE,hook);u.emu_start(a,STOP,count=count)
+           pc=u.reg_read(UC_ARM64_REG_PC);assert pc in stops,(hex(a),hex(pc))
+           return u,pc
+          def w(u,r):return u.reg_read(r)&0xffffffff
+          def rd(u,p):return struct.unpack('<I',u.mem_read(p,4))[0]
+          rows=[]
+          for kind,amount,pending in itertools.product(range(8),(-1,0,1,3,10),(0,2,9)):
+           u,pc=probe(0x2698c1c,[0x2698c40,0x2698cd8,0x2698d7c],{UC_ARM64_REG_X20:OBJ,UC_ARM64_REG_X19:amount,UC_ARM64_REG_X21:kind},{OBJ+0x48:pending})
+           out=rd(u,OBJ+0x48);branch={0x2698c40:1,0x2698cd8:2,0x2698d7c:0}[pc]
+           exp=pending+amount if amount>=1 and kind==6 else pending
+           assert (out,branch)==(exp,0 if amount<1 or kind==6 else 1 if kind==0 else 2)
+           rows.append([kind,amount,pending,out,branch])
+          print('AZUR38_GRANT',json.dumps(rows,separators=(',',':')))
+          rows=[]
+          for pending,request in itertools.product((0,1,2,5,10,30),(-1,0,1,3,10,30)):
+           u,pc=probe(0x26986a8,[0x2698740,0x26986c0],{UC_ARM64_REG_X20:OBJ,UC_ARM64_REG_X19:request},{OBJ+0x48:pending})
+           got=rd(u,OBJ+0x48);dispatch=int(pc==0x26986c0)
+           assert (got,dispatch)==(max(0,pending-request) if request>0 else pending,int(request>0))
+           rows.append([pending,request,got,dispatch])
+          print('AZUR38_COMMIT',json.dumps(rows,separators=(',',':')))
+          rows=[]
+          for pending in (0,1,2,5,10,30):
+           u,pc=probe(0x269879c,[0x269882c,0x26987ac],{UC_ARM64_REG_X20:OBJ},{OBJ+0x48:pending})
+           got=rd(u,OBJ+0x48);dispatch=int(pc==0x26987ac);amount=w(u,UC_ARM64_REG_X19) if dispatch else 0
+           assert (got,amount)==(0,pending)
+           rows.append([pending,got,amount])
+          print('AZUR38_ALL',json.dumps(rows,separators=(',',':')))
+          rows=[]
+          for lo,hi,requested,n in itertools.product((1,4),(8,10),range(0,13),(0,1,3,5,8)):
+           u,pc=probe(0x26975a4,[0x26975e4,0x2697614],{UC_ARM64_REG_X0:hi,UC_ARM64_REG_X21:requested,UC_ARM64_REG_X22:lo,UC_ARM64_REG_X20:TRACK},{TRACK+0x18:n},skips={0x26975c8:0x26975d0,0x26975dc:0x26975e0})
+           slots=w(u,UC_ARM64_REG_X21);idx=w(u,UC_ARM64_REG_X23) if pc==0x26975e4 else -1
+           exp=max(lo,min(hi,requested));assert(slots,idx)==(exp,min(n-1,exp-lo) if n else -1)
+           if not n:assert w(u,UC_ARM64_REG_X22)==0 and w(u,UC_ARM64_REG_X3)==1
+           rows.append([lo,hi,requested,n,slots,idx])
+          print('AZUR38_BUILD',json.dumps(rows,separators=(',',':')))
+          for label,a,b in [('move-handler',0x269906c,0x26990dc),('add-progress',0x2698a24,0x2698b84),('buy-moves',0x26a92bc,0x26a936c),('complete-series',0x2698f24,0x269906c)]:
+           print('AZUR38_ANCHOR',json.dumps({'name':label,'start':hex(a),'end':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in d.disasm(e[off(a,b-a):off(a,b-a)+b-a],a)]},separators=(',',':')))
+          print('PASS_AZUR38_NATIVE')
           PY

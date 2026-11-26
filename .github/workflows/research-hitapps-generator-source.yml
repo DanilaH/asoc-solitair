@@ -136,115 +136,115 @@ jobs:
            return trace
           def args(u,*vs):
            for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),vs):reg(u,r,v)
-          # Recursively identify source AOT helper bodies and underlying placement/search, pattern, and gold event dispatch.
-          targets=r'(BoundOperations\.(TryGetAttachedUpperCard|TryFindUpperBlockAnchor)|FrozenCardOperations\.WasUnlockedThisTick|GoldenCardOperations\.(WasLockerOpenedThisMove|CanBeCollectedInOneMove|GetBonusActivatedGoldenCardCount)|StarterBoosterOperations\.(TryFindDirectLockerInteraction|TryFindMagnetTargetAndOrder|TryFindBySearchType|TryFindFromPlayStacks|TryFindFromDeck|IsValidMagnetTarget|MatchesOrderedMagnetTarget|IsCommonMagnetTarget|MatchesMagnetTargetType|ComputeRequiredMagnetOrder)|LevelDataHandler\.<ApplyBoundCards>g__TryFind|CardPlacementOperations\.Evaluate|CardEntity\.get_IsFrozen)'
-          for r in records:
-           if not re.search(targets,r['type']+'.'+r['method']) or r['rva']=='0x0':continue
-           a=int(r['rva'],16);b=starts[bisect.bisect_right(starts,a)]
-           if b-a>0x1800:continue
-           print('DEEP27',json.dumps({'name':r['type']+'.'+r['method'],'a':hex(a),'b':hex(b),'params':r['parameters'],'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
-          for label,a,b in [('duplicate-inner',0x31e6d94,0x31e6f14),('gold-activate-around-clone',0x1cf5360,0x1cf54e0),('gold-process-clone',0x1cf5630,0x1cf5814),('gold-decrease-clone',0x1cf5814,0x1cf5b0c),('bound-partner-clone',0x1c8c8a8,0x1c8ca28)]:
-           print('DEEP27',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
-          print('PASS_DEEP27')
-
-          # Hammer: actual target predicate + actual Joker/starter getters; substitute only ECS lookup and list indexing.
-          hammer=[]
-          for typ,blocked,n,kind,hidden in itertools.product((0,1,2,3,4),(0,1),(0,1,3),range(7),(0,1)):
-           a=0x1c9bb88;b=0x1c9bd00
-           u=setup([(a,b),(0x1d31bb0,0x1d31bc0),(0x1d3cf0c,0x1d3cf24),(0x2b4c7b8,0x2b4c7c0),(0x3b40e44,0x3b40e48)])
-           wr(u,W+0x14,L);wr(u,W+8,L);wb(u,E+2,blocked);wb(u,E+3,typ);wr(u,E+8,G);wr(u,G+0xc,n)
-           wb(u,C+20,kind);wh(u,C+0x10,hidden);args(u,W,7,0)
-           run(u,a,STOP,{0x1c9bb9c:0x1c9bbe0,0x1c9bbfc:0x1c9bc1c,0x1c9bc70:0x1c9bc88,0x1c9bca0:0x1c9bcc0},{0x2b4c7b8:E,0x3b40e44:11,0x2b4c7bc:C})
-           got=rr(u,UC_ARM_REG_R0);expect=int(typ==2 and not blocked and n>0 and kind not in (2,5,6) and not hidden)
-           assert got==expect,(typ,blocked,n,kind,hidden,got,expect)
-           hammer.append([typ,blocked,n,kind,hidden,got])
-          print('HAMMER27',json.dumps(hammer,separators=(',',':')))
-          # Bound status initial gate/upper partner branch, native loop tested separately by supplying resolved neighboring cards.
-          bound=[]
-          for typ,flags,kind,found,other in itertools.product((0,1,2,3),(0,64,65),range(7),(0,1),(0,1,2)):
-           a=0x1c7b4d0;b=0x1c7b75c
-           u=setup([(a,b),(0x2b4c7bc,0x2b4c7c0),(0x1c8c8a8,0x1c8c8ac),(0x2b4c7b8,0x2b4c7bc)])
-           wr(u,W+8,L);wr(u,W+0x14,L);wb(u,C+0x16,typ);wh(u,C+0x10,flags);wb(u,C+20,kind);wb(u,E+0x17,other)
-           wr(u,G+8,L);wr(u,L+0xc,1);wh(u,C+0xc,0)
-           def partner(uc):
-            wh(uc,rr(uc,UC_ARM_REG_R2),12);reg(uc,UC_ARM_REG_R0,found)
-           def lookup(uc):reg(uc,UC_ARM_REG_R0,C if rr(uc,UC_ARM_REG_R1)==11 else E)
-           args(u,W,11,0)
-           def initial(uc):reg(uc,UC_ARM_REG_R7,11);reg(uc,UC_ARM_REG_R1,11);reg(uc,UC_ARM_REG_PC,0x1c7b580)
-           def partner_lookup(uc):reg(uc,UC_ARM_REG_R1,rr(uc,UC_ARM_REG_R5));reg(uc,UC_ARM_REG_PC,0x1c7b5f8)
-           run(u,a,STOP,{0x1c7b4e8:0x1c7b538,0x1c7b55c:initial,0x1c7b5e0:partner_lookup,0x1c7b62c:0x1c7b64c},{0x2b4c7bc:lookup,0x1c8c8a8:partner,0x2b4c7b8:G})
-           got=rr(u,UC_ARM_REG_R0);expect=(1 if other==1 else 3) if typ==2 and flags&64 and kind<=1 and found else 0
-           assert got==expect,(typ,flags,kind,found,other,got,expect)
-           bound.append([typ,flags,kind,found,other,got])
-          print('BOUND27',json.dumps(bound,separators=(',',':')))
-          # Frozen gates: actual CardEntity.IsFrozen (source) and native flag/time checks, with resolved locker/reveal inputs.
+          # Native source fragments, use original control flow, synthetic ECS/list access only.
+          def half(u,p):return struct.unpack('<H',u.mem_read(p,2))[0]
+          def byte(u,p):return u.mem_read(p,1)[0]
+          def value(u,p):return struct.unpack('<I',u.mem_read(p,4))[0]
+          def skiparg(r,pc,v):
+           def f(u):reg(u,r,v);reg(u,UC_ARM_REG_PC,pc)
+           return f
+          def skipread(regid,fromreg,pc,mask=65535):
+           def f(u):reg(u,regid,rr(u,fromreg)&mask);reg(u,UC_ARM_REG_PC,pc)
+           return f
+          def compare(u):reg(u,UC_ARM_REG_R0,int(half(u,rr(u,UC_ARM_REG_R0))==rr(u,UC_ARM_REG_R1)))
+          # Execute actual upper anchor helper and lower status loop over generated 3-card column snapshots.
+          # Compare category IDs directly only where standard UInt16 Equals is called.
+          cards=[B+0x10000+i*0x100 for i in range(4)]
+          def world(u,items,pos):
+           wr(u,W+8,L);wr(u,W+0x14,L);wr(u,G+8,L);wr(u,L+0xc,len(items))
+           for i,(avail,kind,cat,bs) in enumerate(items):
+            p=cards[i];wh(u,p,cat);wh(u,p+4,7);wh(u,p+0xc,i);wh(u,p+0x10,64 if avail else 0);wb(u,p+0x14,kind);wb(u,p+0x16,2);wb(u,p+0x17,bs)
+           def lookup(u):reg(u,UC_ARM_REG_R0,cards[rr(u,UC_ARM_REG_R1)-10])
+           def idx(u):reg(u,UC_ARM_REG_R0,rr(u,UC_ARM_REG_R1)+10)
+           return lookup,idx
+          def anchor(u,items,pos):
+           lookup,idx=world(u,items,pos);args(u,W,pos+10,E,0)
+           def initial(u):reg(u,UC_ARM_REG_R1,rr(u,UC_ARM_REG_R6)&65535);reg(u,UC_ARM_REG_PC,0x1c7b310)
+           run(u,0x1c7b274,STOP,{0x1c7b290:0x1c7b2d4,0x1c7b2f0:initial,0x1c7b360:skipread(UC_ARM_REG_R1,UC_ARM_REG_R6,0x1c7b380),0x1c7b3a4:skipread(UC_ARM_REG_R1,UC_ARM_REG_R7,0x1c7b3b8),0x1c7b3cc:skipread(UC_ARM_REG_R1,UC_ARM_REG_R10,0x1c7b3e4),0x1c7b404:0x1c7b40c,0x1c7b414:0x1c7b42c,0x1c7b42c:lambda u:(reg(u,UC_ARM_REG_R1,value(u,rr(u,UC_ARM_REG_SP))),reg(u,UC_ARM_REG_R0,rr(u,UC_ARM_REG_SP)+0xa),reg(u,UC_ARM_REG_PC,0x1c7b43c)),0x1c7b47c:skipread(UC_ARM_REG_R1,UC_ARM_REG_R7,0x1c7b490)},{0x2b4c7bc:lookup,0x2b4c7b8:G,0x3b40e44:idx,0x38b4f94:compare},count=800)
+           return rr(u,UC_ARM_REG_R0),half(u,E)
+          # Use actual call site lower loop with source anchor resolved by independent native call above.
+          # Sweep both directions, with one ordinary intervening card or mismatch/barrier.
+          bound2=[]
+          pool=list(itertools.product((0,1),(0,1,2),(1,2),(0,1,2)))
+          ranges=[(0x1c7b274,0x1c7b784),(0x2b4c7b8,0x2b4c7c0),(0x3b40e44,0x3b40e48),(0x38b4f94,0x38b4f98),(0x1c8c8a8,0x1c8c8ac)]
+          for pos,near,far in itertools.product(range(3),pool,[(1,1,1,0),(1,1,1,1),(1,1,1,2),(1,1,2,2)]):
+           items=[near,far];items.insert(pos,(1,1,1,0))
+           u=setup(ranges);found,aid=anchor(u,items,pos)
+           expected=None
+           for i in range(pos,-1,-1):
+            avail,kind,cat,bs=items[i]
+            if not avail or kind>1 or cat!=1:break
+            if bs:expected=i;break
+           assert (found,aid)==(int(expected is not None),0 if expected is None else expected+10),(items,pos,found,aid,expected)
+           u=setup(ranges);lookup,idx=world(u,items,pos);args(u,W,pos+10,0)
+           def partner(u):wh(u,rr(u,UC_ARM_REG_R2),aid);reg(u,UC_ARM_REG_R0,found)
+           def initial(u):reg(u,UC_ARM_REG_R7,pos+10);reg(u,UC_ARM_REG_R1,pos+10);reg(u,UC_ARM_REG_PC,0x1c7b580)
+           def cmp2(u):
+            reg(u,UC_ARM_REG_R1,rr(u,UC_ARM_REG_R8));reg(u,UC_ARM_REG_R0,rr(u,UC_ARM_REG_SP)+2);reg(u,UC_ARM_REG_PC,0x1c7b738)
+           run(u,0x1c7b4d0,STOP,{0x1c7b4e8:0x1c7b538,0x1c7b55c:initial,0x1c7b5e0:skipread(UC_ARM_REG_R1,UC_ARM_REG_R5,0x1c7b5f8),0x1c7b62c:0x1c7b64c,0x1c7b690:skipread(UC_ARM_REG_R1,UC_ARM_REG_R5,0x1c7b6a4),0x1c7b6b8:skipread(UC_ARM_REG_R1,UC_ARM_REG_R4,0x1c7b6d0),0x1c7b700:lambda u:(wh(u,rr(u,UC_ARM_REG_SP)+2,half(u,rr(u,UC_ARM_REG_R0))),cmp2(u))},{0x2b4c7bc:lookup,0x1c8c8a8:partner,0x2b4c7b8:G,0x3b40e44:idx,0x38b4f94:compare},count=800)
+           ex=0
+           if expected is not None:ex=1 if items[expected][3]==1 else 3
+           else:
+            for av,k,c,bs in items[pos+1:]:
+             if not av or k>1:break
+             if bs:ex=2 if bs==1 else 4;break
+             if c!=1:break
+           got=rr(u,UC_ARM_REG_R0);assert got==ex,(items,pos,got,ex)
+           bound2.append([items,pos,found,aid,got])
+          print('BOUND29',json.dumps(bound2,separators=(',',':')))
+          mag=[]
+          for common,kind,baseTag,tag,order,required in itertools.product((0,1),range(5),(0,2),(0,2,3),(0,1,2,9),(-1,0,1,2,9)):
+           a=0x1c9d250;b=0x1c9d2dc
+           u=setup([(a,b),(0x1d34a14,0x1d34a24),(0x1d3100c,0x1d3101c),(0x1c967bc,0x1c967c0)])
+           # Puzzle getter is kind-based? determine source truth with separate actual getter run before comparison
+           wb(u,C+20,kind);wh(u,C+6,baseTag);wb(u,E+20,0 if order==0 else 1);wh(u,E+6,tag);wh(u,E+8,order)
+           args(u,C,0);run(u,0x1d34a14,STOP);puz=rr(u,UC_ARM_REG_R0)
+           u=setup([(a,b),(0x1d34a14,0x1d34a24),(0x1d3100c,0x1d3101c),(0x1c967bc,0x1c967c0)])
+           wb(u,C+20,kind);wh(u,C+6,baseTag);wb(u,E+20,0 if order==0 else 1);wh(u,E+6,tag);wh(u,E+8,order)
+           args(u,C,E,1,required);run(u,a,STOP,calls={0x1c967bc:common})
+           ex=int(common and (order==0 if required==0 else order==required if required>0 else (not puz or baseTag!=0 and baseTag==tag)))
+           got=rr(u,UC_ARM_REG_R0);assert got==ex,(common,kind,baseTag,tag,order,required,puz,got,ex);mag.append([common,kind,baseTag,tag,order,required,puz,got])
+          print('MAGTARGET29',json.dumps(mag,separators=(',',':')))
+          writes=[]
+          for state,sc in itertools.product(range(3),range(2)):
+           u=setup([(0x1c7a164,0x1c7a17c)]);wb(u,C+0x18,sc);wb(u,E+0x17,state);args(u,C);reg(u,UC_ARM_REG_R7,E);run(u,0x1c7a164,0x1c7a17c);cut=[byte(u,C+0x18),byte(u,E+0x17)];assert cut==[0,1]
+           u=setup([(0x1c7a2a0,0x1c7a2ac)]);wb(u,E+0x17,state);args(u,E);run(u,0x1c7a2a0,0x1c7a2ac);un=byte(u,E+0x17);assert un==0
+           u=setup([(0x1c7a454,0x1c7a45c)]);wb(u,C+0x18,sc);args(u,C);run(u,0x1c7a454,0x1c7a45c);ds=byte(u,C+0x18);assert ds==0
+           writes.append([state,sc,*cut,un,ds])
+          print('CUT29',json.dumps(writes,separators=(',',':')))
           ice=[]
-          for layers,hidden,locked,same,reveal,unlocked in itertools.product((0,1,2,99),(0,1),(0,1),(0,1),(0,1),(0,1)):
-           a=0x1c81924;b=0x1c81a78
-           u=setup([(a,b),(0x1d32be4,0x1d32bf4),(0x2b4c7bc,0x2b4c7c0),(0x1c92488,0x1c9248c),(0x1c90158,0x1c9015c)])
-           wr(u,W+8,L);wb(u,C+0x19,layers);wh(u,C+0x10,hidden);wh(u,C+0x12,9 if same else 8);wb(u,C+0x15,reveal)
-           args(u,W,11,9)
-           def skip2(uc):reg(uc,UC_ARM_REG_R1,11);reg(uc,UC_ARM_REG_PC,0x1c81a3c)
-           run(u,a,STOP,{0x1c81940:0x1c81960,0x1c81980:0x1c819a0,0x1c819ec:0x1c81a14,0x1c81a24:skip2},{0x2b4c7bc:C,0x1c92488:locked,0x1c90158:unlocked})
-           got=rr(u,UC_ARM_REG_R0);expect=int(layers>0 and not hidden and not locked and not(same and reveal) and not unlocked)
-           assert got==expect,(layers,hidden,locked,same,reveal,unlocked,got,expect)
-           ice.append([layers,hidden,locked,same,reveal,unlocked,got])
-          print('ICE27',json.dumps(ice,separators=(',',':')))
-          # Collected-key transition: full source numeric write slice, stop before dependent unblocking dispatch.
-          keys=[]
-          for req,old,amount,flags in itertools.product((1,2,5),(0,1,3,65535),(0,1,2,4),(0,1,8,16)):
-           a=0x1c8890c;b=0x1c88998
-           u=setup([(a,b)]);wh(u,C+2,req);wh(u,C+4,old);wb(u,C+6,flags);wh(u,E+2,amount);wb(u,E+4,flags)
-           reg(u,UC_ARM_REG_R0,C);reg(u,UC_ARM_REG_R5,E);reg(u,UC_ARM_REG_R4,W)
-           trace=run(u,a,0x1c8898c,stops=(0x1c88948,0x1c8898c))
-           new=struct.unpack('<H',u.mem_read(C+4,2))[0];kf=u.mem_read(E+4,1)[0];lf=u.mem_read(C+6,1)[0];opened=int(rr(u,UC_ARM_REG_PC)==0x1c88948)
-           assert (new,kf,lf,opened)==((old+amount)&65535,flags|8,flags|8 if (old+amount)&65535>=req else flags,int((old+amount)&65535>=req))
-           keys.append([req,old,amount,flags,new,kf,lf,opened])
-          print('KEY27',json.dumps(keys,separators=(',',':')))
-          # Frozen pattern validate-before-commit branches: exact native branch snippets, candidate/duplicate index already resolved.
+          for lay in (1,2,3,99):
+           u=setup([(0x1c80d88,0x1c80db4),(0x1d32be4,0x1d32bf4)]);wb(u,C+0x19,lay);args(u,C);reg(u,UC_ARM_REG_R11,W);run(u,0x1c80d88,0x1c80db4,stops=(0x1c80e2c,));new=byte(u,C+0x19);ev=2 if rr(u,UC_ARM_REG_PC)==0x1c80e2c else 1;assert (new,ev)==(lay-1,2 if lay==1 else 1);ice.append([lay,new,ev])
+          print('MELT29',json.dumps(ice))
+          puzzle=[]
+          for cat,order,m1,f1,m2,f2,old,flags in itertools.product((1,55),(0,3),(8,9),(0,2),(8,9),(0,2),(8,9),(0,1,2,3)):
+           u=setup([(0x1c98128,0x1c981b4)]);wr(u,W+0x28,L);wh(u,L+8,9);wh(u,C,cat);wh(u,C+0x12,m1);wb(u,C+0x15,f1);wh(u,E+0x12,m2);wb(u,E+0x15,f2);wh(u,G,100);wh(u,G+6,42);wh(u,G+0x12,old);wb(u,G+0x15,flags)
+           args(u,G);reg(u,UC_ARM_REG_R7,C);reg(u,UC_ARM_REG_R9,E);reg(u,UC_ARM_REG_R8,W);reg(u,UC_ARM_REG_R10,order);run(u,0x1c98128,0x1c981b4)
+           got=[half(u,G),half(u,G+6),half(u,G+8),byte(u,G+0x14),half(u,G+0x12),byte(u,G+0x15)]
+           moved=(m1==9 and f1&2) or (m2==9 and f2&2)
+           ex=[cat,0,order,1,9 if moved else old,(flags|2 if old==9 else 2) if moved else flags];assert got==ex,(got,ex);puzzle.append([cat,order,m1,f1,m2,f2,old,flags,*got])
+          print('PUZZLE29',json.dumps(puzzle,separators=(',',':')))
           pat=[]
-          for found,dup in itertools.product((0,1),(-3,-1,0,1,99)):
-           a=0x1d38024;b=0x1d38060
-           u=setup([(a,b)]);args(u,C if found else 0)
-           def supplied(uc):reg(uc,UC_ARM_REG_R0,dup);reg(uc,UC_ARM_REG_PC,0x1d38054)
-           run(u,a,0x1d3805c,{0x1d38030:supplied},stops=(0x1d38200,0x1d3805c))
-           got=int(rr(u,UC_ARM_REG_PC)==0x1d3805c)
-           assert got==int(found and dup<0),(found,dup,got)
-           pat.append([found,dup,got])
-          print('PAT27',json.dumps(pat,separators=(',',':')))
-          # Golden health native gate with resolved active-lock/unlock exclusion tested separately.
+          for idx in (-3,-1,0,1,99):
+           for family,a,end,fail in [('bound',0x1d38d20,0x1d38d28,0x1d38e68),('scissors',0x1d38f94,0x1d38f9c,0x1d38ffc)]:
+            u=setup([(a,end)]);args(u,idx);run(u,a,end,stops=(fail,));got=int(rr(u,UC_ARM_REG_PC)==end);assert got==int(idx<0);pat.append([family,idx,got])
+          print('PAT29',json.dumps(pat))
           gold=[]
-          for health,available,appeared,changed,reveal,opened in itertools.product((0,1,2,3,4),(0,1),(8,9),(8,9),(0,1),(0,1)):
-           # Start at positive-health test; use native gate branch after resolved ECS lookup.
-           a=0x1c83e38;b=0x1c83ee8
-           u=setup([(a,b),(0x1c90550,0x1c90554)])
-           wb(u,G+0x12,health);wh(u,G+0x14,appeared);wh(u,C+0x10,64 if available else 0);wh(u,C+0x12,changed);wb(u,C+0x15,reveal)
-           reg(u,UC_ARM_REG_R5,G);reg(u,UC_ARM_REG_R8,9);reg(u,UC_ARM_REG_R4,W)
-           def card(uc):reg(uc,UC_ARM_REG_R0,C);reg(uc,UC_ARM_REG_PC,0x1c83e88)
-           run(u,a,0x1c83ee8,{0x1c83e44:card},{0x1c90550:opened},stops=(0x1c83e9c,0x1c83ee8))
-           got=int(rr(u,UC_ARM_REG_PC)==0x1c83ee8)
-           expect=int(health>0 and available and appeared!=9 and not(changed==9 and reveal) and not opened)
-           assert got==expect,(health,available,appeared,changed,reveal,opened,got,expect)
-           # actual source decrement instruction slice, test only when allowed by gate
-           if got:
-            u=setup([(0x1c83ee8,0x1c83f04)]);wb(u,G+0x12,health);reg(u,UC_ARM_REG_R5,G);reg(u,UC_ARM_REG_R8,9)
-            run(u,0x1c83ee8,0x1c83f04)
-            assert u.mem_read(G+0x12,1)[0]==health-1
-           gold.append([health,available,appeared,changed,reveal,opened,got])
-          print('GOLD27',json.dumps(gold,separators=(',',':')))
-          # Magnet actual preliminary target branches (inner ordered search and direct-lock helper resolved).
-          magnet=[]
-          for typ,blocked,n,kind,hidden,frozen,locked,bound,match,lockmatch in itertools.product((2,3,4),(0,1),(0,1),(0,1,2),(0,1),(0,1),(0,1),(0,3),(0,1),(0,1)):
-           a=0x1c9b8ec;b=0x1c9bb68
-           u=setup([(a,b),(0x1d31bb0,0x1d31bc0),(0x1d3100c,0x1d3101c),(0x1d32be4,0x1d32bf4),(0x2b4c7b8,0x2b4c7c0),(0x3b40e44,0x3b40e48),(0x1c92488,0x1c9248c),(0x1c8ef18,0x1c8ef1c),(0x1c95384,0x1c95388),(0x1c95458,0x1c9545c)])
-           wr(u,W+0x14,L);wr(u,W+8,L);wb(u,E+2,blocked);wb(u,E+3,typ);wr(u,E+8,G);wr(u,G+0xc,n)
-           wb(u,C+20,kind);wh(u,C+0x10,hidden);wb(u,C+0x19,frozen)
-           args(u,W,7,0)
-           run(u,a,STOP,{0x1c9b908:0x1c9b94c,0x1c9b980:0x1c9b9a4,0x1c9b9f4:0x1c9ba0c,0x1c9ba24:0x1c9ba48},{0x2b4c7b8:E,0x3b40e44:11,0x2b4c7bc:C,0x1c92488:locked,0x1c8ef18:bound,0x1c95384:lockmatch,0x1c95458:match})
-           got=rr(u,UC_ARM_REG_R0)
-           expect=int(not blocked and n>0 and (match if typ==3 else (typ==2 and kind!=2 and not hidden and (locked or kind!=0 or frozen) and (lockmatch if locked else (bound==3 or frozen or match)))))
-           assert got==expect,(typ,blocked,n,kind,hidden,frozen,locked,bound,match,lockmatch,got,expect)
-           magnet.append([typ,blocked,n,kind,hidden,frozen,locked,bound,match,lockmatch,got])
-          print('MAGNET28',json.dumps(magnet,separators=(',',':')))
-          print('PASS_SHA_PINNED_FOUR_FAMILY_NATIVE27')
+          for h,act in itertools.product(range(5),(0,1)):
+           u=setup([(0x1c8414c,0x1c84158)]);wb(u,G+2,h);wb(u,G+6,act);args(u,G);run(u,0x1c8414c,0x1c84158,stops=(0x1c841a8,));gate=rr(u,UC_ARM_REG_PC)==0x1c84158
+           if gate:
+            u=setup([(0x1c8419c,0x1c841a8)]);wb(u,G+2,h);wb(u,G+6,act);reg(u,UC_ARM_REG_R6,G);reg(u,UC_ARM_REG_R7,0);run(u,0x1c8419c,0x1c841a8);new=byte(u,G+2);activated=byte(u,G+6)
+           else:new=h;activated=act
+           assert (gate,new,activated)==(h>0,0 if h>0 else h,1 if h>0 else act)
+           u=setup([(0x1c83f50,0x1c83f5c),(0x1c83fac,0x1c83fbc)]);wb(u,G+0x12,h);reg(u,UC_ARM_REG_R5,G);run(u,0x1c83f50,0x1c83f5c,stops=(0x1c83e9c,0x1c83fbc));ev={0x1c83f5c:2,0x1c83fbc:3,0x1c83e9c:0}[rr(u,UC_ARM_REG_PC)];assert ev==(2 if h==1 else 3 if h==0 else 0)
+           gold.append([h,act,int(gate),new,activated,ev])
+          print('GOLDACT29',json.dumps(gold))
+          amount=[]
+          for total,generated,count in itertools.product((0,1,3,9),(0,1,3,10),(0,1,2,4,9)):
+           u=setup([(0x1c8455c,0x1c84560)]);reg(u,UC_ARM_REG_R4,total);args(u,generated);run(u,0x1c8455c,0x1c84560);delta=rr(u,UC_ARM_REG_R1);assert delta==(total-generated)&0xffffffff
+           u=setup([(0x1c85b74,0x1c85b8c)]);wr(u,G+8,generated);wr(u,rr(u,UC_ARM_REG_SP)+4,total);reg(u,UC_ARM_REG_R5,G);reg(u,UC_ARM_REG_R4,count);run(u,0x1c85b74,0x1c85b8c);low=rr(u,UC_ARM_REG_R0);assert low==int(count<=total-generated)
+           u=setup([(0x1c85a38,0x1c85a48)]);wr(u,G+8,generated);reg(u,UC_ARM_REG_R5,G);reg(u,UC_ARM_REG_R4,total);run(u,0x1c85a38,0x1c85a48);done=rr(u,UC_ARM_REG_R0);assert done==int(generated>=total)
+           amount.append([total,generated,count,delta,low,done])
+          print('GOLDCOUNT29',json.dumps(amount,separators=(',',':')))
+          print('PASS_NATIVE29')
           PY

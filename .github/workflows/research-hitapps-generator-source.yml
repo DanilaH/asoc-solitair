@@ -138,81 +138,122 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # Execute coordinate selectors and native field-write slices, plus
-          # resolve remaining special-distribution numeric helpers.
+          # Validate bounded numeric generation kernels without executing Android.
           from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
           from unicorn.arm_const import *
           from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
-          import itertools,collections
+          import itertools,collections,math
           dis=Cs(CS_ARCH_ARM,CS_MODE_ARM)
           def ins(a,b):return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          B=0x11000000;STOP=B+0xf0000;D=B+0x1000;C=B+0x2000;PAT=B+0x3000;INNER=B+0x4000
-          def read32(u,p):return struct.unpack('<I',bytes(u.mem_read(p,4)))[0]
-          def write32(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
-          def dto(kind=1,container=2,col=0,pos=0,flags=80):
-           buf=bytearray(80);buf[52]=kind;buf[53]=container
-           struct.pack_into('<ii',buf,36,pos,col);struct.pack_into('<H',buf,54,flags)
-           return bytes(buf)
-          def emu(a,b,registers,objects,stop=None,return_data=()):
-           u=Uc(UC_ARCH_ARM,UC_MODE_ARM)
-           page=a&~4095;end=((b+4095)//4096)*4096
-           u.mem_map(page,end-page);u.mem_write(a,e[off(a,b-a):off(a,b-a)+b-a])
+          B=0x11000000;STOP=B+0xf0000;CARD=B+0x1000;PAT=B+0x2000;REF=B+0x3000;ARR=B+0x4000
+          def run_slice(a,b,registers,objects=(),stops=None,extra=(),read=()):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);ranges=[(a,b),*extra]
+           pages=set()
+           for st,en in ranges:
+            for p in range(st&~4095,((en+4095)//4096)*4096,4096):
+             if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
+           # Additional stop targets on the same region are guarded before execution.
+           for p in stops or ():
+            pg=p&~4095
+            if pg not in pages:u.mem_map(pg,4096);pages.add(pg)
            u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP)
            for ptr,raw in objects:u.mem_write(ptr,raw)
            for reg,v in registers.items():u.reg_write(reg,v&0xffffffff)
            trace=[]
            def hook(uc,pc,size,user):
-            if stop and pc in stop:trace.append(pc);uc.emu_stop()
-            elif not a<=pc<b:raise RuntimeError('unexpected '+hex(pc))
+            if stops and pc in stops:trace.append(pc);uc.emu_stop()
+            elif not any(lo<=pc<hi for lo,hi in ranges):raise RuntimeError('unexpected target '+hex(pc))
            u.hook_add(UC_HOOK_CODE,hook)
-           u.emu_start(a,STOP if stop is None else b,count=400)
-           if stop:assert len(trace)==1,trace
+           u.emu_start(a,STOP if stops is None else max(stops)+4,count=2500)
+           if stops:assert len(trace)==1,(hex(a),trace,hex(u.reg_read(UC_ARM_REG_PC)))
            else:assert u.reg_read(UC_ARM_REG_PC)==STOP
-           return u.reg_read(UC_ARM_REG_R0),[bytes(u.mem_read(p,n)) for p,n in return_data],trace
-          counts=collections.Counter()
-          for selector,a,b in [('locker',0x1d3bcac,0x1d3bd3c),('key',0x1d3bd40,0x1d3bdb0),('ice',0x1d3bdb4,0x1d3be24),('bound',0x1d3be28,0x1d3be78)]:
-           # Exact entry found through method registration, not guess by nearby address.
-           method=[r for r in entries.get(a,[]) if '<Apply' in r['method']]
-           assert method,(selector,hex(a))
-           b=starts[bisect.bisect_right(starts,a)]
-           print('SELECTOR15',selector,method[0]['method'],hex(a))
-           for container,col,pos,tc,tp in itertools.product((0,1,2,3),range(3),range(3),(0,1),(0,1)):
-            data=dto(container=container,col=col,pos=pos)
-            c=bytearray(24);p=bytearray(24);inner=bytearray(24)
-            if selector=='bound':struct.pack_into('<ii',c,8,tc,tp)
-            elif selector=='ice':
-             struct.pack_into('<I',c,8,PAT);struct.pack_into('<iii',p,8,3,tc,tp)
-            elif selector=='key':
-             struct.pack_into('<I',c,8,PAT);struct.pack_into('<iii',p,8,2,tp,tc)
-            else:
-             struct.pack_into('<I',c,8,PAT);struct.pack_into('<I',p,12,INNER);struct.pack_into('<iii',inner,8,2,tp,tc)
-            res,_,_=emu(a,b,{UC_ARM_REG_R0:C,UC_ARM_REG_R1:D,UC_ARM_REG_R2:0},[(D,data),(C,bytes(c)),(PAT,bytes(p)),(INNER,bytes(inner))])
-            assert bool(res)==(container==2 and col==tc and pos==tp),(selector,container,col,pos,tc,tp,res)
-            counts[selector]+=1
-          print('SELECTOR_TEST15',json.dumps(dict(counts)))
-          # Native exact layer validity slice. Earlier null tests resolve valid
-          # objects; r5 holds pattern, r4 closure; verify the actual register roles.
-          for label,a,b in [('frozen-layer-input',0x1d37f50,0x1d37fb4),('frozen-layer-constant',0x1d37f88,0x1d37fb0),('frozen-commit-tail',0x1d38128,0x1d3815c),('locker-init-counts',0x1d37468,0x1d37580),('locker-initial-loop',0x1d3769c,0x1d377b8),('locker-check-before-commit',0x1d379a0,0x1d37aa8),('puzzle-choose-amount',0x1d3acec,0x1d3ad70),('puzzle-swap-input',0x1d3ae6c,0x1d3af24)]:
+           return u.reg_read(UC_ARM_REG_R0),u.reg_read(UC_ARM_REG_R1),trace,[bytes(u.mem_read(p,n)) for p,n in read]
+          def raw32(x):return struct.pack('<I',x&0xffffffff)
+          # Full leaf method, exact integer state.
+          count=0
+          for d in (-2147483648,-3,-1,0,1,2,100,2147483647):
+           value,*_=run_slice(0x1d3b7ac,0x1d3b7f0,{UC_ARM_REG_R0:d})
+           assert value==(100 if d<0 else 80 if d==0 else 1),(d,value)
+           count+=1
+          print('STATE16',count,'PASS')
+          # Exact frozen validity branch; synthetic closure's field references.
+          cases=[]
+          for layers in (-2147483648,-1,0,1,2,98,99,100,101,65535,2147483647):
+           p=bytearray(24);struct.pack_into('<i',p,8,layers)
+           _,_,trace,_=run_slice(0x1d37f88,0x1d37fb4,{UC_ARM_REG_R5:PAT,UC_ARM_REG_R4:REF},[(PAT,bytes(p)),(REF,raw32(PAT))],{0x1d37fb0,0x1d38200})
+           ok=trace[0]==0x1d37fb0;assert ok==(1<=layers<100),(layers,ok)
+           cases.append([layers,ok])
+          print('FROZEN_VALID16',json.dumps(cases))
+          # Original write slices on sentinel DTO: only specified fields may change.
+          checks=collections.Counter()
+          for flags,layers in itertools.product((0,1,2,4,16,32,64,80,100,65535),(1,3,99)):
+           c=bytearray([0xa5]*80);struct.pack_into('<H',c,54,flags)
+           arr=bytearray(24);struct.pack_into('<II',arr,12,1,CARD)
+           pat=bytearray(24);struct.pack_into('<I',pat,12,1)
+           regs={UC_ARM_REG_R7:CARD,UC_ARM_REG_R4:layers,UC_ARM_REG_R6:0,UC_ARM_REG_R5:ARR+16,UC_ARM_REG_R9:ARR,UC_ARM_REG_SB:ARR,UC_ARM_REG_SL:PAT}
+           _,_,_,rs=run_slice(0x1d38128,0x1d38160,regs,[(CARD,bytes(c)),(ARR,bytes(arr)),(PAT,bytes(pat))],{0x1d3815c},read=[(CARD,80)])
+           expected=bytearray(c);struct.pack_into('<H',expected,54,flags&~64);struct.pack_into('<H',expected,62,layers)
+           assert rs[0]==bytes(expected),(flags,layers)
+           checks['iceWrite']+=1
+          for flags,lt,kc in itertools.product((0,1,64,80,100,65535),(0,1,2),(0,1,3)):
+           c=bytearray([0xa5]*80);struct.pack_into('<H',c,54,flags)
+           p=bytearray(24);struct.pack_into('<II',p,8,lt,REF)
+           ref=bytearray(24);struct.pack_into('<I',ref,8,kc)
+           _,_,_,rs=run_slice(0x1d37b30,0x1d37b74,{UC_ARM_REG_R4:CARD,UC_ARM_REG_FP:PAT},[(CARD,bytes(c)),(PAT,bytes(p)),(REF,bytes(ref))],{0x1d37b70},read=[(CARD,80)])
+           expected=bytearray(c);struct.pack_into('<H',expected,54,flags&~64);struct.pack_into('<II',expected,44,kc,0);expected[59]=lt
+           assert rs[0]==bytes(expected),(flags,lt,kc)
+           checks['lockWrite']+=1
+          print('WRITES16',json.dumps(dict(checks)))
+          # Source stock inclusion and Mix leaf execution; then exact insertion slice
+          # invokes the original division wrapper/helper, not a mocked modulo.
+          for ct,idx,flags in itertools.product(range(4),range(3),(0,1,2,64,80)):
+           c=bytearray(80);c[53]=ct;struct.pack_into('<i',c,40,idx);struct.pack_into('<H',c,54,flags)
+           ret,*_=run_slice(0x1c99580,0x1c995c0,{UC_ARM_REG_R0:CARD,UC_ARM_REG_R1:0},[(CARD,bytes(c))])
+           assert bool(ret)==(ct==0 and idx==0 and flags!=0),(ct,idx,flags,ret)
+           checks['stockPredicate']+=1
+          rows=[]
+          for level,kind,seed in itertools.product((0,1,20,1000),(5,6),(0,1,42,2147483647,-1)):
+           expected=((((level*397)&0xffffffff)^kind)*397&0xffffffff)^(seed&0xffffffff)
+           ret,*_=run_slice(0x1c99658,0x1c99670,{UC_ARM_REG_R0:level,UC_ARM_REG_R1:kind,UC_ARM_REG_R2:seed})
+           assert ret==expected,(level,kind,seed,ret,expected)
+           checks['mix']+=1
+           for stock in (1,3,10,42):
+            ret,_,_,_=run_slice(0x1c99620,0x1c99644,{UC_ARM_REG_R5:stock,UC_ARM_REG_R6:kind,UC_ARM_REG_R7:level,UC_ARM_REG_R8:seed},stops={0x1c99640},extra=[(0x1b24000,0x1b25000)])
+            rows.append([level,kind,seed,stock,expected,ret])
+          matches=sum(row[-1]==row[-2]%(row[3]+1) for row in rows)
+          print('BOOSTER16',json.dumps({'checks':dict(checks),'insertions':len(rows),'unsignedModuloMatches':matches,'first':rows[:12],'examples':rows[-8:]}))
+          assert matches==len(rows)
+          # Identify the source puzzle count rounding call, exact numeric arguments and
+          # list transformation. No original card words or binary output.
+          for label,a,b in [('puzzle-count-input',0x1d3aca8,0x1d3ad10),('puzzle-list-prepare',0x1d3ad88,0x1d3ae00),('puzzle-shuffle-helper-entry',0x2d6a108,0x2d6a140),('puzzle-shuffle-helper-branches',0x2d6a140,0x2d6a2a0)]:
            rows=[]
            for x in ins(a,b):
-            m=x.mnemonic;p=x.op_str
-            if m.startswith(('cmp','tst','b','mov','ldr','str','sub','add','rsb','mul','and','orr','bic','ux','sx','clz','lsr')) and not ('pc,' in p and m.startswith(('ldr','add'))):
-             if m=='bl' and p in ('#0x1a2677c','#0x1a26a2c','#0x1a26a30','#0x1a268f0','#0x1a26718','#0x1a268f4','#0x1a26a20'):continue
-             rows.append([hex(x.address),m,p])
-           print('FACT15',json.dumps({'label':label,'facts':rows},separators=(',',':')))
-          # Source exact ComputeStarterBoosterInsertIndex, Mix, CountStockSlots and
-          # puzzle shuffle method identities; emit metadata and bounded call sites.
-          for a,rs in sorted(entries.items()):
-           for r in rs:
-            if r['type'] not in ('Core.Systems.StarterBoosterLevelOperations','Core.Handlers.LevelDataHandler'):continue
-            if r['method'] not in ('ComputeStarterBoosterInsertIndex','Mix','CountStockSlots','IsInStock','SwapCards','ComputeDealtPlayStackCardState'):continue
-            end=starts[bisect.bisect_right(starts,a)]
-            print('MAPPED15',json.dumps({'name':r['type']+'.'+r['method'],'rva':hex(a),'end':hex(end),'params':r['parameters']}))
-            if end-a<=260:
-             print('SMALL15',json.dumps({'name':r['method'],'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in ins(a,end) if x.mnemonic.startswith(('cmp','b','tst','sub','add','mul','eor','mov','ldr','and','orr','rsb','clz','lsr','ux','sx')) and not 'pc,' in x.op_str]}))
-          # Resolve a few generic/managed method veneers when they have exact
-          # registrations (generic shared bodies may remain unknown).
-          for a in (0x1b24c08,0x2d6a108,0x31d6014,0x3cc8014):
-           print('VENEER15',hex(a),[[x.mnemonic,x.op_str] for x in ins(a,a+16)])
-          print('PASS_SHA_PINNED_FEATURE_SELECTORS15')
+            if x.mnemonic.startswith(('cmp','tst','b','v','mov','ldr','str','add','sub','mul','and','orr','ux','sx','rsb','eor')):rows.append([hex(x.address),x.mnemonic,x.op_str])
+           print('PUZZLE16',json.dumps({'label':label,'facts':rows},separators=(',',':')))
+          def imm(w):return ((w>>4)&0xf000)|(w&0xfff)
+          a=0x2b4a9a4;w,x,y,z=[word(a+4*i) for i in range(4)];target=None
+          if w&0xfff0f000==0xe300c000 and x&0xfff0f000==0xe340c000 and y==0xe08cc00f and z==0xe12fff1c:target=(a+16+imm(w)+(imm(x)<<16))&0xffffffff
+          print('PUZZLE_COUNT_TARGET16',hex(target) if target else None)
+          for im in ('mscorlib.dll','UnityEngine.CoreModule.dll','CoreGameplay.dll'):
+           if not target:break
+           row=images.get(im);pos=e.find(im.encode()+b'\0')
+           if row is None or pos<0:continue
+           marker=struct.pack('<I',va(pos));found=[]
+           for fo,v,size,_ in seg[1:]:
+            mem=e[fo:fo+size];j=-1
+            while (j:=mem.find(marker,j+1))>=0:
+             if j+12>size:continue
+             n,p=struct.unpack_from('<II',mem,j+4)
+             if not 0<n<60000:continue
+             try: ptrs=struct.unpack_from('<%dI'%n,e,off(p,n*4))
+             except (ValueError,struct.error):continue
+             if all(a==0 or 0x148b0b0<=a<0x6a167d0 for a in ptrs):found.append(ptrs)
+           if len(found)!=1:continue
+           ptrs=found[0]
+           for t in range(row[2],row[2]+row[3]):
+            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+            for i in range(tr[9],tr[9]+(tr[16]&65535)):
+             mr=struct.unpack_from('<7I4H',md,M+36*i);rid=mr[6]&0xffffff
+             if 0<rid<=len(ptrs) and ptrs[rid-1]==target:print('PUZZLE_COUNT_METHOD16',im,tn,name(mr[0]),mr[-1])
+          print('PASS_SHA_PINNED_FEATURE_KERNELS16')
           PY

@@ -179,9 +179,9 @@
   },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "5187a337663c440931b2e15643dc329167a3758f",
-  "sourceInventoryRef": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+  "sourceInventoryRef": "41e292bd8322cc76b693273d4230e061b6b3aa49",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
@@ -637,8 +637,18 @@
       "id": "hitapps-win-streak",
       "status": "ROADMAPPED",
       "currentImplementation": "Existing 5-first-win cycle differs from loss-sensitive WinStreak An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md. Текущий продуктовый цикл из пяти побед отображает прогресс в результате. См. docs/qa/UX_WALLET_PROGRESS.md.",
-      "nextAction": "Define streak failure/reset milestone and test against current cycle without double credits F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "stage": "F1"
+      "nextAction": "Implement distinct event stage/overflow/key/ordered claim ledger, current milestone-only reset, preserve earned-unclaimed on loss and expiry; own event schedule and receipt policy. See docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md.",
+      "stage": "F1",
+      "comboStreakHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+        "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+        "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+        "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 3091,
+        "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained",
+        "work": "Implement distinct event stage/overflow/key/ordered claim ledger, current milestone-only reset, preserve earned-unclaimed on loss and expiry; own event schedule and receipt policy."
+      }
     },
     {
       "id": "hitapps-meta-regions",
@@ -706,8 +716,18 @@
       "id": "unico-win-and-task-streak",
       "status": "ROADMAPPED",
       "currentImplementation": "Existing daily streak/5-win milestone, not two standalone events An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md.",
-      "nextAction": "Compare separate reward ledgers; choose distinct milestones without duplicate grants F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "stage": "F1"
+      "nextAction": "Retain separate win/task tracks and existing candidate evidence bounds. Original publisher signer and device remain external; no new source-parity claim. See docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md.",
+      "stage": "F1",
+      "comboStreakHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+        "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+        "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+        "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 3091,
+        "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained",
+        "work": "Retain separate win/task tracks and existing candidate evidence bounds. Original publisher signer and device remain external; no new source-parity claim."
+      }
     },
     {
       "id": "ui-motion-audio-coin",
@@ -721,9 +741,19 @@
       "id": "hitapps-ingame-streak",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "src/domain/balance.ts STREAK + src/domain/engine.ts transfers; Hitapps specific coin thresholds analogous",
-      "nextAction": "Replay negative invalid-drop/recycle/Undo against original video and Android coin UX",
+      "nextAction": "Version source-like regular/reject/stock producer and reducer; cycle last tier; restore fill and stage snapshot on Undo, transactional provisional rewards and separate win-flow accounting; incomplete fact0/coin accumulation/refund evidence explicit. See docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md.",
       "stage": "D2",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "comboStreakHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+        "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+        "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+        "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 3091,
+        "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained",
+        "work": "Version source-like regular/reject/stock producer and reducer; cycle last tier; restore fill and stage snapshot on Undo, transactional provisional rewards and separate win-flow accounting; incomplete fact0/coin accumulation/refund evidence explicit."
+      }
     },
     {
       "id": "hitapps-gold-rush-event",
@@ -887,14 +917,24 @@
       "id": "azur-combo-streak",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Ordinary C8 fresh campaign attempts at L5+ use azur-combo-candidate-r1, thresholds 4..8 and coins 2/4/7/10/15. engine.ts constructs typed flags from own transfer/Joker-buffer/legalCommands/waste state; comboDisposition resets before advances. Transfer-edge dedupe across Undo and finite fifth-stage completion are own rules. Legacy streak preserved; no double series.",
-      "nextAction": "Trace original producers, wildcard/skip/recycle/Undo/invalid effects, stage-after-fifth and pending Moves grant/discard/commit. Compare own producer and preserve versioned saves; measure human economy. No automatic source-policy switch.",
+      "nextAction": "Version repeat last stage, narrow pre-draw skip and Joker producers, reward kinds 0..6, deferred Moves idempotent budget commit before win/defeat; keep r1 and adapted dedupe; no automatic economy change. See docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md.",
       "stage": "F2",
       "reason": "Native handler/reward track established; original producer and deferred Moves lifecycle still unknown. Product candidate implemented, not source accepted.",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
       "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/201",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-combo-series-original/README.md",
-      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
+      "comboStreakHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+        "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+        "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+        "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 3091,
+        "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained",
+        "work": "Version repeat last stage, narrow pre-draw skip and Joker producers, reward kinds 0..6, deferred Moves idempotent budget commit before win/defeat; keep r1 and adapted dedupe; no automatic economy change."
+      }
     },
     {
       "id": "azur-unlimited-moves-offer",
@@ -1571,5 +1611,14 @@
     "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
     "nativeRows": 1130,
     "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes"
+  },
+  "comboStreakHandoff": {
+    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+    "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+    "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+    "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+    "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "nativeRows": 3091,
+    "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained"
   }
 }

@@ -40,8 +40,8 @@
   "asOf": "2026-11-21",
   "sourcePin": {
     "repo": "DanilaH/asoc-solitair",
-    "sourceInventoryRef": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
-    "sourceInventoryBlob": "5187a337663c440931b2e15643dc329167a3758f",
+    "sourceInventoryRef": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+    "sourceInventoryBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
     "baselineContent8Head": "e092ba156eebb5ebc703d89e4e98bf657bbd6f14",
     "gameVersion": "0.20.3 Content8 preview",
     "runtimeKitCommit": "a9325265e87583a4872cf6a158e1e881a0d7508e"
@@ -169,7 +169,10 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "comboStreakDependencyBrief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+      "localEngineeringGate": "READY_LOCAL",
+      "remainingAcceptance": "Source runtime/physical Android, economy policy and Unico trusted source remain bounded; do not block Hitapps/AZUR offline engineering or activate automatically."
     },
     {
       "id": "P05",
@@ -816,7 +819,10 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "comboStreakDependencyBrief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+      "localEngineeringGate": "READY_LOCAL",
+      "remainingAcceptance": "Source runtime/physical Android, economy policy and Unico trusted source remain bounded; do not block Hitapps/AZUR offline engineering or activate automatically."
     },
     {
       "id": "P31",
@@ -1191,5 +1197,14 @@
     "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
     "nativeRows": 1130,
     "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes"
+  },
+  "comboStreakHandoff": {
+    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+    "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+    "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+    "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+    "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "nativeRows": 3091,
+    "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained"
   }
 }

@@ -40,7 +40,7 @@
   "asOf": "2026-11-21",
   "sourcePin": {
     "repo": "DanilaH/asoc-solitair",
-    "sourceInventoryRef": "055587b0258bfbaf86cdfb725eda4764d5fad985",
+    "sourceInventoryRef": "41e292bd8322cc76b693273d4230e061b6b3aa49",
     "sourceInventoryBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
     "baselineContent8Head": "e092ba156eebb5ebc703d89e4e98bf657bbd6f14",
     "gameVersion": "0.20.3 Content8 preview",
@@ -1199,9 +1199,9 @@
     "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes"
   },
   "comboStreakHandoff": {
-    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/055587b0258bfbaf86cdfb725eda4764d5fad985/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
     "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
-    "sourcePin": "055587b0258bfbaf86cdfb725eda4764d5fad985",
+    "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
     "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
     "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
     "nativeRows": 3091,

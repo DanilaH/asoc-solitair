@@ -1,6 +1,6 @@
 # P30 · Историческая офлайн-проба серий — superseded for source semantics
 
-**Актуальное ТЗ:** [P04/P30 Hitapps/AZUR](HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md), [native evidence](https://github.com/DanilaH/mini-games-kit/blob/055587b0258bfbaf86cdfb725eda4764d5fad985/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md). Старый тестовый контракт ниже сохранён для обратной совместимости; не переносить его упрощённые reset rules в новую source-shaped policy. Hitapps/AZUR локальная инженерия READY_LOCAL; Unico provenance и physical/runtime acceptance остаются отдельными gates. Исходная очередь и release status не повышены.
+**Актуальное ТЗ:** [P04/P30 Hitapps/AZUR](HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md), [native evidence](https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md). Старый тестовый контракт ниже сохранён для обратной совместимости; не переносить его упрощённые reset rules в новую source-shaped policy. Hitapps/AZUR локальная инженерия READY_LOCAL; Unico provenance и physical/runtime acceptance остаются отдельными gates. Исходная очередь и release status не повышены.
 
 # P30 · Раздельные серии побед, задач и переносов
 

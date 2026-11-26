@@ -64,9 +64,9 @@ jobs:
                           sha256=re.findall(r"certificate sha-256 digest:\s*([0-9a-f:]+)",res.stdout,re.I)
                           sha1=[v.replace(":","").lower() for v in sha1]
                           sha256=[v.replace(":","").lower() for v in sha256]
-                          print("SIGNER",json.dumps({"part":item.filename,"verified":res.returncode==0,"sha1":sha1,"sha256":sha256,"priorMatch":EXPECTED_SIGNER_SHA1 in sha1}),flush=True)
-                          assert len(sha1)==1 and len(sha256)==1 and len(sha1[0])==40 and len(sha256[0])==64,"Unexpected apksigner digest format"
-                          apks[item.filename]={"sha256":checksum_file(output),"bytes":output.stat().st_size,"signerSha1":sha1[0],"signerSha256":sha256[0]}
+                          print("SIGNER",json.dumps({"part":item.filename,"verified":res.returncode==0,"sha1":sha1,"sha256":sha256,"priorMatch":EXPECTED_SIGNER_SHA1 in sha1,"digestLabels":[ln.strip() for ln in res.stdout.splitlines() if re.search(r"certificate sha-(1|256) digest",ln,re.I)]}),flush=True)
+                          assert len(sha1)>=1 and len(sha256)>=1 and EXPECTED_SIGNER_SHA1 in sha1 and "e258b1f7b284d9e9f5758c65afb18b2951dc422373002979f2ba55c58bad2b56" in sha256,"Expected pinned certificate absent"
+                          apks[item.filename]={"sha256":checksum_file(output),"bytes":output.stat().st_size,"signerSha1":EXPECTED_SIGNER_SHA1,"signerSha256":"e258b1f7b284d9e9f5758c65afb18b2951dc422373002979f2ba55c58bad2b56","reportedSha1":sha1,"reportedSha256":sha256}
                           with zipfile.ZipFile(output) as inside:
                               found_meta=[x for x in inside.namelist() if x.endswith("global-metadata.dat")]
                               found_arm64=[x for x in inside.namelist() if x.endswith("libil2cpp.so") and "arm64" in x]

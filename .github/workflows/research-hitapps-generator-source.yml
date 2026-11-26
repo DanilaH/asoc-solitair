@@ -164,7 +164,7 @@ jobs:
            u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP)
            pages=set()
            for a,b in ranges:
-            for p in range(a&~4095,((b+4095)//4096)*4096):
+            for p in range(a&~4095,((b+4095)//4096)*4096,4096):
              if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
            return u
           def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
@@ -198,7 +198,8 @@ jobs:
             if mode=='play' and pc==0x1c7dfe0:uc.reg_write(UC_ARM_REG_PC,0x1c7e000)
             elif mode=='home' and pc==0x1c7e114:uc.reg_write(UC_ARM_REG_PC,0x1c7e134)
             elif mode=='play' and pc==0x1c7e01c:uc.reg_write(UC_ARM_REG_PC,0x1c7e03c)
-            elif mode=='home' and pc==0x1c7e150:uc.reg_write(UC_ARM_REG_PC,0x1c7e174)
+            elif mode=='home' and pc==0x1c7e150:
+              uc.reg_write(UC_ARM_REG_R5,17);uc.reg_write(UC_ARM_REG_PC,0x1c7e174)
             elif pc in helpers:
              if pc==0x2b4c7bc:v=CARD
              elif pc==0x1c8eae4:v=hammer;calls.append('hammer')

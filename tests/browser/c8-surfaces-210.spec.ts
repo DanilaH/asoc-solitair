@@ -84,6 +84,13 @@ for (const [width, height, reserve] of [[320, 480, 90], [360, 640, 0]] as const)
     await capture(page, info, '#app', 'home-parked-empty-lives', '#home-play');
     await open(page, '#campaign-lives-open', '#campaign-lives');
     await capture(page, info, '#campaign-lives', 'lives-zero', '#campaign-lives .close');
+    const separation = await page.locator('#campaign-lives-title').evaluate(title => {
+      const text = document.createRange();
+      text.selectNodeContents(title);
+      const wallet = document.querySelector('#lives-wallet-anchor #wallet-open')!.getBoundingClientRect();
+      return wallet.left - text.getBoundingClientRect().right;
+    });
+    expect(separation).toBeGreaterThanOrEqual(2);
     await open(page, '#campaign-lives #wallet-open', '#coins-dialog');
     await capture(page, info, '#coins-dialog', 'coins-from-lives', '#coins-return');
     await page.locator('#coins-return').tap();

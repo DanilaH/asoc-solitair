@@ -279,12 +279,13 @@ html[data-casual] #app>.victory-particles{position:fixed;z-index:14;width:0;heig
 #app[data-casual] .wallet,#app[data-casual][data-screen=home] .wallet { background:#104a56;color:#fff7e5 }
 #app[data-casual] .wallet::before { display:none }
 [data-casual] .wallet-plus { position:static;width:auto;height:16px;line-height:16px;order:1 }
-[data-casual] #campaign-lives .sheet-heading { display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:6px;row-gap:0 }
+[data-casual] #campaign-lives .sheet-heading { display:grid;grid-template-columns:minmax(0,1fr) auto 47px;align-items:center;column-gap:5px;row-gap:0 }
 [data-casual] #campaign-lives .sheet-heading .casual-dialog-title { grid-column:1;grid-row:1;gap:5px }
-[data-casual] #campaign-lives .sheet-heading h2 { margin:5px 0 }
+[data-casual] #campaign-lives .sheet-heading h2 { margin:5px 0;font-size:clamp(17px,5.5vw,25px) }
+[data-casual] #campaign-lives .sheet-heading .casual-dialog-title img { width:23px;height:23px }
 [data-casual] #campaign-lives #lives-wallet-anchor { grid-column:2;grid-row:1;justify-self:end;margin:0 }
 [data-casual] #campaign-lives .sheet-heading>:is(#campaign-lives-status,#campaign-lives-timer,#campaign-life-recovery) { grid-column:1 / -1;margin-block:5px }
-[data-casual] #campaign-lives .sheet-heading { padding-inline-end:50px }
+[data-casual] #campaign-lives .sheet-heading { padding-inline-end:0 }
 [data-casual] #campaign-lives-status { width:min(252px,100%) }
 [data-casual] #daily-tasks-week-reset time { margin-inline-start:.6ch;font-variant-numeric:tabular-nums;font-weight:850 }
 @media(max-height:520px) {
@@ -292,3 +293,4 @@ html[data-casual] #app>.victory-particles{position:fixed;z-index:14;width:0;heig
   [data-casual] .casual-tray { flex:0 1 auto;min-height:0;overflow-y:auto }
   [data-casual] .casual-tray #win-cycle-open { min-height:39px }
 }
+@media(max-width:350px) { [data-casual] #campaign-lives .sheet-heading .casual-dialog-title img { display:none } }

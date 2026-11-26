@@ -1,3 +1,5 @@
+> **26.11 source handoff:** [актуальное ТЗ](HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md) · [original evidence](https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md). Historical toy model below is retained, not original parity. New event implementation is locally actionable with explicit own config; exact runtime and owner/physical activation not claimed. Other package tasks untouched.
+
 # P32 · Регионы и четыре отдельные механики событий
 
 В [сверке F1–F3](../qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md) регионы имеют каталог и порог уровня/звёзд. Для Cascade, Digging, LuckyWheel и EndlessTreasure полноценная исполняемая логика оригинала остаётся открытой. `tools/content/region-event-trials.ts` испытывает пять контрактов отдельно.

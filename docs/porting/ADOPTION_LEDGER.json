@@ -179,9 +179,9 @@
   },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
-  "sourceInventoryRef": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+  "sourceInventoryRef": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
@@ -604,27 +604,49 @@
       "id": "hitapps-weekend-race",
       "status": "ROADMAPPED",
       "currentImplementation": "MVP U5 leaves new ordinary Weekend Race creation/progression off, while exposing completed unclaimed records already saved under hitapps-weekend-race through a strict claim-only allowlist. Claims use the original event key, reward ID and frozen amount, regardless of age; no new event definition, competition or arbitrary record is activated. Existing P31 isolated calendar/product model remains.",
-      "nextAction": "Complete final-branch browser/physical old-ready, duplicate/failure/reload and last-claim acceptance. Continue the separate full source-to-product bot-race, honest simulator presentation and original calendar/live-config research; this compatibility path neither completes source parity nor excludes the event.",
+      "nextAction": "Replace fixed toy interval with persisted generated interval sequence and cumulative clock progress, truthful bots, stage rank/claims; 340 native rows matched, exact comparator/shuffle and completion/claim partial. See docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md. Preserve legacy claims and owner release gate.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "liveOpsEventHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+        "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+        "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+        "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 388,
+        "modelAssertions": 41753,
+        "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation",
+        "work": "Replace fixed toy interval with persisted generated interval sequence and cumulative clock progress, truthful bots, stage rank/claims; 340 native rows matched, exact comparator/shuffle and completion/claim partial."
+      }
     },
     {
       "id": "hitapps-lava-quest",
       "status": "ROADMAPPED",
       "currentImplementation": "MVP U5 leaves new ordinary Lava Quest creation/progression off, while allowing only already completed unclaimed hitapps-lava-quest rewards through the saved event key/ID/frozen prize. Incomplete/claimed records do not create buttons or new progress. Existing P31 isolated first-attempt/calendar model remains in the project.",
-      "nextAction": "Complete final-branch browser/physical historical-claim failure/reload acceptance. Continue full first-attempt multi-win event, simulator presentation/rewards and original calendar/live-config evidence under the retained source roadmap; claim-only compatibility is not new LiveOps activation.",
+      "nextAction": "Implement finalist target, memoized feasible dropout path, seed lifecycle, loss cooldown, floor share and reward claims. 48 seed rows matched; bounds/split/source full run static/model only. See docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md. Preserve legacy claims and owner release gate.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "liveOpsEventHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+        "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+        "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+        "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 388,
+        "modelAssertions": 41753,
+        "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation",
+        "work": "Implement finalist target, memoized feasible dropout path, seed lifecycle, loss cooldown, floor share and reward claims. 48 seed rows matched; bounds/split/source full run static/model only."
+      }
     },
     {
       "id": "hitapps-daily-rewards",
@@ -759,7 +781,7 @@
       "id": "hitapps-gold-rush-event",
       "status": "ROADMAPPED",
       "currentImplementation": "MVP U5 exposes only saved completed unclaimed hitapps-gold-rush-event rewards through the same strict legacy allowlist and original frozen claim contract. Fresh ordinary profiles receive no new event/progress. GoldenCards insertion remains a separate mechanic; the existing P31 isolated event model is preserved.",
-      "nextAction": "Keep P31 event independent from P13 board lifecycle; use health/activation/count and idempotent own reward receipts with explicit policy. Remaining Gold Rush schedule/payout unknown, not an excuse to omit event. Preserve existing archive. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
+      "nextAction": "Integrate P13 board activation with shared Cascade provisional/final event tokens and stage claims; difficulty and first-gold configuration, not direct coin grant. Source multiplier/settlement still partial. See docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md. Preserve legacy claims and owner release gate.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
@@ -773,6 +795,17 @@
         "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
         "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
         "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      },
+      "liveOpsEventHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+        "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+        "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+        "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 388,
+        "modelAssertions": 41753,
+        "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation",
+        "work": "Integrate P13 board activation with shared Cascade provisional/final event tokens and stage claims; difficulty and first-gold configuration, not direct coin grant. Source multiplier/settlement still partial."
       }
     },
     {
@@ -792,9 +825,20 @@
       "id": "hitapps-cascade-events",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No cascade scheduler; general meta only P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Trace native source config/calls to derive event sequencing before porting a generic event lifecycle F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "nextAction": "Implement shared one-active event scheduler, frozen weekly config, distinct category/gold producers, per-attempt provisional/final token flow, overflow and pending claims. Static/model, exact boundaries and lifecycle not fully executed. See docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md. Preserve legacy claims and owner release gate.",
       "stage": "F3",
-      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed",
+      "liveOpsEventHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+        "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+        "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+        "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 388,
+        "modelAssertions": 41753,
+        "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation",
+        "work": "Implement shared one-active event scheduler, frozen weekly config, distinct category/gold producers, per-attempt provisional/final token flow, overflow and pending claims. Static/model, exact boundaries and lifecycle not fully executed."
+      }
     },
     {
       "id": "hitapps-digging-event",
@@ -1620,5 +1664,15 @@
     "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
     "nativeRows": 3091,
     "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained"
+  },
+  "liveOpsEventHandoff": {
+    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+    "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+    "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+    "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+    "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "nativeRows": 388,
+    "modelAssertions": 41753,
+    "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation"
   }
 }

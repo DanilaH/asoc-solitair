@@ -137,56 +137,7 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # More precise AOT binding: full-body comparison for producer-specific callees.
-          targets=[0x1c8bdf8,0x1c9105c,0x1c8d978,0x1c8dca4,0x1c8afe8,0x2b4c824]
-          for a in targets:
-           matches=[]
-           for b,rs in entries.items():
-            if not any(r['image']=='CoreGameplay.dll' for r in rs) or a==b:continue
-            end=starts[bisect.bisect_right(starts,b)]
-            count=min((end-b)//4,1000)
-            if count<6 or sum(equivalent(a+4*i,b+4*i) for i in range(min(count,20)))<min(count,20)-2:continue
-            tails=[i for i in range(count) if word(b+4*i)==0xe12fff1e or word(b+4*i)&0xffff8000==0xe8bd8000]
-            n=tails[-1]+1 if tails else count
-            diff=[i*4 for i in range(n) if not equivalent(a+4*i,b+4*i)]
-            if len(diff)<=max(3,n//10):matches.append([rs[0]['type']+'.'+rs[0]['method'],hex(b),n,len(diff),diff[:8]])
-           print('BIND7',hex(a),json.dumps(sorted(matches,key=lambda r:r[3])[:7]))
-          # Recover field names and offsets for all needed source event and state structures.
-          fieldtab=114085648
-          assert word(0x6bcb3d4)==TS//88 and word(0x6bcb3d8)==fieldtab
-          FD,FDS=struct.unpack_from('<II',md,64);DV,DVS=struct.unpack_from('<II',md,72)
-          defs={ix:(ty,di) for ix,ty,di in (struct.unpack_from('<iii',md,FD+i) for i in range(0,FDS,12))}
-          row=images['CoreGameplay.dll']
-          for i in range(row[2],row[2]+row[3]):
-           tr=struct.unpack_from('<22I',md,T+i*88);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-           if not re.search(r'(Logical|State|FactType|EventType|RequestType|PlacementCheck|CardFactData|CardRequestData|MoveData|CardChanged|MoveEvent|PossibleMovesSystem|MoveEntity|SimulationWorld|CardDto|CardEntity|ContainerEntity|ContainerState)',tn):continue
-           count=tr[17]&65535
-           if not count or count>70:continue
-           try: offsets=struct.unpack_from('<%di'%count,e,off(word(fieldtab+4*i),4*count))
-           except (ValueError,struct.error):continue
-           data=[]
-           for k in range(count):
-            ix=tr[8]+k;fn=name(struct.unpack_from('<I',md,F+ix*12)[0]);dv=defs.get(ix)
-            data.append([fn,offsets[k], None if not dv or not 0<=dv[1]<DVS else [dv[0],md[DV+dv[1]:DV+dv[1]+4].hex()]])
-           print('FIELDS7',json.dumps({'type':tn,'fields':data},separators=(',',':')))
-          # Select dataflow anchors to recover what each loop actually iterates.
-          ranges=[
-           ('home-play-source-list',0x1d0299c,0x1d02a78),
-           ('stock-waste-scan',0x1d03198,0x1d03254),
-           ('stock-member-loop',0x1d03488,0x1d03514),
-           ('stock-target-array',0x1d03568,0x1d03690),
-           ('available-waste-source',0x1d037a0,0x1d03834),
-           ('available-waste-append',0x1d038b4,0x1d03924),
-           ('available-tableau-array',0x1d03918,0x1d03984),
-           ('dirty-event-type',0x1d026cc,0x1d02754),
-           ('pair-initial-return',0x1d3b200,0x1d3b248),
-           ('pair-after-category',0x1d3b424,0x1d3b450)]
-          for label,a,b in ranges:
-           facts=[f for pc in range(a,b,4) if (f:=fact(pc))]
-           print('BLOCK7',json.dumps({'label':label,'facts':facts},separators=(',',':')))
-          print('PASS_SHA_PINNED_PRODUCER7')
-          print('STATIC_ONLY_NO_RUNTIME_OR_REMOTE')
-          PY          # Native rule predicates and precise list-order anchors.
+          # Native rule predicates and precise list-order anchors.
           fieldtab=114085648
           assert word(0x6bcb3d4)==TS//88 and word(0x6bcb3d8)==fieldtab
           FD,FDS=struct.unpack_from('<II',md,64);DV,DVS=struct.unpack_from('<II',md,72)

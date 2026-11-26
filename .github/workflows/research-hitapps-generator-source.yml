@@ -138,76 +138,68 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # Bind ARM veneers to actual IL2CPP registrations. Leaf execution stays synthetic.
+          # Recover exact feature-specific field selectors and predicate helper identities.
           from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
-          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
-          from unicorn.arm_const import *
-          dis=Cs(CS_ARCH_ARM,CS_MODE_ARM)
+          from capstone.arm import ARM_OP_MEM,ARM_OP_IMM,ARM_OP_REG
+          dis=Cs(CS_ARCH_ARM,CS_MODE_ARM);dis.detail=True
           def ins(a,b):return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          def imm(w):return ((w>>4)&0xf000)|(w&0xfff)
-          targets=[0x1b78234,0x1b78244,0x2b4c824]
-          resolved={}
+          def method(n):
+           return [(a,r) for a,rs in entries.items() for r in rs if n in r['type']+'.'+r['method']]
+          # Numeric field references, loop guards and call targets (not entire bodies).
+          chosen=['LevelDataHandler.ApplyLockers','LevelDataHandler.ApplyFrozenCards','LevelDataHandler.ApplyBoundCards','LevelDataHandler.<ApplyBoundCards>g__','LevelDataHandler.DistributePuzzleCards','LevelDataHandler.<DistributePuzzleCards>','LevelDataHandler.<>c__DisplayClass','FrozenCardOperations.IsMeltableRightNow','FrozenCardOperations.CanChangeThisMove','BoundOperations.EvaluateCutTarget','BoundOperations.CanChooseForCut','BoundOperations.CanCut','BoundOperations.CanUnbind','StarterBoosterLevelOperations.AddStarterBoosterToStock','GoldenCardLevelOperations.GenerateGoldenCards']
+          picks=[]
+          for a,rs in sorted(entries.items()):
+           r=rs[0];nm=r['type']+'.'+r['method']
+           if not any(q in nm for q in chosen):continue
+           end=starts[bisect.bisect_right(starts,a)]
+           if end-a>12000:continue
+           print('METHOD12',json.dumps({'name':nm,'rva':hex(a),'end':hex(end),'parameters':r['parameters']},separators=(',',':')))
+           picks.append((a,end,nm))
+          # Decode nested field-related closures; report calls plus compares on small helpers.
+          for a,b,nm in picks:
+           if any(q in nm for q in ('DisplayClass','<>c','g__','CanChooseForCut','CanCut','CanUnbind','IsMeltableRightNow','CanChangeThisMove')):
+            ar=[]
+            for x in ins(a,b):
+             m=x.mnemonic;p=x.op_str
+             if m.startswith(('cmp','tst','teq','cmn','b')) and not m.startswith(('bic','bfc','bfi')) or (m.startswith(('ldr','str')) and any(o.type==ARM_OP_MEM and o.mem.disp in (8,12,16,20,24,28,32,36,40,44,48,52,53,54,56,57,58,59,60,62) and x.reg_name(o.mem.base) not in ('pc','sp') for o in x.operands)):
+              if m=='bl' and x.operands and x.operands[0].type==ARM_OP_IMM:
+               dst=x.operands[0].imm
+               if dst in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):continue
+               ar.append([hex(x.address),m,p,[rr['type']+'.'+rr['method'] for rr in entries.get(dst,[])]])
+              else:ar.append([hex(x.address),m,p])
+            if len(ar)<=150:print('HELPER12',json.dumps({'name':nm,'facts':ar},separators=(',',':')))
+           else:
+            calls=[]
+            # Focus on direct edges and small source CardDto stores.
+            stores=[];comparisons=[]
+            for x in ins(a,b):
+             if x.mnemonic=='bl' and x.operands and x.operands[0].type==ARM_OP_IMM:
+              dst=x.operands[0].imm
+              if dst not in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):
+               calls.append([hex(x.address),hex(dst),[rr['type']+'.'+rr['method'] for rr in entries.get(dst,[])]])
+             if x.mnemonic.startswith('str') and any(o.type==ARM_OP_MEM and o.mem.disp in (36,40,44,48,52,53,54,56,57,58,59,60,62) and x.reg_name(o.mem.base) not in ('pc','sp') for o in x.operands):
+              stores.append([hex(x.address),x.mnemonic,x.op_str])
+             if x.mnemonic in ('cmp','tst','cmn') and x.operands and x.operands[-1].type==ARM_OP_IMM and x.operands[-1].imm!=0:comparisons.append([hex(x.address),x.mnemonic,x.op_str])
+            print('BODY12',json.dumps({'name':nm,'calls':calls[:95],'writes':stores,'compares':comparisons[:60]},separators=(',',':')))
+          # Compare helper copies against real registered bodies; PC-relative relocation
+          # classification alone is not evidence of constant payload equality.
+          targets=[0x1c8bf80,0x1c8e518,0x1c8e64c,0x1c8e738,0x1c92488]
           for a in targets:
-           w,x,y,z=[word(a+4*i) for i in range(4)]
-           if w&0xfff0f000==0xe300c000 and x&0xfff0f000==0xe340c000 and y==0xe08cc00f and z==0xe12fff1c:
-            resolved[a]=(a+16+imm(w)+(imm(x)<<16))&0xffffffff
-           elif w&0xff000000==0xea000000:
-            resolved[a]=a+8+4*(((w&0xffffff)^0x800000)-0x800000)
-           print('VENEER11',hex(a),hex(resolved[a]) if a in resolved else 'UNKNOWN',[[t.mnemonic,t.op_str] for t in ins(a,a+16)])
-          assert resolved.get(0x2b4c824)==0x5bea37c
-          for im,row in images.items():
-           if im not in ('mscorlib.dll','System.dll','CoreGameplay.dll'):continue
-           pos=e.find(im.encode()+b'\0')
-           if pos<0:continue
-           marker=struct.pack('<I',va(pos));found=[]
-           for fo,v,size,_ in seg[1:]:
-            mem=e[fo:fo+size];j=-1
-            while (j:=mem.find(marker,j+1))>=0:
-             if j+12>size:continue
-             n,p=struct.unpack_from('<II',mem,j+4)
-             if not 0<n<60000:continue
-             try: ptrs=struct.unpack_from('<%dI'%n,e,off(p,n*4))
-             except (ValueError,struct.error):continue
-             if all(a==0 or 0x148b0b0<=a<0x6a167d0 for a in ptrs):found.append((n,ptrs))
-           if len(found)!=1:continue
-           n,ptrs=found[0]
-           for t in range(row[2],row[2]+row[3]):
-            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            for i in range(tr[9],tr[9]+(tr[16]&65535)):
-             mr=struct.unpack_from('<7I4H',md,M+36*i);rid=mr[6]&0xffffff
-             if 0<rid<=n and ptrs[rid-1] in resolved.values():print('MATH11',json.dumps({'image':im,'owner':tn,'method':name(mr[0]),'rva':hex(ptrs[rid-1]),'params':mr[-1]}))
-          # Prove arguments at the exact caller sites, not just the veneer target.
-          for label,a,b in [('first-pair-distance',0x1d3b3a4,0x1d3b3b8),('second-pair-distance',0x1d3b5ec,0x1d3b604),('easy-target-penalty',0x22fe384,0x22fe398),('root-category-ids',0x1c7e700,0x1c7e714),('root-selected-id',0x1c7e75c,0x1c7e770),('root-initial-id',0x1c7e564,0x1c7e570),('root-top-id',0x1c7e5b4,0x1c7e5dc),('root-prior-id',0x1c7e638,0x1c7e660),('root-adjacent-id',0x1c7e69c,0x1c7e6c8),('cut-lower-state',0x1d03018,0x1d0302c)]:
-           print('ARGS11',json.dumps({'label':label,'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in ins(a,b)]}))
-          # Run bounded local native branches with injected resolved entity facts, and
-          # compare against a clean-room formula (not a full card-move replay).
-          data=0x10000000
-          def partial(a,b,regs,memory,stop):
-           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);page=a&~4095
-           u.mem_map(page,((b-page+4095)//4096)*4096);u.mem_write(a,e[off(a,b-a):off(a,b-a)+b-a])
-           u.mem_map(data,0x20000)
-           for loc,raw in memory:u.mem_write(loc,raw)
-           for reg,v in regs.items():u.reg_write(reg,v&0xffffffff)
-           trace=[]
-           def guard(uc,pc,size,user):
-            if pc in stop:trace.append(pc);uc.emu_stop()
-            elif not a<=pc<b:raise RuntimeError('unexpected branch '+hex(pc))
-           u.hook_add(UC_HOOK_CODE,guard)
-           u.emu_start(a,b,count=80)
-           assert len(trace)==1,trace
-           return trace[0]
-          count=0
-          for same in (0,1):
-           for bound in (0,1,2):
-            pc=partial(0x1c7e740,0x1c7e780,{UC_ARM_REG_R0:same,UC_ARM_REG_R5:bound,UC_ARM_REG_R6:data},[(data,bytes(23)+bytes([bound]))],{0x1c7e75c,0x1c7e77c})
-            expected=(same or bound==2) and bound!=1
-            assert (pc==0x1c7e75c)==bool(expected),(same,bound,hex(pc))
-            count+=1
-          for bound in (0,1,2):
-           for flags in (0,1,2,4,16,32,64,65,80,100):
-            pc=partial(0x1d03018,0x1d03038,{UC_ARM_REG_R0:data},[(data,bytes(16)+struct.pack('<H',flags)+bytes(5)+bytes([bound]))],{0x1d03034,0x1d0302c})
-            assert (pc==0x1d03034)==(bound==2 and not(flags&1)),(bound,flags,hex(pc))
-            count+=1
-          print('BRANCH_TEST11',count,'PASS')
-          print('PASS_SHA_PINNED_MATH_AND_RULE_BRANCHES11')
+           found=[]
+           for b,rs in entries.items():
+            if a==b or not any(r['image']=='CoreGameplay.dll' for r in rs):continue
+            end=starts[bisect.bisect_right(starts,b)]
+            count=min((end-b)//4,1300)
+            if count<6 or sum(equivalent(a+4*i,b+4*i) for i in range(min(count,24)))<min(count,24)-3:continue
+            tails=[i for i in range(count) if word(b+4*i)==0xe12fff1e or word(b+4*i)&0xffff8000==0xe8bd8000]
+            n=tails[-1]+1 if tails else count
+            diff=[i*4 for i in range(n) if not equivalent(a+4*i,b+4*i)]
+            if len(diff)<=max(4,n//8):found.append([rs[0]['type']+'.'+rs[0]['method'],hex(b),n,len(diff),diff[:12]])
+           print('BIND12',hex(a),json.dumps(sorted(found,key=lambda z:z[3])[:5]))
+          # Identify shipped config sources without exporting contents or protected data.
+          with zipfile.ZipFile(sys.argv[1]) as z:
+           with zipfile.ZipFile(io.BytesIO(z.read('com.hitappsgames.wordsolitaire.apk'))) as base:
+            names=[n for n in base.namelist() if re.search(r'(^|/)([^/]*(config|segmentation|default|pattern|remote)[^/]*)(/|$)',n,re.I)]
+            print('PACKAGED_CONFIG_PATHS12',json.dumps([n for n in names if n.startswith('assets/')][:120]))
+          print('PASS_SHA_PINNED_SPECIAL_INVENTORY12')
           PY

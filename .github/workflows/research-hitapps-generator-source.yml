@@ -242,7 +242,7 @@ jobs:
            args(u,W,7,0)
            run(u,a,STOP,{0x1c9b908:0x1c9b94c,0x1c9b980:0x1c9b9a4,0x1c9b9f4:0x1c9ba0c,0x1c9ba24:0x1c9ba48},{0x2b4c7b8:E,0x3b40e44:11,0x2b4c7bc:C,0x1c92488:locked,0x1c8ef18:bound,0x1c95384:lockmatch,0x1c95458:match})
            got=rr(u,UC_ARM_REG_R0)
-           expect=int(not blocked and n>0 and (match if typ==3 else (typ==2 and kind!=2 and not hidden and (lockmatch if locked else (kind!=0 and not frozen and bound!=3 and match)))))
+           expect=int(not blocked and n>0 and (match if typ==3 else (typ==2 and kind!=2 and not hidden and (locked or kind!=0 or frozen) and (lockmatch if locked else (bound==3 or frozen or match)))))
            assert got==expect,(typ,blocked,n,kind,hidden,frozen,locked,bound,match,lockmatch,got,expect)
            magnet.append([typ,blocked,n,kind,hidden,frozen,locked,bound,match,lockmatch,got])
           print('MAGNET28',json.dumps(magnet,separators=(',',':')))

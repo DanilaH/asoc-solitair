@@ -138,63 +138,80 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # Resolve spatial distance, source pattern data, and field-write decisions.
+          # Execute coordinate selectors and native field-write slices, plus
+          # resolve remaining special-distribution numeric helpers.
+          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
+          from unicorn.arm_const import *
           from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
-          from capstone.arm import ARM_OP_IMM,ARM_OP_MEM
-          dis=Cs(CS_ARCH_ARM,CS_MODE_ARM);dis.detail=True
+          import itertools,collections
+          dis=Cs(CS_ARCH_ARM,CS_MODE_ARM)
           def ins(a,b):return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          def rec(label,a,b):
+          B=0x11000000;STOP=B+0xf0000;D=B+0x1000;C=B+0x2000;PAT=B+0x3000;INNER=B+0x4000
+          def read32(u,p):return struct.unpack('<I',bytes(u.mem_read(p,4)))[0]
+          def write32(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
+          def dto(kind=1,container=2,col=0,pos=0,flags=80):
+           buf=bytearray(80);buf[52]=kind;buf[53]=container
+           struct.pack_into('<ii',buf,36,pos,col);struct.pack_into('<H',buf,54,flags)
+           return bytes(buf)
+          def emu(a,b,registers,objects,stop=None,return_data=()):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM)
+           page=a&~4095;end=((b+4095)//4096)*4096
+           u.mem_map(page,end-page);u.mem_write(a,e[off(a,b-a):off(a,b-a)+b-a])
+           u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP)
+           for ptr,raw in objects:u.mem_write(ptr,raw)
+           for reg,v in registers.items():u.reg_write(reg,v&0xffffffff)
+           trace=[]
+           def hook(uc,pc,size,user):
+            if stop and pc in stop:trace.append(pc);uc.emu_stop()
+            elif not a<=pc<b:raise RuntimeError('unexpected '+hex(pc))
+           u.hook_add(UC_HOOK_CODE,hook)
+           u.emu_start(a,STOP if stop is None else b,count=400)
+           if stop:assert len(trace)==1,trace
+           else:assert u.reg_read(UC_ARM_REG_PC)==STOP
+           return u.reg_read(UC_ARM_REG_R0),[bytes(u.mem_read(p,n)) for p,n in return_data],trace
+          counts=collections.Counter()
+          for selector,a,b in [('locker',0x1d3bcac,0x1d3bd3c),('key',0x1d3bd40,0x1d3bdb0),('ice',0x1d3bdb4,0x1d3be24),('bound',0x1d3be28,0x1d3be78)]:
+           # Exact entry found through method registration, not guess by nearby address.
+           method=[r for r in entries.get(a,[]) if '<Apply' in r['method']]
+           assert method,(selector,hex(a))
+           print('SELECTOR15',selector,method[0]['method'],hex(a))
+           for container,col,pos,tc,tp in itertools.product((0,1,2,3),range(3),range(3),(0,1),(0,1)):
+            data=dto(container=container,col=col,pos=pos)
+            c=bytearray(24);p=bytearray(24);inner=bytearray(24)
+            if selector=='bound':struct.pack_into('<ii',c,8,tc,tp)
+            elif selector=='ice':
+             struct.pack_into('<I',c,8,PAT);struct.pack_into('<iii',p,8,3,tc,tp)
+            elif selector=='key':
+             struct.pack_into('<I',c,8,PAT);struct.pack_into('<iii',p,8,2,tp,tc)
+            else:
+             struct.pack_into('<I',c,8,PAT);struct.pack_into('<I',p,12,INNER);struct.pack_into('<iii',inner,8,2,tp,tc)
+            res,_,_=emu(a,b,{UC_ARM_REG_R0:C,UC_ARM_REG_R1:D,UC_ARM_REG_R2:0},[(D,data),(C,bytes(c)),(PAT,bytes(p)),(INNER,bytes(inner))])
+            assert bool(res)==(container==2 and col==tc and pos==tp),(selector,container,col,pos,tc,tp,res)
+            counts[selector]+=1
+          print('SELECTOR_TEST15',json.dumps(dict(counts)))
+          # Native exact layer validity slice. Earlier null tests resolve valid
+          # objects; r5 holds pattern, r4 closure; verify the actual register roles.
+          for label,a,b in [('frozen-layer-input',0x1d37f50,0x1d37fb4),('frozen-layer-constant',0x1d37f88,0x1d37fb0),('frozen-commit-tail',0x1d38128,0x1d3815c),('locker-init-counts',0x1d37468,0x1d37580),('locker-initial-loop',0x1d3769c,0x1d377b8),('locker-check-before-commit',0x1d379a0,0x1d37aa8),('puzzle-choose-amount',0x1d3acec,0x1d3ad70),('puzzle-swap-input',0x1d3ae6c,0x1d3af24)]:
            rows=[]
            for x in ins(a,b):
             m=x.mnemonic;p=x.op_str
-            if m.startswith(('cmp','cmn','tst','teq','b','v')) or m.startswith(('ldr','str','mov','add','sub','rsb','mul','mla','lsl','lsr','asr','and','orr','bic','eor','ux','sx')) and ('#' in p or m.startswith(('mov','add','sub','rsb','mul','mla','orr','and','eor'))):
-             if m=='bl' and x.operands[0].imm in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):continue
+            if m.startswith(('cmp','tst','b','mov','ldr','str','sub','add','rsb','mul','and','orr','bic','ux','sx','clz','lsr')) and not ('pc,' in p and m.startswith(('ldr','add'))):
+             if m=='bl' and p in ('#0x1a2677c','#0x1a26a2c','#0x1a26a30','#0x1a268f0','#0x1a26718','#0x1a268f4','#0x1a26a20'):continue
              rows.append([hex(x.address),m,p])
-           print('FACT14',json.dumps({'label':label,'facts':rows},separators=(',',':')))
-          for label,a,b in [
-           ('nearest-score',0x1d3baa0,0x1d3bb50),
-           ('balance-initial',0x1d390d8,0x1d391bc),
-           ('balance-pair-overflow',0x1d39278,0x1d392e0),
-           ('balance-scissor-overflow',0x1d391e0,0x1d39264),
-           ('frozen-entry',0x1d37e28,0x1d37e60),
-           ('frozen-pattern-field',0x1d37ef0,0x1d37f58),
-           ('frozen-position-gate',0x1d37f80,0x1d38058),
-           ('frozen-commit-fields',0x1d380c4,0x1d3816c),
-           ('frozen-failure-return',0x1d38200,0x1d382c8),
-           ('lock-validate',0x1d377a4,0x1d377b8),
-           ('lock-key-search',0x1d37910,0x1d379d0),
-           ('lock-commit',0x1d37af8,0x1d37b70),
-           ('key-commit',0x1d37bd4,0x1d37c38),
-           ('bound-pattern-upper-lower',0x1d38e10,0x1d38e68),
-           ('bound-commit',0x1d387ec,0x1d388b4),
-           ('puzzle-group-card-types',0x1d3ab54,0x1d3ac84),
-           ('puzzle-candidate-choice',0x1d3ad70,0x1d3ae10),
-           ('puzzle-write',0x1d3af1c,0x1d3af8c),
-           ('booster-insert',0x1c99254,0x1c992bc),
-           ('booster-adjust-positions',0x1c99320,0x1c993a4)
-          ]:rec(label,a,b)
-          # Relevant nested compiler-generated helper types. Method tokens and
-          # field schemas only; no proprietary words/assets extracted.
-          fieldtab=114085648;assert word(0x6bcb3d8)==fieldtab
-          row=images['CoreGameplay.dll']
-          for t in range(row[2],row[2]+row[3]):
-           tr=struct.unpack_from('<22I',md,T+88*t)
-           tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-           mn=[name(struct.unpack_from('<I',md,M+36*(tr[9]+k))[0]) for k in range(tr[16]&65535)]
-           if not any(re.search(r'ApplyFrozenCards|ApplyLockers|ApplyBoundCards|DistributePuzzleCards|AddStarterBoosterToStock',n) for n in mn):continue
-           n=tr[17]&65535
-           fields=[]
-           if n:
-            try:os=struct.unpack_from('<%di'%n,e,off(word(fieldtab+4*t),4*n))
-            except (ValueError,struct.error):os=[None]*n
-            fields=[[name(struct.unpack_from('<I',md,F+12*(tr[8]+k))[0]),os[k]] for k in range(n)]
-           print('CLOSURE14',json.dumps({'type':tn,'fields':fields,'methods':mn},separators=(',',':')))
-          # Inspect methods around helpers that select level card placements.
+           print('FACT15',json.dumps({'label':label,'facts':rows},separators=(',',':')))
+          # Source exact ComputeStarterBoosterInsertIndex, Mix, CountStockSlots and
+          # puzzle shuffle method identities; emit metadata and bounded call sites.
           for a,rs in sorted(entries.items()):
-           for rr in rs:
-            if not re.search(r'<(ApplyFrozenCards|ApplyLockers|ApplyBoundCards|DistributePuzzleCards|AddStarterBoosterToStock)>',rr['method']):continue
-            if not re.search(r'b__|FindPlayStackCard',rr['method']):continue
+           for r in rs:
+            if r['type'] not in ('Core.Systems.StarterBoosterLevelOperations','Core.Handlers.LevelDataHandler'):continue
+            if r['method'] not in ('ComputeStarterBoosterInsertIndex','Mix','CountStockSlots','IsInStock','SwapCards','ComputeDealtPlayStackCardState'):continue
             end=starts[bisect.bisect_right(starts,a)]
-            if end-a<420:rec(rr['type']+'.'+rr['method'],a,end)
-          print('PASS_SHA_PINNED_SPECIAL_COORDINATES14')
+            print('MAPPED15',json.dumps({'name':r['type']+'.'+r['method'],'rva':hex(a),'end':hex(end),'params':r['parameters']}))
+            if end-a<=260:
+             print('SMALL15',json.dumps({'name':r['method'],'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in ins(a,end) if x.mnemonic.startswith(('cmp','b','tst','sub','add','mul','eor','mov','ldr','and','orr','rsb','clz','lsr','ux','sx')) and not 'pc,' in x.op_str]}))
+          # Resolve a few generic/managed method veneers when they have exact
+          # registrations (generic shared bodies may remain unknown).
+          for a in (0x1b24c08,0x2d6a108,0x31d6014,0x3cc8014):
+           print('VENEER15',hex(a),[[x.mnemonic,x.op_str] for x in ins(a,a+16)])
+          print('PASS_SHA_PINNED_FEATURE_SELECTORS15')
           PY

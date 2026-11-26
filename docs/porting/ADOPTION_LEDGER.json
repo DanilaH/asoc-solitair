@@ -179,9 +179,9 @@
   },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "b711111b5876924d7e05553edf428e51b783f915",
-  "sourceInventoryRef": "81da64b3f11acc1a4e4e9ff69c06e3baea5f8481",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "5187a337663c440931b2e15643dc329167a3758f",
+  "sourceInventoryRef": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
@@ -314,7 +314,7 @@
       "id": "hitapps-stock-restore",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore. Исчерпанный повтор показан на поле. Штатное восстановление доступно с той же ценой, SaveStore и Undo.",
-      "nextAction": "Keep separate player legal deck/recycle economy, native bot stock-lookahead only; test restore/free/price/Unlimited/Undo/Continue without turning simulation policy into player restriction. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
+      "nextAction": "Keep separate player legal deck/recycle economy, native bot stock-lookahead only; test restore/free/price/Unlimited/Undo/Continue without turning simulation policy into player restriction. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade. Implement versioned restore+Undo transaction: actual board-only Undo leaves stockRestores and paid coins unchanged. Original refund decrement/price recompute proven; preserve old saves, refund exact debit once in own product. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
       "reason": "Existing free recycle contract requires a substantive rule/economy redesign",
       "stage": "E1",
       "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md",
@@ -327,18 +327,38 @@
         "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
         "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
         "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      },
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Implement versioned restore+Undo transaction: actual board-only Undo leaves stockRestores and paid coins unchanged. Original refund decrement/price recompute proven; preserve old saves, refund exact debit once in own product."
       }
     },
     {
       "id": "hitapps-revive-offers",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore. Continue после истёкшего Unlimited сохраняет согласованные фазу и бюджет Undo; codec восстанавливает уже записанные active/parked состояния.",
-      "nextAction": "Compare coin/rewarded/segment options and save/device flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
+      "nextAction": "Compare coin/rewarded/segment options and save/device flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Implement separate persisted pending revive/bubble entitlement and adaptive amount+show/cooldown policy as versioned options; keep +10 and #210 earned/coin proof differences until own policy approved; ordinary leftover carryover unproved. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
       "stage": "E1",
       "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md",
       "evidenceRefs": [
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
-      ]
+      ],
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Implement separate persisted pending revive/bubble entitlement and adaptive amount+show/cooldown policy as versioned options; keep +10 and #210 earned/coin proof differences until own policy approved; ordinary leftover carryover unproved."
+      }
     },
     {
       "id": "azur-coin-moves",
@@ -639,7 +659,7 @@
       "id": "hitapps-lives",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 lives v2 uses five slots, retaining deficit, refill clock and earned/pending rights. Refill is one life per five minutes, 50 coins or confirmed video. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
-      "nextAction": "Verify the v2 migration and real SDK lifecycle on Android. Original loss and regeneration parameters remain open.",
+      "nextAction": "Verify the v2 migration and real SDK lifecycle on Android. Original loss and regeneration parameters remain open. Implement configurable finite/offline/refill/channel/capped-price and independent stackable InfiniteLives policies, preserve C8 five lives and #210 loss-charge behavior; source full reservation/loss lifecycle incomplete. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
@@ -648,7 +668,17 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Implement configurable finite/offline/refill/channel/capped-price and independent stackable InfiniteLives policies, preserve C8 five lives and #210 loss-charge behavior; source full reservation/loss lifecycle incomplete."
+      }
     },
     {
       "id": "azur-play-pass",
@@ -870,7 +900,7 @@
       "id": "azur-unlimited-moves-offer",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "MVP F2 retains the ordinary 120-coin/60-second candidate and previously earned contracts. Android timed acquisition requires a fresh usable native recovery-clock reading before debit or consumption; a failed acquisition no longer creates a page-clock timed right. Incomparable saved page/native anchors expire conservatively while active/parked finite budgets, Undo and won/indefinite semantics are preserved. Отсчёт в строке уровня виден вне масштабируемого поля, в том числе при баннерном резерве. Continue и codec согласуют фазу и бюджет после expiry.",
-      "nextAction": "Complete final-branch CI and physical native-clock failure, background/process restart and rollback acceptance. Verify no debit or earned-right consumption on failed acquisition and no extension of incomparable old timers. Candidate value/balance and source lifetime/acquisition policy remain unaccepted; keep full P19 source work.",
+      "nextAction": "Complete final-branch CI and physical native-clock failure, background/process restart and rollback acceptance. Verify no debit or earned-right consumption on failed acquisition and no extension of incomparable old timers. Candidate value/balance and source lifetime/acquisition policy remain unaccepted; keep full P19 source work. Reuse prior 25 Nov attempt-flag and SKU evidence; keep timed rights and implement separate attempt Unlimited option without false original duration claim. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
       "stage": "E1",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
@@ -879,7 +909,17 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Reuse prior 25 Nov attempt-flag and SKU evidence; keep timed rights and implement separate attempt Unlimited option without false original duration claim."
+      }
     },
     {
       "id": "azur-offer-campaign",
@@ -1105,9 +1145,19 @@
       "id": "azur-iap-unlimited-moves-tiers",
       "status": "BLOCKED",
       "currentImplementation": "Три собственных срока показаны в витрине C8. Совместная приёмка P19/P25/P31 связывает подтверждённое право текущего аккаунта с лимитом сертифицированной попытки. SaveStore восстанавливает оставшийся конечный бюджет и Undo после истечения срока или подтверждённого возврата. Оплата отключена до авторизации продавца и SKU с ценой. См. docs/porting/P25_COMMERCIAL_FAMILIES.md.",
-      "nextAction": "Подтвердить условия оригинальных Unlimited Moves/+ /++, допустимый SDK и мерчанта. Проверить платёж, возврат и восстановление на физическом устройстве. См. docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "nextAction": "Подтвердить условия оригинальных Unlimited Moves/+ /++, допустимый SDK и мерчанта. Проверить платёж, возврат и восстановление на физическом устройстве. См. docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Reuse prior 25 Nov evidence, keep entitlement/purchase boundaries and merchant off; no new activation. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
       "stage": "E3",
-      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Reuse prior 25 Nov evidence, keep entitlement/purchase boundaries and merchant off; no new activation."
+      }
     },
     {
       "id": "azur-definition-consumable",
@@ -1512,5 +1562,14 @@
     },
     "scope": "P05–P14 with P19/P31/P33–P37 dependencies; 115 source IDs/38 packets retained; engineering-only; release activation/physical QA separate",
     "remote": "SOURCE_UNKNOWN_NONBLOCKING_FOR_OWN_ADAPTATION"
+  },
+  "recoveryHandoff": {
+    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+    "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+    "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+    "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+    "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "nativeRows": 1130,
+    "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes"
   }
 }

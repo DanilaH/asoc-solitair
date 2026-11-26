@@ -40,8 +40,8 @@
   "asOf": "2026-11-21",
   "sourcePin": {
     "repo": "DanilaH/asoc-solitair",
-    "sourceInventoryRef": "81da64b3f11acc1a4e4e9ff69c06e3baea5f8481",
-    "sourceInventoryBlob": "b711111b5876924d7e05553edf428e51b783f915",
+    "sourceInventoryRef": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+    "sourceInventoryBlob": "5187a337663c440931b2e15643dc329167a3758f",
     "baselineContent8Head": "e092ba156eebb5ebc703d89e4e98bf657bbd6f14",
     "gameVersion": "0.20.3 Content8 preview",
     "runtimeKitCommit": "a9325265e87583a4872cf6a158e1e881a0d7508e"
@@ -516,7 +516,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "recoveryDependencyBrief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md"
     },
     {
       "id": "P19",
@@ -541,7 +542,8 @@
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
       ],
-      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "recoveryDependencyBrief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md"
     },
     {
       "id": "P20",
@@ -697,7 +699,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "recoveryDependencyBrief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md"
     },
     {
       "id": "P26",
@@ -840,7 +843,8 @@
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
       ],
-      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "recoveryDependencyBrief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md"
     },
     {
       "id": "P32",
@@ -1178,5 +1182,14 @@
     ],
     "localEngineering": "READY_LOCAL for all known kernels; unresolved adapters own explicit policies, not remote gating",
     "release": "no automatic activation"
+  },
+  "recoveryHandoff": {
+    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+    "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+    "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+    "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+    "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "nativeRows": 1130,
+    "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes"
   }
 }

@@ -142,89 +142,76 @@ jobs:
            return trace
           rows={}
           def out(k,v):rows[k]=v;print(k,json.dumps(v,separators=(',',':')))
-          # Capture narrow function bodies not selected by initial names, plus field and dispatch anchors.
-          for label,a,b in [('update-clone',0x1c91c0c,0x1c91e80),('action-clone',0x1c91b20,0x1c91c0c),('logic-update',0x1ce8088,0x1ce8600),('stage-complete',0x20b9ca4,0x20b9cb8),('win-loss-current',0x20b3310,0x20b3350),('win-stage-progress',0x20b4c64,0x20b4cb4),('placed-fact',0x1d76604,0x1d76664),('rejected-fact',0x1d76738,0x1d7677c),('streak-fact',0x1d76a24,0x1d76a4c),('undo-fact',0x1d76968,0x1d769bc),('card-joker',0x1d31bb0,0x1d31bc0)]:
-           print('ANCHOR35',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in instructions(a,b)]},separators=(',',':')))
-          # Decode actual field defaults for relevant enums, not declaration order assumptions.
-          FD,FDS=struct.unpack_from('<II',md,64);DD,DDS=struct.unpack_from('<II',md,72)
-          defs={i:di for i,ty,di in struct.iter_unpack('<iii',md[FD:FD+FDS]) if 0<=di<DDS}
+          # Direct callers across exact ELF, plus actual named field ownership and dispatch jump table.
+          targets={a:[] for a in (0x1c87b14,0x1c87a90,0x1c86988,0x1c87434,0x1d76a24,0x1e6fdc0,0x1e70644,0x1e70780,0x1e70db0,0x1e70e40,0x1e70ed0,0x20b3244,0x20b2ad8,0x20aff90,0x20b29c4,0x20b1bb0)}
+          for fo,v,size,flags in seg:
+           if not flags&1:continue
+           for i,(w,) in enumerate(struct.iter_unpack('<I',e[fo:fo+size//4*4])):
+            if w&0x0e000000!=0x0a000000 or w>>28==15:continue
+            pc=v+4*i;delta=w&0xffffff;delta=(delta if delta<0x800000 else delta-0x1000000)<<2
+            a=pc+8+delta
+            if a not in targets:continue
+            idx=bisect.bisect_right(starts,pc)-1;targets[a].append([hex(pc),hex(starts[idx]) if idx>=0 else None,names_at(starts[idx]) if idx>=0 else []])
+          for a,hits in targets.items():print('CALL36',json.dumps({'target':hex(a),'hits':hits},separators=(',',':')))
           for im,row in images.items():
            if not re.match(r'^(Game\.|CoreGameplay|Assembly-CSharp)',im):continue
            for t in range(row[2],row[2]+row[3]):
             tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if not re.search(r'(InGameStreakActionType|InGameStreakTierChange|CardPlacementKind|PlacementKind|CardFactType|CardFact|ContainerType|RewardType|UndoType|StreakStage|GameplayState)$',tn):continue
-            fs=[]
-            for fi in range(tr[8],tr[8]+(tr[17]&65535)):
-             fn=name(struct.unpack_from('<I',md,F+fi*12)[0])
-             fs.append([fn,md[DD+defs[fi]:DD+defs[fi]+1].hex() if fi in defs else None])
-            print('ENUM35',json.dumps({'type':tn,'fields':fs},separators=(',',':')))
-          # Actual leaf predicate and completed-stage index.
-          counted=[]
-          for val in range(256):
-           u=setup([(0x1c87a90,0x1c87aa4)]);wb(u,DATA+0x10,val);args(u,DATA);run(u,0x1c87a90,STOP);v=rr(u,UC_ARM_REG_R0);assert v==int(val==1),(val,v);counted.append([val,v])
-          out('COUNT35',counted)
-          completed=[]
-          for stage,change in itertools.product((0,1,2,3,4,65535),range(4)):
-           u=setup([(0x1c87b14,0x1c87b24)]);wh(u,DATA+0x12,stage);args(u,DATA,change);run(u,0x1c87b14,STOP);v=rr(u,UC_ARM_REG_R0);assert v==(stage if change==2 else stage-1)&0xffffffff;completed.append([stage,change,v])
-          out('COMPLETED35',completed)
-          # Execute the real tier-transition branch; secured progress struct accessors resolved at the storage boundary.
-          tier=[]
+            if re.search(r'Formatter|Migration|Cheat|\.Sample|_1_13_0',tn):continue
+            fs=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
+            if (any(re.search(r'(streak|combo)',f,re.I) for f in fs) and not re.search(r'View|Presenter|Widget|Analytics|UserData|Config|__',tn)) or re.search(r'(^Core\.Entities\..*(State|Undo)|^Core\.Systems\..*(Observable|Undo))',tn):
+             ms=[r for r in records if r['type']==tn and r['image']==im and r['rva']!='0x0']
+             print('OWNER36',json.dumps({'image':im,'type':tn,'fields':[f for f in fs if not f.startswith('__')],'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not re.search(r'get_|set_|__AJson|global::',r['method'])]},separators=(',',':')))
+          print('DISPATCH36',json.dumps([[i,hex(0x1ce8244+word(0x1ce8244+4*i))] for i in range(10)]))
+          # Targeted native slices: actual clone dispatch functions, stock/undo, reward consumers, event stage gate.
+          for label,a,b in [('placed-clone',0x1cf5c24,0x1cf6060),('rejected-clone',0x1cf6060,0x1cf62ec),('stock-clone',0x1cf62ec,0x1cf6500),('undo-clone',0x1cf6500,0x1cf6780),('undo-branch',0x1c875a0,0x1c87640),('win-stage-complete',0x20b9ca4,0x20b9cb8),('win-claim-gate',0x20b02c8,0x20b030c),('win-loss-gate',0x20b29c4,0x20b2a10),('win-stage-loss',0x20b3310,0x20b3350),('source-gate',0x1c86858,0x1c8687c),('stock-gate',0x1c87288,0x1c87294)]:
+           print('ANCHOR36',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in instructions(a,b)]},separators=(',',':')))
+          # Tier clone called by original action dispatch — same native branch with original getter/setter boundaries.
+          clone=[]
           for count in (1,2,4,7):
            for stage,threshold,progress in itertools.product(range(count),(1,4,7),range(10)):
-            u=setup([(0x1c877b0,0x1c87884),(0x1e7a328,0x1e7a32c),(0x1e7a390,0x1e7a394),(0x1e7a450,0x1e7a454)])
+            u=setup([(0x1c91d08,0x1c91ddc),(0x1e7a328,0x1e7a32c),(0x1e7a390,0x1e7a394),(0x1e7a450,0x1e7a454)])
             wr(u,CFG+0x14,OBJ);wr(u,OBJ+0xc,count);wr(u,DATA+8,threshold)
             marker=B+0x6000;wb(u,marker,0)
             reg(u,UC_ARM_REG_R6,DATA);reg(u,UC_ARM_REG_R4,progress);reg(u,UC_ARM_REG_R5,B+0x7000);reg(u,UC_ARM_REG_R7,CFG);reg(u,UC_ARM_REG_R10,marker)
             state=[stage,progress]
-            def getStage(uc):reg(uc,UC_ARM_REG_R0,state[0])
-            def setStage(uc):state[0]=rr(uc,UC_ARM_REG_R1)
-            def setStreak(uc):state[1]=rr(uc,UC_ARM_REG_R1)
-            run(u,0x1c877b0,0x1c87884,skips={0x1c877bc:0x1c877d0,0x1c87830:0x1c87834,0x1c87838:0x1c87848,0x1c87860:0x1c87874},calls={0x1e7a328:getStage,0x1e7a390:setStage,0x1e7a450:setStreak})
+            run(u,0x1c91d08,0x1c91ddc,skips={0x1c91d14:0x1c91d28,0x1c91d88:0x1c91d8c,0x1c91d90:0x1c91da0,0x1c91db8:0x1c91dcc},calls={0x1e7a328:lambda uc:reg(uc,UC_ARM_REG_R0,state[0]),0x1e7a390:lambda uc:state.__setitem__(0,rr(uc,UC_ARM_REG_R1)),0x1e7a450:lambda uc:state.__setitem__(1,rr(uc,UC_ARM_REG_R1))})
             ex=[stage,progress,0] if progress<threshold else [min(stage+1,count-1),0,2 if stage+1>=count else 1]
-            got=state+[rb(u,marker)];assert got==ex,(count,stage,threshold,progress,got,ex);tier.append([count,stage,threshold,progress,*got])
-          out('TIER35',tier)
-          # Source card placement core branch after successful event + different source/target and resolved ECS snapshot.
-          placed=[]
-          for target,breaker,progress,pos,n,kind,below,one in itertools.product((0,1,2,3,4),(0,1),(0,3),(0,2),(1,2),(0,1,2),(0,2),(0,1)):
-           u=setup([(0x1c86cb0,0x1c86e60),(0x1e7a3e8,0x1e7a3ec),(0x1e7a450,0x1e7a454),(0x1d31bb0,0x1d31bc0)])
-           C=B+0x5000;D=B+0x6000;F=B+0x7000;LIST=B+0x8000
-           wb(u,OBJ+3,target);wr(u,OBJ+8,LIST);wr(u,LIST+0xc,n);wb(u,CFG+0x10,breaker);wb(u,C+20,kind);wb(u,D+20,below);wb(u,F+0xe,one)
-           sp=rr(u,UC_ARM_REG_SP);wr(u,sp+0x1c,CFG);wr(u,sp+0x14,pos);wr(u,sp+0x10,C)
-           reg(u,UC_ARM_REG_R5,OBJ);reg(u,UC_ARM_REG_R4,progress);reg(u,UC_ARM_REG_R8,0);reg(u,UC_ARM_REG_R9,F)
-           state=[progress]
-           def get(uc):reg(uc,UC_ARM_REG_R0,state[0])
-           def setp(uc):state[0]=rr(uc,UC_ARM_REG_R1)
-           def prevCard(uc):reg(uc,UC_ARM_REG_R4,D);reg(uc,UC_ARM_REG_PC,0x1c86e20)
-           run(u,0x1c86cb0,0x1c86cfc,skips={0x1c86cc4:0x1c86cd8,0x1c86d4c:0x1c86d74,0x1c86d7c:0x1c86cec,0x1c86db8:prevCard},calls={0x1e7a3e8:get,0x1e7a450:setp},count=120)
-           # Starting branch has one completion condition per accepted event. No proof of whole producer parity.
-           action=1 if target==3 or target==2 and not breaker and ((pos==0 and one==1) or (pos!=0 and n>=2 and (kind!=2 or below==2))) else 2 if target==2 and breaker and progress>0 else 0
-           got=[state[0],rr(u,UC_ARM_REG_R8)];ex=[progress+1 if action==1 else 0 if action==2 else progress,action];assert got==ex,(target,breaker,progress,pos,n,kind,below,one,got,ex);placed.append([target,breaker,progress,pos,n,kind,below,one,*got])
-          out('PLACED35',placed)
-          # Real rejected placement target gate and current fill reset branch, independent input accessor.
-          rejected=[]
-          for flag,same,target,progress in itertools.product((0,1,2),(0,1),range(5),(0,1,6)):
-           u=setup([(0x1c86f0c,0x1c870fc),(0x1e7a3e8,0x1e7a3ec),(0x1e7a450,0x1e7a454)])
-           wb(u,DATA+0x10,flag);wb(u,OBJ+3,target);reg(u,UC_ARM_REG_R7,DATA)
-           state=[progress];action=[0]
-           def sameResult(uc):reg(uc,UC_ARM_REG_R0,same);reg(uc,UC_ARM_REG_PC,0x1c86f58)
-           def targetResult(uc):reg(uc,UC_ARM_REG_R0,OBJ);reg(uc,UC_ARM_REG_PC,0x1c86fa4)
-           def act(uc):action[0]=rr(uc,UC_ARM_REG_R0);reg(uc,UC_ARM_REG_PC,0x1c870fc)
-           run(u,0x1c86f0c,0x1c870fc,skips={0x1c86f18:sameResult,0x1c86f60:targetResult,0x1c86fb4:0x1c87078,0x1c8708c:0x1c870c8,0x1c870e4:act},calls={0x1e7a3e8:lambda uc:reg(uc,UC_ARM_REG_R0,state[0]),0x1e7a450:lambda uc:state.__setitem__(0,rr(uc,UC_ARM_REG_R1))})
-           reset=flag==1 and not same and target in (2,3) and progress!=0;got=state+action;ex=[0 if reset else progress,2 if reset else 0];assert got==ex,(flag,same,target,progress,got,ex);rejected.append([flag,same,target,progress,*got])
-          out('REJECT35',rejected)
-          # Original capped progress leaf and positive carry arithmetic before next stage.
-          win=[]
-          for cap,progress in itertools.product((0,1,3,5,10),(0,1,2,5,7,10,20,-1)):
-           u=setup([(0x20ba58c,0x20ba5a8)]);wr(u,DATA+8,cap);args(u,DATA,progress);run(u,0x20ba58c,STOP);v=rd(u,DATA+0xc);assert v==max(0,min(cap,progress));win.append([cap,progress,v])
-          out('WINCLAMP35',win)
-          carry=[]
-          for cap,old,amount in itertools.product((1,3,5,10),range(6),(0,1,2,6,15)):
-           if old>=cap:continue
-           u=setup([(0x20b2c50,0x20b2c74),(0x20ba58c,0x20ba5a8)])
-           wr(u,DATA+8,cap);wr(u,DATA+0xc,old);reg(u,UC_ARM_REG_R0,DATA);reg(u,UC_ARM_REG_R10,cap);reg(u,UC_ARM_REG_R4,amount)
-           run(u,0x20b2c50,0x20b2c70,stops=(0x20b2bac,0x20b2c98))
-           v=[rd(u,DATA+0xc),rr(u,UC_ARM_REG_R4),int(rr(u,UC_ARM_REG_PC)==0x20b2bac)]
-           left=old+amount-cap;ex=[min(cap,old+amount),left&0xffffffff,int(left>=1)];assert v==ex,(cap,old,amount,v,ex);carry.append([cap,old,amount,*v])
-          out('WINCARRY35',carry)
-          print('PASS_SHA_PINNED_STREAK_KERNELS35',json.dumps({k:len(v) for k,v in rows.items()}))
+            got=state+[rb(u,marker)];assert got==ex,(count,stage,threshold,progress,got,ex);clone.append([count,stage,threshold,progress,*got])
+          out('CLONE36',clone)
+          # Native Undo result-type branch after restored saved progress/stage and resolved current stage record.
+          undo=[]
+          for threshold,restored in itertools.product((0,1,4,5,7),range(10)):
+           u=setup([(0x1c875e4,0x1c87628),(0x1e7a3e8,0x1e7a3ec)])
+           wr(u,DATA+8,threshold);reg(u,UC_ARM_REG_R5,DATA)
+           run(u,0x1c875e4,0x1c87628,skips={0x1c875f0:0x1c87604},calls={0x1e7a3e8:restored})
+           got=rr(u,UC_ARM_REG_R5);assert got==(3 if threshold>=1 and restored==threshold-1 else 0);undo.append([threshold,restored,got])
+          out('UNDO36',undo)
+          # Source stock reset: config gate then update-to-zero; event emitted only if old fill positive.
+          stock=[]
+          for enabled,old in itertools.product((0,1),range(9)):
+           u=setup([(0x1c87288,0x1c8740c),(0x1e7a3e8,0x1e7a3ec),(0x1e7a450,0x1e7a454),(0x1c91c0c,0x1c91c10)])
+           wb(u,CFG+0x11,enabled);reg(u,UC_ARM_REG_R6,CFG)
+           state=[old];updated=[]
+           def afterMetadata(uc):reg(uc,UC_ARM_REG_R5,B+0x7000);reg(uc,UC_ARM_REG_PC,0x1c8736c)
+           run(u,0x1c87288,0x1c8740c,skips={0x1c87294:afterMetadata},calls={0x1e7a3e8:lambda uc:reg(uc,UC_ARM_REG_R0,state[0]),0x1e7a450:lambda uc:state.__setitem__(0,rr(uc,UC_ARM_REG_R1)),0x1c91c0c:lambda uc:updated.append(1)},stops=(0x1c873b0,))
+           got=state+[len(updated),int(rr(u,UC_ARM_REG_PC)==0x1c873b0)];ex=[0 if enabled else old,enabled,int(enabled and old>=1)]
+           assert got==ex,(enabled,old,got,ex);stock.append([enabled,old,*got])
+          out('STOCK36',stock)
+          # Native win-streak leave/claim and loss warning gates with synthetic service state.
+          leave=[]
+          for last,expired,unclaimed in itertools.product((0,1),repeat=3):
+           u=setup([(0x20b02c8,0x20b030c),(0x20b382c,0x20b3830),(0x20b0454,0x20b0458),(0x20af820,0x20af824)])
+           args(u,OBJ);run(u,0x20b02c8,STOP,calls={0x20b382c:last,0x20b0454:expired,0x20af820:unclaimed})
+           got=rr(u,UC_ARM_REG_R0);assert got==int(last or expired and not unclaimed);leave.append([last,expired,unclaimed,got])
+          out('LEAVE36',leave)
+          loss=[]
+          for progress,joined in itertools.product((0,1,2,9),(0,1)):
+           u=setup([(0x20b29c4,0x20b2a10),(0x20b1184,0x20b1188),(0x20b268c,0x20b2690)])
+           wr(u,OBJ+0x14,DATA);wr(u,DATA+0xc,progress);args(u,CFG)
+           # Tailcall IsPlayerInWinStreakEvent uses original LR restored; hook returns controlled joined.
+           run(u,0x20b29c4,STOP,calls={0x20b1184:OBJ,0x20b268c:joined})
+           got=rr(u,UC_ARM_REG_R0);assert got==int(progress>=1 and joined);loss.append([progress,joined,got])
+          out('LOSSWARN36',loss)
+          print('PASS_SHA_PINNED_STREAK_KERNELS36',json.dumps({k:len(v) for k,v in rows.items()}))
           PY

@@ -138,68 +138,141 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # Recover exact feature-specific field selectors and predicate helper identities.
+          # Execute original feature-authoring helpers against synthetic DTOs.
+          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
+          from unicorn.arm_const import *
           from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
-          from capstone.arm import ARM_OP_MEM,ARM_OP_IMM,ARM_OP_REG
-          dis=Cs(CS_ARCH_ARM,CS_MODE_ARM);dis.detail=True
-          def ins(a,b):return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          def method(n):
-           return [(a,r) for a,rs in entries.items() for r in rs if n in r['type']+'.'+r['method']]
-          # Numeric field references, loop guards and call targets (not entire bodies).
-          chosen=['LevelDataHandler.ApplyLockers','LevelDataHandler.ApplyFrozenCards','LevelDataHandler.ApplyBoundCards','LevelDataHandler.<ApplyBoundCards>g__','LevelDataHandler.DistributePuzzleCards','LevelDataHandler.<DistributePuzzleCards>','LevelDataHandler.<>c__DisplayClass','FrozenCardOperations.IsMeltableRightNow','FrozenCardOperations.CanChangeThisMove','BoundOperations.EvaluateCutTarget','BoundOperations.CanChooseForCut','BoundOperations.CanCut','BoundOperations.CanUnbind','StarterBoosterLevelOperations.AddStarterBoosterToStock','GoldenCardLevelOperations.GenerateGoldenCards']
-          picks=[]
-          for a,rs in sorted(entries.items()):
-           r=rs[0];nm=r['type']+'.'+r['method']
-           if not any(q in nm for q in chosen):continue
-           end=starts[bisect.bisect_right(starts,a)]
-           if end-a>12000:continue
-           print('METHOD12',json.dumps({'name':nm,'rva':hex(a),'end':hex(end),'parameters':r['parameters']},separators=(',',':')))
-           picks.append((a,end,nm))
-          # Decode nested field-related closures; report calls plus compares on small helpers.
-          for a,b,nm in picks:
-           if any(q in nm for q in ('DisplayClass','<>c','g__','CanChooseForCut','CanCut','CanUnbind','IsMeltableRightNow','CanChangeThisMove')):
-            ar=[]
-            for x in ins(a,b):
-             m=x.mnemonic;p=x.op_str
-             if m.startswith(('cmp','tst','teq','cmn','b')) and not m.startswith(('bic','bfc','bfi')) or (m.startswith(('ldr','str')) and any(o.type==ARM_OP_MEM and o.mem.disp in (8,12,16,20,24,28,32,36,40,44,48,52,53,54,56,57,58,59,60,62) and x.reg_name(o.mem.base) not in ('pc','sp') for o in x.operands)):
-              if m=='bl' and x.operands and x.operands[0].type==ARM_OP_IMM:
-               dst=x.operands[0].imm
-               if dst in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):continue
-               ar.append([hex(x.address),m,p,[rr['type']+'.'+rr['method'] for rr in entries.get(dst,[])]])
-              else:ar.append([hex(x.address),m,p])
-            if len(ar)<=150:print('HELPER12',json.dumps({'name':nm,'facts':ar},separators=(',',':')))
-           else:
-            calls=[]
-            # Focus on direct edges and small source CardDto stores.
-            stores=[];comparisons=[]
-            for x in ins(a,b):
-             if x.mnemonic=='bl' and x.operands and x.operands[0].type==ARM_OP_IMM:
-              dst=x.operands[0].imm
-              if dst not in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):
-               calls.append([hex(x.address),hex(dst),[rr['type']+'.'+rr['method'] for rr in entries.get(dst,[])]])
-             if x.mnemonic.startswith('str') and any(o.type==ARM_OP_MEM and o.mem.disp in (36,40,44,48,52,53,54,56,57,58,59,60,62) and x.reg_name(o.mem.base) not in ('pc','sp') for o in x.operands):
-              stores.append([hex(x.address),x.mnemonic,x.op_str])
-             if x.mnemonic in ('cmp','tst','cmn') and x.operands and x.operands[-1].type==ARM_OP_IMM and x.operands[-1].imm!=0:comparisons.append([hex(x.address),x.mnemonic,x.op_str])
-            print('BODY12',json.dumps({'name':nm,'calls':calls[:95],'writes':stores,'compares':comparisons[:60]},separators=(',',':')))
-          # Compare helper copies against real registered bodies; PC-relative relocation
-          # classification alone is not evidence of constant payload equality.
-          targets=[0x1c8bf80,0x1c8e518,0x1c8e64c,0x1c8e738,0x1c92488]
-          for a in targets:
-           found=[]
-           for b,rs in entries.items():
-            if a==b or not any(r['image']=='CoreGameplay.dll' for r in rs):continue
-            end=starts[bisect.bisect_right(starts,b)]
-            count=min((end-b)//4,1300)
-            if count<6 or sum(equivalent(a+4*i,b+4*i) for i in range(min(count,24)))<min(count,24)-3:continue
-            tails=[i for i in range(count) if word(b+4*i)==0xe12fff1e or word(b+4*i)&0xffff8000==0xe8bd8000]
-            n=tails[-1]+1 if tails else count
-            diff=[i*4 for i in range(n) if not equivalent(a+4*i,b+4*i)]
-            if len(diff)<=max(4,n//8):found.append([rs[0]['type']+'.'+rs[0]['method'],hex(b),n,len(diff),diff[:12]])
-           print('BIND12',hex(a),json.dumps(sorted(found,key=lambda z:z[3])[:5]))
-          # Identify shipped config sources without exporting contents or protected data.
-          with zipfile.ZipFile(sys.argv[1]) as z:
-           with zipfile.ZipFile(io.BytesIO(z.read('com.hitappsgames.wordsolitaire.apk'))) as base:
-            names=[n for n in base.namelist() if re.search(r'(^|/)([^/]*(config|segmentation|default|pattern|remote)[^/]*)(/|$)',n,re.I)]
-            print('PACKAGED_CONFIG_PATHS12',json.dumps([n for n in names if n.startswith('assets/')][:120]))
-          print('PASS_SHA_PINNED_SPECIAL_INVENTORY12')
+          import itertools,collections
+          dis=Cs(CS_ARCH_ARM,CS_MODE_ARM)
+          def method_end(a):return starts[bisect.bisect_right(starts,a)]
+          def imm(w):return ((w>>4)&0xf000)|(w&0xfff)
+          def veneer(a):
+           w,x,y,z=[word(a+4*i) for i in range(4)]
+           if w&0xfff0f000==0xe300c000 and x&0xfff0f000==0xe340c000 and y==0xe08cc00f and z==0xe12fff1c:
+            return (a+16+imm(w)+(imm(x)<<16))&0xffffffff
+           if w&0xff000000==0xea000000:return a+8+4*(((w&0xffffff)^0x800000)-0x800000)
+           return None
+          comparison=veneer(0x2b4a784)
+          print('COMPARE13',hex(comparison) if comparison else None)
+          assert comparison
+          row=images['mscorlib.dll'];p=e.find(b'mscorlib.dll\0');marker=struct.pack('<I',va(p));found=[]
+          for fo,v,size,_ in seg[1:]:
+           mem=e[fo:fo+size];j=-1
+           while (j:=mem.find(marker,j+1))>=0:
+            if j+12>size:continue
+            n,p=struct.unpack_from('<II',mem,j+4)
+            if not 0<n<60000:continue
+            try: ptrs=struct.unpack_from('<%dI'%n,e,off(p,n*4))
+            except (ValueError,struct.error):continue
+            if all(a==0 or 0x148b0b0<=a<0x6a167d0 for a in ptrs):found.append(ptrs)
+          assert len(found)==1
+          ptrs=found[0];names=[]
+          for t in range(row[2],row[2]+row[3]):
+           tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+           for i in range(tr[9],tr[9]+(tr[16]&65535)):
+            mr=struct.unpack_from('<7I4H',md,M+36*i);rid=mr[6]&0xffffff
+            if 0<rid<=len(ptrs) and ptrs[rid-1]==comparison:names.append(tn+'.'+name(mr[0]))
+          print('COMPARE_METHOD13',json.dumps(names))
+          assert len(names)==1 and names[0] in ('System.String.op_Inequality','System.String.op_Equality'),names
+          # Synthetic strings are interned distinct tokens. Only the identified string
+          # operator is replaced by an exact equality/inequality result.
+          NOT_EQUAL=names[0].endswith('op_Inequality')
+          BASE=0x11000000;STOP=BASE+0xf0000
+          def make_card(kind=1,cat=1,col=0,pos=0,key=0,locker=0,ice=0,puzzle=0,order=0,gold=0,bound=0,scissors=0):
+           buf=bytearray(80)
+           struct.pack_into('<i',buf,12,puzzle);struct.pack_into('<i',buf,16,order)
+           struct.pack_into('<I',buf,24,BASE+0x80000+4*cat)
+           struct.pack_into('<ii',buf,36,pos,col)
+           buf[52]=kind;buf[53]=2;buf[56]=bound;buf[57]=scissors;buf[58]=key;buf[59]=locker;buf[60]=gold
+           struct.pack_into('<H',buf,62,ice)
+           return bytes(buf)
+          def emulate(a,args,objects,arrays=(),reads=()):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM)
+           # Only map source helper ranges, not original executable wholesale.
+           page=0x1d39000;end=0x1d3bd000
+           # map actual page interval around authoring helper cluster
+           start=0x1d39000;limit=0x1d3c000
+           u.mem_map(start,limit-start);u.mem_write(start,e[off(start,limit-start):off(start,limit-start)+limit-start])
+           u.mem_map(BASE,0x100000)
+           for ptr,raw in objects:u.mem_write(ptr,raw)
+           for ptr,items,isbool in arrays:
+            u.mem_write(ptr+12,struct.pack('<I',len(items)))
+            u.mem_write(ptr+16,bytes(items) if isbool else struct.pack('<%dI'%len(items),*items))
+           # string operator veneer call is intercepted before original runtime.
+           vpage=0x2b4a784&~4095;u.mem_map(vpage,4096)
+           # Runtime errors must not be silently bypassed.
+           rtpage=0x1a26000;u.mem_map(rtpage,4096)
+           rgs=[UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3]
+           for r,x in zip(rgs,args):u.reg_write(r,x&0xffffffff)
+           sp=BASE+0xe0000;u.reg_write(UC_ARM_REG_SP,sp);u.reg_write(UC_ARM_REG_LR,STOP)
+           for i,x in enumerate(args[4:]):u.mem_write(sp+4*i,struct.pack('<I',x&0xffffffff))
+           calls=[]
+           def hook(uc,pc,size,user):
+            if pc==0x2b4a784:
+             a,b=uc.reg_read(UC_ARM_REG_R0),uc.reg_read(UC_ARM_REG_R1)
+             val=(a!=b) if NOT_EQUAL else (a==b)
+             uc.reg_write(UC_ARM_REG_R0,int(val));uc.reg_write(UC_ARM_REG_PC,uc.reg_read(UC_ARM_REG_LR));calls.append('category-compare')
+            elif not start<=pc<limit:raise RuntimeError('unexpected native target '+hex(pc))
+           u.hook_add(UC_HOOK_CODE,hook)
+           u.emu_start(a,STOP,count=15000)
+           assert u.reg_read(UC_ARM_REG_PC)==STOP,hex(u.reg_read(UC_ARM_REG_PC))
+           return u.reg_read(UC_ARM_REG_R0),[bytes(u.mem_read(ptr,n)) for ptr,n in reads],calls
+          C1=BASE+0x1000;C2=BASE+0x1100
+          # HasOtherFeature, CanCarryScissors and CanBeBound: one-field and exhaustive
+          # combinations including prior bound/scissors/key fields.
+          tested=collections.Counter();errors=[]
+          for key,locker,ice,puzzle,order,gold,bound,scissors in itertools.product(range(2),repeat=8):
+           card=make_card(key=key,locker=locker,ice=ice,puzzle=puzzle,order=order,gold=gold,bound=bound,scissors=scissors)
+           actual,_,_=emulate(0x1d3bb9c,[C1,0],[(C1,card)])
+           expected=bool(locker or ice or puzzle>0 or order>0 or gold)
+           if actual!=expected:errors.append(('otherFeature',key,locker,ice,puzzle,order,gold,bound,scissors,actual,expected))
+           tested['otherFeature']+=1
+           actual,_,_=emulate(0x1d3b9dc,[C1,0],[(C1,card)])
+           if actual!=(key==0):errors.append(('scissors',key,actual))
+           tested['scissors']+=1
+          for ka,kb,ca,cb,fa,fb in itertools.product((0,1,3),(0,1,4),(1,2),(1,2),(0,1),(0,1)):
+           a=make_card(kind=ka,cat=ca,ice=fa);b=make_card(kind=kb,cat=cb,ice=fb)
+           actual,_,_=emulate(0x1d3b95c,[C1,C2,0],[(C1,a),(C2,b)])
+           expected=ka==kb==1 and ca!=cb and not(fa or fb)
+           if actual!=expected:errors.append(('bound',ka,kb,ca,cb,fa,fb,actual,expected))
+           tested['bound']+=1
+          for ca,pa,cb,pb in itertools.product(range(3),range(3),range(3),range(3)):
+           a=make_card(col=ca,pos=pa);b=make_card(col=cb,pos=pb)
+           actual,_,_=emulate(0x1d3bbf0,[C1,C2,0],[(C1,a),(C2,b)])
+           expected=(ca,pa)<(cb,pb)
+           if actual!=expected:errors.append(('earlier',ca,pa,cb,pb,actual,expected))
+           tested['earlier']+=1
+          print('LEAF13',json.dumps({'counts':dict(tested),'mismatches':len(errors),'examples':errors[:8]}))
+          # No failed model assertion silently converted into source parity.
+          assert not errors
+          # Exercise original nearest-kept and balanced-pattern helpers on synthetic arrays.
+          AR=BASE+0x3000;KEEP=BASE+0x4000
+          coords=[(0,0),(0,1),(0,2),(1,0),(1,1),(2,0)]
+          cards=[BASE+0x5000+i*0x100 for i in range(len(coords))]
+          objects=[(p,make_card(col=c,pos=s)) for p,(c,s) in zip(cards,coords)]
+          out=[]
+          for origin in range(len(coords)):
+           for mask in (0,1,3,10,21,42,63):
+            flags=[(mask>>j)&1 for j in range(len(coords))]
+            ret,read,cl=emulate(0x1d3ba00,[AR,KEEP,len(cards),cards[origin]],objects,[(AR,cards,False),(KEEP,flags,True)],[(KEEP+16,len(cards))])
+            after=list(read[0]);dropped=[j for j,(x,y) in enumerate(zip(flags,after)) if x and not y]
+            assert len(dropped)==min(1,sum(flags))
+            out.append({'origin':origin,'mask':mask,'dropped':dropped})
+          print('NEAREST13',json.dumps({'coordinates':coords,'rows':out},separators=(',',':')))
+          U=BASE+0x10000;L=BASE+0x11000;S=BASE+0x12000;KU=BASE+0x13000;KS=BASE+0x14000
+          # Different coordinates avoid accidental reference collisions. Each pair
+          # independently has or lacks permission, each scissors card has or lacks key.
+          balance=[]
+          for n in (1,2,3):
+           ps=[BASE+0x20000+0x100*i for i in range(n*3)]
+           for pm in range(1<<n):
+            for sm in range(1<<n):
+             objects=[]
+             for i in range(n):
+              objects.extend([(ps[i],make_card(cat=1,col=i,pos=2)),(ps[n+i],make_card(cat=2 if pm>>i&1 else 1,col=i,pos=1)),(ps[2*n+i],make_card(key=0 if sm>>i&1 else 1,col=(i+1)%n,pos=0))])
+             arrays=[(U,ps[:n],False),(L,ps[n:2*n],False),(S,ps[2*n:],False),(KU,[0]*n,True),(KS,[0]*n,True)]
+             ret,read,cl=emulate(0x1d39028,[U,L,S,KU,KS,n,0],objects,arrays,[(KU+16,n),(KS+16,n)])
+             balance.append({'n':n,'pairMask':pm,'scissorsMask':sm,'keptPairs':list(read[0]),'keptScissors':list(read[1]),'result':ret})
+          print('BALANCE13',json.dumps(balance,separators=(',',':')))
+          print('PASS_SHA_PINNED_SPECIAL_HELPERS13')
           PY

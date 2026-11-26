@@ -59,7 +59,7 @@ jobs:
            for t in range(row[2],row[2]+row[3]):
             tr=struct.unpack_from('<22I',md,T+88*t)
             tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if re.search(r'(Lives|LifeService|LifeConfig|Heart|Revive|RestoreStock|ExtraMoves|MovesLimit|MovesOperations|MoveCount|MovesSystem|MovesLogic|MoveBudget|UnlimitedMoves|ContinueService|LevelBucketRv|GameplayState|LevelProgress|LevelResult|LevelBootstrapper|UserData|PlayerData|RewardType)',tn,re.I) and not re.search(r'^(Unity|System|Google|Facebook|Amazon|AppLovin|Newtonsoft|Cysharp|UniRx|DG\.|Adjust|Yandex|VContainer|TMPro)',tn):
+            if re.match(r'^(Game\.|CoreGameplay\.dll|Assembly-CSharp\.dll|GameCore\.)',im) and (re.search(r'(Lives|LifePurchaser|LifeData|LifeReserv|LifeSpend|LifeConfig|LifeRestore|NextDayWaiter|Revive|RestoreStock|ExtraMoves|MovesOffer|MovesLimit|MovesOperations|MoveOperations|MoveCount|MovesSystem|MovesLogic|MoveBudget|UnlimitedMoves|ContinueService|LevelBucketRv|GameplayState|LevelProgress|LevelResult|LevelBootstrapper|UserProgress|PlayerProgress|StockOperations|GameplayController|LevelController|MovesData|StepsData|MovesBalance)',tn,re.I) or any(re.search(r'(AddExtraMoves|AddMoves|SpendMoves|ConsumeMoves|GetMovesLeft|RemainingMoves|PendingRevive|SpendLife|ReserveLife|RestoreStock|OnLevelLost|OnLevelFailed|HandleContinue|OnContinueRequested|OnLevelWon|HandleTryAgain|LevelFinished|ResetMove|FreeRestore)',name(struct.unpack_from('<I',md,M+36*k)[0]),re.I) for k in range(tr[9],tr[9]+(tr[16]&65535)))):
              wanted.setdefault(im,[]).append((tn,tr))
           print('TARGET_IMAGES',list(wanted))
           entries={};records=[];tables={}
@@ -101,28 +101,32 @@ jobs:
            if op.startswith(('bl','b','cmp','cmn','tst','teq','ldr','str','mov','add','sub','and','orr','bic','eor','rsb','ux','lsl','asr','lsr','mvn','pop','push','stm','ldm','mul')):
             return [hex(x.address),op,x.op_str]
            return None
-          # Restrict log output to named method/field anchors and bounded source control flow.
+          # Reconcile actual field rows and registered method entries. No source strings beyond symbolic names.
+          selected_type=re.compile(r'(\.LimitedLives\.Implementations\.(LimitedLivesModule|LifePurchaser|LimitLifeRestoreTimerController|NextDayWaiter)$|\.InfiniteLives\.Implementations\.(InfiniteLivesModule|DeferredInfiniteLivesAward|InfiniteLivesAwardService)$|\.Lives\.Implementations\.LivesService$|\.LivesSpendProvider$|\.LivesStorageHandler$|\.PaidRestoreStockService$|\.ReviveMovesOffer\.Internal\.(ReviveMovesCalculator|ReviveMovesOfferService|ReviveOfferTypeCalculator|ReviveMovesOfferProcessor|ReviveOfferContentSearcher)$|\.ExtraMovesBubble(Service|Policy|SaveData|PurchaseProcessor)$|\.MovesOfferData$|\.LivesData$|\.LivesConfig$|\.RevivesMovesOfferConfig$|\.PaidRestoreConfig$|\.LevelBootstrapper$|Core\.Systems\.(MoveCounterSystem|MoveOperations|StockOperations|GameplayStateOperations|GameplayStateSystem|GameplayStateLogicSystem|MovesOperations)$|\.LevelProgressData$|\.LevelProgress$|\.UserProgress$)',re.I)
+          method_pat=re.compile(r'(AddExtraMoves|AddMoves|SpendMoves|ConsumeMoves|GetMovesLeft|RemainingMoves|PendingRevive|SpendLife|ReserveLife|RestoreStock|OnLevelLost|OnLevelFailed|HandleContinue|OnContinueRequested|OnLevelWon|HandleTryAgain|LevelFinished|ResetMove|FreeRestore|MovesLeft|MovesLimit|GetSteps|SetSteps|ContinueGame)',re.I)
+          ignore=re.compile(r'Formatter|Migrator|\.Migration\.|\.Cheat|\.Sample\.|\.Analytics\.|\.AJson|ViewModel|\.Mock|\.Tests|\._1_13_0\.|IUserData|^<|__AJson|global::',re.I)
           for im,types in wanted.items():
            for tn,tr in types:
-            if re.search(r'(View|Presenter|Animation|Binder|Factory|Installer|Mock|Editor|Debug|Analytics|Message|EventData|Request|Fact|DtoConverter)',tn,re.I):continue
-            fields=[]
-            for fi in range(tr[12],tr[12]+((tr[17]>>16)&65535)):
-             if not 0<=fi<FS//12:continue
-             fields.append(name(struct.unpack_from('<I',md,F+fi*12)[0]))
-            print('TYPE30',json.dumps({'image':im,'type':tn,'fields':fields,'methods':[[r['method'],r['rva'],r['parameters']] for r in records if r['type']==tn]},separators=(',',':')))
-          selected=re.compile(r'(LivesService|LifeService|LivesOperations|RevivesMovesOfferService|PaidRestoreStockService|RestoreStockOperations|MovesOperations|MoveCountOperations|ExtraMovesService|MovesLogicSystem|MoveCounterSystem|GameplayStateOperations|LevelBootstrapper|LevelBucketRvLimitService|UnlimitedMovesService)',re.I)
+            ms=[r for r in records if r['image']==im and r['type']==tn and r['rva']!='0x0']
+            if ignore.search(tn):continue
+            fields=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
+            if selected_type.search(tn) or any(method_pat.search(r['method']) for r in ms) or any(re.search(r'(extra|pending|move|life|restor|limit|continue)',f,re.I) for f in fields) and re.search(r'(Current|Core\.Entities|Progress|Reserve|Budget|Pool|State)',tn):
+             print('TYPE31',json.dumps({'image':im,'type':tn,'fields':fields,'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not ignore.search(r['method'])]},separators=(',',':')))
+          # Bound analysis: primary lifecycle bodies and arithmetic, avoid boilerplate serialization/UI/analytics.
+          focus=re.compile(r'^(Calculate|CalculateRestoredAmountOfLives|GetTimeToNextLifeRestore|SynchronizeLives|TryReduceLife|TryAddLife|TrySpendLife|TryPurchaseLife|RestoreLife|ResetLimits|ResetLimitsOnNewDay|NeedResetLimits|RecalculateNearestStartRestoreTime|SetNewStartRestoreTime|ClearSavedStartRestoreTime|GetPurchaseByCurrencyPrice|GetUtcTimeAtFullLivesRestored|AddInfiniteLivesFor|FinishInfiniteLives|SyncState|RestoreInfiniteLivesTimer|MarkLifeCanBeSpent|RemoveMarkLifeCanBeSpent|OnEvent|OnLevelValueChanged|Get|OnAdd|OnTrySpend|OnSetInfinite|HasInfiniteLives|TryPurchaseRestore|RefundRestore|CanAffordRestore|Reset|get_CurrentRestoreCost|get_IsFreeRestoreAvailable|get_IsLastFinishedRestoreFree|CalculateMovesToOffer|CanShow|TryGetPendingReviveMoves|TryResetPendingReviveMoves|OnOfferShown|OnOfferPurchased|ApplyMovesReward|CompletePurchase|CompleteCoinsOfferPurchase|EnsureSessionInitialized|IsRvDeniedByPolicy|CanTakeLifeByAds|IsAdsLimitNotReached|CanPurchaseLifeByCurrency|PayerForcesAlternativePayment|TryConsumePendingMoves|TryResetPendingMoves|ConfirmPurchase|GrantNow|RecordIntent|ClearIntent|ResetIntent|ApplyPendingBubbleMoves|ResolveMovesAmount|GetMovesAmount|SetRemainingCards|IsAwaitingStoreTooLong|IsBeyondReportingWindow|Increment|Update|HandleAddExtraMoves|HandleContinue|HandleTryAgain|OnLevelWon|OnLevelLost|OnLevelFailed|OnContinueRequested|GetStepsLimit|TryRestoreStock|RestoreStock)$')
+          seen=set()
           for r in records:
-           if not selected.search(r['type']) or r['rva']=='0x0' or re.search(r'^get_|^set_|\.ctor|\.cctor',r['method']):continue
-           a=int(r['rva'],16);i=bisect.bisect_right(starts,a)
+           tn=r['type'];mn=r['method'];a=int(r['rva'],16)
+           if not a or ignore.search(tn) or (tn,mn,a) in seen:continue
+           if not ((selected_type.search(tn) and focus.search(mn)) or method_pat.search(mn) and not re.search(r'(View|Presenter|Popup|Analytics|Track|Tutorial|\.Abstractions\.|\.Config)',tn) and not re.search(r'^get_|^set_|^add_|^remove_',mn)):continue
+           i=bisect.bisect_right(starts,a)
            if i>=len(starts):continue
            b=starts[i]
-           if b-a>0x1400 or b-a<4:continue
-           ins=instructions(a,b)
-           facts=[f for x in ins if (f:=compact(x)) is not None]
-           calls=[]
-           for x in ins:
-            if x.mnemonic.startswith('bl') and x.op_str.startswith('#0x'):
-             dst=int(x.op_str[1:],16);calls.append([hex(x.address),hex(dst),names_at(dst)])
-           print('METHOD30',json.dumps({'type':r['type'],'method':r['method'],'params':r['parameters'],'a':hex(a),'b':hex(b),'calls':calls,'facts':facts},separators=(',',':')))
-          print('PASS_SHA_PINNED_RECOVERY_CATALOG30')
+           if b-a>0x1200 or b-a<4:continue
+           seen.add((tn,mn,a));ins=instructions(a,b)
+           calls=[[hex(x.address),hex(int(x.op_str[1:],16)),names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('bl') and x.op_str.startswith('#0x')]
+           # Numeric instruction anchors; strip metadata initialization and alignment noise from review.
+           facts=[f for x in ins if (f:=compact(x)) is not None and not (x.mnemonic=='streq' and x.address>=b-32)]
+           print('METHOD31',json.dumps({'type':tn,'method':mn,'params':r['parameters'],'a':hex(a),'b':hex(b),'calls':calls,'facts':facts},separators=(',',':')))
+          print('PASS_SHA_PINNED_RECOVERY_DEEP31')
           PY

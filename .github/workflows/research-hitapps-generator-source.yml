@@ -138,39 +138,175 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # Gold column/slot structure schema and numerical scoring control flow.
+          # Execute native weight/mark/pick kernels against independent equations.
+          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
+          from unicorn.arm_const import *
           from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
           from capstone.arm import ARM_OP_IMM,ARM_OP_MEM
+          import math,itertools,random
           dis=Cs(CS_ARCH_ARM,CS_MODE_ARM);dis.detail=True
           def ins(a,b):return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          fieldtab=114085648;row=images['CoreGameplay.dll']
-          for t in range(row[2],row[2]+row[3]):
-           tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-           if not re.search(r'(^|\.)(Column|Slot|GenerationParameters|ColumnData|SlotData|ColumnInfo|SlotInfo|GoldenSlot|GoldenColumn|GoldenCardSlot|GoldenCardColumn|BoundStatus)$',tn,re.I):continue
-           n=tr[17]&65535
-           try:os=struct.unpack_from('<%di'%n,e,off(word(fieldtab+4*t),4*n)) if n else []
-           except (ValueError,struct.error):os=[None]*n
-           fields=[[name(struct.unpack_from('<I',md,F+12*(tr[8]+k))[0]),os[k]] for k in range(n)]
-           print('STRUCT21',json.dumps({'type':tn,'fields':fields}))
-          for label,a,b in [('initialize-column',0x1c846c0,0x1c84764),('pick-slots',0x1c84764,0x1c8483c),('mark-slot',0x1c8483c,0x1c84954),('weight-column',0x1c84954,0x1c84bc0),('weight-slot',0x1c84bcc,0x1c84cbc),('can-be-gold-slot',0x1c84cbc,0x1c84cdc),('pick-slot',0x1c84cdc,0x1c84e24)]:
-           facts=[]
-           for x in ins(a,b):
-            m=x.mnemonic;p=x.op_str
-            # Decision/score facts, including register/field operands; ignore
-            # literal-pool pseudo-instructions after the last executable return.
-            if m.startswith(('v','cmp','tst','cmn','b','ldr','str','mov','add','sub','mul','mla','eor','and','orr','bic','rsb','clz','lsl','lsr','asr','ux','sx')):
-             if m=='bl' and x.operands[0].imm in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):continue
-             facts.append([hex(x.address),m,p])
-           print('SCORE21',json.dumps({'label':label,'facts':facts},separators=(',',':')))
-          # Read actual literals referenced by numerical helper VFP loads.
-          for x in ins(0x1c846c0,0x1c84e24):
-           if x.mnemonic.startswith('vldr') and '[pc' in x.op_str:
-            w=word(x.address);a=x.address+8+4*(w&255)*(1 if w&0x800000 else -1)
-            print('LITERAL21',hex(x.address),hex(a),hex(word(a)),struct.unpack('<f',struct.pack('<I',word(a)))[0])
-          # Selected method addresses for remaining source verdict inputs.
-          for a,rs in sorted(entries.items()):
-           for r in rs:
-            if r['type'] in ('Core.Systems.BoundOperations','Core.Systems.StarterBoosterOperations','Core.Entities.CardEntity') and r['method'] in ('ComputeBoundStatus','CanPlaceHammer','CanPlaceMagnet','get_IsPuzzleCard','get_IsFrozen','get_IsOrderedCard','get_IsJoker'):
-             print('VERDICT_METHOD21',hex(a),r['type']+'.'+r['method'])
-          print('PASS_SHA_PINNED_SCORING21')
+          def imm(w):return ((w>>4)&0xf000)|(w&0xfff)
+          def veneer(a):
+           w,x,y,z=[word(a+4*i) for i in range(4)]
+           if w&0xfff0f000==0xe300c000 and x&0xfff0f000==0xe340c000 and y==0xe08cc00f and z==0xe12fff1c:return (a+16+imm(w)+(imm(x)<<16))&0xffffffff
+           if w&0xff000000==0xea000000:return a+8+4*(((w&0xffffff)^0x800000)-0x800000)
+           return None
+          powtarget=veneer(0x2b4c8d0);rngtarget=veneer(0x2b4c8e0)
+          print('VENEERS22',json.dumps({'pow':hex(powtarget) if powtarget else None,'rng':hex(rngtarget) if rngtarget else None}))
+          # Verify exact ELF import or named registered target.
+          sh=struct.unpack_from('<I',e,32)[0];ents,n,si=struct.unpack_from('<HHH',e,46)
+          sections=[struct.unpack_from('<10I',e,sh+i*ents) for i in range(n)];st=sections[si];strings=e[st[4]:st[4]+st[5]]
+          def cstr(data,i):return data[i:data.index(b'\0',i)].decode('utf-8','replace')
+          byname={cstr(strings,x[0]):x for x in sections};ds=byname['.dynsym'];dt=sections[ds[6]];strs=e[dt[4]:dt[4]+dt[5]]
+          rel={}
+          for s in sections:
+           if s[1] not in (4,9) or s[6]!=sections.index(ds):continue
+           for pos in range(s[4],s[4]+s[5],s[9]):
+            at,info=struct.unpack_from('<II',e,pos);ix=info>>8;row=struct.unpack_from('<IIIBBH',e,ds[4]+ix*ds[9]);rel[at]=cstr(strs,row[0])
+          def import_name(a):
+           ip=got=None
+           for x in ins(a,a+16):
+            op=x.operands
+            if x.mnemonic=='add' and len(op)==3 and x.reg_name(op[0].reg)=='ip' and op[2].type==ARM_OP_IMM:
+             src=x.reg_name(op[1].reg)
+             if src=='pc':ip=x.address+8+op[2].imm
+             elif src=='ip' and ip is not None:ip+=op[2].imm
+            elif x.mnemonic.startswith('ldr') and len(op)==2 and op[1].type==ARM_OP_MEM and x.reg_name(op[0].reg)=='pc':
+             if x.reg_name(op[1].mem.base)=='ip' and ip is not None:got=(ip+op[1].mem.disp)&0xffffffff;break
+           return rel.get(got)
+          powname=import_name(powtarget) if powtarget else None
+          # Only UnityEngine.CoreModule and mscorlib registration tables needed.
+          names={}
+          for im in ('UnityEngine.CoreModule.dll','mscorlib.dll','CoreGameplay.dll'):
+           row=images.get(im);pos=e.find(im.encode()+b'\0')
+           if row is None or pos<0:continue
+           marker=struct.pack('<I',va(pos));found=[]
+           for fo,v,size,_ in seg[1:]:
+            mem=e[fo:fo+size];j=-1
+            while (j:=mem.find(marker,j+1))>=0:
+             if j+12>size:continue
+             n,p=struct.unpack_from('<II',mem,j+4)
+             if not 0<n<60000:continue
+             try: ptrs=struct.unpack_from('<%dI'%n,e,off(p,n*4))
+             except (ValueError,struct.error):continue
+             if all(a==0 or 0x148b0b0<=a<0x6a167d0 for a in ptrs):found.append(ptrs)
+           if len(found)!=1:continue
+           ptrs=found[0]
+           for t in range(row[2],row[2]+row[3]):
+            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+            for i in range(tr[9],tr[9]+(tr[16]&65535)):
+             mr=struct.unpack_from('<7I4H',md,M+36*i);rid=mr[6]&0xffffff
+             if 0<rid<=len(ptrs) and ptrs[rid-1] in (powtarget,rngtarget):names[ptrs[rid-1]]=tn+'.'+name(mr[0])
+          print('BIND22',json.dumps({'powImport':powname,'powMethod':names.get(powtarget),'rngMethod':names.get(rngtarget)}))
+          assert powname=='powf' or names.get(powtarget) in ('UnityEngine.Mathf.Pow','System.MathF.Pow')
+          assert names.get(rngtarget)=='UnityEngine.Random.get_value'
+          B=0x11000000;STOP=B+0xf0000;COLS=B+0x1000;SLOTS=B+0x2000;PARAM=B+0x3000;META=B+0x4000;PTR=B+0x5000
+          def f32(x):return struct.unpack('<f',struct.pack('<f',x))[0]
+          def flbits(x):return struct.unpack('<I',struct.pack('<f',x))[0]
+          def frombits(x):return struct.unpack('<f',struct.pack('<I',x))[0]
+          def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
+          def rd(u,p):return struct.unpack('<I',bytes(u.mem_read(p,4)))[0]
+          def setup(ranges):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP);u.reg_write(UC_ARM_REG_FPEXC,0x40000000)
+           pages=set()
+           for a,b in ranges:
+            for p in range(a&~4095,((b+4095)//4096)*4096,4096):
+             if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
+           return u
+          def fill(u,lens,slots,counts,params):
+           wr(u,COLS+12,len(lens));wr(u,SLOTS+12,len(slots))
+           st=0
+           for i,(n,g) in enumerate(zip(lens,counts)):
+            u.mem_write(COLS+16+16*i,struct.pack('<fiii',0.0,st,st+n,g));st+=n
+           for i,(g,invalid,c,d,w) in enumerate(slots):
+            u.mem_write(SLOTS+16+8*i,struct.pack('<fBBBB',w,g,invalid,c,d))
+           u.mem_write(PARAM,struct.pack('<4fB3x',*params))
+          def weights(lens,slots,counts,params):
+           a,b=0x1c84954,0x1c84bc0
+           u=setup([(a,b),(0x2b4c8d0,0x2b4c8d4)])
+           fill(u,lens,slots,counts,params)
+           def hk(uc,pc,size,user):
+            if pc==0x2b4c8d0:
+             x,y=frombits(uc.reg_read(UC_ARM_REG_R0)),frombits(uc.reg_read(UC_ARM_REG_R1))
+             uc.reg_write(UC_ARM_REG_R0,flbits(x**y));uc.reg_write(UC_ARM_REG_PC,uc.reg_read(UC_ARM_REG_LR))
+            elif not a<=pc<b:raise RuntimeError('unexpected weight '+hex(pc))
+           u.hook_add(UC_HOOK_CODE,hk)
+           for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),(COLS,len(lens),SLOTS,PARAM)):u.reg_write(r,v)
+           u.emu_start(a,STOP,count=10000);assert u.reg_read(UC_ARM_REG_PC)==STOP
+           return [frombits(rd(u,COLS+16+16*i)) for i in range(len(lens))],[frombits(rd(u,SLOTS+16+8*i)) for i in range(len(slots))]
+          def equation(lens,slots,counts,p):
+           cp,ce,sp,se,d=p;valid=[g for n,g in zip(lens,counts) if g<n]
+           mn=min(valid,default=0);mx=max(valid,default=0)
+           def lerp_penalty(strength,x,exponent):
+            x=max(0.0,min(1.0,f32(x**exponent)))
+            base=f32(1-strength);return f32(base+f32(f32(1-base)*x))
+           cw=[0.0 if g>=n else lerp_penalty(cp,1 if mn==mx else f32(1-f32((g-mn)/(mx-mn))),ce) for n,g in zip(lens,counts)]
+           sw=[0.0 if g or inv else f32(cw[col]*lerp_penalty(sp,f32(dist/d),se)) for g,inv,col,dist,_ in slots]
+           return cw,sw
+          params=[f32(.96),f32(2),f32(.999),f32(1),4]
+          samples=[];count=0;maxdiff=0
+          for lens in ([1],[3,4],[2,3,5],[4,4,4]):
+           for counts in itertools.product(*[range(n+1) for n in lens]):
+            slots=[]
+            for c,(n,gc) in enumerate(zip(lens,counts)):
+             for k in range(n):slots.append((int(k<gc),int(k==n-1 and gc<n and c%2),c,min(4,abs(k-gc+1)),0.0))
+            actual=weights(lens,slots,counts,params);expected=equation(lens,slots,counts,params)
+            diff=max([abs(a-b) for x,y in zip(actual,expected) for a,b in zip(x,y)]+[0])
+            maxdiff=max(maxdiff,diff);assert diff<2e-6,(lens,counts,actual,expected,diff)
+            count+=1
+            if len(samples)<8 or count%40==0:samples.append({'lens':lens,'counts':counts,'slots':slots,'columnWeights':actual[0],'slotWeights':actual[1]})
+          print('WEIGHT22',json.dumps({'cases':count,'maxAbsoluteDiff':maxdiff,'examples':samples},separators=(',',':')))
+          # PickSlot native loop with injected random unit value; observe fallback and
+          # inclusive cumulative boundary separately from random stream generation.
+          pickrows=[]
+          for w,flags in [([1,2,3],[0,0,0]),([0,0,0],[1,0,0]),([0,1,0],[0,0,0]),([0,0],[1,1]),([1,0,1],[0,1,0])]:
+           for rv in (0.,.125,.25,.5,.75,1.):
+            a,b=0x1c84cdc,0x1c84e24;u=setup([(a,b),(0x2b4c8e0,0x2b4c8e4)])
+            fill(u,[len(w)],[(f,0,0,4,x) for x,f in zip(w,flags)],[sum(flags)],params)
+            calls=[]
+            def hk(uc,pc,size,user):
+             if pc==0x2b4c8e0:
+              calls.append(rv);uc.reg_write(UC_ARM_REG_R0,flbits(rv));uc.reg_write(UC_ARM_REG_PC,uc.reg_read(UC_ARM_REG_LR))
+             elif not a<=pc<b:raise RuntimeError('unexpected picker '+hex(pc))
+            u.hook_add(UC_HOOK_CODE,hk);u.reg_write(UC_ARM_REG_R0,SLOTS);u.reg_write(UC_ARM_REG_R1,len(w));u.emu_start(a,STOP,count=500)
+            assert u.reg_read(UC_ARM_REG_PC)==STOP
+            ret=u.reg_read(UC_ARM_REG_R0);ret=ret if ret<2**31 else ret-2**32
+            total=f32(sum(w));expected=-1
+            if total>0:
+             threshold=f32(total*rv);cum=0.
+             for i,x in enumerate(w):
+              cum=f32(cum+x)
+              if threshold<=cum and not flags[i]:expected=i;break
+            if expected<0:expected=next((i for i,x in enumerate(flags) if not x),-1)
+            assert ret==expected,(w,flags,rv,ret,expected)
+            assert len(calls)==(1 if total>0 else 0)
+            pickrows.append([w,flags,rv,ret,len(calls)])
+          print('PICK22',json.dumps(pickrows,separators=(',',':')))
+          # Native mark operation: synthetic value arrays with initialized metadata.
+          # Resume after metadata guard and bind only its class pointer, no scoring
+          # or marking logic stubbed.
+          marks=[]
+          for lens in ([1],[5],[2,4]):
+           for idx in range(sum(lens)):
+            a,b=0x1c84874,0x1c84948;u=setup([(a,b)])
+            slots=[(0,0,c,4,0.0) for c,n in enumerate(lens) for _ in range(n)]
+            fill(u,lens,slots,[0]*len(lens),params);wr(u,PTR,META);wr(u,META+0x74,1)
+            u.reg_write(UC_ARM_REG_R6,COLS);u.reg_write(UC_ARM_REG_R8,SLOTS);u.reg_write(UC_ARM_REG_R5,idx)
+            stops=[]
+            def hk(uc,pc,size,user):
+             if pc==0x1c848ec:
+              uc.reg_write(UC_ARM_REG_R9,PTR);uc.reg_write(UC_ARM_REG_PC,0x1c848f0)
+             elif pc==0x1c84944:stops.append(pc);uc.emu_stop()
+             elif not a<=pc<b:raise RuntimeError('unexpected mark '+hex(pc))
+            u.hook_add(UC_HOOK_CODE,hk);u.emu_start(a,b,count=1000)
+            assert stops==[0x1c84944]
+            out=[struct.unpack('<fBBBB',bytes(u.mem_read(SLOTS+16+8*i,8))) for i in range(sum(lens))]
+            selected=slots[idx][2]
+            assert [x[1] for x in out]==[int(i==idx) for i in range(len(slots))]
+            assert [rd(u,COLS+28+16*c) for c in range(len(lens))]==[int(c==selected) for c in range(len(lens))]
+            assert [x[4] for x in out]==[min(4,abs(idx-i)) if slots[i][2]==selected else 4 for i in range(len(slots))]
+            marks.append([lens,idx,[x[4] for x in out]])
+          print('MARK22',json.dumps(marks,separators=(',',':')))
+          print('PASS_SHA_PINNED_GOLD_SCORING22')
           PY

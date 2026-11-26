@@ -101,26 +101,22 @@ jobs:
            if op.startswith(('bl','b','cmp','cmn','tst','teq','ldr','str','mov','add','sub','and','orr','bic','eor','rsb','ux','lsl','asr','lsr','mvn','pop','push','stm','ldm','mul')):
             return [hex(x.address),op,x.op_str]
            return None
-          ignore=re.compile(r'Formatter|Migrator|\.Migration\.|\.Cheat|\.Sample\.|\.Analytics\.|\.AJson|\.Mock|\.Tests|\._1_13_0\.|__AJson|global::',re.I)
-          focus=re.compile(r'(WeekendRace|RaceBot|RaceStage|RaceParticipant|RaceConfig|RaceData|RaceService|RaceProgress|LavaQuest|GoldRush|CascadeEvent|GoldCard|GoldenCard|EventWindow|LiveOpsService|RewardBuffer)',re.I)
+          # Follow the numeric kernels and event-state producers; preserve precise source bounds.
+          for label,a,b in [
+           ('race-bot-create',0x2094978,0x2094be0),('race-intervals',0x2094f60,0x20952b8),('race-progress',0x20a57ac,0x20a5914),('race-update-bot',0x20a556c,0x20a57ac),('race-completion',0x2098644,0x2098928),('race-positions',0x209833c,0x2098644),('race-join',0x209bde4,0x209beac),('race-complete',0x2098d08,0x2098ef0),('race-participant-progress',0x1f10f6c,0x1f10ff0),
+           ('lava-bounds',0x1ff7eb0,0x1ff804c),('lava-feasibility',0x1ff7c6c,0x1ff7eb0),('lava-dropout',0x1ff804c,0x1ff8d74),('lava-fallback',0x1ff8d74,0x1ff8e38),('lava-build',0x1ffa964,0x1ffac44),('lava-finalists',0x1ffae7c,0x1ffaff0),('lava-mixseed',0x1ffb5d8,0x1ffb5fc),('lava-step',0x1fd5b9c,0x1fd5d38),('lava-loss',0x1fd7414,0x1fd75c8),('lava-reward-split',0x1fd93b8,0x1fd9ad0),('lava-final-count',0x1fd1e00,0x1fd1f50),
+           ('cascade-base',0x21034f4,0x2103500),('cascade-final',0x21031c0,0x2103290),('cascade-token',0x20f5530,0x20f558c),('cascade-level-end',0x20f5708,0x20f58f8),('cascade-progress',0x20ff388,0x20ffc58),('cascade-restart',0x20f5e98,0x20f6044),('cascade-earn-gate',0x20fb0f4,0x20fb118),('cascade-schedule-active',0x2100cdc,0x2100df0),('cascade-select',0x2100650,0x2100bbc),('cascade-weekly',0x2100df0,0x21012e8),('gold-hook',0x1f28590,0x1f28790),('gold-level-end',0x2103d88,0x2103fc0),('gold-amount',0x1f39ee4,0x1f3a258)]:
+           ins=instructions(a,b)
+           print('ANCHOR41',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in ins]},separators=(',',':')))
+          # Recover metadata enum literals and exact parameter lists.
+          FD,FDS=struct.unpack_from('<II',md,64);DD,DDS=struct.unpack_from('<II',md,72)
+          defs={i:di for i,ty,di in struct.iter_unpack('<iii',md[FD:FD+FDS]) if 0<=di<DDS}
           for im,types in wanted.items():
            for tn,tr in types:
-            if ignore.search(tn):continue
-            ms=[r for r in records if r['image']==im and r['type']==tn]
-            fields=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
-            if focus.search(tn) or any(focus.search(r['method']) for r in ms):
-             print('TYPE40',json.dumps({'image':im,'type':tn,'fields':[f for f in fields if not f.startswith('__')],'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not ignore.search(r['method']) and not re.match('add_|remove_',r['method'])]},separators=(',',':')))
-          # first pass focuses logic rather than generated async/UI glue and avoids excessive disassembly logs.
-          for r in records:
-           tn=r['type'];mn=r['method'];a=int(r['rva'],16)
-           if not a or ignore.search(tn) or ignore.search(mn):continue
-           if not focus.search(tn) or re.search(r'View|Presenter|Animation|Binder|Installer|Payload|Factory|ConfigProvider|Cheat|Notifier|Tutorial|\.Abstractions?\.|Widget|Notification|^<',tn) or re.match(r'add_|remove_|get_|set_|\.ctor|\.cctor',mn):continue
-           i=bisect.bisect_right(starts,a)
-           if i>=len(starts):continue
-           b=starts[i]
-           if b-a<4 or b-a>0xc00:continue
-           ins=instructions(a,b)
-           calls=[[hex(x.address),x.op_str,names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str)]
-           print('METHOD40',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':calls},separators=(',',':')))
-          print('PASS_SHA_PINNED_EVENTS_CATALOG40')
+            if not re.search(r'(CascadeEvent(TokenSourceType|MultiplierType|LifecycleAction|ScheduleType|Type)|LavaQuest(EventState|Stage|ScheduleType)|RaceParticipantType)$',tn):continue
+            fs=[]
+            for fi in range(tr[8],tr[8]+(tr[17]&65535)):
+             fs.append([name(struct.unpack_from('<I',md,F+fi*12)[0]),md[DD+defs[fi]:DD+defs[fi]+1].hex() if fi in defs else None])
+            print('ENUM41',json.dumps({'type':tn,'fields':fs},separators=(',',':')))
+          print('PASS_SHA_PINNED_EVENTS_ANCHORS41')
           PY

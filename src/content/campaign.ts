@@ -265,10 +265,8 @@ export function selectRetryLayout(save: Save, base: Deal, current: Deal): Deal |
   const mastered = save.platform?.completedCampaign.includes(campaignId(level));
   if (!mastered && (level <= 4 || teachingByLevel.has(level) ||
       level === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1'))) return;
-  if (current.hitapps) {
-    const source = selectHitappsBank(hitappsR4Bank, save, base, save.attempt);
-    return source && layoutFingerprint(source) !== layoutFingerprint(current) ? source : undefined;
-  }
+  const source = hitappsR4Bank.get(current.id);
+  if (source && source.record.use !== 'campaign') return;
   const desired = selectCampaignDeal(save, base, save.attempt);
   const fingerprint = layoutFingerprint(current);
   if (layoutFingerprint(desired) !== fingerprint) return desired;

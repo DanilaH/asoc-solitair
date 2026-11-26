@@ -99,3 +99,22 @@ test('the Rules4 retry replaces geometry and settles one life with the new passp
   expect(after.attempt.issuance?.dealId).toBe(after.attempt.dealId);
   expect(after.campaignLives?.remaining).toBe(4);
 });
+
+test('the last Rules4 layout falls back to a different archived deal on an ordinary retry', async ({ page }) => {
+  const entries = [...hitappsR4Deals()].filter(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 31);
+  expect(entries).toHaveLength(1);
+  const { deal } = entries[0];
+  const save = profile(deal, 'hitapps-r4-fallback-touch');
+  save.attempt.board.phase = 'exhausted';
+  save.attempt.board.movesLeft = 0;
+  await launch(page, save);
+  if (await page.locator('#home-play').isVisible()) await page.locator('#home-play').tap();
+  await expect(page.locator('#result')).toBeVisible();
+  await page.locator('#replay').tap();
+  await expect.poll(async () => (await read(page)).attempt.dealId).not.toBe(deal.id);
+  const after = await read(page);
+  expect(after.attempt.board.rulesVersion).toBe(3);
+  expect(after.attempt.board.tableau).not.toEqual(deal.initial.tableau);
+  expect(after.attempt.issuance?.dealId).toBe(after.attempt.dealId);
+  expect(after.campaignLives?.remaining).toBe(4);
+});

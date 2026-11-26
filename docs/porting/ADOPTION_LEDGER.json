@@ -179,9 +179,9 @@
   },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
-  "sourceInventoryRef": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/10cc5a22520912ea26069817d1f4ad52293fb69f/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "0d55a933096fd1bc3166ec2bd567a7c3eb066f07",
+  "sourceInventoryRef": "10cc5a22520912ea26069817d1f4ad52293fb69f",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
@@ -675,8 +675,8 @@
     {
       "id": "hitapps-meta-regions",
       "status": "ROADMAPPED",
-      "currentImplementation": "No star/building/region meta P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Estimate asset pipeline and staged owner-visible progression UI for later season F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "P32 isolated offline prototype in tools/content/region-event-trials.ts; not production runtime. Latest developer baseline PR216 89feea96.",
+      "nextAction": "Implement multi-step prerequisites, stars per level type, XP, two reward paths, frozen region balance and asset lifecycle. Star producer/settlement parity open. Locally actionable; docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md; original device/remote values not verified.",
       "stage": "F3"
     },
     {
@@ -843,26 +843,26 @@
     {
       "id": "hitapps-digging-event",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No digging event P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Inspect original event behavior and schema; define adaptation and authoring cost F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "P32 isolated offline prototype in tools/content/region-event-trials.ts; not production runtime. Latest developer baseline PR216 89feea96.",
+      "nextAction": "Implement authored/seeded rectangle placement, 200 attempts/fallback, durability and 1-token hits, bonuses/mole chains, separate stage awards. Exact seed and chain/settlement open. Locally actionable; docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md; original device/remote values not verified.",
       "stage": "F3",
-      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+      "reason": "Bounded native kernels and detailed static lifecycle recovered; full original transaction/config parity remains open. Not a blocker to own adaptation."
     },
     {
       "id": "hitapps-lucky-wheel",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No wheel rewards P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Find original UI/state/odds evidence, then design own optional reward minigame F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "P32 isolated offline prototype in tools/content/region-event-trials.ts; not production runtime. Latest developer baseline PR216 89feea96.",
+      "nextAction": "Implement staged weighted sectors, minSpins, deactivation, upgrade/final repeats, per-difficulty task quotas, persisted event config and token/reward lifecycle. Task sampling/expiry and live weights open. Locally actionable; docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md; original device/remote values not verified.",
       "stage": "F3",
-      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+      "reason": "Bounded native kernels and detailed static lifecycle recovered; full original transaction/config parity remains open. Not a blocker to own adaptation."
     },
     {
       "id": "hitapps-endless-treasure",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No treasure progression event P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Determine native phases and actual gameplay before creating design spec F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "P32 isolated offline prototype in tools/content/region-event-trials.ts; not production runtime. Latest developer baseline PR216 89feea96.",
+      "nextAction": "Implement configured Free/RV/Paid chain, separate resource milestone progress/pending claim, event rotation, persisted period. IAP gated; overflow and full settlement parity open. Locally actionable; docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md; original device/remote values not verified.",
       "stage": "F3",
-      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+      "reason": "Bounded native kernels and detailed static lifecycle recovered; full original transaction/config parity remains open. Not a blocker to own adaptation."
     },
     {
       "id": "hitapps-birthday-offer",
@@ -1674,5 +1674,20 @@
     "nativeRows": 388,
     "modelAssertions": 41753,
     "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation"
+  },
+  "metaRewardsHandoff": {
+    "report": "https://github.com/DanilaH/mini-games-kit/blob/10cc5a22520912ea26069817d1f4ad52293fb69f/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+    "brief": "docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md",
+    "consumerCodeBaseline": "89feea96e4e1355679f4763e1d435f1afa2f2d4a",
+    "nativeRows": 1122,
+    "scope": "bounded independent original kernels and static lifecycle; not device/runtime/remote parity or product acceptance",
+    "researchCI": "https://github.com/DanilaH/asoc-solitair/actions/runs/45884391974",
+    "sourceIds": [
+      "hitapps-meta-regions",
+      "hitapps-digging-event",
+      "hitapps-lucky-wheel",
+      "hitapps-endless-treasure"
+    ],
+    "consolidation": "docs-only on #217; reconcile developer #216 separately"
   }
 }

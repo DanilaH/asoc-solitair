@@ -1,5 +1,9 @@
 # Project contract
 
+## Unico candidate handoff · 27 November 2026
+
+Read [Unico candidate brief](docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md) and [source PR158](https://github.com/DanilaH/mini-games-kit/pull/158). Successful project research CI 45888593172; signed candidate static only, publisher trust UNKNOWN, zero native execution. Preserve distinct ordinary/Super Magnet, Daily minigame/Fortune Cards/login calendar, win/task streak, shared Coffee and all nine [candidate systems](docs/porting/UNICO_CANDIDATE_SYSTEMS.json). Rules3-only Magnet trial is not Rules4 parity. Preserve #210, 115 canonical IDs/38 packets/15 commerce families, runtime pin and IAP OFF. Reconcile latest developer #216 with all stacked docs branches; no release or status change.
+
 ## Hitapps commerce and rewarded source handoff · 27 November 2026
 
 Use [the commerce brief](docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md) and [source research PR157](https://github.com/DanilaH/mini-games-kit/pull/157) for P20/P21/P25. Five families including Buy All, purchase pins, recent-payer RV and ceilf streak-inclusive win bonus. Two successful static source passes and 4976 own-model assertions, no original executed rows. IAP remains OFF; no implicit balance or ads changes. Reconcile developer PR216 with all research handoff branches; retain 115 IDs / 38 packets / 15 commerce families and runtime pin.

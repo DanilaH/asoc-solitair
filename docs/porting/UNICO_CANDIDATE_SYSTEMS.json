@@ -1,0 +1,100 @@
+{
+  "sourceRef": "d91def6f0f2239405a3de9b0f1703dd63cb9ffa4",
+  "sourcePR": 158,
+  "sourceCI": 45888593172,
+  "canonicalIds": 115,
+  "packets": 38,
+  "scope": "Additional provisional research/porting backlog, not exclusions or original runtime acceptance",
+  "candidates": [
+    {
+      "id": "unico-super-magnet-candidate",
+      "name": "Super Magnet",
+      "packets": "P17",
+      "parent": "unico-magnet-helper",
+      "evidence": "SuperMagnetService win counter, pending claim, separate inventory and upgraded use gates",
+      "next": "Trace exact selected cards, booster consumption, loss reset, Undo and claim transaction",
+      "status": "RESEARCH_REQUIRED_RETAIN_IN_ROADMAP",
+      "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC_OR_METADATA"
+    },
+    {
+      "id": "unico-fortune-cards-event-candidate",
+      "name": "Fortune Cards layered event",
+      "packets": "P29/P32",
+      "parent": "unico-daily-fortune",
+      "evidence": "FortuneCardsService, separate clover/layer/slot progress and claim; nine slots, minimum-progress gate",
+      "next": "Resolve reward generation and layer transitions; treat as separate event from daily minigame",
+      "status": "RESEARCH_REQUIRED_RETAIN_IN_ROADMAP",
+      "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC_OR_METADATA"
+    },
+    {
+      "id": "unico-login-calendar-candidate",
+      "name": "Daily Rewards login calendar",
+      "packets": "P29",
+      "parent": "unico-daily-puzzles",
+      "evidence": "DailyRewardSchedule, DailyRewardService, claimed mask and missed-day claim, x2 UI",
+      "next": "Trace cycle/claim/reset and acquisition receipts",
+      "status": "RESEARCH_REQUIRED_RETAIN_IN_ROADMAP",
+      "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC_OR_METADATA"
+    },
+    {
+      "id": "unico-tournament-candidate",
+      "name": "Tournament and leaderboard backend",
+      "packets": "P32/P36",
+      "parent": null,
+      "evidence": "UnicoTournamentBackend join, submit score, rankings, WebSocket; separate API assemblies",
+      "next": "Trace event/score rules, backend dependencies and live activation; never fabricate opponents",
+      "status": "RESEARCH_REQUIRED_RETAIN_IN_ROADMAP",
+      "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC_OR_METADATA"
+    },
+    {
+      "id": "unico-digdeep-candidate",
+      "name": "DigDeep",
+      "packets": "P32/P36",
+      "parent": null,
+      "evidence": "RemoteConfigData DigDeepConfig; AchievementTrackerService item hook",
+      "next": "Resolve concrete state and event lifecycle",
+      "status": "RESEARCH_REQUIRED_RETAIN_IN_ROADMAP",
+      "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC_OR_METADATA"
+    },
+    {
+      "id": "unico-nestquest-candidate",
+      "name": "NestQuest",
+      "packets": "P32/P36",
+      "parent": null,
+      "evidence": "RemoteConfigData NestQuestConfig",
+      "next": "Resolve whether distinct active game system and state transitions",
+      "status": "RESEARCH_REQUIRED_RETAIN_IN_ROADMAP",
+      "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC_OR_METADATA"
+    },
+    {
+      "id": "unico-show-category-candidate",
+      "name": "Show Category helper",
+      "packets": "P17",
+      "parent": null,
+      "evidence": "Separate saved _safeShowCategory and config",
+      "next": "Resolve user interaction, cost, reveal rule and Undo",
+      "status": "RESEARCH_REQUIRED_RETAIN_IN_ROADMAP",
+      "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC_OR_METADATA"
+    },
+    {
+      "id": "unico-achievement-candidate",
+      "name": "Achievement tracking",
+      "packets": "P32/P36",
+      "parent": null,
+      "evidence": "AchievementTrackerService hooks for level, daily, category, fortune, DigDeep",
+      "next": "Trace milestones and rewards, distinguish analytics from grants",
+      "status": "RESEARCH_REQUIRED_RETAIN_IN_ROADMAP",
+      "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC_OR_METADATA"
+    },
+    {
+      "id": "unico-offer-variants-candidate",
+      "name": "Difficulty and failure offers",
+      "packets": "P25",
+      "parent": "unico-vip",
+      "evidence": "Candidate configuration and offer metadata",
+      "next": "Resolve eligibility, rewards, timing; IAP remains off",
+      "status": "RESEARCH_REQUIRED_RETAIN_IN_ROADMAP",
+      "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC_OR_METADATA"
+    }
+  ]
+}

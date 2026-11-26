@@ -1,3 +1,7 @@
+# P30 · Историческая офлайн-проба серий — superseded for source semantics
+
+**Актуальное ТЗ:** [P04/P30 Hitapps/AZUR](HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md), [native evidence](https://github.com/DanilaH/mini-games-kit/blob/055587b0258bfbaf86cdfb725eda4764d5fad985/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md). Старый тестовый контракт ниже сохранён для обратной совместимости; не переносить его упрощённые reset rules в новую source-shaped policy. Hitapps/AZUR локальная инженерия READY_LOCAL; Unico provenance и physical/runtime acceptance остаются отдельными gates. Исходная очередь и release status не повышены.
+
 # P30 · Раздельные серии побед, задач и переносов
 
 В [источниках F1–F3](../qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md) у Hitapps есть отдельные GainProgress, LoseStreak и получение этапов. У Unico видео показывает два направления. У AZUR подтверждено имя ComboStreak, условия сброса и награды по нему остаются неизвестными.

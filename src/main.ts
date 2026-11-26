@@ -33,6 +33,7 @@ import { cosmeticUnlocked, currentDailyStreak, dailyRewardEligible, localDay } f
 import { WalletPresentation } from './app/wallet-presentation';
 import { ContinueCheck } from './app/continue-check';
 import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
+import { lessonMarker, recordReleaseLearning } from './app/c8-tutorial';
 import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, ruleIntroMarker, specialRuleNote, type RuleIntro } from './app/tutorial';
 import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
@@ -43,6 +44,7 @@ import { collectedGold, goldenRewardKey } from './domain/golden-cards';
 import { TASKS_PREVIEW, acceptedTaskSignals, claimTask, claimTaskMilestone, taskRewardState, recordTaskSignal, releaseTasks, shouldScheduleTasks, updatePreviewTasks, type TaskSignal } from './domain/events/daily-tasks';
 import { PICTURE_PREVIEW, PICTURE_PRICES, PICTURE_TITLE, claimPicture, observePictureClock, openPictureEvent, pictureClosed, pictureTokens, recordPictureWin, revealPicturePart } from './domain/events/picture';
 import { REWARD_OFFER_PREVIEW, canClaimShopCoins, claimShopCoins, definitionCount, isOfferPlacement, offerLabels, offerQuote, offerShowContext, prepareRewardOffer, selectedWinMultiplier, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
+import { openingShuffleProof } from './domain/shuffle-intro-proof';
 import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-shuffle';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
 import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
@@ -509,7 +511,7 @@ try {
       const now = Date.now(), remainingIdle = Math.max(adBreakHold, adBreakRetryAt, fullscreenRetryAt) - performance.now();
       const idle = !saving && !serviceBusy && !store.needsRecovery && !inspectMode && !activePointers.size && remainingIdle <= 0
         && (!save.attempt.daily || !training()) &&
-        !currentLesson()?.accepts && !ruleIntroduction(save, deal) && Boolean(scene?.idleForAd());
+        !currentLesson()?.accepts && !currentLesson()?.authored && !ruleIntroduction(save, deal) && Boolean(scene?.idleForAd());
       if (themeAdAttempt === save.attempt.id) {
         if (!idle) { scheduleAdBreak(Math.max(250, remainingIdle)); return; }
         themeAdAttempt = undefined;
@@ -568,7 +570,9 @@ try {
         screen === 'game' && (deal.campaignLevel ?? 0) >= BALANCE.ads.bannerFromLevel);
     const blocked = runtime.activity.getBlockReasons().some(reason => reason !== 'screen' && reason !== 'level-transition');
     const intro = screen === 'game' ? ruleIntroduction(save, deal) : undefined;
-    const teaching = screen === 'game' && (Boolean(currentLesson()?.accepts) || Boolean(intro && !dismissedRules.has(ruleIntroMarker(intro, deal))));
+    const coaching = screen === 'game' ? currentLesson() : undefined;
+    const teaching = screen === 'game' && (Boolean(coaching?.accepts || coaching?.authored) ||
+      Boolean(intro && !dismissedRules.has(ruleIntroMarker(intro, deal))));
     const result = screen === 'game' && save.attempt.board.phase !== 'playing';
     banner?.setEligible(eligible, blocked || teaching || result);
   }
@@ -815,6 +819,9 @@ try {
     const text = visible ? copy! : '';
     if ($('#lesson-copy').textContent !== text) $('#lesson-copy').textContent = text;
     $('#lesson-note').hidden = !visible;
+    const actionKind = visible && action ? action.type : undefined;
+    if (actionKind) $('#lesson-note').dataset.action = actionKind;
+    else delete $('#lesson-note').dataset.action;
   }
   const currentLesson = () => {
     if (save !== lessonSave) { lessonSave = save; instruction = lesson(save, deal); }
@@ -956,7 +963,8 @@ try {
     const boosterNote = nextBooster === 'magnet' ? 'Магнит в слоте темы подтянет карту из колоды.'
       : nextBooster === 'hammer' ? 'Молоток в слоте темы откроет карту в столбце.' : undefined;
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
-      ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.'
+      ? (instruction.jokerColumn === undefined ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.'
+        : 'Для примера коснитесь выделенного столбца с камнем.')
       : instruction?.copy ?? (casual && screen === 'game' ? specialRuleNote(save, deal)?.copy : binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
         : ice ? 'Соберите тему, чтобы снять один слой льда.'
         : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : goldNote ?? boosterNote);
@@ -1351,8 +1359,9 @@ try {
         }
         Object.assign(next, result.next);
         if (result.accepted) {
+          if (releaseProfile) recordReleaseLearning(next, beforeBoard, cmd, deal, result.events);
           if (cmd.type === 'transfer' || cmd.type === 'draw' || cmd.type === 'recycle') {
-            recordLearning(next, beforeBoard, cmd, deal);
+            recordLearning(next, beforeBoard, cmd, deal, result.events);
             if (!seenTutorial(next, 'learn:covered-waste') && coversPlayableWaste(beforeBoard, cmd, deal)) {
               coveredWaste = true;
               markTutorial(next, 'learn:covered-waste');
@@ -2587,7 +2596,7 @@ try {
   $('#joker').addEventListener('click', () => {
     if (deal.training !== 'joker' && deal.campaignLevel !== undefined && !seenTutorial(save,'joker-used') && !seenTutorial(save,'intro:joker') && maybeIntroduceRule('joker')) return;
     if (!save.profile.jokers && !freeJokerPractice(save, deal)) { openHelpers('joker'); return; }
-    const active = $('#joker').getAttribute('aria-pressed') !== 'true'; setInspect(false); scene?.setJoker(active); renderHud();
+    const active = $('#joker').getAttribute('aria-pressed') !== 'true'; setInspect(false); scene?.setJoker(active, currentLesson()?.jokerColumn); renderHud();
     message('');
   }, domOptions);
   $('#buy-joker').addEventListener('click', async () => {
@@ -2747,9 +2756,11 @@ try {
   }, domOptions);
   async function requestShuffle() {
     if (!ready || saving || serviceBusy || screen !== 'game' || runtime.activity.isBlocked() || !canShuffle(save, deal)) return;
+    const preset = releaseProfile && !seenTutorial(save, lessonMarker('shuffle-used'))
+      ? openingShuffleProof(save.attempt.board, deal) : undefined;
     const request: ShuffleRequest = {
       attemptId: save.attempt.id, dealId: deal.id, revision: save.revision, board: save.attempt.board, deal,
-      seed: crypto.getRandomValues(new Uint32Array(1))[0],
+      seed: preset?.seed ?? crypto.getRandomValues(new Uint32Array(1))[0],
     };
     runtime.activity.setBlocked('shuffle', true);
     renderHud();
@@ -2769,7 +2780,10 @@ try {
       if (!proof) { message('Не удалось найти выигрышный порядок колоды.', true); return; }
       if (!await write(next => {
         const accepted = commitShuffle(next, deal, request, proof);
-        if (accepted) logTaskAction(next, 'UseShuffles', 'helper');
+        if (accepted) {
+          logTaskAction(next, 'UseShuffles', 'helper');
+          if (releaseProfile) markTutorial(next, lessonMarker('shuffle-used'));
+        }
         return accepted;
       })) return;
       scene?.sync();

@@ -225,3 +225,7 @@ html[data-casual] #app>.victory-particles{position:fixed;z-index:14;width:0;heig
 [data-casual] #home .casual-archive button{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:44px;margin:0;padding:3px;font-size:12px;line-height:1.13;border-radius:9px}
 [data-casual] #home .casual-archive .casual-icon{width:21px;height:21px}
 [data-casual] #home .casual-archive #daily-resume-old{grid-column:1/-1}
+
+[data-casual] #lesson-note p{font-size:clamp(15px,4vw,18px);line-height:1.18}
+[data-casual] #feedback-row:has(#message.error:not(:empty)) #lesson-note{visibility:hidden}
+[data-casual] #feedback-row:has(#message.error:not(:empty)) #message.error{visibility:visible}

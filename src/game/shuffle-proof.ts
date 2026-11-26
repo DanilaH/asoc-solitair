@@ -1,5 +1,6 @@
 import { solve } from '../domain/solver';
 import { findReferenceRoute } from '../domain/ordinary-search';
+import { openingShuffleProof } from '../domain/shuffle-intro-proof';
 import { prepareShuffleBoard, type ShuffleRequest } from '../domain/proof-shuffle';
 import type { Board, BoardCommand, Deal } from '../domain/types';
 import { advance, identity, options } from '../../tools/qa/gameplay-oracle';
@@ -60,6 +61,8 @@ export function proveShuffle(request: ShuffleRequest): BoardCommand[] | null {
   if (board.phase !== 'playing' || (deal.shufflePreview === 1 && board.stock.length < 2)) return null;
   const candidate = prepareShuffleBoard(board, deal, seed);
   if (!candidate) return null;
+  const preset = openingShuffleProof(board, deal);
+  if (preset?.seed === seed && replaysToWin(candidate, deal, preset.route)) return preset.route;
   const quick = foundationFirst(candidate, deal);
   if (quick) return quick;
   const deadline = performance.now() + 1800;
@@ -69,11 +72,15 @@ export function proveShuffle(request: ShuffleRequest): BoardCommand[] | null {
   const guided = ordinary ?? progressFirst(candidate, deal, Math.min(deadline, performance.now() + 900));
   const result = guided ? { status: 'SOLVED' as const, path: guided } : solve(candidate, deal, 12_000, deadline);
   if (result.status !== 'SOLVED') return null;
-  let replay = candidate;
-  for (const command of result.path) {
+  return replaysToWin(candidate, deal, result.path) ? result.path : null;
+}
+
+function replaysToWin(board: Board, deal: Deal, route: readonly BoardCommand[]) {
+  let replay = board;
+  for (const command of route) {
     const next = advance(replay, command, deal);
-    if (!next) return null;
+    if (!next) return false;
     replay = next;
   }
-  return replay.phase === 'won' ? result.path : null;
+  return replay.phase === 'won';
 }

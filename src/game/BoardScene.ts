@@ -60,6 +60,7 @@ export class BoardScene extends Phaser.Scene {
   private views = new Map<string, CardView>();
   private metrics!: ReturnType<typeof layout>;
   private jokerSelecting = false;
+  private taughtJokerColumn?: number;
   private jokerArt!: Phaser.GameObjects.Container;
   private jokerBadge!: Phaser.GameObjects.Container;
   private lockArt!: Phaser.GameObjects.Container;
@@ -144,7 +145,7 @@ export class BoardScene extends Phaser.Scene {
     const newDeal = this.animateEntryOnCreate;
     this.initial = newDeal;
     this.animateEntryOnCreate = false;
-    this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.dragPointer = undefined; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = []; this.stockBusyUntil = 0;
+    this.jokerSelecting = false; this.taughtJokerColumn = undefined; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.dragPointer = undefined; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = []; this.stockBusyUntil = 0;
     installSceneTextSharpness(this);
     this.world = this.add.container(0, 0);
     this.cues = [];
@@ -1102,7 +1103,7 @@ export class BoardScene extends Phaser.Scene {
     if (press.jokerColumn !== undefined) {
       const target = this.hitTarget(x, y);
       if (tap && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
-        this.jokerSelecting = false; this.options.jokerMode?.(false); this.options.command({ type: 'place-joker', column: press.jokerColumn });
+        this.jokerSelecting = false; this.taughtJokerColumn = undefined; this.options.jokerMode?.(false); this.options.command({ type: 'place-joker', column: press.jokerColumn });
       } else this.cancel();
       return;
     }
@@ -1133,7 +1134,10 @@ export class BoardScene extends Phaser.Scene {
     if (!this.focus) return;
     this.focus.clear();
     if (this.jokerSelecting) for (const t of this.metrics.targets.filter(t => t.location.kind === 'tableau' && this.options.getSave().attempt.board.tableau[t.location.index].length && !isLocked(this.options.getSave().attempt.board, t.location.index, this.options.deal))) {
-      this.targetLight(t);
+      const recommended = t.location.index === this.taughtJokerColumn;
+      this.targetLight(t, true, this.taughtJokerColumn === undefined || recommended ? 1 : .4);
+      if (recommended) this.focus.lineStyle(3 / this.cssUnit, 0xffe5a7).strokeRoundedRect(
+        t.x - this.cardW / 2 + 3, t.y - this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
     }
     if (this.selected && !this.press?.moved) {
       const source = this.selected;
@@ -1159,14 +1163,14 @@ export class BoardScene extends Phaser.Scene {
       this.targetLight(hover, valid, this.options.reducedMotion() ? 1 : Math.min(1, (performance.now() - this.hoverSince) / 75));
     } else this.hoverKey = '';
   }
-  public setJoker(active: boolean): void { this.cancel(); this.jokerSelecting = active; this.options.jokerMode?.(active); this.drawFocus(); this.game.loop.wake(); }
+  public setJoker(active: boolean, taughtColumn?: number): void { this.cancel(); this.jokerSelecting = active; this.taughtJokerColumn = taughtColumn; this.options.jokerMode?.(active); this.drawFocus(); this.game.loop.wake(); }
   public cancel(press = this.press ?? this.pendingReturn): void {
     this.inspectClick=null;
     const board = this.options.getSave().attempt.board;
     const index = press?.moved && press.from?.kind === 'tableau' ? press.from.index : -1;
     const returning = index >= 0 && board.tableau[index]?.length && board.tableau[index].every(id => press!.poses.some(p => p.id === id)) && !this.options.reducedMotion()
       ? { ids: press!.poses.map(p => p.id), y: this.metrics.poses.find(p => p.id === board.tableau[index][0])!.y } : undefined;
-    this.jokerSelecting = false; this.options.jokerMode?.(false); this.options.peek?.(null); this.press = null; this.dragPointer = undefined; this.selected = null; this.dragCount?.setVisible(false);
+    this.jokerSelecting = false; this.taughtJokerColumn = undefined; this.options.jokerMode?.(false); this.options.peek?.(null); this.press = null; this.dragPointer = undefined; this.selected = null; this.dragCount?.setVisible(false);
     if (this.world) { this.sync([], false, undefined, undefined, press?.poses.map(p => p.id)); if (returning) { this.returningWells.set(index, returning); this.drawSlots(); } }
   }
   public settleMotion(): void {

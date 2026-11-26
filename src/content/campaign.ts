@@ -10,6 +10,7 @@ import { modifierDeals } from './modifiers';
 import data from './campaign.json' with { type: 'json' };
 import { coreSpecialBaseIds, coreSpecialDeals } from './campaign-v8-integrated-specials';
 import { content8Special } from './campaign-v8-special';
+import { c8TeachingPresets } from './campaign-v8-ftue';
 import { content8BonusDeals } from './campaign-v8-bonus';
 import { content8FrozenDeal } from './campaign-v8-frozen';
 import { content8BoundDeal } from './campaign-v8-bound';
@@ -133,14 +134,16 @@ const progressionShuffleBySource = new Map([...content8Campaign, ...lateAdaptive
 export const integratedCampaignDeals = [...releaseDealBySource.values(), ...shuffleBySource.values(), ...rightsBySource.values(),
   ...progressionShuffleBySource.values()];
 
-const all = new Map([introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
+const teachingByLevel = new Map(c8TeachingPresets.map(({ deal, base }) => [base.campaignLevel!, { deal, base }]));
+const teachingOriginal = new Map(c8TeachingPresets.map(({ deal, base }) => [deal.id, base.id]));
+const all = new Map([...c8TeachingPresets.map(({ deal }) => deal), introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
   ...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...integratedCampaignDeals, ...coreSpecialDeals, ...content8DirectorDeals, ...lateAdaptiveDeals, ...hitappsDirectorDeals.map(entry => entry.deal), equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal, ...content8Special, ...content8BonusDeals,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 /** Includes every campaign definition that can be restored from a saved Deal ID. */
 export const savedDealDefinitions = () => all.values();
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
-  dealId = releaseSourceById.get(dealId) ?? dealId;
+  dealId = teachingOriginal.get(dealId) ?? releaseSourceById.get(dealId) ?? dealId;
   const previewIds = CONTENT8_PREVIEW ? variants.get(base.campaignLevel)?.ids : undefined;
   if (CONTENT8_PREVIEW && dealId === recoveryDeal.id && base.id === recoveryBase.id) return true;
   if (CONTENT8_PREVIEW && dealId === randomJokerDeal.id && base.id === jokerBase.id) return true;
@@ -156,6 +159,9 @@ export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
 }
 export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): Deal {
   if (!CONTENT8_PREVIEW) return base;
+  const lesson = base.campaignLevel !== undefined ? teachingByLevel.get(base.campaignLevel) : undefined;
+  if (releaseProfile && lesson?.base.id === base.id && !save.platform?.completedCampaign.includes(campaignId(base.campaignLevel!)))
+    return lesson.deal;
   if (!releaseProfile && RECOVERY_GAMEPLAY && base.id === recoveryBase.id) return recoveryDeal;
   if (RANDOM_JOKER_PREVIEW && base.id === jokerBase.id) return randomJokerDeal;
   const selected = localizedCampaignDeal(save, selectC8Deal(save, base, previous));

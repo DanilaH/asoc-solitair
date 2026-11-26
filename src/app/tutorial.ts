@@ -1,13 +1,16 @@
-import { applyBoard, legalCommands, sameBoardCommand, sourceCards } from '../domain/engine';
+import { applyBoard, isLocked, legalCommands, sameBoardCommand, sourceCards } from '../domain/engine';
 import { knownContinuation } from '../domain/solver';
-import { completedLevels, freeHintDemo, markTutorial, seenTutorial } from '../domain/progression';
+import { completedLevels, freeHintDemo, freeUndoPractice, markTutorial, seenTutorial } from '../domain/progression';
 import { bonusKinds, bonusOffer, pilesFor } from '../domain/bonus-slots';
-import type { Board, BoardCommand, Command, Deal, Save } from '../domain/types';
-import { authoredLessonAction, usesAuthoredLesson } from './c8-tutorial';
+import type { Board, BoardCommand, Command, Deal, GameEvent, Save } from '../domain/types';
+import { authoredLessonAction, hasReleaseLesson, isLessonBoardCommand, lessonMarker, releaseLessonStep, usesAuthoredLesson } from './c8-tutorial';
 import { frozenLayers } from '../domain/frozen-cards';
 import { isBoundCard } from '../domain/bound-cards';
 import { isPictureJoined } from '../domain/puzzle-pairs';
+import { hammerCard, matchingStock } from '../domain/starter-boosters';
 import { releaseProfile } from '../config/profile';
+import { canShuffle } from '../domain/proof-shuffle';
+import { openingShuffleProof } from '../domain/shuffle-intro-proof';
 
 type Skill = 'category' | 'match' | 'stock';
 const marker = (skill: Skill) => `learn:${skill}`;
@@ -21,9 +24,10 @@ export function coversPlayableWaste(board: Board, action: BoardCommand, deal: De
     legalCommands(board, deal).some(move => move.type === 'transfer' && move.from.kind === 'waste' && move.to.kind === 'foundation');
 }
 
-export function recordLearning(save: Save, before: Board, action: BoardCommand, deal: Deal): void {
+export function recordLearning(save: Save, before: Board, action: BoardCommand, deal: Deal, events: readonly GameEvent[] = []): void {
   if (action.type === 'transfer' && action.to.kind !== 'waste' &&
     action.to.index === bonusOffer(deal, action.to.kind)?.index) markTutorial(save, `learn:bonus-${action.to.kind}`);
+  if (releaseProfile && hasReleaseLesson(deal)) return;
   if (action.type === 'recycle' && deal.training) markTutorial(save, 'learn:recycle');
   if (action.type === 'transfer' && action.from.kind === 'waste' && deal.training === 'stock') markTutorial(save, 'learn:waste');
   if (action.type === 'transfer' && action.to.kind === 'tableau' && before.tableau[action.to.index].length === 0 && deal.training === 'planning')
@@ -39,18 +43,15 @@ export function recordLearning(save: Save, before: Board, action: BoardCommand, 
   if (deal.campaignLevel && deal.campaignLevel <= 2) markTutorial(save, marker(skillFor(before, action, deal)));
   if (!releaseProfile) return;
   const after = save.attempt.board;
-  const earlier = new Set(before.collected);
-  const newlyCollected = (id: string) => !earlier.has(id) && after.collected.includes(id);
-  if (Object.keys(deal.frozen?.layers ?? {}).some(id => frozenLayers(after, deal, id) < frozenLayers(before, deal, id)))
-    markTutorial(save, 'learn:frozen');
-  if (Object.keys(deal.bound?.scissorsByCard ?? {}).some(id => isBoundCard(before, deal, id) && !isBoundCard(after, deal, id)))
-    markTutorial(save, 'learn:bound');
-  if (deal.puzzle?.pairs.some(pair => newlyCollected(pair.top) || !isPictureJoined(before, pair) && isPictureJoined(after, pair)))
-    markTutorial(save, 'learn:puzzle');
-  if (deal.golden?.ids.some(newlyCollected)) markTutorial(save, 'learn:golden');
-  for (const [id, booster] of Object.entries(deal.starter?.cards ?? {})) {
-    if (action.type === 'transfer' && action.to.kind === 'foundation' && sourceCards(before, action.from, deal).includes(id))
-      markTutorial(save, 'learn:' + booster);
+  if (action.type !== 'transfer' || action.to.kind !== 'foundation') return;
+  const moved = sourceCards(before, action.from, deal);
+  if (moved.some(id => deal.frozen?.layers[id] && !frozenLayers(before, deal, id))) markTutorial(save, 'learn:frozen');
+  if (moved.some(id => deal.bound?.scissorsByCard[id] && !isBoundCard(before, deal, id))) markTutorial(save, 'learn:bound');
+  if (deal.puzzle?.pairs.some(pair => moved.includes(pair.top) && moved.includes(pair.bottom))) markTutorial(save, 'learn:puzzle');
+  if (deal.golden?.ids.every(id => after.collected.includes(id) || after.foundations.some(pile => pile.includes(id))))
+    markTutorial(save, 'learn:golden');
+  for (const event of events) {
+    if (event.cause === 'magnet' || event.cause === 'hammer') markTutorial(save, 'learn:' + event.cause);
   }
 
 }
@@ -58,18 +59,28 @@ export function recordLearning(save: Save, before: Board, action: BoardCommand, 
 export function specialRuleNote(save: Save, deal: Deal): { kind: string; copy: string } | undefined {
   const board = save.attempt.board;
   if (board.phase !== 'playing') return;
-  const visible = (id: string) => board.faceUp.includes(id) && !board.collected.includes(id);
+  const visible = (id: string) => board.waste.at(-1) === id || board.tableau.some((pile, index) =>
+    !isLocked(board, index, deal) && (pile.at(-1) === id && board.faceUp.includes(id) ||
+      sourceCards(board, { kind: 'tableau', index }, deal).includes(id)));
   const seen = (kind: string) => seenTutorial(save, 'learn:' + kind);
   if (!seen('frozen') && Object.keys(deal.frozen?.layers ?? {}).some(id => visible(id) && frozenLayers(board, deal, id)))
     return { kind: 'frozen', copy: 'Соберите тему, чтобы снять слой льда.' };
   if (!seen('bound') && Object.keys(deal.bound?.scissorsByCard ?? {}).some(id => visible(id) && isBoundCard(board, deal, id)))
     return { kind: 'bound', copy: 'Ножницы в верхнем слоте разрежут связь.' };
-  if (!seen('puzzle') && deal.puzzle?.pairs.some(({ top, bottom }) => visible(top) || visible(bottom)))
+  if (!seen('puzzle') && deal.puzzle?.pairs.some(({ top, bottom }) =>
+    visible(top) && visible(bottom) && legalCommands(board, deal).some(action => action.type === 'transfer' &&
+      sourceCards(board, action.from, deal).includes(top) &&
+      (action.to.kind === 'tableau' ? board.tableau[action.to.index].at(-1) === bottom : isPictureJoined(board, { top, bottom }))))) {
     return { kind: 'puzzle', copy: 'Соедините половинки в столбце, затем перенесите пару в тему.' };
-  if (!seen('golden') && deal.golden?.ids.some(visible))
-    return { kind: 'golden', copy: 'Соберите золотые карты и выиграйте, чтобы получить бонус.' };
+  }
+  if (deal.golden) {
+    const placed = deal.golden.ids.filter(id => board.collected.includes(id) || board.foundations.some(pile => pile.includes(id))).length;
+    if (placed || deal.golden.ids.some(visible))
+      return { kind: 'golden', copy: `Золотые карты: ${placed} из ${deal.golden.ids.length}. Бонус за победу.` };
+  }
   const starter = Object.entries(deal.starter?.cards ?? {}).find(([id, kind]) =>
-    !seen(kind) && visible(id) && !board.foundations.some(pile => pile.includes(id)));
+    !seen(kind) && visible(id) && (kind === 'magnet' ? matchingStock(board, deal, deal.cards[id].category) >= 0
+      : Boolean(hammerCard(board, deal))));
   if (!starter) return;
   const kind = starter[1];
   return { kind, copy: kind === 'magnet' ? 'Магнит в слоте темы притянет карту из колоды.' :
@@ -95,6 +106,8 @@ export interface Guidance {
   action?: BoardCommand;
   delay?: number;
   attention?: 'hint' | 'undo' | 'joker';
+  jokerColumn?: number;
+  authored?: true;
   copy?: string;
   accepts?: (command: Command) => boolean;
 }
@@ -145,6 +158,16 @@ function openingLesson(save: Save, deal: Deal): Guidance | undefined {
       }
       return button('Нажмите «Подсказка». Первый раз бесплатно.', 'hint', 'hint');
     case 'undo':
+      if (releaseProfile && deal.id === 'campaign-c8-dealer-004') {
+        if (seen(lessonMarker('undo-repeated'))) break;
+        if (!save.attempt.undo.length && authoredStep && sameBoardCommand(authoredStep, deal.winningPath[0]))
+          return { copy: seen(lessonMarker('undo-restored'))
+            ? 'Карта вернулась. Повторите этот ход самостоятельно.' : 'Сделайте показанный ход.', action: authoredStep, authored: true };
+        if (save.attempt.undo.length && (save.profile.undos || freeUndoPractice(save, deal)) && !seen(lessonMarker('undo-restored')))
+          return { copy: save.profile.undos ? 'Нажмите «Отмена», чтобы вернуть ход. Расходуется 1 отмена.'
+            : 'Нажмите «Отмена», чтобы вернуть ход. Учебное действие бесплатно.', attention: 'undo', authored: true };
+        break;
+      }
       if (seen('undo-used')) break;
       if (!save.attempt.undo.length) return guide('Сделайте показанный ход.', () => true);
       return button(save.profile.undos
@@ -209,6 +232,16 @@ function isBoardCommand(command: Command): command is BoardCommand {
 export function lesson(save: Save, deal: Deal): Guidance | undefined {
   if (save.attempt.board.phase !== 'playing') return;
   const board = save.attempt.board;
+  if (releaseProfile && hasReleaseLesson(deal)) {
+    const step = releaseLessonStep(save, deal);
+    if (!step) return;
+    const { command, copy } = step;
+    if (command.type === 'place-joker') return { attention: 'joker', copy, jokerColumn: command.column, authored: true };
+    return isLessonBoardCommand(command) ? { action: command, copy, authored: true } : undefined;
+  }
+  if (releaseProfile && !seenTutorial(save, lessonMarker('shuffle-used')) &&
+      canShuffle(save, deal) && openingShuffleProof(board, deal))
+    return { copy: 'Можно перемешать скрытые карты. Это потратит один заряд.' };
   for (const kind of bonusKinds) {
     const offer = bonusOffer(deal, kind);
     if (!offer || pilesFor(board, kind).length <= offer.index || seenTutorial(save, `learn:bonus-${kind}`)) continue;

@@ -1,3 +1,5 @@
+import { recordReleaseLearning } from '../../src/app/c8-tutorial';
+import { releaseProfile } from '../../src/config/profile';
 import assert from 'node:assert/strict';
 import { lesson, recordLearning } from '../../src/app/tutorial';
 import { expect, it } from 'vitest';
@@ -83,16 +85,14 @@ it('keeps the opening gates on an executable, budget-safe route through category
     for (const action of deal.winningPath) {
       const current = lesson(save, deal);
       expect(current?.accepts?.(action)).not.toBe(false);
-      if (current?.accepts) {
-        assert(current.copy);
-        assert.equal(current.accepts({ type: 'undo' }), false);
-        taught.push(current.copy);
-      }
+      if (current?.accepts) assert.equal(current.accepts({ type: 'undo' }), false);
+      if (current?.copy && current.action) taught.push(current.copy);
       const before = save.attempt.board;
       const move = dispatch(save, action, deal);
       assert(move.accepted);
       save = move.next;
-      recordLearning(save, before, action, deal);
+      if (releaseProfile) recordReleaseLearning(save, before, action, deal, move.events);
+      recordLearning(save, before, action, deal, move.events);
     }
     assert.equal(save.attempt.board.phase, 'won');
     assert(taught.length >= 3);

@@ -412,8 +412,8 @@
     {
       "id": "azur-action-ftue",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Content 8 has required action steps and saved Hint practice. CORE-0 enlarges the prompt and covers blocked alternate input and restored steps in the compact browser preview.",
-      "nextAction": "Owner plays 1–8 continuously on a real phone. Check mandatory lesson text, Hint, Undo and Joker at native banner height.",
+      "currentImplementation": "C8 release uses deal-bound opt-in action cues, saved Hint/Undo practice, distinct ordered/picture and three/one-key effects, and new authored first-clear presets from PR211. See docs/qa/issue-210/FTUE_PRESETS.md for exact levels, saved markers and checks.",
+      "nextAction": "Verify first play from a clean profile on physical Android and check card motion, understanding, tap targets and accessibility at native banner height.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "C1",
       "evidenceRef": "docs/qa/content-v8/CORE_0.md"
@@ -1254,8 +1254,8 @@
     {
       "id": "azur-tutorial-preset-deal",
       "status": "IN_PROGRESS",
-      "currentImplementation": "Offline tools/content/azur-preset.ts resolves negative category references and ordered columns and deck from the schema in kit PR #93. Level 1 eligibility plus enabled and valid preset gates the branch. Product validation requires the exact card partition. Other options use the existing ordinary AZUR dealer. content:azur-preset exports a versioned Russian Rules 3 example and verifies each of its 19 moves against the engine and independent oracle. Tests cover fallback, RNG calls and stock order. See docs/qa/content-v8/AZUR_PRESET_AUTHORING.md. Issue #210: C8 teaching indexes immutable authored positions at src/app/c8-tutorial.ts and checks presented source and target in BoardScene; local regressions cover ordered and stock reload. See docs/qa/issue-210/COMPOSITION_REVIEW.md.",
-      "nextAction": "Verify the original Android first-level board, live tutorial activation and full native validator semantics. Any future campaign activation needs an owner decision and preservation of frozen C8 lesson identities and SaveStore/Undo compatibility.",
+      "currentImplementation": "Offline tools/content/azur-preset.ts resolves negative category references and ordered columns and deck from the schema in kit PR #93. Level 1 eligibility plus enabled and valid preset gates the branch. Product validation requires the exact card partition. Other options use the existing ordinary AZUR dealer. content:azur-preset exports a versioned Russian Rules 3 example and verifies each of its 19 moves against the engine and independent oracle. Tests cover fallback, RNG calls and stock order. See docs/qa/content-v8/AZUR_PRESET_AUTHORING.md. Issue #210 first-clear C8 authored presets use seven versioned Deal IDs and preserve old definitions and Undo states. Each supported action is tied to an actual presented source/target and a verified state transition. See docs/qa/issue-210/FTUE_PRESETS.md.",
+      "nextAction": "Verify the original Android first-level board, live tutorial activation and full native validator semantics. Current C8 first-clear activation is owner-authorized in PR211. Physical Android and independent human acceptance remain open.",
       "stage": "C1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/66"
     },

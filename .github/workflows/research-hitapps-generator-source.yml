@@ -17,6 +17,7 @@ jobs:
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
           curl --fail --location --silent --show-error --retry 1 --max-time 100 'https://d.apkpure.net/b/XAPK/com.hitappsgames.wordsolitaire?versionCode=3742' -o "$tmp/source.xapk"
+          python3 -m pip install --quiet --disable-pip-version-check 'unicorn==2.1.4' 'capstone==5.0.6'
           python3 - "$tmp/source.xapk" <<'PY'
           import hashlib,struct,sys,zipfile,io,re,bisect,json
           from pathlib import Path
@@ -187,4 +188,76 @@ jobs:
            print('CHECK8',json.dumps({'name':r['type']+'.'+r['method'],'facts':facts},separators=(',',':')))
           print('PASS_SHA_PINNED_RULES8')
           print('STATIC_ONLY_NO_RUNTIME_OR_REMOTE')
+          PY          # Execute ONLY small, leaf native predicates in a synthetic ARM memory map.
+          # No Android app, SDK, user records or real cohort is executed.
+          import itertools, math
+          from unicorn import Uc, UC_ARCH_ARM, UC_MODE_ARM, UC_HOOK_CODE
+          from unicorn.arm_const import UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3,UC_ARM_REG_LR,UC_ARM_REG_SP,UC_ARM_REG_PC
+          from capstone import Cs, CS_ARCH_ARM, CS_MODE_ARM
+          dis=Cs(CS_ARCH_ARM,CS_MODE_ARM)
+          data=0x10000000;stop=0x10010000
+          def emu_leaf(a,end,payload):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);page=a&~4095
+           u.mem_map(page,((end-page+4095)//4096)*4096)
+           u.mem_write(a,e[off(a,end-a):off(a,end-a)+end-a])
+           u.mem_map(data,0x20000);u.mem_write(data,payload)
+           u.reg_write(UC_ARM_REG_R0,data);u.reg_write(UC_ARM_REG_LR,stop);u.reg_write(UC_ARM_REG_SP,data+0xff00)
+           def guard(uc,pc,size,user):
+            if not a<=pc<end:raise RuntimeError('non-leaf access '+hex(pc))
+           u.hook_add(UC_HOOK_CODE,guard)
+           u.emu_start(a,stop,count=150)
+           assert u.reg_read(UC_ARM_REG_PC)==stop
+           return u.reg_read(UC_ARM_REG_R0)
+          # Source value-type unboxed memory layout, established by field-offset table.
+          def play_raw(bits,so,to,v):
+           p=bytearray(12);p[:5]=bytes(bits);struct.pack_into('<HHB',p,6,so,to,v);return emu_leaf(0x1c7ce00,0x1c7ce7c,bytes(p))
+          def home_raw(bits,so,to,v):
+           p=bytearray(10);p[:4]=bytes(bits);struct.pack_into('<HHB',p,4,so,to,v);return emu_leaf(0x1c7d034,0x1c7d0b0,bytes(p))
+          # Emit truth tables as compact boolean masks. Compare with independent equations next.
+          orders=[(0,0),(0,1),(1,0),(1,1),(1,2),(2,1),(65535,0),(0,65535),(65535,65535)]
+          for nm,fn,n in [('play',play_raw,5),('home',home_raw,4)]:
+           for v in (0,1,2):
+            for so,to in orders:
+             mask=0
+             for i in range(1<<n):
+              bits=[(i>>j)&1 for j in range(n)]
+              res=fn(bits,so,to,v);assert res in (0,1),(nm,bits,so,to,v,res)
+              mask|=res<<i
+             print('TRUTH9',json.dumps({'type':nm,'verdict':v,'sourceOrder':so,'targetOrder':to,'mask':hex(mask)}))
+          # Sparse source-anchored decision blocks. No entire proprietary bodies exported.
+          # Resolve exact field loads, conditional branches, immediate bit masks and calls
+          # with a real ARM decoder instead of the older partial custom decoder.
+          def record(label,a,b):
+           ins=list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
+           facts=[]
+           for x in ins:
+            m=x.mnemonic;op=x.op_str
+            if m.startswith(('b','tst','cmp','cmn','ldr','str','and','orr','eor','mov','sub','add','ubfx','uxth','sxth','uxtb','sxtb','v')) and 'pc,' not in op and not ('sp,' in op and m.startswith(('sub','add'))):
+             # restrict to decision-relevant fields, branch destinations, and masks
+             if m.startswith(('b','tst','cmp','cmn','v')) or '#' in op and m.startswith(('ldr','str','and','orr','eor','mov','sub','add','ubfx')):
+              facts.append([hex(x.address),m,op])
+           print('ANCHOR9',json.dumps({'label':label,'facts':facts},separators=(',',':')))
+          for label,a,b in [
+           ('root-eligibility',0x1c7e568,0x1c7e638),
+           ('root-group-loop',0x1c7e640,0x1c7e7a4),
+           ('play-target-empty-lock',0x1c7d5a0,0x1c7d624),
+           ('play-flags',0x1c7d650,0x1c7d6b0),
+           ('play-order-puzzle',0x1c7d728,0x1c7d7d4),
+           ('home-target-empty-lock',0x1c7d920,0x1c7d9c0),
+           ('home-category-order',0x1c7da40,0x1c7db64),
+           ('cut-eligibility',0x1d02f94,0x1d030bc),
+           ('dirty-secondary',0x1d02830,0x1d02874),
+           ('pair-state-first',0x1d3b3b8,0x1d3b424),
+           ('pair-state-second',0x1d3b604,0x1d3b66c),
+           ('easy-dec-coef',0x22fe160,0x22fe208),
+           ('easy-dec-formula',0x22fe330,0x22fe3c4),
+           ('tolerance-formula',0x1c79130,0x1c791e0)
+          ]:record(label,a,b)
+          # Discover named source predicates and remaining applier helpers (metadata only).
+          for a,rs in sorted(entries.items()):
+           for rr in rs:
+            if re.search(r'Core\\.(Systems\\.(CardPlacementOperations|ContainerOperations|BoundOperations|FrozenCardOperations|PuzzleOperations)|Handlers\\.LevelDataHandler)',rr['type']):
+             if re.search(r'Drag|Valid|Evaluate|Cut|FindBound|FindScissors|KeepApplicable|Puzzle|Frozen|Locker|PlaceCategory|ApplyBound',rr['method']):
+              print('METHOD9',json.dumps(rr,separators=(',',':')))
+          print('PASS_SHA_PINNED_LEAF_EMULATION9')
           PY

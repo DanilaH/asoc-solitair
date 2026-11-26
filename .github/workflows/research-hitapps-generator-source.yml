@@ -114,54 +114,42 @@ jobs:
              immediates.append([hex(pc),(op>>16)&15,imm,cond])
            print('FLOW',json.dumps({'method':r['type']+'.'+r['method'],'rva':r['rva'],'boundedEnd':hex(end),'calls':calls[:60],'conditionalBranches':branches[:40],'cmpImmediate':immediates[:35]},separators=(',',':')))
 
-          # Recover field offset table independently from paired type-definition counts.
-          tdcount=TS//88;hits=[]
-          for fo,v,size,_ in seg[1:]:
-           data=e[fo:fo+size];p=-1;marker=struct.pack('<I',tdcount)
-           while (p:=data.find(marker,p+1))>=0:
-            if p%4 or p+16>size or struct.unpack_from('<I',data,p+8)[0]!=tdcount:continue
-            ftab,stab=struct.unpack_from('<II',data,p+4)[0],struct.unpack_from('<I',data,p+12)[0]
-            try:
-             fo1=off(ftab,tdcount*4);fo2=off(stab,tdcount*4)
-            except ValueError:continue
-            hits.append((hex(v+p),ftab,stab))
-          print('FIELD_TABLE_CANDIDATES',json.dumps(hits))
-          for addr,ftab,stab in hits:
-           mapped=[]
-           for i in range(tdcount):
-            tr=struct.unpack_from('<22I',md,T+i*88);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if not re.search(r'(^Core\..*\.(CardDto|LevelDto|MoveData|ContainerEntity|CardEntity|SimulationWorld|SimulationController|LogicWorld|GameEntity|GameData|GameStateEntity|SystemCreator)$|EasyDealsConfig$|EasyDealsResult$|DynamicDifficultyConfig$)',tn):continue
-            count=tr[17]&65535
-            if not count:continue
-            try:
-             fptr=word(ftab+i*4);values=struct.unpack_from('<%di'%count,e,off(fptr,count*4))
-            except (ValueError,struct.error):continue
-            mapped.append([tn,[[name(struct.unpack_from('<I',md,F+12*(tr[8]+k))[0]),values[k]] for k in range(count)]])
-           print('OFFSETS',addr,json.dumps(mapped,separators=(',',':')))
+          # Final focused producer/placement pass.
           def branch(pc):
            w=word(pc)
            return pc+8+4*(((w&0xffffff)^0x800000)-0x800000) if w&0xe000000==0xa000000 and w>>28!=15 else None
-          # Ignore relocated external branches and PC literal offsets in clone comparisons;
-          # count and report unresolved differences separately.
-          for a,b,n,label in [(0x1d07be0,0x1d1e1bc,90,'Equality valid'),(0x1d08104,0x1d1e33c,90,'Priority valid'),(0x1d07be0,0x1d08104,90,'two validators'),(0x1d3b1b8,0x1d4621c,301,'pair transform')]:
-           same=relocated=0;unresolved=[]
-           for k in range(n):
-            x,y=a+4*k,b+4*k;u,w=word(x),word(y)
-            if u==w:same+=1;continue
-            bx,by=branch(x),branch(y)
-            if bx is not None and by is not None and (u&0xff000000)==(w&0xff000000) and (bx==by or bx-x==by-y):relocated+=1;continue
-            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:
-             relocated+=1;continue
-            # PC-relative ADD references differ by their immediate encoding.
-            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:relocated+=1;continue
-            unresolved.append(hex(4*k))
-           print('CLONE4',json.dumps({'label':label,'words':n,'same':same,'relocated':relocated,'unresolvedOffsets':unresolved}))
-          # Selected 3-instruction traces to bind switch offsets and weights; no full bodies.
-          for pc in [0x1d07fd8,0x1d07fdc,0x1d07fe0,0x1d07ff8,0x1d08000,0x1d08008,0x1d08010,0x1d08014,0x1d08018,0x1d0801c,0x1d08024,0x1d08040,0x1d08044,0x1d08048,0x1d08058,0x1d0805c,0x1d07b68,0x1d07b70,0x1d07b94,0x1d080c8,0x1d07ce0,0x1d07ce4,0x1d07cf0,0x1d07cf8,0x1d07d00,0x1d07d08,0x1d07d10,0x1d07d24,0x1d07d28,0x1d07d3c,0x1d07d40,0x1d3b288,0x1d3b290,0x1d3b324,0x1d3b328,0x1d3b32c,0x1d3b340,0x1d3b4b0,0x1d3b4c4,0x1d3b574,0x1d3b578,0x1d3b58c,0x1d3b590,0x1d3b62c,0x1d3b634,0x1d3b644,0x1d3b654,0x1d3b65c,0x1d3b660,0x1d3b664,0x1d3b668]:
-           print('WORD',hex(pc),hex(word(pc)))
-          for i in range(5):print('SWITCH',i,hex(0x1d07fe4+word(0x1d07fe4+4*i)))
-          # Native factory registration count and constructor identities via direct branches.
-          for a,b,label in [(0x1d72f1c,0x1d73100,'registered strategies'),(0x1c8bc30,0x1c8be14,'factory clone')]:
-           print('FACTORY',label,[[hex(pc),hex(t),[r['type']+'.'+r['method'] for r in entries.get(t,[])]] for pc in range(a,b,4) if (t:=branch(pc)) is not None and word(pc)&0x1000000 and t in entries])
+          def operand2(op):
+           if op&(1<<25):
+            rot=((op>>8)&15)*2;imm=op&255
+            return ((imm>>rot)|(imm<<(32-rot)))&0xffffffff if rot else imm
+           return ['r',op&15,'shift',(op>>5)&3,(op>>7)&31,'registerShift',bool(op&16)]
+          def fact(pc):
+           op=word(pc);c=op>>28
+           if (dst:=branch(pc)) is not None:return [hex(pc),'call' if op&0x1000000 else 'branch',c,hex(dst)]
+           if op&0x0c000000==0x04000000 and not op&0x02000000:return [hex(pc),'read' if op&0x100000 else 'write',c,(op>>12)&15,(op>>16)&15,(op&4095)*(1 if op&0x800000 else -1),'byte' if op&0x400000 else 'word']
+           if op&0x0e000090==0x00000090 and op&0x60 and op&0x400000:return [hex(pc),'readHalf' if op&0x100000 else 'writeHalf',c,(op>>12)&15,(op>>16)&15,(((op>>4)&240)|(op&15))*(1 if op&0x800000 else -1)]
+           if op&0x0c000000==0 and (op&0x0e000090)!=0x00000090:return [hex(pc),'alu',c,(op>>21)&15,(op>>12)&15,(op>>16)&15,operand2(op),bool(op&0x100000)]
+           return None
+          for label,a,b in [('category-swap-setup',0x1d3b1b8,0x1d3b200),('category-swap-compare',0x1d3b268,0x1d3b288),('category-swap-store',0x1d3b384,0x1d3b424),('member-swap-mask',0x1d3b4b0,0x1d3b4e8),('member-swap-condition',0x1d3b5cc,0x1d3b668),('easy-loss-coefficient',0x22fe2d0,0x22fe32c),('easy-formula',0x22fe354,0x22fe3bc)]:
+           print('ANCHOR5',json.dumps({'label':label,'facts':[f for pc in range(a,b,4) if (f:=fact(pc))]},separators=(',',':')))
+          for a,rs in sorted(entries.items()):
+           r=next((r for r in rs if r['type']=='Core.Systems.PossibleMovesSystem' or r['type']=='Core.Helpers.SimulationHelper'),None)
+           if not r:continue
+           end=starts[bisect.bisect_right(starts,a)]
+           direct=[];notMapped=[];cmp=[]
+           for pc in range(a,end,4):
+            if (d:=branch(pc)) is not None and word(pc)&0x1000000:
+             dst=[q['type']+'.'+q['method'] for q in entries.get(d,[])]
+             if dst:direct.append([hex(pc),hex(d),dst[:2]])
+             elif d not in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):notMapped.append([hex(pc),hex(d)])
+            op=word(pc)
+            if op&0x0ff0f000==0x03500000:
+             imm=operand2(op)
+             if imm!=0:cmp.append([hex(pc),(op>>16)&15,imm,op>>28])
+           print('PRODUCER',json.dumps({'method':r['method'],'rva':hex(a),'end':hex(end),'direct':direct,'otherCalls':notMapped[:40],'nonzeroCmp':cmp[:40]},separators=(',',':')))
+          # For the important clone calls, compare the full bounded executable code, not a method name.
+          for label,a,b,n in [('pair',0x1d3b1b8,0x1d4621c,301),('validatorE',0x1d07be0,0x1d1e1bc,90),('validatorP',0x1d08104,0x1d1e33c,90)]:
+           assert all(word(a+4*k)==word(b+4*k) or (branch(a+4*k) is not None and branch(b+4*k) is not None and word(a+4*k)&0xff000000==word(b+4*k)&0xff000000 and (branch(a+4*k)==branch(b+4*k) or branch(a+4*k)-a==branch(b+4*k)-b)) or (word(a+4*k)&0x0f7f0000==0x051f0000 and word(b+4*k)&0x0f7f0000==0x051f0000 and word(a+4*k)&0xfffff000==word(b+4*k)&0xfffff000) or (word(a+4*k)&0x0fef0000==0x028f0000 and word(b+4*k)&0x0fef0000==0x028f0000 and word(a+4*k)&0xfffff000==word(b+4*k)&0xfffff000) for k in range(n))
+           print('CLONE_ASSERT',label,n,'PASS')
           print('STATIC_ONLY_NO_RUNTIME_OR_REMOTE')
           PY

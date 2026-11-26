@@ -113,7 +113,27 @@ jobs:
             fields=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
             matches=[f for f in fields if not f.startswith('__') and re.search(r'(extra.*move|move.*(pool|balance|bank|reserv|carry|remain|available|limit|purchas|add)|pending.*move|remaining.*(step|move)|reservedLives|LivesReservation|paidRestoreCount|restor.*count|step.*limit)',f,re.I)]
             if matches:print('FIELD32',json.dumps({'image':im,'type':tn,'fields':matches},separators=(',',':')))
-          # Source-pinned ARM32 bounded execution of numeric write slices and resolved accessor boundaries.
+          # Resolve persistence/lifecycle callers and interface methods, including abstract method ordinals.
+          for im,row in images.items():
+           if not re.match(r'^(Game\.|CoreGameplay|Assembly-CSharp|GameCore\.)',im):continue
+           for t in range(row[2],row[2]+row[3]):
+            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+            if not re.search(r'(IPaidRestoreStockService|ILivesSpendProvider|ILivesService|IExtraMovesBubbleService|IReviveMovesOfferService|LevelSaveDto|LevelGameplayConfig|LevelStats|MovesOfferSaveData|LivesData|LifeSpend|ProcessLifeSpend|<HandleTryAgainAsync>|<RestartLevelAsync>)',tn):continue
+            if re.search(r'Formatter|Migration|Cheat',tn):continue
+            print('CONTRACT33',json.dumps({'type':tn,'fields':[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12],'methods':[[name(struct.unpack_from('<I',md,M+36*k)[0]),list(struct.unpack_from('<7I4H',md,M+36*k)[-4:])] for k in range(tr[9],tr[9]+(tr[16]&65535))]},separators=(',',':')))
+          for a,b,label in [(0x1d6e4d4,0x1d6e4f0,'dto-limit-get'),(0x1d75b2c,0x1d75b54,'dto-stats-get'),(0x1d75a34,0x1d75a54,'dto-limit-set'),(0x24a3784,0x24a38d0,'life-loss-presenter'),(0x205d9f0,0x205da44,'revive-cooldown'),(0x1ffe82c,0x1ffe928,'lives-ad-limit'),(0x1f3da80,0x1f3db38,'restore-undo'),(0x20663a4,0x2066648,'bubble-buy-flow'),(0x2000a20,0x2000b1c,'life-coin-flow'),(0x2000898,0x20009b4,'life-ad-flow')]:
+           print('ANCHOR33',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in instructions(a,b)]},separators=(',',':')))
+          
+          targets={a:[] for a in (0x1f27118,0x200e0c0,0x20666c4,0x205d4e8,0x1ffdb14,0x1ffdb20,0x200b064,0x2000570,0x1d75f5c)}
+          for fo,v,size,flags in seg:
+           if not flags&1:continue
+           for i,(w,) in enumerate(struct.iter_unpack('<I',e[fo:fo+size//4*4])):
+            if w&0x0e000000!=0x0a000000 or w>>28==15:continue
+            pc=v+4*i;delta=w&0xffffff;delta=(delta if delta<0x800000 else delta-0x1000000)<<2
+            a=pc+8+delta
+            if a not in targets:continue
+            idx=bisect.bisect_right(starts,pc)-1;targets[a].append([hex(pc),hex(starts[idx]) if idx>=0 else None,names_at(starts[idx]) if idx>=0 else []])
+          for a,hits in targets.items():print('CALLERS33',json.dumps({'target':hex(a),'hits':hits},separators=(',',':')))
           from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
           from unicorn.arm_const import *
           import itertools,math
@@ -155,100 +175,31 @@ jobs:
            return trace
           rows={}
           def out(k,v):rows[k]=v;print(k,json.dumps(v,separators=(',',':')))
-          moves=[]
-          for n in [0,1,2,99,65534,65535]:
-           u=setup([(0x1d02530,0x1d02548)]);wh(u,DATA+8,n);reg(u,UC_ARM_REG_R4,DATA);run(u,0x1d02530,0x1d02548);got=rh(u,DATA+8);assert got==max(1,(n+1)&65535);moves.append([n,got])
-          out('MOVE32',moves)
-          pending=[]
-          for limit,extra,prior in itertools.product((0,1,10,100,500),(0,1,5,20),(0,1,99)):
-           u=setup([(0x1d75f5c,0x1d75f74)]);wr(u,OBJ+0x30,limit);wr(u,OBJ+0x44,prior);args(u,OBJ,extra);run(u,0x1d75f5c,STOP);got=[rd(u,OBJ+0x30),rd(u,OBJ+0x44)];assert got==[limit+extra,0];pending.append([limit,extra,prior,*got])
-          out('PENDING32',pending)
-          bubble=[]
-          for flag,n,old in itertools.product((0,1),(-1,0,1,5,50),(0,1)):
-           u=setup([(0x2066648,0x20666c4),(0x2065224,0x2065228)]);wb(u,DATA+8,flag);wr(u,DATA+0xc,n);wb(u,OBJ+0x28,old);args(u,OBJ);run(u,0x2066648,STOP,calls={0x2065224:DATA});got=[rr(u,UC_ARM_REG_R0),rb(u,OBJ+0x28),rd(u,DATA+0xc),rb(u,DATA+8)];allowed=flag and n>=1;assert got==[n if allowed else 0,1 if allowed else old,n&0xffffffff,flag];bubble.append([flag,n,old,*got])
-          out('BUBBLE32',bubble)
-          reset=[]
-          for old in (0,1):
-           u=setup([(0x20666c4,0x20666dc)]);wb(u,OBJ+0x28,old);args(u,OBJ);run(u,0x20666c4,STOP,stops=(0x20666dc,));got=[rb(u,OBJ+0x28),int(rr(u,UC_ARM_REG_PC)==0x20666dc)];assert got==[0,old];reset.append([old,*got])
-          out('BUBBLERESET32',reset)
-          restock=[]
-          for count,enabled,success,cost in itertools.product((0,1,2,10),(0,1),(0,1),(0,100,350)):
-           u=setup([(0x200dcb0,0x200ddf8),(0x200d9b8,0x200d9bc),(0x200db64,0x200db68)])
-           wr(u,OBJ+0x1c,count);wr(u,OBJ+0x18,999);reg(u,UC_ARM_REG_R4,OBJ);reg(u,UC_ARM_REG_R8,cost)
-           # The original purchase gate invokes provider; start after method prologue, stop before epilogue.
-           def spend(uc):reg(uc,UC_ARM_REG_R8,cost);reg(uc,UC_ARM_REG_R0,success);reg(uc,UC_ARM_REG_PC,0x200dde0)
-           run(u,0x200dcb0,0x200ddf4,{0x200dcf0:spend},{0x200d9b8:enabled,0x200db64:cost})
-           got=[rr(u,UC_ARM_REG_R0),rd(u,OBJ+0x1c),rd(u,OBJ+0x18)]
-           ex=[1,count,0] if not enabled else [1,1,0] if count==0 else [success,count+success,cost]
-           assert got==ex,(got,ex);restock.append([count,enabled,success,cost,*got])
-          out('RESTOCK32',restock)
-          refund=[]
-          for count,enabled in itertools.product((0,1,2,10),(0,1)):
-           u=setup([(0x200de70,0x200de98),(0x200d9b8,0x200d9bc)]);wr(u,OBJ+0x1c,count);reg(u,UC_ARM_REG_R4,OBJ)
-           run(u,0x200de70,0x200de98,calls={0x200d9b8:enabled},stops=(0x200df98,))
-           got=[rd(u,OBJ+0x1c),int(rr(u,UC_ARM_REG_PC)==0x200de98)];ex=[count-1 if enabled and count>=1 else count,int(enabled and count>1)];assert got==ex;refund.append([count,enabled,*got])
-          out('REFUND32',refund)
-          clamp=[]
-          for old,amount,cap,add in itertools.product((0,1,3,5,10),(0,1,2,5),(1,3,5),(0,1)):
-           if add and old>=cap:continue # full-life early gate excluded from write slice
-           u=setup([(0x2000c14,0x2000c6c)] if add else [(0x2000704,0x200075c)])
-           if add:
-            reg(u,UC_ARM_REG_R5,old);reg(u,UC_ARM_REG_R7,cap);reg(u,UC_ARM_REG_R10,amount);reg(u,UC_ARM_REG_R8,DATA);run(u,0x2000c14,0x2000c6c)
-           else:
-            reg(u,UC_ARM_REG_R7,old);reg(u,UC_ARM_REG_R6,cap);reg(u,UC_ARM_REG_R8,amount);reg(u,UC_ARM_REG_R10,DATA);run(u,0x2000704,0x200075c)
-           got=rd(u,DATA+8);assert got==max(0,min(cap,old+amount if add else old-amount));clamp.append([old,amount,cap,add,got])
-          out('LIFECLAMP32',clamp)
-          infinite=[]
-          for now,prev,duration in itertools.product((100,2**32+100),(0,99,100,101,2**32+200),(1,60,3600)):
-           u=setup([(0x2005380,0x20053c8),(0x20047f4,0x20047f8)])
-           wq(u,DATA+0x28,prev);reg(u,UC_ARM_REG_R6,DATA);reg(u,UC_ARM_REG_R4,OBJ);reg(u,UC_ARM_REG_R5,now);reg(u,UC_ARM_REG_R7,now>>32);reg(u,UC_ARM_REG_R8,duration)
-           run(u,0x2005380,0x20053c8,calls={0x20047f4:DATA})
-           got=rq(u,DATA+0x28);ex=max(now,prev)+duration;assert got==ex,(now,prev,duration,got,ex);infinite.append([now,prev,duration,got])
-          out('INFINITE32',infinite)
-          resetday=[]
-          for now,deadline in itertools.product((0,100,101,2**32+100),(0,99,100,101,2**32+100)):
-           u=setup([(0x1fff74c,0x1fff7b4),(0x1ffe948,0x1ffe94c)])
-           wq(u,DATA+0x18,deadline);args(u,OBJ,0,now,now>>32);run(u,0x1fff74c,STOP,calls={0x1ffe948:DATA});got=rr(u,UC_ARM_REG_R0);assert got==int(deadline!=0 and deadline<now),(now,deadline,got);resetday.append([now,deadline,got])
-          out('DAY32',resetday)
-          def f32(x):return struct.unpack('<f',struct.pack('<f',x))[0]
-          def fbits(x):return struct.unpack('<I',struct.pack('<f',x))[0]
-          def fl(x):return struct.unpack('<f',struct.pack('<I',x))[0]
-          def ceilf(u):reg(u,UC_ARM_REG_R0,fbits(math.ceil(fl(rr(u,UC_ARM_REG_R0)))))
-          def powf(u):reg(u,UC_ARM_REG_R0,fbits(fl(rr(u,UC_ARM_REG_R0))**fl(rr(u,UC_ARM_REG_R1))))
-          # Both imported functions were resolved by earlier SHA-identical source runs.
-          revive=[]
-          for remaining,coef,cap in itertools.product((0,1,4,5,6,10,11,31,99),(.1,.25,.5,1,1.2,2.5),(0,5,10,20,100)):
-           u=setup([(0x205a5d0,0x205a618),(0x2b4a9a4,0x2b4a9a8)])
-           reg(u,UC_ARM_REG_R5,remaining);reg(u,UC_ARM_REG_R4,CFG);reg(u,UC_ARM_REG_S16,fbits(coef));wr(u,CFG+0x24,cap)
-           run(u,0x205a5d0,0x205a618,calls={0x2b4a9a4:ceilf})
-           got=rr(u,UC_ARM_REG_R0);ex=min(cap,5*math.ceil(f32(f32(f32(coef)*f32(remaining))/5)))
-           assert got==ex,(remaining,coef,cap,got,ex);revive.append([remaining,coef,cap,got])
-          out('REVIVE32',revive)
-          prices=[]
-          for count,base,inc in itertools.product((0,1,2,3,10),(0,50,300),(0,25,100)):
-           if count==0:
-            u=setup([(0x200db64,0x200dc00)]);wr(u,OBJ+0x1c,0);args(u,OBJ);run(u,0x200db64,STOP)
-           else:
-            u=setup([(0x200dbe8,0x200dbf4)]);reg(u,UC_ARM_REG_R4,CFG);reg(u,UC_ARM_REG_R6,base);reg(u,UC_ARM_REG_R7,count);wr(u,CFG+0x38,inc);run(u,0x200dbe8,0x200dbf4)
-           got=rr(u,UC_ARM_REG_R0);assert got==(0 if not count else base+(count-1)*inc);prices.append([count,base,inc,got])
-          out('RESTPRICE32',prices)
-          exponents=[]
-          for base,n,cap,coef in itertools.product((1,9,15,51,100),(0,1,2,4,8),(0,2,5),(1,1.15,1.5,2)):
-           u=setup([(0x1ffe3e4,0x1ffe440),(0x2b4c8d0,0x2b4c8d4)])
-           args(u,base,n,cap,fbits(coef))
-           run(u,0x1ffe3e4,0x1ffe440,skips={0x1ffe408:0x1ffe40c,0x1ffe414:0x1ffe43c},calls={0x2b4c8d0:powf})
-           got=fl(rr(u,UC_ARM_REG_S18));ex=f32(f32(base)*f32(f32(coef)**f32(min(n,cap))))
-           assert got==ex,(base,n,cap,coef,got,ex);exponents.append([base,n,cap,coef,got])
-          out('LIFEEXP32',exponents)
-          rounding=[]
-          for n in range(121):
-           u=setup([(0x1ffe4fc,0x1ffe51c)]);args(u,n);run(u,0x1ffe4fc,0x1ffe51c)
-           got=rr(u,UC_ARM_REG_R0);assert got==(n if n<10 else n//10*10);rounding.append([n,got])
-          out('LIFEROUND32',rounding)
-          resets=[]
-          for count,cost in itertools.product((0,1,3,100),(0,25,100)):
-           u=setup([(0x200e0c0,0x200e0cc)]);wr(u,OBJ+0x1c,count);wr(u,OBJ+0x18,cost);args(u,OBJ);run(u,0x200e0c0,STOP)
-           got=[rd(u,OBJ+0x1c),rd(u,OBJ+0x18)];assert got==[0,cost];resets.append([count,cost,*got])
-          out('RESTRESET32',resets)
-          print('PASS_SHA_PINNED_RECOVERY_KERNELS32',json.dumps({k:len(v) for k,v in rows.items()}))
+          # Actual offline-life branch and quotient (provider and integer arithmetic boundaries resolved).
+          refills=[]
+          for now,start,interval in itertools.product((100,120,160,2**32+160),(0,90,100,130,2**32+90),(1,10,30,60)):
+           u=setup([(0x20012f0,0x2001428),(0x1ffe948,0x1ffe94c),(0x1ffef10,0x1ffef14),(0x1b24864,0x1b24868),(0x1b78244,0x1b78248)])
+           wq(u,DATA+0x20,start);wr(u,OBJ+0x10,CFG);wr(u,CFG+0x10,interval);args(u,OBJ)
+           def clock(uc):reg(uc,UC_ARM_REG_R0,now);reg(uc,UC_ARM_REG_R1,now>>32)
+           def cfg1(uc):reg(uc,UC_ARM_REG_R0,CFG);reg(uc,UC_ARM_REG_PC,0x2001378)
+           def cfg2(uc):reg(uc,UC_ARM_REG_R0,CFG);reg(uc,UC_ARM_REG_PC,0x20013c4)
+           def div64(uc):
+            n=rr(uc,UC_ARM_REG_R0)|(rr(uc,UC_ARM_REG_R1)<<32);d=rr(uc,UC_ARM_REG_R2)|(rr(uc,UC_ARM_REG_R3)<<32)
+            q,rem=divmod(n,d);reg(uc,UC_ARM_REG_R0,q);reg(uc,UC_ARM_REG_R1,q>>32);reg(uc,UC_ARM_REG_R2,rem);reg(uc,UC_ARM_REG_R3,rem>>32)
+           def max32(uc):
+            x=rr(uc,UC_ARM_REG_R1);reg(uc,UC_ARM_REG_R0,max(0,x if x<2**31 else x-2**32))
+           run(u,0x20012f0,STOP,skips={0x2001300:0x2001320,0x2001364:cfg1,0x20013b0:cfg2,0x20013ec:0x2001408},calls={0x1ffe948:DATA,0x1ffef10:clock,0x1b24864:div64,0x1b78244:max32})
+           got=rr(u,UC_ARM_REG_R0);q=(now-start)//interval if start and now-start>=interval else 0;qi=q&0xffffffff;ex=max(0,qi if qi<2**31 else qi-2**32)
+           assert got==ex,(now,start,interval,got,ex);refills.append([now,start,interval,got])
+          out('REFILL33',refills)
+          # Native life spend marker, saved pending resets, DTO field getters, current stock-price and reward gate.
+          marks=[]
+          for old,kind in itertools.product((0,1),(0,1)):
+           u=setup([(0x1ffdb14,0x1ffdb2c)]);wb(u,OBJ+8,old);args(u,OBJ);run(u,0x1ffdb14 if kind else 0x1ffdb20,STOP);got=rb(u,OBJ+8);assert got==kind;marks.append([old,kind,got])
+          out('MARK33',marks)
+          inventory=[]
+          for old,amount in itertools.product((0,1,3,5,10),(0,1,2,5)):
+           u=setup([(0x23bf280,0x23bf290)]);wr(u,DATA+8,old);reg(u,UC_ARM_REG_R5,DATA);reg(u,UC_ARM_REG_R4,amount);run(u,0x23bf280,0x23bf290);got=rd(u,DATA+8);assert got==(old-amount)&0xffffffff;inventory.append([old,amount,got])
+          out('INVWRITE33',inventory)
+          print('PASS_SHA_PINNED_RECOVERY_KERNELS33',json.dumps({k:len(v) for k,v in rows.items()}))
           PY

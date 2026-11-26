@@ -40,8 +40,8 @@
   "asOf": "2026-11-21",
   "sourcePin": {
     "repo": "DanilaH/asoc-solitair",
-    "sourceInventoryRef": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
-    "sourceInventoryBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+    "sourceInventoryRef": "e620b8f6f14ddaf9a486c5785b00a9b4329202fa",
+    "sourceInventoryBlob": "68450cdf575a6de47cf3db784f7a31343359610f",
     "baselineContent8Head": "e092ba156eebb5ebc703d89e4e98bf657bbd6f14",
     "gameVersion": "0.20.3 Content8 preview",
     "runtimeKitCommit": "a9325265e87583a4872cf6a158e1e881a0d7508e"
@@ -574,7 +574,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "commerceSourceBrief": "docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md"
     },
     {
       "id": "P21",
@@ -600,7 +601,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "commerceSourceBrief": "docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md"
     },
     {
       "id": "P22",
@@ -703,7 +705,8 @@
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
       ],
-      "recoveryDependencyBrief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md"
+      "recoveryDependencyBrief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+      "commerceSourceBrief": "docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md"
     },
     {
       "id": "P26",
@@ -1228,5 +1231,29 @@
     "nativeRows": 388,
     "modelAssertions": 41753,
     "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation"
+  },
+  "commerceHandoff": {
+    "brief": "docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md",
+    "evidence": "https://github.com/DanilaH/mini-games-kit/blob/e620b8f6f14ddaf9a486c5785b00a9b4329202fa/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md",
+    "kitPR": 157,
+    "sourceCI": [
+      45885901789,
+      45886148828
+    ],
+    "consumerBaseline": "89feea96e4e1355679f4763e1d435f1afa2f2d4a",
+    "sourceIds": [
+      "hitapps-piggy-bank",
+      "hitapps-rotating-offers",
+      "hitapps-birthday-offer",
+      "hitapps-decoy-offer",
+      "hitapps-starter-offer",
+      "hitapps-win-rewarded-offer",
+      "hitapps-inapp-shop",
+      "hitapps-revive-offers",
+      "hitapps-adbreak"
+    ],
+    "ownAssertions": 4976,
+    "originalExecutedRows": 0,
+    "activation": "IAP_OFF; existing reward/ads policies unchanged"
   }
 }

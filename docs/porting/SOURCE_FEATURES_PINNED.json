@@ -315,11 +315,11 @@
     {
       "id": "hitapps-meta-regions",
       "name": "Hitapps stars/buildings/regions progression",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Native meta-unlock/region building/star model, asset/remote activation and complete economy unknown"
+      "knownLimit": "Unlock/prewarm native matched; multi-step object prerequisites, stars/XP, completion and distinct XP/region rewards, frozen balance and reducer/service architecture statically reconstructed. Original star producer, settlement/dedup, live catalog and asset activation unknown."
     },
     {
       "id": "hitapps-piggy-bank",
@@ -423,29 +423,29 @@
     {
       "id": "hitapps-digging-event",
       "name": "Hitapps Digging event system",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "events",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Named module/config is not activation or observed minigame rules"
+      "knownLimit": "Native grid/index/margin/gates matched. Authored first launch, later seeded placement (200 attempts + authored fallback), rectangle finds, durability, bonuses, mole chains, stage rewards. Exact seed hash/PRNG, failed fallback, full chain/claim and live maps/config unknown."
     },
     {
       "id": "hitapps-lucky-wheel",
       "name": "Hitapps LuckyWheel prize system",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Named module only; odds, rewards and presentation unknown"
+      "knownLimit": "Native float32 cutoff, min-spin gate, segment flags and upgrade branch matched. Staged deactivation, final repeated sectors, task quotas/used IDs and reward/save flow statically recovered. Full task draw/expiry/receipt, probability display and live weights unknown."
     },
     {
       "id": "hitapps-endless-treasure",
       "name": "Hitapps EndlessTreasure event system",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Named module only; rules, stage caps and active status unknown"
+      "knownLimit": "Native event config rotation matched. Configured Free/Rewarded/Paid step sequence and separate resource progress/pending awards recovered statically; full milestone claims, callback atomicity, schedules and live economy unknown."
     },
     {
       "id": "hitapps-birthday-offer",
@@ -1063,5 +1063,5 @@
       "knownLimit": "Native FindAvailableMove five-class priority and MoveHintSystem.IsUselessJokerColumnToColumnMove are distinct from MoveValidator.IsUselessJokerColumnToColumnMove. Hint filters wouldUncoverHidden, alternate non-Joker stack and previous foundation opportunity; precise original Android chosen hint and live user outcome not fully recovered; source result not a winning-path proof. Numeric original native 17 method / 19 opcode / 14 call proof; PRODUCT_ADAPTED solver-backed consumer route remains default.\n25 Nov helper economy supplement: Acquisition and teaching source subfeature: local unlock2/3 initial/250 coins per charge, free at exact unlock; keep greedy action-selection evidence and consumer solver adaptation. Evidence: https://github.com/DanilaH/mini-games-kit/blob/5ef479201e957b79a6d63e33c7c05eb5583f1b6e/research/games/association-solitaire/2026-11-25-azur-helper-economy/README.md"
     }
   ],
-  "auditRevision": "2026-11-25-solitaire-source-consolidation-v21"
+  "auditRevision": "2026-11-27-solitaire-meta-rewards-v22"
 }

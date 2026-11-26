@@ -49,6 +49,7 @@ import level62 from './062.json' with { type: 'json' };
 import level63 from './063.json' with { type: 'json' };
 import level64 from './064.json' with { type: 'json' };
 import level65 from './065.json' with { type: 'json' };
+import level66 from './066.json' with { type: 'json' };
 import level67 from './067.json' with { type: 'json' };
 import level68 from './068.json' with { type: 'json' };
 import level69 from './069.json' with { type: 'json' };
@@ -72,4 +73,4 @@ import level86 from './086.json' with { type: 'json' };
 import level87 from './087.json' with { type: 'json' };
 import type { SourceRecord } from '../hitapps-r4-bank';
 
-export const sourceRecords = [...level16, ...level17, ...level18, ...level19, ...level20, ...level21, ...level22, ...level23, ...level24, ...level25, ...level26, ...level27, ...level28, ...level29, ...level30, ...level31, ...level32, ...level33, ...level34, ...level35, ...level36, ...level37, ...level38, ...level39, ...level40, ...level41, ...level42, ...level43, ...level44, ...level45, ...level46, ...level47, ...level48, ...level49, ...level50, ...level51, ...level52, ...level53, ...level54, ...level55, ...level56, ...level57, ...level58, ...level59, ...level60, ...level61, ...level62, ...level63, ...level64, ...level65, ...level67, ...level68, ...level69, ...level70, ...level71, ...level72, ...level73, ...level74, ...level75, ...level76, ...level77, ...level78, ...level79, ...level80, ...level81, ...level82, ...level83, ...level84, ...level85, ...level86, ...level87] as unknown as readonly SourceRecord[];
+export const sourceRecords = [...level16, ...level17, ...level18, ...level19, ...level20, ...level21, ...level22, ...level23, ...level24, ...level25, ...level26, ...level27, ...level28, ...level29, ...level30, ...level31, ...level32, ...level33, ...level34, ...level35, ...level36, ...level37, ...level38, ...level39, ...level40, ...level41, ...level42, ...level43, ...level44, ...level45, ...level46, ...level47, ...level48, ...level49, ...level50, ...level51, ...level52, ...level53, ...level54, ...level55, ...level56, ...level57, ...level58, ...level59, ...level60, ...level61, ...level62, ...level63, ...level64, ...level65, ...level66, ...level67, ...level68, ...level69, ...level70, ...level71, ...level72, ...level73, ...level74, ...level75, ...level76, ...level77, ...level78, ...level79, ...level80, ...level81, ...level82, ...level83, ...level84, ...level85, ...level86, ...level87] as unknown as readonly SourceRecord[];

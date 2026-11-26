@@ -17,7 +17,7 @@ export interface SourceFeatures {
   lockers?: Pattern<readonly LockerPattern[]>;
   frozen?: Pattern<readonly IcePattern[]>;
   bound?: Pattern<BoundPattern>;
-  gold?: { initial: number; first: number; total: number; seed: number; coinsPerActivation: number; eventKey?: string };
+  gold?: { initial: number; first: number; total: number; seed: number; coinsPerActivation: number; eventKey?: string; rewardGroup?: string };
   starter?: readonly { card: Card; kind: 5 | 6; seed: number }[];
 }
 type FeatureResult = { id: string; status: string; mask?: number };
@@ -84,7 +84,8 @@ export function prepareSourceInput(template: Deal, input: SourceInput, effective
   const size = template.initial.tableau.map(column => column.length);
   const configuration: NonNullable<Deal['hitapps']> = { policy: 'hitapps-rules4-v1',
     assemblies: (features.puzzle ?? []).map(row => ({ tag: row.tag, card: row.assembled, halves: [row.halves[0].id, row.halves[1].id] })),
-    ...(gold && { gold: { total: gold.total, first: gold.first, coinsPerActivation: gold.coinsPerActivation, ...(gold.eventKey && { eventKey: gold.eventKey }) } }),
+    ...(gold && { gold: { total: gold.total, first: gold.first, coinsPerActivation: gold.coinsPerActivation,
+      ...(gold.eventKey && { eventKey: gold.eventKey }), ...(gold.rewardGroup && { rewardGroup: gold.rewardGroup }) } }),
   };
 
   function prepare(request: number, strategy: 'None' | 'Priority' | 'Equality', drawSeed: (cap: number) => number) {

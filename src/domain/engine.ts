@@ -57,6 +57,9 @@ export function sourceCards(board: Board, loc: Location, deal: Deal, root?: numb
 const sameLocation = (a: Location, b: Location) => a.kind === b.kind && (a.kind === 'waste' || a.index === b.index);
 const normalize = (ids: string[], deal: Deal) => [...ids.filter(id => !deal.cards[id].leader).sort((a, b) => (deal.cards[a].rank ?? 0) - (deal.cards[b].rank ?? 0)), ...ids.filter(id => deal.cards[id].leader)];
 export function isLocked(board: Board, index: number, deal: Deal): boolean {
+  const top = board.tableau[index]?.at(-1);
+  const sourceLock = top ? board.hitapps?.cards[top]?.lock : undefined;
+  if (sourceLock) return sourceLock.collected < sourceLock.required;
   return deal.lock?.column === index && !deal.lock.requiredKeys.every(key => board.keys?.includes(key));
 }
 /** An ordered group is one interval; its category card requires a prefix starting at one. */

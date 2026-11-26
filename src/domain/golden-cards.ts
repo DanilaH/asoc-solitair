@@ -12,7 +12,7 @@ export function prepareGoldenDeal(base: Deal, previewId: string, sourceGate: { e
   return { status: 'APPLIED', deal } as const;
 }
 
-export const goldenRewardKey = (deal: Deal) => `golden-cards:${deal.golden?.rewardGroup ?? deal.id}`;
+export const goldenRewardKey = (deal: Deal) => `golden-cards:${deal.hitapps?.gold?.rewardGroup ?? deal.golden?.rewardGroup ?? deal.id}`;
 export const collectedGold = (board: Board, deal: Deal) =>
   board.hitapps ? Object.values(board.hitapps.cards).filter(card => card.gold?.activated).length
     : deal.golden?.ids.filter(id => board.collected.includes(id)).length ?? 0;

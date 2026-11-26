@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
-import { campaignDeals, hitappsR4Deals } from '../../src/content/campaign';
-import { freshSave, sourceCards } from '../../src/domain/engine';
+import { campaignDeals, findDeal, hitappsR4Deals } from '../../src/content/campaign';
+import { dispatch, freshSave, sourceCards } from '../../src/domain/engine';
 import { campaignId } from '../../src/domain/progression';
 import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 import { boardFrame, layout } from '../../src/game/layout';
@@ -100,11 +100,10 @@ test('the Rules4 retry replaces geometry and settles one life with the new passp
   expect(after.campaignLives?.remaining).toBe(4);
 });
 
-test('the last Rules4 layout falls back to a different archived deal on an ordinary retry', async ({ page }) => {
-  const entries = [...hitappsR4Deals()].filter(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 31);
-  expect(entries).toHaveLength(1);
-  const { deal } = entries[0];
-  const save = profile(deal, 'hitapps-r4-fallback-touch');
+test('an ordinary L66 retry changes the layout and preserves the three-key lock', async ({ page }) => {
+  const { deal } = [...hitappsR4Deals()].find(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 66)!;
+  const save = profile(deal, 'hitapps-r4-lock-retry-touch');
+  save.platform!.completedCampaign = Array.from({ length: 65 }, (_, index) => campaignId(index + 1));
   save.attempt.board.phase = 'exhausted';
   save.attempt.board.movesLeft = 0;
   await launch(page, save);
@@ -113,8 +112,48 @@ test('the last Rules4 layout falls back to a different archived deal on an ordin
   await page.locator('#replay').tap();
   await expect.poll(async () => (await read(page)).attempt.dealId).not.toBe(deal.id);
   const after = await read(page);
-  expect(after.attempt.board.rulesVersion).toBe(3);
-  expect(after.attempt.board.tableau).not.toEqual(deal.initial.tableau);
+  expect(after.attempt.board.rulesVersion).toBe(4);
+  expect([after.attempt.board.tableau, after.attempt.board.stock]).not.toEqual([deal.initial.tableau, deal.initial.stock]);
+  const states = Object.values(after.attempt.board.hitapps!.cards);
+  expect(states.filter(card => card.lock).map(card => card.lock?.required)).toEqual([3]);
+  expect(states.filter(card => card.key)).toHaveLength(3);
   expect(after.attempt.issuance?.dealId).toBe(after.attempt.dealId);
+  expect(after.campaignLives?.remaining).toBe(4);
+});
+
+test('Next from the archived L65 issues Rules4 L66 through the normal campaign route', async ({ page }) => {
+  const previous = findDeal('campaign-c8-wave-065')!;
+  let save = profile(previous, 'hitapps-r4-next-66');
+  save.platform!.completedCampaign = Array.from({ length: 64 }, (_, index) => campaignId(index + 1));
+  for (const action of previous.winningPath) {
+    const step = dispatch(save, action, previous);
+    expect(step.accepted).toBe(true);
+    save = step.next;
+  }
+  expect(save.attempt.board.phase).toBe('won');
+  await launch(page, save);
+  if (await page.locator('#home-play').isVisible()) await page.locator('#home-play').tap();
+  await page.locator('#next-level').tap();
+  if (await page.locator('#difficulty-play').isVisible()) await page.locator('#difficulty-play').tap();
+  await expect.poll(async () => (await read(page)).attempt.issuance?.baseId).toBe('campaign-c8-special-066');
+  const after = (await read(page)).attempt;
+  expect(after.board.rulesVersion).toBe(4);
+  expect(Object.values(after.board.hitapps!.cards).filter(card => card.key)).toHaveLength(3);
+  await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', after.dealId);
+});
+
+test('the exact replay still keeps the same Rules4 layout and only charges one life', async ({ page }) => {
+  const { deal } = [...hitappsR4Deals()].find(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 31)!;
+  const save = profile(deal, 'hitapps-r4-exact-replay-touch');
+  save.attempt.board.phase = 'exhausted';
+  save.attempt.board.movesLeft = 0;
+  await launch(page, save);
+  if (await page.locator('#home-play').isVisible()) await page.locator('#home-play').tap();
+  await expect(page.locator('#result')).toBeVisible();
+  await page.locator('#result-redeal').tap();
+  await expect.poll(async () => (await read(page)).attempt.id).not.toBe(save.attempt.id);
+  const after = await read(page);
+  expect(after.attempt.dealId).toBe(deal.id);
+  expect(after.attempt.board).toEqual(deal.initial);
   expect(after.campaignLives?.remaining).toBe(4);
 });

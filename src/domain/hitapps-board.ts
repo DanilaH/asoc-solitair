@@ -6,7 +6,7 @@ import { activeLocker, activateGold, boundStatus, canMelt, Change, collectTypedK
 export interface HitappsDealRules {
   policy: 'hitapps-rules4-v1';
   assemblies: readonly { tag: number; halves: readonly [string, string]; card: string }[];
-  gold?: { total: number; first: number; coinsPerActivation: number; eventKey?: string };
+  gold?: { total: number; first: number; coinsPerActivation: number; eventKey?: string; rewardGroup?: string };
 }
 export interface HitappsBoardState {
   move: number;
@@ -422,6 +422,8 @@ export function assertHitappsBoard(board: ActiveBoard, deal: Deal) {
   if (board.movesLeft !== null && !nat(board.movesLeft) || (board.phase === 'exhausted') !== (board.movesLeft === 0 && board.phase !== 'won') ||
       (board.phase === 'won') !== hitappsGoals(deal).every(id => board.collected.includes(id)) || !['won', 'playing', 'exhausted'].includes(board.phase))
     throw Error('Несогласованные фаза и бюджет');
+  if (deal.recovery ? !nat(board.recyclesLeft!, deal.recovery.freeRecycles) : board.recyclesLeft !== undefined)
+    throw Error('Некорректный запас повторов');
   if (state.generatedGold !== Object.values(state.cards).filter(card => card.gold).length ||
       state.generatedGold > (config.gold?.total ?? 0)) throw Error('Некорректный счётчик золотых карт');
 }

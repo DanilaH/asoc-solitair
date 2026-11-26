@@ -201,12 +201,9 @@ export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): 
   const candidate = selectAdaptiveDeal(save, selected, lateAdaptive, previousSource ? { ...previous!, dealId: previousSource } : previous);
   if (!releaseProfile) return candidate;
   const composed = composeReleaseDeal(candidate);
-  if (!composed.recovery && !composed.shufflePolicy && !composed.lock && !composed.frozen && !composed.bound &&
-      !composed.puzzle && !composed.golden && !composed.starter && !composed.extraHelpers) {
-    const source = selectHitappsBank(hitappsR4Bank, save, base, previous);
-    if (source) return source;
-  }
-  return composed;
+  if (base.training && !save.platform?.completedCampaign.includes(campaignId(base.campaignLevel!)) ||
+      base.campaignLevel === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1')) return composed;
+  return selectHitappsBank(hitappsR4Bank, save, base, composed, previous) ?? composed;
 }
 
 function composeReleaseDeal(candidate: Deal): Deal {

@@ -7,7 +7,7 @@ import { certifySourceRoute } from './hitapps-source-pipeline';
 
 const inputFolder = '.authoring/hitapps-r4';
 const outputFolder = 'src/content/hitapps-r4-bank';
-const files = readdirSync(inputFolder).filter(file => /^(campaign|sweep|specials|compact-bound|locale|strategies)-\d+-of-\d+\.json$/.test(file));
+const files = readdirSync(inputFolder).filter(file => /^(campaign|sweep|specials|compact-bound|locale|strategies|coverage)-\d+-of-\d+\.json$/.test(file));
 const rows = files.flatMap(file => (JSON.parse(readFileSync(`${inputFolder}/${file}`, 'utf8')) as { records: SourceRecord[] }).records);
 const distinct = new Map<string, SourceRecord>();
 for (const record of rows) {

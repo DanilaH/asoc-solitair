@@ -189,7 +189,7 @@
     {
       "id": "hitapps-stock-dealer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "The Rules4 candidate consumes the reused EmbeddedRandom stream for ten destination passes and staged layout, records phase receipts, and publishes only independently replayed own deals.",
+      "currentImplementation": "The Rules4 candidate consumes the reused EmbeddedRandom stream for ten destination passes and staged layout, records phase receipts, and publishes independently replayed own deals. The candidate offers different Rules4 layouts at all levels 16–80 under all three supported budgets after the preserved teaching encounters.",
       "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/166",
       "stage": "B1",
@@ -331,7 +331,7 @@
     {
       "id": "hitapps-stock-restore",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Rules4 keeps player stock and recycle separate from the source bot lookahead. Existing finite stock recovery and payout contracts remain reachable on their established deals.",
+      "currentImplementation": "Rules4 keeps player stock and recycle separate from the source bot lookahead. The candidate carries over finite stock recovery and the existing prices on Rules4 L16/L22/L30 and on the saved legacy deals.",
       "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
       "reason": "Existing free recycle contract requires a substantive rule/economy redesign",
       "stage": "E1",
@@ -402,7 +402,7 @@
     {
       "id": "hitapps-golden-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Rules4 adds weighted Final placement, health4 with appearance and decay guards, explicit activation, and a separate local reward receipt.",
+      "currentImplementation": "Rules4 adds weighted Final placement, health4 with appearance and decay guards, explicit activation, and a separate local reward receipt. Ordinary L27 retains the existing activation payout amount and once-only reward group.",
       "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
       "stage": "D1",
       "generatorHandoff": {
@@ -438,7 +438,7 @@
     {
       "id": "hitapps-lockers",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Rules4 stores per-card numeric locks, typed keys, accumulated amounts and one-time key flags. New and legacy lesson variants have separate rules.",
+      "currentImplementation": "Rules4 stores per-card numeric locks, typed keys, accumulated amounts and one-time key flags. The preserved first L18 lesson still uses its original ID. Ordinary Rules4 issuance covers the three-key L18/L66 and the one-key L26 under every supported budget.",
       "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "D1",

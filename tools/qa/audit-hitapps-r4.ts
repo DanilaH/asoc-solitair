@@ -1,9 +1,13 @@
 import assert from 'node:assert/strict';
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { hitappsR4Deals, savedDealDefinitions } from '../../src/content/campaign';
+import { campaignDeals, campaignIssuance, findDeal, hitappsR4Deals, layoutFingerprint, savedDealDefinitions,
+  selectCampaignDeal, selectRetryLayout } from '../../src/content/campaign';
 import { hitappsR4Difficulty } from '../../src/config/hitapps-r4';
-import { easyDealTarget } from '../../src/domain/difficulty';
-import { applyBoard, legalCommands } from '../../src/domain/engine';
+import { adjustedMoveBudget, easyDealTarget } from '../../src/domain/difficulty';
+import { applyBoard, freshSave, legalCommands } from '../../src/domain/engine';
+import { Kind } from '../../src/domain/hitapps-rules';
+import { campaignId } from '../../src/domain/progression';
+import { decodeSave } from '../../src/platform/storage';
 import { authoringHash } from '../content/hitapps-authoring';
 import { certifySourceRoute } from '../content/hitapps-source-pipeline';
 import { runSourceBot } from '../content/hitapps-source-bot';
@@ -11,6 +15,45 @@ import { runSourceBot } from '../content/hitapps-source-bot';
 const archive = [...savedDealDefinitions()].filter(deal => !deal.hitapps).sort((left, right) => left.id.localeCompare(right.id));
 assert.equal(archive.length, 1015);
 assert.equal(authoringHash(archive), 'd08544e30eea43a85b27772bb290a0930704384bd2c34e80fc63606e2402bf30');
+const campaign = campaignDeals.slice(15, 80);
+assert.equal(campaign.length, 65);
+const teaching = new Map<number, string>([
+  [17, 'campaign-c8-ftue-017-r1'], [18, 'campaign-c8-special-018'], [19, 'campaign-c8-ftue-019-r1'],
+  [24, 'campaign-c8-ftue-024-r1'], [28, 'campaign-c8-ftue-028-r1'],
+  [30, 'campaign-c8-bonus-030-c8-core-r1-shuffle-r1-rights-r1'], [32, 'campaign-c8-ftue-032-r1'],
+]);
+const issuance = campaign.map(base => {
+  const level = base.campaignLevel!;
+  const start = freshSave(base, `hitapps-r4-coverage-${level}`);
+  start.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0,
+    completedCampaign: Array.from({ length: level - 1 }, (_, index) => campaignId(index + 1)) };
+  const first = selectCampaignDeal(start, base);
+  if (teaching.has(level)) assert.equal(first.id, teaching.get(level), `L${level} lesson changed`);
+  else assert.equal(first.initial.rulesVersion, 4, `L${level} initial issue fell back`);
+  start.platform.completedCampaign.push(campaignId(level));
+  start.campaign = { version: 1, tutorials: ['ftue:shuffle-used:r1'] };
+  const adaptive = [-5, 0, 10].map(penalty => {
+    start.difficultyPenalty = penalty;
+    const issued = selectCampaignDeal(start, base);
+    assert.equal(issued.initial.rulesVersion, 4, `L${level} issue fell back at ${penalty}`);
+    const budget = adjustedMoveBudget(base.initial.movesLeft!, penalty, true);
+    assert.equal(issued.initial.movesLeft, budget, `L${level} issue used the wrong budget at ${penalty}`);
+    const saved = { ...start, attempt: freshSave(issued, `hitapps-r4-live-${level}-${penalty}`).attempt };
+    const passport = campaignIssuance(saved, base, issued);
+    assert(passport && passport.dealId === issued.id && passport.seed);
+    saved.attempt.issuance = passport;
+    const restored = decodeSave(JSON.stringify(saved), findDeal(issued.id)!);
+    assert.deepEqual(restored.attempt.board, saved.attempt.board);
+    assert.deepEqual(restored.attempt.issuance, passport);
+    saved.attempt.board = { ...saved.attempt.board, phase: 'exhausted', movesLeft: 0 };
+    const retry = selectRetryLayout(saved, base, issued);
+    assert(retry?.initial.rulesVersion === 4 && layoutFingerprint(retry) !== layoutFingerprint(issued),
+      `L${level} retry has no fresh alternative at ${penalty}`);
+    assert.equal(retry.initial.movesLeft, budget, `L${level} retry changed the budget at ${penalty}`);
+    return { penalty, issued: issued.id, retry: retry.id, budget };
+  });
+  return { level, first: first.id, adaptive };
+});
 const rows = [], coverage = { normal: [], hard: [], superhard: [] } as Record<string, { cost: number; spare: number; branch: number; ratio: number }[]>;
 const seenLevels = new Set<number>(), routes = new Set<string>();
 let checkedEdges = 0;
@@ -33,7 +76,9 @@ for (const { deal, record, hash, penalty } of hitappsR4Deals()) {
     checkedEdges++;
   }
   const level = deal.campaignLevel!, tier = deal.difficultyTier ?? 'normal', budget = deal.initial.movesLeft!;
-  const target = easyDealTarget({ level, difficulty: tier, previousLosses: 2, random: true, stable: true, special: false,
+  const special = Boolean(deal.hitapps?.assemblies.length || Object.values(deal.initial.hitapps!.cards)
+    .some(card => card.bound || card.ice || card.lock || card.kind === Kind.magnet || card.kind === Kind.hammer));
+  const target = easyDealTarget({ level, difficulty: tier, previousLosses: 2, random: true, stable: true, special,
     dtoMoves: budget, dtoPenalty: 0 }, hitappsR4Difficulty.easy);
   const branch = steps.filter(count => count > 1).length;
   seenLevels.add(level);
@@ -58,8 +103,8 @@ const summary = Object.fromEntries(Object.entries(coverage).map(([tier, values])
 const report = { archive: archive.length, verifiedSeededRoutes: rows.length, distinctRoutes: routes.size, verifiedSeededEdges: checkedEdges,
   actualCampaignCoverage: [...seenLevels].sort((a, b) => a - b), fallbackLevels: Array.from({ length: 65 }, (_, index) => index + 16)
     .filter(level => !seenLevels.has(level)), meetsEasyTarget: rows.filter(row => row.reachesEasyTarget).length,
-  originalRuntime: 'UNOBSERVED', skill: 'bot-and-solver-distributions', summary, rows };
+  originalRuntime: 'UNOBSERVED', skill: 'bot-and-solver-distributions', summary, issuance, rows };
 assert(rows.length > 0, 'Candidate must contain a certified fresh seed');
 mkdirSync('.authoring/hitapps-r4', { recursive: true });
 writeFileSync('.authoring/hitapps-r4/balance-report.json', `${JSON.stringify(report, null, 2)}\n`);
-console.log(JSON.stringify({ ...report, rows: undefined }, null, 2));
+console.log(JSON.stringify({ ...report, issuance: issuance.length, rows: undefined }, null, 2));

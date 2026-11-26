@@ -114,7 +114,7 @@ jobs:
              immediates.append([hex(pc),(op>>16)&15,imm,cond])
            print('FLOW',json.dumps({'method':r['type']+'.'+r['method'],'rva':r['rva'],'boundedEnd':hex(end),'calls':calls[:60],'conditionalBranches':branches[:40],'cmpImmediate':immediates[:35]},separators=(',',':')))
 
-          # Final focused producer/placement pass.
+          # Focused producer closure: resolve actually invoked AOT copies and conditions.
           def branch(pc):
            w=word(pc)
            return pc+8+4*(((w&0xffffff)^0x800000)-0x800000) if w&0xe000000==0xa000000 and w>>28!=15 else None
@@ -122,34 +122,62 @@ jobs:
            if op&(1<<25):
             rot=((op>>8)&15)*2;imm=op&255
             return ((imm>>rot)|(imm<<(32-rot)))&0xffffffff if rot else imm
-           return ['r',op&15,'shift',(op>>5)&3,(op>>7)&31,'registerShift',bool(op&16)]
+           return ['r',op&15,'shift',(op>>5)&3,(op>>7)&31,'rs',(op>>8)&15 if op&16 else None]
           def fact(pc):
            op=word(pc);c=op>>28
            if (dst:=branch(pc)) is not None:return [hex(pc),'call' if op&0x1000000 else 'branch',c,hex(dst)]
            if op&0x0c000000==0x04000000 and not op&0x02000000:return [hex(pc),'read' if op&0x100000 else 'write',c,(op>>12)&15,(op>>16)&15,(op&4095)*(1 if op&0x800000 else -1),'byte' if op&0x400000 else 'word']
-           if op&0x0e000090==0x00000090 and op&0x60 and op&0x400000:return [hex(pc),'readHalf' if op&0x100000 else 'writeHalf',c,(op>>12)&15,(op>>16)&15,(((op>>4)&240)|(op&15))*(1 if op&0x800000 else -1)]
+           if op&0x0e000090==0x00000090 and op&0x60 and op&0x400000:return [hex(pc),'readHalf' if op&0x100000 else 'writeHalf',c,(op>>12)&15,(op>>16)&15,(((op>>4)&240)|(op&15))*(1 if op&0x800000 else -1),(op>>5)&3]
            if op&0x0c000000==0 and (op&0x0e000090)!=0x00000090:return [hex(pc),'alu',c,(op>>21)&15,(op>>12)&15,(op>>16)&15,operand2(op),bool(op&0x100000)]
            return None
-          for label,a,b in [('category-swap-setup',0x1d3b1b8,0x1d3b200),('category-swap-compare',0x1d3b268,0x1d3b288),('category-swap-store',0x1d3b384,0x1d3b424),('member-swap-mask',0x1d3b4b0,0x1d3b4e8),('member-swap-condition',0x1d3b5cc,0x1d3b668),('easy-loss-coefficient',0x22fe2d0,0x22fe32c),('easy-formula',0x22fe354,0x22fe3bc)]:
-           print('ANCHOR5',json.dumps({'label':label,'facts':[f for pc in range(a,b,4) if (f:=fact(pc))]},separators=(',',':')))
-          for a,rs in sorted(entries.items()):
-           r=next((r for r in rs if r['type']=='Core.Systems.PossibleMovesSystem' or r['type']=='Core.Helpers.SimulationHelper'),None)
-           if not r:continue
-           end=starts[bisect.bisect_right(starts,a)]
-           direct=[];notMapped=[];cmp=[]
-           for pc in range(a,end,4):
-            if (d:=branch(pc)) is not None and word(pc)&0x1000000:
-             dst=[q['type']+'.'+q['method'] for q in entries.get(d,[])]
-             if dst:direct.append([hex(pc),hex(d),dst[:2]])
-             elif d not in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):notMapped.append([hex(pc),hex(d)])
-            op=word(pc)
-            if op&0x0ff0f000==0x03500000:
-             imm=operand2(op)
-             if imm!=0:cmp.append([hex(pc),(op>>16)&15,imm,op>>28])
-           print('PRODUCER',json.dumps({'method':r['method'],'rva':hex(a),'end':hex(end),'direct':direct,'otherCalls':notMapped[:40],'nonzeroCmp':cmp[:40]},separators=(',',':')))
-          # For the important clone calls, compare the full bounded executable code, not a method name.
-          for label,a,b,n in [('pair',0x1d3b1b8,0x1d4621c,301),('validatorE',0x1d07be0,0x1d1e1bc,90),('validatorP',0x1d08104,0x1d1e33c,90)]:
-           assert all(word(a+4*k)==word(b+4*k) or (branch(a+4*k) is not None and branch(b+4*k) is not None and word(a+4*k)&0xff000000==word(b+4*k)&0xff000000 and (branch(a+4*k)==branch(b+4*k) or branch(a+4*k)-a==branch(b+4*k)-b)) or (word(a+4*k)&0x0f7f0000==0x051f0000 and word(b+4*k)&0x0f7f0000==0x051f0000 and word(a+4*k)&0xfffff000==word(b+4*k)&0xfffff000) or (word(a+4*k)&0x0fef0000==0x028f0000 and word(b+4*k)&0x0fef0000==0x028f0000 and word(a+4*k)&0xfffff000==word(b+4*k)&0xfffff000) for k in range(n))
-           print('CLONE_ASSERT',label,n,'PASS')
+          def equivalent(a,b):
+           u,w=word(a),word(b)
+           if u==w:return True
+           ba,bb=branch(a),branch(b)
+           if ba is not None and bb is not None and (u&0xff000000)==(w&0xff000000) and (ba==bb or ba-a==bb-b):return True
+           if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
+           if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
+           return False
+          targets=[0x1d1a0c8,0x1c8bdf8,0x1d1a570,0x1d1a820,0x1d1ae98,0x1d1abb8,0x1d1b0c0,0x1c9105c,0x1c8d978,0x1c8dca4]
+          cand=[(a,r['type']+'.'+r['method']) for a,rs in entries.items() for r in rs[:1] if r['image']=='CoreGameplay.dll' and ('PossibleMovesSystem' in r['type'] or 'PlacementCheck' in r['type'] or 'MoveOperations' in r['type'] or 'CardOperations' in r['type'])]
+          for a in targets:
+           matches=[]
+           for b,nm in cand:
+            if sum(equivalent(a+4*i,b+4*i) for i in range(24))<18:continue
+            end=starts[bisect.bisect_right(starts,b)]
+            # terminal return preceding literal pool, where present
+            count=(end-b)//4
+            tail=[i for i in range(count) if word(b+4*i)==0xe12fff1e or word(b+4*i)&0xffff8000==0xe8bd8000]
+            n=(tail[-1]+1 if tail else count)
+            if n>1024:continue
+            diff=[i*4 for i in range(n) if not equivalent(a+4*i,b+4*i)]
+            matches.append([nm,hex(b),n,len(diff),diff[:12]])
+           print('CLONE6',hex(a),json.dumps(sorted(matches,key=lambda r:r[3])[:4]))
+          # Exact enum defaults and source field names.
+          FD,FDS=struct.unpack_from('<II',md,64);DV,DVS=struct.unpack_from('<II',md,72)
+          defs={ix:(ty,di) for ix,ty,di in (struct.unpack_from('<iii',md,FD+i) for i in range(0,FDS,12))}
+          row=images['CoreGameplay.dll']
+          for i in range(row[2],row[2]+row[3]):
+           tr=struct.unpack_from('<22I',md,T+i*88);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+           if not re.search(r'(LogicalState|ContainerState|CardFactType|GameState|MoveType|CardType|ContainerType|CardEntity|CardDto|MoveData|PlacementCheck|SimulationWorld|GameStateEntity|CardRequestType)$',tn):continue
+           out=[]
+           for k in range(tr[17]&65535):
+            ix=tr[8]+k;fn=name(struct.unpack_from('<I',md,F+ix*12)[0]);dv=defs.get(ix)
+            out.append([fn, None if not dv or not 0<=dv[1]<DVS else [dv[0],md[DV+dv[1]:DV+dv[1]+4].hex()]])
+           print('ENUM6',json.dumps({'type':tn,'fields':out},separators=(',',':')))
+          # Sparse decision blocks: loop order, move creation, stock gates, placement.
+          ranges=[
+           ('producer-entry',0x1d02948,0x1d029c0),
+           ('producer-home-loop',0x1d02a80,0x1d02bd8),
+           ('producer-play-loop',0x1d02be0,0x1d02d14),
+           ('stock-gate',0x1d031d8,0x1d032c8),
+           ('stock-type-and-append',0x1d032cc,0x1d033c0),
+           ('available-container',0x1d03808,0x1d038c0),
+           ('available-positions',0x1d03928,0x1d03a30),
+           ('dirty-update',0x1d02700,0x1d02758)]
+          for label,a,b in ranges:
+           print('BLOCK6',json.dumps({'label':label,'facts':[f for pc in range(a,b,4) if (f:=fact(pc))]},separators=(',',':')))
+          # No full disassembly or original bytes exported.
+          print('PASS_SHA_PINNED_PRODUCER6')
           print('STATIC_ONLY_NO_RUNTIME_OR_REMOTE')
           PY

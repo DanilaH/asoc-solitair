@@ -12,6 +12,7 @@ import type { EventLedger } from './events/ledger';
 import type { OfferCampaignJournal } from './commerce/offer-campaigns';
 import type { CommerceJournal } from './commerce/orders';
 import type { RewardOffers } from './reward-offers';
+import type { HitappsBoardState, HitappsDealRules } from './hitapps-board';
 
 export const RULES_VERSION = 3;
 export const CONTENT8_PREVIEW = Boolean(releaseProfile) || import.meta.env?.VITE_CONTENT8_PREVIEW === '1';
@@ -24,7 +25,8 @@ export interface Card {
 }
 export interface Board {
   /** Persisted per board/Undo snapshot so active and parked attempts can differ. */
-  rulesVersion?: 2 | 3;
+  rulesVersion?: 2 | 3 | 4;
+  hitapps?: HitappsBoardState;
   tableau: string[][]; foundations: string[][]; stock: string[]; waste: string[];
   faceUp: string[]; collected: string[]; movesLeft: number | null;
   phase: 'playing' | 'exhausted' | 'won';
@@ -35,7 +37,7 @@ export interface Board {
 }
 export interface Location { kind: 'tableau' | 'waste' | 'foundation'; index: number }
 export type BonusKind = 'foundation' | 'tableau';
-export type BoardCommand = { type: 'transfer'; from: Location; to: Location }
+export type BoardCommand = { type: 'transfer'; from: Location; to: Location; root?: number; scissors?: 'cut' | 'unbind' | 'discard' }
   | { type: 'draw' } | { type: 'recycle' };
 export type Command = BoardCommand | { type: 'place-joker'; column: number } | { type: 'undo' } | { type: 'restart'; attemptId: string }
   | { type: 'hint'; revision: number; action: BoardCommand };
@@ -69,6 +71,7 @@ export interface Deal {
   tutorialPath?: Command[];
   legacyTutorialPath?: Command[];
   daily?: { dayId: string; contentVersion: number; poolId: string };
+  hitapps?: HitappsDealRules;
 }
 export interface CampaignOutcome {
   outcome: 'Clean' | 'ExtraSteps' | 'Restart';
@@ -178,7 +181,7 @@ export interface Save {
   randomJokers?: { version: 1; grants: RandomJokerAccess[] };
 }
 export interface GameEvent {
-  type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';
+  type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward' | 'ice' | 'cut' | 'unbind' | 'discard' | 'assemble' | 'gold';
   cards?: string[]; category?: string; amount?: number; reason?: string; cause?: 'magnet' | 'hammer';
 }
 export interface Result { next: Save; accepted: boolean; events: GameEvent[]; reason?: string }

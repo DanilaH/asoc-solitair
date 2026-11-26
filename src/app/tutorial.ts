@@ -25,6 +25,14 @@ export function coversPlayableWaste(board: Board, action: BoardCommand, deal: De
 }
 
 export function recordLearning(save: Save, before: Board, action: BoardCommand, deal: Deal, events: readonly GameEvent[] = []): void {
+  if (before.hitapps) {
+    const lessons: Partial<Record<GameEvent['type'], string>> = { ice: 'frozen', cut: 'bound', assemble: 'puzzle', unlock: 'keys' };
+    for (const event of events) {
+      const learned = event.cause ?? lessons[event.type] ??
+        (event.type === 'gold' && event.reason === 'activated' ? 'golden' : undefined);
+      if (learned) markTutorial(save, `learn:r4-${learned}`);
+    }
+  }
   if (action.type === 'transfer' && action.to.kind !== 'waste' &&
     action.to.index === bonusOffer(deal, action.to.kind)?.index) markTutorial(save, `learn:bonus-${action.to.kind}`);
   if (releaseProfile && hasReleaseLesson(deal)) return;
@@ -63,6 +71,19 @@ export function specialRuleNote(save: Save, deal: Deal): { kind: string; copy: s
     !isLocked(board, index, deal) && (pile.at(-1) === id && board.faceUp.includes(id) ||
       sourceCards(board, { kind: 'tableau', index }, deal).includes(id)));
   const seen = (kind: string) => seenTutorial(save, 'learn:' + kind);
+  if (board.hitapps) {
+    const learned = (kind: string) => seen(`r4-${kind}`);
+    for (const [id, card] of Object.entries(board.hitapps.cards)) {
+      if (!visible(id)) continue;
+      if (card.ice && !learned('frozen')) return { kind: 'r4-frozen', copy: 'Подходящий перенос снимает слой льда.' };
+      if (card.lock && card.lock.collected < card.lock.required && !learned('keys')) return { kind: 'r4-keys', copy: 'Соберите ключи нужного типа.' };
+      if ((card.scissors || card.bound === 2) && !learned('bound')) return { kind: 'r4-bound', copy: 'Перенесите ножницы на связанную карту.' };
+      if (card.puzzle && !learned('puzzle')) return { kind: 'r4-puzzle', copy: 'Соедините половины на поле.' };
+      if (card.gold?.health && !learned('golden')) return { kind: 'r4-golden', copy: 'Активируйте золото, пока не кончились отметки.' };
+      if (card.kind === 5 && !learned('magnet')) return { kind: 'r4-magnet', copy: 'Магнит притягивает подходящую карту или ключ.' };
+      if (card.kind === 6 && !learned('hammer')) return { kind: 'r4-hammer', copy: 'Молоток действует на открытую карту в столбце.' };
+    }
+  }
   if (!seen('frozen') && Object.keys(deal.frozen?.layers ?? {}).some(id => visible(id) && frozenLayers(board, deal, id)))
     return { kind: 'frozen', copy: 'Соберите тему, чтобы снять слой льда.' };
   if (!seen('bound') && Object.keys(deal.bound?.scissorsByCard ?? {}).some(id => visible(id) && isBoundCard(board, deal, id)))

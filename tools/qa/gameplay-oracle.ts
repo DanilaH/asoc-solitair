@@ -1,5 +1,6 @@
 /** Audit-only second implementation. No production transition/packet/legal helpers. */
 import type { Board, BoardCommand, Deal, Location } from '../../src/domain/types';
+import { advanceRules4 } from './hitapps-rules4-oracle';
 export function locked(b: Board, i: number, d: Deal) { return d.lock?.column === i && !d.lock.requiredKeys.every(k => b.keys?.includes(k)); }
 function frozen(b: Board, d: Deal, id?: string) {
   if (id === undefined || !d.frozen?.layers[id]) return false;
@@ -29,6 +30,7 @@ export function group(b:Board,i:number,d:Deal):string[]{
   return col.slice(j);
 }
 export function advance(input:Board,a:BoardCommand,d:Deal):Board|null{
+  if(input.rulesVersion===4)return advanceRules4(input,a,d);
   if(input.phase!=='playing')return null;
   const b=structuredClone(input);
   const expose=(id:string|undefined)=>{if(!id||b.faceUp.includes(id))return;b.faceUp.push(id);const key=d.cards[id].keyId;if(key&&!(b.keys??=[]).includes(key)){b.keys.push(key);if(d.lock&&!locked(b,d.lock.column,d))expose(b.tableau[d.lock.column].at(-1));}};

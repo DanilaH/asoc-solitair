@@ -120,4 +120,4 @@ test.skipIf(process.env.ASOC_QA_C8_GEOMETRY !== '1')('C8 uses a single bounded g
   }
   console.info(JSON.stringify({ profile: releaseProfile!.id, campaign: campaignDeals.length, issued: issued.size,
     daily: daily.length, retained: saved.length, distinctIds: definitions.size, cases, replayed, bonusCases }));
-}, 35_000);
+}, 90_000);

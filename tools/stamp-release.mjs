@@ -44,6 +44,7 @@ const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding:
 const manifest = {
   version: 1, commit, gameVersion: pkg.version, androidVersionCode: Number(versionCode),
   ...profile, runtimePin, sdkMode, apkVariant,
+  ...(process.env.VITE_HITAPPS_SOURCE_QA === '1' && { candidate: 'hitapps-r4-qa', supportedBoardRules: [2, 3, 4] }),
   sdkCapabilities: {
     campaignPause: sdkMode === 'test' || (sdkMode === 'live' && process.env.ASOC_OWNER_ADS_READY === '1'),
     lifeRefill: sdkMode === 'test' || (sdkMode === 'live' && process.env.ASOC_OWNER_LIVES_ADS_READY === '1'),

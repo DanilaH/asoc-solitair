@@ -34,6 +34,7 @@ import { adaptiveBank, selectAdaptiveDeal } from './campaign-v8-adaptive';
 import { BEYOND80_PREVIEW, campaignId } from '../domain/progression';
 import { CONTENT8_PREVIEW } from '../domain/types';
 import type { Attempt, Board, BoardCommand, CampaignIssuance, Deal, Save } from '../domain/types';
+import { bindHitappsBank, selectHitappsBank } from './hitapps-r4-bank';
 
 export interface CampaignRecord {
   id: string; version: number; campaignLevel: number; title: string; topics: TopicSelection[];
@@ -157,10 +158,18 @@ const teachingOriginal = new Map(c8TeachingPresets.map(({ deal, base }) => [deal
 const all = new Map([...c8TeachingPresets.map(({ deal }) => deal), introDeal, ...legacyCampaignDeals, ...openingDeals, ...content7Deals, ...content8Slice,
   ...authoredCampaignCandidates, ...progressiveBonusBySource.values(), equalityPreviewDeal, ...equalityAttestedDeals, randomJokerDeal, recoveryDeal,
   ...[...variants.values()].map(({ deal }) => deal)].map(deal => [deal.id, deal]));
+const hitappsR4Bank = bindHitappsBank(all);
+for (const { deal } of hitappsR4Bank.values()) {
+  if (all.has(deal.id)) throw Error(`Duplicate immutable deal: ${deal.id}`);
+  all.set(deal.id, deal);
+}
+export const hitappsR4Deals = () => hitappsR4Bank.values();
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 /** Includes every campaign definition that can be restored from a saved Deal ID. */
 export const savedDealDefinitions = () => all.values();
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
+  const r4 = hitappsR4Bank.get(dealId);
+  if (r4) return r4.deal.campaignLevel === base.campaignLevel;
   dealId = bonusOrigin.get(dealId) ?? dealId;
   dealId = teachingOriginal.get(dealId) ?? releaseSourceById.get(dealId) ?? dealId;
   const previewIds = CONTENT8_PREVIEW ? variants.get(base.campaignLevel)?.ids : undefined;
@@ -191,7 +200,10 @@ export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): 
   const previousSource = original && (releaseSourceById.get(original) ?? original);
   const candidate = selectAdaptiveDeal(save, selected, lateAdaptive, previousSource ? { ...previous!, dealId: previousSource } : previous);
   if (!releaseProfile) return candidate;
-  return composeReleaseDeal(candidate);
+  const composed = composeReleaseDeal(candidate);
+  if (base.training && !save.platform?.completedCampaign.includes(campaignId(base.campaignLevel!)) ||
+      base.campaignLevel === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1')) return composed;
+  return selectHitappsBank(hitappsR4Bank, save, base, composed, previous) ?? composed;
 }
 
 function composeReleaseDeal(candidate: Deal): Deal {
@@ -207,6 +219,11 @@ const directorRecordsById = new Map(hitappsDirectorRecords.map(record => [record
 
 export function campaignIssuance(save: Save, target: Deal, selected: Deal): CampaignIssuance | undefined {
   if (!releaseProfile || selected.campaignLevel === undefined) return;
+  const r4 = hitappsR4Bank.get(selected.id);
+  if (r4) return { version: 1, profile: releaseProfile.id, policy: 'hitapps-r4-bank-v1', baseId: r4.record.baseId,
+    dealId: selected.id, baseBudget: findDeal(r4.record.baseId)?.initial.movesLeft ?? null, effectiveBudget: selected.initial.movesLeft,
+    source: 'certified-seed', seed: { value: r4.record.seed, inputHash: r4.record.sourceHash, boardHash: r4.hash, routeHash: r4.record.routeHash },
+    equality: 'unknown-cohort' };
   const original = bonusOrigin.get(selected.id) ?? selected.id;
   const candidateId = releaseSourceById.get(original) ?? original;
   const generated = directorRecordsById.get(candidateId);
@@ -245,6 +262,8 @@ export function selectRetryLayout(save: Save, base: Deal, current: Deal): Deal |
   const mastered = save.platform?.completedCampaign.includes(campaignId(level));
   if (!mastered && (level <= 4 || teachingByLevel.has(level) ||
       level === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1'))) return;
+  const source = hitappsR4Bank.get(current.id);
+  if (source && source.record.use !== 'campaign') return;
   const desired = selectCampaignDeal(save, base, save.attempt);
   const fingerprint = layoutFingerprint(current);
   if (layoutFingerprint(desired) !== fingerprint) return desired;

@@ -3,6 +3,7 @@ import { releaseProfile } from '../config/profile';
 import { installSceneTextSharpness } from '@danilah/mini-games-kit/phaser';
 import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
+import { activeLocker } from '../domain/hitapps-rules';
 import { frozenLayers } from '../domain/frozen-cards';
 import { isBoundCard } from '../domain/bound-cards';
 import { isPictureJoined, picturePair, puzzleHalf } from '../domain/puzzle-pairs';
@@ -13,7 +14,7 @@ import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 import { specialCardCues, type SpecialCardCue } from './special-card-feedback';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text; puzzleLabel?: Phaser.GameObjects.Text; puzzleArt?: { half: Phaser.GameObjects.Image; full: Phaser.GameObjects.Image } }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text; puzzleLabel?: Phaser.GameObjects.Text; sourceBadge?: Phaser.GameObjects.Text; puzzleArt?: { half: Phaser.GameObjects.Image; full: Phaser.GameObjects.Image } }
 interface Options {
   deal: Deal; getSave(): Save; reducedMotion(): boolean; command(command: Command): void; sound(name: string): void; allows?(command: BoardCommand): boolean;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene, newDeal: boolean, dealId: string): void;
@@ -21,7 +22,7 @@ interface Options {
   readerZone?(): DOMRect; peek?(id: string | null, previewOnly?: boolean): void;
 }
 interface BoardPointer { id: number; x: number; y: number; clientX: number; clientY: number; primaryDown: boolean; isDown: boolean }
-interface CardPress { pointerId: number; toggle: boolean; from: Location | null; x: number; y: number; clientX: number; clientY: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; inspectOnly?: boolean; liftedAt?: number; motion?: { x: number; at: number; tilt: number }; jokerColumn?: number }
+interface CardPress { pointerId: number; toggle: boolean; from: Location | null; root?: number; x: number; y: number; clientX: number; clientY: number; moved: boolean; stock: boolean; target: Target | null; poses: Pose[]; inspectId?: string; inspectOnly?: boolean; liftedAt?: number; motion?: { x: number; at: number; tilt: number }; jokerColumn?: number }
 interface FoundationSurface { view: CardView; frontId: string }
 interface CoveredFace { frontId: string; strip: boolean }
 interface CollectionView { node: Phaser.GameObjects.Container; targets: Phaser.GameObjects.GameObject[]; timers: Phaser.Time.TimerEvent[]; sparks: Phaser.GameObjects.Image[]; readableUntil?: number }
@@ -71,6 +72,7 @@ export class BoardScene extends Phaser.Scene {
   private keyPresentation: KeyPresentation | undefined;
   private presentationGeneration = 0;
   private selected: Location | null = null;
+  private selectedRoot?: number;
   private press: CardPress | null = null;
   private pendingReturn: CardPress | null = null;
   private dragPointer: BoardPointer | undefined;
@@ -97,12 +99,20 @@ export class BoardScene extends Phaser.Scene {
   private hoverKey = '';
   private dropBoard: Save['attempt']['board'] | undefined;
   private dropValidity = new Map<string, boolean>();
-  private canDrop(from: Location, to: Location): boolean {
+  private dropAction(from: Location, to: Location, root?: number): BoardCommand {
+    const board = this.options.getSave().attempt.board;
+    const tail = (from.kind === 'tableau' ? board.tableau[from.index] : board.waste).at(-1);
+    if (tail && board.hitapps?.cards[tail]?.scissors && to.kind === 'tableau' &&
+        board.tableau[to.index]?.some(id => board.faceUp.includes(id) && board.hitapps!.cards[id].bound === 2))
+      return { type: 'transfer', from, to, scissors: 'cut' };
+    return { type: 'transfer', from, to, ...(root === undefined ? {} : { root }) };
+  }
+  private canDrop(from: Location, to: Location, root?: number): boolean {
     const board = this.options.getSave().attempt.board;
     if (this.dropBoard !== board) { this.dropBoard = board; this.dropValidity.clear(); }
-    const key = `${from.kind}:${from.index}:${to.kind}:${to.index}`;
+    const key = `${from.kind}:${from.index}:${to.kind}:${to.index}:${root ?? ''}`;
     if (!this.dropValidity.has(key)) {
-      const action = { type: 'transfer', from, to } as const;
+      const action = this.dropAction(from, to, root);
       this.dropValidity.set(key, this.options.allows?.(action) !== false && typeof applyBoard(board, action, this.options.deal) !== 'string');
     }
     return this.dropValidity.get(key)!;
@@ -298,11 +308,16 @@ export class BoardScene extends Phaser.Scene {
       fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#563514',
       backgroundColor: '#f7ddc0', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0));
+    const sourceBadge = this.options.deal.hitapps ? this.add.text(0, -this.cardH / 2 + 8, '', {
+      fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#393347', backgroundColor: '#f6eacb',
+      padding: { x: 4, y: 2 },
+    }).setOrigin(.5, 0).setVisible(false) : undefined;
+    if (sourceBadge) face.add(sourceBadge);
     const b = this.add.image(0, 0, 'art-card-back-classic').setDisplaySize(this.cardW, this.cardH);
     this.paintBack(b);
     const shade = this.add.image(0, 0, shadeKey).setAlpha(0);
     back.add(b); node.add([shadow, face, back, shade]); this.world.add(node);
-    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice, binding, puzzleLabel, puzzleArt };
+    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice, binding, puzzleLabel, puzzleArt, sourceBadge };
   }
   private paintBack(b: Phaser.GameObjects.Image) {
     const diamonds = this.options.getSave().settings.cardBack === 'diamonds';
@@ -598,7 +613,15 @@ export class BoardScene extends Phaser.Scene {
         const active = isBoundCard(board, this.options.deal, pose.id) || isBoundCard(board, this.options.deal, linked);
         view.binding.setY(-this.cardH / 2 + (view.ice?.visible ? 32 : 8)).setVisible(pose.faceUp && active);
       }
-      view.puzzleLabel?.setVisible(pose.faceUp && !view.ice?.visible && !view.binding?.visible && !view.puzzleArt?.full.visible);
+      const special = board.hitapps?.cards[pose.id];
+      if (view.sourceBadge && special) {
+        const text = activeLocker(special) ? `Замок ${special.lock!.collected}/${special.lock!.required}` : special.ice ? `Лёд ${special.ice}`
+          : special.scissors ? 'Ножницы' : special.bound === 2 ? 'Связь' : special.bound === 1 ? 'Разрезано'
+          : special.key && !special.key.used ? `Ключ ×${special.key.amount}` : special.gold?.health ? `Золото ${special.gold.health}`
+          : special.order ? `№${special.order}` : '';
+        view.sourceBadge.setText(text).setVisible(pose.faceUp && Boolean(text));
+      }
+      view.puzzleLabel?.setVisible(pose.faceUp && !view.ice?.visible && !view.binding?.visible && !view.sourceBadge?.visible && !view.puzzleArt?.full.visible);
       const def = this.options.deal.cards[pose.id];
       if (previousCollected.has(pose.id) && events.some(e => e.type === 'undo')) {
         // A reloaded save has no old sprite positions. Restore from an actual
@@ -1022,16 +1045,20 @@ export class BoardScene extends Phaser.Scene {
     const card = this.hitCard(x, y);
     const stock = Boolean(board.stock.length || board.waste.length) && !chosenTarget && inside(x, y, this.stockTarget);
     if (stock && performance.now() < this.stockBusyUntil) return;
-    const ids = from ? sourceCards(board, from, this.options.deal) : card ? [card.id] : [];
-    this.press = { ...origin, toggle: Boolean(source && this.selected && same(source, this.selected)), from, stock, inspectId: card?.id,
+    const position = board.hitapps && source?.kind === 'tableau' && card ? board.tableau[source.index].indexOf(card.id) : -1;
+    const whole = source ? sourceCards(board, source, this.options.deal) : [];
+    const root = chosenTarget ? this.selectedRoot : source?.kind === 'tableau' && position > board.tableau[source.index].length - whole.length &&
+      sourceCards(board, source, this.options.deal, position).length ? position : undefined;
+    const ids = from ? sourceCards(board, from, this.options.deal, root) : card ? [card.id] : [];
+    this.press = { ...origin, toggle: Boolean(source && this.selected && same(source, this.selected) && root === this.selectedRoot), from, root, stock, inspectId: card?.id,
       target: chosenTarget, poses: this.metrics.poses.filter(p => ids.includes(p.id)).map(p => ({ ...p, x: this.views.get(p.id)!.node.x, y: this.views.get(p.id)!.node.y })) };
-    if (source && !chosenTarget) { this.selected = source; this.options.sound('lift'); this.drawFocus(); }
+    if (source && !chosenTarget) { this.selected = source; this.selectedRoot = root; this.options.sound('lift'); this.drawFocus(); }
   }
   private currentDrop(x: number, y: number): Target | null {
     const from = this.press?.from, front = this.press?.poses.at(-1), node = front && this.views.get(front.id)!.node;
     if (!from || !node) return null;
     return dragTarget(this.metrics.targets.filter(t => !same(from, t.location)), { x, y }, { x: node.x, y: node.y, width: this.cardW, height: this.cardH }, 12 / this.cssUnit,
-      target => this.canDrop(from, target.location));
+      target => this.canDrop(from, target.location, this.press?.root));
   }
   private overReader(x: number, y: number, fingerOnly = false): boolean {
     const rect = this.options.readerZone?.(); if (!rect || !this.press?.inspectId) return false;
@@ -1077,7 +1104,7 @@ export class BoardScene extends Phaser.Scene {
     this.dragCount.setVisible(!press.from || press.poses.length > 1);
     if (front) { const node = this.views.get(front.id)!.node; this.dragCount.setDepth(850).setText(press.from ? `×${press.poses.length}` : 'Просмотр').setFontSize(Math.max(17, 11 / this.cssUnit)).setPosition(node.x - this.cardW / 2 + 10, node.y - this.cardH / 2 + 8); }
     if (firstMove) { this.world.sort('depth'); this.drawSlots(); }
-    const hover = this.currentDrop(x, y), valid = hover && press.from && this.canDrop(press.from, hover.location);
+    const hover = this.currentDrop(x, y), valid = hover && press.from && this.canDrop(press.from, hover.location, press.root);
     this.options.peek?.(this.overReader(x, y, true) || this.overReader(x, y) && !valid ? press.inspectId! : null, !press.from);
     this.drawFocus(hover);
   }
@@ -1089,7 +1116,7 @@ export class BoardScene extends Phaser.Scene {
     const dragged = press?.liftedAt !== undefined;
     if (dragged) this.move({ ...pointer, isDown: true });
     const drop = dragged ? this.currentDrop(point.x, point.y) : null;
-    const valid = drop && press?.from && this.canDrop(press.from, drop.location);
+    const valid = drop && press?.from && this.canDrop(press.from, drop.location, press.root);
     const reader = dragged && (this.overReader(point.x, point.y, true) || this.overReader(point.x, point.y) && !valid);
     this.press = null;
     this.dragPointer = undefined;
@@ -1123,7 +1150,7 @@ export class BoardScene extends Phaser.Scene {
     }
     const target = press.target ?? drop;
     if (press.from && target && !same(press.from, target.location)) {
-      this.selected = null; this.options.command({ type: 'transfer', from: press.from, to: target.location });
+      this.selected = null; this.options.command(this.dropAction(press.from, target.location, press.root));
     } else if (!tap || !press.from || press.toggle) this.cancel(press);
     else this.drawFocus();
   }
@@ -1147,7 +1174,7 @@ export class BoardScene extends Phaser.Scene {
       const front = frontId && this.views.get(frontId)?.node;
       if (front) this.focus.lineStyle(2 / this.cssUnit, 0xffe5a7).strokeRoundedRect(
         front.x - this.cardW / 2 + 3, front.y - this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
-      for (const id of sourceCards(this.options.getSave().attempt.board, this.selected, this.options.deal)) {
+      for (const id of sourceCards(this.options.getSave().attempt.board, this.selected, this.options.deal, this.selectedRoot)) {
         const view = this.views.get(id)!;
         this.tweens.killTweensOf([view.face, view.back]);
         view.face.setVisible(true).setScale(1); view.back.setVisible(false).setScale(1);

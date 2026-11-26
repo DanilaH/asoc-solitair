@@ -48,6 +48,7 @@ jobs:
           npm run qa:decision-cost
           npm run qa:decision-deep
       - run: npm run qa:hitapps-equality
+      - run: npm run qa:hitapps-r4
       - run: npm run qa:rules
       - run: npm run content:azur-preset
       - run: npm run qa:content8
@@ -225,6 +226,12 @@ jobs:
         run: npx playwright test tests/browser/c8-ftue-presets.spec.ts --output=test-results/c8-ftue-presets
       - name: Verify saved rights and reward lifecycle through ordinary touch UI
         run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts --output=test-results/mvp-cohesion
+      - name: Verify Rules4 candidate issuance and resume through ordinary touch UI
+        env:
+          VITE_HITAPPS_SOURCE_QA: '1'
+        run: |
+          npm run build
+          npx playwright test tests/browser/hitapps-rules4.spec.ts --output=test-results/hitapps-rules4
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -234,6 +241,7 @@ jobs:
             test-results/mvp-cohesion/
             test-results/c8-ui/
             test-results/c8-ftue-presets/
+            test-results/hitapps-rules4/
             .recording/c8-grid.txt
             .recording/mvp-unit-results.json
             dist/release-manifest.json
@@ -270,7 +278,10 @@ jobs:
         env:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
-      - run: npm run check && npm run android:sync
+      - run: npm run check
+      - run: npm run android:sync
+        env:
+          VITE_HITAPPS_SOURCE_QA: '1'
       - uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/asoc-debug-signing/debug.keystore

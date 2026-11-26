@@ -15,7 +15,7 @@ export function resolveCandidateSeed(requested: number, drawSeed: (maxExclusive:
 
 const phaseOrder = {
   initial: ['paywall', 'ordered'],
-  shuffle: ['puzzleDistribution', 'lockers', 'frozen', 'bound'],
+  shuffle: ['puzzleDistribution', 'equalityPairs', 'lockers', 'frozen', 'bound'],
   final: ['golden', 'starterBooster'],
 } as const;
 type Phase = keyof typeof phaseOrder;
@@ -41,8 +41,11 @@ function context<T>(snapshot: T, levelShuffled: boolean): PhaseState<T> {
 }
 
 export function prepareFreshPlan<T>(snapshot: T, appliers: FeatureAppliers<T>) {
+  return runPhase('final', prepareFreshShuffle(snapshot, appliers), appliers);
+}
+export function prepareFreshShuffle<T>(snapshot: T, appliers: FeatureAppliers<T>, layout?: (snapshot: T) => T) {
   const initial = runPhase('initial', context(snapshot, false), appliers);
-  return runPhase('final', runPhase('shuffle', initial, appliers), appliers);
+  return runPhase('shuffle', layout ? { ...initial, snapshot: layout(initial.snapshot) } : initial, appliers);
 }
 export function prepareSimulatedShuffle<T>(snapshot: T, appliers: FeatureAppliers<T> = {}) {
   return runPhase('shuffle', context(snapshot, true), appliers);
@@ -59,6 +62,7 @@ export function preparePriorityPlan<T, V>(options: {
   digest: (state: Readonly<PhaseState<T>>) => string;
   target: number;
   tolerancePercent: number;
+  source?: { stable: boolean };
   appliers?: FeatureAppliers<T>;
 }) {
   const appliers = options.appliers ?? {};
@@ -70,7 +74,7 @@ export function preparePriorityPlan<T, V>(options: {
     if (evaluation) return { seed, steps: evaluation.steps, value: {
       requestedSeed, state, digest: options.digest(state), evaluation: evaluation.value,
     } };
-  }, options.target, options.tolerancePercent);
+  }, options.target, options.tolerancePercent, options.source);
   const best = selection.candidate;
   if (!best) return { attempts: selection.attempts, reason: selection.reason };
   // On the bounded exit the source rebuilds the best seed and reruns Shuffle.

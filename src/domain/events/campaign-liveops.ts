@@ -1,5 +1,6 @@
 import { claimMilestone, eventKey, observeEvents, recordEventWin, settledFirstWin, type EventDefinition } from './ledger';
 import type { Deal, Save } from '../types';
+import { collectedGold } from '../golden-cards';
 
 const DAY = 86_400_000, WEEK = 7 * DAY, MONDAY_EPOCH = 4 * DAY, GRACE = 4 * WEEK;
 const race = 'hitapps-weekend-race', lava = 'hitapps-lava-quest', gold = 'hitapps-gold-rush-event';
@@ -47,6 +48,17 @@ export function validLavaRun(value: LavaRun) {
 }
 export function recordLiveOpsLoss(save: Save) {
   if (save.lavaRun?.wins.length) save.lavaRun.wins = [];
+}
+
+/** Local Rules4 event progress. Its receipt lives in the event ledger, independently of card health. */
+export function recordSourceGoldRush(before: Save, after: Save, deal: Deal, now: number) {
+  if (deal.hitapps?.gold?.eventKey !== 'gold-r4-weekly-v1' || collectedGold(after.attempt.board, deal) < 1 ||
+      now < (after.events?.clocks.local ?? 0)) return;
+  const settled = settledFirstWin(before, after, deal);
+  const period = liveOpsDefinitions(now).find(event => event.sourceFeatureId === gold);
+  if (!settled || settled.mode !== 'campaign' || !period) return;
+  const definition = { ...period, id: `r4-${period.id}`, version: 2 };
+  recordEventWin(after, [definition], settled, { localMs: now });
 }
 
 export function recordLiveOpsWin(before: Save, after: Save, deal: Deal, now: number) {

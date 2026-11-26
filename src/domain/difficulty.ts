@@ -33,18 +33,26 @@ export function difficultyPenalty(save: Save): number {
   return save.difficultyPenalty ?? nextPenalty(save.difficultyHistory ?? [], 0, C8_DIFFICULTY);
 }
 
-export function easyDealTarget(input: {
+type EasyDealInput = {
   level: number; random: boolean; stable: boolean; previousLosses: number; difficulty: DifficultyTier; special: boolean;
-}, config: {
+  dtoMoves?: number; dtoPenalty?: number;
+};
+type EasyDealConfig = {
   enabled: boolean; minLevel: number;
-  byDifficulty: Partial<Record<DifficultyTier, { lossThreshold: number; targetSteps: number }>>;
-}) {
+} & ({ revision?: undefined; byDifficulty: Partial<Record<DifficultyTier, { lossThreshold: number; targetSteps: number }>> }
+  | { revision: 'source-easy-v1'; byDifficulty: Partial<Record<DifficultyTier, { lossThreshold: number; decCoef: number }>> });
+
+export function easyDealTarget(input: EasyDealInput, config: EasyDealConfig) {
   if (!config.enabled || input.level < config.minLevel || !input.random || !input.stable || input.special) return;
   const setting = config.byDifficulty[input.difficulty];
-  if (!setting || !Number.isSafeInteger(setting.lossThreshold) || setting.lossThreshold < 1 ||
-    !Number.isSafeInteger(setting.targetSteps) || setting.targetSteps < 1) return;
+  if (!setting || !isInt32(setting.lossThreshold) || setting.lossThreshold < 1) return;
   if (!Number.isSafeInteger(input.previousLosses) || input.previousLosses < 0 || input.previousLosses + 1 < setting.lossThreshold) return;
-  return setting.targetSteps;
+  if ('targetSteps' in setting) return Number.isSafeInteger(setting.targetSteps) && setting.targetSteps > 0 ? setting.targetSteps : undefined;
+  const { dtoMoves, dtoPenalty } = input;
+  if (dtoMoves === undefined || !isInt32(dtoMoves) || dtoMoves < 1 || dtoPenalty === undefined ||
+      !isInt32(dtoPenalty) || !isInt32(setting.decCoef) || setting.decCoef < 1) return;
+  const target = adjustedMoveBudget(dtoMoves, (Math.min(dtoPenalty, 0) - setting.decCoef) | 0, true);
+  return target > 0 ? target : undefined;
 }
 
 /** Full source event history takes precedence only in the isolated director build. */
@@ -59,11 +67,9 @@ export function planFutureDifficulty(input: Parameters<typeof easyDealTarget>[0]
   levelPenalty: number;
   historyPenalty: number;
 }, easy: Parameters<typeof easyDealTarget>[1]) {
-  return {
-    penalty: input.levelPenalty + input.historyPenalty,
-    effectiveBudget: adjustedMoveBudget(input.baseBudget, input.levelPenalty + input.historyPenalty, input.stable),
-    easyTarget: easyDealTarget(input, easy),
-  };
+  const penalty = input.levelPenalty + input.historyPenalty;
+  const effectiveBudget = adjustedMoveBudget(input.baseBudget, penalty, input.stable);
+  return { penalty, effectiveBudget, easyTarget: easyDealTarget({ ...input, dtoMoves: effectiveBudget, dtoPenalty: penalty }, easy) };
 }
 
 export function recordCampaignExhaustion(attempt: Attempt) {

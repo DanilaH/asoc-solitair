@@ -5,6 +5,8 @@ import { advance } from '../qa/gameplay-oracle';
 import { completeSimulatedPlan, prepareSimulatedShuffle, resolveCandidateSeed } from './candidate-pipeline';
 import { eligibleForEquality, selectEquality, type PlayerSegment, type PolicyRun, type SimulationPolicy } from './difficulty-selection';
 import { EmbeddedRandom } from './plain-dealer';
+import { exchangeSourceSlots, type SourceSlot } from './hitapps-puzzle-distribution';
+import { Kind } from '../../src/domain/hitapps-rules';
 
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 
@@ -14,6 +16,27 @@ export function sampleEqualityStacks(columns: number, rng: EmbeddedRandom, strat
   const indices = new Set<number>();
   while (indices.size < 3) indices.add(rng.next(columns));
   return [...indices];
+}
+
+/** Known positive path from native PlaceCategoryPairOnStack. The caller discards an incomplete trial. */
+export function placeEqualityPairs(slots: SourceSlot[], sizes: readonly number[], rng: EmbeddedRandom, categoryOf: (id: string) => string) {
+  if (sizes.length < 3) return { status: 'UNKNOWN_INSUFFICIENT_STACKS' as const, indices: [] };
+  const indices: number[] = [];
+  while (indices.length < 3) {
+    const column = rng.next(sizes.length);
+    if (indices.includes(column)) continue;
+    indices.push(column);
+    const leader = slots.find(slot => slot.container === 0 && slot.kind === Kind.category);
+    const at = (position: number) => slots.find(slot => slot.container === 2 && slot.column === column && slot.position === position);
+    const first = at(0), second = at(1);
+    if (!leader || !first || !second) return { status: 'UNKNOWN_PAIR_INPUT' as const, indices };
+    exchangeSourceSlots(leader, first, sizes);
+    const word = slots.find(slot => slot.container === 0 && (slot.kind === Kind.word || slot.kind === Kind.puzzleTop ||
+      slot.kind === Kind.puzzleBottom) && categoryOf(slot.id) === categoryOf(leader.id));
+    if (!word) return { status: 'UNKNOWN_PAIR_WORD' as const, indices };
+    exchangeSourceSlots(word, second, sizes);
+  }
+  return { status: 'APPLIED' as const, indices };
 }
 
 export function prepareEqualityPlan(options: {

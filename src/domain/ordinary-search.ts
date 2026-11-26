@@ -1,9 +1,20 @@
-import { applyBoard, boardKey, packet, sourceCards } from './engine';
+import { applyBoard, boardKey, legalCommands, packet, sourceCards } from './engine';
 import type { Board, BoardCommand, Deal, Location } from './types';
 
 /** Symmetry-pruned actions for the ordinary, unlocked reference slice. */
 export function referenceActions(board: Board, deal: Deal): BoardCommand[] {
   if (board.phase !== 'playing') return [];
+  if (board.rulesVersion === 4) {
+    const emptyHome = board.foundations.findIndex(pile => !pile.length);
+    const emptyTableau = board.tableau.findIndex(pile => !pile.length);
+    return legalCommands(board, deal).filter(action => {
+      if (action.type !== 'transfer' || action.scissors) return true;
+      if (action.to.kind === 'foundation') return board.foundations[action.to.index].length || action.to.index === emptyHome;
+      if (action.to.kind !== 'tableau' || board.tableau[action.to.index].length) return true;
+      return action.to.index === emptyTableau && (action.from.kind !== 'tableau' || action.root !== undefined ||
+        packet(board, action.from.index, deal).length < board.tableau[action.from.index].length);
+    });
+  }
   const out: BoardCommand[] = [];
   const groups = board.tableau.map((_, i) => packet(board, i, deal));
   const firstFree = board.foundations.findIndex(group => !group.length);
@@ -37,7 +48,9 @@ const key = (board: Board) => JSON.stringify([
 
 export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allowLower = true, deadline = Infinity,
   mode?: 'verified-specials') {
-  const identity = mode === 'verified-specials' ? boardKey : key;
+  const plainR4 = initial.rulesVersion === 4 && initial.hitapps && !deal.hitapps?.assemblies.length && !deal.hitapps?.gold && !initial.joker &&
+    Object.values(initial.hitapps.cards).every(card => !card.bound && !card.scissors && !card.ice && !card.lock && !card.key && card.kind <= 1);
+  const identity = plainR4 ? key : mode === 'verified-specials' || initial.rulesVersion === 4 ? boardKey : key;
   const heap: Node[] = [], seen = new Map<string, number>();
   const weights = new Map<string, number>();
   for (const card of Object.values(deal.cards)) weights.set(card.category, (weights.get(card.category) ?? 0) + 1);
@@ -47,6 +60,10 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
       const cat = deal.cards[group[0]].category;
       distance += weights.get(cat)! - group.length;
       opened += group.length;
+    }
+    if (initial.rulesVersion === 4) {
+      const hidden = board.tableau.flat().filter(id => !board.faceUp.includes(id)).length;
+      return (board.collected.length + opened) * -8 + distance * .3 + hidden * 1.4 + board.stock.length * .09 + steps * .52;
     }
     return (board.collected.length + opened) * -6 + distance * .28 + board.stock.length * .19
       + board.tableau.filter(group => group.length).length * .6 + steps * .78;
@@ -99,7 +116,7 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
         throw Error(result);
       }
       if (result.board.phase === 'exhausted') continue;
-      push(result.board, node.steps + 1, node, action);
+      push(result.board, node.steps + (result.consumedMoves ?? 1), node, action);
     }
   }
   return { status: (heap.length ? 'UNKNOWN' : 'NO_ROUTE_IN_PRUNED_GRAPH') as 'UNKNOWN' | 'NO_ROUTE_IN_PRUNED_GRAPH', visited };

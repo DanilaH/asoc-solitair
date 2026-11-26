@@ -6,7 +6,7 @@ export class EmbeddedRandom {
   private at = 0;
   private other = 21;
 
-  constructor(seed: number) {
+  constructor(seed: number, private readonly observe?: (bound: number, value: number) => void) {
     if (!Number.isInteger(seed) || seed < -2147483648 || seed > modulus) throw new Error('Expected Int32 seed');
     let a = 161803398 - Math.min(modulus, Math.abs(seed)), b = 1;
     this.state[55] = a;
@@ -31,7 +31,9 @@ export class EmbeddedRandom {
     if (value === modulus) value--;
     if (value < 0) value += modulus;
     this.state[this.at] = value;
-    return Math.floor(value / modulus * max);
+    const draw = Math.floor(value / modulus * max);
+    this.observe?.(max, draw);
+    return draw;
   }
 }
 
@@ -64,9 +66,16 @@ export function dealOrdinary<T>(cards: readonly T[], stockSize: number, columnSi
 export interface WinCandidate<T> { seed: number; steps: number; value: T }
 const candidateCap = 100;
 
+/** Hitapps SimulationHelper: float32 arithmetic, then round away from zero. */
+export function sourceWithinTolerance(target: number, steps: number, stable: boolean, accuracy: number) {
+  if (!stable || accuracy <= 0) return true;
+  const tolerance = Math.round(Math.fround(Math.fround(Math.fround(target) * Math.fround(accuracy)) / 100));
+  return Math.abs(target - steps) <= tolerance;
+}
+
 /** Ordinary Priority ranking, using our engine's proven wins as input. */
 export function selectPriority<T>(seeds: Iterable<number>, simulateWin: (seed: number) => WinCandidate<T> | undefined,
-  target: number, tolerancePercent: number) {
+  target: number, tolerancePercent: number, source?: { stable: boolean }) {
   if (!Number.isInteger(target) || target < 0 || !Number.isFinite(tolerancePercent) || tolerancePercent < 0 || tolerancePercent > 100)
     throw Error('Invalid Priority target or tolerance');
   let closest: WinCandidate<T> | undefined;
@@ -77,7 +86,7 @@ export function selectPriority<T>(seeds: Iterable<number>, simulateWin: (seed: n
     if (candidate) {
       const gap = Math.abs(candidate.steps - target);
       if (!closest || gap < Math.abs(closest.steps - target)) closest = candidate;
-      if (gap * 100 <= target * tolerancePercent)
+      if (source ? sourceWithinTolerance(target, candidate.steps, source.stable, tolerancePercent) : gap * 100 <= target * tolerancePercent)
         return { candidate, attempts, reason: 'WITHIN_TOLERANCE' as const, reachedCap: false };
     }
     if (attempts === candidateCap) break;

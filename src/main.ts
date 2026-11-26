@@ -6,10 +6,11 @@ import { claimDailyBonus, dailyBonusState, openDailyBonusRound, revealDailyBonus
 import { grantShuffleIntro, hasFutureShuffleUse, SHUFFLE_LEVELS } from './domain/shuffle-progression';
 import { commitAdaptiveRetry, quoteAdaptiveRetry, quoteLayoutRetry } from './app/campaign-retry';
 import { releaseProfile } from './config/profile';
+import { HITAPPS_SOURCE_QA } from './config/hitapps-r4';
 import { OFFER_CAMPAIGNS_PREVIEW } from './domain/commerce/offer-campaigns';
 import { mountOfferCampaignPreview } from './app/offer-campaign-preview';
 import { authorizeLifeVideo, cancelLifeVideo, LIVEOPS_PREVIEW, LIVES_PREVIEW, LIVES_RULES, matchesLifeVideo, mayStartCampaignAttempt, refillCampaignLife, refreshCampaignLives } from './domain/campaign-lives';
-import { claimLegacyLiveOpsReward, legacyLiveOpsRewards, liveOpsDefinitions, liveOpsTitles, recordLiveOpsWin, type LiveOpsSource } from './domain/events/campaign-liveops';
+import { claimLegacyLiveOpsReward, legacyLiveOpsRewards, liveOpsDefinitions, liveOpsTitles, recordLiveOpsWin, recordSourceGoldRush, type LiveOpsSource } from './domain/events/campaign-liveops';
 import { availableEvents, claimMilestone, eventKey, type EventReward } from './domain/events/ledger';
 import { createStorefront } from './platform/storefront';
 import { claimShopProgress, freeCampaignBonusState, PASS_GOAL, PIGGY_LIMIT, productLabels, recordFreeCampaignClear, recordStoreClear, settleFreeCampaignBonus, showProductGoods, storefrontView, STOREFRONT_PREVIEW, type FreeCampaignBonusGrant } from './domain/commerce/storefront';
@@ -23,7 +24,7 @@ import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
-import { campaignIssuance, campaignDeals, campaignRedeal, findDeal, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
+import { campaignIssuance, campaignDeals, campaignRedeal, findDeal, hitappsR4Deals, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
 import { CAMPAIGN_LENGTH, HELPER_UNLOCK, RELEASE_UNLOCK, dailyTasksAvailable, dailyModeAvailable, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { canSwitchCardLanguage, localizedCampaignDeal, LOCALE_PREVIEW } from './content/campaign-v8-locale';
@@ -37,7 +38,7 @@ import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
 import { activelyTeaching, firstBonusOffer, recordTeachingAction, teachingProtected } from './app/teaching-protection';
 import { lessonMarker, recordReleaseLearning } from './app/c8-tutorial';
 import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, ruleIntroMarker, specialRuleNote, type RuleIntro } from './app/tutorial';
-import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, STREAK } from './domain/engine';
+import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, legalCommands, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import { AZUR_VICTORY_DEFAULTS, AZUR_VICTORY_QA, AZUR_VICTORY_SAVE_KEY, quoteVictoryReward, victoryDifficulty } from './domain/azur-victory-reward';
 import { frozenLayers } from './domain/frozen-cards';
@@ -78,7 +79,7 @@ const victoryPolicy = AZUR_VICTORY_QA ? AZUR_VICTORY_DEFAULTS : undefined;
 const integratedOffers = releaseProfile?.capabilities.rewardOffers === 'sdk-acceptance-gated';
 const rewardOffersEnabled = (REWARD_OFFER_PREVIEW || integratedOffers) && !AZUR_VICTORY_QA;
 const casual = Boolean(releaseProfile);
-const qaLevelPicker = new URLSearchParams(location.search).get('qa-levels') === '1';
+const qaLevelPicker = HITAPPS_SOURCE_QA || new URLSearchParams(location.search).get('qa-levels') === '1';
 if (casual) {
   document.documentElement.dataset.casual = 'true';
   $('#app').dataset.casual = 'true';
@@ -370,6 +371,7 @@ try {
   systemMotion.addEventListener('change', syncMotionPreference, domOptions);
   deal = findDeal(save.attempt.dealId)!;
   let requestedLevel: number | undefined;
+  let requestedSourceDeal: string | undefined;
   let difficultyRequest: { level: number; returnTo: 'result' | 'picker' | undefined } | undefined;
 
   let activeRule: RuleIntro | undefined;
@@ -1098,12 +1100,32 @@ try {
     const nextBooster = screen === 'game' && board.phase === 'playing'
       ? Object.entries(deal.starter?.cards ?? {}).find(([id]) => !board.collected.includes(id) && !board.foundations.some(pile => pile.includes(id)))?.[1]
       : undefined;
+    const source = screen === 'game' && board.phase === 'playing' ? board.hitapps : undefined;
+    const sourceGlyphs = source ? Object.values(source.cards) : [];
+    const sourceActions = $('#source-special-actions');
+    const choices = sourceGlyphs.some(card => card.scissors || card.bound === 1)
+      ? legalCommands(board, deal).filter((action): action is Extract<BoardCommand, {type:'transfer'}> =>
+        action.type === 'transfer' && (action.scissors === 'unbind' || action.scissors === 'discard')) : [];
+    sourceActions.hidden = !choices.length;
+    sourceActions.replaceChildren(...choices.slice(0, 2).map(action => {
+      const button = document.createElement('button');
+      button.type = 'button'; button.className = 'secondary';
+      const title = action.scissors === 'discard' ? 'Убрать ножницы' : 'Снять связь';
+      button.textContent = title;
+      button.setAttribute('aria-label', `${title} · ${action.from.kind === 'waste' ? 'сброс' : `столбец ${action.from.index + 1}`}`);
+      button.addEventListener('click', () => { void execute(action); });
+      return button;
+    }));
+    const sourceNote = sourceGlyphs.some(card => card.scissors || card.bound === 2) ? 'Перенесите ножницы на связанную карту.'
+      : choices.length ? 'Связь можно снять.' : sourceGlyphs.some(card => card.ice) ? 'Подходящий перенос снимает слой льда.'
+      : deal.hitapps?.assemblies.some(pair => !source?.spent.includes(pair.halves[0])) && source ? 'Соедините две половины в столбце.'
+      : deal.hitapps?.gold && source ? `Активировано золотых карт: ${collectedGold(board, deal)}.` : undefined;
     const boosterNote = nextBooster === 'magnet' ? 'Магнит в слоте темы подтянет карту из колоды.'
       : nextBooster === 'hammer' ? 'Молоток в слоте темы откроет карту в столбце.' : undefined;
     const note = instruction?.attention === 'joker' && $('#joker').getAttribute('aria-pressed') === 'true'
       ? (instruction.jokerColumn === undefined ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.'
         : 'Для примера коснитесь выделенного столбца с камнем.')
-      : instruction?.copy ?? (casual && screen === 'game' ? (firstBonusOffer(save, deal) === 'foundation'
+      : instruction?.copy ?? sourceNote ?? (casual && screen === 'game' ? (firstBonusOffer(save, deal) === 'foundation'
         ? 'Дополнительный слот можно открыть за монеты или видео.' : firstBonusOffer(save, deal) === 'tableau'
           ? 'Дополнительный столбец можно открыть за монеты или видео.' : specialRuleNote(save, deal)?.copy) : binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
         : ice ? 'Соберите тему, чтобы снять один слой льда.'
@@ -1533,6 +1555,7 @@ try {
           else recordStoreClear(result.next, now);
         }
         if (LIVEOPS_PREVIEW && result.accepted) recordLiveOpsWin(next, result.next, deal, Date.now());
+        if (deal.hitapps?.gold && result.accepted) recordSourceGoldRush(next, result.next, deal, now);
         if (PICTURE_PREVIEW && result.accepted && result.next.attempt.board.phase === 'won') {
           recordPictureWin(next, result.next, deal, Date.now());
         }
@@ -1628,7 +1651,7 @@ try {
       if (cmd.type !== 'transfer') present();
       const trigger = releaseAdCadence.coffee;
       const category = result.events.some(event => event.type === 'complete');
-      const pauseTrigger = boardCommand && (category && trigger.triggerCategory ? 'category' :
+      const pauseTrigger = boardCommand && !(boardCommand.type === 'transfer' && boardCommand.scissors) && (category && trigger.triggerCategory ? 'category' :
         boardCommand.type === 'recycle' ? trigger.triggerRecycle && 'recycle' : trigger.triggerMove && boardCommand.type);
       const paused = casual && pauseTrigger ? offerPause(pauseTrigger, protectedAction) : false;
       if (casual && !paused && category && !save.attempt.daily && save.attempt.board.phase === 'playing' &&
@@ -2297,6 +2320,24 @@ try {
       button.dataset.completed = String(done); button.dataset.next = String(level === unlocked && !done);
       button.setAttribute('aria-label', `Уровень ${level}: ${item.title}${difficulty ? ', ' + difficulty : ''}${done ? ', пройден' : level > unlocked ? ', закрыт' : ''}`);
     }
+    if (HITAPPS_SOURCE_QA) {
+      const container = $('#source-deal-list');
+      const fixtures = [...hitappsR4Deals()].filter(row => row.record.use === 'feature-check' && row.penalty === 0 &&
+        Math.floor((row.deal.campaignLevel! - 1) / 20) === chapterPage);
+      container.hidden = !fixtures.length;
+      container.replaceChildren(...fixtures.map(({ deal: fixture }) => {
+        const card = Object.values(fixture.initial.hitapps!.cards);
+        const name = fixture.hitapps?.gold ? 'Золотые карты' : fixture.hitapps?.assemblies.length ? 'Половинки'
+          : card.some(item => item.bound) ? 'Связки и ножницы' : card.some(item => item.lock) ? 'Замок и ключи'
+          : card.some(item => item.ice) ? 'Лёд' : card.some(item => item.kind === 5) ? 'Магнит'
+          : card.some(item => item.kind === 6) ? 'Молоток' : 'Порядок';
+        const button = document.createElement('button');
+        button.className = 'secondary'; button.textContent = `${fixture.campaignLevel} · ${name}`;
+        button.disabled = fixture.campaignLevel! > unlocked || !ready || saving || serviceBusy;
+        button.addEventListener('click', () => { void openLevel(fixture.campaignLevel!, false, false, undefined, fixture.id); });
+        return button;
+      }));
+    }
   }
   function maybeIntroduceRule(requested?: 'joker'): boolean {
     const intro = requested ?? ruleIntroduction(save, deal);
@@ -2412,18 +2453,20 @@ try {
     screen = 'game'; $('#home').hidden = true; $('#play-screen').hidden = false; runtime.activity.setBlocked('screen', false);
     setInput(); scene?.setDeal(deal, animate);
   }
-  async function openLevel(level: number, confirmed = false, announce = true, redeal?: { attemptId: string; dealId: string }) {
+  async function openLevel(level: number, confirmed = false, announce = true, redeal?: { attemptId: string; dealId: string }, sourceDealId?: string) {
     if (!alive || !ready || saving || serviceBusy || store.needsRecovery || level < 1 || level > unlockedLevel(save)) return;
+    const exact = sourceDealId && HITAPPS_SOURCE_QA ? findDeal(sourceDealId) : undefined;
+    if (sourceDealId && (!exact?.hitapps || exact.campaignLevel !== level)) return;
     if (redeal && (redeal.attemptId !== save.attempt.id || campaignRedeal(save.attempt)?.id !== redeal.dealId)) return;
     const target = campaignDeals[level - 1];
     const campaign = campaignAttempt(save);
-    if (campaign?.board.phase === 'playing' && isCurrentCampaignDeal(campaign.dealId, target)) {
+    if (campaign?.board.phase === 'playing' && (exact ? campaign.dealId === exact.id : isCurrentCampaignDeal(campaign.dealId, target))) {
       if (save.attempt.daily) await activateMode('campaign');
       else { closeDialogs(); showGame(); }
       return;
     }
     if (!confirmed && campaign?.board.phase === 'playing' && (campaign.telemetry?.started || campaign.undo.length > 0)) {
-      requestedLevel = level; $('#switch-title').textContent = `Начать уровень ${level}?`; openDialog('#switch-level'); return;
+      requestedLevel = level; requestedSourceDeal = exact?.id; $('#switch-title').textContent = `Начать уровень ${level}?`; openDialog('#switch-level'); return;
     }
     const tier = difficultyLabel(target);
     if (!casual && tier && announce) {
@@ -2435,7 +2478,7 @@ try {
       openDialog('#difficulty-entry'); return;
     }
     closeDialogs(); serviceBusy = true; renderHome();
-    await showTransitionAd(level);
+    if (!exact) await showTransitionAd(level);
     const enter = async () => {
       removeForeground?.(); removeForeground = undefined;
       runtime.activity.setBlocked('level-transition', true);
@@ -2447,7 +2490,7 @@ try {
         started = await write(next => {
           const previous = campaignAttempt(next);
           const previousDeal = previous && findDeal(previous.dealId);
-          const selected = redeal ? campaignRedeal(next.attempt) : selectCampaignDeal(next, target, previous);
+          const selected = exact ?? (redeal ? campaignRedeal(next.attempt) : selectCampaignDeal(next, target, previous));
           if (!selected || (redeal && (next.attempt.id !== redeal.attemptId || selected.id !== redeal.dealId))) return false;
           if (LIVES_PREVIEW && !mayStartCampaignAttempt(next, previous, Date.now())) {
             blockedLives = true; return false;
@@ -2861,7 +2904,11 @@ try {
     try { await showTransitionAd(level, 'menu'); }
     finally { serviceBusy = false; if (alive) renderHome(); }
   }, domOptions);
-  $('#switch-confirm').addEventListener('click', () => { const level = requestedLevel; requestedLevel = undefined; if (level) void openLevel(level, true); }, domOptions);
+  $('#switch-confirm').addEventListener('click', () => {
+    const level = requestedLevel, exact = requestedSourceDeal;
+    requestedLevel = undefined; requestedSourceDeal = undefined;
+    if (level) void openLevel(level, true, !exact, undefined, exact);
+  }, domOptions);
   $('#menu').addEventListener('click', () => { $<HTMLDetailsElement>('#pause-options').open = screen === 'home'; openDialog('#settings'); }, domOptions);
   $('#pause-options').addEventListener('toggle', () => { const expanded = $<HTMLDetailsElement>('#pause-options').open;
     $('#pause-options summary').textContent = expanded && screen === 'game' ? 'Назад' : 'Настройки';

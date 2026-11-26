@@ -133,6 +133,7 @@ test('claims free shop coins through the wallet on an offline build', async ({ p
 });
 
 test('opens cards in Daily Bonus, resumes the same round and claims only once', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-11-26T12:00:00Z'));
   const deal = content8Dealer[2];
   const save = freshSave(deal, 'bonus-browser');
   save.contentVersion = 8;
@@ -157,9 +158,17 @@ test('opens cards in Daily Bonus, resumes the same round and claims only once', 
   await cards.nth(chosen[1]).tap();
   await cards.nth(chosen[2]).tap();
   await page.locator('#daily-bonus-claim').tap();
-  await expect(page.locator('#daily-bonus-status')).toHaveText('Приз получен');
+  await expect.poll(async () => (await read(page)).dailyBonus?.claimed).toBe(true);
   await expect(page.locator('#daily-bonus-claim')).toBeHidden();
-  expect((await read(page)).dailyBonus?.claimed).toBe(true);
+  const claimed = await read(page);
+  await page.reload();
+  await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
+  await page.locator('#daily-bonus-open').tap();
+  await expect(page.locator('#daily-bonus-status')).toContainText('До бонуса дня');
+  await expect(page.locator('#daily-bonus-claim')).toBeHidden();
+  const restored = await read(page);
+  expect(restored.dailyBonus).toEqual(claimed.dailyBonus);
+  expect(restored.profile).toEqual(claimed.profile);
 });
 
 test('uses both task Definition charges and opens normal offers when the stock is empty', async ({ page }) => {

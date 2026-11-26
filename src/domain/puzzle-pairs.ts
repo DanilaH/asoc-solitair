@@ -5,6 +5,8 @@ export function picturePair(deal: Deal, id: string) {
 }
 
 export function puzzleHalf(deal: Deal, id: string): 'top' | 'bottom' | undefined {
+  const assembly = deal.hitapps?.assemblies.find(candidate => candidate.halves.includes(id));
+  if (assembly) return assembly.halves[0] === id ? 'top' : 'bottom';
   const pair = picturePair(deal, id);
   return pair ? pair.top === id ? 'top' : 'bottom' : undefined;
 }

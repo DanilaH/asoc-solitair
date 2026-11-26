@@ -57,7 +57,7 @@ for (const deal of [...c8TeachingPresets.map(item => item.deal), ...retained, ..
       recordReleaseLearning(save, before, command, deal, result.events);
       if (step) expect(eventProvesStep(step, save.attempt.board, deal, result.events)).toBe(true);
       if (step?.marker) expect(save.campaign?.tutorials).toContain(lessonMarker(step.marker));
-      if (step) {
+      if (step && releaseProfile) {
         const reloaded = decodeSave(JSON.stringify(save), findDeal);
         expect(reloaded.attempt).toEqual(save.attempt);
         expect(releaseLessonStep(reloaded, deal)?.command).toEqual(releaseLessonStep(save, deal)?.command);

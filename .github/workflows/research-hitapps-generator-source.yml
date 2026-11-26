@@ -142,76 +142,82 @@ jobs:
            return trace
           rows={}
           def out(k,v):rows[k]=v;print(k,json.dumps(v,separators=(',',':')))
-          # Direct callers across exact ELF, plus actual named field ownership and dispatch jump table.
-          targets={a:[] for a in (0x1c87b14,0x1c87a90,0x1c86988,0x1c87434,0x1d76a24,0x1e6fdc0,0x1e70644,0x1e70780,0x1e70db0,0x1e70e40,0x1e70ed0,0x20b3244,0x20b2ad8,0x20aff90,0x20b29c4,0x20b1bb0)}
-          for fo,v,size,flags in seg:
-           if not flags&1:continue
-           for i,(w,) in enumerate(struct.iter_unpack('<I',e[fo:fo+size//4*4])):
-            if w&0x0e000000!=0x0a000000 or w>>28==15:continue
-            pc=v+4*i;delta=w&0xffffff;delta=(delta if delta<0x800000 else delta-0x1000000)<<2
-            a=pc+8+delta
-            if a not in targets:continue
-            idx=bisect.bisect_right(starts,pc)-1;targets[a].append([hex(pc),hex(starts[idx]) if idx>=0 else None,names_at(starts[idx]) if idx>=0 else []])
-          for a,hits in targets.items():print('CALL36',json.dumps({'target':hex(a),'hits':hits},separators=(',',':')))
-          for im,row in images.items():
-           if not re.match(r'^(Game\.|CoreGameplay|Assembly-CSharp)',im):continue
-           for t in range(row[2],row[2]+row[3]):
-            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if re.search(r'Formatter|Migration|Cheat|\.Sample|_1_13_0',tn):continue
-            fs=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
-            if (any(re.search(r'(streak|combo)',f,re.I) for f in fs) and not re.search(r'View|Presenter|Widget|Analytics|UserData|Config|__',tn)) or re.search(r'(^Core\.Entities\..*(State|Undo)|^Core\.Systems\..*(Observable|Undo))',tn):
-             ms=[r for r in records if r['type']==tn and r['image']==im and r['rva']!='0x0']
-             print('OWNER36',json.dumps({'image':im,'type':tn,'fields':[f for f in fs if not f.startswith('__')],'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not re.search(r'get_|set_|__AJson|global::',r['method'])]},separators=(',',':')))
-          print('DISPATCH36',json.dumps([[i,hex(0x1ce8244+word(0x1ce8244+4*i))] for i in range(10)]))
-          # Targeted native slices: actual clone dispatch functions, stock/undo, reward consumers, event stage gate.
-          for label,a,b in [('placed-clone',0x1cf5c24,0x1cf6060),('rejected-clone',0x1cf6060,0x1cf62ec),('stock-clone',0x1cf62ec,0x1cf6500),('undo-clone',0x1cf6500,0x1cf6780),('undo-branch',0x1c875a0,0x1c87640),('win-stage-complete',0x20b9ca4,0x20b9cb8),('win-claim-gate',0x20b02c8,0x20b030c),('win-loss-gate',0x20b29c4,0x20b2a10),('win-stage-loss',0x20b3310,0x20b3350),('source-gate',0x1c86858,0x1c8687c),('stock-gate',0x1c87288,0x1c87294)]:
-           print('ANCHOR36',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in instructions(a,b)]},separators=(',',':')))
-          # Tier clone called by original action dispatch — same native branch with original getter/setter boundaries.
-          clone=[]
-          for count in (1,2,4,7):
-           for stage,threshold,progress in itertools.product(range(count),(1,4,7),range(10)):
-            u=setup([(0x1c91d08,0x1c91ddc),(0x1e7a328,0x1e7a32c),(0x1e7a390,0x1e7a394),(0x1e7a450,0x1e7a454)])
-            wr(u,CFG+0x14,OBJ);wr(u,OBJ+0xc,count);wr(u,DATA+8,threshold)
-            marker=B+0x6000;wb(u,marker,0)
-            reg(u,UC_ARM_REG_R6,DATA);reg(u,UC_ARM_REG_R4,progress);reg(u,UC_ARM_REG_R5,B+0x7000);reg(u,UC_ARM_REG_R7,CFG);reg(u,UC_ARM_REG_R10,marker)
-            state=[stage,progress]
-            run(u,0x1c91d08,0x1c91ddc,skips={0x1c91d14:0x1c91d28,0x1c91d88:0x1c91d8c,0x1c91d90:0x1c91da0,0x1c91db8:0x1c91dcc},calls={0x1e7a328:lambda uc:reg(uc,UC_ARM_REG_R0,state[0]),0x1e7a390:lambda uc:state.__setitem__(0,rr(uc,UC_ARM_REG_R1)),0x1e7a450:lambda uc:state.__setitem__(1,rr(uc,UC_ARM_REG_R1))})
-            ex=[stage,progress,0] if progress<threshold else [min(stage+1,count-1),0,2 if stage+1>=count else 1]
-            got=state+[rb(u,marker)];assert got==ex,(count,stage,threshold,progress,got,ex);clone.append([count,stage,threshold,progress,*got])
-          out('CLONE36',clone)
-          # Native Undo result-type branch after restored saved progress/stage and resolved current stage record.
-          undo=[]
-          for threshold,restored in itertools.product((0,1,4,5,7),range(10)):
-           u=setup([(0x1c875e4,0x1c87628),(0x1e7a3e8,0x1e7a3ec)])
-           wr(u,DATA+8,threshold);reg(u,UC_ARM_REG_R5,DATA)
-           run(u,0x1c875e4,0x1c87628,skips={0x1c875f0:0x1c87604},calls={0x1e7a3e8:restored})
-           got=rr(u,UC_ARM_REG_R5);assert got==(3 if threshold>=1 and restored==threshold-1 else 0);undo.append([threshold,restored,got])
-          out('UNDO36',undo)
-          # Source stock reset: config gate then update-to-zero; event emitted only if old fill positive.
-          stock=[]
-          for enabled,old in itertools.product((0,1),range(9)):
-           u=setup([(0x1c87288,0x1c8740c),(0x1e7a3e8,0x1e7a3ec),(0x1e7a450,0x1e7a454),(0x1c91c0c,0x1c91c10)])
-           wb(u,CFG+0x11,enabled);reg(u,UC_ARM_REG_R6,CFG)
-           state=[old];updated=[]
-           def afterMetadata(uc):reg(uc,UC_ARM_REG_R5,B+0x7000);reg(uc,UC_ARM_REG_PC,0x1c8736c)
-           run(u,0x1c87288,0x1c8740c,skips={0x1c87294:afterMetadata},calls={0x1e7a3e8:lambda uc:reg(uc,UC_ARM_REG_R0,state[0]),0x1e7a450:lambda uc:state.__setitem__(0,rr(uc,UC_ARM_REG_R1)),0x1c91c0c:lambda uc:updated.append(1)},stops=(0x1c873b0,))
-           got=state+[len(updated),int(rr(u,UC_ARM_REG_PC)==0x1c873b0)];ex=[0 if enabled else old,enabled,int(enabled and old>=1)]
-           assert got==ex,(enabled,old,got,ex);stock.append([enabled,old,*got])
-          out('STOCK36',stock)
-          # Native win-streak leave/claim and loss warning gates with synthetic service state.
-          leave=[]
-          for last,expired,unclaimed in itertools.product((0,1),repeat=3):
-           u=setup([(0x20b02c8,0x20b030c),(0x20b382c,0x20b3830),(0x20b0454,0x20b0458),(0x20af820,0x20af824)])
-           args(u,OBJ);run(u,0x20b02c8,STOP,calls={0x20b382c:last,0x20b0454:expired,0x20af820:unclaimed})
-           got=rr(u,UC_ARM_REG_R0);assert got==int(last or expired and not unclaimed);leave.append([last,expired,unclaimed,got])
-          out('LEAVE36',leave)
-          loss=[]
-          for progress,joined in itertools.product((0,1,2,9),(0,1)):
-           u=setup([(0x20b29c4,0x20b2a10),(0x20b1184,0x20b1188),(0x20b268c,0x20b2690)])
-           wr(u,OBJ+0x14,DATA);wr(u,DATA+0xc,progress);args(u,CFG)
-           # Tailcall IsPlayerInWinStreakEvent uses original LR restored; hook returns controlled joined.
-           run(u,0x20b29c4,STOP,calls={0x20b1184:OBJ,0x20b268c:joined})
-           got=rr(u,UC_ARM_REG_R0);assert got==int(progress>=1 and joined);loss.append([progress,joined,got])
-          out('LOSSWARN36',loss)
-          print('PASS_SHA_PINNED_STREAK_KERNELS36',json.dumps({k:len(v) for k,v in rows.items()}))
+          # Close downstream UI/coin/quest producers and snapshot storage, not just the isolated reducer.
+          for label,a,b in [('streak-view-update',0x1cf6920,0x1cf6e10),('streak-view-init',0x1cf6e10,0x1cf6f9c),('streak-view-state',0x1cf6f9c,0x1cf7218),('streak-stage-config',0x1cf7218,0x1cf72f4),('streak-view-delegate',0x1cf73cc,0x1cf7460),('quest-streak',0x1d07644,0x1d078b0),('quest-streak-size',0x1d078b0,0x1d079dc),('save-streak',0x1e6fdc0,0x1e6fe90),('load-streak',0x1e6fef0,0x1e6ff50),('win-loss',0x20b3244,0x20b34bc),('win-claim',0x20aff90,0x20b02c8),('win-buffer',0x20af6a8,0x20af770)]:
+           print('ANCHOR37',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in instructions(a,b)]},separators=(',',':')))
+          for a,rows0 in entries.items():
+           for r in rows0:
+            if not (re.search(r'Core\.(Systems\.(UndoOperations|UndoSystem|UndoCommitSystem|.*ObservableSystem)|Entities\.UndoSnapshot|Entities\.GameStateEntity)',r['type']) and re.search(r'Undo|Snapshot|Streak|Apply|Restore|Update|Reward',r['method'],re.I)):continue
+            j=bisect.bisect_right(starts,a)
+            if j>=len(starts):continue
+            b=starts[j]
+            if b-a<4 or b-a>0x1600:continue
+            ins=instructions(a,b)
+            print('UNDOOWNER37',json.dumps({'type':r['type'],'name':r['method'],'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':[[hex(x.address),x.op_str,names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str)],'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in ins if x.mnemonic.startswith(('ldr','str','vld','vst','ldm','stm','bl','b','cmp','mov'))]},separators=(',',':')))
+          print('PASS_SHA_PINNED_STREAK_SETTLEMENT37')
+          PY
+  azur:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Acquire exact AZUR build if publicly available and execute known leaf
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          if ! curl --fail --location --silent --show-error --retry 0 --max-time 70 'https://d.apkpure.net/b/XAPK/com.solitaire.match.words?versionCode=244' -o "$tmp/azur.xapk"; then
+            echo AZUR37_ACQUISITION_UNAVAILABLE
+            exit 0
+          fi
+          python3 -m pip install --quiet --disable-pip-version-check 'unicorn==2.1.4' 'capstone==5.0.6'
+          python3 - "$tmp/azur.xapk" <<'PY'
+          import sys,zipfile,io,hashlib,struct,itertools,json
+          from pathlib import Path
+          p=Path(sys.argv[1])
+          def sha(x):return hashlib.sha256(x).hexdigest()
+          actual=sha(p.read_bytes())
+          try:
+           with zipfile.ZipFile(p) as z:
+            with zipfile.ZipFile(io.BytesIO(z.read('com.solitaire.match.words.apk'))) as a:md=a.read('assets/bin/Data/Managed/Metadata/global-metadata.dat')
+            with zipfile.ZipFile(io.BytesIO(z.read('config.arm64_v8a.apk'))) as a:e=a.read('lib/arm64-v8a/libil2cpp.so')
+          except (KeyError,zipfile.BadZipFile) as exc:
+           print('AZUR37_WRONG_PACKAGE_LAYOUT',actual,str(exc));sys.exit(0)
+          h=[actual,sha(e),sha(md)]
+          if h[1:]!=['27eb2e67ba00093ed575e16fc01a876a9e90fff8e53b504338047a4bf2c0d924','01ec4a9211a481353c4d660cda2f76fcb842f60e195ab5266d7a0ce4545be0a0']:
+           print('AZUR37_WRONG_BUILD',json.dumps(h));sys.exit(0)
+          print('AZUR37_EXACT_NATIVE_HASHES',json.dumps(h))
+          from unicorn import Uc,UC_ARCH_ARM64,UC_MODE_ARM
+          from unicorn.arm64_const import *
+          from capstone import Cs,CS_ARCH_ARM64,CS_MODE_ARM
+          d=Cs(CS_ARCH_ARM64,CS_MODE_ARM)
+          ph=struct.unpack_from('<Q',e,32)[0];sz,n=struct.unpack_from('<HH',e,54)
+          seg=[]
+          for i in range(n):
+           typ,flags,fo,va,pa,filesz,memsz,align=struct.unpack_from('<II6Q',e,ph+i*sz)
+           if typ==1:seg.append((fo,va,filesz))
+          def off(a,n):
+           for fo,v,sz in seg:
+            if v<=a and a+n<=v+sz:return fo+a-v
+           raise ValueError(hex(a))
+          def run(a,b,flags):
+           u=Uc(UC_ARCH_ARM64,UC_MODE_ARM);page=a&~4095
+           u.mem_map(page,4096);u.mem_write(page,e[off(page,4096):off(page,4096)+4096])
+           u.mem_map(0x11000000,0x10000);u.reg_write(UC_ARM64_REG_SP,0x1100f000);u.reg_write(UC_ARM64_REG_LR,0x11000000)
+           u.reg_write(UC_ARM64_REG_X0,flags);u.reg_write(UC_ARM64_REG_X1,flags)
+           u.emu_start(a,0x11000000,count=64)
+           assert u.reg_read(UC_ARM64_REG_PC)==0x11000000
+           return u.reg_read(UC_ARM64_REG_X0)
+          a=0x26990dc;b=0x26990f8
+          print('AZUR37_LEAF',json.dumps([[hex(x.address),x.mnemonic,x.op_str] for x in d.disasm(e[off(a,b-a):off(a,b-a)+b-a],a)]))
+          rows=[]
+          for v in itertools.product((0,1),repeat=5):
+           flags=sum(k<<(8*i) for i,k in enumerate(v));got=run(a,b,flags)
+           assert got==int(bool(v[0] and v[3] and not v[2])),(v,got)
+           rows.append([*v,got])
+          print('AZUR37_NATIVE_PRODUCTIVE',json.dumps(rows,separators=(',',':')))
+          for label,a,b in [('commit',0x2698678,0x2698770),('commit-all',0x2698770,0x2698880),('grant',0x2698b84,0x2698f24),('build',0x2697554,0x2697630),('sink',0x2621a44,0x2621ad4)]:
+           print('AZUR37_ANCHOR',json.dumps({'name':label,'start':hex(a),'end':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in d.disasm(e[off(a,b-a):off(a,b-a)+b-a],a)]},separators=(',',':')))
+          print('PASS_AZUR37_EXACT_NATIVE')
           PY

@@ -161,7 +161,7 @@ jobs:
            args(u,W,11,0)
            def initial(uc):reg(uc,UC_ARM_REG_R7,11);reg(uc,UC_ARM_REG_R1,11);reg(uc,UC_ARM_REG_PC,0x1c7b580)
            def partner_lookup(uc):reg(uc,UC_ARM_REG_R1,rr(uc,UC_ARM_REG_R5));reg(uc,UC_ARM_REG_PC,0x1c7b5f8)
-          run(u,a,STOP,{0x1c7b4e8:0x1c7b538,0x1c7b55c:initial,0x1c7b5e0:partner_lookup,0x1c7b62c:0x1c7b64c},{0x2b4c7bc:lookup,0x1c8c8a8:partner,0x2b4c7b8:G})
+           run(u,a,STOP,{0x1c7b4e8:0x1c7b538,0x1c7b55c:initial,0x1c7b5e0:partner_lookup,0x1c7b62c:0x1c7b64c},{0x2b4c7bc:lookup,0x1c8c8a8:partner,0x2b4c7b8:G})
            got=rr(u,UC_ARM_REG_R0);expect=(1 if other==1 else 3) if typ==2 and flags&64 and kind<=1 and found else 0
            assert got==expect,(typ,flags,kind,found,other,got,expect)
            bound.append([typ,flags,kind,found,other,got])

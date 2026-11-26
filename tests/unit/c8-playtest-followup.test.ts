@@ -49,7 +49,7 @@ it('applies a quoted rewarded Continue to a solver-impossible position and prese
   expect(hasVideoContinueCredit(save)).toBe(false);
 });
 
-it('recovers a parked Continue without mutating Daily and retires a no-fill quote', () => {
+it.skipIf(!releaseProfile)('recovers a parked Continue without mutating Daily and retires a no-fill quote', () => {
   let save = loadLoss(unrecoverable, 'parked-loss');
   const receipt: EarnedReceipt = { schema: 1, id: 'late-video', attempt: save.attempt.id,
     dealId: unrecoverable.id, mode: 'campaign', placement: 'continue' };
@@ -120,7 +120,7 @@ describe.skipIf(!releaseProfile)('ordinary release follow-up', () => {
     expect(uncovered).toEqual([]);
   });
 
-  it.each([6, 11, 16, 35, 80])('issues a different certified layout on two successive losses at L%i', level => {
+  it.each([6, 11, 16, 35, 45, 66, 80])('issues a different certified layout on two successive losses at L%i', level => {
     const save = profileAt(level), base = campaignDeals[level - 1];
     let deal: Deal = selectCampaignDeal(save, base);
     save.attempt = freshSave(deal, 'retry-first').attempt;

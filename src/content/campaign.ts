@@ -9,7 +9,7 @@ import { findDaily } from './daily';
 import { modifierDeals } from './modifiers';
 import data from './campaign.json' with { type: 'json' };
 import { coreSpecialBaseIds, coreSpecialDeals } from './campaign-v8-integrated-specials';
-import { content8Special } from './campaign-v8-special';
+import { content8Special, content8SpecialRestart } from './campaign-v8-special';
 import { c8TeachingPresets } from './campaign-v8-ftue';
 import { content8BonusDeals, progressiveBonusDeal } from './campaign-v8-bonus';
 import { content8FrozenDeal } from './campaign-v8-frozen';
@@ -143,7 +143,7 @@ const progressiveBonusBySource = new Map<string, Deal>();
 const bonusOrigin = new Map<string, string>();
 const authoredCampaignCandidates = [...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...integratedCampaignDeals,
   ...coreSpecialDeals, ...content8DirectorDeals, ...lateAdaptiveDeals, ...hitappsDirectorDeals.map(entry => entry.deal),
-  ...content8Special, ...content8BonusDeals];
+  ...content8Special, ...content8SpecialRestart, ...content8BonusDeals];
 for (const source of authoredCampaignCandidates) {
   if ((source.campaignLevel ?? 0) > 80 || source.campaignLevel === 8 || source.campaignLevel === releaseConfig.policies.chargedShuffleLevel) continue;
   const offered = progressiveBonusDeal(source);
@@ -167,6 +167,7 @@ export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
   if (CONTENT8_PREVIEW && dealId === recoveryDeal.id && base.id === recoveryBase.id) return true;
   if (CONTENT8_PREVIEW && dealId === randomJokerDeal.id && base.id === jokerBase.id) return true;
   if (CONTENT8_PREVIEW && isEqualityVariant(dealId, base.id)) return true;
+  if (CONTENT8_PREVIEW && dealId === base.id + '-restart-r1' && content8SpecialRestart.some(deal => deal.id === dealId)) return true;
   if (previewIds?.has(base.id) && previewIds.has(dealId)) return true;
   const adaptiveBase = CONTENT8_PREVIEW ? all.get(dealId)?.adaptive?.baseId : undefined;
   if (adaptiveBase && (adaptiveBase === base.id || sameLocalizedLevel(adaptiveBase, base))) return true;
@@ -233,7 +234,7 @@ export const layoutFingerprint = (deal: Deal) =>
   JSON.stringify([deal.initial.tableau, deal.initial.stock, deal.initial.faceUp]);
 
 function ruleFamily(deal: Deal) {
-  return JSON.stringify([Object.keys(deal.cards).sort(), deal.lock, deal.frozen, deal.bound, deal.puzzle,
+  return JSON.stringify([Object.keys(deal.cards).sort(), deal.lock?.requiredKeys.length, deal.frozen, deal.bound, deal.puzzle,
     deal.golden, deal.starter, Boolean(deal.recovery), deal.extraHelpers, deal.shufflePolicy, deal.bonusSlots,
     deal.initial.foundations.length, deal.initial.tableau.length, deal.difficultyTier]);
 }

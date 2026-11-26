@@ -55,6 +55,7 @@ async function seedHome(page: Page, save: Save, now = NOW, route = '/') {
 
 async function home(page: Page) {
   if (!await page.locator('#settings').isVisible()) await page.locator('#menu').tap();
+  if (!await page.locator('#levels-open').isVisible()) await page.locator('#pause-options summary').tap();
   await page.locator('#levels-open').tap();
   await expect(page.locator('#home')).toBeVisible();
 }

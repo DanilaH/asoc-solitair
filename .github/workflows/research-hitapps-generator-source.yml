@@ -1,181 +1,215 @@
-name: Isolated Hitapps commerce research
+name: Isolated Unico signed candidate research
 on:
   pull_request:
-    branches: [research/hitapps-meta-native-20261127]
+    branches: [research/hitapps-commerce-native-20261127]
 permissions:
   contents: read
 jobs:
   inspect:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 10
     steps:
-      - name: Verify original public build and inspect numeric source anchors
+      - name: Verify signed candidate and inspect ARM64 native catalog
         shell: bash
         run: |
           set -euo pipefail
           umask 077
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
-          curl --fail --location --silent --show-error --retry 1 --max-time 100 'https://d.apkpure.net/b/XAPK/com.hitappsgames.wordsolitaire?versionCode=3742' -o "$tmp/source.xapk"
-          python3 -m pip install --quiet --disable-pip-version-check 'unicorn==2.1.4' 'capstone==5.0.6'
+          curl --fail --location --silent --show-error --retry 1 --max-time 120 'https://d.apkpure.net/b/XAPK/com.unicostudio.wordsolitaire?version=latest' -o "$tmp/source.xapk"
+          python3 -m pip install --quiet --disable-pip-version-check 'capstone==5.0.6' 'unicorn==2.1.4'
           python3 - "$tmp/source.xapk" <<'PY'
-          import hashlib,struct,sys,zipfile,io,re,bisect,json
+          import hashlib, io, json, re, struct, sys, zipfile, subprocess, shutil, tempfile
           from pathlib import Path
-          raw=Path(sys.argv[1]).read_bytes()
-          assert len(raw)==287832513 and hashlib.sha256(raw).hexdigest()=='22aaff3a6d5b70f217b8feb7348538f5ab3352d4e8c766406cbddcbcd71e49f0'
-          with zipfile.ZipFile(io.BytesIO(raw)) as z:
-           with zipfile.ZipFile(io.BytesIO(z.read('com.hitappsgames.wordsolitaire.apk'))) as a: md=a.read('assets/bin/Data/Managed/Metadata/global-metadata.dat')
-           with zipfile.ZipFile(io.BytesIO(z.read('config.armeabi_v7a.apk'))) as a: e=a.read('lib/armeabi-v7a/libil2cpp.so')
-          assert hashlib.sha256(e).hexdigest()=='f25d9a988f6fa61eb201879f72c556a5875a4ac2c5f541670950589afbb51e26'
-          assert hashlib.sha256(md).hexdigest()=='47e2db3a792411193b25ed90c590facebcb3af861834eca90cb8e433a8e14aca'
-          assert struct.unpack_from('<II',md)==(0xfab11baf,31)
-          print('ORIGINAL XAPK AND BOTH PRIVATE NATIVE HASHES MATCH')
-          del raw
-          ph=struct.unpack_from('<I',e,28)[0];step,num=struct.unpack_from('<HH',e,42)
+          
+          XAPK_SHA="4cd372b97d14711bcd4dfbb3188919fdd6a98b86ec0645163c28424bc08113f7"
+          EXPECTED_SIGNER_SHA1="0845180dd90924929c7f688ac2e115b17354456d"
+          PKG="com.unicostudio.wordsolitaire"
+          KEYS=("Magnet","Daily","Coffee","Game","Level","Hint","Booster",
+                "Stock","Deck","Move","Victory","Failure","Offer","Purchase",
+                "Reward","Event","Fortune","Tournament","Card","Ad","Shuffle",
+                "Analytics","Play","Currency","Store","Joker","Undo")
+          def checksum_file(path):
+              h=hashlib.sha256()
+              with open(path,'rb') as f:
+                  for chunk in iter(lambda:f.read(4<<20),b''):h.update(chunk)
+              return h.hexdigest()
+          def checksum(raw):return hashlib.sha256(raw).hexdigest()
+          def validate_original_candidate(path):
+              assert checksum_file(path)==XAPK_SHA,"PUBLIC candidate SHA mismatch; refuse different version"
+              with zipfile.ZipFile(path) as outer:
+                  mf=json.loads(outer.read("manifest.json"))
+                  assert mf.get("package_name")==PKG
+                  assert str(mf.get("version_code"))=="37" and mf.get("version_name")=="1.1.10"
+                  inner=[x for x in outer.infolist() if x.filename.endswith(".apk") and "/" not in x.filename]
+                  assert len(inner)==2,[(x.filename,x.file_size) for x in inner]
+                  apks={}
+                  apksigner=shutil.which("apksigner")
+                  if not apksigner:
+                      # GitHub runner usually has Android SDK; use versioned build-tools.
+                      import os
+                      sdk=Path(os.environ.get("ANDROID_HOME","/opt/android-sdk"))
+                      paths=sorted((sdk/"build-tools").glob("*/apksigner"),reverse=True)
+                      apksigner=str(paths[0]) if paths else None
+                  assert apksigner and Path(apksigner).exists(),"apksigner required; no false signature claims"
+                  with tempfile.TemporaryDirectory() as wd:
+                      for item in inner:
+                          output=Path(wd)/Path(item.filename).name
+                          with outer.open(item) as source, output.open("wb") as dest:
+                              shutil.copyfileobj(source,dest,4<<20)
+                          command=[str(apksigner),"verify","--print-certs","--min-sdk-version","27",str(output)]
+                          res=subprocess.run(command,capture_output=True,text=True,timeout=110)
+                          assert res.returncode==0,"Cryptographic APK signature verification failed"
+                          sha1=re.findall(r"certificate sha-1 digest:\s*([0-9a-f:]+)",res.stdout,re.I)
+                          sha256=re.findall(r"certificate sha-256 digest:\s*([0-9a-f:]+)",res.stdout,re.I)
+                          sha1=[v.replace(":","").lower() for v in sha1]
+                          sha256=[v.replace(":","").lower() for v in sha256]
+                          print("SIGNER",json.dumps({"part":item.filename,"verified":res.returncode==0,"sha1":sha1,"sha256":sha256,"priorMatch":EXPECTED_SIGNER_SHA1 in sha1,"digestLabels":[ln.strip() for ln in res.stdout.splitlines() if re.search(r"certificate sha-(1|256) digest",ln,re.I)]}),flush=True)
+                          assert len(sha1)>=1 and len(sha256)>=1 and EXPECTED_SIGNER_SHA1 in sha1 and "e258b1f7b284d9e9f5758c65afb18b2951dc422373002979f2ba55c58bad2b56" in sha256,"Expected pinned certificate absent"
+                          apks[item.filename]={"sha256":checksum_file(output),"bytes":output.stat().st_size,"signerSha1":EXPECTED_SIGNER_SHA1,"signerSha256":"e258b1f7b284d9e9f5758c65afb18b2951dc422373002979f2ba55c58bad2b56","reportedSha1":sha1,"reportedSha256":sha256}
+                          with zipfile.ZipFile(output) as inside:
+                              found_meta=[x for x in inside.namelist() if x.endswith("global-metadata.dat")]
+                              found_arm64=[x for x in inside.namelist() if x.endswith("libil2cpp.so") and "arm64" in x]
+                              if found_meta:
+                                  assert len(found_meta)==1
+                                  apks[item.filename]["metadata"]=inside.read(found_meta[0])
+                              if found_arm64:
+                                  assert len(found_arm64)==1
+                                  apks[item.filename]["native"]=inside.read(found_arm64[0])
+              md=[x["metadata"] for x in apks.values() if "metadata" in x]
+              elf=[x["native"] for x in apks.values() if "native" in x]
+              assert len(md)==1 and len(elf)==1
+              assert len({x['signerSha256'] for x in apks.values()})==1,'Split signer mismatch'
+              return (md[0],elf[0],{k:{u:v for u,v in val.items() if u not in ("metadata","native")} for k,val in apks.items()})
+          
+          md,e,parts=validate_original_candidate(Path(sys.argv[1]))
+          print('IDENTITY',json.dumps({'xapk':XAPK_SHA,'priorClaimSignerSha1':EXPECTED_SIGNER_SHA1,'parts':parts,'metadata':checksum(md),'elf':checksum(e),'metadataVersion':struct.unpack_from('<I',md,4)[0]},separators=(',',':')))
+          assert e[:6]==b'\x7fELF\x02\x01' and struct.unpack_from('<H',e,18)[0]==183
+          assert struct.unpack_from('<I',md)[0]==0xfab11baf
+          version=struct.unpack_from('<I',md,4)[0]
+          ph=struct.unpack_from('<Q',e,32)[0];ps,pn=struct.unpack_from('<HH',e,54)
           seg=[]
-          for j in range(num):
-           typ,fo,va,_,size,_,flags,_=struct.unpack_from('<8I',e,ph+j*step)
-           if typ==1:seg.append((fo,va,size,flags))
-          assert [va-fo for fo,va,_,_ in seg]==[0,0x4000,0x8000]
-          def off(va,n=4):
-           for fo,start,size,_ in seg:
-            if start<=va and va+n<=start+size:return fo+va-start
+          for i in range(pn):
+           typ,flags,fo,va,_,fs,ms,al=struct.unpack_from('<II6Q',e,ph+i*ps)
+           if typ==1:seg.append((fo,va,fs,flags))
+          def off(va,n=1):
+           for fo,v,s,f in seg:
+            if v<=va and va+n<=v+s:return fo+va-v
            raise ValueError(hex(va))
           def va(fo):
-           for start,v,size,_ in seg:
-            if start<=fo<start+size:return v+fo-start
+           for o,v,s,f in seg:
+            if o<=fo<o+s:return v+fo-o
            raise ValueError(hex(fo))
-          def word(a):return struct.unpack_from('<I',e,off(a))[0]
-          S,SS=struct.unpack_from('<II',md,24);T,TS=struct.unpack_from('<II',md,160)
-          M,MS=struct.unpack_from('<II',md,48);I,IS=struct.unpack_from('<II',md,168)
+          def ex(a):
+           return any(v<=a<v+s and f&1 for o,v,s,f in seg)
+          sh=struct.unpack_from('<Q',e,40)[0];ss,sn,si=struct.unpack_from('<HHH',e,58)
+          sec=[struct.unpack_from('<II4QII2Q',e,sh+i*ss) for i in range(sn)]
+          rel={}
+          for row in sec:
+           if row[1]!=4 or row[9]!=24:continue
+           for p in range(row[4],row[4]+row[5],24):
+            dst,info,addend=struct.unpack_from('<QQq',e,p)
+            if (info&0xffffffff)==1027:rel[dst]=addend
+          def ptr(a):
+           return rel.get(a,struct.unpack_from('<Q',e,off(a,8))[0])
+          print('ELF_LAYOUT',json.dumps({'segments':seg,'relativeRelocs':len(rel),'metadataVersion':version}))
+          if version not in (29,31):
+           print('UNSUPPORTED_METADATA',version);sys.exit(0)
+          S,SS=struct.unpack_from('<II',md,24);M,MS=struct.unpack_from('<II',md,48)
+          T,TS=struct.unpack_from('<II',md,160);I,IS=struct.unpack_from('<II',md,168)
           F,FS=struct.unpack_from('<II',md,96);P,PS=struct.unpack_from('<II',md,88)
-          def name(ix):
-           if not 0<=ix<SS:return ''
-           p=S+ix;return md[p:md.index(b'\0',p,S+SS)].decode()
-          images={}
-          wanted={}
+          assert TS%88==0 and MS%36==0 and IS%40==0 and S+SS<=len(md)
+          def name(i):
+           if not 0<=i<SS:return ''
+           p=S+i;return md[p:md.index(b'\0',p,S+SS)].decode(errors='replace')
+          pattern=re.compile(r'Magnet|Daily|Fortune|Coffee|Streak|Theme|Skin|FailOffer|HardOffer|StarterOffer|VIP|DoubleReward|WinReward|LevelGenerator|LevelManager|LevelController|GameController|GameManager|Rewarded|Interstitial|AdBreak|AdsManager|AdManager|Shuffle|NoMoves|OutOfMoves|Redeal|Retry|TaskManager|Tournament|Season|OfferManager|OfferController|ShopManager',re.I)
+          ignore=re.compile(r'^Unity|^System|^Microsoft|^Mono|^mscorlib|^Newtonsoft|^Google|^Facebook|^Firebase|^Adjust|^AppsFlyer|^DG\.|^TMPro|^Sirenix|^Cysharp|^UniTask|^UniRx|^MaxSdk|^Amazon|^I2\.|^AppLovin|^Android|^Apple|^IronSource',re.I)
+          images={};wanted={}
           for j in range(IS//40):
-           row=struct.unpack_from('<10I',md,I+40*j);im=name(row[0]);images[im]=row
-           for t in range(row[2],row[2]+row[3]):
+           ir=struct.unpack_from('<10I',md,I+40*j);im=name(ir[0]);images[im]=ir
+           if ignore.search(im):continue
+           for t in range(ir[2],ir[2]+ir[3]):
             tr=struct.unpack_from('<22I',md,T+88*t)
             tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if re.match(r'^(Game\.|CoreGameplay\.dll|Assembly-CSharp\.dll|GameCore\.)',im) and (re.search(r'(PiggyBank|StarterOffer|DecoyOffer|BirthdayOffer|BuyAll|OfferShowIteration|PayerRvLimit|PayerType|PayerSegment|WinScreenRvReward|AdsLimitation|AdsBreak|NoAds|PurchaseOrchestrator|PurchaseRewardProcessor|StoreProductExcluder|OfferConfig|OfferService|OfferSystem)',tn,re.I) or any(re.search(r'(PiggyBank|StarterOffer|DecoyOffer|BirthdayOffer|BuyAll|OfferShowIteration|PayerRvLimit|PayerType|PayerSegment|WinScreenRvReward|AdsLimitation|AdsBreak|NoAds|PurchaseOrchestrator|PurchaseRewardProcessor|StoreProductExcluder|OfferConfig|OfferService|OfferSystem)',name(struct.unpack_from('<I',md,M+36*k)[0]),re.I) for k in range(tr[9],tr[9]+(tr[16]&65535)))):
-             wanted.setdefault(im,[]).append((tn,tr))
-          print('TARGET_IMAGES',list(wanted))
-          entries={};records=[];tables={}
-          for im,types in wanted.items():
-           row=images[im];pos=e.find(im.encode()+b'\0')
-           if pos<0:print('NO_MODULE_STRING',im);continue
-           marker=struct.pack('<I',va(pos));found=[]
-           for fo,v,size,_ in seg[1:]:
-            data=e[fo:fo+size];j=-1
-            while (j:=data.find(marker,j+1))>=0:
-             if j+12>size:continue
-             n,p=struct.unpack_from('<II',data,j+4)
-             if not 0<n<25000:continue
-             try: ptrs=struct.unpack_from('<%dI'%n,e,off(p,n*4))
-             except (ValueError,struct.error):continue
-             if all(a==0 or 0x148b0b0<=a<0x6a167d0 for a in ptrs):found.append((v+j,n,p,ptrs))
-           if len(found)!=1:print('AMBIGUOUS_MODULE',im,len(found));continue
-           descriptor,n,table,ptrs=found[0];tables[im]=[hex(descriptor),n,hex(table)]
-           for t in range(row[2],row[2]+row[3]):
-            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            for i in range(tr[9],tr[9]+(tr[16]&65535)):
-             mr=struct.unpack_from('<7I4H',md,M+36*i);rid=mr[6]&0xffffff
-             if not 0<rid<=n:continue
-             a=ptrs[rid-1];mn=name(mr[0])
-             rec={'image':im,'type':tn,'method':mn,'rid':rid,'rva':hex(a),'parameters':[name(struct.unpack_from('<I',md,P+12*(mr[4]+k))[0]) for k in range(mr[-1])]}
-             if a:entries.setdefault(a,[]).append(rec)
-             if any(tn==x[0] for x in types):records.append(rec)
-          print('MODULES',json.dumps(tables))
-          from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
-          d=Cs(CS_ARCH_ARM,CS_MODE_ARM)
-          starts=sorted(entries)
-          def instructions(a,b):
-           return list(d.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          def names_at(a):
-           return [x['type']+'.'+x['method'] for x in entries.get(a,[])][:2]
-          def compact(x):
-           # Numeric dataflow anchor; no original instruction bytes or decompiled source.
-           op=x.mnemonic
-           if op.startswith(('bl','b','cmp','cmn','tst','teq','ldr','str','mov','add','sub','and','orr','bic','eor','rsb','ux','lsl','asr','lsr','mvn','pop','push','stm','ldm','mul')):
-            return [hex(x.address),op,x.op_str]
-           return None
-          ignore=re.compile(r'Formatter|Migrator|\.Migration\.|\.Cheat|\.Sample\.|\.Analytics\.|\.AJson|\.Mock|\.Tests|\._1_13_0\.|__AJson|global::',re.I)
-          focus=re.compile(r'(PiggyBank|StarterOffer|DecoyOffer|BirthdayOffer|BuyAll|OfferShowIteration|PayerRvLimit|PayerType|PayerSegment|WinScreenRvReward|AdsLimitation|AdsBreak|NoAds|PurchaseOrchestrator|PurchaseRewardProcessor|StoreProductExcluder|OfferConfig|OfferService|OfferSystem)',re.I)
-          for im,types in wanted.items():
-           for tn,tr in types:
             if ignore.search(tn):continue
-            ms=[r for r in records if r['image']==im and r['type']==tn]
-            fields=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
-            if focus.search(tn) or any(focus.search(r['method']) for r in ms):
-             print('COM_TYPE',json.dumps({'image':im,'type':tn,'fields':[f for f in fields if not f.startswith('__')],'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not ignore.search(r['method']) and not re.match('add_|remove_',r['method'])]},separators=(',',':')))
-          focus={
-           "PiggyBankAvailabilityProvider":["EvaluateAvailability"],
-           "PiggyBankService":["ApplyCoinsProgressInternal","IsPurchaseAvailable","GetCoinsProgress","IsAvailableOnRevive"],
-           "PiggyBankLifecycleController":["EvaluateActivationInternal","TryResolveNextOfferState","CanActivateNextOfferInCurrentPeriod","SaveOffer","ApplyNewShow"],
-           "PiggyBankRewardProvider":["GetValidContent","GetNextAvailableOfferTypeIndex","GetNextAvailableOfferTypeIndexCycled","GetCurrentOfferContentRewards","GetAllCurrentRewards","GetPurchaseRewards","TryPinPurchase"],
-           "StarterOfferAvailabilityProvider":["EvaluateAvailability"],
-           "StarterOfferLifecycleController":["EvaluateActivationInternal","CanAdvanceToNextOffer","TryGetCurrentOfferData","ApplyNewShow","SaveOfferShow"],
-           "StarterOfferRewardProvider":["GetValidContent","TryGetFirstShowableOffer","GetNextAvailableOfferTypeIndex","GetPurchaseRewards","TryPinPurchase","GetCurrentExtraMovesBubble"],
-           "DecoyOfferAvailabilityProvider":["EvaluateAvailability"],
-           "DecoyOfferLifecycleController":["get_IsShowAllowedByTheNumberOfAttempts","EvaluateActivationInternal","ApplyShow","TryScheduleNextOffer"],
-           "DecoyOfferRewardProvider":["SelectBestContent","GetPurchaseRewards","TryPinPurchase"],
-           "BirthdayOfferAvailabilityProvider":["CanStartNewShow","IsAvailable","IsPurchased"],
-           "BirthdayOfferLifecycleController":["TryFindEligibleEditionForNewShow","IsEditionFresh","ApplyShow"],
-           "BirthdayOfferRewardProvider":["SelectBestContent","GetPurchaseRewards","TryPinPurchase"],
-           "BuyAllContentSelector":["TrySelectOptions"],
-           "BuyAllConfigParser":["ParseEvent","ParseOfferType"],
-           "BuyAllVariantSaveData":["ResetWindow"],
-           "BuyAllWindowLoop":["RunAsync"],
-           "OfferShowIterationDataExtensions":["GetShowTimes","FindEntry","RegisterShow"],
-           "RecentPayerDetector":["IsRecentPayer"],
-           "PayerRvLimitPolicyService":["RemainingToday","CanWatchNow","CommitOneWatch","IsOverrideActive","ResolveLimits","DailyResetIfNeeded"],
-           "PayerAwareRvLimitExtensions":["CommitEffectiveWatch","IsEffectiveLimitReached","CanWatchEffective","GetEffectiveRemaining"],
-           "WinScreenRvRewardServiceEnable":["IsEnabled","IsAdsLimitNotReached","GetRewardResult","ApplyWatchedReward"],
-           "WinScreenRvRewardResult":["get_ExtraRewardCount",".ctor"],
-           "AdsBreakService":["IsInterLimitReached","IsAvailable"],
-           "AdsLimitationService":["IsLimitReached","Reset","RegisterShow"]
-          }
-          for r in records:
-           key=r['type'].split('.')[-1];mn=r['method'];a=int(r['rva'],16)
-           if not a or mn not in focus.get(key,[]):continue
-           i=bisect.bisect_right(starts,a)
-           if i>=len(starts):continue
-           b=starts[i]
-           if b<=a or b-a>0x4000:continue
-           ins=instructions(a,b)
-           facts=[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in ins]
-           print('COM_FULL',json.dumps({'type':r['type'],'method':mn,'a':hex(a),'b':hex(b),'facts':facts},separators=(',',':')))
-          # Exact source import resolution (reuse prior ELF relocation reader).
-          from capstone.arm import ARM_OP_IMM,ARM_OP_MEM
-          d.detail=True
-          def imm(w):return ((w>>4)&0xf000)|(w&0xfff)
-          def veneer(a):
-           w,x,y,z=[word(a+4*i) for i in range(4)]
-           if w&0xfff0f000==0xe300c000 and x&0xfff0f000==0xe340c000 and y==0xe08cc00f and z==0xe12fff1c:return (a+16+imm(w)+(imm(x)<<16))&0xffffffff
-           if w&0xff000000==0xea000000:return a+8+4*(((w&0xffffff)^0x800000)-0x800000)
-           return None
-          sh=struct.unpack_from('<I',e,32)[0];ents,n,si=struct.unpack_from('<HHH',e,46)
-          sections=[struct.unpack_from('<10I',e,sh+i*ents) for i in range(n)];st=sections[si];strings=e[st[4]:st[4]+st[5]]
-          def cstr(data,i):return data[i:data.index(b'\0',i)].decode('utf-8','replace')
-          byname={cstr(strings,x[0]):x for x in sections};ds=byname['.dynsym'];dt=sections[ds[6]];strs=e[dt[4]:dt[4]+dt[5]]
-          rel={}
-          for sec in sections:
-           if sec[1] not in (4,9) or sec[6]!=sections.index(ds):continue
-           for pos in range(sec[4],sec[4]+sec[5],sec[9]):
-            addr,info=struct.unpack_from('<II',e,pos);ix=info>>8;row=struct.unpack_from('<IIIBBH',e,ds[4]+ix*ds[9]);rel[addr]=cstr(strs,row[0])
-          def import_name(a):
-           ip=got=None
-           for x in instructions(a,a+16):
-            op=x.operands
-            if x.mnemonic=='add' and len(op)==3 and x.reg_name(op[0].reg)=='ip' and op[2].type==ARM_OP_IMM:
-             src=x.reg_name(op[1].reg)
-             if src=='pc':ip=x.address+8+op[2].imm
-             elif src=='ip' and ip is not None:ip+=op[2].imm
-            elif x.mnemonic.startswith('ldr') and len(op)==2 and op[1].type==ARM_OP_MEM and x.reg_name(op[0].reg)=='pc':
-             if x.reg_name(op[1].mem.base)=='ip' and ip is not None:got=(ip+op[1].mem.disp)&0xffffffff;break
-           return rel.get(got)
-          print('COM_ROUND',json.dumps({'address':'0x2b4a9a4','symbol':import_name(veneer(0x2b4a9a4))}))
-          print('PASS_COMMERCE_FOCUS')
+            count=tr[16]&65535
+            if tr[9]+count>MS//36:continue
+            methods=[]
+            for idx in range(tr[9],tr[9]+count):
+             mr=struct.unpack_from('<7I4H',md,M+36*idx);mn=name(mr[0])
+             methods.append((mn,mr))
+            if pattern.search(tn) or any(pattern.search(mn) for mn,mr in methods):
+             wanted.setdefault(im,[]).append((tn,tr,methods))
+          print('IMAGES',json.dumps({im:len(t) for im,t in wanted.items()}))
+          entries={};records=[];modules={}
+          # Module names may live in read-only data, direct pointers or relative relocations.
+          revrel={}
+          for a,b in rel.items():revrel.setdefault(b,[]).append(a)
+          for im,types in wanted.items():
+           ir=images[im];possible=set();marker=im.encode()+b'\0';start=0
+           while True:
+            p=e.find(marker,start);start=p+1
+            if p<0:break
+            if p and e[p-1]!=0:continue
+            try:addr=va(p)
+            except ValueError:continue
+            possible.update(revrel.get(addr,[]))
+            packed=struct.pack('<Q',addr)
+            for o,v,s,f in seg:
+             if f&1:continue
+             j=-1;blob=e[o:o+s]
+             while (j:=blob.find(packed,j+1))>=0:
+              if (v+j)%8==0:possible.add(v+j)
+           found=[]
+           maxrid=0
+           for t in range(ir[2],ir[2]+ir[3]):
+            tr=struct.unpack_from('<22I',md,T+88*t)
+            for idx in range(tr[9],tr[9]+(tr[16]&65535)):
+             mr=struct.unpack_from('<7I4H',md,M+36*idx);maxrid=max(maxrid,mr[6]&0xffffff)
+           for a in possible:
+            try:
+             n=struct.unpack_from('<I',e,off(a+8,4))[0];p=ptr(a+16)
+             if not 0<n<100000 or n<maxrid or n>maxrid+100:continue
+             off(p,n*8);pset=[ptr(p+8*i) for i in range(n)]
+             if all(v==0 or ex(v) for v in pset) and any(pset):found.append((a,n,p,pset))
+            except (ValueError,struct.error):continue
+           if len(found)!=1:
+            print('MODULE_UNRESOLVED',json.dumps({'image':im,'candidates':len(possible),'valid':len(found),'maxTokenRid':maxrid}))
+            pset=[]
+           else:
+            a,n,p,pset=found[0];modules[im]={'descriptor':hex(a),'count':n,'table':hex(p)}
+            for t in range(ir[2],ir[2]+ir[3]):
+             tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+             for idx in range(tr[9],tr[9]+(tr[16]&65535)):
+              mr=struct.unpack_from('<7I4H',md,M+36*idx);rid=mr[6]&0xffffff
+              if 0<rid<=len(pset) and pset[rid-1]:entries.setdefault(pset[rid-1],[]).append(tn+'.'+name(mr[0]))
+           for tn,tr,methods in types:
+            fields=[name(struct.unpack_from('<I',md,F+12*idx)[0]) for idx in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=idx<FS//12]
+            mm=[]
+            for mn,mr in methods:
+             rid=mr[6]&0xffffff;a=pset[rid-1] if 0<rid<=len(pset) else 0
+             params=[name(struct.unpack_from('<I',md,P+12*(mr[4]+i))[0]) for i in range(mr[-1]) if 0<=mr[4]+i<PS//12]
+             mm.append([mn,hex(a),params])
+             if a and (pattern.search(tn) or pattern.search(mn)):records.append((im,tn,mn,a,params))
+            print('U_TYPE',json.dumps({'image':im,'type':tn,'fields':fields,'methods':mm},separators=(',',':')))
+          print('MODULES',json.dumps(modules))
+          from capstone import Cs,CS_ARCH_ARM64,CS_MODE_ARM
+          import bisect
+          d=Cs(CS_ARCH_ARM64,CS_MODE_ARM)
+          starts=sorted(entries)
+          deep=re.compile(r'Magnet|Daily|Fortune|Coffee|Streak|Theme|FailOffer|DoubleReward|WinReward|LevelGenerator|LevelController|Rewarded|Interstitial|AdBreak|Shuffle|NoMoves|OutOfMoves|Retry|Tournament|Season',re.I)
+          for im,tn,mn,a,params in records:
+           if not deep.search(tn+'.'+mn) or re.search(r'Analytics|Editor|Test|Debug|Formatter|Serializer|ViewModel|Animation|Localization',tn,re.I):continue
+           if mn.startswith(('add_','remove_','set_')):continue
+           k=bisect.bisect_right(starts,a)
+           if k>=len(starts):continue
+           b=starts[k]
+           if not 4<=b-a<=0x1800:continue
+           ins=list(d.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
+           calls=[[hex(x.address),x.op_str,entries.get(int(x.op_str[1:],16),[])[:3]] for x in ins if x.mnemonic in ('bl','b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) and entries.get(int(x.op_str[1:],16))]
+           print('U_METHOD',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'parameters':params,'calls':calls},separators=(',',':')))
+           if (deep.search(tn) and len(ins)<=160 and re.search(r'Can|Is|Get|Calculate|Select|Apply|Add|Claim|Reset|Reward|Move|Try|Count|Update|Complete|Shuffle|Start|End|Check|Find|Activate|Process|On',mn,re.I)):
+            facts=[[hex(x.address),x.mnemonic,x.op_str] for x in ins if x.mnemonic.startswith(('b','cb','tb','cmp','cmn','tst','cset','csel','ldr','str','ldp','stp','mov','add','sub','mul','f','sdiv','udiv','and','orr','eor','lsl','lsr','asr','ret'))]
+            print('U_FOCUS',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'facts':facts,'calls':calls},separators=(',',':')))
+          print('PASS_UNICO_CANDIDATE_CATALOG',len(modules),len(records))
           PY

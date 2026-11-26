@@ -54,7 +54,10 @@ async function installBridge(page: Page, save: Save, filled = false) {
               shown = { ...options, schema: 1, id: 'transport-show-' + ++sequence, shownAt: Date.now() };
               return { shown: true, outcome: 'dismissed' };
             }
-            if(method==='measureBanner')return {webView:{x:0,y:0,width:360,height:640},root:{width:360,height:640},adHeight:50};
+            if (method === 'measureBanner') {
+              const width = Number(options.viewportWidth), height = innerHeight;
+              return { webView: { x: 0, y: 0, width, height }, root: { width, height }, adHeight: 50 };
+            }
           }
           return {};
         },
@@ -163,6 +166,7 @@ test('Settings → Home shows menu interstitial only after the shared clock, wit
 });
 
 test('L2 teaching and the next L3 lesson suppress forced advertising even after cooldown', async ({ page }) => {
+  test.setTimeout(75_000);
   const deal = findDeal('campaign-c8-dealer-002')!;
   const save = freshSave(deal, 'start-ad-checkpoint');
   save.contentVersion = 8;

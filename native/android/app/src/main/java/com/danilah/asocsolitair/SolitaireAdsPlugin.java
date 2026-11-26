@@ -106,7 +106,7 @@ public class SolitaireAdsPlugin extends Plugin {
             value.put("placement", placement); value.put("micros", micros); value.put("currency", currency);
             value.put("provider", "yandex-mobile-ads"); value.put("sdk", "8.6.0");
             value.put("sdkMode", BuildConfig.AD_MODE); value.put("build", BuildConfig.VERSION_NAME);
-            value.put("policy", "source-shaped-pause-r3");
+            value.put("policy", BuildConfig.ADVERTISING_POLICY);
             RevenueDelivery.Capture result = delivery.receive(id, value.toString());
             if (result == RevenueDelivery.Capture.CAPTURED) event(kind, "revenue_intake_pending");
             if (result == RevenueDelivery.Capture.INTAKE_FULL) event(kind, "revenue_intake_full");

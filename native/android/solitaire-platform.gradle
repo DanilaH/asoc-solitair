@@ -2,6 +2,7 @@
 def quoted = { String value -> groovy.json.JsonOutput.toJson(value) }
 def adMode = System.getenv('ASOC_AD_MODE') ?: 'test'
 if (!(adMode in ['disabled', 'test', 'live'])) throw new GradleException('Invalid ASOC_AD_MODE')
+def advertisingPolicy = new groovy.json.JsonSlurper().parse(rootProject.file('../../src/config/c8-release.json')).policies.advertising
 def bannerId = adMode == 'test' ? 'demo-banner-yandex' : adMode == 'live' ? System.getenv('YANDEX_BANNER_AD_UNIT_ID') ?: '' : ''
 def interstitialId = adMode == 'test' ? 'demo-interstitial-yandex' : adMode == 'live' ? System.getenv('YANDEX_INTERSTITIAL_AD_UNIT_ID') ?: '' : ''
 def rewardedId = adMode == 'test' ? 'demo-rewarded-yandex' : adMode == 'live' ? System.getenv('YANDEX_REWARDED_AD_UNIT_ID') ?: '' : ''
@@ -12,6 +13,7 @@ android {
     buildFeatures { buildConfig true }
     defaultConfig {
         buildConfigField 'String', 'AD_MODE', quoted(adMode)
+        buildConfigField 'String', 'ADVERTISING_POLICY', quoted(advertisingPolicy)
         buildConfigField 'boolean', 'CAMPAIGN_LIVES_ADS_APPROVED', String.valueOf(adMode == 'live' && System.getenv('ASOC_OWNER_LIVES_ADS_READY') == '1')
         buildConfigField 'boolean', 'CAMPAIGN_ADS_APPROVED', String.valueOf(adMode == 'live' && System.getenv('ASOC_OWNER_ADS_READY') == '1')
         buildConfigField 'boolean', 'REWARD_OFFERS_ADS_APPROVED', String.valueOf(adMode == 'live' && System.getenv('ASOC_REWARD_OFFERS_ADS_READY') == '1')

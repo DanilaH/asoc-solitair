@@ -168,25 +168,26 @@ jobs:
              if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
            return u
           def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
-          def dto(u,kind):
-           c=bytearray(40);c[20]=kind
+          def dto(u,kind,puzzle=0):
+           c=bytearray(40);c[20]=kind;struct.pack_into('<H',c,6,puzzle)
            u.mem_write(CARD,bytes(c))
           getters={0x1d3cf38:6,0x1d3cf24:5,0x1d31bb0:2,0x1d34a14:(3,4)}
-          # Actual getter test first; only afterwards substitute these exact
-          # previously verified leaf results in the caller predicate.
+          # Observe all source getters without assuming PuzzleID == CardType.
+          actual_getters={}
           for a,typ in getters.items():
            b=starts[bisect.bisect_right(starts,a)]
-           for k in range(7):
-            u=setup([(a,b)]);dto(u,k);u.reg_write(UC_ARM_REG_R0,CARD);u.reg_write(UC_ARM_REG_R1,0)
+           for k,tag in itertools.product(range(7),(0,1,65535)):
+            u=setup([(a,b)]);dto(u,k,tag);u.reg_write(UC_ARM_REG_R0,CARD);u.reg_write(UC_ARM_REG_R1,0)
             u.emu_start(a,STOP,count=100)
             assert u.reg_read(UC_ARM_REG_PC)==STOP
-            assert bool(u.reg_read(UC_ARM_REG_R0))==(k in typ if isinstance(typ,tuple) else k==typ),(hex(a),k,u.reg_read(UC_ARM_REG_R0))
-          print('GETTERS24',28,'PASS')
-          def verdict(mode,kind,has,locked,frozen,hammer,magnet,bound):
+            v=u.reg_read(UC_ARM_REG_R0);assert v in (0,1)
+            actual_getters[(a,k,tag)]=v
+           print('GETTER25',hex(a),json.dumps([[k,t,actual_getters[(a,k,t)]] for k,t in itertools.product(range(7),(0,1,65535))]))
+          def verdict(mode,kind,tag,has,locked,frozen,hammer,magnet,bound):
            a,b=(0x1c7dfc4,0x1c7e0f8) if mode=='play' else (0x1c7e0f8,0x1c7e228)
            helpers=[0x2b4c7bc,0x1c8eae4,0x1c8ec7c,0x1c8ef18,*getters]
            u=setup([(a,b),*[(x,x+4) for x in helpers]])
-           dto(u,kind);wr(u,WORLD+8,B+0x4000)
+           dto(u,kind,tag);wr(u,WORLD+8,B+0x4000)
            sp=B+0xe0000
            args=(WORLD,SEQ,17,19)
            for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),args):u.reg_write(r,v)
@@ -206,7 +207,7 @@ jobs:
              elif pc==0x1c8ec7c:v=magnet;calls.append('magnet')
              elif pc==0x1c8ef18:v=bound;calls.append('bound')
              else:
-              typ=getters[pc];v=int(kind in typ if isinstance(typ,tuple) else kind==typ)
+              v=actual_getters[(pc,kind,tag)]
              uc.reg_write(UC_ARM_REG_R0,v);uc.reg_write(UC_ARM_REG_PC,uc.reg_read(UC_ARM_REG_LR))
             elif not a<=pc<b:raise RuntimeError('unexpected verdict '+hex(pc))
            # The prologue loads PC-relative metadata address before the first
@@ -215,13 +216,13 @@ jobs:
            assert u.reg_read(UC_ARM_REG_PC)==STOP
            return u.reg_read(UC_ARM_REG_R0),calls
           results=[]
-          for mode,k,has,locked,frozen,hammer,magnet,bound in itertools.product(('play','home'),range(7),(0,1),(0,1),(0,1),(0,1),(0,1),range(5)):
+          for mode,k,tag,has,locked,frozen,hammer,magnet,bound in itertools.product(('play','home'),range(7),(0,1),(0,1),(0,1),(0,1),(0,1),(0,1),range(5)):
            # Home has no target booleans/hammer result in the original signature.
            if mode=='home' and (has or locked or frozen or hammer):continue
            if mode=='play' and bound:continue
-           v,c=verdict(mode,k,has,locked,frozen,hammer,magnet,bound)
+           v,c=verdict(mode,k,tag,has,locked,frozen,hammer,magnet,bound)
            assert v in (0,1,2)
-           results.append([mode,k,has,locked,frozen,hammer,magnet,bound,v,c])
-          print('VERDICTS24',json.dumps(results,separators=(',',':')))
-          print('PASS_SHA_PINNED_PLACEMENT_OVERRIDES24')
+           results.append([mode,k,tag,has,locked,frozen,hammer,magnet,bound,v,c])
+          print('VERDICTS25',json.dumps(results,separators=(',',':')))
+          print('PASS_SHA_PINNED_PLACEMENT_OVERRIDES25')
           PY

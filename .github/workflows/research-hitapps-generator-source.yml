@@ -95,7 +95,7 @@ jobs:
             print('METHOD',json.dumps(r,separators=(',',':')))
           starts=sorted(entries)
           targets=[r for r in records if r['rva']!='0x0' and (r['type'].endswith('SimulationController') or re.search(r'StrategySystem|Simulation.*System|Bot.*System',r['type'],re.I) or r['method'] in ['PlaceCategoryPairOnStack','PlaceCategoryPairsOnUniqueStacks','DistributePuzzleCards','ApplyLockers','ApplyFrozenCards','ApplyBoundCards','Evaluate'])]
-          for r in targets[:160]:
+          for r in targets[:0]:
            a=int(r['rva'],16);j=bisect.bisect_right(starts,a);end=min(starts[j] if j<len(starts) else a+512,a+2400)
            calls=[];branches=[];immediates=[]
            for pc in range(a,end,4):
@@ -113,5 +113,54 @@ jobs:
              if rot:imm=((imm>>rot)|(imm<<(32-rot)))&0xffffffff
              immediates.append([hex(pc),(op>>16)&15,imm,cond])
            print('FLOW',json.dumps({'method':r['type']+'.'+r['method'],'rva':r['rva'],'boundedEnd':hex(end),'calls':calls[:60],'conditionalBranches':branches[:40],'cmpImmediate':immediates[:35]},separators=(',',':')))
+
+          # Second pass: field inventories and selected semantic anchors only.
+          for im,(start,*_) in images.items():
+           if im not in ('CoreGameplay.dll','Game.Services.EasyDeals.dll','Game.Services.Segmentation.dll','Game.Controllers.dll'):continue
+           row=images[im]
+           for i in range(row[2],row[2]+row[3]):
+            tr=struct.unpack_from('<22I',md,T+i*88);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+            if re.search(r'(Simulation|Strategy|PossibleMove|ValidMove|MoveData|MoveInfo|MoveComponent|CardData|LevelCard|EasyDeals|DynamicDifficulty|CategoryPair|PuzzleCards|BoundCards|FrozenCards|Lockers|CardType|StackType|PlacementType|MoveType|LocationType|ContainerType)',tn):
+             fields=[name(struct.unpack_from('<I',md,F+12*(tr[8]+k))[0]) for k in range(tr[17]&65535)]
+             methods=[(name(struct.unpack_from('<I',md,M+36*(tr[9]+k))[0]), hex(ptr) if False else '')[0] for k in range(tr[16]&65535)]
+             if fields or methods: print('TYPE',json.dumps({'type':tn,'fields':fields,'methods':methods},separators=(',',':')))
+          # Decode only selected decision blocks to operand facts (not full bodies).
+          def operand2(op):
+           if op&(1<<25):
+            rot=((op>>8)&15)*2;imm=op&255
+            return {'imm':((imm>>rot)|(imm<<(32-rot)))&0xffffffff if rot else imm}
+           return {'reg':op&15,'shift':(op>>5)&3,'shiftAmount':(op>>7)&31,'registerShift':bool(op&16)}
+          def fact(pc):
+           op=word(pc);c=op>>28
+           if op&0x0e000000==0x0a000000 and c!=15:
+            dst=pc+8+4*(((op&0xffffff)^0x800000)-0x800000)
+            return [hex(pc),'call' if op&0x1000000 else 'branch',c,hex(dst)]
+           if op&0x0c000000==0x04000000 and not op&0x02000000:
+            return [hex(pc),'read' if op&0x100000 else 'write',c,(op>>12)&15,(op>>16)&15,(op&4095)*(1 if op&0x800000 else -1),'byte' if op&0x400000 else 'word']
+           if op&0x0e000090==0x00000090 and op&0x60 and op&0x400000:
+            return [hex(pc),'readHalf' if op&0x100000 else 'writeHalf',c,(op>>12)&15,(op>>16)&15,(((op>>4)&240)|(op&15))*(1 if op&0x800000 else -1)]
+           if op&0x0c000000==0 and (op&0x0e000090)!=0x00000090:
+            return [hex(pc),'alu',c,(op>>21)&15,(op>>12)&15,(op>>16)&15,operand2(op),bool(op&0x100000)]
+           return None
+          ranges=[
+           ('equality-valid-conditions',0x1d07cdc,0x1d07d50),
+           ('priority-valid-conditions',0x1d08200,0x1d08274),
+           ('priority-ranking',0x1d07fc0,0x1d080c8),
+           ('equality-choice',0x1d07b64,0x1d07bc8),
+           ('pair-first-match',0x1d3b288,0x1d3b2a8),
+           ('pair-second-match',0x1d3b324,0x1d3b35c),
+           ('pair-swap-gate',0x1d3b4b0,0x1d3b4e8),
+           ('pair-second-swap-gate',0x1d3b570,0x1d3b5ac),
+           ('easy-deals-target',0x22fe32c,0x22fe3c4)]
+          for label,a,b in ranges:
+           print('ANCHOR',json.dumps({'label':label,'facts':[f for pc in range(a,b,4) if (f:=fact(pc))]},separators=(',',':')))
+          # Explicit helper/ctor edges and small field-write inventory.
+          for a,b,label in [(0x1c78a4c,0x1c78b24,'create-strategies'),(0x1c78b6c,0x1c78c14,'swap-strategies'),(0x1d07be0,0x1d07cdc,'equality-precheck'),(0x1d08104,0x1d08200,'priority-precheck'),(0x1d3b424,0x1d3b66c,'pair-writes'),(0x1d38c94,0x1d38e94,'find-bound'),(0x1d38e94,0x1d39028,'find-scissors')]:
+           facts=[]
+           for pc in range(a,b,4):
+            f=fact(pc)
+            if f and f[1] in ('readHalf','writeHalf','write') and f[4]!=13:facts.append(f)
+           print('WRITES',json.dumps({'label':label,'facts':facts},separators=(',',':')))
+
           print('STATIC_ONLY_NO_RUNTIME_OR_REMOTE')
           PY

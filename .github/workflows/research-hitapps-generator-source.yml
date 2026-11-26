@@ -59,7 +59,7 @@ jobs:
            for t in range(row[2],row[2]+row[3]):
             tr=struct.unpack_from('<22I',md,T+88*t)
             tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if re.search(r'(SimulationController|SimulationHelper|StrategySystem|Bot.*System|Simulation.*System|Simulation.*Strategy|LevelDataHandler|LevelSimulationRunner|EasyDealsService|EasyDealsConfig|DynamicDifficultyConfig|SimulatorGameplayContextFactory|MockRemoteConfig)',tn,re.I):
+            if im in ('CoreGameplay.dll','Game.Controllers.dll') and re.search(r'(BoundOperations|StarterBoosterOperations|Placement|FrozenCard|Locker|KeyOperations|PuzzleOperations|PuzzleCardLogicSystem|GoldenCard|CardEntity|CardFactData|LevelDataHandler|Scissors|CardContainer|MoveCounter|MovesLimit|Gameplay.*System)',tn,re.I):
              wanted.setdefault(im,[]).append((tn,tr))
           print('TARGET_IMAGES',list(wanted))
           entries={};records=[];tables={}
@@ -88,141 +88,46 @@ jobs:
              if a:entries.setdefault(a,[]).append(rec)
              if any(tn==x[0] for x in types):records.append(rec)
           print('MODULES',json.dumps(tables))
-          # Numeric metadata and control-flow facts only, no original assets,
-          # method bodies, native binaries, credentials or private data.
+          from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
+          d=Cs(CS_ARCH_ARM,CS_MODE_ARM)
+          starts=sorted(entries)
+          def instructions(a,b):
+           return list(d.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
+          def names_at(a):
+           return [x['type']+'.'+x['method'] for x in entries.get(a,[])][:2]
+          def compact(x):
+           # Numeric dataflow anchor; no original instruction bytes or decompiled source.
+           op=x.mnemonic
+           if op.startswith(('bl','b','cmp','cmn','tst','teq','ldr','str','mov','add','sub','and','orr','bic','eor','rsb','ux','lsl','asr','lsr','mvn','pop','push','stm','ldm','mul')):
+            return [hex(x.address),op,x.op_str]
+           return None
+          families = {
+           'placement':r'(BoundOperations\.(ComputeBoundStatus|IsBoundCardAt|CanCut|CanUnbind|CanChooseForCut)|StarterBoosterOperations\.CanPlace|Placement.*\.(GetTopTargetOrder|TryGet|Evaluate|Resolve|Build|Create|IsLast|CanPlace)|.*\.IsLastCardInSourceCategory)',
+           'transitions':r'(FrozenCardOperations\.(MeltOneLayer|CanChangeThisMove|IsMeltableRightNow|WasRevealedThisMove|WasIceBrokenByBoosterHit)|FrozenCardLogicSystem\.Update|BoundOperations\.(Cut|Unbind|DiscardScissors|UseRevealedScissors)|PuzzleOperations\.(TryResolveTopPuzzlePair|AssembleTopPuzzlePair)|PuzzleCardLogicSystem\.(Update|AssembleTopPuzzlePairIfMatching)|LockerOperations\..*|Locker.*LogicSystem\.Update|Key.*LogicSystem\.Update)',
+           'patterns':r'LevelDataHandler\.(ApplyLockers|ApplyFrozenCards|ApplyBoundCards)$',
+           'gold':r'GoldenCard(Operations|LogicSystem|LevelOperations)\.(InitializeGoldenCards|ProcessUncoveredGoldenCards|DecreaseUncoveredGoldenCardsHealth|ActivateGoldenCardBonus|ActivateGoldenCardBonusesAroundPlacement|ActivateGoldenCardUnderJoker|GenerateGoldenCardsOnHiddenCards|GenerateGoldenCard|GenerateGoldenCards|Update|.*First.*|.*RunningOut.*)$',
+          }
           for r in records:
            if r['rva']=='0x0':continue
-           if re.search(r'SimulationController|SimulationHelper|StrategySystem|Bot.*System|Simulation.*System|Simulation.*Strategy',r['type'],re.I) or r['method'] in ['PlaceCategoryPairOnStack','PlaceCategoryPairsOnUniqueStacks','DistributePuzzleCards','ApplyLockers','ApplyFrozenCards','ApplyBoundCards','Evaluate','GetStepsLimit','Run','ShuffleLevelWithSeed']:
-            print('METHOD',json.dumps(r,separators=(',',':')))
-          starts=sorted(entries)
-          targets=[r for r in records if r['rva']!='0x0' and (r['type'].endswith('SimulationController') or re.search(r'StrategySystem|Simulation.*System|Bot.*System',r['type'],re.I) or r['method'] in ['PlaceCategoryPairOnStack','PlaceCategoryPairsOnUniqueStacks','DistributePuzzleCards','ApplyLockers','ApplyFrozenCards','ApplyBoundCards','Evaluate'])]
-          for r in targets[:0]:
-           a=int(r['rva'],16);j=bisect.bisect_right(starts,a);end=min(starts[j] if j<len(starts) else a+512,a+2400)
-           calls=[];branches=[];immediates=[]
-           for pc in range(a,end,4):
-            op=word(pc);cond=op>>28
-            if (op&0x0e000000)==0x0a000000 and cond!=15:
-             delta=((op&0xffffff)^0x800000)-0x800000;dst=pc+8+4*delta
-             if op&0x01000000:
-              names=[x['type']+'.'+x['method'] for x in entries.get(dst,[])]
-              calls.append([hex(pc),hex(dst),names[:3],cond])
-             elif cond<14:
-              branches.append([hex(pc),cond,hex(dst)])
-            # Record only CMP immediate anchors: condition, tested register, decoded integer.
-            elif op&0x0ff0f000==0x03500000:
-             imm=op&255;rot=((op>>8)&15)*2
-             if rot:imm=((imm>>rot)|(imm<<(32-rot)))&0xffffffff
-             immediates.append([hex(pc),(op>>16)&15,imm,cond])
-           print('FLOW',json.dumps({'method':r['type']+'.'+r['method'],'rva':r['rva'],'boundedEnd':hex(end),'calls':calls[:60],'conditionalBranches':branches[:40],'cmpImmediate':immediates[:35]},separators=(',',':')))
-
-          def branch(pc):
-           w=word(pc)
-           return pc+8+4*(((w&0xffffff)^0x800000)-0x800000) if w&0xe000000==0xa000000 and w>>28!=15 else None
-          def operand2(op):
-           if op&(1<<25):
-            rot=((op>>8)&15)*2;imm=op&255
-            return ((imm>>rot)|(imm<<(32-rot)))&0xffffffff if rot else imm
-           return ['r',op&15,'shift',(op>>5)&3,(op>>7)&31,'rs',(op>>8)&15 if op&16 else None]
-          def fact(pc):
-           op=word(pc);c=op>>28
-           if (dst:=branch(pc)) is not None:return [hex(pc),'call' if op&0x1000000 else 'branch',c,hex(dst)]
-           if op&0x0c000000==0x04000000 and not op&0x02000000:return [hex(pc),'read' if op&0x100000 else 'write',c,(op>>12)&15,(op>>16)&15,(op&4095)*(1 if op&0x800000 else -1),'byte' if op&0x400000 else 'word']
-           if op&0x0e000090==0x00000090 and op&0x60 and op&0x400000:return [hex(pc),'readHalf' if op&0x100000 else 'writeHalf',c,(op>>12)&15,(op>>16)&15,(((op>>4)&240)|(op&15))*(1 if op&0x800000 else -1),(op>>5)&3]
-           if op&0x0c000000==0 and (op&0x0e000090)!=0x00000090:return [hex(pc),'alu',c,(op>>21)&15,(op>>12)&15,(op>>16)&15,operand2(op),bool(op&0x100000)]
-           return None
-          def equivalent(a,b):
-           u,w=word(a),word(b)
-           if u==w:return True
-           ba,bb=branch(a),branch(b)
-           if ba is not None and bb is not None and (u&0xff000000)==(w&0xff000000) and (ba==bb or ba-a==bb-b):return True
-           if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
-           if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
-           return False
-          # Recover exact ordinary/pre-booster placement override logic, not the
-          # external target search or player UI. All tested objects are synthetic.
-          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
-          from unicorn.arm_const import *
-          from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
-          import itertools
-          dis=Cs(CS_ARCH_ARM,CS_MODE_ARM)
-          def ins(a,b):return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          for label,a,b in [('play-entry',0x1c7dfc4,0x1c7e040),('play-ordinary-flags',0x1c7e0a4,0x1c7e0ec),('home-entry',0x1c7e0f8,0x1c7e178),('home-return',0x1c7e18c,0x1c7e21c),('gold-request',0x2d1f000,0x2d1f0fc),('gold-commit-loop',0x2d1f0fc,0x2d1f21c),('ice-duplicate-call',0x1d38030,0x1d38058),('bound-duplicate-call',0x1d38cf8,0x1d38d28)]:
-           print('ARGS24',json.dumps({'label':label,'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in ins(a,b) if not (x.mnemonic=='bl' and x.op_str in ('#0x1a2677c','#0x1a26a2c','#0x1a26a30','#0x1a268f0','#0x1a26718','#0x1a268f4','#0x1a26a20'))]},separators=(',',':')))
-          fieldtab=114085648;FD,FDS=struct.unpack_from('<II',md,64);DV,DVS=struct.unpack_from('<II',md,72)
-          defs={ix:(ty,di) for ix,ty,di in (struct.unpack_from('<iii',md,FD+i) for i in range(0,FDS,12))}
-          row=images['CoreGameplay.dll']
-          for t in range(row[2],row[2]+row[3]):
-           tr=struct.unpack_from('<22I',md,T+t*88);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-           if not re.search(r'Bound.*(Status|Kind)|Gold.*(Slot|Column)|^(ColumnState|SlotState)$',tn,re.I):continue
-           n=tr[17]&65535
-           fields=[]
-           for k in range(n):
-            ix=tr[8]+k;dv=defs.get(ix);fields.append([name(struct.unpack_from('<I',md,F+12*ix)[0]),None if not dv or not 0<=dv[1]<DVS else md[DV+dv[1]:DV+dv[1]+4].hex()])
-           print('ENUM24',tn,json.dumps(fields))
-          B=0x11000000;STOP=B+0xf0000;CARD=B+0x1000;WORLD=B+0x2000;SEQ=B+0x3000
-          def setup(ranges):
-           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP)
-           pages=set()
-           for a,b in ranges:
-            for p in range(a&~4095,((b+4095)//4096)*4096,4096):
-             if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
-           return u
-          def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
-          def dto(u,kind,puzzle=0):
-           c=bytearray(40);c[20]=kind;struct.pack_into('<H',c,6,puzzle)
-           u.mem_write(CARD,bytes(c))
-          getters={0x1d3cf38:6,0x1d3cf24:5,0x1d31bb0:2,0x1d34a14:(3,4)}
-          # Observe all source getters without assuming PuzzleID == CardType.
-          actual_getters={}
-          for a,typ in getters.items():
-           b=starts[bisect.bisect_right(starts,a)]
-           for k,tag in itertools.product(range(7),(0,1,65535)):
-            u=setup([(a,b)]);dto(u,k,tag);u.reg_write(UC_ARM_REG_R0,CARD);u.reg_write(UC_ARM_REG_R1,0)
-            u.emu_start(a,STOP,count=100)
-            assert u.reg_read(UC_ARM_REG_PC)==STOP
-            v=u.reg_read(UC_ARM_REG_R0);assert v in (0,1)
-            actual_getters[(a,k,tag)]=v
-           print('GETTER25',hex(a),json.dumps([[k,t,actual_getters[(a,k,t)]] for k,t in itertools.product(range(7),(0,1,65535))]))
-          def verdict(mode,kind,tag,has,locked,frozen,hammer,magnet,bound):
-           a,b=(0x1c7dfc4,0x1c7e0f8) if mode=='play' else (0x1c7e0f8,0x1c7e228)
-           helpers=[0x2b4c7bc,0x1c8eae4,0x1c8ec7c,0x1c8ef18,*getters]
-           u=setup([(a,b),*[(x,x+4) for x in helpers]])
-           dto(u,kind,tag);wr(u,WORLD+8,B+0x4000)
-           sp=B+0xe0000
-           args=(WORLD,SEQ,17,19)
-           for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),args):u.reg_write(r,v)
-           for i,v in enumerate((has,locked,frozen,0)):wr(u,sp+4*i,v)
+           label=r['type']+'.'+r['method']
+           matched=[k for k,pat in families.items() if re.search(pat,label)]
+           if not matched:continue
+           a=int(r['rva'],16);i=bisect.bisect_right(starts,a);b=starts[i] if i<len(starts) else a+4
+           if b-a>0x2400:print('SKIP_BOUND',label,hex(a),hex(b));continue
+           ins=instructions(a,b)
            calls=[]
-           def hk(uc,pc,size,user):
-            # Skip solely method metadata initialization/access. Card lookup
-            # and external booster/bound resolution use supplied synthetic inputs.
-            if mode=='play' and pc==0x1c7dfe0:uc.reg_write(UC_ARM_REG_PC,0x1c7e000)
-            elif mode=='home' and pc==0x1c7e114:uc.reg_write(UC_ARM_REG_PC,0x1c7e134)
-            elif mode=='play' and pc==0x1c7e01c:uc.reg_write(UC_ARM_REG_PC,0x1c7e03c)
-            elif mode=='home' and pc==0x1c7e150:
-              uc.reg_write(UC_ARM_REG_R5,17);uc.reg_write(UC_ARM_REG_PC,0x1c7e174)
-            elif pc in helpers:
-             if pc==0x2b4c7bc:v=CARD
-             elif pc==0x1c8eae4:v=hammer;calls.append('hammer')
-             elif pc==0x1c8ec7c:v=magnet;calls.append('magnet')
-             elif pc==0x1c8ef18:v=bound;calls.append('bound')
-             else:
-              v=actual_getters[(pc,kind,tag)]
-             uc.reg_write(UC_ARM_REG_R0,v);uc.reg_write(UC_ARM_REG_PC,uc.reg_read(UC_ARM_REG_LR))
-            elif not a<=pc<b:raise RuntimeError('unexpected verdict '+hex(pc))
-           # The prologue loads PC-relative metadata address before the first
-           # guard. That computation stays native and never dereferences it.
-           u.hook_add(UC_HOOK_CODE,hk);u.emu_start(a,STOP,count=500)
-           assert u.reg_read(UC_ARM_REG_PC)==STOP
-           return u.reg_read(UC_ARM_REG_R0),calls
-          results=[]
-          for mode,k,tag,has,locked,frozen,hammer,magnet,bound in itertools.product(('play','home'),range(7),(0,1),(0,1),(0,1),(0,1),(0,1),(0,1),range(5)):
-           # Home has no target booleans/hammer result in the original signature.
-           if mode=='home' and (has or locked or frozen or hammer):continue
-           if mode=='play' and bound:continue
-           v,c=verdict(mode,k,tag,has,locked,frozen,hammer,magnet,bound)
-           assert v in (0,1,2)
-           results.append([mode,k,tag,has,locked,frozen,hammer,magnet,bound,v,c])
-          print('VERDICTS25',json.dumps(results,separators=(',',':')))
-          print('PASS_SHA_PINNED_PLACEMENT_OVERRIDES25')
+           for x in ins:
+            if x.mnemonic.startswith('bl') and x.op_str.startswith('#0x'):
+             dest=int(x.op_str[1:],16);calls.append([hex(x.address),hex(dest),names_at(dest)])
+           # bounded facts emitted by family/method; return and compare branches, field access, caller identity
+           print('FAMILY26',json.dumps({'family':matched[0],'name':label,'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':calls,'facts':[f for x in ins if (f:=compact(x)) is not None]},separators=(',',':')))
+          # Explicit generic duplicate-search call target is not a registered MethodDef.
+          # Keep a bounded entry probe, not proof of equality semantics.
+          a=0x31d6014;b=a+0x180
+          print('DUP26',json.dumps({'a':hex(a),'b':hex(b),'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
+          # Metadata identity for all relevant operations; useful for recursive follow-up.
+          for r in records:
+           if re.search(r'(GoldenCard|FrozenCardOperations|BoundOperations|LockerOperations|StarterBoosterOperations|PuzzleOperations|Placement)',r['type']) and r['rva']!='0x0':
+            print('ID26',json.dumps(r,separators=(',',':')))
+          print('PASS_SHA_PINNED_FOUR_FAMILY_STATIC_SCAN26')
           PY

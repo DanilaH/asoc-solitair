@@ -101,26 +101,130 @@ jobs:
            if op.startswith(('bl','b','cmp','cmn','tst','teq','ldr','str','mov','add','sub','and','orr','bic','eor','rsb','ux','lsl','asr','lsr','mvn','pop','push','stm','ldm','mul')):
             return [hex(x.address),op,x.op_str]
            return None
-          ignore=re.compile(r'Formatter|Migrator|\.Migration\.|\.Cheat|\.Sample\.|\.Analytics\.|\.AJson|\.Mock|\.Tests|\._1_13_0\.|__AJson|global::',re.I)
-          for im,types in wanted.items():
-           for tn,tr in types:
-            if ignore.search(tn):continue
-            ms=[r for r in records if r['image']==im and r['type']==tn]
-            fields=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
-            if re.search(r'Streak|Combo',tn,re.I) or any(re.search(r'Streak|Combo',r['method'],re.I) for r in ms) or any(re.search(r'Streak|Combo',f,re.I) for f in fields):
-             print('TYPE34',json.dumps({'image':im,'type':tn,'fields':[f for f in fields if not f.startswith('__')],'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not ignore.search(r['method']) and not re.match('add_|remove_',r['method'])]},separators=(',',':')))
-          focus=re.compile(r'(InGameStreak|WinStreak|StreakOperations|StreakLogicSystem|StreakSystem|StreakProgress|StreakReward|StreakStage|StreakController)',re.I)
-          for r in records:
-           tn=r['type'];mn=r['method'];a=int(r['rva'],16)
-           if not a or ignore.search(tn) or ignore.search(mn):continue
-           if not ((focus.search(tn) and not re.search(r'View|Presenter|Animation|Binder|Installer|Payload|Factory|ConfigProvider|Cheat|Notifier|Tutorial|\.Abstractions\.',tn) and not re.match(r'add_|remove_|get_|set_|\.ctor|\.cctor',mn)) or re.search(r'Streak|Combo',mn,re.I) and re.search(r'Core\.|LevelLifecycleService|LevelSaveProgressService|Controller',tn) and not re.search(r'View|Presenter|Animation|Analytics',tn)):continue
-           i=bisect.bisect_right(starts,a)
-           if i>=len(starts):continue
-           b=starts[i]
-           if b-a<4 or b-a>0x1500:continue
-           ins=instructions(a,b)
-           facts=[[hex(x.address),x.mnemonic,x.op_str] for x in ins if (compact(x) is not None or x.mnemonic.startswith('v')) and not (x.mnemonic=='streq' and x.address>=b-24)]
-           calls=[[hex(x.address),hex(int(x.op_str[1:],16)),names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('bl') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str)]
-           print('METHOD34',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':calls,'facts':facts},separators=(',',':')))
-          print('PASS_SHA_PINNED_STREAK_CATALOG34')
+          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
+          from unicorn.arm_const import *
+          import itertools,math
+          B=0x11000000; STOP=B+0xf0000; OBJ=B+0x1000; DATA=B+0x2000; CFG=B+0x3000
+          def setup(ranges):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP);u.reg_write(UC_ARM_REG_FPEXC,0x40000000)
+           pages=set()
+           for a,b in ranges:
+            for p in range(a&~4095,((b+4095)//4096)*4096,4096):
+             if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
+           return u
+          def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
+          def wh(u,p,v):u.mem_write(p,struct.pack('<H',v&65535))
+          def wb(u,p,v):u.mem_write(p,bytes([v&255]))
+          def wq(u,p,v):u.mem_write(p,struct.pack('<Q',v&0xffffffffffffffff))
+          def rd(u,p):return struct.unpack('<I',u.mem_read(p,4))[0]
+          def rh(u,p):return struct.unpack('<H',u.mem_read(p,2))[0]
+          def rb(u,p):return u.mem_read(p,1)[0]
+          def rq(u,p):return struct.unpack('<Q',u.mem_read(p,8))[0]
+          def rr(u,r):return u.reg_read(r)
+          def reg(u,r,v):u.reg_write(r,v&0xffffffff)
+          def args(u,*vs):
+           for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),vs):reg(u,r,v)
+          def run(u,a,end,skips=None,calls=None,stops=(),count=400):
+           skips=skips or {};calls=calls or {};trace=[]
+           def hook(uc,pc,size,user):
+            if pc in stops:trace.append(pc);uc.emu_stop();return
+            if pc in skips:
+             item=skips[pc]
+             if callable(item):item(uc)
+             else:reg(uc,UC_ARM_REG_PC,item)
+            elif pc in calls:
+             item=calls[pc];trace.append(pc)
+             if callable(item):item(uc)
+             else:reg(uc,UC_ARM_REG_R0,item)
+             reg(uc,UC_ARM_REG_PC,rr(uc,UC_ARM_REG_LR))
+           u.hook_add(UC_HOOK_CODE,hook);u.emu_start(a,end,count=count)
+           assert rr(u,UC_ARM_REG_PC)==end or rr(u,UC_ARM_REG_PC) in stops,(hex(a),hex(rr(u,UC_ARM_REG_PC)),trace)
+           return trace
+          rows={}
+          def out(k,v):rows[k]=v;print(k,json.dumps(v,separators=(',',':')))
+          # Capture narrow function bodies not selected by initial names, plus field and dispatch anchors.
+          for label,a,b in [('update-clone',0x1c91c0c,0x1c91e80),('action-clone',0x1c91b20,0x1c91c0c),('logic-update',0x1ce8088,0x1ce8600),('stage-complete',0x20b9ca4,0x20b9cb8),('win-loss-current',0x20b3310,0x20b3350),('win-stage-progress',0x20b4c64,0x20b4cb4),('placed-fact',0x1d76604,0x1d76664),('rejected-fact',0x1d76738,0x1d7677c),('streak-fact',0x1d76a24,0x1d76a4c),('undo-fact',0x1d76968,0x1d769bc),('card-joker',0x1d31bb0,0x1d31bc0)]:
+           print('ANCHOR35',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in instructions(a,b)]},separators=(',',':')))
+          # Decode actual field defaults for relevant enums, not declaration order assumptions.
+          FD,FDS=struct.unpack_from('<II',md,64);DD,DDS=struct.unpack_from('<II',md,72)
+          defs={i:di for i,ty,di in struct.iter_unpack('<iii',md[FD:FD+FDS]) if 0<=di<DDS}
+          for im,row in images.items():
+           if not re.match(r'^(Game\.|CoreGameplay|Assembly-CSharp)',im):continue
+           for t in range(row[2],row[2]+row[3]):
+            tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+            if not re.search(r'(InGameStreakActionType|InGameStreakTierChange|CardPlacementKind|PlacementKind|CardFactType|CardFact|ContainerType|RewardType|UndoType|StreakStage|GameplayState)$',tn):continue
+            fs=[]
+            for fi in range(tr[8],tr[8]+(tr[17]&65535)):
+             fn=name(struct.unpack_from('<I',md,F+fi*12)[0])
+             fs.append([fn,md[DD+defs[fi]:DD+defs[fi]+1].hex() if fi in defs else None])
+            print('ENUM35',json.dumps({'type':tn,'fields':fs},separators=(',',':')))
+          # Actual leaf predicate and completed-stage index.
+          counted=[]
+          for val in range(256):
+           u=setup([(0x1c87a90,0x1c87aa4)]);wb(u,DATA+0x10,val);args(u,DATA);run(u,0x1c87a90,STOP);v=rr(u,UC_ARM_REG_R0);assert v==int(val==1),(val,v);counted.append([val,v])
+          out('COUNT35',counted)
+          completed=[]
+          for stage,change in itertools.product((0,1,2,3,4,65535),range(4)):
+           u=setup([(0x1c87b14,0x1c87b24)]);wh(u,DATA+0x12,stage);args(u,DATA,change);run(u,0x1c87b14,STOP);v=rr(u,UC_ARM_REG_R0);assert v==(stage if change==2 else stage-1)&0xffffffff;completed.append([stage,change,v])
+          out('COMPLETED35',completed)
+          # Execute the real tier-transition branch; secured progress struct accessors resolved at the storage boundary.
+          tier=[]
+          for count in (1,2,4,7):
+           for stage,threshold,progress in itertools.product(range(count),(1,4,7),range(10)):
+            u=setup([(0x1c877b0,0x1c87884),(0x1e7a328,0x1e7a32c),(0x1e7a390,0x1e7a394),(0x1e7a450,0x1e7a454)])
+            wr(u,CFG+0x14,OBJ);wr(u,OBJ+0xc,count);wr(u,DATA+8,threshold)
+            marker=B+0x6000;wb(u,marker,0)
+            reg(u,UC_ARM_REG_R6,DATA);reg(u,UC_ARM_REG_R4,progress);reg(u,UC_ARM_REG_R5,B+0x7000);reg(u,UC_ARM_REG_R7,CFG);reg(u,UC_ARM_REG_R10,marker)
+            state=[stage,progress]
+            def getStage(uc):reg(uc,UC_ARM_REG_R0,state[0])
+            def setStage(uc):state[0]=rr(uc,UC_ARM_REG_R1)
+            def setStreak(uc):state[1]=rr(uc,UC_ARM_REG_R1)
+            run(u,0x1c877b0,0x1c87884,skips={0x1c877bc:0x1c877d0,0x1c87830:0x1c87834,0x1c87838:0x1c87848,0x1c87860:0x1c87874},calls={0x1e7a328:getStage,0x1e7a390:setStage,0x1e7a450:setStreak})
+            ex=[stage,progress,0] if progress<threshold else [min(stage+1,count-1),0,2 if stage+1>=count else 1]
+            got=state+[rb(u,marker)];assert got==ex,(count,stage,threshold,progress,got,ex);tier.append([count,stage,threshold,progress,*got])
+          out('TIER35',tier)
+          # Source card placement core branch after successful event + different source/target and resolved ECS snapshot.
+          placed=[]
+          for target,breaker,progress,pos,n,kind,below,one in itertools.product((0,1,2,3,4),(0,1),(0,3),(0,2),(1,2),(0,1,2),(0,2),(0,1)):
+           u=setup([(0x1c86cb0,0x1c86e60),(0x1e7a3e8,0x1e7a3ec),(0x1e7a450,0x1e7a454),(0x1d31bb0,0x1d31bc0)])
+           C=B+0x5000;D=B+0x6000;F=B+0x7000;LIST=B+0x8000
+           wb(u,OBJ+3,target);wr(u,OBJ+8,LIST);wr(u,LIST+0xc,n);wb(u,CFG+0x10,breaker);wb(u,C+20,kind);wb(u,D+20,below);wb(u,F+0xe,one)
+           sp=rr(u,UC_ARM_REG_SP);wr(u,sp+0x1c,CFG);wr(u,sp+0x14,pos);wr(u,sp+0x10,C)
+           reg(u,UC_ARM_REG_R5,OBJ);reg(u,UC_ARM_REG_R4,progress);reg(u,UC_ARM_REG_R8,0);reg(u,UC_ARM_REG_R9,F)
+           state=[progress]
+           def get(uc):reg(uc,UC_ARM_REG_R0,state[0])
+           def setp(uc):state[0]=rr(uc,UC_ARM_REG_R1)
+           def prevCard(uc):reg(uc,UC_ARM_REG_R4,D);reg(uc,UC_ARM_REG_PC,0x1c86e20)
+           run(u,0x1c86cb0,0x1c86cfc,skips={0x1c86cc4:0x1c86cd8,0x1c86d4c:0x1c86d74,0x1c86d7c:0x1c86cec,0x1c86db8:prevCard},calls={0x1e7a3e8:get,0x1e7a450:setp},count=120)
+           # Starting branch has one completion condition per accepted event. No proof of whole producer parity.
+           action=1 if target==3 or target==2 and not breaker and ((pos==0 and one==1) or (pos!=0 and n>=2 and (kind!=2 or below==2))) else 2 if target==2 and breaker and progress>0 else 0
+           got=[state[0],rr(u,UC_ARM_REG_R8)];ex=[progress+1 if action==1 else 0 if action==2 else progress,action];assert got==ex,(target,breaker,progress,pos,n,kind,below,one,got,ex);placed.append([target,breaker,progress,pos,n,kind,below,one,*got])
+          out('PLACED35',placed)
+          # Real rejected placement target gate and current fill reset branch, independent input accessor.
+          rejected=[]
+          for flag,same,target,progress in itertools.product((0,1,2),(0,1),range(5),(0,1,6)):
+           u=setup([(0x1c86f0c,0x1c870fc),(0x1e7a3e8,0x1e7a3ec),(0x1e7a450,0x1e7a454)])
+           wb(u,DATA+0x10,flag);wb(u,OBJ+3,target);reg(u,UC_ARM_REG_R7,DATA)
+           state=[progress];action=[0]
+           def sameResult(uc):reg(uc,UC_ARM_REG_R0,same);reg(uc,UC_ARM_REG_PC,0x1c86f58)
+           def targetResult(uc):reg(uc,UC_ARM_REG_R0,OBJ);reg(uc,UC_ARM_REG_PC,0x1c86fa4)
+           def act(uc):action[0]=rr(uc,UC_ARM_REG_R0);reg(uc,UC_ARM_REG_PC,0x1c870fc)
+           run(u,0x1c86f0c,0x1c870fc,skips={0x1c86f18:sameResult,0x1c86f60:targetResult,0x1c86fb4:0x1c87078,0x1c8708c:0x1c870c8,0x1c870e4:act},calls={0x1e7a3e8:lambda uc:reg(uc,UC_ARM_REG_R0,state[0]),0x1e7a450:lambda uc:state.__setitem__(0,rr(uc,UC_ARM_REG_R1))})
+           reset=flag==1 and not same and target in (2,3) and progress!=0;got=state+action;ex=[0 if reset else progress,2 if reset else 0];assert got==ex,(flag,same,target,progress,got,ex);rejected.append([flag,same,target,progress,*got])
+          out('REJECT35',rejected)
+          # Original capped progress leaf and positive carry arithmetic before next stage.
+          win=[]
+          for cap,progress in itertools.product((0,1,3,5,10),(0,1,2,5,7,10,20,-1)):
+           u=setup([(0x20ba58c,0x20ba5a8)]);wr(u,DATA+8,cap);args(u,DATA,progress);run(u,0x20ba58c,STOP);v=rd(u,DATA+0xc);assert v==max(0,min(cap,progress));win.append([cap,progress,v])
+          out('WINCLAMP35',win)
+          carry=[]
+          for cap,old,amount in itertools.product((1,3,5,10),range(6),(0,1,2,6,15)):
+           if old>=cap:continue
+           u=setup([(0x20b2c50,0x20b2c74),(0x20ba58c,0x20ba5a8)])
+           wr(u,DATA+8,cap);wr(u,DATA+0xc,old);reg(u,UC_ARM_REG_R0,DATA);reg(u,UC_ARM_REG_R10,cap);reg(u,UC_ARM_REG_R4,amount)
+           run(u,0x20b2c50,0x20b2c70,stops=(0x20b2bac,0x20b2c98))
+           v=[rd(u,DATA+0xc),rr(u,UC_ARM_REG_R4),int(rr(u,UC_ARM_REG_PC)==0x20b2bac)]
+           left=old+amount-cap;ex=[min(cap,old+amount),left&0xffffffff,int(left>=1)];assert v==ex,(cap,old,amount,v,ex);carry.append([cap,old,amount,*v])
+          out('WINCARRY35',carry)
+          print('PASS_SHA_PINNED_STREAK_KERNELS35',json.dumps({k:len(v) for k,v in rows.items()}))
           PY

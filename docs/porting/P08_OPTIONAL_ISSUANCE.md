@@ -1,5 +1,8 @@
 # P08 · Опциональная выдача Equality
 
+> 26.11.2026: [new unified brief](HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md). Old `PAIR_TRANSFORM_UNKNOWN` is accurate for historical manifests only; the positive native pair exchange and strategy predicates are now recovered. Implement new versioned records; keep old archive and independent product proof. Unresolved source cases explicit, server values nonblocking for local development. No release activation by this note.
+
+
 В `beginDeal` добавлен необязательный вход для заранее проверенной раздачи. Он выключен на игровых точках входа. Контрольный профиль передаёт явную конфигурацию с версией, известным тестовым сегментом и лимитом. При отключении, неизвестном сегменте, отсутствии подходящей раздачи, достижении лимита и после первой победы выдаётся обычная раздача.
 
 Кандидат связывает исходный и новый Deal ID, версию, два разных проверенных следа позднего поражения и отдельный полный путь до победы. Solver в выдаче не запускается. Интеграционный тест получил следы P07, независимо проиграл победный маршрут и передал этот кандидат на уровне 16 через нормальную операцию сохранения.

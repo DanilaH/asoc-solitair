@@ -179,9 +179,9 @@
   },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "29ddea6086c46c5581702cb0001536e6666b7626",
-  "sourceInventoryRef": "af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "b711111b5876924d7e05553edf428e51b783f915",
+  "sourceInventoryRef": "81da64b3f11acc1a4e4e9ff69c06e3baea5f8481",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
@@ -190,10 +190,17 @@
       "id": "hitapps-stock-dealer",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "CORE-1 replays 15 frozen C8 deals. P05 binds structural input, card order and budget before preparing a fixed or seeded board and gates the fresh and simulated feature paths explicitly.",
-      "nextAction": "Kit #118 reports 752 conditional model comparisons. P36 still needs authenticated original inputs, executed post-Shuffle/post-Final snapshots and live feature settings.",
+      "nextAction": "Reuse EmbeddedRandom and ten-pass destination shuffle; add source-shaped typed numeric conversion preserving category/word order, separate puzzle population, fixed/random and all phase manifests. No original live final-board claim. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/166",
       "stage": "B1",
-      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
+      "generatorHandoff": {
+        "work": "G1",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-level-wave",
@@ -208,16 +215,23 @@
       "id": "hitapps-candidate-priority",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P05/P07 share an authoring pipeline for None, Priority and Equality with effective budget, recorded seeds, feature phases and certification on the final board. Bot heuristics and search are PRODUCT_ADAPTED.",
-      "nextAction": "Compare authentic original strategy, seed and final layout against the model in P36. Evaluate the generated QA catalog on physical Android.",
+      "nextAction": "Refactor hitapps-bots/difficulty-selection to source-shaped ordered move producer plus Priority/Equality policies; keep existing competent policies for independent fairness, use rounded f32 tolerance and explicit UNKNOWN, replay actual final board. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170",
       "stage": "B1",
-      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
+      "generatorHandoff": {
+        "work": "G2",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-dynamic-difficulty",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "MVP C3 adds an ordinary exhausted-result new-attempt action through the existing selectCampaignDeal path when its quote actually changes the layout or increases the budget. Fixed replay keeps the immutable current deal/issuance. The new path settles loss identity, lives, history and selected passport in one SaveStore transaction; labels distinguish a different layout from additional moves. Existing adaptive thresholds are unchanged.",
-      "nextAction": "Complete final-branch browser/physical loss-threshold acceptance, comparing fixed replay with new issuance and duplicate/reload behavior. Human balance and original rounding/active remote coefficients remain unverified; retain full P06 direction and archived active/parked boards.",
+      "nextAction": "Retain existing 10-slot event model and product configs; wire source slot on Continue REQUEST/Restart/Won, sign-reset and stable budget, remove conflicting duplicate ownership via versioned migration. Calibrate human balance; live parameters SOURCE_UNKNOWN. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "B2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170",
@@ -226,13 +240,20 @@
         "docs/porting/PR201_RECHECK_2026-11-24.md",
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "generatorHandoff": {
+        "work": "G1",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-easy-deals",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "The C8 director retains 116 seeded Priority/EasyDeals variants on 53 levels in 16–80 and archived fallback layouts. MVP C3 exposes an eligible new issuance from the ordinary loss screen using that same selector, with its deal ID/budget frozen before play. A fixed replay does not silently reselect; current history and threshold rules are preserved.",
-      "nextAction": "Validate final-branch browser/physical new-attempt and fixed-replay cases, including no eligible relief and zero lives. Measure candidate loss-triggered layouts with people; capture original decCoef, tier thresholds, target and active seed routing before claiming source parity.",
+      "nextAction": "Replace targetSteps-only source preview with DTO-based min(penalty,0)-decCoef calculation and per-tier explicit local config. Preserve actual budget, reroll geometry, retry/FTUE policy and archive old config. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "B2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170",
@@ -241,25 +262,46 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "generatorHandoff": {
+        "work": "G1",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-equality-paywall",
       "status": "IN_PROGRESS",
       "currentImplementation": "Seed 47 is archived for SaveStore. The isolated QA profile can issue level 31 seed 38 only with its attested +10% budget and verified fixture cohort. Two replayed late policy losses and a winning route of 213/219 are bound to the final board. Public issuance remains off.",
-      "nextAction": "Verify human balance on physical Android in the combined generation profile. Kit #125 verified access to the authentic XAPK; P36 still requires original execution, pair transform, native StrategySystems and actual cohort settings.",
+      "nextAction": "Implement source-shaped selection after G2/G3, positive three-stack exchange and same RNG, bounded late-loss gate; retain distinct competent fairness witnesses and own final winning proof. Preserve active off/default unknown cohort behavior until existing activation QA. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/169",
       "stage": "B3",
-      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
+      "generatorHandoff": {
+        "work": "G4",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-paywall-segmentation",
       "status": "IN_PROGRESS",
       "currentImplementation": "Offline and QA issuance require an explicit positive paywall seed, level, attempt cap, one of the four cohorts and a whitelist. Provider provenance also requires a declared provider revision. Actual segment assignment remains unknown.",
-      "nextAction": "Verify the actual cohort assignment, provider revision, privacy boundary and device acceptance before supplying any live cohort to the draft policy. Keep unknown profiles on ordinary deals.",
+      "nextAction": "Implement explicit versioned local four-cohort policy with trustworthy input/provenance and caps; unknown => ordinary. No invented original remote membership or payment gating. Owner-approved scope remains. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/169",
       "stage": "B3",
-      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
+      "generatorHandoff": {
+        "work": "G4",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-adbreak",
@@ -272,13 +314,20 @@
       "id": "hitapps-stock-restore",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore. Исчерпанный повтор показан на поле. Штатное восстановление доступно с той же ценой, SaveStore и Undo.",
-      "nextAction": "Design true rule difference and migration before free/paid restore; don't sell existing free behavior Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
+      "nextAction": "Keep separate player legal deck/recycle economy, native bot stock-lookahead only; test restore/free/price/Unlimited/Undo/Continue without turning simulation policy into player restriction. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "reason": "Existing free recycle contract requires a substantive rule/economy redesign",
       "stage": "E1",
       "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md",
       "evidenceRefs": [
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
-      ]
+      ],
+      "generatorHandoff": {
+        "work": "G2/G6",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-revive-offers",
@@ -333,51 +382,93 @@
       "id": "hitapps-golden-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P13 PRODUCT_ADAPTED conditioned mark placement and actual collection. A separate atomic award is granted once per immutable deal version. Calendar and source payout remain open. See docs/porting/P13_GOLDEN_CARDS.md.",
-      "nextAction": "Restore separate native Final-phase GoldenCards insertion and check gold-marked win receipts; event policy tracked separately under hitapps-gold-rush-event D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
-      "stage": "D1"
+      "nextAction": "Native-shaped weighted Final placement and per-card health4/appearance/decrement/activate/destroy/generate state; explicit count/first-selection adaptation, independent reward receipts not inferred from source flag. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
+      "stage": "D1",
+      "generatorHandoff": {
+        "work": "G3/G5",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-ordered-category",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Existing rank and contiguous-prefix rules now apply in Content 8 at levels 17 and 45. Level 17 teaches the first ordered move through a resumable exercise.",
-      "nextAction": "Verify on physical Android, then evaluate placement and difficulty before extending the ordered schedule. Original live activation remains open. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
+      "nextAction": "Keep existing ranked legacy rules; port direction-specific source order predicates and actual group/source/target resolution in new rule revision; verify Ordered+Puzzle/lock/frozen. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "D1",
-      "evidenceRef": "docs/qa/content-v8/CORE_4_SPECIAL_DEALS.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_4_SPECIAL_DEALS.md",
+      "generatorHandoff": {
+        "work": "G2/G3",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-lockers",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Authored Content 8 deals at levels 18, 26 and 66 close a tableau column until three distinct key cards are revealed. Level 18 teaches actual unlocking. Saved state and Undo retain the column and key state. Добавлены отдельный Rules3 Deal с одним ключом, счётчик 0/1 и восстановление через Undo. Трёхключевые раздачи сохранены.",
-      "nextAction": "Track body-level predicates and original Android under P36. Independent versioned playback and product preview are recorded for #174. Kit #125 confirms access to the exact XAPK. Complete native transition predicates and original physical Android comparison in P36.",
+      "nextAction": "Implement per-card typed lock/key state, weighted collection, matching type, collected flags and recalc; pattern prevalidation, unknown collisions explicit local policy, preserve old column locks. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "D1",
-      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md"
+      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
+      "generatorHandoff": {
+        "work": "G2/G3",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-frozen",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P10 PRODUCT_ADAPTED preview uses per-card starting layers and thaws one layer per completed category. Immutable Deal ID, two dual-engine winning routes and browser Undo/relaunch. Evidence: docs/porting/P10_FROZEN_CARDS.md. В проверочном поле подтверждены 1–3 слоя адаптированного льда. Отдельная модель следов хранит параметры оригинала и два вида снятия. В интерфейсе снятый слой отмечается на затронутой карте. См. docs/qa/UX_ACTION_FEEDBACK.md.",
-      "nextAction": "#129 proves conditional IsPositiveMove branches, not full thaw schedule. Trace producer/destination meaning/MeltOneLayer order/cost/Undo and original device. Preserve adapted historical Deals.",
+      "nextAction": "Implement mutable per-card layers and positive-event melt eligibility, reveal/unlock/booster suppression, events and recompute; new rule profile rather than changing legacy category thaw. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "D1",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-frozen-positive/README.md",
-      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
+      "generatorHandoff": {
+        "work": "G2/G3",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-bound",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P11 PRODUCT_ADAPTED per-card binding with a matching scissors transfer, two solved routes, browser Undo and reload. See docs/porting/P11_BOUND_SCISSORS.md. Проверены две связи и разные ножницы на общем поле. Отдельная source-static модель различает Cut, Discard и Unbound. В интерфейсе разрыв отображается на освобождённой карте. См. docs/qa/UX_ACTION_FEEDBACK.md.",
-      "nextAction": "Reconstruct bound-card pattern and design original mechanic + undo/solver/migration D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md. Kit #125 confirms access to the exact XAPK. Complete native transition predicates and original physical Android comparison in P36.",
+      "nextAction": "Implement Attached/Detached/None and five-state resolver, actual cut/unbind/discard state and group movement; balanced partial pattern masks, independent Undo/solver. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "D1",
-      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md"
+      "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
+      "generatorHandoff": {
+        "work": "G2/G3",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-magnet-hammer",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P14 verifies the post-candidate Unity-seed gate and separately previews a matching-stock magnet and tableau-reveal hammer. See docs/porting/P14_STARTER_BOOSTERS.md.",
-      "nextAction": "P02 physical preview and P36 original stock placement, actual actions and purchase gates.",
-      "stage": "D1"
+      "nextAction": "Final independent insertion seed/hash, actual preliminary gates, ordered/puzzle matching, lock/ice/bound interactions and explicitly versioned search/commit policy; preserve existing adapted preview and helper rights. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
+      "stage": "D1",
+      "generatorHandoff": {
+        "work": "G2/G5",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "azur-shuffle-helper",
@@ -397,9 +488,16 @@
       "id": "hitapps-joker",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Existing Joker helper and dedicated C8 level8 lesson",
-      "nextAction": "Native playtest Joker, costs, save, cancel, reduced motion",
+      "nextAction": "Keep current helper/FTUE; use verified source Joker placement override and separate root/group behavior under new rule profile; do not merge paid/rewarded rights with source move list. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "stage": "D2"
+      "stage": "D2",
+      "generatorHandoff": {
+        "work": "G2",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-ghost-hint",
@@ -601,14 +699,21 @@
       "id": "hitapps-gold-rush-event",
       "status": "ROADMAPPED",
       "currentImplementation": "MVP U5 exposes only saved completed unclaimed hitapps-gold-rush-event rewards through the same strict legacy allowlist and original frozen claim contract. Fresh ordinary profiles receive no new event/progress. GoldenCards insertion remains a separate mechanic; the existing P31 isolated event model is preserved.",
-      "nextAction": "Complete final-branch browser/physical historical claim, duplicate/failure and last-row acceptance. Continue full Gold Rush lifecycle, progress and first-attempt reward research independently of GoldenCards; original live configuration and runtime remain unverified.",
+      "nextAction": "Keep P31 event independent from P13 board lifecycle; use health/activation/count and idempotent own reward receipts with explicit policy. Remaining Gold Rush schedule/payout unknown, not an excuse to omit event. Preserve existing archive. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "generatorHandoff": {
+        "work": "G5",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-puzzle-gallery",
@@ -1189,57 +1294,99 @@
       "id": "hitapps-equality-three-stack-pair-placement",
       "status": "ROADMAPPED",
       "currentImplementation": "P07 samples three distinct tableau indices from the candidate RNG after the dealer consumes its draws. The original placement transform is pending.",
-      "nextAction": "Capture original pre/post placement, selected indices, RNG consumption and pair-card identities. Check the completed original transform against the independent source model.",
+      "nextAction": "Replace placeholder PAIR_TRANSFORM_UNKNOWN for new positive-path records with tested real swaps of Category and matching Word/PuzzleTop/PuzzleBottom, positions0/1 and state bits, shared advanced RNG; unresolved failure path explicit. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "B3",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/168",
-      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md"
+      "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
+      "generatorHandoff": {
+        "work": "G3",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-feature-seed-one-time-reshuffle",
       "status": "IN_PROGRESS",
       "currentImplementation": "Source-ordered phase adapter performs a single fresh reseed before pattern application, skips it on pre-shuffled simulation and preserves explicit failure flags.",
-      "nextAction": "Connect the concrete Lockers/Frozen/Bound pattern appliers in CORE-4 and compare controlled original traces. B3 carry-over: one-time reseed model exists, concrete Shuffle modifier behaviors and final selected source/runtime board still require independent evidence. See docs/qa/content-v8/B3_EQUALITY_PAYWALL_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "nextAction": "Connect concrete pattern appliers; one fresh feature reseed, simulated already shuffled, preserve mutated board on failure and separate flags, test collision/duplicate/partial masks. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "B3",
-      "evidenceRef": "docs/qa/content-v8/CORE_2.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_2.md",
+      "generatorHandoff": {
+        "work": "G3",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-initial-shuffle-final-pipeline",
       "status": "IN_PROGRESS",
       "currentImplementation": "CORE-1 routes fresh and simulated plans through source-ordered phase hooks. Shuffle precedes scoring and bounded fallback replays it. Final runs once for the selected result.",
-      "nextAction": "Connect confirmed feature appliers in CORE-2/4, including a single eligible feature reseed and separately sourced Final RNG. Verify with original final-board traces.",
+      "nextAction": "Keep fresh Initial/Shuffle/Final vs simulated Shuffle/selection/Final distinct, place puzzle redistribution/pairs in seeded shuffle before modifiers, record final independent streams. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "B3",
-      "evidenceRef": "docs/qa/content-v8/CORE_1.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_1.md",
+      "generatorHandoff": {
+        "work": "G3",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-negative-seed-request-path",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "CORE-1 authoring handles negative requests with an injected [0, INT32_MAX) seed source and records both requested and actual seed.",
-      "nextAction": "Capture original entropy behavior and selected seed on Android. Product authoring uses its own entropy, and saves resume fixed variants.",
+      "nextAction": "Keep resolved actual seed and separate request stream; persist exact RNG draw counts/indices, test negative request versus direct constructor. No live entropy dependency. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "B1",
       "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/166"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/166",
+      "generatorHandoff": {
+        "work": "G1",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-puzzle-top-bottom-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P12 PRODUCT_ADAPTED top/bottom pairs join in tableau before entering the foundation together. Old deals remain unchanged. See docs/porting/P12_PUZZLE_PAIRS.md. Собственная иллюстрация из двух карт проходит совместно с Ordered другой категории. Отдельно проверены ненулевой tag, идентичность и порядок исхода сборки. Иллюстрация соединяется при контакте карт. См. docs/qa/UX_ACTION_FEEDBACK.md.",
-      "nextAction": "#125 IsMatchingPair proves nonzero equal tags, not top/bottom order. Trace callers/distribution/assembly/cost/Undo and original device. Preserve adapted old IDs.",
+      "nextAction": "Separate numeric puzzle population and positive distribution; resolver on last two cards and moved ID, nonzero pair tags, replacement Word and transferred move flag. Version physical/semantic IDs, no phantom collectible. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-public-acquisition/P11_P12_ORIGINAL_NUMERIC_PREDICATES_2026-11-23.md",
-      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
+      "generatorHandoff": {
+        "work": "G2/G3",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "hitapps-bound-scissors-pattern",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P11 PRODUCT_ADAPTED scissors release a separately bound card on a legal move into the foundation. Native reveal/cost/target remain unknown. See docs/porting/P11_BOUND_SCISSORS.md. Раздельные числовые ветки 0/1/2/retry проверены на двух целях. Известная зависимость с Frozen проходит отрицательные проверки авторинга. Отклик показывает фактически снятую связь на карте. См. docs/qa/UX_ACTION_FEEDBACK.md.",
-      "nextAction": "#125 proves numeric revealed-scissors dispatch 0 discard/1 cut/2 stop/other retry; unknown evaluator/target, cost, exact enum ownership and runtime. Compare adapted cut/discard/unbound.",
+      "nextAction": "Replace source-shaped foundation-only proxy with revealed-scissors target dispatch and distinct Cut/Discard/Stop; preserve product adapted historical deals. Ambiguous auto-selection/cost explicitly own rule policy. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-public-acquisition/P11_P12_ORIGINAL_NUMERIC_PREDICATES_2026-11-23.md",
-      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
+      "generatorHandoff": {
+        "work": "G2/G3",
+        "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+        "sourceNativeRef": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/README.md",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3"
+      }
     },
     {
       "id": "unico-magnet-helper",
@@ -1353,5 +1500,17 @@
     "report": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
     "sourceCI": "Initial run 45594363530: zero runner steps; acceptance pending",
     "runtimeKitUnchanged": "a9325265e87583a4872cf6a158e1e881a0d7508e"
+  },
+  "generatorHandoff": {
+    "date": "2026-11-26",
+    "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+    "source": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+    "consumerBaseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "previousPin": {
+      "ref": "af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a",
+      "blob": "29ddea6086c46c5581702cb0001536e6666b7626"
+    },
+    "scope": "P05–P14 with P19/P31/P33–P37 dependencies; 115 source IDs/38 packets retained; engineering-only; release activation/physical QA separate",
+    "remote": "SOURCE_UNKNOWN_NONBLOCKING_FOR_OWN_ADAPTATION"
   }
 }

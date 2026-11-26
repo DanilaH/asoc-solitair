@@ -40,8 +40,8 @@
   "asOf": "2026-11-21",
   "sourcePin": {
     "repo": "DanilaH/asoc-solitair",
-    "sourceInventoryRef": "af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a",
-    "sourceInventoryBlob": "29ddea6086c46c5581702cb0001536e6666b7626",
+    "sourceInventoryRef": "81da64b3f11acc1a4e4e9ff69c06e3baea5f8481",
+    "sourceInventoryBlob": "b711111b5876924d7e05553edf428e51b783f915",
     "baselineContent8Head": "e092ba156eebb5ebc703d89e4e98bf657bbd6f14",
     "gameVersion": "0.20.3 Content8 preview",
     "runtimeKitCommit": "a9325265e87583a4872cf6a158e1e881a0d7508e"
@@ -197,7 +197,9 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "nextImplementationBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "nextLocalEngineering": "READY_LOCAL"
     },
     {
       "id": "P06",
@@ -221,7 +223,9 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "nextImplementationBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "nextLocalEngineering": "READY_LOCAL"
     },
     {
       "id": "P07",
@@ -229,7 +233,7 @@
       "title": "Equality/Paywall offline source phases",
       "workstream": "CORE",
       "state": "ENGINEERING_VERIFIED",
-      "entryGate": "SOURCE_EVIDENCE",
+      "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P05"
       ],
@@ -247,7 +251,9 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "nextImplementationBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "nextLocalEngineering": "READY_LOCAL"
     },
     {
       "id": "P08",
@@ -267,7 +273,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
     },
     {
       "id": "P09",
@@ -292,7 +299,9 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "nextImplementationBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "nextLocalEngineering": "READY_LOCAL"
     },
     {
       "id": "P10",
@@ -300,7 +309,7 @@
       "title": "Frozen cards",
       "workstream": "SPECIAL",
       "state": "NEEDS_DEVICE",
-      "entryGate": "SOURCE_EVIDENCE",
+      "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P05",
         "P09"
@@ -315,7 +324,9 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "nextImplementationBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "nextLocalEngineering": "READY_LOCAL"
     },
     {
       "id": "P11",
@@ -323,7 +334,7 @@
       "title": "Bound + Scissors",
       "workstream": "SPECIAL",
       "state": "NEEDS_DEVICE",
-      "entryGate": "SOURCE_EVIDENCE",
+      "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P05",
         "P09"
@@ -339,7 +350,9 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "nextImplementationBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "nextLocalEngineering": "READY_LOCAL"
     },
     {
       "id": "P12",
@@ -347,7 +360,7 @@
       "title": "PuzzleTop / PuzzleBottom",
       "workstream": "SPECIAL",
       "state": "NEEDS_DEVICE",
-      "entryGate": "SOURCE_EVIDENCE",
+      "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P05"
       ],
@@ -361,7 +374,9 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "nextImplementationBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "nextLocalEngineering": "READY_LOCAL"
     },
     {
       "id": "P13",
@@ -369,7 +384,7 @@
       "title": "GoldenCards in Final phase",
       "workstream": "SPECIAL",
       "state": "NEEDS_DEVICE",
-      "entryGate": "SOURCE_EVIDENCE",
+      "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P05"
       ],
@@ -383,7 +398,9 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "nextImplementationBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "nextLocalEngineering": "READY_LOCAL"
     },
     {
       "id": "P14",
@@ -391,7 +408,7 @@
       "title": "Hitapps Magnet/Hammer starter boosters",
       "workstream": "SPECIAL",
       "state": "NEEDS_DEVICE",
-      "entryGate": "SOURCE_EVIDENCE",
+      "entryGate": "READY_LOCAL",
       "dependsOn": [
         "P05"
       ],
@@ -405,7 +422,9 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "nextImplementationBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+      "nextLocalEngineering": "READY_LOCAL"
     },
     {
       "id": "P15",
@@ -521,7 +540,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
     },
     {
       "id": "P20",
@@ -819,7 +839,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
     },
     {
       "id": "P32",
@@ -872,7 +893,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
     },
     {
       "id": "P34",
@@ -899,7 +921,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
     },
     {
       "id": "P35",
@@ -921,7 +944,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
     },
     {
       "id": "P36",
@@ -941,7 +965,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
     },
     {
       "id": "P37",
@@ -965,7 +990,8 @@
         "replayable tests, exact-head CI and device evidence class",
         "115-feature ledger evidence update and remaining gaps",
         "real APK + inline GIF for visible changes; no unverified original parity"
-      ]
+      ],
+      "generatorDependencyBrief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md"
     }
   ],
   "sourceFeatureOwner": {
@@ -1107,12 +1133,11 @@
       "G1": 5
     },
     "currentStatuses": {
-      "IMPLEMENTED_UNVERIFIED": 47,
-      "IN_PROGRESS": 6,
-      "ROADMAPPED": 41,
-      "DEFERRED": 1,
+      "IMPLEMENTED_UNVERIFIED": 66,
+      "IN_PROGRESS": 7,
+      "ROADMAPPED": 23,
       "BLOCKED": 9,
-      "EVIDENCE_GAP": 11
+      "EVIDENCE_GAP": 10
     }
   },
   "researchConsolidation": {
@@ -1126,5 +1151,32 @@
       "url": "https://github.com/DanilaH/mini-games-kit/blob/adb0657facebf8b5e3ed22369305ba509c988626/research/games/association-solitaire/porting/SOURCE_FEATURES.json"
     },
     "scope": "Research/doc synchronization; package states/owners and runtime pin unchanged"
+  },
+  "generatorHandoff": {
+    "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
+    "source": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/README.md",
+    "consumerBaseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "after": "#210 / PR212 owner acceptance and merge/rebase",
+    "packets": [
+      "P05",
+      "P06",
+      "P07",
+      "P08",
+      "P09",
+      "P10",
+      "P11",
+      "P12",
+      "P13",
+      "P14",
+      "P19",
+      "P31",
+      "P33",
+      "P34",
+      "P35",
+      "P36",
+      "P37"
+    ],
+    "localEngineering": "READY_LOCAL for all known kernels; unresolved adapters own explicit policies, not remote gating",
+    "release": "no automatic activation"
   }
 }

@@ -1,5 +1,10 @@
 # Technical Spec 02 — special cards, assisted play and core game feel
 
+## Updated implementation entry · 26.11.2026
+
+[Unified generator/specials brief](../HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md) and [tested numeric model](https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/2026-11-26-hitapps-generator-handoff/reference.mjs) are the authoritative next delta for P05–P14; all earlier packets remain. Source remote config is nonblocking UNKNOWN for own adaptation, no full original-client parity. Preserve #210 and Rules2/3. 
+
+
 **Research method · 24.11.2026:** follow the owner-adopted [research and porting method](../RESEARCH_METHOD_2026-11-24.md) and [implementation brief template](../RESEARCH_TO_IMPLEMENTATION_BRIEF.template.md). Build our implementation directly from inspected original code and architecture, without clean-room separation; preserve relevant exact excerpts/provenance only in the private kit evidence annex. Connect each effect's source call order and state ownership to the product transition, persistence and acceptance. UNKNOWN effects and existing source/product classifications below remain unchanged by this method update.
 
 **P04, P09–P17.** Reference [D1 14-system audit](../../qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md), [CORE-4 specials](../../qa/content-v8/CORE_4_SPECIAL_DEALS.md), [AZUR upper/lower slots](../../qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md), [original Hitapps Shuffle/Final study](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-17-hitapps-final-phase/README.md), [AZUR original Joker](https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-20-azur-shared-rng-joker/README.md). **Independent source mechanic IDs are not interchangeable**. Preserve full roadmap, separate source exactness and user comprehension.

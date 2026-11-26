@@ -114,53 +114,56 @@ jobs:
              immediates.append([hex(pc),(op>>16)&15,imm,cond])
            print('FLOW',json.dumps({'method':r['type']+'.'+r['method'],'rva':r['rva'],'boundedEnd':hex(end),'calls':calls[:60],'conditionalBranches':branches[:40],'cmpImmediate':immediates[:35]},separators=(',',':')))
 
-          # Second pass: field inventories and selected semantic anchors only.
-          for im,(start,*_) in images.items():
-           if im not in ('CoreGameplay.dll','Game.Services.EasyDeals.dll','Game.Services.Segmentation.dll','Game.Controllers.dll'):continue
+          # Targeted third pass, compare duplicated bodies without publishing them.
+          def normalized(pc):
+           op=word(pc);c=op>>28
+           if op&0x0e000000==0x0a000000 and c!=15:
+            return ('branch',op&0xff000000,pc+8+4*(((op&0xffffff)^0x800000)-0x800000))
+           if op&0x0f7f0000==0x051f0000:
+            return ('pcLiteral',op&0xfffff000,word(pc+8+(op&4095)*(1 if op&0x800000 else -1)))
+           return op
+          for a,b,limit,label in [(0x1d07be0,0x1d1e1bc,96,'Equality IsMoveValid'),(0x1d08104,0x1d1e33c,96,'Priority IsMoveValid'),(0x1d3b1b8,0x1d4621c,313,'PlaceCategoryPairOnStack')]:
+           count=sum(word(a+4*i)==word(b+4*i) for i in range(limit))
+           matched=sum(normalized(a+4*i)==normalized(b+4*i) for i in range(limit))
+           print('CLONE',json.dumps({'label':label,'a':hex(a),'b':hex(b),'words':limit,'sameRaw':count,'sameNormalized':matched}))
+          # Field constants, without any card art, terms, or user data.
+          FD,FDS=struct.unpack_from('<II',md,64);DV,DVS=struct.unpack_from('<II',md,72)
+          defs={ix:(ty,di) for ix,ty,di in (struct.unpack_from('<iii',md,FD+i) for i in range(0,FDS,12))}
+          for im in ('CoreGameplay.dll','Game.Services.Segmentation.dll','Game.Services.EasyDeals.dll'):
            row=images[im]
            for i in range(row[2],row[2]+row[3]):
             tr=struct.unpack_from('<22I',md,T+i*88);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if re.search(r'(Simulation|Strategy|PossibleMove|ValidMove|MoveData|MoveInfo|MoveComponent|CardData|LevelCard|EasyDeals|DynamicDifficulty|CategoryPair|PuzzleCards|BoundCards|FrozenCards|Lockers|CardType|StackType|PlacementType|MoveType|LocationType|ContainerType)',tn):
-             fields=[name(struct.unpack_from('<I',md,F+12*(tr[8]+k))[0]) for k in range(tr[17]&65535)]
-             methods=[(name(struct.unpack_from('<I',md,M+36*(tr[9]+k))[0]), hex(ptr) if False else '')[0] for k in range(tr[16]&65535)]
-             if fields or methods: print('TYPE',json.dumps({'type':tn,'fields':fields,'methods':methods},separators=(',',':')))
-          # Decode only selected decision blocks to operand facts (not full bodies).
+            if re.search(r'(MoveType|ContainerType|CardType|StrategyType|GameState|MovePriority|EasyDealsDecision|SimulationWorld|CardData|CardEntity|MoveData|ContainerData|ContainerEntity|LevelCardData)$',tn):
+             fields=[]
+             for k in range(tr[17]&65535):
+              ix=tr[8]+k;fn=name(struct.unpack_from('<I',md,F+ix*12)[0]);dv=defs.get(ix)
+              fields.append([fn,None if not dv else [dv[0],dv[1],md[DV+dv[1]:DV+dv[1]+4].hex() if 0<=dv[1]<DVS else None]])
+             print('FIELD',json.dumps({'type':tn,'fields':fields},separators=(',',':')))
+          # Decode selected branch and memory facts for ranking and placement only.
           def operand2(op):
            if op&(1<<25):
             rot=((op>>8)&15)*2;imm=op&255
-            return {'imm':((imm>>rot)|(imm<<(32-rot)))&0xffffffff if rot else imm}
-           return {'reg':op&15,'shift':(op>>5)&3,'shiftAmount':(op>>7)&31,'registerShift':bool(op&16)}
+            return ((imm>>rot)|(imm<<(32-rot)))&0xffffffff if rot else imm
+           return {'reg':op&15,'shift':(op>>5)&3,'amount':(op>>7)&31,'regShift':bool(op&16),'shiftReg':(op>>8)&15 if op&16 else None}
           def fact(pc):
            op=word(pc);c=op>>28
-           if op&0x0e000000==0x0a000000 and c!=15:
-            dst=pc+8+4*(((op&0xffffff)^0x800000)-0x800000)
-            return [hex(pc),'call' if op&0x1000000 else 'branch',c,hex(dst)]
-           if op&0x0c000000==0x04000000 and not op&0x02000000:
-            return [hex(pc),'read' if op&0x100000 else 'write',c,(op>>12)&15,(op>>16)&15,(op&4095)*(1 if op&0x800000 else -1),'byte' if op&0x400000 else 'word']
-           if op&0x0e000090==0x00000090 and op&0x60 and op&0x400000:
-            return [hex(pc),'readHalf' if op&0x100000 else 'writeHalf',c,(op>>12)&15,(op>>16)&15,(((op>>4)&240)|(op&15))*(1 if op&0x800000 else -1)]
-           if op&0x0c000000==0 and (op&0x0e000090)!=0x00000090:
-            return [hex(pc),'alu',c,(op>>21)&15,(op>>12)&15,(op>>16)&15,operand2(op),bool(op&0x100000)]
+           if op&0x0e000000==0x0a000000 and c!=15:return [hex(pc),'call' if op&0x1000000 else 'branch',c,hex(pc+8+4*(((op&0xffffff)^0x800000)-0x800000))]
+           if op&0x0c000000==0x04000000 and not op&0x02000000:return [hex(pc),'read' if op&0x100000 else 'write',c,(op>>12)&15,(op>>16)&15,(op&4095)*(1 if op&0x800000 else -1),'byte' if op&0x400000 else 'word']
+           if op&0x0e000090==0x00000090 and op&0x60 and op&0x400000:return [hex(pc),'readHalf' if op&0x100000 else 'writeHalf',c,(op>>12)&15,(op>>16)&15,(((op>>4)&240)|(op&15))*(1 if op&0x800000 else -1)]
+           if op&0x0c000000==0 and (op&0x0e000090)!=0x00000090:return [hex(pc),'alu',c,(op>>21)&15,(op>>12)&15,(op>>16)&15,operand2(op),bool(op&0x100000)]
            return None
-          ranges=[
-           ('equality-valid-conditions',0x1d07cdc,0x1d07d50),
-           ('priority-valid-conditions',0x1d08200,0x1d08274),
-           ('priority-ranking',0x1d07fc0,0x1d080c8),
-           ('equality-choice',0x1d07b64,0x1d07bc8),
-           ('pair-first-match',0x1d3b288,0x1d3b2a8),
-           ('pair-second-match',0x1d3b324,0x1d3b35c),
-           ('pair-swap-gate',0x1d3b4b0,0x1d3b4e8),
-           ('pair-second-swap-gate',0x1d3b570,0x1d3b5ac),
-           ('easy-deals-target',0x22fe32c,0x22fe3c4)]
-          for label,a,b in ranges:
-           print('ANCHOR',json.dumps({'label':label,'facts':[f for pc in range(a,b,4) if (f:=fact(pc))]},separators=(',',':')))
-          # Explicit helper/ctor edges and small field-write inventory.
-          for a,b,label in [(0x1c78a4c,0x1c78b24,'create-strategies'),(0x1c78b6c,0x1c78c14,'swap-strategies'),(0x1d07be0,0x1d07cdc,'equality-precheck'),(0x1d08104,0x1d08200,'priority-precheck'),(0x1d3b424,0x1d3b66c,'pair-writes'),(0x1d38c94,0x1d38e94,'find-bound'),(0x1d38e94,0x1d39028,'find-scissors')]:
-           facts=[]
-           for pc in range(a,b,4):
-            f=fact(pc)
-            if f and f[1] in ('readHalf','writeHalf','write') and f[4]!=13:facts.append(f)
-           print('WRITES',json.dumps({'label':label,'facts':facts},separators=(',',':')))
-
+          for label,a,b in [('priority-init',0x1d07e20,0x1d07ed8),('priority-record',0x1d07f14,0x1d07fc4),('priority-choice',0x1d0807c,0x1d080d4),('equality-init',0x1d07a78,0x1d07b1c),('valid-precheck',0x1d07c34,0x1d07cdc),('pair-parameters',0x1d3b200,0x1d3b234),('pair-prepare',0x1d3b340,0x1d3b36c),('pair-set',0x1d3b424,0x1d3b438),('pair-place',0x1d3b5ac,0x1d3b66c),('strategy-index',0x1c78b6c,0x1c78bac)]:
+           print('ANCHOR3',json.dumps({'label':label,'facts':[f for pc in range(a,b,4) if (f:=fact(pc))]},separators=(',',':')))
+          # Read jump-table entries as relative targets, not executable instructions.
+          for pc in range(0x1d07fe4,0x1d07ff8,4):
+           print('TABLE',hex(pc),hex(word(pc)),hex(0x1d07fe0+word(pc)))
+          for a in [0x1c8afe8,0x1c8b58c,0x1c8bc30]:
+           # Find exact matching normalized prefixes. Prefix alone is not identity.
+           matches=[]
+           for b in sorted(entries):
+            if abs(b-a)<4:continue
+            eq=sum(normalized(a+4*i)==normalized(b+4*i) for i in range(24))
+            if eq>=16:matches.append((eq,hex(b),[r['type']+'.'+r['method'] for r in entries[b]]))
+           print('PREFIX',hex(a),json.dumps(sorted(matches,reverse=True)[:6]))
           print('STATIC_ONLY_NO_RUNTIME_OR_REMOTE')
           PY

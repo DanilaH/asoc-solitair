@@ -85,7 +85,7 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "help",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "First free then base+(n-1)*increment formula proven, real base/increment/reset trigger UNKNOWN"
+      "knownLimit": "First free then base+(n-1)*increment formula proven, real base/increment/reset trigger UNKNOWN 26 Nov: original native cost and first-free/disabled/paid state, refund count and reset verified (113 restore-related rows incl price and reset); actual OnRestoreStockUndone dispatches refund interface slot7, direct TryAgain/ExitWithFail reset call chain; refund recomputes cost after decrement. Consumer Undo currently board-only. Full original save/next-win and currency settlement runtime unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md"
     },
     {
       "id": "hitapps-revive-offers",
@@ -94,7 +94,7 @@
       "evidenceTier": "METADATA",
       "surface": "monetization",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Segment/cooldown/cap product config names present; exact active revive grant offers/click behavior not observed"
+      "knownLimit": "Segment/cooldown/cap product config names present; exact active revive grant offers/click behavior not observed 26 Nov: exact revive amount min(cap,5*ceilf(f32(coef*remainingCards/5))) (270 native rows); compiled gates min-level, remaining strict min, daily shown count, cooldown bypass before first purchase, separate policy. MovesOfferSaveData and ExtraMovesBubbleSaveData are distinct persisted pending-purchase rights; confirmed positive bubble can apply on fresh/restart/restored level, CurrentSteps+=extra and LoseReason=0, read/mark/reset separate (82 native rows). Ordinary leftover moves carryover not proved; original runtime transaction and active values unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md"
     },
     {
       "id": "azur-coin-moves",
@@ -328,7 +328,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "S1 5 lives and temporary infinite-life reward observed, full loss/regen policy unknown"
+      "knownLimit": "S1 5 lives and temporary infinite-life reward observed, full loss/regen policy unknown 26 Nov: finite-life cap, offline elapsed/interval refill, infinite deadline max(now,old)+duration, daily expiry and price power/decade-floor (native kernels); finite spend, infinite bypass, timer callback amount, explicit channel config/purchase caps and transient spend marker verified. Actual life reservation/debit full flow, source midpoint math full execution and active values unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md"
     },
     {
       "id": "azur-play-pass",

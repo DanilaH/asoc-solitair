@@ -1,5 +1,9 @@
 # Project contract
 
+## P32 meta rewards source handoff · 27 November 2026
+
+Use [the new P32 brief](docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md) and [pinned evidence](https://github.com/DanilaH/mini-games-kit/blob/10cc5a22520912ea26069817d1f4ad52293fb69f/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md) for Digging, Lucky Wheel, Endless Treasure, Regions. 1122 bounded native comparisons; no runtime or activation change. Reconcile developer PR216 Rules4 with research PR217 and this docs-only branch. 115 sources, 38 packets, 15 commerce families and runtime kit pin retained. Do not activate IAP or claim original device/remote parity.
+
 ## Owner follow-up · 26 November 2026
 
 Use [the post-playtest decision](https://github.com/DanilaH/asoc-solitair/issues/210#issuecomment-7185896846) and [implementation and verification notes](docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md). The candidate introduces action-bound Coffee, a tutorial exit guard, earned video Continue without a winning-route proof, layout-based retry, five lives and the versioned unlock track. Coin Continue retains its proof. The upper-slot threshold is L6. Keep the approved Card Table B, exact FTUE Deal IDs, all previous saves and the full research roadmap.

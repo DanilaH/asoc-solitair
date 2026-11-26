@@ -59,7 +59,7 @@ jobs:
            for t in range(row[2],row[2]+row[3]):
             tr=struct.unpack_from('<22I',md,T+88*t)
             tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if re.match(r'^(Game\.|CoreGameplay\.dll|Assembly-CSharp\.dll|GameCore\.)',im) and (re.search(r'(Digging|DigEvent|DigField|DigBoard|LuckyWheel|EndlessTreasure|MetaRegion|MetaBuilding|MetaUnlock|MetaStar|StarCurrency)',tn,re.I) or any(re.search(r'(Digging|DigEvent|DigField|DigBoard|LuckyWheel|EndlessTreasure|MetaRegion|MetaBuilding|MetaUnlock|MetaStar|StarCurrency)',name(struct.unpack_from('<I',md,M+36*k)[0]),re.I) for k in range(tr[9],tr[9]+(tr[16]&65535)))):
+            if re.match(r'^(Game\.|CoreGameplay\.dll|Assembly-CSharp\.dll|GameCore\.)',im) and (re.search(r'(Digging|DigEvent|DigField|DigBoard|LuckyWheel|EndlessTreasure|MetaRegion|MetaBuilding|MetaUnlock|MetaStar|StarCurrency|MetaData|MetaConfig|MetaProgress|MetaReward|MetaXp|MetaCurrency|MetaObject|\.Meta\.)',tn,re.I) or any(re.search(r'(Digging|DigEvent|DigField|DigBoard|LuckyWheel|EndlessTreasure|MetaRegion|MetaBuilding|MetaUnlock|MetaStar|StarCurrency|MetaData|MetaConfig|MetaProgress|MetaReward|MetaXp|MetaCurrency|MetaObject|\.Meta\.)',name(struct.unpack_from('<I',md,M+36*k)[0]),re.I) for k in range(tr[9],tr[9]+(tr[16]&65535)))):
              wanted.setdefault(im,[]).append((tn,tr))
           print('TARGET_IMAGES',list(wanted))
           entries={};records=[];tables={}
@@ -102,7 +102,7 @@ jobs:
             return [hex(x.address),op,x.op_str]
            return None
           ignore=re.compile(r'Formatter|Migrator|\.Migration\.|\.Cheat|\.Sample\.|\.Analytics\.|\.AJson|\.Mock|\.Tests|\._1_13_0\.|__AJson|global::',re.I)
-          focus=re.compile(r'(Digging|DigEvent|DigField|DigBoard|LuckyWheel|EndlessTreasure|MetaRegion|MetaBuilding|MetaUnlock|MetaStar|StarCurrency)',re.I)
+          focus=re.compile(r'(Digging|DigEvent|DigField|DigBoard|LuckyWheel|EndlessTreasure|MetaRegion|MetaBuilding|MetaUnlock|MetaStar|StarCurrency|MetaData|MetaConfig|MetaProgress|MetaReward|MetaXp|MetaCurrency|MetaObject|\.Meta\.)',re.I)
           for im,types in wanted.items():
            for tn,tr in types:
             if ignore.search(tn):continue
@@ -110,21 +110,76 @@ jobs:
             fields=[name(struct.unpack_from('<I',md,F+fi*12)[0]) for fi in range(tr[8],tr[8]+(tr[17]&65535)) if 0<=fi<FS//12]
             if focus.search(tn) or any(focus.search(r['method']) for r in ms):
              print('META_TYPE',json.dumps({'image':im,'type':tn,'fields':[f for f in fields if not f.startswith('__')],'methods':[[r['method'],r['rva'],r['parameters']] for r in ms if not ignore.search(r['method']) and not re.match('add_|remove_',r['method'])]},separators=(',',':')))
-          # first pass focuses logic rather than generated async/UI glue and avoids excessive disassembly logs.
+          target={
+           "WheelSpinResolver": ["Resolve","IsEligible"],
+           "WheelLevelController": ["ProcessSpin","AdvanceLevel","HasActiveSegments","InitLevel"],
+           "LuckyWheelRunController": ["ProcessSpin","BurnLeftoverSpinTokens"],
+           "LuckyWheelQuestPool": ["TryDrawNextTask","TryDrawFromRemaining","PickDifficultyWithRemaining","ResetDrawState","OnProgressRegistered","ClaimReward"],
+           "LuckyWheelProbabilityRows":["DistributePercents","Build"],
+           "DiggingStageState":["Index","get_CellCount"],
+           "DiggingStageBuilder":["ComputeShuffleSeed","GenerateNonZeroSeed","InBounds","RandomStartWithMargin","PlaceHiddenObject","TryCollectIndices","PlaceElements","PlaceJsonElements","ApplyHitCounts","InitializeNormalCells"],
+           "DiggingStageController":["TryTapCell","AreAllCellsOpened","AreAllObjectsFound","TryMarkHiddenObjectFound"],
+           "DiggingMoleResolver":["WalkMoleLine","ProcessMoleLine","ResolveChain"],
+           "DiggingTokenProcessor":["TrySpend","EnsureAtLeast","AddTokens"],
+           "DiggingStageAwardController":["ClaimStageReward","ValidatePendingReward","ApplyStageAward"],
+           "EndlessTreasureActiveEventResolver":["NextIndex","ResolveByIndex"],
+           "EndlessTreasureClaimCoordinator":["ApplyStepProgress","GetPendingMilestoneRewardIndex","TryClaimCurrentMilestoneReward"],
+           "EndlessTreasureStepClaimFinalizer":["FinalizeStepClaim"],
+           "EndlessTreasurePhaseState":["BeginStage","get_StageNum","get_PhaseNum"],
+           "MetaUnlockGate":["get_IsUnlocked","get_IsPrewarmReached"],
+           "SegmentRuntimeState":["Deactivate","Reset"]
+          }
+          # Native arithmetic/state leaves exercised without invoking the whole original runtime.
+          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
+          from unicorn.arm_const import *
+          B=0x11000000; OBJ=B+0x1000; STOP=B+0xf000
+          def probe(start,end,regs,fields):
+           u=Uc(UC_ARCH_ARM,UC_MODE_ARM)
+           for p in range(start&~4095,((end-1)&~4095)+4096,4096):
+            u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096])
+           u.mem_map(B,0x10000);u.reg_write(UC_ARM_REG_SP,B+0xe000);u.reg_write(UC_ARM_REG_LR,STOP)
+           for r,n in regs.items():u.reg_write(r,n&0xffffffff)
+           for p,n in fields.items():u.mem_write(p,struct.pack('<I',n&0xffffffff))
+           u.emu_start(start,STOP,count=300)
+           assert u.reg_read(UC_ARM_REG_PC)==STOP,(hex(start),hex(u.reg_read(UC_ARM_REG_PC)))
+           return u
+          def rd(u,p):return struct.unpack('<I',u.mem_read(p,4))[0]
+          def rr(u,r):return u.reg_read(r)&0xffffffff
           for r in records:
-           tn=r['type'];mn=r['method'];a=int(r['rva'],16)
+           tn=r['type'];mn=r['method'];a=int(r['rva'],16);key=tn.split('.')[-1]
            if not a or ignore.search(tn) or ignore.search(mn):continue
-           if not focus.search(tn) or re.search(r'View|Presenter|Animation|Binder|Installer|Payload|Factory|ConfigProvider|Cheat|Notifier|Tutorial|\.Abstractions?\.|Widget|Notification|^<',tn) or re.match(r'add_|remove_|get_|set_|\.ctor|\.cctor',mn):continue
            i=bisect.bisect_right(starts,a)
            if i>=len(starts):continue
            b=starts[i]
-           if b-a<4 or b-a>0xc00:continue
+           if b-a<4:continue
+           # Expanded Meta and treasure owners; method identity and call summary only.
+           if ('.Meta.' in tn or 'EndlessTreasure' in tn) and not re.search(r'View|Presenter|Formatter|Installer|Config|Payload|Widget|Window|Abstractions?\.|Animation|Notification|^<',tn,re.I):
+            if not re.match('add_|remove_|get_|set_|\.ctor|\.cctor',mn) and b-a<=0x2000:
+             ins=instructions(a,b)
+             calls=[[hex(x.address),x.op_str,names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str)]
+             print('META_EXPANDED',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'calls':calls},separators=(',',':')))
+           if mn not in target.get(key,[]):continue
            ins=instructions(a,b)
-           calls=[[hex(x.address),x.op_str,names_at(int(x.op_str[1:],16))] for x in ins if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str)]
-           print('META_METHOD',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'params':r['parameters'],'calls':calls},separators=(',',':')))
-           if re.search(r'Generate|Random|Choose|Select|Weight|CanBuild|CanDig|CanSpin|Cost|Price|Calculate|GetReward|GetProgress|TrySpend|TryClaim|Advance|Complete|Unlock',mn,re.I):
-            # Only compact numeric control flow, no vendor files or raw instructions.
-            facts=[[hex(x.address),x.mnemonic,x.op_str] for x in ins if x.mnemonic in ('cmp','cmn','tst','teq','vcmp.f32','vcmp.f64','vadd.f32','vsub.f32','vmul.f32','vdiv.f32','vcmpe.f32','vcvt.s32.f32','vcvt.f32.s32') or (x.mnemonic.startswith(('mov','add','sub','mul','rsb','and','orr','bic','lsl','asr','lsr','str','ldr')) and re.search(r'#(?:0x[0-9a-f]+|[0-9]+)',x.op_str))]
-            if len(facts)<=45:print('META_NUMERIC',json.dumps({'type':tn,'method':mn,'a':hex(a),'facts':facts},separators=(',',':')))
-          print('PASS_SHA_PINNED_META_CATALOG')
+           # Bounded numeric field accesses, comparisons, conditions, RNG calls and control flow; no byte dump.
+           facts=[[hex(x.address),x.mnemonic,x.op_str,names_at(int(x.op_str[1:],16)) if x.mnemonic.startswith('b') and re.fullmatch(r'#0x[0-9a-f]+',x.op_str) else []] for x in ins if x.mnemonic.startswith(('b','cmp','cmn','tst','teq','v','mov','add','sub','mul','rsb','and','orr','bic','eor','lsl','asr','lsr','ux','str','ldr'))]
+           print('META_FOCUS',json.dumps({'type':tn,'method':mn,'a':hex(a),'b':hex(b),'facts':facts},separators=(',',':')))
+          # Verify exact small arithmetic kernels with matrix results; record independent expectations in later report.
+          # Use actual method pointer lookup, not guessed offsets.
+          def lookup(ty,mn):
+           a={int(r['rva'],16) for r in records if r['type'].endswith('.'+ty) and r['method']==mn and int(r['rva'],16)}
+           assert len(a)==1,(ty,mn,a)
+           a=a.pop();return a,starts[bisect.bisect_right(starts,a)]
+          import itertools
+          for ty,mn in [('DiggingStageState','Index'),('DiggingStageState','get_CellCount'),('DiggingStageBuilder','InBounds'),('SegmentRuntimeState','Deactivate'),('SegmentRuntimeState','Reset')]:
+           a,b=lookup(ty,mn);print('META_LEAF',ty,mn,hex(a),hex(b))
+          # Native model-free state flag test with fixed object storage, after inspecting exact class ABI.
+          for method,expected in [('Deactivate',0),('Reset',1)]:
+           a,b=lookup('SegmentRuntimeState',method);rows=[]
+           for prior in (0,1):
+            u=probe(a,b,{UC_ARM_REG_R0:OBJ},{OBJ+12:prior})
+            val=rd(u,OBJ+12)&255
+            assert val==expected,(method,prior,val)
+            rows.append([prior,val])
+           print('META_NATIVE_SEGMENT',json.dumps({'method':method,'rows':rows},separators=(',',':')))
+          print('PASS_META_FOCUSED')
           PY

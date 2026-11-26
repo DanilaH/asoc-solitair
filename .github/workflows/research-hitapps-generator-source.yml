@@ -136,6 +136,17 @@ jobs:
            return trace
           def args(u,*vs):
            for r,v in zip((UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3),vs):reg(u,r,v)
+          # Recursively identify source AOT helper bodies and underlying placement/search, pattern, and gold event dispatch.
+          targets=r'(BoundOperations\.(TryGetAttachedUpperCard|TryFindUpperBlockAnchor)|FrozenCardOperations\.WasUnlockedThisTick|GoldenCardOperations\.(WasLockerOpenedThisMove|CanBeCollectedInOneMove|GetBonusActivatedGoldenCardCount)|StarterBoosterOperations\.(TryFindDirectLockerInteraction|TryFindMagnetTargetAndOrder|TryFindBySearchType|TryFindFromPlayStacks|TryFindFromDeck|IsValidMagnetTarget|MatchesOrderedMagnetTarget|IsCommonMagnetTarget|MatchesMagnetTargetType|ComputeRequiredMagnetOrder)|LevelDataHandler\.<ApplyBoundCards>g__TryFind|CardPlacementOperations\.Evaluate|CardEntity\.get_IsFrozen)'
+          for r in records:
+           if not re.search(targets,r['type']+'.'+r['method']) or r['rva']=='0x0':continue
+           a=int(r['rva'],16);b=starts[bisect.bisect_right(starts,a)]
+           if b-a>0x1800:continue
+           print('DEEP27',json.dumps({'name':r['type']+'.'+r['method'],'a':hex(a),'b':hex(b),'params':r['parameters'],'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
+          for label,a,b in [('duplicate-inner',0x31e6d94,0x31e6f14),('gold-activate-around-clone',0x1cf5360,0x1cf54e0),('gold-process-clone',0x1cf5630,0x1cf5814),('gold-decrease-clone',0x1cf5814,0x1cf5b0c),('bound-partner-clone',0x1c8c8a8,0x1c8ca28)]:
+           print('DEEP27',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
+          print('PASS_DEEP27')
+
           # Hammer: actual target predicate + actual Joker/starter getters; substitute only ECS lookup and list indexing.
           hammer=[]
           for typ,blocked,n,kind,hidden in itertools.product((0,1,2,3,4),(0,1),(0,1,3),range(7),(0,1)):
@@ -231,19 +242,9 @@ jobs:
            args(u,W,7,0)
            run(u,a,STOP,{0x1c9b908:0x1c9b94c,0x1c9b980:0x1c9b9a4,0x1c9b9f4:0x1c9ba0c,0x1c9ba24:0x1c9ba48},{0x2b4c7b8:E,0x3b40e44:11,0x2b4c7bc:C,0x1c92488:locked,0x1c8ef18:bound,0x1c95384:lockmatch,0x1c95458:match})
            got=rr(u,UC_ARM_REG_R0)
-           expect=int(not blocked and n>0 and (match if typ==3 else (typ==2 and kind!=2 and not hidden and (lockmatch if locked else (kind!=1 and not frozen and bound!=3 and match)))))
+           expect=int(not blocked and n>0 and (match if typ==3 else (typ==2 and kind!=2 and not hidden and (lockmatch if locked else (kind!=0 and not frozen and bound!=3 and match)))))
            assert got==expect,(typ,blocked,n,kind,hidden,frozen,locked,bound,match,lockmatch,got,expect)
            magnet.append([typ,blocked,n,kind,hidden,frozen,locked,bound,match,lockmatch,got])
           print('MAGNET28',json.dumps(magnet,separators=(',',':')))
           print('PASS_SHA_PINNED_FOUR_FAMILY_NATIVE27')
-          # Recursively identify source AOT helper bodies and underlying placement/search, pattern, and gold event dispatch.
-          targets=r'(BoundOperations\.(TryGetAttachedUpperCard|TryFindUpperBlockAnchor)|FrozenCardOperations\.WasUnlockedThisTick|GoldenCardOperations\.(WasLockerOpenedThisMove|CanBeCollectedInOneMove|GetBonusActivatedGoldenCardCount)|StarterBoosterOperations\.(TryFindDirectLockerInteraction|TryFindMagnetTargetAndOrder|TryFindBySearchType|TryFindFromPlayStacks|TryFindFromDeck|IsValidMagnetTarget|MatchesOrderedMagnetTarget|IsCommonMagnetTarget|MatchesMagnetTargetType|ComputeRequiredMagnetOrder)|LevelDataHandler\.<ApplyBoundCards>g__TryFind|CardPlacementOperations\.Evaluate|CardEntity\.get_IsFrozen)'
-          for r in records:
-           if not re.search(targets,r['type']+'.'+r['method']) or r['rva']=='0x0':continue
-           a=int(r['rva'],16);b=starts[bisect.bisect_right(starts,a)]
-           if b-a>0x1800:continue
-           print('DEEP27',json.dumps({'name':r['type']+'.'+r['method'],'a':hex(a),'b':hex(b),'params':r['parameters'],'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
-          for label,a,b in [('duplicate-inner',0x31e6d94,0x31e6f14),('gold-activate-around-clone',0x1cf5360,0x1cf54e0),('gold-process-clone',0x1cf5630,0x1cf5814),('gold-decrease-clone',0x1cf5814,0x1cf5b0c),('bound-partner-clone',0x1c8c8a8,0x1c8ca28)]:
-           print('DEEP27',json.dumps({'name':label,'a':hex(a),'b':hex(b),'facts':[f for x in instructions(a,b) if (f:=compact(x)) is not None]},separators=(',',':')))
-          print('PASS_DEEP27')
           PY

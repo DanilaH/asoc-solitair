@@ -1,0 +1,18 @@
+# Unico — candidate source investigation and consumer audit 27.11.2026
+
+Source work [PR222](https://github.com/DanilaH/asoc-solitair/pull/222). All Unico source families retained, no original parity promotion until trusted source and behavior evidence. Read the prior S3 observation, provenance and current crosswalk in kit research. Exact consumer baseline PR216 89feea96e4e1355679f4763e1d435f1afa2f2d4a; docs branch stacked on commerce research, not a runtime merge.
+
+## P17 Magnet
+Existing tools/content/unico-magnet-trial.ts only handles Rules3 and a buried face-up waste card, one accepted move, selected foundation, separate attempt receipt and Undo. This is PRODUCT_ADAPTED, not original. Actual use not observed in S3. Reconstruct candidate/original source pool, target eligibility, number/order of cards, hidden-card effects, move and resource accounting, cancellation, completion and Undo before choosing source-shaped implementation. Rules4 lock/freeze/bound/ordered/half-card state and historical saves need independent oracle. Do not merge Magnet with Hitapps starter or AZUR Joker. Retain P17 even while publisher trust is blocked.
+
+## P29 Daily and Fortune
+Own 28 authored date-indexed deals and fixed daily layout are not the original. S3 changed exposed layout and budget after failure, same topics, no rescue observed. Keep saved date/deal stable on relaunch; separately research source retry generator/budget and allow certified own alternatives only after owner policy and independent solver. Fortune's 3 slots/4,6,10 in trial are own numbers. Need pool, selection/animation, reward type, free/second RV/other attempts, timing/day persistence and receipt. Do not conflate Fortune with AZUR Daily Bonus or daily puzzle. Build receipt-safe test state, not a fabricated source default.
+
+## P21 Coffee
+Current r4 actual path src/main.ts::offerPause -> interstitial ads-break, newly saved eligible action, settled field, painted notice, actual readiness, shared shown-clock cooldown; applies Campaign and Daily and supports repeats. Existing transport tests three per mode, physical SDK remains open. S3 +3 after two Daily pauses; not proof of SDK earned or opt-in. Do not add a second placement/UI or mint coins on request. Recover source timer, trigger, ad kind, completion callback and cap. If product owner chooses compensation, make a distinct verified grant contract with unique saved event identity, preserving board and no-fill/kill/late callback behavior. Legacy voluntary +10 preview not original.
+
+## P30 / P20 / P25 / P04
+Win Streak and Task Streak independent, actual reset/threshold/reward unknown. Do not substitute Hitapps policy or existing 5-win milestone. Source Double It CTA observed, one S3 base50 and 7 leftover moves/+14 sample does not prove exact formula. Existing x2/other reward policies and current economy unchanged; map source multiplier component after evidence. Theme video/Halloween seen, own 24h amber is adaptation. Source unlock/equip/permanent rights unknown; use own art and receipt safety. Loss dialog +10/1500 or video is one S3 observation, current +10/120 approved policy unaffected. VIP, ten public iOS titles and fail/difficulty variants stay in P25, IAP OFF. Autumn tournament and category reveal are explicitly unresolved candidates, not silently omitted or falsely declared separate original systems.
+
+## Acceptance
+Original installed APK or publisher signing trust, actual source method identity and bounded native tests, video/device lifecycle, source-vs-product matrix. Current research is not implementation acceptance. Preserve all 115 IDs/38 packets/15 commerce families and prior handoffs. No original protected assets/code or live price changes.

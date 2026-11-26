@@ -138,102 +138,59 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # Bind puzzle count rounding to exact ELF imported symbol.
+          # Gold placement and pre-verdict inventory: bounded field and call facts.
           from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
-          from capstone.arm import ARM_OP_IMM,ARM_OP_MEM
-          from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
-          from unicorn.arm_const import *
-          import itertools,math
+          from capstone.arm import ARM_OP_MEM,ARM_OP_IMM
           dis=Cs(CS_ARCH_ARM,CS_MODE_ARM);dis.detail=True
           def ins(a,b):return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          sh=struct.unpack_from('<I',e,32)[0];ents,n,shstr=struct.unpack_from('<HHH',e,46)
-          sections=[struct.unpack_from('<10I',e,sh+i*ents) for i in range(n)]
-          st=sections[shstr];strings=e[st[4]:st[4]+st[5]]
-          def cstr(data,i):return data[i:data.index(b'\0',i)].decode('utf-8','replace')
-          byname={cstr(strings,x[0]):x for x in sections}
-          ds=byname['.dynsym'];dt=sections[ds[6]];strs=e[dt[4]:dt[4]+dt[5]]
-          rel={}
-          for s in sections:
-           if s[1] not in (4,9) or s[6]!=sections.index(ds):continue
-           for pos in range(s[4],s[4]+s[5],s[9]):
-            at,info=struct.unpack_from('<II',e,pos);si=info>>8
-            row=struct.unpack_from('<IIIBBH',e,ds[4]+si*ds[9]);rel[at]=cstr(strs,row[0])
-          a=0x6a168b0;body=ins(a,a+16);ip=None;got=None
-          for x in body:
-           op=x.operands
-           if x.mnemonic=='add' and len(op)==3 and x.reg_name(op[0].reg)=='ip' and op[2].type==ARM_OP_IMM:
-            src=x.reg_name(op[1].reg)
-            if src=='pc':ip=x.address+8+op[2].imm
-            elif src=='ip' and ip is not None:ip+=op[2].imm
-           elif x.mnemonic.startswith('ldr') and len(op)==2 and op[1].type==ARM_OP_MEM and x.reg_name(op[0].reg)=='pc':
-            if x.reg_name(op[1].mem.base)=='ip' and ip is not None:got=(ip+op[1].mem.disp)&0xffffffff;break
-          print('PUZZLE_IMPORT17',json.dumps({'plt':hex(a),'got':hex(got) if got else None,'symbol':rel.get(got),'ops':[[x.mnemonic,x.op_str] for x in body]}))
-          assert rel.get(got) in ('ceilf','floorf','roundf','truncf','rintf'),rel.get(got)
-          symbol=rel[got]
-          B=0x11000000;STOP=B+0xf0000;LIST=B+0x1000;ARRAY=B+0x2000;META=B+0x3000;MTYPE=B+0x4000;RNG=B+0x5000
-          def wr(u,p,v):u.mem_write(p,struct.pack('<I',v&0xffffffff))
-          def rd(u,p):return struct.unpack('<I',bytes(u.mem_read(p,4)))[0]
-          def map_range(u,a,b,pages):
-           for p in range(a&~4095,((b+4095)//4096)*4096,4096):
-            if p not in pages:u.mem_map(p,4096);u.mem_write(p,e[off(p,4096):off(p,4096)+4096]);pages.add(p)
-          def setup():
-           u=Uc(UC_ARCH_ARM,UC_MODE_ARM);u.mem_map(B,0x100000);u.reg_write(UC_ARM_REG_SP,B+0xe0000);u.reg_write(UC_ARM_REG_LR,STOP)
-           u.reg_write(UC_ARM_REG_FPEXC,0x40000000)
-           return u
-          def f32bits(x):return struct.unpack('<I',struct.pack('<f',x))[0]
-          def frombits(x):return struct.unpack('<f',struct.pack('<I',x))[0]
-          roundfn={'ceilf':math.ceil,'floorf':math.floor,'roundf':lambda x:math.floor(x+.5) if x>=0 else math.ceil(x-.5),'truncf':math.trunc,'rintf':round}[symbol]
-          rows=[]
-          for stock,already in itertools.product(range(9),repeat=2):
-           u=setup();pages=set();a,b=0x1d3acd4,0x1d3ad10
-           map_range(u,a,b,pages);map_range(u,0x2b4a9a4,0x2b4a9b4,pages)
-           u.reg_write(UC_ARM_REG_R4,stock);u.reg_write(UC_ARM_REG_R8,already)
-           def hk(uc,pc,size,user):
-            if pc==0x2b4a9a4:
-             x=frombits(uc.reg_read(UC_ARM_REG_R0))
-             uc.reg_write(UC_ARM_REG_R0,f32bits(roundfn(x)));uc.reg_write(UC_ARM_REG_PC,uc.reg_read(UC_ARM_REG_LR))
-            elif not a<=pc<b:raise RuntimeError('unexpected count target '+hex(pc))
-           u.hook_add(UC_HOOK_CODE,hk);u.emu_start(a,b,count=80)
-           assert u.reg_read(UC_ARM_REG_PC)==b
-           raw=u.reg_read(UC_ARM_REG_R5);result=raw if raw<2**31 else raw-2**32
-           assert result==roundfn((stock+already)*.5)-already,(stock,already,result)
-           rows.append([stock,already,result])
-          print('PUZZLE_COUNTS17',json.dumps({'symbol':symbol,'cases':len(rows),'rows':rows},separators=(',',':')))
-          # Original generic shuffle, mocked only managed list indexing and supplied RNG draws.
-          shuffle_rows=[]
-          for n,variant in itertools.product((0,1,2,3,5,10),(0,1,2)):
-           u=setup();pages=set();a,b=0x2d6a108,0x2d6a28c
-           map_range(u,a,b,pages)
-           for target in (0x1c6e650,0x3cc7610,0x3cc765c):map_range(u,target,target+4,pages)
-           wr(u,LIST+8,ARRAY);wr(u,LIST+12,n);wr(u,ARRAY+12,n)
-           for i in range(n):wr(u,ARRAY+16+4*i,i+1)
-           wr(u,META+0x1c,MTYPE);wr(u,MTYPE+8,0);wr(u,MTYPE+0x10,0)
+          def m_end(a):return starts[bisect.bisect_right(starts,a)]
+          FD,FDS=struct.unpack_from('<II',md,64);DV,DVS=struct.unpack_from('<II',md,72)
+          defs={ix:(ty,di) for ix,ty,di in (struct.unpack_from('<iii',md,FD+i) for i in range(0,FDS,12))}
+          fieldtab=114085648;assert word(0x6bcb3d8)==fieldtab
+          for im in ('CoreGameplay.dll','Game.Controllers.dll','Game.Services.Segmentation.dll'):
+           row=images[im]
+           for i in range(row[2],row[2]+row[3]):
+            tr=struct.unpack_from('<22I',md,T+i*88);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
+            if not re.search(r'GoldenCard|GoldRush|PlacementVerdict|PlacementCheck|MagnetSearch|StarterBooster|LockerType|KeyType|LevelType',tn):continue
+            count=tr[17]&65535
+            if count>70:continue
+            try: offsets=struct.unpack_from('<%di'%count,e,off(word(fieldtab+4*i),4*count)) if count else []
+            except (ValueError,struct.error):continue
+            data=[]
+            for k in range(count):
+             ix=tr[8]+k;dv=defs.get(ix)
+             data.append([name(struct.unpack_from('<I',md,F+12*ix)[0]),offsets[k],None if not dv or not 0<=dv[1]<DVS else [dv[0],md[DV+dv[1]:DV+dv[1]+4].hex()]])
+            if data:print('SCHEMA18',json.dumps({'type':tn,'fields':data},separators=(',',':')))
+          # Selected method registrations and direct call graph; don't export whole bodies.
+          for a,rs in sorted(entries.items()):
+           for r in rs:
+            nm=r['type']+'.'+r['method']
+            if not (re.search(r'GoldenCardLevel|GoldenCardGeneration|GoldenCardBoard|GoldRush.*Config',r['type']) or r['method'] in ('ResolvePlayStackVerdict','ResolveHomeVerdict','GetTopTargetOrder','CanConsiderHomePlacement','TryGetActiveLocker')):continue
+            end=m_end(a)
+            if end-a>30000:continue
+            ops=ins(a,end)
+            calls=[];gates=[];writes=[]
+            for x in ops:
+             if x.mnemonic=='bl' and x.operands[0].type==ARM_OP_IMM:
+              dst=x.operands[0].imm
+              if dst not in (0x1a2677c,0x1a26a2c,0x1a26a30,0x1a268f0,0x1a26718,0x1a268f4,0x1a26a20):calls.append([hex(x.address),hex(dst),[z['type']+'.'+z['method'] for z in entries.get(dst,[])]])
+             if x.mnemonic in ('cmp','cmn','tst') and x.operands[-1].type==ARM_OP_IMM and x.operands[-1].imm!=0:gates.append([hex(x.address),x.mnemonic,x.op_str])
+             if x.mnemonic.startswith('str') and any(o.type==ARM_OP_MEM and x.reg_name(o.mem.base) not in ('pc','sp') and 0<=o.mem.disp<=80 for o in x.operands):writes.append([hex(x.address),x.mnemonic,x.op_str])
+            print('GOLD18',json.dumps({'name':nm,'a':hex(a),'b':hex(end),'params':r['parameters'],'calls':calls[:70],'gates':gates[:35],'writes':writes[:40]},separators=(',',':')))
+          for a,b,label in [(0x1c7dfc4,0x1c7e0f8,'play-verdict'),(0x1c7e0f8,0x1c7e23c,'home-verdict'),(0x1c7e23c,0x1c7e328,'top-order'),(0x1c82f10,0x1c82fe0,'gold-wrapper'),(0x1f3f788,0x1f3f880,'gold-actual-wrapper')]:
+           facts=[]
+           for x in ins(a,b):
+            if x.mnemonic.startswith(('cmp','tst','cmn','b')) or x.mnemonic.startswith(('ldr','str','mov','add','sub','and','orr','ux','sx')) and any(o.type==ARM_OP_IMM or o.type==ARM_OP_MEM and x.reg_name(o.mem.base) not in ('pc','sp') for o in x.operands):
+             facts.append([hex(x.address),x.mnemonic,x.op_str])
+           print('ANCHOR18',json.dumps({'label':label,'facts':facts},separators=(',',':')))
+          # Bind source gold generator generic interface, no claim by name alone.
+          for a in (0x2d1ea1c,0x1f3f788):
+           end=a+0x180
            calls=[]
-           def hk(uc,pc,size,user):
-            if pc==0x1c6e650:
-             bound=uc.reg_read(UC_ARM_REG_R1)
-             assert uc.reg_read(UC_ARM_REG_R0)==RNG and bound>=2
-             draw=0 if variant==0 else bound-1 if variant==1 else (bound*3+1)%bound
-             calls.append(bound);uc.reg_write(UC_ARM_REG_R0,draw);uc.reg_write(UC_ARM_REG_PC,uc.reg_read(UC_ARM_REG_LR))
-            elif pc in (0x3cc7610,0x3cc765c):
-             assert uc.reg_read(UC_ARM_REG_R0)==LIST
-             index=uc.reg_read(UC_ARM_REG_R1);assert 0<=index<n
-             if pc==0x3cc7610:uc.reg_write(UC_ARM_REG_R0,rd(uc,ARRAY+16+4*index))
-             else:wr(uc,ARRAY+16+4*index,uc.reg_read(UC_ARM_REG_R2))
-             uc.reg_write(UC_ARM_REG_PC,uc.reg_read(UC_ARM_REG_LR))
-            elif not a<=pc<b:raise RuntimeError('unexpected shuffle target '+hex(pc))
-           u.reg_write(UC_ARM_REG_R0,LIST);u.reg_write(UC_ARM_REG_R1,RNG);u.reg_write(UC_ARM_REG_R2,1);u.reg_write(UC_ARM_REG_R3,META)
-           u.hook_add(UC_HOOK_CODE,hk);u.emu_start(a,STOP,count=5000)
-           assert u.reg_read(UC_ARM_REG_PC)==STOP
-           actual=[rd(u,ARRAY+16+4*i) for i in range(n)]
-           expected=list(range(1,n+1))
-           for k in range(n,1,-1):
-            j=0 if variant==0 else k-1 if variant==1 else (k*3+1)%k
-            expected[j],expected[k-1]=expected[k-1],expected[j]
-           assert actual==expected and calls==list(range(n,1,-1)),(n,variant,actual,calls)
-           shuffle_rows.append([n,variant,calls,actual])
-          print('PUZZLE_SHUFFLE17',json.dumps(shuffle_rows,separators=(',',':')))
-          for label,a,b in [('puzzle-initial-lists',0x1d3aa58,0x1d3aaf4),('puzzle-exchange-loop',0x1d3ae10,0x1d3ae6c),('puzzle-count-clamps',0x1d3ad7c,0x1d3adc4)]:
-           print('PUZZLE_FACT17',json.dumps({'label':label,'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in ins(a,b) if x.mnemonic.startswith(('ldr','str','cmp','tst','b','mov','add','sub'))]},separators=(',',':')))
-          print('PASS_SHA_PINNED_PUZZLE17')
+           for x in ins(a,end):
+            if x.mnemonic=='bl':
+             dst=x.operands[0].imm
+             calls.append([hex(x.address),hex(dst),[z['type']+'.'+z['method'] for z in entries.get(dst,[])]])
+           print('CALLEES18',hex(a),json.dumps(calls,separators=(',',':')))
+          print('PASS_SHA_PINNED_GOLD_VERDICT_INVENTORY18')
           PY

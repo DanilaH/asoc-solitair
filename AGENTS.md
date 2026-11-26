@@ -1,5 +1,10 @@
 # Project contract
 
+## Hitapps commerce and rewarded source handoff · 27 November 2026
+
+Use [the commerce brief](docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md) and [source research PR157](https://github.com/DanilaH/mini-games-kit/pull/157) for P20/P21/P25. Five families including Buy All, purchase pins, recent-payer RV and ceilf streak-inclusive win bonus. Two successful static source passes and 4976 own-model assertions, no original executed rows. IAP remains OFF; no implicit balance or ads changes. Reconcile developer PR216 with all research handoff branches; retain 115 IDs / 38 packets / 15 commerce families and runtime pin.
+
+
 ## P32 meta rewards source handoff · 27 November 2026
 
 Use [the new P32 brief](docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md) and [pinned evidence](https://github.com/DanilaH/mini-games-kit/blob/10cc5a22520912ea26069817d1f4ad52293fb69f/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md) for Digging, Lucky Wheel, Endless Treasure, Regions. 1122 bounded native comparisons; no runtime or activation change. Reconcile developer PR216 Rules4 with research PR217 and this docs-only branch. 115 sources, 38 packets, 15 commerce families and runtime kit pin retained. Do not activate IAP or claim original device/remote parity.

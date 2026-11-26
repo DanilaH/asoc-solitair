@@ -76,7 +76,7 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "ads",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Native per-level/per-difficulty trigger and cap guards exist; in-game actual placement frequency from live remote config UNKNOWN"
+      "knownLimit": "Native per-level/per-difficulty trigger and cap guards exist; in-game actual placement frequency from live remote config UNKNOWN 27 Nov: Do not conflate rewarded payer overrides with in-level interstitial policy; ordinary and payer RV buckets separate; existing interstitial limits unchanged. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-stock-restore",
@@ -94,7 +94,7 @@
       "evidenceTier": "METADATA",
       "surface": "monetization",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Segment/cooldown/cap product config names present; exact active revive grant offers/click behavior not observed 26 Nov: exact revive amount min(cap,5*ceilf(f32(coef*remainingCards/5))) (270 native rows); compiled gates min-level, remaining strict min, daily shown count, cooldown bypass before first purchase, separate policy. MovesOfferSaveData and ExtraMovesBubbleSaveData are distinct persisted pending-purchase rights; confirmed positive bubble can apply on fresh/restart/restored level, CurrentSteps+=extra and LoseReason=0, read/mark/reset separate (82 native rows). Ordinary leftover moves carryover not proved; original runtime transaction and active values unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md"
+      "knownLimit": "Segment/cooldown/cap product config names present; exact active revive grant offers/click behavior not observed 26 Nov: exact revive amount min(cap,5*ceilf(f32(coef*remainingCards/5))) (270 native rows); compiled gates min-level, remaining strict min, daily shown count, cooldown bypass before first purchase, separate policy. MovesOfferSaveData and ExtraMovesBubbleSaveData are distinct persisted pending-purchase rights; confirmed positive bubble can apply on fresh/restart/restored level, CurrentSteps+=extra and LoseReason=0, read/mark/reset separate (82 native rows). Ordinary leftover moves carryover not proved; original runtime transaction and active values unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md 27 Nov: Recent payer rewarded placement policy separate from ordinary buckets and paywall segmentation; preserve 26 Nov native recovery evidence. Runtime/active values unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "azur-coin-moves",
@@ -325,10 +325,10 @@
       "id": "hitapps-piggy-bank",
       "name": "Hitapps accumulated purchasable piggy-bank rewards",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "S1 piggy bank UI/time and saved currency visible, actual IAP purchase fulfillment/refund unobserved"
+      "knownLimit": "S1 piggy bank UI/time and saved currency visible, actual IAP purchase fulfillment/refund unobserved 27 Nov: Separate min purchase/max fill, clamped accumulation, period activation cap and cycling, pinned rewards. Live values/settlement unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-lives",
@@ -352,10 +352,10 @@
       "id": "hitapps-rotating-offers",
       "name": "Hitapps starter/event/IAP/offer family and timed eligibility",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Native offer family configs/thresholds exist, exact real eligible offer triggers and payouts UNKNOWN"
+      "knownLimit": "Native offer family configs/thresholds exist, exact real eligible offer triggers and payouts UNKNOWN 27 Nov: Buy All subfeature: per-variant calendar, options snapshot, purchase pins, priority conditions and eligibility enum. Generic native bodies and live values unresolved. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "unico-win-and-task-streak",
@@ -451,28 +451,28 @@
       "id": "hitapps-birthday-offer",
       "name": "Hitapps BirthdayOffer contextual sale",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Offer name/config present; triggering conditions and products unknown"
+      "knownLimit": "Offer name/config present; triggering conditions and products unknown 27 Nov: Calendar editions, distinct show/cooldown/purchase state, priority selection, pins; no proven player-birthdate requirement. Live calendar unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-decoy-offer",
       "name": "Hitapps DecoyOffer contextual sale",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Offer config present; real offer UI and eligibility unknown"
+      "knownLimit": "Offer config present; real offer UI and eligibility unknown 27 Nov: Strict min-level/fresh notPaid gate, show cap, schedule, prioritized eligible content and pins. Prices and full lifecycle unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-starter-offer",
       "name": "Hitapps StarterOffer first-time offer",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Config present; actual pricing, eligibility and available IAP unknown"
+      "knownLimit": "Config present; actual pricing, eligibility and available IAP unknown 27 Nov: Level interval, fresh vs active payer gate, offer-type scan/loop, content priority, pins. Live pricing and lifecycle unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-meta-prewarm",
@@ -496,19 +496,19 @@
       "id": "hitapps-win-rewarded-offer",
       "name": "Hitapps WinScreenRvReward offer policy",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "monetization",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Config exists; actual payout formula/offer trigger and live activity unknown"
+      "knownLimit": "Config exists; actual payout formula/offer trigger and live activity unknown 27 Nov: Static exact total ceilf(f32(multiplier)*f32(level+streak)), extra=total-base; separate recent-payer override (seven placements), ordinary bucket and watch settlement. Live config/Android unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-inapp-shop",
       "name": "Hitapps shop and purchasable booster/soft currency offers",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "ShopConfig/SoftCurrencyConfig/StarterOfferConfig compiled; KYC/store prices and activation unknown"
+      "knownLimit": "ShopConfig/SoftCurrencyConfig/StarterOfferConfig compiled; KYC/store prices and activation unknown 27 Nov: Offer purchase pins, product+screen show accounting, NoAds restore/revoke/receipt metadata. No actual store fulfillment/refunds tested. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-ingame-banner",

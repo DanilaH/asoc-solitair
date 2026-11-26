@@ -179,9 +179,9 @@
   },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/10cc5a22520912ea26069817d1f4ad52293fb69f/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "0d55a933096fd1bc3166ec2bd567a7c3eb066f07",
-  "sourceInventoryRef": "10cc5a22520912ea26069817d1f4ad52293fb69f",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/e620b8f6f14ddaf9a486c5785b00a9b4329202fa/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "68450cdf575a6de47cf3db784f7a31343359610f",
+  "sourceInventoryRef": "e620b8f6f14ddaf9a486c5785b00a9b4329202fa",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
@@ -306,8 +306,8 @@
     {
       "id": "hitapps-adbreak",
       "status": "ROADMAPPED",
-      "currentImplementation": "Issue #210 uses one repeatable AdsBreak/Coffee placement in campaign and eligible Daily in the C8 SDK test build. It checks the saved board and shared fullscreen clock at a safe boundary. Remaining move percentage and difficulty caps are optional config; active source values are unknown. See docs/porting/P21_AD_PLACEMENTS.md. Device impression and ILRD are open.",
-      "nextAction": "Prototype in-level configurable opportunities/cooldowns with valid SDK impression attribution Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Current source does not prove the in-level live placement; issue #80 prevents treating attempted show as actual display.",
+      "currentImplementation": "Issue #210 uses one repeatable AdsBreak/Coffee placement in campaign and eligible Daily in the C8 SDK test build. It checks the saved board and shared fullscreen clock at a safe boundary. Remaining move percentage and difficulty caps are optional config; active source values are unknown. See docs/porting/P21_AD_PLACEMENTS.md. Device impression and ILRD are open. 27 Nov source delta (baseline PR216): Payer RV override is not an interstitial cap; preserve current AdsBreak/Coffee policy.",
+      "nextAction": "Prototype in-level configurable opportunities/cooldowns with valid SDK impression attribution Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Current source does not prove the in-level live placement; issue #80 prevents treating attempted show as actual display. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E2"
     },
     {
@@ -342,8 +342,8 @@
     {
       "id": "hitapps-revive-offers",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore. Continue после истёкшего Unlimited сохраняет согласованные фазу и бюджет Undo; codec восстанавливает уже записанные active/parked состояния.",
-      "nextAction": "Compare coin/rewarded/segment options and save/device flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Implement separate persisted pending revive/bubble entitlement and adaptive amount+show/cooldown policy as versioned options; keep +10 and #210 earned/coin proof differences until own policy approved; ordinary leftover carryover unproved. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
+      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore. Continue после истёкшего Unlimited сохраняет согласованные фазу и бюджет Undo; codec восстанавливает уже записанные active/parked состояния. 27 Nov source delta (baseline PR216): Payer RV override and recovery-pending rights are separate; preserve existing recovery handoff.",
+      "nextAction": "Compare coin/rewarded/segment options and save/device flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Implement separate persisted pending revive/bubble entitlement and adaptive amount+show/cooldown policy as versioned options; keep +10 and #210 earned/coin proof differences until own policy approved; ordinary leftover carryover unproved. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E1",
       "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md",
       "evidenceRefs": [
@@ -682,8 +682,8 @@
     {
       "id": "hitapps-piggy-bank",
       "status": "BLOCKED",
-      "currentImplementation": "No purchase-backed bank and store IAP policy not validated P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Verify legal supported Android store purchase/receipts/payout before feature spec E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "No purchase-backed bank and store IAP policy not validated P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): Single-cap/full-only review model differs from original min/max gates and period cycling.",
+      "nextAction": "Verify legal supported Android store purchase/receipts/payout before feature spec E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "reason": "Unverified available IAP/provider integration and legal payout for current target stores. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
       "stage": "E3"
     },
@@ -730,8 +730,8 @@
     {
       "id": "hitapps-rotating-offers",
       "status": "ROADMAPPED",
-      "currentImplementation": "No event-specific commercial offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Inventory eligible offers and verify store purchase capability before implementing any E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "No event-specific commercial offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): One-SKU rotation does not reproduce Buy All variants/options snapshots. Buy All retained as explicit subfeature.",
+      "nextAction": "Inventory eligible offers and verify store purchase capability before implementing any E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3"
     },
     {
@@ -867,24 +867,24 @@
     {
       "id": "hitapps-birthday-offer",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No birthday offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Verify actual trigger/privacy/eligibility and legal storefront payments before implementing E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "No birthday offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): Opt-in placeholder differs from source calendar editions and per-edition cooldown/show state.",
+      "nextAction": "Verify actual trigger/privacy/eligibility and legal storefront payments before implementing E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
     {
       "id": "hitapps-decoy-offer",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No decoy offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Inspect concrete source display/eligibility and product semantics; avoid guessing from class name E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "No decoy offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): Two-pack offline comparison differs from eligible-content priority and repeatable schedule.",
+      "nextAction": "Inspect concrete source display/eligibility and product semantics; avoid guessing from class name E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
     {
       "id": "hitapps-starter-offer",
       "status": "ROADMAPPED",
-      "currentImplementation": "Basic coin wallet and helper shop; no IAP starter bundle P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Define owner-approved first-play offer and legal store purchase contract E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "Basic coin wallet and helper shop; no IAP starter bundle P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): 72h trial differs from source start/finish level gates and optional offer loop.",
+      "nextAction": "Define owner-approved first-play offer and legal store purchase contract E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3"
     },
     {
@@ -906,15 +906,15 @@
     {
       "id": "hitapps-win-rewarded-offer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P20 opt-in preview has a separate flat +20 offer backed by an exact earned receipt. Source values remain unknown. See docs/porting/P20_REWARD_OFFERS.md.",
-      "nextAction": "Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
+      "currentImplementation": "P20 opt-in preview has a separate flat +20 offer backed by an exact earned receipt. Source values remain unknown. See docs/porting/P20_REWARD_OFFERS.md. 27 Nov source delta (baseline PR216): Flat +20 preview differs from original ceilf multiplier including streak; preserve existing approved balance and AZUR base-only variant.",
+      "nextAction": "Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E1"
     },
     {
       "id": "hitapps-inapp-shop",
       "status": "ROADMAPPED",
-      "currentImplementation": "Coin-priced hints/Undo/Joker; no original-style IAP/shop tiers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Separate soft-currency helper store vs IAP; verify actual store capabilities and payouts E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "Coin-priced hints/Undo/Joker; no original-style IAP/shop tiers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): Offline catalog/disabled checkout; add pinned original offer snapshot and show-counter identity to receipt policy.",
+      "nextAction": "Separate soft-currency helper store vs IAP; verify actual store capabilities and payouts E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3"
     },
     {
@@ -1689,5 +1689,29 @@
       "hitapps-endless-treasure"
     ],
     "consolidation": "docs-only on #217; reconcile developer #216 separately"
+  },
+  "commerceHandoff": {
+    "brief": "docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md",
+    "evidence": "https://github.com/DanilaH/mini-games-kit/blob/e620b8f6f14ddaf9a486c5785b00a9b4329202fa/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md",
+    "kitPR": 157,
+    "sourceCI": [
+      45885901789,
+      45886148828
+    ],
+    "consumerBaseline": "89feea96e4e1355679f4763e1d435f1afa2f2d4a",
+    "sourceIds": [
+      "hitapps-piggy-bank",
+      "hitapps-rotating-offers",
+      "hitapps-birthday-offer",
+      "hitapps-decoy-offer",
+      "hitapps-starter-offer",
+      "hitapps-win-rewarded-offer",
+      "hitapps-inapp-shop",
+      "hitapps-revive-offers",
+      "hitapps-adbreak"
+    ],
+    "ownAssertions": 4976,
+    "originalExecutedRows": 0,
+    "activation": "IAP_OFF; existing reward/ads policies unchanged"
   }
 }

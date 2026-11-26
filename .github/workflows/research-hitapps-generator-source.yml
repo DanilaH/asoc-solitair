@@ -138,67 +138,25 @@ jobs:
            if u&0x0f7f0000==0x051f0000 and w&0x0f7f0000==0x051f0000 and u&0xfffff000==w&0xfffff000:return True
            if u&0x0fef0000==0x028f0000 and w&0x0fef0000==0x028f0000 and u&0xfffff000==w&0xfffff000:return True
            return False
-          # Source arithmetic / special-state slice. Only private synthetic inputs.
-          from capstone import Cs, CS_ARCH_ARM, CS_MODE_ARM
+          # Bind ARM veneers to actual IL2CPP registrations. Leaf execution stays synthetic.
+          from capstone import Cs,CS_ARCH_ARM,CS_MODE_ARM
           from unicorn import Uc,UC_ARCH_ARM,UC_MODE_ARM,UC_HOOK_CODE
           from unicorn.arm_const import *
           dis=Cs(CS_ARCH_ARM,CS_MODE_ARM)
-          def instructions(a,b):
-           return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
-          def fact(a,b,label):
-           out=[]
-           for x in instructions(a,b):
-            m=x.mnemonic;p=x.op_str
-            if m.startswith(('cmp','cmn','tst','teq','b','v')) or (m.startswith(('ldr','str','and','orr','eor','bic','ubfx','uxth','mov','sub','add','rsb','lsl','lsr','asr')) and ('#' in p or m.startswith(('mov','orr','and','rsb')))):
-             out.append([hex(x.address),m,p])
-           print('FACT10',json.dumps({'label':label,'facts':out},separators=(',',':')))
-          # Narrow branch slices, no entire game methods or protected contents exported.
-          ranges=[
-           ('root-entry',0x1c7e4b8,0x1c7e568),
-           ('root-return',0x1c7e774,0x1c7e7a4),
-           ('root-compare',0x1c7e6c8,0x1c7e774),
-           ('root-top',0x1c7e5ec,0x1c7e638),
-           ('cut-list-setup',0x1d02ef0,0x1d02f8c),
-           ('cut-list-accept',0x1d03014,0x1d030a8),
-           ('play-gate-early',0x1c7d564,0x1c7d5d0),
-           ('play-source-flags',0x1c7d64c,0x1c7d728),
-           ('home-preflight',0x1c7d8f8,0x1c7d920),
-           ('home-empty-and-top',0x1c7d988,0x1c7da44),
-           ('home-check-result',0x1c7db4c,0x1c7db94),
-           ('easy-per-tier',0x22fe278,0x22fe2e4),
-           ('easy-thresholds',0x22fe3b8,0x22fe450),
-           ('easy-target',0x22fe338,0x22fe3b8),
-           ('tolerance-gate',0x1c79080,0x1c79130),
-           ('tolerance-literal',0x1c7918c,0x1c791b8),
-           ('pair-call-first',0x1d3b38c,0x1d3b3bc),
-           ('pair-call-second',0x1d3b5d4,0x1d3b608),
-           ('frozen-assign',0x1d38028,0x1d380c4),
-           ('bound-helper-accept',0x1d38738,0x1d387e4),
-           ('bound-assign',0x1d388b0,0x1d38990)]
-          for label,a,b in ranges:fact(a,b,label)
-          # Recover enum/default values and fields for feature pattern types.
-          FD,FDS=struct.unpack_from('<II',md,64);DV,DVS=struct.unpack_from('<II',md,72)
-          defs={ix:(ty,di) for ix,ty,di in (struct.unpack_from('<iii',md,FD+i) for i in range(0,FDS,12))}
-          fieldtab=114085648;assert word(0x6bcb3d8)==fieldtab
-          for im in ('CoreGameplay.dll','Game.Services.Segmentation.dll','Game.Services.EasyDeals.dll'):
-           row=images[im]
-           for i in range(row[2],row[2]+row[3]):
-            tr=struct.unpack_from('<22I',md,T+i*88);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
-            if not re.search(r'(FrozenCardPattern|FrozenCardData|BoundCardPattern|BoundPatternElement|LockerPattern|LockerData|PatternElement|EasyDealsConfig|EasyDealsResult|BoundCut|CutTarget|CardState|CardType|ContainerState|LevelType)$',tn):continue
-            n=tr[17]&65535
-            if not n or n>50:continue
-            try: offsets=struct.unpack_from('<%di'%n,e,off(word(fieldtab+i*4),4*n))
-            except (ValueError,struct.error):continue
-            fields=[]
-            for j in range(n):
-             ix=tr[8]+j;dv=defs.get(ix)
-             fields.append([name(struct.unpack_from('<I',md,F+ix*12)[0]),offsets[j],None if not dv or not 0<=dv[1]<DVS else [dv[0],md[DV+dv[1]:DV+dv[1]+4].hex()]])
-            print('SCHEMA10',json.dumps({'type':tn,'fields':fields},separators=(',',':')))
-          # Bind exact helper identities by scanning CodeGenModule registrations only.
-          # Only mapped names/RIDs emitted, never vendor binary.
-          want={0x1b78234,0x1b78244,0x2b4c824,0x1c92488,0x1c8e518,0x1c8e64c,0x1c8e738,0x38b4f94,0x1c8bf80}
+          def ins(a,b):return list(dis.disasm(e[off(a,b-a):off(a,b-a)+b-a],a))
+          def imm(w):return ((w>>4)&0xf000)|(w&0xfff)
+          targets=[0x1b78234,0x1b78244,0x2b4c824]
+          resolved={}
+          for a in targets:
+           w,x,y,z=[word(a+4*i) for i in range(4)]
+           if w&0xfff0f000==0xe300c000 and x&0xfff0f000==0xe340c000 and y==0xe08cc00f and z==0xe12fff1c:
+            resolved[a]=(a+16+imm(w)+(imm(x)<<16))&0xffffffff
+           elif w&0xff000000==0xea000000:
+            resolved[a]=a+8+4*(((w&0xffffff)^0x800000)-0x800000)
+           print('VENEER11',hex(a),hex(resolved[a]) if a in resolved else 'UNKNOWN',[[t.mnemonic,t.op_str] for t in ins(a,a+16)])
+          assert resolved.get(0x2b4c824)==0x5bea37c
           for im,row in images.items():
-           if not re.search(r'(mscorlib|System|CoreGameplay|UnityEngine.CoreModule|Unity.Mathematics)',im):continue
+           if im not in ('mscorlib.dll','System.dll','CoreGameplay.dll'):continue
            pos=e.find(im.encode()+b'\0')
            if pos<0:continue
            marker=struct.pack('<I',va(pos));found=[]
@@ -207,7 +165,7 @@ jobs:
             while (j:=mem.find(marker,j+1))>=0:
              if j+12>size:continue
              n,p=struct.unpack_from('<II',mem,j+4)
-             if not 0<n<40000:continue
+             if not 0<n<60000:continue
              try: ptrs=struct.unpack_from('<%dI'%n,e,off(p,n*4))
              except (ValueError,struct.error):continue
              if all(a==0 or 0x148b0b0<=a<0x6a167d0 for a in ptrs):found.append((n,ptrs))
@@ -217,37 +175,39 @@ jobs:
             tr=struct.unpack_from('<22I',md,T+88*t);tn='.'.join(filter(None,(name(tr[1]),name(tr[0]))))
             for i in range(tr[9],tr[9]+(tr[16]&65535)):
              mr=struct.unpack_from('<7I4H',md,M+36*i);rid=mr[6]&0xffffff
-             if 0<rid<=n and ptrs[rid-1] in want:print('HELPER10',im,tn,name(mr[0]),hex(ptrs[rid-1]))
-          # Native pure arithmetic after each pair-move helper return. Execute actual instructions,
-          # inject only register result of the preceding numeric helper, use fresh synthetic DTOs.
-          regs=[UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3,UC_ARM_REG_R4,UC_ARM_REG_R5,UC_ARM_REG_R6,UC_ARM_REG_R7,UC_ARM_REG_R8,UC_ARM_REG_R9,UC_ARM_REG_R10,UC_ARM_REG_R11,UC_ARM_REG_R12]
-          def synthetic_pair(a,b,delta,second=False):
+             if 0<rid<=n and ptrs[rid-1] in resolved.values():print('MATH11',json.dumps({'image':im,'owner':tn,'method':name(mr[0]),'rva':hex(ptrs[rid-1]),'params':mr[-1]}))
+          # Prove arguments at the exact caller sites, not just the veneer target.
+          for label,a,b in [('first-pair-distance',0x1d3b3a4,0x1d3b3b8),('second-pair-distance',0x1d3b5ec,0x1d3b604),('easy-target-penalty',0x22fe384,0x22fe398),('root-category-ids',0x1c7e700,0x1c7e714),('root-selected-id',0x1c7e75c,0x1c7e770),('root-initial-id',0x1c7e564,0x1c7e570),('root-top-id',0x1c7e5b4,0x1c7e5dc),('root-prior-id',0x1c7e638,0x1c7e660),('root-adjacent-id',0x1c7e69c,0x1c7e6c8),('cut-lower-state',0x1d03018,0x1d0302c)]:
+           print('ARGS11',json.dumps({'label':label,'facts':[[hex(x.address),x.mnemonic,x.op_str] for x in ins(a,b)]}))
+          # Run bounded local native branches with injected resolved entity facts, and
+          # compare against a clean-room formula (not a full card-move replay).
+          data=0x10000000
+          def partial(a,b,regs,memory,stop):
            u=Uc(UC_ARCH_ARM,UC_MODE_ARM);page=a&~4095
-           u.mem_map(page,((b-page+4095)//4096)*4096)
-           u.mem_write(a,e[off(a,b-a):off(a,b-a)+b-a])
-           mem=0x10000000;u.mem_map(mem,0x20000);left=mem+0x100;right=mem+0x200
-           # initialize both card DTO fields to sentinel; verify no unrelated changes
-           u.mem_write(left,bytes([0xA5])*80);u.mem_write(right,bytes([0x5A])*80)
-           vals={0:delta&0xffffffff,4:right,6:left,7:0,8:13,9:3,10:1,11:3}
-           if second:vals[5]=0
-           for n,v in vals.items():u.reg_write(regs[n],v)
-           u.reg_write(UC_ARM_REG_SP,mem+0x8000)
-           u.emu_start(a,b,count=100);assert u.reg_read(UC_ARM_REG_PC)==b
-           x=bytes(u.mem_read(left,80));y=bytes(u.mem_read(right,80))
-           def summary(z):return [struct.unpack_from('<i',z,36)[0],struct.unpack_from('<i',z,40)[0],z[53],struct.unpack_from('<H',z,54)[0]]
-           changed=[i for i,(p,q) in enumerate(zip(x,bytes([0xA5])*80)) if p!=q]
-           changed2=[i for i,(p,q) in enumerate(zip(y,bytes([0x5A])*80)) if p!=q]
-           assert set(changed+changed2)<=set(range(36,44))|{53,54,55}
-           return summary(x),summary(y)
-          for delta in (-10,-2,-1,0,1,2,10):
-           a,b=synthetic_pair(0x1d3b3bc,0x1d3b424,delta)
-           c,d=synthetic_pair(0x1d3b608,0x1d3b66c,delta,True)
-           print('PAIR10',json.dumps({'helperResult':delta,'first':[a,b],'second':[c,d]}))
-          # Decode vldr PC-relative literal for tolerance (32-bit float).
-          ins=instructions(0x1c7918c,0x1c791b8)
-          for x in ins:
-           if x.mnemonic.startswith('vldr') and '[pc' in x.op_str:
-            w=word(x.address);addr=x.address+8+(w&255)*4*(1 if w&0x800000 else -1)
-            print('TOLERANCE_LITERAL10',hex(x.address),hex(addr),struct.unpack('<f',struct.pack('<I',word(addr)))[0])
-          print('PASS_SHA_PINNED_ARITHMETIC10')
+           u.mem_map(page,((b-page+4095)//4096)*4096);u.mem_write(a,e[off(a,b-a):off(a,b-a)+b-a])
+           u.mem_map(data,0x20000)
+           for loc,raw in memory:u.mem_write(loc,raw)
+           for reg,v in regs.items():u.reg_write(reg,v&0xffffffff)
+           trace=[]
+           def guard(uc,pc,size,user):
+            if pc in stop:trace.append(pc);uc.emu_stop()
+            elif not a<=pc<b:raise RuntimeError('unexpected branch '+hex(pc))
+           u.hook_add(UC_HOOK_CODE,guard)
+           u.emu_start(a,b,count=80)
+           assert len(trace)==1,trace
+           return trace[0]
+          count=0
+          for same in (0,1):
+           for bound in (0,1,2):
+            pc=partial(0x1c7e740,0x1c7e780,{UC_ARM_REG_R0:same,UC_ARM_REG_R5:bound,UC_ARM_REG_R6:data},[(data,bytes(23)+bytes([bound]))],{0x1c7e75c,0x1c7e77c})
+            expected=(same or bound==2) and bound!=1
+            assert (pc==0x1c7e75c)==bool(expected),(same,bound,hex(pc))
+            count+=1
+          for bound in (0,1,2):
+           for flags in (0,1,2,4,16,32,64,65,80,100):
+            pc=partial(0x1d03018,0x1d03038,{UC_ARM_REG_R0:data},[(data,bytes(16)+struct.pack('<H',flags)+bytes(5)+bytes([bound]))],{0x1d03034,0x1d0302c})
+            assert (pc==0x1d03034)==(bound==2 and not(flags&1)),(bound,flags,hex(pc))
+            count+=1
+          print('BRANCH_TEST11',count,'PASS')
+          print('PASS_SHA_PINNED_MATH_AND_RULE_BRANCHES11')
           PY

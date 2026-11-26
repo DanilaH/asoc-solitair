@@ -62,7 +62,8 @@ function dualReplay(initial: Board, route: readonly BoardCommand[], deal: Deal) 
 describe.skipIf(!releaseProfile)('charged Shuffle progression', () => {
   it('preserves all old immutable deals and fully replays every new composed definition without recovery rights', () => {
     const composed = integratedCampaignDeals.filter(deal => deal.id.endsWith('-shuffle-r2'));
-    expect(composed.map(deal => deal.id).sort()).toEqual(shuffleProgressionWitnesses.map(row => row.id).sort());
+    const expected = [...shuffleProgressionWitnesses.map(row => row.id), 'campaign-c8-wave-036-restart-r1-shuffle-r2'];
+    expect(composed.map(deal => deal.id).sort()).toEqual(expected.sort());
     for (const deal of composed) {
       const source = findDeal(deal.id.slice(0, -'-shuffle-r2'.length))!;
       expect(source).toBeDefined();

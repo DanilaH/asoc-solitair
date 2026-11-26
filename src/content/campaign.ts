@@ -101,6 +101,9 @@ for (const source of [...recoveryBases, ...lateAdaptiveDeals, ...hitappsDirector
   const recycles = Math.max(1, source.winningPath.filter(command => command.type === 'recycle').length);
   const deal: Deal = {
     ...source, id: `${source.id}-${releaseConfig.policies.issuance}`,
+    ...(source.id.endsWith('-restart-r1') ? {
+      bonusSlots: recoveryBases.find(base => base.campaignLevel === source.campaignLevel)?.bonusSlots,
+    } : {}),
     initial: { ...source.initial, recyclesLeft: recycles },
     recovery: { ...recoveryDeal.recovery!, freeRecycles: recycles },
     recoveryPaths: undefined,

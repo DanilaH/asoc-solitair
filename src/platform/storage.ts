@@ -84,7 +84,7 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
   }
   const teachingAds = save.attempt.teachingAds;
   if (teachingAds !== undefined && (!teachingAds || teachingAds.version !== 1 ||
-      !natural(teachingAds.ordinary) || teachingAds.ordinary > 2)) throw Error('Повреждена защита обучения');
+      !natural(teachingAds.ordinary))) throw Error('Повреждена защита обучения');
   if (!natural(save.revision) || typeof save.attempt.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(save.attempt.id)) throw Error('Повреждён номер сохранения');
   for (const value of [save.profile.coins, save.profile.hints, save.profile.undos, save.profile.jokers, save.profile.wins, save.attempt.streak.coins]) if (!natural(value)) throw Error('Повреждён профиль');
   const streak = save.attempt.streak;

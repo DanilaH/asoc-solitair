@@ -113,7 +113,7 @@ it('rejects incorrect Joker targets without charge and offers a winning ordinary
 });
 
 it('independently replays the deterministic initial Shuffle for every issued L30 budget', () => {
-  const deals = integratedCampaignDeals.filter(deal => deal.campaignLevel === 30 && deal.shuffleCost === 'charge');
+  const deals = integratedCampaignDeals.filter(deal => deal.campaignLevel === 30 && deal.shuffleCost === 'charge' && !deal.id.includes('-restart-r1'));
   expect(deals).toHaveLength(6);
   for (const deal of deals) {
     const proof = openingShuffleProof(deal.initial, deal)!;

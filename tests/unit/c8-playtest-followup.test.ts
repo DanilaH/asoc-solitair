@@ -3,6 +3,7 @@ import { quoteLayoutRetry, commitAdaptiveRetry } from '../../src/app/campaign-re
 import { activelyTeaching, recordTeachingAction, teachingProtected } from '../../src/app/teaching-protection';
 import { unlockedBetween, unlockTrack } from '../../src/app/unlock-track';
 import { releaseProfile } from '../../src/config/profile';
+import { hasReleaseLesson, lessonMarker } from '../../src/app/c8-tutorial';
 import { campaignDeals, findDeal, layoutFingerprint, selectCampaignDeal } from '../../src/content/campaign';
 import { dailyForDay } from '../../src/content/daily';
 import { findContinue } from '../../src/domain/continuation';
@@ -97,6 +98,26 @@ describe.skipIf(!releaseProfile)('ordinary release follow-up', () => {
     const legacy = decodeSave(JSON.stringify(before), findDeal);
     expect(dailyModeAvailable(legacy)).toBe(true);
     expect(dailyTasksAvailable(legacy)).toBe(true);
+  });
+
+  it('covers every ordinary L6–80 first issuance and L30 after its Shuffle lesson', () => {
+    const protectedLevels: number[] = [], uncovered: number[] = [];
+    for (const base of campaignDeals.slice(5, 80)) {
+      const level = base.campaignLevel!, save = profileAt(level), deal = selectCampaignDeal(save, base);
+      save.attempt = freshSave(deal, 'retry-coverage').attempt;
+      save.attempt.board = { ...save.attempt.board, phase: 'exhausted', movesLeft: 0 };
+      if (level === 30) {
+        expect(quoteLayoutRetry(save)).toBeUndefined();
+        save.campaign = { version: 1, tutorials: [lessonMarker('shuffle-used')] };
+      } else if (deal.training || hasReleaseLesson(deal)) {
+        protectedLevels.push(level);
+        expect(quoteLayoutRetry(save)).toBeUndefined();
+        continue;
+      }
+      if (quoteLayoutRetry(save)?.level !== level) uncovered.push(level);
+    }
+    expect(protectedLevels).toEqual([8, 17, 18, 19, 24, 26, 27, 28, 32]);
+    expect(uncovered).toEqual([]);
   });
 
   it.each([6, 11, 16, 35, 80])('issues a different certified layout on two successive losses at L%i', level => {

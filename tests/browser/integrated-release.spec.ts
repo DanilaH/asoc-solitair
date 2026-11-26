@@ -8,7 +8,6 @@ import { content8Dealer } from '../../src/content/campaign-v8-dealer';
 import { campaignId } from '../../src/domain/progression';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { content8Wave } from '../../src/content/campaign-v8-dealer';
-import { findDeal } from '../../src/content/campaign';
 import { boardFrame, layout } from '../../src/game/layout';
 import { move, read } from './wallet-fixture';
 

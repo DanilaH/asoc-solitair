@@ -1,28 +1,14 @@
 import data from './campaign-v8-dealer.json' with { type: 'json' };
 import wave from './campaign-v8-wave.json' with { type: 'json' };
 import late from './campaign-v8-late.json' with { type: 'json' };
-import type { BoardCommand, Deal, Location } from '../domain/types';
+import type { Deal } from '../domain/types';
+import { decodeRoute } from './route';
+export { decodeRoute } from './route';
 import { content8Cards, type Content8TopicSelection } from './content8-words';
 
 type DealerRecord = Omit<Deal, 'cards' | 'winningPath' | 'recoveryPaths'> & {
   topics: Content8TopicSelection[]; winningPath: string; recoveryPaths?: string[];
 };
-
-const locations = { t: 'tableau', f: 'foundation', w: 'waste' } as const;
-function location(code: string): Location {
-  if (!/^[tfw]\d+$/.test(code)) throw Error('Invalid campaign route location');
-  return { kind: locations[code[0] as keyof typeof locations], index: Number(code.slice(1)) };
-}
-
-/** d = draw, r = recycle, t2>f0 = move tableau column 2 to foundation slot 0. */
-export function decodeRoute(route: string): BoardCommand[] {
-  return route.split(' ').map(step => {
-    if (step === 'd') return { type: 'draw' };
-    if (step === 'r') return { type: 'recycle' };
-    const [from, to] = step.split('>');
-    return { type: 'transfer', from: location(from), to: location(to) };
-  });
-}
 
 function decodeDeal({ topics, winningPath, recoveryPaths, ...deal }: DealerRecord): Deal {
   return {

@@ -220,7 +220,7 @@ test.describe('local presentation of unchanged UTC reward periods', () => {
     await expect(page.locator('#daily-tasks-first-clear')).toContainText('Условия действуют до обновления');
     await expect(page.locator('#daily-tasks-day-status')).toContainText(/25\.11.*05:00/);
     await expect(page.locator('#daily-tasks-week-title')).toHaveText('Неделя прежней версии');
-    await expect(page.locator('#daily-tasks-medals')).toHaveText('Медали недели · 30');
+    await expect(page.locator('#daily-tasks-medals')).toHaveText('30');
     await expect(page.locator('#daily-tasks-legacy-week')).toContainText(/Обычный недельный бонус начнётся 30\.11.*05:00/);
     await expect(page.locator('#daily-tasks-weekly')).toBeHidden();
     if (process.env.ASOC_MVP_DEMO === '1') {
@@ -230,7 +230,7 @@ test.describe('local presentation of unchanged UTC reward periods', () => {
     const oldTask = page.locator('[data-reward-key="task:2026-11-23:azur-1-4"]');
     await expect(oldTask).toContainText('25 мед.');
     await oldTask.getByRole('button').tap();
-    await expect(page.locator('#daily-tasks-medals')).toHaveText('Медали недели · 55');
+    await expect(page.locator('#daily-tasks-medals')).toHaveText('55');
     const milestone = page.locator('#daily-tasks-milestones').getByRole('button', { name: /^50 мед\./ });
     await milestone.tap();
     await expect(milestone).toHaveText('50 мед. · Получено');
@@ -246,7 +246,7 @@ test.describe('local presentation of unchanged UTC reward periods', () => {
     await expect(page.locator('#daily-tasks-week-title')).toHaveText('Бонус недели');
     await expect(page.locator('#daily-tasks-legacy-week')).toBeHidden();
     await expect(page.locator('#daily-tasks-first-clear')).toBeHidden();
-    await expect(page.locator('#daily-tasks-medals')).toHaveText('Медали недели · 0/5');
+    await expect(page.locator('#daily-tasks-medals')).toHaveText('0/5');
     expect((await read(page)).dailyTasks!.weeks[0]).toEqual(earned);
   });
 

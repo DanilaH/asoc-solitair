@@ -5,7 +5,7 @@
     "xapk": "AZUR 1.3.3.8/code244",
     "originalXapkSha256": "4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4",
     "researchCatalogGitBlob": "391f1ec3f4e9400177f7172d81f98613f61efb1d",
-    "sourceFeatureInventoryGitBlob": "72efdad46077213e1ce68475b004544fe9dfec75",
+    "sourceFeatureInventoryGitBlob": "29ddea6086c46c5581702cb0001536e6666b7626",
     "evidence": "ORIGINAL_ASSET_VERIFIED_IN_MINI_GAMES_KIT_REPORT_NOT_EXECUTED_THIS_TURN",
     "merchantCodesCopied": false
   },
@@ -125,8 +125,8 @@
     },
     {
       "id": "azur-offer-campaign",
-      "sourceEvidenceTier": "METADATA",
-      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-azur-static/README.md",
+      "sourceEvidenceTier": "NATIVE_STATIC",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/c76c5b842d76462ad53fa1338a8feb09aae48c12/research/games/association-solitaire/2026-11-22-azur-welcome-milestone/README.md",
       "consumerStage": "E3",
       "observedConsumerStatusAtAudit": "ROADMAPPED"
     },
@@ -160,8 +160,8 @@
     },
     {
       "id": "azur-iap-no-ads",
-      "sourceEvidenceTier": "ASSET_VERIFIED",
-      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "sourceEvidenceTier": "NATIVE_STATIC",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-noads-native/README.md",
       "consumerStage": "E3",
       "observedConsumerStatusAtAudit": "BLOCKED"
     },
@@ -188,8 +188,8 @@
     },
     {
       "id": "azur-iap-welcome-offer",
-      "sourceEvidenceTier": "ASSET_VERIFIED",
-      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-source-packaging/IAP_CATALOG.md",
+      "sourceEvidenceTier": "NATIVE_STATIC",
+      "sourceEvidenceRef": "https://github.com/DanilaH/mini-games-kit/blob/c76c5b842d76462ad53fa1338a8feb09aae48c12/research/games/association-solitaire/2026-11-22-azur-welcome-milestone/README.md",
       "consumerStage": "E3",
       "observedConsumerStatusAtAudit": "BLOCKED"
     },

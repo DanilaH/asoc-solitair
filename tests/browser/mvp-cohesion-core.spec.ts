@@ -44,12 +44,12 @@ function profile(deal: Deal = content8Dealer[3], id = 'mvp-core-campaign'): Save
   return save;
 }
 
-async function seedHome(page: Page, save: Save, now = NOW) {
+async function seedHome(page: Page, save: Save, now = NOW, route = '/') {
   await page.clock.install({ time: new Date(now) });
   await page.addInitScript(({ key, value }) => {
     if (!localStorage.getItem(key)) localStorage.setItem(key, value);
   }, { key: KEY, value: JSON.stringify(save) });
-  await page.goto('/');
+  await page.goto(route);
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   await expect(page.locator('#home')).toBeVisible();
 }
@@ -609,7 +609,7 @@ for (const direction of ['to-daily', 'to-campaign', 'level-picker'] as const) {
       save.platform!.completedCampaign = profile(campaign).platform!.completedCampaign;
     }
     await observeAnalytics(page);
-    await seedHome(page, save);
+    await seedHome(page, save, NOW, direction === 'level-picker' ? '/?qa-levels=1' : '/');
     await page.evaluate(() => {
       (window as typeof window & { mvpNativeStorage: NativeStorageFixture }).mvpNativeStorage.breakTransition = true;
     });

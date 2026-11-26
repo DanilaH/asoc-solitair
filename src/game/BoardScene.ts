@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { releaseProfile } from '../config/profile';
 import { installSceneTextSharpness } from '@danilah/mini-games-kit/phaser';
 import { cardCaption, categoryCaption } from './captions';
 import { applyBoard, isLocked, packet, sourceCards } from '../domain/engine';
@@ -52,12 +53,14 @@ export class BoardScene extends Phaser.Scene {
   private stockLayers: Phaser.GameObjects.Image[] = [];
   private stockBusyUntil = 0;
   private stockCount!: Phaser.GameObjects.Text;
+  private recycleIcon?: Phaser.GameObjects.Image;
   private stockBadge!: Phaser.GameObjects.Graphics;
   private collections = new Map<number, CollectionView>();
   private praiseIndex = 0;
   private views = new Map<string, CardView>();
   private metrics!: ReturnType<typeof layout>;
   private jokerSelecting = false;
+  private taughtJokerColumn?: number;
   private jokerArt!: Phaser.GameObjects.Container;
   private jokerBadge!: Phaser.GameObjects.Container;
   private lockArt!: Phaser.GameObjects.Container;
@@ -124,6 +127,7 @@ export class BoardScene extends Phaser.Scene {
     this.tweens.add({ targets: cards, angle: 9, duration: 170, ease: 'Sine.easeInOut', yoyo: true });
   }
   public preload(): void {
+    if (releaseProfile && !this.textures.exists('recycle-icon')) this.load.svg('recycle-icon', 'art/ui/recycle.svg', { width: 96, height: 96 });
     if (!this.textures.exists('tutorial-hand')) this.load.image('tutorial-hand', 'art/ui/tutorial-hand.webp');
     for (const name of UI_ART) if (!this.textures.exists('art-' + name)) this.load.image('art-' + name, artUrl(name));
     for (const card of Object.values(this.options.deal.cards)) { const image = cardArtwork(card, this.options.deal); if (image && !this.textures.exists(image)) this.load.image(image, image); }
@@ -141,7 +145,7 @@ export class BoardScene extends Phaser.Scene {
     const newDeal = this.animateEntryOnCreate;
     this.initial = newDeal;
     this.animateEntryOnCreate = false;
-    this.jokerSelecting = false; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.dragPointer = undefined; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = []; this.stockBusyUntil = 0;
+    this.jokerSelecting = false; this.taughtJokerColumn = undefined; this.options.jokerMode?.(false); this.selected = null; this.press = null; this.dragPointer = undefined; this.inspectMode = false; this.particles = []; this.hintObjects = []; this.hintTweens = []; this.stockBusyUntil = 0;
     installSceneTextSharpness(this);
     this.world = this.add.container(0, 0);
     this.cues = [];
@@ -152,6 +156,10 @@ export class BoardScene extends Phaser.Scene {
     this.stockCount = this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '24px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(.5).setDepth(38);
     this.stockBadge = this.add.graphics().setDepth(37);
     this.world.add([this.slots, ...this.stockLayers, this.stockArt, this.focus, this.stockBadge, this.stockCount]);
+    if (releaseProfile) {
+      this.recycleIcon = this.add.image(0, 0, 'recycle-icon').setDepth(38).setVisible(false);
+      this.world.add(this.recycleIcon);
+    }
     for (const kind of bonusKinds) {
       for (let index = 0; index < slotCount(this.options.deal, kind); index++) {
         const view = this.add.image(0, 0, `art-slot-${kind}`).setVisible(false).setDepth(0);
@@ -236,7 +244,7 @@ export class BoardScene extends Phaser.Scene {
       const title = categoryCaption(card.text);
       caption = this.label(0, 0, title, 28, '#294d5d', this.cardH - 72).setOrigin(.5);
       content.add(caption);
-      strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
+      strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: releaseProfile ? '#483b36' : '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
     } else if (image) {
       const size = Math.min(104, this.cardW - 22);
@@ -256,7 +264,7 @@ export class BoardScene extends Phaser.Scene {
       strip = this.add.image(0, -this.cardH / 2 + 11, image).setDisplaySize(18, 18); face.add(strip); strip.setVisible(false);
     } else {
       caption = this.label(0, 0, card.text, 29, '#294d5d', this.cardH - 72); caption.setOrigin(.5); content.add(caption);
-      strip = this.add.text(0, 0, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: '#79909c' }).setOrigin(.5);
+      strip = this.add.text(0, 0, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: releaseProfile ? '#39505d' : '#79909c' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 14) / strip.width)); face.add(strip); strip.setVisible(false);
     }
     if (card.keyId) {
@@ -375,7 +383,14 @@ export class BoardScene extends Phaser.Scene {
         .setDisplaySize(this.cardW, this.cardH).setTint(ink ? 0xd8ceff : 0xffffff)
         .setAlpha(ink ? upper ? .8 : .62 : upper ? 1 : .85);
     }
-    if (!board.stock.length && board.waste.length) this.slots.fillStyle(0xd2e8db, .08).fillCircle(this.metrics.stock.x, this.metrics.stock.y, 35);
+    const { stock } = this.metrics;
+    const deck = this.options.deal.initial;
+    if (releaseProfile && !board.stock.length && (deck.stock.length || deck.waste.length)) {
+      const recyclable = board.waste.length && board.recyclesLeft !== 0;
+      const x = stock.x - this.cardW / 2, y = stock.y - this.cardH / 2;
+      this.slots.fillStyle(0x071e2a, recyclable ? .5 : .33).fillRoundedRect(x, y, this.cardW, this.cardH, 10);
+      this.slots.lineStyle(2, 0xc3e5d8, recyclable ? .58 : .3).strokeRoundedRect(x, y, this.cardW, this.cardH, 10);
+    } else if (!board.stock.length && board.waste.length) this.slots.fillStyle(0xd2e8db, .08).fillCircle(stock.x, stock.y, 35);
   }
   public sync(events: GameEvent[] = [], entering = false, command?: BoardCommand, feedback?: ContactFeedback, returningIds: readonly string[] = []): void {
     if (!this.world || this.presentedDealId !== this.options.getSave().attempt.dealId) return;
@@ -461,6 +476,8 @@ export class BoardScene extends Phaser.Scene {
     });
     this.stockArt.setDepth(8);
     this.stockBadge.clear();
+    const showRecycle = deckActive && !board.stock.length && board.waste.length > 0 && board.recyclesLeft !== 0;
+    this.recycleIcon?.setPosition(stock.x, stock.y).setDisplaySize(this.cardW * .53, this.cardW * .53).setVisible(showRecycle);
     if (board.stock.length) {
       const x = stock.x, y = stock.y + thickness - this.cardH / 2 + 36;
       const font = Math.max(31, 18 / this.cssUnit);
@@ -469,7 +486,7 @@ export class BoardScene extends Phaser.Scene {
       const height = font * 1.08;
       this.stockBadge.fillStyle(0x1c284c).fillRoundedRect(x - width / 2, y - height / 2, width, height, height / 2);
       this.stockBadge.lineStyle(2, 0xffdfa3).strokeRoundedRect(x - width / 2, y - height / 2, width, height, height / 2);
-    } else this.stockCount.setPosition(stock.x, stock.y).setFontSize(42).setText(board.waste.length ? board.recyclesLeft === 0 ? '×' : '↻' : '');
+    } else this.stockCount.setPosition(stock.x, stock.y).setFontSize(42).setText(board.waste.length ? board.recyclesLeft === 0 ? '×' : releaseProfile ? '' : '↻' : '');
     const root = this.options.inputRoot?.();
     if (root) root.dataset.stockCount = deckActive ? String(board.stock.length) : '';
     this.foundationArt.clear();
@@ -1086,7 +1103,7 @@ export class BoardScene extends Phaser.Scene {
     if (press.jokerColumn !== undefined) {
       const target = this.hitTarget(x, y);
       if (tap && target?.location.kind === 'tableau' && target.location.index === press.jokerColumn) {
-        this.jokerSelecting = false; this.options.jokerMode?.(false); this.options.command({ type: 'place-joker', column: press.jokerColumn });
+        this.jokerSelecting = false; this.taughtJokerColumn = undefined; this.options.jokerMode?.(false); this.options.command({ type: 'place-joker', column: press.jokerColumn });
       } else this.cancel();
       return;
     }
@@ -1117,7 +1134,10 @@ export class BoardScene extends Phaser.Scene {
     if (!this.focus) return;
     this.focus.clear();
     if (this.jokerSelecting) for (const t of this.metrics.targets.filter(t => t.location.kind === 'tableau' && this.options.getSave().attempt.board.tableau[t.location.index].length && !isLocked(this.options.getSave().attempt.board, t.location.index, this.options.deal))) {
-      this.targetLight(t);
+      const recommended = t.location.index === this.taughtJokerColumn;
+      this.targetLight(t, true, this.taughtJokerColumn === undefined || recommended ? 1 : .4);
+      if (recommended) this.focus.lineStyle(3 / this.cssUnit, 0xffe5a7).strokeRoundedRect(
+        t.x - this.cardW / 2 + 3, t.y - this.cardH / 2 + 3, this.cardW - 6, this.cardH - 6, 13);
     }
     if (this.selected && !this.press?.moved) {
       const source = this.selected;
@@ -1143,14 +1163,14 @@ export class BoardScene extends Phaser.Scene {
       this.targetLight(hover, valid, this.options.reducedMotion() ? 1 : Math.min(1, (performance.now() - this.hoverSince) / 75));
     } else this.hoverKey = '';
   }
-  public setJoker(active: boolean): void { this.cancel(); this.jokerSelecting = active; this.options.jokerMode?.(active); this.drawFocus(); this.game.loop.wake(); }
+  public setJoker(active: boolean, taughtColumn?: number): void { this.cancel(); this.jokerSelecting = active; this.taughtJokerColumn = taughtColumn; this.options.jokerMode?.(active); this.drawFocus(); this.game.loop.wake(); }
   public cancel(press = this.press ?? this.pendingReturn): void {
     this.inspectClick=null;
     const board = this.options.getSave().attempt.board;
     const index = press?.moved && press.from?.kind === 'tableau' ? press.from.index : -1;
     const returning = index >= 0 && board.tableau[index]?.length && board.tableau[index].every(id => press!.poses.some(p => p.id === id)) && !this.options.reducedMotion()
       ? { ids: press!.poses.map(p => p.id), y: this.metrics.poses.find(p => p.id === board.tableau[index][0])!.y } : undefined;
-    this.jokerSelecting = false; this.options.jokerMode?.(false); this.options.peek?.(null); this.press = null; this.dragPointer = undefined; this.selected = null; this.dragCount?.setVisible(false);
+    this.jokerSelecting = false; this.taughtJokerColumn = undefined; this.options.jokerMode?.(false); this.options.peek?.(null); this.press = null; this.dragPointer = undefined; this.selected = null; this.dragCount?.setVisible(false);
     if (this.world) { this.sync([], false, undefined, undefined, press?.poses.map(p => p.id)); if (returning) { this.returningWells.set(index, returning); this.drawSlots(); } }
   }
   public settleMotion(): void {
@@ -1164,15 +1184,40 @@ export class BoardScene extends Phaser.Scene {
   public back(): boolean { if (!this.jokerSelecting && !this.press && !this.selected && !this.hintObjects.length) return false; this.clearHint(); this.cancel(); return true; }
   public idleForAd(): boolean {
     return !this.press && !this.selected && !this.pendingReturn && !this.dragPointer && !this.jokerSelecting &&
-      !this.inspectMode && !this.enteringCards.size && !this.collections.size && !this.keyFlights.length &&
+      !this.inspectMode && !this.enteringCards.size && !this.collections.size && !this.keyPresentation &&
+      !this.keyFlights.some(flight => flight.visible) &&
       ![...this.views.values()].some(view => this.tweens.isTweening(view.node));
   }
   public setEnabled(value: boolean): void { this.enabled = value; if (!value) { this.clearHint(); this.options.peek?.(null); if (this.press || this.selected || this.jokerSelecting) this.cancel(); } }
   public setInspect(value: boolean): void { this.inspectMode = value; this.clearHint(); this.cancel(); }
   public clearHint(): void { this.hintTweens.forEach(t => t.stop()); this.hintTweens = []; this.hintObjects.forEach(o => o.destroy()); this.hintObjects = []; }
   public hint(action: BoardCommand): void { this.cancel(); this.demonstrate(action, false); }
+  public guidanceReady(action: BoardCommand): boolean {
+    if (!this.world || !this.enabled) return false;
+    const board = this.options.getSave().attempt.board;
+    if (action.type !== 'transfer') return this.enteringCards.size === 0 && performance.now() >= this.stockBusyUntil &&
+      typeof applyBoard(board, action, this.options.deal) !== 'string';
+    if (!this.canDrop(action.from, action.to)) return false;
+    const source = sourceCards(board, action.from, this.options.deal);
+    const target = this.metrics.targets.find(t => same(t.location, action.to));
+    if (!target || !source.length) return false;
+    const { kind, index } = action.to;
+    if (kind === 'foundation' && (this.collections.has(index) || this.foundationSurfaces.has(index))) return false;
+    // Foundations display the current member above the category card.
+    const front = kind === 'foundation' ? this.foundationFaces.get(index) : board.tableau[index].at(-1);
+    for (const id of front ? [...source, front] : source) {
+      const view = this.views.get(id);
+      if (!view?.node.visible || !view.face.visible || this.enteringCards.has(id) ||
+          this.tweens.isTweening(view.node) || this.tweens.isTweening(view.face)) return false;
+    }
+    const last = this.views.get(source.at(-1)!)!.node;
+    const hitSource = this.hitSource(last.x, last.y), hitTarget = this.hitTarget(target.x, target.y);
+    return Boolean(hitSource && hitTarget && same(hitSource, action.from) && same(hitTarget.location, action.to));
+  }
   /** One action at a time, following the real board; cosmetic and non-blocking. */
-  public teach(action: BoardCommand): void { this.demonstrate(action, true); }
+  public teach(action: BoardCommand): void {
+    if (this.guidanceReady(action)) this.demonstrate(action, true);
+  }
   private demonstrate(action: BoardCommand, teaching: boolean): void {
     this.clearHint();
     if (!this.enabled || this.press || this.selected || this.inspectMode) return;

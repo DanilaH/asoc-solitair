@@ -347,11 +347,11 @@ test('level 17 teaches the first ordered transfer and remembers accepted practic
   await touch(page, deal, { type: 'draw' });
   expect((await read(page)).attempt.board).toEqual(initial);
   await touch(page, deal, deal.winningPath[0]);
-  await expect(page.locator('#lesson-copy')).toContainText('понедельника');
+  await expect(page.locator('#lesson-copy')).toContainText('«Понедельник»');
   await page.reload();
   await openGame(page, deal);
   await expect(page.locator('#learn-rule')).toBeHidden();
-  await expect(page.locator('#lesson-copy')).toContainText('понедельника');
+  await expect(page.locator('#lesson-copy')).toContainText('«Понедельник»');
   await touch(page, deal, deal.winningPath[1]);
   await expect(page.locator('#lesson-note')).toBeHidden();
   expect((await read(page)).campaign?.tutorials).toContain('learn:ordered');
@@ -1215,7 +1215,7 @@ test('reward offer preview keeps the normal victory and grants only a matching e
   await expect.poll(async () => (await adControls(page)).length).toBe(2);
   const [first, second] = await adControls(page);
   expect(second).toEqual(first);
-  const receipt: EarnedReceipt = { schema: 1, id: 'p20-earned-win', placement: second.placement,
+  const receipt: EarnedReceipt = { schema: 1, id: 'p20-earned-win', placement: second.placement as EarnedReceipt['placement'],
     attempt: second.attempt, dealId: second.dealId, mode: 'campaign' };
   await page.evaluate(value => {
     const mock = (window as unknown as { adTestControls: AdTestControls }).adTestControls;

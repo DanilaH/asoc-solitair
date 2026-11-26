@@ -173,6 +173,6 @@ export interface Save {
 }
 export interface GameEvent {
   type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward';
-  cards?: string[]; category?: string; amount?: number; reason?: string;
+  cards?: string[]; category?: string; amount?: number; reason?: string; cause?: 'magnet' | 'hammer';
 }
 export interface Result { next: Save; accepted: boolean; events: GameEvent[]; reason?: string }

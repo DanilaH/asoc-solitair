@@ -1,0 +1,88 @@
+{
+  "master": "exec-55353b67-5932-437c-9697-7643b9a0a9bd.png",
+  "sha256": "ee342ce7a4480d350f85cd5ac8c2b0630b1040c15fa918c7aa14ab6dc0096caf",
+  "width": 1263,
+  "height": 1246,
+  "crops": [
+    {
+      "name": "heart",
+      "cell": {
+        "left": 0,
+        "top": 0,
+        "width": 631,
+        "height": 623
+      },
+      "crop": {
+        "left": 134,
+        "top": 148,
+        "width": 433,
+        "height": 383
+      },
+      "nativeSize": [
+        192,
+        192
+      ],
+      "sha256": "695a51d317f4304be784ee747979527a4cc3cfd3f5d2756b399a9bb21e750ddc"
+    },
+    {
+      "name": "gift",
+      "cell": {
+        "left": 631,
+        "top": 0,
+        "width": 631,
+        "height": 623
+      },
+      "crop": {
+        "left": 68,
+        "top": 90,
+        "width": 428,
+        "height": 465
+      },
+      "nativeSize": [
+        192,
+        192
+      ],
+      "sha256": "6bbd1ef2c65deb26d82db35518ce1e88659330a862f2b1190b558d8f9e554df5"
+    },
+    {
+      "name": "medal",
+      "cell": {
+        "left": 0,
+        "top": 623,
+        "width": 631,
+        "height": 623
+      },
+      "crop": {
+        "left": 158,
+        "top": 26,
+        "width": 370,
+        "height": 524
+      },
+      "nativeSize": [
+        192,
+        192
+      ],
+      "sha256": "13d06f758e79beb4403b0c0bed98e03377ddd0d171bd82c4a018e6089dd5b3af"
+    },
+    {
+      "name": "task",
+      "cell": {
+        "left": 631,
+        "top": 623,
+        "width": 631,
+        "height": 623
+      },
+      "crop": {
+        "left": 98,
+        "top": 32,
+        "width": 350,
+        "height": 500
+      },
+      "nativeSize": [
+        192,
+        192
+      ],
+      "sha256": "ce44a93c84b8b4a11f422758cd3d93b607e29d8a74ca5bf5570cd34fd715a311"
+    }
+  ]
+}

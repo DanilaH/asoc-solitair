@@ -137,7 +137,8 @@
     "movesLeft": "number",
     "activeMs": "number",
     "format": "string",
-    "phase": "string"
+    "phase": "string",
+    "placement": "string"
   },
   "ad_impression_revenue": {
     "schema": "number",

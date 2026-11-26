@@ -1,12 +1,12 @@
 import { Capacitor, registerPlugin, type PluginListenerHandle } from '@capacitor/core';
 import { DurableReceiptQueue, type ReceiptCommitResult, type GameplayActivityCoordinator } from '@danilah/mini-games-kit/platform';
 import type { NativeBannerPlacement, NativeBannerPlacementInput } from '@danilah/mini-games-kit/layout';
-import { parseFullscreenShown, parseReceipt, type EarnedReceipt, type FullscreenShown, type RewardPlacement } from '../domain/services';
+import { parseFullscreenShown, parseReceipt, type EarnedReceipt, type FullscreenShown, type AdPlacement } from '../domain/services';
 
-export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: RewardPlacement; attempt: string; dealId: string; mode: 'campaign' | 'daily' }
+export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: AdPlacement; attempt: string; dealId: string; mode: 'campaign' | 'daily' }
 export interface AdOutcome { shown: boolean; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
-export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean; campaignApproved?: boolean; livesApproved?: boolean; offersApproved?: boolean }
-export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string }
+export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean; interstitialLoaded?: boolean; campaignApproved?: boolean; livesApproved?: boolean; offersApproved?: boolean }
+export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string; placement?: string }
 interface PendingLife { id: string; dealId: string }
 export interface AdsBridge {
   status(): Promise<AdStatus>;
@@ -105,6 +105,8 @@ export function createAds(options: {
   if (native) {
     void native.addListener('adEvent', event => {
       if (!alive) return;
+      if (event.kind === 'interstitial' && ['loaded', 'load_error', 'show', 'show_error', 'dismiss'].includes(event.phase))
+        status = { ...status, interstitialLoaded: event.phase === 'loaded' };
       options.onEvent(event);
       if (['earned', 'receipt_pending', 'dismiss'].includes(event.phase)) void recoverEarned();
       if (event.phase === 'show') void recoverShown();
@@ -124,14 +126,14 @@ export function createAds(options: {
     },
     async show(request: AdRequest): Promise<AdOutcome> {
       if (!alive || !native || showing || options.activity.isBlocked()) return unavailable;
-      options.onEvent({ kind: request.kind, phase: 'show_request' });
-      if (!status[request.kind]) { options.onEvent({ kind: request.kind, phase: 'unavailable' }); return unavailable; }
+      options.onEvent({ kind: request.kind, phase: 'show_request', placement: request.placement });
+      if (!status[request.kind]) { options.onEvent({ kind: request.kind, phase: 'unavailable', placement: request.placement }); return unavailable; }
       showing = true; options.activity.setBlocked('ad', true);
       try {
         await options.beforeShow({ ...request });
         if (!alive) return unavailable;
         const result = await native.show({ ...request });
-        if (!result.shown) options.onEvent({ kind: request.kind, phase: result.outcome });
+        if (!result.shown) options.onEvent({ kind: request.kind, phase: result.outcome, placement: request.placement });
         if (result.shown) {
           // The earlier read may have started before the SDK callback.
           await shownFlight;

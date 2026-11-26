@@ -72,14 +72,14 @@ export function placeJoker(board: Board, column: number, deal: Deal): Board | st
   next.joker = { column, boundary: board.tableau[column].length };
   assertBoard(next, deal); return next;
 }
-function reveal(board: Board, id: string | undefined, deal: Deal, events: GameEvent[]): void {
+function reveal(board: Board, id: string | undefined, deal: Deal, events: GameEvent[], cause?: 'hammer'): void {
   if (!id || board.faceUp.includes(id)) return;
-  board.faceUp.push(id); events.push({ type: 'flip', cards: [id] });
+  board.faceUp.push(id); events.push({ type: 'flip', cards: [id], ...(cause && { cause }) });
   const key = deal.cards[id].keyId;
   if (key && !(board.keys ??= []).includes(key)) {
     board.keys.push(key); events.push({ type: 'key', cards: [id], amount: board.keys.length });
     if (deal.lock && !isLocked(board, deal.lock.column, deal)) {
-      events.push({ type: 'unlock', amount: 3 });
+      events.push({ type: 'unlock', amount: deal.lock.requiredKeys.length });
       reveal(board, board.tableau[deal.lock.column].at(-1), deal, events);
     }
   }
@@ -142,10 +142,10 @@ export function applyBoard(input: Board, cmd: BoardCommand, deal: Deal): { board
             const [pulled] = board.stock.splice(index, 1);
             board.waste.push(pulled);
             board.faceUp.push(pulled);
-            events.push({ type: 'draw', cards: [pulled] });
+            events.push({ type: 'draw', cards: [pulled], cause: 'magnet' });
           }
         }
-        if (booster === 'hammer') reveal(board, hammerCard(board, deal), deal, events);
+        if (booster === 'hammer') reveal(board, hammerCard(board, deal), deal, events, 'hammer');
       }
       const members = Object.values(deal.cards).filter(c => c.category === category);
       const target = board.foundations[cmd.to.index];
@@ -227,8 +227,8 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
       if (sameBoardCommand(attempt.lessonHint, cmd)) markTutorial(next, 'hint-practiced');
       delete attempt.lessonHint;
     }
-    if (deal.training === 'joker' && cmd.type === 'transfer' && cmd.to.kind === 'tableau' && cmd.to.index === attempt.board.joker?.column)
-      markTutorial(next, 'joker-buffer');
+    if (deal.training === 'joker' && deal.editorialStatus !== 'authored-ftue-r1' && cmd.type === 'transfer' &&
+        cmd.to.kind === 'tableau' && cmd.to.index === attempt.board.joker?.column) markTutorial(next, 'joker-buffer');
     recordUndo(attempt); attempt.board = result.board; events = result.events;
     recordEqualityOutcome(next, attempt);
     if (trackDifficulty && attempt.board.phase === 'exhausted') recordCampaignExhaustion(attempt);

@@ -1,5 +1,17 @@
 # Project contract
 
+## Owner playtest · issue 210
+
+[Issue #210](https://github.com/DanilaH/asoc-solitair/issues/210) starts from PR208 and upstreams the PR209 research doc delta. Keep the approved C8 grid, frozen deal bank, receipts, art and product behavior. Start with [the composition review](docs/qa/issue-210/COMPOSITION_REVIEW.md) and parallel FTUE/ads engineering. After owner composition approval, use the vertical slice before scaling the art. [Android ads acceptance](docs/qa/issue-210/ANDROID_ADS_CHECK.md) distinguishes actual SDK, runtime and physical checks. The 115 sources, 38 packets, 15 commerce families and the runtime pin remain in force.
+
+Owner approved Card Table B with animated reward feedback and assigned the [independent PR211 audit](https://github.com/DanilaH/asoc-solitair/issues/210#issuecomment-7168310228). The runtime kit remains a9325265. Incremental P21 source evidence is pinned to [kit f4542d28](https://github.com/DanilaH/mini-games-kit/blob/f4542d287d17fc085eb2e8e874bd49415a2dedfd/research/games/association-solitaire/2026-11-25-azur-ad-director-unlimited/README.md), alongside the consolidated research snapshot below. The updated #210 ad direction supersedes the old fixed L16/one-Coffee/three-wins limits for the ordinary test candidate. See [P21](docs/porting/P21_AD_PLACEMENTS.md). Keep live/provider gates and the separate earned-receipt path.
+
+The [owner FTUE clarification](https://github.com/DanilaH/asoc-solitair/issues/210#issuecomment-7184786704) authorizes new C8 teaching deal revisions for actual first encounters with misaligned card orders. Keep the old definitions restorable, apply cue contracts to the exact Deal ID, and require evidence of visible and accepted actions. Read the [FTUE passport](docs/qa/issue-210/FTUE_PRESETS.md) before changing an opening route. Keep optional paid/video rights optional and preserve proof before consumption.
+
+## Research consolidation — 25 November 2026
+
+Read [current Solitaire research](https://github.com/DanilaH/mini-games-kit/blob/af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a/research/games/association-solitaire/CURRENT.md) and [consumer pin reconciliation](docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md). Exact research pin `af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a`, blob `29ddea6086c46c5581702cb0001536e6666b7626`, kit draft PR151. Research snapshot only; runtime dependency unchanged. Active UI candidate PR208 on feat/c8-ui-grid-205; resolve latest HEAD, retain issue205 requirements. Do not restart implemented ordinary Bonus/Combo/base-only multiplier. All 115 IDs/38 packets, seven owner decisions, IAP OFF and one AdsBreak/Coffee capability retained.
+
 ## Owner layout decision — issue 205, 25 November 2026
 
 Work from [PR #204](https://github.com/DanilaH/asoc-solitair/pull/204) at `5039f1fbafcfebc399e36141826cc9ca6a59fe5d`. [Issue #205](https://github.com/DanilaH/asoc-solitair/issues/205) and the [C8 field contract](docs/qa/content-v8/C8_UI_205.md) supersede the old requirement to stretch each row across the screen. Every row starts on the same left-aligned grid. Cards, wells and offered slots use 138:166 with the same pitch. Reserve both bonus slots before purchase. Deck position and side affect only stock and waste. Verify geometry and raw taps on the release profile, with Android and live SDK evidence reported separately. KIT IMPACT is REUSE. Keep the configured runtime pin.

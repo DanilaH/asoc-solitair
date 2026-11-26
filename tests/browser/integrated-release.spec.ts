@@ -1,4 +1,4 @@
-import { coreSpecialDeals } from '../../src/content/campaign-v8-integrated-specials';
+import { findDeal } from '../../src/content/campaign';
 import { content8Special } from '../../src/content/campaign-v8-special';
 import { expect, test } from '@playwright/test';
 import { recoverable } from '../fixtures/content8-loss';
@@ -72,10 +72,10 @@ test('L15 to adaptive L16 through the normal campaign UI, then reopen and retain
   await expect.poll(async () => (await read(page)).attempt.board).toEqual(issued.board);
 });
 
-test('opens full Frozen level through Next and keeps the board and Undo at compact widths', async ({ page }, info) => {
+test('opens the Frozen teaching deal through Next and keeps the board and Undo at compact widths', async ({ page }, info) => {
   await page.setViewportSize(info.project.name === 'compact' ? { width: 320, height: 568 } : { width: 390, height: 844 });
   const prior = content8Special.find(deal => deal.campaignLevel === 18)!;
-  const frozen = coreSpecialDeals.find(deal => deal.campaignLevel === 19)!;
+  const frozen = findDeal('campaign-c8-ftue-019-r1')!;
   let save = freshSave(prior, 'won-level-18');
   save.contentVersion = 8;
   save.settings.reducedMotion = true;
@@ -150,7 +150,7 @@ test('opens cards in Daily Bonus, resumes the same round and claims only once', 
   await cards.nth(chosen[1]).tap();
   await cards.nth(chosen[2]).tap();
   await page.locator('#daily-bonus-claim').tap();
-  await expect(page.locator('#daily-bonus-status')).toContainText('Получено');
+  await expect(page.locator('#daily-bonus-status')).toHaveText('Приз получен');
   await expect(page.locator('#daily-bonus-claim')).toBeHidden();
   expect((await read(page)).dailyBonus?.claimed).toBe(true);
 });

@@ -26,7 +26,7 @@
 
 ### Приёмка и границы выпуска
 
-P01 хранит фактические shown отдельно от earned; P20 сохраняет собственные quotes и выдачи. Баннер остаётся отдельным форматом со своей безопасной областью и lifecycle. ILRD требует доставки действительных сумм, валюты, идентичности точки и события в аналитику: локальный буфер сам по себе этого не доказывает. Новые точки и увеличение частоты остаются выключены до принятой проверки SDK, баланса и UX; этот документ не утверждает численные параметры.
+P01 хранит фактические shown отдельно от earned; P20 сохраняет собственные quotes и выдачи. Баннер остаётся отдельным форматом со своей безопасной областью и lifecycle. ILRD требует доставки действительных сумм, валюты, идентичности точки и события в аналитику. Частота для подписанной тестовой сборки задана в уточнении №210 ниже. Для коммерческой сборки действуют отдельные проверки SDK, баланса и UX.
 
 Для первого рекламного выпуска P24/денежный checkout не являются зависимостью P21. Рекламный аккаунт, units, реальный SDK и физическая приёмка остаются самостоятельными условиями. Общая интеграция должна сохранять принятую партию, незавершённый жест, SaveStore и безопасный возврат с рекламы. Сравнение с оригиналом и приёмка собственного приложения — разные уровни доказательств.
 
@@ -49,3 +49,12 @@ P01 хранит фактические shown отдельно от earned; P20 
 AdsBreak планируется после сохранённого хода и пропускает занятый экран. Квота уровня и попытки списывается по native shown, а не по запросу. Coffee Break имеет собственное добровольное подтверждение и выдачу только по native earned. Баннер сохраняет штатную безопасную область и проверяет No Ads. Изменение рекламной частоты защищено `CAMPAIGN_ADS_APPROVED`, который требует live-конфигурации и отдельного включения после приёмки. В тестовой сборке можно открыть окно Coffee Break, показ заблокирован.
 
 Источником ILRD служит callback ImpressionData, из которого считаются целые micros и валюта. Для событий без суммы запись о доходе не создаётся. SDK не предоставляет общий обязательный impression ID, поэтому связка использует локальный ID события показа. Журнал приложения ограничен 128 наблюдениями, это не сверка выплат. Нативный одновременный kill до доставки ILRD в приложение остаётся открытым риском диагностики. Требуются реальные SDK события, фон/kill/rotation, баланс и UX. Договор SDK проверен по [Yandex Android 8 ILRD](https://ads.yandex.com/helpcenter/en/dev/android/impression-level). KIT IMPACT: REUSE.
+
+## Owner clarification · 25 November · #210
+
+The C8 test candidate uses the `source-shaped-pause-r2` configuration in `src/config/c8-release.json`. AZUR compiled defaults motivate the L3 and 120-second transition policy. Two pauses in one Unico Daily motivate repeatability and a 180-second starting gap. Hitapps source motivates configurable triggers, remaining steps and difficulty limits. Active original remote values and Unico's +3 reward grant contract are open evidence. Own Coffee stays an interstitial pause and does not mint coins. Campaign and Daily share the same persisted last confirmed fullscreen; no-fill changes the request backoff only. Device gates remain in [the #210 runbook](../qa/issue-210/ANDROID_ADS_CHECK.md).
+
+
+## Дополнение независимого аудита PR211
+
+[AZUR NATIVE_STATIC на SHA-подтверждённом оригинале](https://github.com/DanilaH/mini-games-kit/blob/f4542d287d17fc085eb2e8e874bd49415a2dedfd/research/games/association-solitaire/2026-11-25-azur-ad-director-unlimited/README.md) устанавливает отдельную точку меню, взаимно исключающие start/end, выключенную по умолчанию точку темы и bundled порог баннера L2. В `source-shaped-pause-r3` обычный C8 проверяет текущий уровень для меню и целевой для перехода. Все точки используют те же разрешения, готовность native SDK и durable fullscreen clock. Тестовые defaults — start включён, end и theme выключены. Обучение сохраняет защиту от баннера и рекламных пауз. Зарегистрированная схема Unlimited остаётся предметом P19/P25.

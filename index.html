@@ -1,7 +1,15 @@
 <!doctype html>
 <html lang="ru">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1c666a"><title>Солитёр ассоциаций</title></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1c666a"><title>Солитёр ассоциаций</title>
+<style>
+  html[data-c8-loading] { background:#155861 }
+  html[data-c8-loading] #app, html[data-c8-loading] #game-surface { visibility:hidden }
+  #c8-startup { display:none }
+  html[data-c8-loading] #c8-startup { display:grid;position:fixed;inset:0;place-content:center;gap:12px;text-align:center;color:#fff2d6;font:700 16px system-ui,sans-serif }
+  #c8-startup img { width:110px;height:90px;object-fit:contain;margin:auto }
+</style></head>
 <body>
+<div id="c8-startup" role="status"><img src="art/ui/linked-cards.webp" alt="">Открываем стол…</div>
 <div id="app" data-screen="home">
   <header><button id="menu" class="round" aria-label="Настройки"><span class="hamburger"></span></button><span id="wallet-anchor"><button id="wallet-open" class="wallet" aria-label="Монеты и помощники"><span class="coin-icon">✦</span><span id="coins">100</span><span class="wallet-plus">+</span></button></span><section class="streak-row" aria-label="Серия переносов"><div id="streak" class="streak"></div><span id="streak-reward" class="streak-reward">+2 <span>✦</span></span></section></header>
   <section id="home" aria-label="Кампания">
@@ -35,9 +43,9 @@
   <div id="feedback-row"><p id="recovery-clock-status" role="status" hidden>Проверяем время ходов без лимита. Можно вернуться на главную.</p><p id="message" role="status"></p><aside id="lesson-note" hidden><p id="lesson-copy" role="status"></p></aside><p id="no-transfer" role="status" hidden>Переносов нет даже после полного круга колоды.</p><div id="stock-recovery" hidden><span>Повторы колоды исчерпаны</span><button id="stock-recovery-button" type="button" class="secondary" hidden></button></div><div id="praise" aria-live="polite" hidden><img src="art/ui/linked-cards.webp" alt=""><strong></strong></div></div>
   <footer id="dock"><button id="hint"><span class="helper-icon"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M13 24c-9-12 0-22 8-21 12 1 15 13 7 21l-3 5H16z" fill="currentColor"/><path d="M18 8l-4 5m3 20h8m-7 4h6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span id="hint-label">Подсказка</span><b id="hint-count">3</b></button><button id="undo"><span class="helper-icon undo-icon">↶</span><span>Отмена</span><b id="undo-count">5</b></button><button id="joker" aria-pressed="false" hidden><span class="helper-icon joker-icon"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 12l7 8 6-13 6 13 7-8-3 19H10z" fill="currentColor"/><path d="M11 35h18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span><span>Джокер</span><b id="joker-count">1</b></button><button id="proof-shuffle" aria-label="Перемешать колоду" hidden><span class="helper-icon" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11h4c8 0 12 18 20 18h4m-6-6 6 6-6 6M6 29h4c3 0 5-2 7-6m6-6c2-4 4-6 7-6h4m-6-6 6 6-6 6"/></svg></span><span id="proof-shuffle-label">Перемешать</span><b id="proof-shuffle-count" hidden></b></button><button id="inspect" aria-label="Рассмотреть карту" aria-pressed="false"><span class="inspect-icon">Aa</span></button></footer>
   <div class="bottom-note" aria-hidden="true"></div>
-  <div id="banner-slot" hidden aria-hidden="true"></div>
   </div>
   <button id="save-retry" class="secondary" hidden>Повторить сохранение</button>
+  <div id="banner-slot" hidden aria-hidden="true"></div>
 </div>
 <div id="coin-layer" aria-hidden="true"></div>
 <dialog id="learn-rule" aria-labelledby="learn-title"><button class="close" data-lesson-close aria-label="Закрыть">×</button><h2 id="learn-title"></h2>
@@ -114,7 +122,7 @@
   <div class="sheet-actions"><button id="daily-bonus-new" class="primary" hidden>Открыть новый бонус</button><button id="daily-bonus-claim" class="primary" hidden>Забрать бонус</button><button class="secondary" data-close>Закрыть</button></div>
 </dialog>
 <dialog id="daily-tasks-dialog" class="sheet" aria-labelledby="daily-tasks-title">
-  <div class="sheet-heading"><button class="close" data-close aria-label="Закрыть">×</button><h2 id="daily-tasks-title">Задания</h2></div>
+  <div class="sheet-heading"><button class="close" data-close aria-label="Закрыть">×</button><h2 id="daily-tasks-title">Задания</h2><div id="daily-tasks-ready" class="weekly-ready" hidden></div></div>
   <div class="sheet-body"><h3>Сегодня</h3><p id="daily-tasks-day-status" class="small" role="status"></p><p id="daily-tasks-first-clear" class="small" hidden></p><div id="daily-tasks-list"></div><h3 id="daily-tasks-week-title">Бонус недели</h3><p id="daily-tasks-medals" role="status"></p><p id="daily-tasks-legacy-week" class="small" hidden></p><div id="daily-tasks-milestones"></div><button id="daily-tasks-weekly" class="secondary" disabled>Получить 20 монет за 5 медалей</button><section id="daily-tasks-previous" hidden><h3>Награды прошлых дней</h3><div id="daily-tasks-previous-list"></div></section></div>
   <div class="sheet-actions"><button class="secondary" data-close>Готово</button></div>
 </dialog>

@@ -20,19 +20,20 @@ const issuedIds: Record<number, string> = {
   1: 'dealer-001',
   2: 'dealer-002',
   3: 'dealer-003',
-  8: 'dealer-008',
+  5: 'ftue-005-r1',
+  8: 'ftue-008-r1',
   16: 'wave-016-c8-core-r1-rights-r1',
-  17: 'special-017-core-special-r1',
+  17: 'ftue-017-r1',
   18: 'special-018',
-  19: 'wave-019-core-special-r1',
+  19: 'ftue-019-r1',
   21: 'wave-021',
   22: 'bonus-022-c8-core-r1-rights-r1',
-  24: 'wave-024-core-special-r1',
+  24: 'ftue-024-r1',
   26: 'special-026-core-special-r1',
   27: 'wave-027-core-special-r1',
-  28: 'wave-028-core-special-r1',
+  28: 'ftue-028-r1',
   30: 'bonus-030-c8-core-r1-shuffle-r1-rights-r1',
-  32: 'wave-032-core-special-r1',
+  32: 'ftue-032-r1',
   33: 'wave-033-shuffle-r2',
   36: 'wave-036-shuffle-r2',
   39: 'wave-039-shuffle-r2',
@@ -350,7 +351,7 @@ test('real-time draw, Undo, drag, result and Next on C8', async ({ page, context
   await expect(page.locator('#next-level')).toHaveText('Забрать');
   const claim = await touchable(page, '#next-level');
   await page.touchscreen.tap(claim.x, claim.y);
-  await expect(page.locator('#next-level')).toContainText('Уровень 17');
+  await expect(page.locator('#next-level')).toHaveText('Дальше');
   const next = await touchable(page, '#next-level');
   await page.touchscreen.tap(next.x, next.y);
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', dealAt(17).id);

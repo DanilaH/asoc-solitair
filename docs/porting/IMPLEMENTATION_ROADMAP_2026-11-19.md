@@ -169,7 +169,7 @@ Continue +10, coin +moves, rewards multipliers, offer variants, correct no-fill 
 | `hitapps-revive-offers` | `ROADMAPPED` | Compare coin/rewarded/segment options and save/device flow |
 | `azur-coin-moves` | `IMPLEMENTED_UNVERIFIED` | C8 preview offers +10 for 120 coins after exact-board proof and durable debit. Verify price and channel choice on Android. [Checks](../qa/content-v8/CORE_5_COIN_CONTINUE.md) |
 | `azur-rewarded-moves` | `IMPLEMENTED_UNVERIFIED` | C8 shows +10 only for a verified exhausted-board route. Verify physical SDK earned, no-fill and relaunch. |
-| `azur-win-multiplier` | `ROADMAPPED` | Prototype optional post-win earned bonus with separate idempotent receipt and economy model |
+| `azur-win-multiplier` | `IMPLEMENTED_UNVERIFIED` | Actual implementation and original gaps: see RESEARCH_CONSOLIDATION_2026-11-25.md / ADOPTION_LEDGER.json. |
 | `hitapps-win-rewarded-offer` | `ROADMAPPED` | Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK |
 | `azur-unlimited-moves-offer` | `ROADMAPPED` | Define exact entitlement duration/UI/server/SaveStore/budget migration without falsely copying AZUR |
 | `unico-rewarded-theme` | `ROADMAPPED` | Design opt-in themed cosmetic offer, entitlement persistence and receipt grants |
@@ -228,7 +228,7 @@ PuzzleEvent/Puzzle Journey, daily tasks, daily bonus, daily reward, streaks, cos
 | --- | --- | --- |
 | `hitapps-puzzle-event` | `ROADMAPPED` | Prototype original 6-piece picture reward on actual wins/daily; assess visual payoff |
 | `azur-daily-tasks` | `ROADMAPPED` | Inventory ALL 16 original DailyTask kinds and 9 reward kinds (engagement, helper-use, spend/purchase), with per-kind evidence and trigger; implement in owner-approved stages without silently dropping commercially oriented task types |
-| `azur-daily-bonus` | `ROADMAPPED` | Prototype optional daily card-choice mini reward; measure friction, scope and locale dates |
+| `azur-daily-bonus` | `IMPLEMENTED_UNVERIFIED` | Actual implementation and original gaps: see RESEARCH_CONSOLIDATION_2026-11-25.md / ADOPTION_LEDGER.json. |
 | `hitapps-daily-rewards` | `ROADMAPPED` | Compare separate login reward against existing daily; propose value and dedup if selected |
 | `hitapps-win-streak` | `ROADMAPPED` | Define streak failure/reset milestone and test against current cycle without double credits |
 | `unico-win-and-task-streak` | `ROADMAPPED` | Compare separate reward ledgers; choose distinct milestones without duplicate grants |
@@ -250,7 +250,7 @@ Gold Rush, WeekendRace/LavaQuest, limited lives/events, first-encounter and offl
 | `hitapps-lives` | `ROADMAPPED` | Determine effect on current unlimited offline play and clear rule+save variation |
 | `hitapps-gold-rush-event` | `ROADMAPPED` | Design prize progress and first-attempt bonus independent from GoldenCards insertion; ensure event grant once |
 | `hitapps-meta-prewarm` | `ROADMAPPED` | Add optional event unlock level and preload timing in meta scheduler after first event exists |
-| `azur-combo-streak` | `EVIDENCE_GAP` | Reconstruct reward/counter reset/FTUE and determine whether separate progress necessary |
+| `azur-combo-streak` | `IMPLEMENTED_UNVERIFIED` | Actual implementation and original gaps: see RESEARCH_CONSOLIDATION_2026-11-25.md / ADOPTION_LEDGER.json. |
 
 ### F3. Полная расширенная LiveOps-мета (5)
 

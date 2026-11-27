@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { findDeal, hitappsR4Deals } from '../../src/content/campaign';
 import { dailyForDay } from '../../src/content/daily';
 import { advance } from '../../tools/qa/gameplay-oracle';
@@ -309,3 +309,38 @@ it('FA-01 accepted commands keep the Joker invariant across representative speci
   expect(attempts).toBeGreaterThan(500);
   console.info('FA-01 and FA-03 special card matrix', { sockets, attempts });
 }, 30_000);
+
+
+it('FA-02 a stalled native read defers fullscreen without locking play and permits recovery', async () => {
+  vi.useFakeTimers();
+  let available = false, requests = 0;
+  const blocked: boolean[] = [];
+  const bridge = {
+    status: async () => ({ banner: false, interstitial: true, rewarded: false, mode: 'test' }),
+    addListener: async () => ({ remove: async () => {} }), pending: async () => ({ receipts: [] }),
+    pendingShown: () => available ? Promise.resolve({ shown: null }) : new Promise(() => {}),
+    show: async () => { requests++; return { shown: false, outcome: 'unavailable' }; },
+    dispose: async () => {},
+  } as unknown as AdsBridge;
+  const ads = createAds({
+    activity: { setBlocked: (_reason, value) => blocked.push(value), isBlocked: () => false },
+    beforeShow: async () => {}, onStatus() {}, onEvent() {},
+    commit: async () => 'already-applied', commitShown: async () => 'already-applied',
+  }, bridge);
+  const request = { attempt: 'restarted', dealId: heavyDeal, mode: 'campaign', placement: 'level-start', kind: 'interstitial' } as const;
+  try {
+    await ads.refresh();
+    const result = ads.show(request);
+    expect(blocked).toEqual([]);
+    await vi.advanceTimersByTimeAsync(1600);
+    expect(await result).toMatchObject({ shown: false });
+    expect(requests).toBe(0);
+    expect(blocked).toEqual([]);
+    available = true;
+    await vi.advanceTimersByTimeAsync(1600);
+    await ads.recover();
+    await ads.show(request);
+    expect(requests).toBe(1);
+    expect(blocked).toEqual([true, false]);
+  } finally { ads.destroy(); vi.useRealTimers(); }
+});

@@ -328,7 +328,9 @@ describe('optional native services', () => {
     const activity = new GameplayActivityCoordinator(() => undefined, () => undefined), commit = vi.fn(async () => 'applied' as const);
     const ads = createAds({ activity, commit, commitShown: ignoreShown, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined }, b.api);
     await ads.refresh(); const display = ads.show({ kind: 'rewarded', placement: 'hint', attempt: 'attempt-1', dealId: deal.id, mode: 'campaign' });
-    await Promise.resolve(); expect(activity.getBlockReasons()).toContain('ad'); activity.setBlocked('native-background', true);
+    await vi.waitFor(() => expect(b.api.show).toHaveBeenCalledTimes(1));
+    expect(activity.getBlockReasons()).toContain('ad');
+    activity.setBlocked('native-background', true);
     shown.resolve({ shown: true, outcome: 'dismissed' }); await display; await ads.recover();
     expect(commit).not.toHaveBeenCalled(); expect(activity.getBlockReasons()).toEqual(['native-background']); ads.destroy();
   });

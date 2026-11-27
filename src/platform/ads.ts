@@ -25,6 +25,16 @@ export interface AdsBridge {
 }
 export const disabledStatus: AdStatus = { rewarded: false, interstitial: false, banner: false, mode: 'disabled' };
 const unavailable: AdOutcome = { shown: false, outcome: 'unavailable' };
+const SHOWN_CHECK_MS = 1500;
+
+async function withinShownCheck<T>(work: Promise<T>): Promise<T | undefined> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([work, new Promise<undefined>(resolve => {
+      timer = setTimeout(() => resolve(undefined), SHOWN_CHECK_MS);
+    })]);
+  } finally { clearTimeout(timer); }
+}
 /** No web mocks; injected bridges exist solely as ordinary unit-test constructor dependencies. */
 export function createAds(options: {
   activity: Pick<GameplayActivityCoordinator, 'setBlocked' | 'isBlocked'>;
@@ -83,9 +93,9 @@ export function createAds(options: {
     if (!alive || !native) return Promise.resolve(false);
     if (shownFlight) return shownFlight;
     shownFlight = (async () => {
-      const { shown } = await native.pendingShown();
-      if (!alive) return false;
-      if (shown !== null) await shownQueue.deliver(parseFullscreenShown(shown));
+      const record = await withinShownCheck(native.pendingShown());
+      if (!alive || !record) return false;
+      if (record.shown !== null) await shownQueue.deliver(parseFullscreenShown(record.shown));
       return true;
     })().catch(() => false).finally(() => { shownFlight = undefined; });
     return shownFlight;
@@ -128,23 +138,32 @@ export function createAds(options: {
       if (!alive || !native || showing || options.activity.isBlocked()) return unavailable;
       options.onEvent({ kind: request.kind, phase: 'show_request', placement: request.placement });
       if (!status[request.kind]) { options.onEvent({ kind: request.kind, phase: 'unavailable', placement: request.placement }); return unavailable; }
-      showing = true; options.activity.setBlocked('ad', true);
+      showing = true;
+      let ownsActivity = false;
       try {
         // Resolve any persisted display before re-evaluating product cooldown.
-        // A storage failure only defers fullscreen ads.
-        if (!await recoverShown() || !alive) return unavailable;
+        // The game stays available throughout the journal preflight.
+        if (!await withinShownCheck(recoverShown()) || !alive || options.activity.isBlocked()) return unavailable;
+        ownsActivity = true;
+        options.activity.setBlocked('ad', true);
         await options.beforeShow({ ...request });
         if (!alive) return unavailable;
         const result = await native.show({ ...request });
         if (!result.shown) options.onEvent({ kind: request.kind, phase: result.outcome, placement: request.placement });
         if (result.shown) {
           // The earlier read may have started before the SDK callback.
-          await shownFlight;
-          await recoverShown();
+          await withinShownCheck((async () => {
+            await shownFlight;
+            await recoverShown();
+          })());
         }
         return result;
       } catch { return { shown: false, outcome: 'error' }; }
-      finally { showing = false; options.activity.setBlocked('ad', false); if (alive) void recover(); }
+      finally {
+        showing = false;
+        if (ownsActivity) options.activity.setBlocked('ad', false);
+        if (alive) void recover();
+      }
     },
     destroy() {
       if (!alive) return; alive = false;

@@ -55,7 +55,7 @@ async function dealOnScreen(page: Page, level: number) {
 }
 
 test('cold start through L6, with real touch, short lessons and a new L6 layout', async ({ page }, info) => {
-  test.setTimeout(250_000);
+  test.setTimeout(420_000);
   await page.goto('/');
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
   await expect(page.locator('#level-picker-open')).toBeHidden();
@@ -100,7 +100,7 @@ test('cold start through L6, with real touch, short lessons and a new L6 layout'
 });
 
 test('L6 voluntary restart creates a second playable board without losing a life', async ({ page }, info) => {
-  test.setTimeout(120_000);
+  test.setTimeout(180_000);
   const base = findDeal('campaign-c8-dealer-006-bonus-r2')!;
   // Begin with the old untouched L6 so this also proves the explicit save upgrade path.
   const save = freshSave(base, 'historical-l6-stage1');

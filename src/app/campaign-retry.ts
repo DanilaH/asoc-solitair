@@ -1,4 +1,5 @@
 import { campaignDeals, campaignIssuance, findDeal, layoutFingerprint, selectCampaignDeal, selectRetryLayout } from '../content/campaign';
+import { CAMPAIGN_CORE_STAGE1 } from '../config/hitapps-r4';
 import { releaseProfile } from '../config/profile';
 import { beginDeal } from '../domain/campaign';
 import { mayStartCampaignAttempt } from '../domain/campaign-lives';
@@ -26,7 +27,8 @@ export function quoteAdaptiveRetry(save: Save): AdaptiveRetryQuote | undefined {
 
 export function quoteLayoutRetry(save: Save): AdaptiveRetryQuote | undefined {
   const previous = save.attempt;
-  if (!releaseProfile || previous.daily || previous.board.phase !== 'exhausted' || previous.board.movesLeft !== 0) return;
+  if (!releaseProfile || previous.daily || previous.board.phase === 'won' ||
+      (previous.board.phase === 'playing' ? !CAMPAIGN_CORE_STAGE1 : previous.board.movesLeft !== 0)) return;
   const current = findDeal(previous.dealId), level = current?.campaignLevel;
   if (!current || level === undefined || !campaignDeals[level - 1]) return;
   const selected = selectRetryLayout(save, campaignDeals[level - 1], current);
@@ -42,7 +44,7 @@ export function commitAdaptiveRetry(save: Save, quote: AdaptiveRetryQuote, attem
   const previous = save.attempt, previousDeal = findDeal(previous.dealId)!;
   if (!mayStartCampaignAttempt(save, previous, now)) return 'lives';
   beginDeal(save, current.selected, attemptId, previousDeal);
-  const issuance = campaignIssuance(save, campaignDeals[current.level - 1], current.selected);
+  const issuance = campaignIssuance(save, campaignDeals[current.level - 1], current.selected, previous);
   if (issuance) save.attempt.issuance = issuance;
   return 'started';
 }

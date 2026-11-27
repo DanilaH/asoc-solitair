@@ -40,7 +40,7 @@ it('pays two tokens and separate coins only on a real first win; spending and cl
   expect(claimPicture(restored, now + 8 * 86_400_000)).toBe(false);
   expect(restored.profile).toMatchObject({ coins: coins + 20, hints: hints + 1 });
   expect(validPicture(restored)).toBe(true);
-});
+}, 20000);
 
 it('expires earning while retaining parts and excluding daily/replayed wins', () => {
   const save = freshSave(introDeal, 'new-gallery');

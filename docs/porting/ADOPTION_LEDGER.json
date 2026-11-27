@@ -1,5 +1,15 @@
 {
   "schema": "consumer-adoption-ledger-v1",
+  "campaignCoreStage1": {
+    "issue": "https://github.com/DanilaH/asoc-solitair/issues/228",
+    "base": "26c40e7cbddf7117acde956b2c61c98af2728f84",
+    "implementationBranch": "feat/228-campaign-core",
+    "policy": "campaign-core-stage1-v1",
+    "evidence": "docs/qa/campaign-core-stage1-228.md",
+    "scope": ["PT-01", "PT-02", "PT-03", "PT-05", "PT-08", "PT-11", "PT-12", "LEG-01", "LEG-02"],
+    "acceptance": "DEVICE_AND_LIVE_SDK_PENDING",
+    "remainingIssues": [228, 226]
+  },
   "functionalAudit225": {
     "issue": "https://github.com/DanilaH/asoc-solitair/issues/225",
     "base": "9eab55ba6f5406981c28aadee1c5a922ba703fdb",

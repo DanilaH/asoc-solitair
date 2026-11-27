@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { hitappsR4Difficulty } from '../../src/config/hitapps-r4';
-import { campaignDeals, layoutFingerprint, selectCampaignDeal } from '../../src/content/campaign';
+import { campaignDeals, layoutFingerprint, campaignAuthoringTemplate } from '../../src/content/campaign';
 import type { SourceRecord } from '../../src/content/hitapps-r4-bank';
 import { adjustedMoveBudget, C8_DIFFICULTY } from '../../src/domain/difficulty';
 import { freshSave } from '../../src/domain/engine';
@@ -10,21 +10,21 @@ import type { Deal } from '../../src/domain/types';
 import { authoringHash } from './hitapps-authoring';
 import { emptyFeatures, prepareSourceInput, sourceCardOrder, type SourceFeatures } from './hitapps-source-authoring';
 import { runSourceBot } from './hitapps-source-bot';
-import { authorSourceCandidate } from './hitapps-source-pipeline';
+import { authorSourceCandidate, certifySourceRoute } from './hitapps-source-pipeline';
 
 const level = Number(process.argv[2]);
 const seedOffset = Number(process.argv[3] ?? 280);
 const count = Number(process.argv[4] ?? 240);
 const visits = Number(process.env.HITAPPS_COVERAGE_VISITS ?? 450);
+const limit = Number(process.env.HITAPPS_COVERAGE_LIMIT ?? 2);
 const base = campaignDeals.find(deal => deal.campaignLevel === level);
-if (!base || level < 16 || level > 80 || ![seedOffset, count, visits].every(Number.isSafeInteger) ||
-    seedOffset < 0 || count < 1 || visits < 0) throw Error('Expected one campaign level and a bounded seed range');
+if (!base || level < 16 || level > 80 || ![seedOffset, count, visits, limit].every(Number.isSafeInteger) ||
+    seedOffset < 0 || count < 1 || visits < 0 || limit < 1) throw Error('Expected one campaign level and a bounded seed range');
 
 const save = freshSave(base, 'hitapps-coverage-authoring');
 save.platform = { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0, lastFullscreenAt: 0,
   completedCampaign: Array.from({ length: level }, (_, index) => campaignId(index + 1)) };
-const legacy = selectCampaignDeal(save, base);
-if (legacy.hitapps) throw Error('Build the coverage tool with the standard C8 issuance profile');
+const legacy = campaignAuthoringTemplate(save, base);
 const template: Deal = { ...base, training: undefined, recovery: legacy.recovery, extraHelpers: legacy.extraHelpers,
   randomJokerPreview: legacy.randomJokerPreview, randomJokerCost: legacy.randomJokerCost, shufflePolicy: legacy.shufflePolicy,
   shuffleCost: legacy.shuffleCost, bonusSlots: legacy.bonusSlots,
@@ -88,7 +88,7 @@ function write() {
   writeFileSync(`${output}/coverage-${level * 10000 + seedOffset}-of-1.json`, JSON.stringify({ records: rows, level, reasons }));
 }
 mkdirSync(output, { recursive: true });
-for (let offset = seedOffset; offset < seedOffset + count && rows.length < 2; offset++) {
+for (let offset = seedOffset; offset < seedOffset + count && rows.length < limit; offset++) {
   const seed = level * 100000 + offset;
   const features = recipe(seed);
   if (!features) continue;
@@ -112,7 +112,13 @@ for (let offset = seedOffset; offset < seedOffset + count && rows.length < 2; of
   const fingerprint = layoutFingerprint(result.deal);
   if (geometry.has(fingerprint)) continue;
   geometry.add(fingerprint);
-  rows.push({ seed, strategy: 'None', use: 'campaign', cost: proof.cost, reserve: proof.reserve, baseId: base.id,
+  const budgets = Object.fromEntries([C8_DIFFICULTY.hardPenalty, C8_DIFFICULTY.easyPenalty].map(penalty => {
+    const moves = adjustedMoveBudget(budget, penalty, true);
+    const revised = { ...result.deal, initial: { ...packed.initial, movesLeft: moves } };
+    if (!certifySourceRoute(revised, packed.winningPath)) throw Error(`Uncertified budget: ${packed.id}`);
+    return [String(penalty), { moves, hash: authoringHash([revised.initial, cards, packed.hitapps]) }];
+  }));
+  rows.push({ seed, strategy: 'None', use: 'campaign', budgets, cost: proof.cost, reserve: proof.reserve, baseId: base.id,
     deal: packed, campaignPolicy: 'c8-coverage-v1', changedCards: Object.fromEntries(Object.entries(cards)
       .filter(([id, card]) => JSON.stringify(base.cards[id]) !== JSON.stringify(card))), sourceHash: receipt.sourceHash,
     boardHash: result.manifest.finalBoardHash, routeHash: proof.routeHash, traceHash: proof.traceHash,

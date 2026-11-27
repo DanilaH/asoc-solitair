@@ -8,3 +8,8 @@ export const hitappsR4Difficulty = { revision: 'hitapps-balance-v1', easy: {
 
 export const HITAPPS_RULES4_CAMPAIGN = releaseProfile?.campaignBoardRulesVersion === 4;
 export const HITAPPS_FIXTURE_UI = import.meta.env?.VITE_HITAPPS_FIXTURES === '1';
+
+export const campaignCorePolicy = 'campaign-core-stage1-v1';
+export const CAMPAIGN_CORE_STAGE1 = releaseProfile?.policies.campaignCore === campaignCorePolicy &&
+  import.meta.env?.VITE_ASOC_ARCHIVE_227 !== '1';
+export const campaignCoreDealId = (id: string) => id.endsWith('-core-stage1-v1');

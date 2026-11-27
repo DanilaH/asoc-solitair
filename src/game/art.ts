@@ -1,4 +1,5 @@
 /** Presentation-only resources. Published deal URLs, IDs and save data stay intact. */
+import { campaignCoreDealId } from '../config/hitapps-r4';
 import { picturePair } from '../domain/puzzle-pairs';
 import type { Card, Deal } from '../domain/types';
 import subjectsByText from './subject-art.json' with { type: 'json' };
@@ -20,6 +21,8 @@ const categoryArt = new WeakMap<Deal, Map<string, string>>();
 export function cardArtwork(card: Card, deal: Deal): string | undefined {
   const splitIllustration = picturePair(deal, card.id)?.illustration;
   if (splitIllustration) return splitIllustration;
+  if (campaignCoreDealId(deal.id) && (deal.campaignLevel ?? 0) <= 15)
+    return card.image && illustrationUrl(card.image);
   if (deal.tags?.includes('content8-beyond80')) return !card.leader && card.image ? illustrationUrl(card.image) : undefined;
   let art = categoryArt.get(deal);
   if (!art) {

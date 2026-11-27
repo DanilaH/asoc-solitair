@@ -118,7 +118,8 @@ it('keeps campaign difficulty history and loss on restart across save reload and
   expect(decodeSave(JSON.stringify(freshSave(deal, 'legacy-no-history')), findDeal).difficultyHistory).toBeUndefined();
 });
 
-it('issues only certified variants to new C8 starts and keeps their identity across reload and Restart', async () => {
+it('restores the archived C8 director variants with the same identity across reload and Restart', async () => {
+  vi.stubEnv('VITE_ASOC_ARCHIVE_227', '1');
   vi.stubEnv('VITE_CONTENT8_PREVIEW', '1');
   const { campaignDeals, findDeal, selectCampaignDeal } = await import('../../src/content/campaign');
   const { content8DirectorDeals } = await import('../../src/content/campaign-v8-director');

@@ -1,4 +1,4 @@
-import { applyBoard, boardKey } from './engine';
+import { applyBoard, boardKey, isLocked } from './engine';
 import { recordUndo } from './history';
 import type { Board, BoardCommand, Deal, Save } from './types';
 
@@ -13,7 +13,7 @@ export function canShuffle(save: Save, deal: Deal): boolean {
   if ((deal.shuffleCost === 'charge' && !save.dailyTasks?.inventory.shuffles) || attempt.daily || attempt.shuffleUsed || board.phase !== 'playing' || attempt.dealId !== deal.id) return false;
   if (deal.shufflePolicy === 'hidden-pool-r1') {
     const hidden = board.tableau.flat().filter(id => !board.faceUp.includes(id)).length;
-    return !board.joker && !deal.lock && board.stock.length + board.waste.length + hidden > 1;
+    return !board.joker && !board.tableau.some((_, index) => isLocked(board, index, deal)) && board.stock.length + board.waste.length + hidden > 1;
   }
   return deal.shufflePreview === 1 && board.stock.length > 1;
 }
@@ -40,7 +40,7 @@ function permute(cards: readonly string[], seed: number): string[] {
 export function prepareShuffleBoard(board: Board, deal: Deal, seed: number): Board | undefined {
   if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) return;
   if (deal.shufflePreview === 1) return { ...board, stock: shuffledStock(board.stock, seed) };
-  if (deal.shufflePolicy !== 'hidden-pool-r1' || board.joker || deal.lock) return;
+  if (deal.shufflePolicy !== 'hidden-pool-r1' || board.joker || board.tableau.some((_, index) => isLocked(board, index, deal))) return;
   const visible = new Set(board.faceUp);
   const faceDown = board.tableau.flatMap(pile => pile.filter(id => !visible.has(id)));
   const resetStock = [...board.stock, ...board.waste];

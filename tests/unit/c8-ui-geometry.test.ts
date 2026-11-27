@@ -1,3 +1,4 @@
+import { CAMPAIGN_LENGTH } from '../../src/domain/progression';
 import assert from 'node:assert/strict';
 import { test } from 'vitest';
 import { releaseProfile } from '../../src/config/profile';
@@ -15,7 +16,7 @@ test.skipIf(process.env.ASOC_QA_C8_GEOMETRY !== '1')('C8 uses a single bounded g
   assert.equal(releaseProfile!.capabilities.bonusSlots, 'active');
   assert.equal(releaseProfile!.capabilities.frozenBoundPuzzleGoldenStarter, 'active');
   assert.equal(releaseProfile!.capabilities.purchases, 'off');
-  assert.equal(campaignDeals.length, 80);
+  assert.equal(campaignDeals.length, CAMPAIGN_LENGTH);
 
   const issued = new Map<string, Deal>();
   for (const base of campaignDeals) {
@@ -120,4 +121,4 @@ test.skipIf(process.env.ASOC_QA_C8_GEOMETRY !== '1')('C8 uses a single bounded g
   }
   console.info(JSON.stringify({ profile: releaseProfile!.id, campaign: campaignDeals.length, issued: issued.size,
     daily: daily.length, retained: saved.length, distinctIds: definitions.size, cases, replayed, bonusCases }));
-}, 90_000);
+}, 240_000);

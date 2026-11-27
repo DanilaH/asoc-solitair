@@ -7,6 +7,7 @@ from zipfile import ZipFile
 manifest = Path("dist/release-manifest.json").read_bytes()
 profile = json.loads(manifest)
 if (profile.get("fixtureNavigation") is not False or profile.get("archivedCampaign") is not False or profile.get("archivedEconomy") is not False
+        or profile.get("archivedMeta") is not False
         or profile.get("campaignBoardRulesVersion") != 4
         or profile["policies"].get("campaignCore") != "campaign-core-stage1-v1"
         or profile["policies"].get("campaignEconomy") != "e4-m1-r1" or profile["balanceVersion"] != 4):

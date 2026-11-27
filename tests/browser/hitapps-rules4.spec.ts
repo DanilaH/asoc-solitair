@@ -1,3 +1,4 @@
+import { extendedRecords } from '../../src/content/campaign-meta-bank';
 import { expect, test, type Page } from '@playwright/test';
 import { campaignDeals, findDeal, hitappsR4Deals } from '../../src/content/campaign';
 import { dispatch, freshSave, sourceCards } from '../../src/domain/engine';
@@ -163,9 +164,12 @@ test('a URL cannot enable fixture controls in the release build', async ({ page 
 
 test('the finished campaign keeps Daily accessible and never opens the level picker', async ({ page }, info) => {
   test.skip(fixtureBuild, 'Requires the ordinary release build');
-  const { deal } = [...hitappsR4Deals()].find(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 80)!;
+  const archived = process.env.VITE_ASOC_ARCHIVE_227 === '1' || process.env.VITE_ASOC_ARCHIVE_229 === '1' ||
+    process.env.VITE_ASOC_ARCHIVE_230 === '1';
+  const deal = archived ? [...hitappsR4Deals()].find(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 80)!.deal
+    : findDeal(extendedRecords(200)[0].deal.id + '-core-stage1-v1-m1')!;
   let save = profile(deal, 'hitapps-production-completed');
-  save.platform!.completedCampaign = Array.from({ length: 79 }, (_, index) => campaignId(index + 1));
+  save.platform!.completedCampaign = Array.from({ length: deal.campaignLevel! - 1 }, (_, index) => campaignId(index + 1));
   for (const action of deal.winningPath) {
     const step = dispatch(save, action, deal);
     expect(step.accepted).toBe(true);

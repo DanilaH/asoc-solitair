@@ -1,3 +1,4 @@
+import type { WinStreak } from './events/win-streak';
 import { E4_M1, M1 } from '../config/economy';
 import type { ProductOffers } from './commerce/product-offers';
 import type { Combo } from './events/combo';
@@ -147,7 +148,7 @@ export interface PlatformState {
   fullscreenCadence?: { version: 1; lastShownId: string };
 }
 export interface RewardGrant { key: string; reason: 'win' | 'campaign_combo' | 'campaign_milestone' | 'campaign_win_cycle' | 'daily_completion' | 'daily_streak_milestone' | 'golden_cards'; label: string; coins: number; hints?: number; undos?: number }
-export interface MetaState { version: 1; winCycle: number; cycles: number; dailyDates: string[]; dailyStreak: number; lastDaily?: string }
+export interface MetaState { version: 1; winCycle: number; cycles: number; dailyDates: string[]; dailyStreak: number; lastDaily?: string; winStreak?: WinStreak }
 export interface EqualityIssuanceState {
   version: 1;
   eligible: number; attempted: number; selected: number; issued: number; lost: number; completed: number;

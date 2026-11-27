@@ -1,3 +1,5 @@
+import { CAMPAIGN_META } from './config/campaign-meta';
+import { claimWinStreak, stagedStreak, streakStatus } from './domain/events/win-streak';
 import { E4_M1, M1, M1_ID } from './config/economy';
 import { ordinaryProgress } from './domain/ordinary-progress';
 import { createProductOfferAdapter, noUsefulMoveFact, startOfferSession, type ContextFact } from './domain/commerce/product-offers';
@@ -46,9 +48,9 @@ import { AZUR_VICTORY_DEFAULTS, AZUR_VICTORY_QA, AZUR_VICTORY_SAVE_KEY, quoteVic
 import { frozenLayers } from './domain/frozen-cards';
 import { isBoundCard } from './domain/bound-cards';
 import { collectedGold, goldenRewardKey } from './domain/golden-cards';
-import { TASKS_PREVIEW, acceptedTaskSignals, claimTask, claimTaskMilestone, taskRewardState, recordTaskSignal, releaseTasks, shouldScheduleTasks, updatePreviewTasks, type TaskSignal } from './domain/events/daily-tasks';
+import { TASKS_PREVIEW, acceptedTaskSignals, claimTask, claimTaskMilestone, openWeeklyChest, taskRewardState, recordTaskSignal, releaseTasks, shouldScheduleTasks, updatePreviewTasks, type TaskSignal } from './domain/events/daily-tasks';
 import { PICTURE_PREVIEW, PICTURE_PRICES, PICTURE_TITLE, claimPicture, observePictureClock, openPictureEvent, pictureClosed, pictureTokens, recordPictureWin, revealPicturePart } from './domain/events/picture';
-import { SHOP_FREE_COINS, SHOP_VIDEO_COINS, REWARD_OFFER_PREVIEW, COIN_WALLET_LEVEL, canClaimShopCoins, claimShopCoins, definitionCount, isOfferPlacement, offerLabels, offerQuote, offerShowContext, prepareRewardOffer, selectedWinMultiplier, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
+import { SHOP_FREE_COINS, SHOP_VIDEO_COINS, REWARD_OFFER_PREVIEW, COIN_WALLET_LEVEL, canClaimShopCoins, claimShopCoins, definitionCount, isOfferPlacement, offerLabels, offerQuote, offerShowContext, prepareRewardOffer, retireUnrewardedOffer, selectedWinMultiplier, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
 import { openingShuffleProof } from './domain/shuffle-intro-proof';
 import { canShuffle, commitShuffle, prepareShuffleBoard, type ShuffleRequest } from './domain/proof-shuffle';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
@@ -861,6 +863,8 @@ try {
   let lifeVideoInFlight: string | undefined;
   const ads = createAds({
     pendingLife: () => lifeVideoInFlight ? undefined : save.campaignLives?.pending,
+    pendingOffer: () => save.rewardOffers?.pending.find(offer => offer.attemptId !== undefined)?.id,
+    async retireOffer(id) { await store.mutate(next => retireUnrewardedOffer(next, id)); },
     async retireLife(request) {
       if (lifeVideoInFlight || !matchesLifeVideo(save, request.id, request.dealId)) return;
       await store.mutate(next => {
@@ -1548,7 +1552,7 @@ try {
     const cycleReward = payout?.find(r => r.reason === 'campaign_win_cycle');
     $('#result-bonus').hidden = !won || !cycleReward;
     $('#result-bonus-copy').textContent = cycleReward ? `Получено: +${cycleReward.coins} монет${cycleReward.hints ? ` и +${cycleReward.hints} подсказка` : ''}` : '';
-    const cycle = save.meta!.winCycle, progress = $('#result-meta');
+    const cycle = save.meta!.winCycle, progress = $('#result-meta'), staged = !daily && !cycleReward && stagedStreak(save);
     progress.hidden = !won || !daily && (completedLevels(save) >= CAMPAIGN_LENGTH || !cycleReward && (!deal.campaignLevel || cycle === 0));
     progress.textContent = daily ? `Серия дней · ${currentDailyStreak(save, localDay())}`
       : cycleReward ? 'Новый цикл · 0 / 5' : `Пять побед · ${cycle} / 5`;
@@ -1559,7 +1563,12 @@ try {
       $('#result-bonus-copy').replaceChildren(prizeToken({ kind: 'Coins', quantity: cycleReward.coins }));
       if (cycleReward.hints) $('#result-bonus-copy').append(prizeToken({ kind: 'MoveHint', quantity: cycleReward.hints }));
     }
-    if (casual && !progress.hidden && !daily) {
+    if (won && staged && deal.campaignLevel && save.meta?.winStreak) {
+      const streak = streakStatus(save);
+      progress.hidden = false;
+      progress.textContent = streak.ready ? `Серия побед · наград готово ${streak.ready}` : `Серия побед · ${streak.progress}/${streak.goal}`;
+      progress.setAttribute('aria-label', progress.textContent);
+    } else if (casual && !progress.hidden && !daily) {
       const count = cycleReward ? 5 : cycle;
       const stamps = winStamps(count);
       progress.replaceChildren(stamps, Object.assign(document.createElement('span'), { textContent: count + '/5' }));
@@ -2019,7 +2028,7 @@ try {
       return row;
     }));
     const weekly = $<HTMLButtonElement>('#daily-tasks-weekly');
-    weekly.hidden = !week || week.catalog === 'azur-compiled-r1';
+    weekly.hidden = !week || week.milestones.length !== 1;
     const single = week?.milestones.find(entry => entry.id === 'week');
     const weeklyClaimed = Boolean(week?.claimedMilestones.includes('week'));
     if (casual) {
@@ -2042,17 +2051,23 @@ try {
     weekly.textContent = weeklyClaimed ? 'Бонус недели получен'
       : single ? 'Получить бонус недели · ' + [single.prize, ...(single.bundle ?? [])].map(prizeLabel).join(' + ') : 'Бонус недели';
     const milestones = $('#daily-tasks-milestones');
-    if (casual && week?.catalog === 'azur-compiled-r1' && week.milestones.some(item =>
+    const multiWeek = Boolean(week && week.milestones.length > 1);
+    const chest = $<HTMLButtonElement>('#task-chest-open');
+    const chestCount = Object.keys(save.dailyTasks?.inventory.weeklyChests ?? {}).length;
+    chest.hidden = chestCount === 0;
+    chest.disabled = busy;
+    chest.textContent = chestCount > 1 ? `Открыть сундук · ${chestCount}` : 'Открыть сундук';
+    if (casual && week && multiWeek && week.milestones.some(item =>
       item.medals <= week.totalMedals && !week.claimedMilestones.includes(item.id))) {
       $('#daily-tasks-ready').hidden = false;
       $('#daily-tasks-ready').append(medals, milestones);
     } else if (milestones.parentElement?.id === 'daily-tasks-ready') {
       $('#daily-tasks-legacy-week').after(medals, milestones);
     }
-    milestones.replaceChildren(...(week?.catalog === 'azur-compiled-r1' ? week.milestones.map(entry => {
+    milestones.replaceChildren(...(week && multiWeek ? week.milestones.map(entry => {
       const claim = document.createElement('button'); claim.type = 'button'; claim.className = 'secondary';
       const claimed = week.claimedMilestones.includes(entry.id);
-      claim.textContent = entry.medals + ' мед. · ' + (claimed ? 'Получено' : [entry.prize, ...(entry.bundle ?? [])].map(prizeLabel).join(' + '));
+      claim.textContent = entry.medals + ' мед. · ' + (claimed ? 'Получено' : [entry.prize, ...(entry.bundle ?? [])].map(prizeLabel).join(' + ') + (entry.chest ? ' + сундук' : ''));
       claim.disabled = busy || claimed || week.totalMedals < entry.medals;
       claim.addEventListener('click', () => {
         if (saving || serviceBusy) return;
@@ -2312,6 +2327,10 @@ try {
     const attempt = save.attempt.id, back = returnToDialog;
     serviceBusy = true;
     try {
+      if (E4_M1 && !await ads.canAuthorizeOffer()) {
+        message('Проверяем предыдущий запрос. Можно продолжить игру.', true);
+        return;
+      }
       const offer = await write(next => prepareRewardOffer(next, deal, kind, Date.now(), crypto.randomUUID(), integratedOffers, integratedOffers));
       if (!offer || !alive || save.attempt.id !== attempt) return;
       if (E4_M1 && selector === '#result') {
@@ -2323,6 +2342,9 @@ try {
       const result = await ads.show({ kind: 'rewarded', placement: kind, attempt: offer.id, dealId: offer.dealId, mode: 'campaign' });
       if (!alive) return;
       rewardOfferReturn = { attempt, selector, back };
+      if (E4_M1 && (result.terminalNoReward || !result.shown && result.outcome === 'unavailable')) {
+        await write(next => retireUnrewardedOffer(next, offer.id));
+      }
       if (videoWin && videoWin.id === offer.id) {
         if (result.shown) videoWin.until = Date.now() + 2000;
         else {
@@ -2581,8 +2603,11 @@ try {
   }
   async function activateMode(mode: 'campaign' | 'daily', oldDaily = false, replaceConfirmed = false) {
     if (!ready || saving || serviceBusy || store.needsRecovery) return;
-    const target = mode === 'daily' ? oldDaily && dailyAttempt(save) ? findDeal(dailyAttempt(save)!.dealId)! : dailyForDay(localDay()) : campaignAttempt(save) ? findDeal(campaignAttempt(save)!.dealId)! : campaignDeals[0];
     const previousDaily = dailyAttempt(save);
+    const today = localDay();
+    const target = mode === 'daily'
+      ? previousDaily && (oldDaily || (previousDaily.daily?.dayId ?? '') >= today) ? findDeal(previousDaily.dealId)! : dailyForDay(today)
+      : campaignAttempt(save) ? findDeal(campaignAttempt(save)!.dealId)! : campaignDeals[0];
     const previousTarget = mode === 'daily' ? previousDaily : campaignAttempt(save);
     if (mode === 'daily' && !oldDaily && !replaceConfirmed && previousDaily?.daily?.dayId !== target.daily?.dayId && previousDaily?.board.phase === 'playing' && previousDaily.telemetry?.started) { openDialog('#replace-daily'); return; }
     if (save.attempt.dealId === target.id) { closeDialogs(); showGame(); return; }
@@ -2908,7 +2933,7 @@ try {
     else void openLevel(level, false, true, undefined, undefined, skipAd);
   }
   nextLevelButton.addEventListener('click', () => {
-    if (!startRewardClaim()) advanceResult(E4_M1);
+    if (!startRewardClaim()) advanceResult();
   }, domOptions);
   if (dailyBonusEnabled) {
     async function showDailyBonus(fromHelpers = false) {
@@ -2956,6 +2981,27 @@ try {
         const error = $('#daily-bonus-error');
         error.textContent = 'Не удалось сохранить награду.'; error.hidden = false;
       }
+    }, domOptions);
+  }
+  if (CAMPAIGN_META) {
+    $('#cycle-claim').addEventListener('click', () => {
+      if (saving || serviceBusy) return;
+      const expected = save.meta?.winStreak?.claimed ?? 0;
+      const origin = $('#cycle-claim').getBoundingClientRect(), earlier = save;
+      void write(next => claimWinStreak(next, expected)).then(granted => {
+        if (granted) presentRewardDeltas('#cycle-info', origin, earlier);
+      }).catch(() => message('Не удалось сохранить награду.', true));
+    }, domOptions);
+    $('#task-chest-open').addEventListener('click', () => {
+      const key = Object.keys(save.dailyTasks?.inventory.weeklyChests ?? {})[0];
+      if (!key || saving || serviceBusy) return;
+      const origin = $('#task-chest-open').getBoundingClientRect(), earlier = save;
+      void write(next => openWeeklyChest(next, key)).then(prize => {
+        if (!prize) return;
+        $('#task-chest-prize').hidden = false;
+        $('#task-chest-prize').textContent = 'В сундуке · ' + prizeLabel(prize);
+        presentRewardDeltas('#daily-tasks-dialog', origin, earlier);
+      }).catch(() => message('Не удалось открыть сундук.', true));
     }, domOptions);
   }
   if (TASKS_PREVIEW) {
@@ -3113,7 +3159,7 @@ try {
     const changedLayout = quoteLayoutRetry(save);
     if (save.attempt.board.phase !== 'won' && (confirm || save.attempt.telemetry?.started || hasBonus || changedLayout)) {
       const start = changedLayout ? 'Начнётся новый расклад этого уровня.' : 'Карты вернутся на исходные места.';
-      $('#restart-confirm-copy').textContent = `${start} Потраченные помощники не восстановятся.${hasBonus ? ' Дополнительные места закроются.' : ''}${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`;
+      $('#restart-confirm-copy').textContent = `${start} Потраченные помощники не восстановятся.${hasBonus ? ' Дополнительные места закроются.' : ''}${save.attempt.daily ? '' : stagedStreak(save) ? save.attempt.board.phase === 'exhausted' && streakStatus(save).progress ? ' Текущая ступень серии обнулится. Готовые награды сохранятся.' : '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`;
       openDialog('#restart-confirm');
     }
     else void replay();

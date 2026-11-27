@@ -1,7 +1,7 @@
 import { settleLifeVideo } from './campaign-lives';
 import { isCampaignInterstitial, recordAdBreakShown, recordCoffeeDisplay, settleCoffee, type CampaignInterstitialPlacement } from './campaign-advertising';
 import { campaignRewards } from './meta';
-import { isOfferPlacement, offerShowContext, settleRewardOffer, type OfferPlacement } from './reward-offers';
+import { isOfferPlacement, settleRewardOffer, type OfferPlacement } from './reward-offers';
 import { BALANCE } from './balance';
 import { campaignId } from './progression';
 import { CONTENT8_PREVIEW, type ContinueVideoQuote, type Deal, type PlatformState, type Save } from './types';
@@ -47,7 +47,7 @@ export function parseFullscreenShown(value: unknown): FullscreenShown {
 
 /** The native journal owns one verified show until this independent effect is durable. */
 export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?: number, repeatableDeal?: Deal): 'applied' | 'already-applied' {
-  if (isOfferPlacement(shown.placement) && (shown.kind !== 'rewarded' || !offerShowContext(save, shown))) return 'already-applied';
+  if (isOfferPlacement(shown.placement) && shown.kind !== 'rewarded') return 'already-applied';
   const state = platformState(save);
   if (shown.id === state.fullscreenCadence?.lastShownId || shown.shownAt <= state.lastFullscreenAt) {
     return 'already-applied';

@@ -30,6 +30,7 @@ interface OfferShowContext {
 const MAX_SHOW_CONTEXTS = 64;
 
 interface PendingOffer {
+  attemptId?: string;
   economy?: typeof M1_ID;
   id: string;
   kind: OfferPlacement;
@@ -58,7 +59,7 @@ export function validRewardOffers(value: RewardOffers): boolean {
     (value.shop === undefined || (value.shop.version === 1 && natural(value.shop.freeDay) &&
       (value.shop.earnedDay === undefined || (natural(value.shop.earnedDay) && value.shop.earnedDay <= value.shop.freeDay)))) &&
     Array.isArray(value.pending) && value.pending.every(offer => offer && token(offer.id) && token(offer.dealId) &&
-      isOfferPlacement(offer.kind) && natural(offer.at) && natural(offer.amount) &&
+      isOfferPlacement(offer.kind) && (offer.attemptId === undefined || token(offer.attemptId)) && natural(offer.at) && natural(offer.amount) &&
       (offer.kind === 'shop-free-coins' ? (offer.key === 'shop' || shopDayKey(offer.key)) && (offer.economy === M1_ID ? offer.amount === M1.videoWallet && shopDayKey(offer.key) : offer.economy === undefined && offer.amount === LEGACY_SHOP_COINS) :
         offer.kind === 'rewarded-theme' ? offer.key === 'theme' && offer.amount === 0 : winKey(offer.key) && offer.amount > 0)) &&
     new Set(value.pending.map(offer => offer.id)).size === value.pending.length &&
@@ -156,11 +157,14 @@ export function prepareRewardOffer(save: Save, deal: Deal, kind: OfferPlacement,
   const quote = offerQuote(save, deal, kind, now, componentMultiplier);
   if (!quote || !token(id)) return;
   const state = rewardOfferState(save);
+  // Only one newly issued nonce may be unresolved. Legacy authorizations
+  // remain eligible for settlement and are never trimmed by age or count.
+  if (E4_M1 && state.pending.some(entry => entry.attemptId !== undefined)) return;
   const previous = state.pending.find(entry => entry.key === quote.key && entry.kind === kind &&
     entry.dealId === deal.id && entry.amount === quote.amount);
   if (previous && !newRequest) return previous;
   if (state.pending.some(entry => entry.id === id) || state.shows?.some(entry => entry.id === id)) return;
-  const offer: PendingOffer = { ...quote, at: now, dealId: deal.id, kind, id };
+  const offer: PendingOffer = { ...quote, at: now, dealId: deal.id, kind, id, ...(E4_M1 && { attemptId: save.attempt.id }) };
   state.pending.push(offer);
   if (componentMultiplier && (kind === 'win-triple' || kind === 'win-fivefold')) {
     const schedule = state.multiplier ??= { version: 1, eligible: 0, selected: {} };
@@ -178,8 +182,19 @@ export function offerShowContext(save: Save, request: {
   attempt: string; dealId: string; placement: string; mode: 'campaign' | 'daily';
 }) {
   if (request.mode !== 'campaign') return;
+  const active = save.rewardOffers?.pending.find(offer => offer.attemptId && offer.id === request.attempt &&
+    offer.dealId === request.dealId && offer.kind === request.placement);
+  if (active?.attemptId) return { id: active.id, attemptId: active.attemptId, dealId: active.dealId, kind: active.kind };
   return save.rewardOffers?.shows?.find(show => show.id === request.attempt &&
     show.dealId === request.dealId && show.kind === request.placement);
+}
+
+export function retireUnrewardedOffer(save: Save, id: string) {
+  const state = save.rewardOffers;
+  if (!state?.pending.some(offer => offer.id === id && offer.attemptId !== undefined)) return false;
+  state.pending = state.pending.filter(offer => offer.id !== id);
+  if (state.shows) state.shows = state.shows.filter(show => show.id !== id);
+  return true;
 }
 
 export function settleRewardOffer(save: Save, earned: { attempt: string; dealId: string; placement: OfferPlacement; mode: 'campaign'|'daily' }, now: number): boolean {

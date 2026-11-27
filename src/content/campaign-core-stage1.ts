@@ -1,3 +1,4 @@
+import { EXTENDED_CHAPTER } from '../config/campaign-meta';
 import { E4_M1, M1 } from '../config/economy';
 import stage2Specials from './hitapps-r4-bank/stage2-specials.json' with { type: 'json' };
 import type { SourceRecord } from './hitapps-r4-bank';
@@ -34,13 +35,13 @@ function coreDeal(source: Deal): Deal {
 }
 
 /** Own seeded selection over the independently certified bank. The generator itself runs offline. */
-export function bindCampaignCore(known: ReadonlyMap<string, Deal>, archived: Bank) {
+export function bindCampaignCore(known: ReadonlyMap<string, Deal>, archived: Bank, extended?: SourceRecord[]) {
   const byId = new Map<string, Layout>(), byLevel = new Map<number, Layout[]>();
   const identities = new Map<string, string>();
-  const additions = bindHitappsBank(known, [...openingSourceRecords, ...lateSourceRecords, ...stage2Specials as unknown as SourceRecord[]]);
+  const additions = bindHitappsBank(known, extended ?? [...openingSourceRecords, ...lateSourceRecords, ...stage2Specials as unknown as SourceRecord[]]);
   for (const { record, deal: source, hash, penalty } of [...additions.values(), ...archived.values()]) {
     const level = source.campaignLevel!;
-    if (record.use !== 'campaign' || level > 80) continue;
+    if (record.use !== 'campaign' || (extended ? level < EXTENDED_CHAPTER.first : level >= EXTENDED_CHAPTER.first)) continue;
     const geometry = hitappsGeometry(source);
     const key = `${level}:${geometry}`;
     const geometryId = identities.get(key) ?? record.deal.id;
@@ -87,7 +88,7 @@ export function recordCoreRotation(entry: Layout, previous: Attempt | undefined)
 export function selectCampaignCore(bank: ReturnType<typeof bindCampaignCore>, save: Save, base: Deal,
     previous: Attempt | undefined, previousDeal: Deal | undefined): Deal {
   const level = base.campaignLevel!, entries = bank.byLevel.get(level) ?? [];
-  const matching = entries.filter(({ deal }) => level <= 15 ||
+  const matching = entries.filter(({ deal }) => level <= 15 || level >= EXTENDED_CHAPTER.first ||
     (deal.difficultyTier === base.difficultyTier && sameHitappsMechanics(deal, base)));
   if (!matching.length) throw Error(`No certified Rules4 campaign layout for level ${level}`);
   const rotation = previousRotation(matching[0], previous);

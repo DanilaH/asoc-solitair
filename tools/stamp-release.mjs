@@ -17,7 +17,8 @@ if (!['debug', 'release', 'web'].includes(apkVariant)) throw Error('Invalid APK 
 const fixtureNavigation = process.env.VITE_HITAPPS_FIXTURES === '1';
 const archivedCampaign = process.env.VITE_ASOC_ARCHIVE_227 === '1';
 const archivedEconomy = archivedCampaign || process.env.VITE_ASOC_ARCHIVE_229 === '1';
-if ((fixtureNavigation || archivedCampaign || archivedEconomy) && (apkVariant !== 'web' || sdkMode !== 'disabled')) throw Error('Fixtures are limited to offline browser QA');
+const archivedMeta = archivedEconomy || process.env.VITE_ASOC_ARCHIVE_230 === '1';
+if ((archivedMeta || fixtureNavigation || archivedCampaign || archivedEconomy) && (apkVariant !== 'web' || sdkMode !== 'disabled')) throw Error('Fixtures are limited to offline browser QA');
 
 const dist = fileURLToPath(new URL('dist/', root));
 const manifestName = 'release-manifest.json';
@@ -48,7 +49,7 @@ const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding:
 const manifest = {
   version: 1, commit, gameVersion: pkg.version, androidVersionCode: Number(versionCode),
   ...profile, runtimePin, sdkMode, apkVariant,
-  fixtureNavigation, archivedCampaign, archivedEconomy,
+  fixtureNavigation, archivedCampaign, archivedEconomy, archivedMeta,
   balanceVersion: archivedEconomy ? 3 : profile.balanceVersion,
   sdkCapabilities: {
     campaignPause: sdkMode === 'test' || (sdkMode === 'live' && process.env.ASOC_OWNER_ADS_READY === '1'),

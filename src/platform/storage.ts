@@ -1,3 +1,4 @@
+import { validWinStreak } from '../domain/events/win-streak';
 import { E4_M1, M1 } from '../config/economy';
 import { validRestoreUndo } from '../domain/history';
 import { validProductOffers } from '../domain/commerce/product-offers';
@@ -254,6 +255,7 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
   if (save.meta) {
     const m = save.meta;
     if (m.version !== 1 || !natural(m.winCycle) || m.winCycle > 4 || !natural(m.cycles) || !natural(m.dailyStreak) || !strings(m.dailyDates)) throw Error('Повреждён прогресс');
+    if (m.winStreak !== undefined && (!validWinStreak(m.winStreak) || m.winCycle)) throw Error('Повреждена серия побед');
     m.dailyDates.forEach(dayNumber);
     if (m.lastDaily !== undefined && (!m.dailyDates.includes(m.lastDaily) || m.dailyStreak < 1)) throw Error('Повреждена серия дней');
   } else { metaState(save); milestoneRewards(save); }

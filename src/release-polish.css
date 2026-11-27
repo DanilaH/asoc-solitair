@@ -1,0 +1,111 @@
+/* Card Table B · shared paper, fixed navigation and receipt presentation. */
+html[data-casual] {
+  --table-paper:#fff7e4;
+  --table-stroke:#d7c39c;
+  --table-ink:#294c54;
+  --table-action:#ffe0a0;
+}
+[data-casual] .casual-dialog-title h2{overflow-wrap:anywhere;word-break:normal}
+[data-casual] .casual-dialog-title .casual-icon{flex:none}
+[data-casual] .sheet-heading:has(>.close){padding-inline-end:49px}
+[data-casual] #daily-bonus-dialog .sheet-heading{padding-inline-end:49px}
+[data-casual] #daily-bonus-dialog h2{padding-inline-end:0}
+[data-casual] #campaign-lives .sheet-heading{padding-inline-end:0}
+[data-casual] :is(.casual-dialog,#home) :is(button,summary):focus-visible{outline:2px solid #257881;outline-offset:2px}
+[data-casual] .casual-dialog .sheet-body,[data-casual] #pause-options{scrollbar-color:#9b8361 #f3e8d5;scrollbar-gutter:stable;overflow-anchor:none}
+[data-casual] .casual-dialog:has(.sheet-body) .sheet-actions{position:relative;padding-top:17px}
+[data-casual] .casual-dialog[data-scroll-down] .sheet-actions::before{
+  content:'Ещё ниже ↓';position:absolute;inset:0 0 auto;text-align:right;padding-inline:4px;
+  font-size:10px;line-height:13px;font-weight:850;color:#705f43;pointer-events:none;
+}
+[data-casual] .casual-dialog[data-scroll-up] .sheet-body{border-top:1px solid var(--table-stroke);padding-top:0}
+[data-casual] .casual-dialog .sheet-body{border-top:1px solid transparent}
+[data-casual] #settings[open]{height:auto;max-height:calc(100dvh - 30px)}
+[data-casual] #settings .casual-dialog-title h2{margin:7px 0 10px;height:auto}
+[data-casual] #pause-options summary{min-height:44px;padding:10px;border:1px solid var(--table-stroke);background:linear-gradient(#fff4dc,#ecdebf);color:var(--table-ink);font-weight:850;cursor:pointer}
+[data-casual] #settings[data-direct-settings] #pause-options summary{display:none}
+[data-casual] #settings[data-scroll-down] #settings-done{box-shadow:0 2px #ae684d,0 -6px 11px #e2d2ae95}
+[data-casual] #settings .setting input{accent-color:#366f69}
+[data-casual] #helpers .helper-offer h3::before{content:none}
+[data-casual] #helpers .helper-offer h3{padding-inline-start:0;display:flex;align-items:center;flex-wrap:wrap;gap:5px}
+[data-casual] #helpers .helper-offer h3 .casual-icon{margin:0}
+[data-casual] #helpers .helper-offer h3 span{margin-inline-start:auto}
+[data-casual] #wallet-open[aria-disabled=true] .wallet-plus{display:none}
+[data-casual] #wallet-open[aria-disabled=true]{cursor:default}
+[data-casual] #home #daily-play #daily-status:not(:empty){display:block;font-size:10px;font-weight:850;color:#315c55;line-height:1}
+[data-casual] #home #daily-tasks-open[data-reward-ready=true]::after{
+  content:attr(data-task-claims);position:absolute;inset:2px 2px auto auto;min-width:15px;height:15px;
+  line-height:15px;padding:0 2px;border-radius:8px;background:#ffdc9b;color:#523215;font-size:10px;font-weight:900;
+}
+[data-casual] #campaign-monthly-bonus{grid-template-columns:21px auto minmax(18px,1fr) auto auto;color:#fff0cc}
+[data-casual] #campaign-monthly-bonus strong{font-size:11px;line-height:1.15;text-align:start}
+[data-casual] #campaign-monthly-bonus .prize-token{color:#513d27}
+#app[data-casual][data-screen=home][data-scroll-down] #home{box-shadow:inset 0 -3px 0 #bdad7c70}
+@media(max-height:560px){
+  [data-casual] #home>.brand-scene{grid-template:1fr / auto auto;justify-content:center;min-height:72px;max-height:98px;gap:9px}
+  [data-casual] #home>.brand-scene h1{grid-area:1/2;min-width:0;text-align:left;font-size:clamp(22px,7.4vw,32px)}
+  [data-casual] #home>.brand-scene .linked-emblem{grid-area:1/1;width:66px;height:62px;max-width:none;object-fit:contain}
+}
+[data-casual] #inspect .inspect-icon{font-size:clamp(18px,5vw,23px);font-weight:850}
+[data-casual] #calendar-month{text-transform:capitalize;overflow-wrap:normal}
+[data-casual] #calendar .calendar-week{font-size:11px;color:#586c5d}
+[data-casual] #calendar .calendar-day{font-variant-numeric:tabular-nums;border-radius:8px;font-weight:850}
+[data-casual] #calendar .calendar-day.complete{background:#e2edd5;border-color:#acc89c;color:#27533d}
+[data-casual] #calendar .calendar-day.future{color:#666b60;background:#f0e7d5}
+[data-casual] #calendar .stamp-new{animation:stage4-stamp .38s ease-out both}
+@keyframes stage4-stamp{0%{filter:brightness(1.3);transform:scale(.92)}55%{transform:scale(1.08)}100%{transform:none}}
+[data-casual] #cycle-copy{font-size:14px;font-weight:900;margin:4px 0 7px}
+[data-casual] #cycle-stages{list-style:none;display:grid;gap:6px;margin:0;padding:0}
+[data-casual] #cycle-stages li{display:grid;grid-template-columns:25px minmax(0,1fr) auto;align-items:center;gap:7px;padding:7px;border:1px solid var(--table-stroke);border-radius:11px;background:#f4ebd9;color:var(--table-ink)}
+[data-casual] #cycle-stages li[data-stage=current]{background:#ffebbd;border-color:#bc965c}
+[data-casual] #cycle-stages li[data-stage=complete]{background:#e6efdc;border-color:#a9bc97}
+[data-casual] #cycle-stages li>img{width:24px;height:24px}
+[data-casual] #cycle-stages strong{font-size:13px;font-variant-numeric:tabular-nums}
+[data-casual] #cycle-rule{margin:9px 0 3px;color:#51665d}
+[data-casual] .series-prizes{display:flex;gap:4px;align-items:center;font-size:12px}
+[data-casual] .series-prizes .casual-icon{width:17px;height:17px}
+[data-casual] .series-claim-slot{display:grid;align-items:center;min-height:48px;text-align:center;font-size:13px;font-weight:800;color:#577164}
+[data-casual] .series-claim-slot button{margin:0}
+[data-casual] #weekly-main[data-week-ladder]{border:1px solid var(--table-stroke);border-radius:13px;margin-bottom:9px;padding:6px;background:#fcf2d9}
+[data-casual] #weekly-main #daily-tasks-week-title{display:block;font-size:15px;margin:2px 1px 6px}
+[data-casual] #weekly-main #daily-tasks-medals{margin:3px 0 5px;min-height:37px}
+[data-casual] #daily-tasks-milestones{display:grid;grid-template-columns:1fr;gap:4px}
+[data-casual] #daily-tasks-milestones button{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;text-align:start;gap:7px;min-height:44px;margin:0;padding:4px 7px;font-size:12px;line-height:1.14}
+[data-casual] #daily-tasks-milestones button small{display:block;font-size:11px;margin-top:3px;font-weight:700}
+[data-casual] #daily-tasks-milestones button b{justify-self:end;font-size:11px}
+[data-casual] #daily-tasks-milestones button[data-week-claim=ready]{background:linear-gradient(#ffe8ae,#ffda8f);border-color:#c79042;color:#5b3918}
+[data-casual] #daily-tasks-milestones button[data-week-claim=claimed]{background:#e2ebd8;border-color:#b1c19c;color:#3b5d44}
+[data-casual] #daily-tasks-milestones button[data-week-claim=locked]{color:#666359}
+[data-casual] #task-chest-open{background:linear-gradient(#ffe7af,#f6c778);border-color:#bb874b;color:#603b23;min-height:44px}
+[data-casual] #task-chest-prize:not([hidden]){padding:8px;border:1px solid #c79757;border-radius:10px;background:#fff1bd;font-weight:850;color:#5e4126}
+[data-casual] #result-life-note,[data-casual] #result[data-won=false] #result-home{grid-column:1/-1}
+[data-casual] #result-life-note{padding:4px 6px;border-radius:8px;background:#f3e6ca;color:#63523c}
+[data-casual] #result[data-won=false] #result-home{border:1px solid var(--table-stroke);border-radius:10px;background:#f5ecd6;color:var(--table-ink)}
+[data-casual] #result #win-video-panel:has(#win-video-offers:not([hidden])){min-block-size:78px}
+[data-casual] #win-video-status{line-height:1.18;font-size:11px;min-block-size:2.36em;margin:3px 0 0;color:#6c4e37}
+[data-casual] #result #result-source-breakdown{padding:3px 8px;margin:3px 0;line-height:1.22}
+[data-casual] #result #unlock-reward:not([hidden]){display:grid;grid-template-columns:35px minmax(0,1fr) auto;margin:4px 0}
+[data-casual] #result #unlock-reward .unlock-preview{display:block;width:33px;height:32px;margin:0;overflow:hidden;border-radius:7px}
+[data-casual] #result #unlock-reward .unlock-preview :is(.preview-face,.preview-back){top:4px;left:7px;width:17px;height:22px;padding:0;line-height:19px;font-size:0;transform:none}
+[data-casual] #result #unlock-reward .unlock-preview .preview-back{left:14px;top:3px;transform:rotate(12deg);z-index:2}
+[data-casual] #result #unlock-reward .unlock-preview .preview-face b{font-size:12px}
+[data-casual] :is(#result,#cycle-info,#picture-dialog,#daily-bonus-dialog,#daily-tasks-dialog)>.reward-counts{
+  flex:none;height:24px;margin:3px 0 -3px;overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;scrollbar-width:none;
+}
+[data-casual] .reward-counts>span{flex:none;padding:1px 5px;font-size:12px;min-height:22px}
+[data-casual] .reward-counts .casual-icon{width:17px;height:17px}
+@supports (transition-behavior:allow-discrete){
+  html[data-casual]:not([data-reduced=true]) dialog[data-sheet-exit]{transition:opacity 110ms ease-in,translate 110ms ease-in,overlay 110ms allow-discrete,display 110ms allow-discrete}
+  html[data-casual]:not([data-reduced=true]) dialog[data-sheet-exit]:not([open]){opacity:0;translate:0 5px;pointer-events:none}
+  html[data-casual]:not([data-reduced=true]) dialog[data-sheet-exit]::backdrop{transition:background-color 110ms ease-in,overlay 110ms allow-discrete,display 110ms allow-discrete}
+  html[data-casual]:not([data-reduced=true]) dialog[data-sheet-exit]:not([open])::backdrop{background-color:transparent;pointer-events:none}
+  @starting-style{html[data-casual]:not([data-reduced=true]) dialog[data-sheet-exit]:not([open]){opacity:1;translate:0 0}}
+}
+html[data-reduced=true] [data-casual] #calendar .stamp-new{animation:none}
+[data-casual] #cycle-info .series-claim-slot{block-size:52px;min-block-size:52px}
+[data-casual] #cycle-info .series-claim-slot button{block-size:100%;min-height:0;padding-block:4px}
+@media(max-height:520px){
+  [data-casual] #calendar .sheet-heading h2{font-size:clamp(19px,6.5vw,25px);margin:5px 0 8px}
+  [data-casual] #calendar .calendar-day{height:28px}
+  [data-casual] #calendar-summary{margin:4px 0 8px}
+}

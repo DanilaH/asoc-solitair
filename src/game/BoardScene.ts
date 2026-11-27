@@ -223,8 +223,9 @@ export class BoardScene extends Phaser.Scene {
     this.options.ready(this, newDeal, this.options.deal.id);
   }
   private label(x: number, y: number, text: string, size: number, color: string, maxHeight = Infinity) {
-    const label = this.add.text(x, y, cardCaption(text, text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size}px`, fontStyle: 'bold', color, align: 'center', wordWrap: { width: this.cardW - 18 } }).setOrigin(.5, 0);
-    label.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, label.width), maxHeight / Math.max(1, label.height)));
+    const width = this.cardW - (releaseProfile ? 12 : 18);
+    const label = this.add.text(x, y, cardCaption(text, text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size}px`, fontStyle: 'bold', color, align: 'center', lineSpacing: -2, wordWrap: { width, useAdvancedWrap: Boolean(releaseProfile) } }).setOrigin(.5, 0);
+    label.setScale(Math.min(1, width / Math.max(1, label.width), maxHeight / Math.max(1, label.height)));
     return label;
   }
   private makeCard(id: string): CardView {
@@ -253,7 +254,7 @@ export class BoardScene extends Phaser.Scene {
       }
       const title = categoryCaption(card.text);
       if (image) content.add(this.add.image(0, -23, image).setDisplaySize(61, 61));
-      caption = this.label(0, image ? 36 : 0, title, image ? 22 : 28, '#294d5d', this.cardH - 72).setOrigin(.5);
+      caption = this.label(0, image ? 36 : 0, title, image ? 24 : 30, '#203e48', image ? 60 : this.cardH - 70).setOrigin(.5);
       content.add(caption);
       strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: releaseProfile ? '#483b36' : '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
@@ -274,7 +275,7 @@ export class BoardScene extends Phaser.Scene {
       content.add(illustration);
       strip = this.add.image(0, -this.cardH / 2 + 11, image).setDisplaySize(18, 18); face.add(strip); strip.setVisible(false);
     } else {
-      caption = this.label(0, 0, card.text, 29, '#294d5d', this.cardH - 72); caption.setOrigin(.5); content.add(caption);
+      caption = this.label(0, 0, card.text, 31, '#203e48', this.cardH - 70); caption.setOrigin(.5); content.add(caption);
       strip = this.add.text(0, 0, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: releaseProfile ? '#39505d' : '#79909c' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 14) / strip.width)); face.add(strip); strip.setVisible(false);
     }
@@ -282,7 +283,7 @@ export class BoardScene extends Phaser.Scene {
       const key = this.add.image(this.cardW / 2 - 23, -this.cardH / 2 + 23, 'art-key').setDisplaySize(30, 30);
       content.add(key);
     }
-    const badge = this.label(0, card.leader && !card.ordered ? -this.cardH / 2 + 13 : this.cardH / 2 - 30, '', 17, card.leader ? '#a17e5d' : '#a9815f'); content.add(badge);
+    const badge = this.label(0, card.leader && !card.ordered ? -this.cardH / 2 + 13 : this.cardH / 2 - 30, '', 20, '#694729'); content.add(badge);
     const ice = this.options.deal.frozen?.layers[id]
       ? this.add.text(0, -this.cardH / 2 + 8, '', { fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold',
         color: '#154560', backgroundColor: '#c7ebf6', padding: { x: 5, y: 2 } }).setOrigin(.5, 0).setVisible(false)
@@ -310,7 +311,7 @@ export class BoardScene extends Phaser.Scene {
       backgroundColor: '#f7ddc0', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0));
     const sourceBadge = this.options.deal.hitapps ? this.add.text(0, -this.cardH / 2 + 8, '', {
-      fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#393347', backgroundColor: '#f6eacb',
+      fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold', color: '#393347', backgroundColor: '#f6eacb',
       padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0).setVisible(false) : undefined;
     if (sourceBadge) face.add(sourceBadge);
@@ -616,11 +617,15 @@ export class BoardScene extends Phaser.Scene {
       }
       const special = board.hitapps?.cards[pose.id];
       if (view.sourceBadge && special) {
-        const text = activeLocker(special) ? `Замок ${special.lock!.collected}/${special.lock!.required}` : special.ice ? `Лёд ${special.ice}`
-          : special.scissors ? 'Ножницы' : special.bound === 2 ? 'Связь' : special.bound === 1 ? 'Разрезано'
-          : special.key && !special.key.used ? `Ключ ×${special.key.amount}` : special.gold?.health ? `Золото ${special.gold.health}`
-          : special.order ? `№${special.order}` : '';
-        view.sourceBadge.setText(text).setVisible(pose.faceUp && Boolean(text));
+        const [text, ink, paper] = activeLocker(special) ? [`◆ ${special.lock!.collected}/${special.lock!.required}`, '#5a326e', '#f0e2fb']
+          : special.ice ? [`❄ Лёд ${special.ice}`, '#154560', '#c7ebf6']
+          : special.scissors ? ['✂ Ножницы', '#572954', '#f3dcef']
+          : special.bound === 2 ? ['⌁ Связь', '#572954', '#f3dcef'] : special.bound === 1 ? ['Разрезано', '#572954', '#f3dcef']
+          : special.key && !special.key.used ? [`Ключ ×${special.key.amount}`, '#5a326e', '#f0e2fb']
+          : special.gold?.health ? [`✦ Золото ${special.gold.health}`, '#533408', '#f9dfa4']
+          : special.order ? [`№${special.order}`, '#28535a', '#d8eee7'] : ['', '', ''];
+        view.sourceBadge.setText(text).setColor(ink).setBackgroundColor(paper).setScale(1);
+        view.sourceBadge.setScale(Math.min(1, (this.cardW - 14) / Math.max(1, view.sourceBadge.width))).setVisible(pose.faceUp && Boolean(text));
       }
       view.puzzleLabel?.setVisible(pose.faceUp && !view.ice?.visible && !view.binding?.visible && !view.sourceBadge?.visible && !view.puzzleArt?.full.visible);
       const def = this.options.deal.cards[pose.id];
@@ -658,8 +663,8 @@ export class BoardScene extends Phaser.Scene {
       // incoming card clear. A squeezed band yields no misleading fragment.
       const previewRoom = Math.max(0, band - (rearWaste ? 10 : 20));
       if (view.strip instanceof Phaser.GameObjects.Text) {
-        view.strip.setFontSize(rearWaste ? 23 : 16).setColor(rearWaste ? '#2f2630' : releaseProfile ? '#483b36' : '#8c7257').setText(rearWaste ? def.leader ? categoryCaption(def.text) : def.text : view.stripText!).setOrigin(.5).setScale(1);
-        view.strip.setScale(Math.min(1, (rearWaste ? this.cardH - 18 : this.cardW - 28) / Math.max(1, view.strip.width), previewRoom / Math.max(1, view.strip.height)));
+        view.strip.setFontSize(rearWaste ? 24 : 18).setColor('#3a3028').setText(rearWaste ? def.leader ? categoryCaption(def.text) : def.text : view.stripText!).setOrigin(.5).setScale(1);
+        view.strip.setScale(Math.min(1, (rearWaste ? this.cardH - 18 : this.cardW - 19) / Math.max(1, view.strip.width), previewRoom / Math.max(1, view.strip.height)));
       } else if (view.strip) { const size = Math.min(rearWaste ? 24 : 22, previewRoom); view.strip.setDisplaySize(Math.max(1, size), Math.max(1, size)); }
       if (view.strip) {
         const side = save.settings.deckSide === 'left' ? -1 : 1;

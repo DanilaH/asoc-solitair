@@ -1,5 +1,13 @@
 {
   "schema": "consumer-adoption-ledger-v1",
+  "releasePolish226": {
+    "issue": "https://github.com/DanilaH/asoc-solitair/issues/226#issuecomment-7224737015",
+    "base": "1dead90632f5f86a93066ae2d2ff8d5363d930a2",
+    "implementationBranch": "feat/226-release-polish",
+    "evidence": "docs/qa/release-polish-226.md",
+    "scope": ["UI-01", "UI-02", "UI-03", "UI-04", "UI-05", "UI-06", "UI-07", "UI-08", "UI-09", "UI-10", "S3-A", "S3-B"],
+    "acceptance": "DEVICE_AND_LIVE_SDK_PENDING"
+  },
   "campaignMetaStage3": {
     "issue": "https://github.com/DanilaH/asoc-solitair/issues/228",
     "base": "00f960cf7957bf709a3f2e856fbdac934b464e16",

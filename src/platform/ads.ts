@@ -4,7 +4,7 @@ import type { NativeBannerPlacement, NativeBannerPlacementInput } from '@danilah
 import { parseFullscreenShown, parseReceipt, type EarnedReceipt, type FullscreenShown, type AdPlacement } from '../domain/services';
 
 export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: AdPlacement; attempt: string; dealId: string; mode: 'campaign' | 'daily' }
-export interface AdOutcome { shown: boolean; terminalNoReward?: true; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
+export interface AdOutcome { shown: boolean; terminalNoReward?: true; pendingTerminal?: true; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
 export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean; interstitialLoaded?: boolean; campaignApproved?: boolean; livesApproved?: boolean; offersApproved?: boolean }
 export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string; placement?: string }
 interface PendingLife { id: string; dealId: string }
@@ -13,6 +13,7 @@ export interface AdsBridge {
   prepareInterstitial(): Promise<void>;
   discardInterstitial?(): Promise<void>;
   show(request: AdRequest): Promise<AdOutcome>;
+  fullscreenState?(): Promise<{ foreground: boolean; session: 'idle' | 'active' | 'awaiting-terminal'; shown: boolean }>;
   pending(): Promise<{ receipts: unknown[]; activeLife?: PendingLife | null }>;
   acknowledge(options: { id: string }): Promise<void>;
   rewardOfferIdle?(): Promise<{ idle: boolean }>;
@@ -28,6 +29,7 @@ export interface AdsBridge {
 export const disabledStatus: AdStatus = { rewarded: false, interstitial: false, banner: false, mode: 'disabled' };
 const unavailable: AdOutcome = { shown: false, outcome: 'unavailable', terminalNoReward: true };
 const SHOWN_CHECK_MS = 1500;
+const TERMINAL_CHECK_MS = 1600;
 
 async function withinShownCheck<T>(work: Promise<T>): Promise<T | undefined> {
   let timer: ReturnType<typeof setTimeout> | undefined;
@@ -51,7 +53,7 @@ export function createAds(options: {
   onEvent(event: AdEvent): void;
 }, bridge?: AdsBridge) {
   const native = bridge ?? (Capacitor.isNativePlatform() ? registerPlugin<AdsBridge>('SolitaireAds') : undefined);
-  let alive = true, showing = false;
+  let alive = true, showing = false, nativeNeedsTerminal = false;
   let retryDelay = 1000;
   let interstitialEpoch = 0, readinessRevision = 0;
   let status = disabledStatus;
@@ -108,6 +110,34 @@ export function createAds(options: {
   async function recover(): Promise<void> {
     await Promise.all([recoverEarned(), recoverShown()]);
   }
+  async function nativeCanShow() {
+    if (!nativeNeedsTerminal) return true;
+    if (!native?.fullscreenState) return false;
+    const state = await withinShownCheck(native.fullscreenState()).catch(() => undefined);
+    if (state?.foreground && state.session === 'idle') nativeNeedsTerminal = false;
+    return !nativeNeedsTerminal;
+  }
+  async function showUntilForeground(request: AdRequest): Promise<AdOutcome> {
+    const result = native!.show(request);
+    if (!native?.fullscreenState) return result;
+    let done = false, timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      return await Promise.race([result, new Promise<AdOutcome>(resolve => {
+        const check = async () => {
+          if (done) return;
+          if (!alive) { resolve({ shown: false, outcome: 'cancelled' }); return; }
+          const state = await withinShownCheck(native.fullscreenState!()).catch(() => undefined);
+          if (done) return;
+          if (state?.foreground && (state.session === 'idle' || state.session === 'awaiting-terminal')) {
+            // An observation of the activity cannot serve as a reward or a
+            // terminal no-reward answer for a persisted offer.
+            resolve({ shown: state.shown === true, outcome: 'error', ...(state.session !== 'idle' && { pendingTerminal: true }) });
+          } else timer = setTimeout(() => { void check(); }, TERMINAL_CHECK_MS);
+        };
+        timer = setTimeout(() => { void check(); }, TERMINAL_CHECK_MS);
+      })]);
+    } finally { done = true; clearTimeout(timer); }
+  }
   async function reconcileOffer(): Promise<boolean> {
     const offer = options.pendingOffer?.();
     if (!offer) return true;
@@ -163,7 +193,7 @@ export function createAds(options: {
     refresh, recover,
     async canAuthorizeOffer() {
       if (!alive || !native || !status.rewarded || showing) return false;
-      return Boolean(await withinShownCheck(recoverShown())) && await reconcileOffer();
+      return await nativeCanShow() && Boolean(await withinShownCheck(recoverShown())) && await reconcileOffer();
     },
     prepareInterstitial(): Promise<void> {
       if (!alive || !native || showing || !status.interstitial) return Promise.resolve();
@@ -180,13 +210,14 @@ export function createAds(options: {
       try {
         // Resolve any persisted display before re-evaluating product cooldown.
         // The game stays available throughout the journal preflight.
-        if (!await withinShownCheck(recoverShown()) || !alive || options.activity.isBlocked()) return unavailable;
+        if (!await nativeCanShow() || !await withinShownCheck(recoverShown()) || !alive || options.activity.isBlocked()) return unavailable;
         ownsActivity = true;
         options.activity.setBlocked('ad', true);
         await options.beforeShow({ ...request });
         if (!alive) return unavailable;
         enteredNative = true;
-        const result = await native.show({ ...request });
+        const result = await showUntilForeground({ ...request });
+        if (result.pendingTerminal) nativeNeedsTerminal = true;
         if (!result.shown) options.onEvent({ kind: request.kind, phase: result.outcome, placement: request.placement });
         if (result.shown) {
           // The earlier read may have started before the SDK callback.

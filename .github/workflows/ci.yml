@@ -239,6 +239,12 @@ jobs:
           ASOC_E4_RECORD: '1'
           ASOC_S3_RECORD: '1'
         run: npx playwright test tests/browser/campaign-core-stage1.spec.ts tests/browser/hitapps-rules4.spec.ts tests/browser/functional-audit-225.spec.ts tests/browser/e4-m1.spec.ts tests/browser/campaign-meta.spec.ts --output=test-results/campaign-core-stage1
+      - name: Recover a fullscreen presentation with no terminal callback
+        run: npx vitest run tests/unit/platform.test.ts -t 'recovers presentation on confirmed foreground'
+      - name: Verify Card Table B across compact and tall ordinary screens
+        env:
+          ASOC_POLISH_RECORD: '1'
+        run: npx playwright test tests/browser/release-polish.spec.ts --project=compact --output=test-results/release-polish
       - name: Build the archived PR227 policy for historical UI contracts
         env:
           VITE_ASOC_ARCHIVE_227: '1'
@@ -272,6 +278,7 @@ jobs:
             test-results/c8-ui/
             test-results/c8-ftue-presets/
             test-results/campaign-core-stage1/
+            test-results/release-polish/
             test-results/hitapps-fixtures/
             .recording/c8-grid.txt
             .recording/mvp-unit-results.json

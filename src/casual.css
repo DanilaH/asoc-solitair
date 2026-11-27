@@ -188,7 +188,6 @@
 [data-casual] #picture-grid button:not([data-open]):disabled{background:#e9e0cd;color:#58584f}
 [data-casual] #result[data-won=false] .sheet-actions>.primary{grid-column:1/-1}
 [data-casual] #result[data-won=true] #unlock-reward{background:#f2ead6}
-[data-casual] #result[data-won=true]:has(#win-video-offers:not([hidden])) #unlock-reward{display:none}
 html[data-casual] #app>.victory-particles{position:fixed;z-index:14;width:0;height:0;pointer-events:none;opacity:0}
 #app>.victory-particles::before{inset:-61px;border:4px solid #fff1a7;box-shadow:0 0 26px #ffea76,inset 0 0 35px #ffda7870;animation-duration:.54s}
 #app>.victory-particles::after{content:'';position:absolute;inset:-108px;background:radial-gradient(circle,#fff6bfbb,transparent 69%);animation:c8-win-light .5s ease-out both}

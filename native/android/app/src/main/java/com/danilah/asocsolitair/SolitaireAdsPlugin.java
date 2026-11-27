@@ -37,17 +37,22 @@ public class SolitaireAdsPlugin extends Plugin {
     private RewardJournal journal, shownJournal;
     private Session session;
     private final android.view.ViewTreeObserver.OnWindowFocusChangeListener focusListener = focused -> {
-        if (!focused) hide();
-        if (focused && session != null && session.invoked && !session.shown) checkUnshown(session);
+        Session active = session;
+        if (!focused) { hide(); markPresentationAway(active); }
+        else if (active != null) {
+            checkPresentation(active);
+            handler.postDelayed(() -> checkPresentation(active), FOREGROUND_SETTLE_MS);
+        }
     };
+    private static final long FOREGROUND_SETTLE_MS = 1200;
     private static final class Session {
         final PluginCall call;
         final String kind, placement, attempt, mode, dealId;
         final String id = UUID.randomUUID().toString();
-        boolean invoked, shown, earned, resolved;
+        boolean invoked, shown, earned, resolved, wentAway;
         // Memory capture ownership/rejection is distinct from the worker's durable receipt.
         RevenueDelivery.Capture impressionCapture;
-        long invokedAt;
+        long invokedAt, focusedAt = -1;
         Session(PluginCall call, String kind, String placement, String attempt, String mode, String dealId) {
             this.call = call; this.kind = kind; this.placement = placement; this.attempt = attempt; this.mode = mode; this.dealId = dealId;
         }
@@ -218,20 +223,39 @@ public class SolitaireAdsPlugin extends Plugin {
     }); }
     private void beforeShow(Session s) {
         s.invoked = true; s.invokedAt = SystemClock.elapsedRealtime();
-        handler.postDelayed(() -> checkUnshown(s), 8000);
+        handler.postDelayed(() -> checkPresentation(s), 8000);
     }
-    private void checkUnshown(Session s) {
-        if (session != s || s.shown || background || !getActivity().hasWindowFocus()) return;
-        long remaining = 8000 - (SystemClock.elapsedRealtime() - s.invokedAt);
-        if (remaining > 0) { handler.postDelayed(() -> checkUnshown(s), remaining); return; }
-        event(s.kind, "show_error");
-        // An invoked SDK request without a callback is ambiguous. Release the
-        // WebView without dropping the listener or claiming the session ended.
-        if (!s.resolved) {
-            s.resolved = true;
-            resolve(s.call, false, "error", false);
-        }
+    private void markPresentationAway(@Nullable Session s) {
+        if (s == null || !s.invoked) return;
+        s.wentAway = true;
+        s.focusedAt = -1;
     }
+    private boolean presentationForeground() {
+        return !destroyed && !background && getActivity().hasWindowFocus() && getBridge().getWebView().hasWindowFocus();
+    }
+    private void checkPresentation(Session s) {
+        if (session != s || !s.invoked || s.resolved || !presentationForeground()) return;
+        long now = SystemClock.elapsedRealtime();
+        if (s.focusedAt < 0) s.focusedAt = now;
+        boolean returned = s.wentAway && now - s.focusedAt >= FOREGROUND_SETTLE_MS;
+        if (s.shown ? !returned : now - s.invokedAt < 8000) return;
+        // Release presentation only. The SDK still owns the native session, so
+        // late callbacks can persist their records and no second ad can start.
+        s.resolved = true;
+        event(s.kind, "foreground_recovered", s.placement);
+        JSObject result = new JSObject();
+        result.put("shown", s.shown); result.put("outcome", "error"); result.put("pendingTerminal", true);
+        s.call.resolve(result);
+    }
+    @PluginMethod public void fullscreenState(PluginCall call) { handler.post(() -> {
+        Session active = session;
+        if (active != null) checkPresentation(active);
+        JSObject result = new JSObject();
+        result.put("foreground", presentationForeground());
+        result.put("session", active == null ? "idle" : active.resolved ? "awaiting-terminal" : "active");
+        result.put("shown", active != null && active.shown);
+        call.resolve(result);
+    }); }
     private JSONObject sessionIdentity(Session s) throws org.json.JSONException {
         JSONObject event = new JSONObject();
         event.put("schema", 1); event.put("id", s.id);
@@ -426,8 +450,18 @@ public class SolitaireAdsPlugin extends Plugin {
         call.resolve();
     }); }
     private void destroyBanner() { if (banner!=null) { banner.setBannerAdEventListener(null);if (banner.getParent() instanceof FrameLayout) ((FrameLayout)banner.getParent()).removeView(banner);banner.destroy();banner=null; } bannerLoaded=false;bannerRetryAt=0; }
-    @Override protected void handleOnPause() { background = true; hide(); if (session != null && !session.invoked) finish(session, "cancelled"); }
-    @Override protected void handleOnResume() { background = false; if (session != null && session.invoked && !session.shown) handler.postDelayed(() -> { if (session != null) checkUnshown(session); }, 200); }
+    @Override protected void handleOnPause() {
+        background = true; hide(); markPresentationAway(session);
+        if (session != null && !session.invoked) finish(session, "cancelled");
+    }
+    @Override protected void handleOnResume() {
+        background = false;
+        Session active = session;
+        if (active != null) {
+            checkPresentation(active);
+            handler.postDelayed(() -> checkPresentation(active), FOREGROUND_SETTLE_MS);
+        }
+    }
     @PluginMethod public void dispose(PluginCall call) { handler.post(() -> { handleOnDestroy(); call.resolve(); }); }
     @Override protected void handleOnDestroy() {
         destroyed = true; hide(); destroyBanner(); preloadGeneration++; handler.removeCallbacksAndMessages(null);

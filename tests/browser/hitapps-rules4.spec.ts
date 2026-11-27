@@ -183,7 +183,12 @@ test('the finished campaign lets the player select a level without entering QA',
   await home.tap();
   await expect(page.locator('#level-picker')).toBeVisible();
   await expect(page.locator('#source-deal-list button')).toHaveCount(0);
-  await expect(page.locator('#level-80')).toBeEnabled();
+  const last = page.locator('#level-80');
+  await expect(last).toBeEnabled();
+  await expect(last.locator('.difficulty-chip')).toHaveText('Очень сложный');
+  const button = (await last.boundingBox())!, chip = (await last.locator('.difficulty-chip').boundingBox())!;
+  expect(chip.height).toBeLessThanOrEqual(21);
+  expect(chip.y + chip.height).toBeLessThanOrEqual(button.y + button.height);
   await page.screenshot({ path: info.outputPath('completed-campaign-picker.png'), scale: 'css' });
   await page.locator('#level-80').tap();
   await expect.poll(async () => (await read(page)).attempt.id).not.toBe(save.attempt.id);

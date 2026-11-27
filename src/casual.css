@@ -243,8 +243,8 @@ html[data-casual] #app>.victory-particles{position:fixed;z-index:14;width:0;heig
 [data-casual] .difficulty-chip[hidden] { display:none }
 [data-casual] .difficulty-chip .casual-icon { width:13px;height:13px }
 [data-casual] #next-level small { display:flex;align-items:center;justify-content:center;gap:6px;line-height:1.15 }
-[data-casual] .level-button:has(.difficulty-chip) { height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center }
-[data-casual] .level-button .difficulty-chip { font-size:9px;padding:1px;max-width:100% }
+[data-casual] .level-button { height:50px;padding:2px 1px;display:flex;flex-direction:column;align-items:center;justify-content:center }
+[data-casual] .level-button .difficulty-chip { display:block;font-size:8px;padding:1px;max-width:100%;overflow-wrap:normal }
 [data-casual] .level-button .difficulty-chip .casual-icon { display:none }
 @media(max-width:360px) { [data-casual] .level #unlimited-countdown { font-size:0 } [data-casual] .level #unlimited-countdown strong { font-size:12px } }
 [data-casual] .unlock-track { display:flex;align-items:center;gap:6px;border:1px solid #d8bc94;border-radius:10px;background:#fff6de;color:#35555c;padding:4px 7px;text-align:left;line-height:1.12 }

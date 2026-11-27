@@ -14,6 +14,8 @@ const sdkMode = process.env.ASOC_AD_MODE ?? 'disabled';
 const apkVariant = process.env.ASOC_APK_VARIANT ?? 'web';
 if (!['disabled', 'test', 'live'].includes(sdkMode)) throw Error('Invalid advertisement SDK mode');
 if (!['debug', 'release', 'web'].includes(apkVariant)) throw Error('Invalid APK variant');
+const fixtureNavigation = process.env.VITE_HITAPPS_FIXTURES === '1';
+if (fixtureNavigation && (apkVariant !== 'web' || sdkMode !== 'disabled')) throw Error('Fixtures are limited to offline browser QA');
 
 const dist = fileURLToPath(new URL('dist/', root));
 const manifestName = 'release-manifest.json';
@@ -44,7 +46,7 @@ const commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding:
 const manifest = {
   version: 1, commit, gameVersion: pkg.version, androidVersionCode: Number(versionCode),
   ...profile, runtimePin, sdkMode, apkVariant,
-  ...(process.env.VITE_HITAPPS_SOURCE_QA === '1' && { candidate: 'hitapps-r4-qa', supportedBoardRules: [2, 3, 4] }),
+  fixtureNavigation,
   sdkCapabilities: {
     campaignPause: sdkMode === 'test' || (sdkMode === 'live' && process.env.ASOC_OWNER_ADS_READY === '1'),
     lifeRefill: sdkMode === 'test' || (sdkMode === 'live' && process.env.ASOC_OWNER_LIVES_ADS_READY === '1'),

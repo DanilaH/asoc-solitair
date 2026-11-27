@@ -29,27 +29,30 @@ describe.skipIf(!releaseProfile)('explicit adaptive retry', () => {
     const quote = quoteAdaptiveRetry(save)!;
     expect(quote).toBeDefined();
     expect(quote.selected.id).not.toBe(deal.id);
-    expect(quote.changesLayout).toBe(false);
+    expect(quote.changesLayout).toBe(true);
     const fixed = dispatch(save, { type: 'restart', attemptId: 'fixed-replay' }, deal);
     expect(fixed.accepted).toBe(true);
     expect(fixed.next.attempt.dealId).toBe(deal.id);
     expect(fixed.next.attempt.board).toEqual(deal.initial);
     save.attempt.director = { restarts: 0, previousLosses: 0, exhausted: true };
-    expect(quoteAdaptiveRetry(save)).toBeUndefined();
+    expect(quoteAdaptiveRetry(save)?.changesLayout).toBe(true);
     save.attempt.director = { restarts: 2, previousLosses: 2, exhausted: true };
     save.platform!.completedCampaign.push(campaignId(16));
     expect(quoteAdaptiveRetry(save)).toBeUndefined();
     expect(quoteAdaptiveRetry(freshSave(dailyForDay('2026-11-24'), 'daily'))).toBeUndefined();
   });
 
-  it('distinguishes an added move budget from a different layout, preserving Shuffle and keeping recovery absent on L36', () => {
-    const { save, deal } = exhausted(36), quote = quoteAdaptiveRetry(save)!;
-    expect(quote.changesLayout).toBe(false);
+  it('selects a different layout with a larger budget, preserving charged Shuffle on L36', () => {
+    const { save, deal } = exhausted(36);
+    save.difficultyPenalty = 10;
+    const quote = quoteAdaptiveRetry(save)!;
+    expect(quote.changesLayout).toBe(true);
     expect(quote.selected.initial.movesLeft).toBeGreaterThan(deal.initial.movesLeft!);
     expect(quote.selected.shufflePolicy).toBe('hidden-pool-r1');
+    expect(quote.selected.shuffleCost).toBe('charge');
     expect(quote.selected.recovery).toBeUndefined();
     expect(commitAdaptiveRetry(save, quote, 'budget-retry', 110)).toBe('started');
-    expect(save.attempt.issuance).toMatchObject({ source: 'budget-r2', dealId: quote.selected.id,
+    expect(save.attempt.issuance).toMatchObject({ source: 'certified-seed', policy: 'hitapps-r4-bank-v1', dealId: quote.selected.id,
       effectiveBudget: quote.selected.initial.movesLeft });
     expect(decodeSave(JSON.stringify(save), findDeal)).toEqual(save);
   });
@@ -78,7 +81,7 @@ describe.skipIf(!releaseProfile)('explicit adaptive retry', () => {
     expect(store.state.campaignLives?.remaining).toBe(LIVES_RULES.max - 1);
     expect(store.state.attempt.director).toMatchObject({ restarts: 3, previousLosses: 3 });
     expect(store.state.attempt.sourceDifficulty).toEqual({ outcome: 'Restart', restarts: 3 });
-    expect(store.state.attempt.issuance).toMatchObject({ dealId: quote.selected.id, source: 'budget-r2' });
+    expect(store.state.attempt.issuance).toMatchObject({ dealId: quote.selected.id, source: 'certified-seed', policy: 'hitapps-r4-bank-v1' });
     expect(store.state.randomJokers?.grants).toEqual([{ version: 1, id: 'old-paid-unused', source: 'coins', cost: 250, issuedAt: 10 }]);
     mode = 'ok';
     const reopened = new SaveStore(disk, findDeal, () => save);

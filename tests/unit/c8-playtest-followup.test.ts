@@ -116,7 +116,7 @@ describe.skipIf(!releaseProfile)('ordinary release follow-up', () => {
       }
       if (quoteLayoutRetry(save)?.level !== level) uncovered.push(level);
     }
-    expect(protectedLevels).toEqual([8, 17, 18, 19, 24, 26, 27, 28, 32]);
+    expect(protectedLevels).toEqual([8, 17, 18, 19, 24, 28, 32]);
     expect(uncovered).toEqual([]);
   });
 

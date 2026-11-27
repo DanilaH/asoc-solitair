@@ -6,7 +6,8 @@ import type { BoardCommand, Deal, Save } from '../../src/domain/types';
 import { boardFrame, layout } from '../../src/game/layout';
 import { read } from './wallet-fixture';
 
-test.skip(process.env.VITE_HITAPPS_SOURCE_QA !== '1', 'Requires the signed-candidate browser profile');
+test.skip(process.env.VITE_ASOC_PROFILE !== 'c8-release-v1', 'Requires the ordinary C8 release profile');
+const fixtureBuild = process.env.VITE_HITAPPS_FIXTURES === '1';
 
 function profile(deal: Deal, id: string) {
   const save = freshSave(deal, id);
@@ -17,11 +18,11 @@ function profile(deal: Deal, id: string) {
     completedCampaign: Array.from({ length: 32 }, (_, index) => campaignId(index + 1)) };
   return save;
 }
-async function launch(page: Page, save: Save) {
+async function launch(page: Page, save: Save, route = '/') {
   await page.addInitScript(value => {
     if (!localStorage.getItem('asoc-solitaire.save.v1')) localStorage.setItem('asoc-solitaire.save.v1', JSON.stringify(value));
   }, save);
-  await page.goto('/');
+  await page.goto(route);
   await expect(page.locator('#app')).toHaveAttribute('data-ready', 'true');
 }
 
@@ -68,6 +69,7 @@ test('a signed-candidate deal restores the same layout and Undo across reload', 
 });
 
 test('the candidate picker issues a certified special board through the campaign SaveStore', async ({ page }, info) => {
+  test.skip(!fixtureBuild, 'Requires the separate fixture web build');
   const base = campaignDeals.find(deal => deal.campaignLevel === 18)!;
   await launch(page, profile(base, 'hitapps-old-rule-save'));
   await page.locator('#level-picker-open').tap();
@@ -142,7 +144,54 @@ test('Next from the archived L65 issues Rules4 L66 through the normal campaign r
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', after.dealId);
 });
 
+test('a URL cannot enable fixture controls in the release build', async ({ page }) => {
+  test.skip(fixtureBuild, 'Requires the ordinary release build');
+  const { deal } = [...hitappsR4Deals()].find(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 23)!;
+  const save = profile(deal, 'hitapps-production-query');
+  save.attempt.board.phase = 'exhausted';
+  save.attempt.board.movesLeft = 0;
+  await launch(page, save, '/?qa-levels=1');
+  const manifest = await page.request.get('/release-manifest.json');
+  expect(await manifest.json()).toMatchObject({ fixtureNavigation: false, campaignBoardRulesVersion: 4 });
+  await expect(page.locator('#level-picker-open')).toBeHidden();
+  await expect(page.locator('#source-deal-list button')).toHaveCount(0);
+  await page.locator('#home-play').tap();
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#result-redeal')).toBeHidden();
+  await expect(page.locator('#replay')).toBeVisible();
+});
+
+test('the finished campaign lets the player select a level without entering QA', async ({ page }, info) => {
+  test.skip(fixtureBuild, 'Requires the ordinary release build');
+  const { deal } = [...hitappsR4Deals()].find(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 80)!;
+  let save = profile(deal, 'hitapps-production-completed');
+  save.platform!.completedCampaign = Array.from({ length: 79 }, (_, index) => campaignId(index + 1));
+  for (const action of deal.winningPath) {
+    const step = dispatch(save, action, deal);
+    expect(step.accepted).toBe(true);
+    save = step.next;
+  }
+  expect(save.attempt.board.phase).toBe('won');
+  await launch(page, save);
+  await page.locator('#home-play').tap();
+  const next = page.locator('#next-level');
+  await expect(next).toBeVisible();
+  await next.tap();
+  if (await next.isVisible()) await next.tap();
+  const home = page.locator('#home-play');
+  await expect(home).toContainText('Выбрать уровень');
+  await home.tap();
+  await expect(page.locator('#level-picker')).toBeVisible();
+  await expect(page.locator('#source-deal-list button')).toHaveCount(0);
+  await expect(page.locator('#level-80')).toBeEnabled();
+  await page.screenshot({ path: info.outputPath('completed-campaign-picker.png'), scale: 'css' });
+  await page.locator('#level-80').tap();
+  await expect.poll(async () => (await read(page)).attempt.id).not.toBe(save.attempt.id);
+  expect((await read(page)).attempt.board.rulesVersion).toBe(4);
+});
+
 test('the exact replay still keeps the same Rules4 layout and only charges one life', async ({ page }) => {
+  test.skip(!fixtureBuild, 'Requires the separate fixture web build');
   const { deal } = [...hitappsR4Deals()].find(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 31)!;
   const save = profile(deal, 'hitapps-r4-exact-replay-touch');
   save.attempt.board.phase = 'exhausted';

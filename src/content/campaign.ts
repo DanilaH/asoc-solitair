@@ -220,7 +220,7 @@ const directorRecordsById = new Map(hitappsDirectorRecords.map(record => [record
 export function campaignIssuance(save: Save, target: Deal, selected: Deal): CampaignIssuance | undefined {
   if (!releaseProfile || selected.campaignLevel === undefined) return;
   const r4 = hitappsR4Bank.get(selected.id);
-  if (r4) return { version: 1, profile: releaseProfile.id, policy: 'hitapps-r4-bank-v1', baseId: r4.record.baseId,
+  if (r4) return { version: 1, profile: releaseProfile.id, policy: releaseProfile.policies.rules4Issuance, baseId: r4.record.baseId,
     dealId: selected.id, baseBudget: findDeal(r4.record.baseId)?.initial.movesLeft ?? null, effectiveBudget: selected.initial.movesLeft,
     source: 'certified-seed', seed: { value: r4.record.seed, inputHash: r4.record.sourceHash, boardHash: r4.hash, routeHash: r4.record.routeHash },
     equality: 'unknown-cohort' };

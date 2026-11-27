@@ -1,5 +1,10 @@
 # Content8+ · фактический журнал автономной разработки
 
+
+## 27.11 · Релизный кандидат PR224
+
+[PR224](https://github.com/DanilaH/asoc-solitair/pull/224) объединяет игровой код PR216 и исследовательские документы по PR223. Обычный `c8-release-v1` 0.21.0/code51 выдаёт сертифицированные Rules4. QA-выбор конкретной раздачи вынесен в отдельную офлайн веб-сборку. [Состав кампании, проверки и открытые гейты](../qa/MVP_RELEASE_CANDIDATE_2026-11-27.md). Приёмка устройства, SDK и релиза остаётся отдельной. Реестры сохраняют 115 записей, 38 пакетов, 15 коммерческих семейств и девять кандидатов Unico.
+
 ## 25.11 · Консолидация исследований (docs only)
 
 [Kit PR151](https://github.com/DanilaH/mini-games-kit/blob/af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a/research/games/association-solitaire/CURRENT.md) — source pin `af6a6b1ac7a363164be38c7b7b2a78c2d8d3723a`, blob `29ddea6086c46c5581702cb0001536e6666b7626`. [Сверка PR208](RESEARCH_CONSOLIDATION_2026-11-25.md) на `b3180bbe2f2f39b5428e664c19a6c56cde63aed2`: Bonus, Combo, компонентный x3/x5 уже подключены. Остатки source lifecycle сохранены, 115 IDs / 38 пакетов. Исходный CI кита 45594363530 остановился до runner, не принят; runtime и UI не изменены. Состояния пакетов ниже сохранены.

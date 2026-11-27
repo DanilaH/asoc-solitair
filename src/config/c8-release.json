@@ -2,10 +2,13 @@
   "id": "c8-release-v1",
   "contentVersion": 8,
   "rulesVersion": 3,
+  "campaignBoardRulesVersion": 4,
+  "supportedBoardRules": [2, 3, 4],
   "saveSchemaVersion": 1,
   "balanceVersion": 3,
   "policies": {
     "issuance": "c8-core-r1",
+    "rules4Issuance": "hitapps-r4-bank-v1",
     "difficulty": "c8-budget-r2",
     "recovery": 1,
     "specials": "c8-core-special-r1",

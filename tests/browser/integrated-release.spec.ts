@@ -36,8 +36,9 @@ test('L15 to adaptive L16 through the normal campaign UI, then reopen and retain
   await page.locator('#next-level').tap();
   const difficulty = page.locator('#difficulty-play');
   if (await difficulty.isVisible()) await difficulty.tap();
-  await expect.poll(async () => (await read(page)).attempt.dealId).toMatch(/-c8-core-r1-rights-r1(?:-bonus-r2)?$/);
+  await expect.poll(async () => (await read(page)).attempt.issuance?.policy).toBe('hitapps-r4-bank-v1');
   const issued = (await read(page)).attempt;
+  expect(issued.board.rulesVersion).toBe(4);
   await expect(page.locator('#app')).toHaveAttribute('data-presented-deal', issued.dealId);
   await page.locator('#menu').tap();
   await page.locator('#pause-options summary').tap();

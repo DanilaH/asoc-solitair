@@ -8,7 +8,8 @@ export type ContinueResult = { status: 'PROVEN_RECOVERABLE'; path: BoardCommand[
 export interface ContinueProof { attemptId: string; deal: Deal; path: BoardCommand[] }
 export type ContinueAttempt = Pick<Attempt, 'id' | 'dealId' | 'board' | 'continued'>;
 
-export const requiresContinueProof = (attempt: Attempt) => !attempt.daily && attempt.dealId.startsWith('campaign-c8-');
+export const requiresContinueProof = (attempt: Attempt) => !attempt.daily &&
+  (attempt.board.rulesVersion === 4 || attempt.dealId.startsWith('campaign-c8-'));
 const recoveryBoard = (board: Board): Board | undefined => board.phase === 'exhausted' && board.movesLeft === 0
   ? { ...board, phase: 'playing', movesLeft: BALANCE.continueMoves } : undefined;
 

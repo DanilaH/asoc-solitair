@@ -80,6 +80,7 @@ jobs:
             .recording/layout-audit/
             .recording/content7-ui/
             .recording/content7-recordings/
+            .authoring/hitapps-r4/balance-report.json
             .authoring/content8/campaign-decisions.json
             .authoring/content8/campaign-decision-cost.json
             .authoring/content8/campaign-unknown-transfer-deep.json
@@ -226,12 +227,15 @@ jobs:
         run: npx playwright test tests/browser/c8-ftue-presets.spec.ts --output=test-results/c8-ftue-presets
       - name: Verify saved rights and reward lifecycle through ordinary touch UI
         run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts --output=test-results/mvp-cohesion
-      - name: Verify Rules4 candidate issuance and resume through ordinary touch UI
+      - name: Verify release Rules4 issuance, resume, and campaign ending through ordinary touch UI
+        run: npx playwright test tests/browser/hitapps-rules4.spec.ts --output=test-results/hitapps-rules4
+      - name: Verify the offline fixture build separately
         env:
-          VITE_HITAPPS_SOURCE_QA: '1'
+          VITE_HITAPPS_FIXTURES: '1'
         run: |
+          cp dist/release-manifest.json .recording/ordinary-release-manifest.json
           npm run build
-          npx playwright test tests/browser/hitapps-rules4.spec.ts --output=test-results/hitapps-rules4
+          npx playwright test tests/browser/hitapps-rules4.spec.ts tests/browser/mvp-cohesion-core.spec.ts --grep 'candidate picker|exact replay|fixed retry|ambiguous level-picker' --output=test-results/hitapps-fixtures
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -242,9 +246,10 @@ jobs:
             test-results/c8-ui/
             test-results/c8-ftue-presets/
             test-results/hitapps-rules4/
+            test-results/hitapps-fixtures/
             .recording/c8-grid.txt
             .recording/mvp-unit-results.json
-            dist/release-manifest.json
+            .recording/ordinary-release-manifest.json
           retention-days: 7
   android:
     runs-on: ubuntu-24.04
@@ -280,8 +285,6 @@ jobs:
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run check
       - run: npm run android:sync
-        env:
-          VITE_HITAPPS_SOURCE_QA: '1'
       - uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}/asoc-debug-signing/debug.keystore

@@ -8,7 +8,7 @@ import { dailyForDay } from '../../src/content/daily';
 import { beginDeal } from '../../src/domain/campaign';
 import { mayStartCampaignAttempt } from '../../src/domain/campaign-lives';
 import { applyBoard, dispatch, freshSave } from '../../src/domain/engine';
-import { C8_DIFFICULTY } from '../../src/domain/difficulty';
+import { C8_DIFFICULTY, adjustedMoveBudget } from '../../src/domain/difficulty';
 import { campaignId } from '../../src/domain/progression';
 import { switchMode } from '../../src/domain/sessions';
 import { decodeSave } from '../../src/platform/storage';
@@ -41,7 +41,7 @@ it.skipIf(!releaseProfile)('starts an adapted L16 with recovery and Joker, then 
   let save = decodeSave(JSON.stringify(old), findDeal);
   expect(save.contentVersion).toBe(8);
   const selected = selectCampaignDeal(save, target);
-  expect(selected).toMatchObject({ campaignLevel: 16, adaptive: { direction: 'relief' }, recovery: { version: 1 }, randomJokerPreview: 1, extraHelpers: { version: 1, randomJokerCoins: 250 } });
+  expect(selected).toMatchObject({ campaignLevel: 16, initial: { rulesVersion: 4, movesLeft: adjustedMoveBudget(target.initial.movesLeft!, C8_DIFFICULTY.easyPenalty, true) }, recovery: { version: 1 }, randomJokerPreview: 1, extraHelpers: { version: 1, randomJokerCoins: 250 } });
   expect(isCurrentCampaignDeal(selected.id, target)).toBe(true);
   expect(await loadEqualityPreviewPolicy()).toBeUndefined();
   expect(mayStartCampaignAttempt(save, save.attempt, 100)).toBe(true);

@@ -3,14 +3,16 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { campaignDeals, campaignIssuance, findDeal, hitappsR4Deals, layoutFingerprint, savedDealDefinitions,
   selectCampaignDeal, selectRetryLayout } from '../../src/content/campaign';
 import { hitappsR4Difficulty } from '../../src/config/hitapps-r4';
+import { beginDeal } from '../../src/domain/campaign';
 import { adjustedMoveBudget, easyDealTarget } from '../../src/domain/difficulty';
-import { applyBoard, freshSave, legalCommands } from '../../src/domain/engine';
+import { applyBoard, dispatch, freshSave, legalCommands } from '../../src/domain/engine';
 import { Kind } from '../../src/domain/hitapps-rules';
-import { campaignId } from '../../src/domain/progression';
+import { campaignId, completedLevels, unlockedLevel } from '../../src/domain/progression';
 import { decodeSave } from '../../src/platform/storage';
 import { authoringHash } from '../content/hitapps-authoring';
 import { certifySourceRoute } from '../content/hitapps-source-pipeline';
 import { runSourceBot } from '../content/hitapps-source-bot';
+import { advance } from './gameplay-oracle';
 
 const archive = [...savedDealDefinitions()].filter(deal => !deal.hitapps).sort((left, right) => left.id.localeCompare(right.id));
 assert.equal(archive.length, 1015);
@@ -22,6 +24,40 @@ const teaching = new Map<number, string>([
   [24, 'campaign-c8-ftue-024-r1'], [28, 'campaign-c8-ftue-028-r1'],
   [30, 'campaign-c8-bonus-030-c8-core-r1-shuffle-r1-rights-r1'], [32, 'campaign-c8-ftue-032-r1'],
 ]);
+assert.equal(campaignDeals.length, 80);
+let session = freshSave(selectCampaignDeal(freshSave(campaignDeals[0], 'campaign-audit-template'), campaignDeals[0]), 'campaign-audit-1');
+const firstTraversal = campaignDeals.map((base, index) => {
+  const level = index + 1;
+  assert.equal(unlockedLevel(session), level);
+  const deal = index ? selectCampaignDeal(session, base, session.attempt) : findDeal(session.attempt.dealId)!;
+  if (index) beginDeal(session, deal, `campaign-audit-${level}`, findDeal(session.attempt.dealId));
+  if (level === 30) {
+    const lesson = findDeal(teaching.get(level)!)!;
+    assert.equal(layoutFingerprint(deal), layoutFingerprint(lesson));
+    assert.deepEqual(deal.winningPath, lesson.winningPath);
+    assert.equal(deal.shuffleCost, lesson.shuffleCost);
+  } else if (teaching.has(level)) assert.equal(deal.id, teaching.get(level), `L${level} lesson changed during campaign`);
+  else if (level >= 16) assert.equal(deal.initial.rulesVersion, 4, `L${level} fell back during campaign`);
+  const passport = campaignIssuance(session, base, deal);
+  if (passport) session.attempt.issuance = passport;
+  let independent = deal.initial;
+  for (const [move, command] of deal.winningPath.entries()) {
+    const next = dispatch(session, command, deal);
+    assert(next.accepted, `L${level} move ${move + 1}: ${next.reason}`);
+    const expected = advance(independent, command, deal);
+    assert(expected, `L${level} oracle refused move ${move + 1}`);
+    assert.deepEqual(next.next.attempt.board, expected, `L${level} diverged on move ${move + 1}`);
+    session = next.next;
+    independent = expected;
+  }
+  assert.equal(session.attempt.board.phase, 'won', `L${level} did not finish`);
+  assert.equal(completedLevels(session), level);
+  const restored = decodeSave(JSON.stringify(session), findDeal);
+  assert.deepEqual(restored.attempt, session.attempt, `L${level} changed when restored`);
+  session = restored;
+  return { level, dealId: deal.id, rules: deal.initial.rulesVersion, commands: deal.winningPath.length, movesLeft: session.attempt.board.movesLeft };
+});
+assert.equal(unlockedLevel(session), 80);
 const issuance = campaign.map(base => {
   const level = base.campaignLevel!;
   const start = freshSave(base, `hitapps-r4-coverage-${level}`);
@@ -103,8 +139,8 @@ const summary = Object.fromEntries(Object.entries(coverage).map(([tier, values])
 const report = { archive: archive.length, verifiedSeededRoutes: rows.length, distinctRoutes: routes.size, verifiedSeededEdges: checkedEdges,
   actualCampaignCoverage: [...seenLevels].sort((a, b) => a - b), fallbackLevels: Array.from({ length: 65 }, (_, index) => index + 16)
     .filter(level => !seenLevels.has(level)), meetsEasyTarget: rows.filter(row => row.reachesEasyTarget).length,
-  originalRuntime: 'UNOBSERVED', skill: 'bot-and-solver-distributions', summary, issuance, rows };
+  originalRuntime: 'UNOBSERVED', skill: 'bot-and-solver-distributions', summary, issuance, firstTraversal, rows };
 assert(rows.length > 0, 'Candidate must contain a certified fresh seed');
 mkdirSync('.authoring/hitapps-r4', { recursive: true });
 writeFileSync('.authoring/hitapps-r4/balance-report.json', `${JSON.stringify(report, null, 2)}\n`);
-console.log(JSON.stringify({ ...report, issuance: issuance.length, rows: undefined }, null, 2));
+console.log(JSON.stringify({ ...report, issuance: issuance.length, firstTraversal: firstTraversal.length, rows: undefined }, null, 2));

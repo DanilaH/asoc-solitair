@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest';
 import { releaseProfile } from '../../src/config/profile';
-import { campaignDeals, campaignIssuance, findDeal, lateAdaptiveDeals, selectCampaignDeal } from '../../src/content/campaign';
+import { campaignDeals, campaignIssuance, findDeal, hitappsR4Deals, lateAdaptiveDeals, selectCampaignDeal } from '../../src/content/campaign';
 import { coreSpecialDeals } from '../../src/content/campaign-v8-integrated-specials';
 import { recoveryDeal } from '../../src/content/campaign';
 import { dailyForDay } from '../../src/content/daily';
@@ -37,9 +37,11 @@ it.skipIf(!releaseProfile)('binds generated provenance to the issued deal and ca
   const deal = selectCampaignDeal(save, base);
   const issued = freshSave(deal, 'generated');
   issued.attempt.issuance = campaignIssuance(save, base, deal);
+  const certified = [...hitappsR4Deals()].find(entry => entry.deal.id === deal.id)!;
+  expect(certified.penalty).toBe(-5);
   expect(issued.attempt.issuance).toMatchObject({
-    dealId: deal.id,
-    source: 'certified-seed', seed: { value: 47 }, equality: 'unknown-cohort',
+    dealId: deal.id, policy: 'hitapps-r4-bank-v1', source: 'certified-seed',
+    seed: { value: certified.record.seed, boardHash: certified.hash }, equality: 'unknown-cohort',
   });
   const restart = dispatch(issued, { type: 'restart', attemptId: 'same-layout' }, deal).next;
   expect(restart.attempt.issuance).toEqual(issued.attempt.issuance);

@@ -3,7 +3,7 @@
   "asOf": "2026-11-21",
   "source": {
     "kitRetentionEvidenceGitBlob": "a108bc5d843ea45ece26aed67e7ca4cb91735589",
-    "consumerSourceInventoryGitBlob": "b711111b5876924d7e05553edf428e51b783f915",
+    "consumerSourceInventoryGitBlob": "a5d88b3913edced9172a7122f4df296c0bfeb4e5",
     "originalHitappsXapkSha256": "22aaff3a6d5b70f217b8feb7348538f5ab3352d4e8c766406cbddcbcd71e49f0",
     "originalAzurXapkSha256": "4990fa1a5d8dd2974e1105cf4c54fa28fad13a6f5cb197b562dfc10426cb83e4",
     "sourceTier": "REPORT_FROM_ORIGINAL_SHA_CHECKED_BINARIES_NOT_EXECUTED_THIS_TURN",
@@ -160,7 +160,7 @@
     {
       "id": "hitapps-lava-quest",
       "stage": "F2",
-      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "pinnedSourceTier": "NATIVE_STATIC",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
       "consumerAuditStatus": "ROADMAPPED"
     },
@@ -181,8 +181,8 @@
     {
       "id": "hitapps-meta-regions",
       "stage": "F3",
-      "pinnedSourceTier": "METADATA",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
       "consumerAuditStatus": "ROADMAPPED"
     },
     {
@@ -202,7 +202,7 @@
     {
       "id": "hitapps-gold-rush-event",
       "stage": "F2",
-      "pinnedSourceTier": "VIDEO_OBSERVED",
+      "pinnedSourceTier": "NATIVE_STATIC",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
       "consumerAuditStatus": "ROADMAPPED"
     },
@@ -216,29 +216,29 @@
     {
       "id": "hitapps-cascade-events",
       "stage": "F3",
-      "pinnedSourceTier": "METADATA",
+      "pinnedSourceTier": "NATIVE_STATIC",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
       "consumerAuditStatus": "EVIDENCE_GAP"
     },
     {
       "id": "hitapps-digging-event",
       "stage": "F3",
-      "pinnedSourceTier": "METADATA",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
       "consumerAuditStatus": "EVIDENCE_GAP"
     },
     {
       "id": "hitapps-lucky-wheel",
       "stage": "F3",
-      "pinnedSourceTier": "METADATA",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
       "consumerAuditStatus": "EVIDENCE_GAP"
     },
     {
       "id": "hitapps-endless-treasure",
       "stage": "F3",
-      "pinnedSourceTier": "METADATA",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
+      "pinnedSourceTier": "NATIVE_STATIC",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
       "consumerAuditStatus": "EVIDENCE_GAP"
     },
     {

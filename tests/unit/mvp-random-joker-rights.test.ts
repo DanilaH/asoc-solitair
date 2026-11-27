@@ -2,12 +2,12 @@ import { expect, it } from 'vitest';
 import { campaignDeals, findDeal } from '../../src/content/campaign';
 import { dailyForDay } from '../../src/content/daily';
 import { beginDeal } from '../../src/domain/campaign';
-import { dispatch } from '../../src/domain/engine';
+import { dispatch, freshSave } from '../../src/domain/engine';
 import { buyRandomJokerAccess, randomJokerCount, randomJokerReady, settleRandomJoker } from '../../src/domain/random-joker';
 import { switchMode } from '../../src/domain/sessions';
 import { decodeSave, SaveStore } from '../../src/platform/storage';
 import { randomJokerFixture } from '../fixtures/owner-random-joker';
-import { CONTENT_VERSION } from '../../src/domain/types';
+import { CONTENT_VERSION, type BoardCommand } from '../../src/domain/types';
 
 const extraHelpers = { version: 1, randomJokerCoins: 250, unlimitedCoins: 120, unlimitedMs: 60_000 } as const;
 function fixture() {
@@ -139,4 +139,38 @@ it('settles purchase and proof consumption through failed writes, ambiguous comm
   await reopened.open();
   expect(reopened.state).toEqual(store.state);
   expect(randomJokerCount(reopened.state)).toBe(0);
+});
+
+
+it('buys, places, and restores the paid Random Joker on a certified Rules4 L16', () => {
+  const deal = findDeal('campaign-ha4-16-1600280-2dc32d1d790b34cd-df7df9f8')!;
+  let save = freshSave(deal, 'rules4-random-joker');
+  save.profile.coins = 500;
+  const prefix = 5, column = 0;
+  for (const action of deal.winningPath.slice(0, prefix)) {
+    const result = dispatch(save, action, deal);
+    expect(result.accepted).toBe(true);
+    save = result.next;
+  }
+  const coins = save.profile.coins;
+  expect(buyRandomJokerAccess(save, deal, 'paid-rules4-joker', 100)).toBe(true);
+  const path: BoardCommand[] = [
+    { type: 'transfer', from: { kind: 'tableau', index: 2 }, to: { kind: 'tableau', index: column }, root: 6 },
+    { type: 'transfer', from: { kind: 'tableau', index: column }, to: { kind: 'tableau', index: 2 } },
+    ...deal.winningPath.slice(prefix),
+  ];
+  const proof = { attemptId: save.attempt.id, revision: save.revision, column, id: 'azj-rules4', path };
+  expect(settleRandomJoker(save, deal, proof)).toBe(true);
+  expect(save.profile.coins).toBe(coins - 250);
+  expect(randomJokerCount(save)).toBe(0);
+  expect(save.attempt.undo).toHaveLength(0);
+  save = decodeSave(JSON.stringify(save), findDeal);
+  expect(save.attempt.board.joker?.card?.id).toBe(proof.id);
+  for (const action of path) {
+    const result = dispatch(save, action, deal);
+    expect(result.accepted).toBe(true);
+    save = result.next;
+  }
+  expect(save.attempt.board.phase).toBe('won');
+  expect(save.attempt.board.joker).toBeUndefined();
 });

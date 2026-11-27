@@ -6,7 +6,7 @@ import { claimDailyBonus, dailyBonusState, openDailyBonusRound, revealDailyBonus
 import { grantShuffleIntro, hasFutureShuffleUse, SHUFFLE_LEVELS } from './domain/shuffle-progression';
 import { commitAdaptiveRetry, quoteAdaptiveRetry, quoteLayoutRetry } from './app/campaign-retry';
 import { releaseProfile } from './config/profile';
-import { HITAPPS_SOURCE_QA } from './config/hitapps-r4';
+import { HITAPPS_FIXTURE_UI } from './config/hitapps-r4';
 import { OFFER_CAMPAIGNS_PREVIEW } from './domain/commerce/offer-campaigns';
 import { mountOfferCampaignPreview } from './app/offer-campaign-preview';
 import { authorizeLifeVideo, cancelLifeVideo, LIVEOPS_PREVIEW, LIVES_PREVIEW, LIVES_RULES, matchesLifeVideo, mayStartCampaignAttempt, refillCampaignLife, refreshCampaignLives } from './domain/campaign-lives';
@@ -79,7 +79,7 @@ const victoryPolicy = AZUR_VICTORY_QA ? AZUR_VICTORY_DEFAULTS : undefined;
 const integratedOffers = releaseProfile?.capabilities.rewardOffers === 'sdk-acceptance-gated';
 const rewardOffersEnabled = (REWARD_OFFER_PREVIEW || integratedOffers) && !AZUR_VICTORY_QA;
 const casual = Boolean(releaseProfile);
-const qaLevelPicker = HITAPPS_SOURCE_QA || new URLSearchParams(location.search).get('qa-levels') === '1';
+const qaLevelPicker = HITAPPS_FIXTURE_UI;
 if (casual) {
   document.documentElement.dataset.casual = 'true';
   $('#app').dataset.casual = 'true';
@@ -2283,15 +2283,13 @@ try {
       ? campaignDeal : completed === CAMPAIGN_LENGTH ? undefined : campaignDeals[unlocked - 1];
     const homeDifficulty = setDifficulty($('#home-play'), homeDeal);
     const finished = casual && !current && completed === CAMPAIGN_LENGTH;
-    $('#home-play').hidden = finished && (!campaign || outcomeViewed);
-    $('.casual-tray')?.toggleAttribute('data-campaign-finished', finished);
-    const level = Object.assign(document.createElement('small'), { textContent: parts[1] ?? (casual ? 'Последняя раздача' : 'Кампания') });
+    const level = Object.assign(document.createElement('small'), { textContent: parts[1] ?? (completed === CAMPAIGN_LENGTH ? 'Кампания пройдена' : 'Кампания') });
     if (homeDifficulty) {
       if (casual) level.append(difficultyBadge(homeDeal));
       else level.textContent += ' · ' + homeDifficulty;
     }
     if (casual) renderUnlockTrack($('#home-unlock-track'));
-    $('#home-play').replaceChildren(document.createTextNode(finished ? 'Итоги' : parts[0]), level);
+    $('#home-play').replaceChildren(document.createTextNode(finished && !outcomeViewed ? 'Итоги' : parts[0]), level);
     $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy;
     const focusId = campaign?.id ?? 'new';
     if (chapterAttemptId !== focusId) {
@@ -2320,7 +2318,7 @@ try {
       button.dataset.completed = String(done); button.dataset.next = String(level === unlocked && !done);
       button.setAttribute('aria-label', `Уровень ${level}: ${item.title}${difficulty ? ', ' + difficulty : ''}${done ? ', пройден' : level > unlocked ? ', закрыт' : ''}`);
     }
-    if (HITAPPS_SOURCE_QA) {
+    if (HITAPPS_FIXTURE_UI) {
       const container = $('#source-deal-list');
       const fixtures = [...hitappsR4Deals()].filter(row => row.record.use === 'feature-check' && row.penalty === 0 &&
         Math.floor((row.deal.campaignLevel! - 1) / 20) === chapterPage);
@@ -2455,7 +2453,7 @@ try {
   }
   async function openLevel(level: number, confirmed = false, announce = true, redeal?: { attemptId: string; dealId: string }, sourceDealId?: string) {
     if (!alive || !ready || saving || serviceBusy || store.needsRecovery || level < 1 || level > unlockedLevel(save)) return;
-    const exact = sourceDealId && HITAPPS_SOURCE_QA ? findDeal(sourceDealId) : undefined;
+    const exact = sourceDealId && HITAPPS_FIXTURE_UI ? findDeal(sourceDealId) : undefined;
     if (sourceDealId && (!exact?.hitapps || exact.campaignLevel !== level)) return;
     if (redeal && (redeal.attemptId !== save.attempt.id || campaignRedeal(save.attempt)?.id !== redeal.dealId)) return;
     const target = campaignDeals[level - 1];
@@ -2685,7 +2683,7 @@ try {
   $('#home-play').addEventListener('click', () => {
     if (save.attempt.daily) { void activateMode('campaign'); return; }
     if (save.attempt.board.phase === 'playing' || !outcomeViewed) showGame();
-    else if (completedLevels(save) === CAMPAIGN_LENGTH) { if (!casual || qaLevelPicker) openDialog('#level-picker'); }
+    else if (completedLevels(save) === CAMPAIGN_LENGTH) { renderMeta(save, saving); openDialog('#level-picker'); }
     else void openLevel(unlockedLevel(save));
   }, domOptions);
   $('#daily-play').addEventListener('click', () => { if (dailyModeAvailable(save)) void activateMode('daily'); }, domOptions);

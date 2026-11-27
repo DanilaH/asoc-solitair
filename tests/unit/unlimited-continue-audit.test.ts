@@ -88,7 +88,7 @@ it.skipIf(!releaseProfile)('reopens and undoes a legal Unlimited expiry followed
   broken.attempt.board = broken.attempt.undo.pop()!;
   const invalidActive = structuredClone(broken);
   delete invalidActive.attempt.unlimited;
-  expect(() => decodeSave(JSON.stringify(invalidActive), findDeal)).toThrow('Несогласованный бюджет');
+  expect(() => decodeSave(JSON.stringify(invalidActive), findDeal)).toThrow(/Несогласованн.*бюджет/);
   expect(decodeSave(JSON.stringify(broken), findDeal).attempt.board).toEqual(undone.next.attempt.board);
 
   const daily = dailyForDay('2026-11-24');

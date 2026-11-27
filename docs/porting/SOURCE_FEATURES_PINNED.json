@@ -76,7 +76,7 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "ads",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Native per-level/per-difficulty trigger and cap guards exist; in-game actual placement frequency from live remote config UNKNOWN"
+      "knownLimit": "Native per-level/per-difficulty trigger and cap guards exist; in-game actual placement frequency from live remote config UNKNOWN 27 Nov: Do not conflate rewarded payer overrides with in-level interstitial policy; ordinary and payer RV buckets separate; existing interstitial limits unchanged. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-stock-restore",
@@ -85,7 +85,7 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "help",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "First free then base+(n-1)*increment formula proven, real base/increment/reset trigger UNKNOWN"
+      "knownLimit": "First free then base+(n-1)*increment formula proven, real base/increment/reset trigger UNKNOWN 26 Nov: original native cost and first-free/disabled/paid state, refund count and reset verified (113 restore-related rows incl price and reset); actual OnRestoreStockUndone dispatches refund interface slot7, direct TryAgain/ExitWithFail reset call chain; refund recomputes cost after decrement. Consumer Undo currently board-only. Full original save/next-win and currency settlement runtime unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md"
     },
     {
       "id": "hitapps-revive-offers",
@@ -94,7 +94,7 @@
       "evidenceTier": "METADATA",
       "surface": "monetization",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Segment/cooldown/cap product config names present; exact active revive grant offers/click behavior not observed"
+      "knownLimit": "Segment/cooldown/cap product config names present; exact active revive grant offers/click behavior not observed 26 Nov: exact revive amount min(cap,5*ceilf(f32(coef*remainingCards/5))) (270 native rows); compiled gates min-level, remaining strict min, daily shown count, cooldown bypass before first purchase, separate policy. MovesOfferSaveData and ExtraMovesBubbleSaveData are distinct persisted pending-purchase rights; confirmed positive bubble can apply on fresh/restart/restored level, CurrentSteps+=extra and LoseReason=0, read/mark/reset separate (82 native rows). Ordinary leftover moves carryover not proved; original runtime transaction and active values unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md 27 Nov: Recent payer rewarded placement policy separate from ordinary buckets and paywall segmentation; preserve 26 Nov native recovery evidence. Runtime/active values unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "azur-coin-moves",
@@ -274,16 +274,22 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Race/bot config and visible event, synchronous human multiplayer NOT proven and bot results vary by config"
+      "knownLimit": "Race/bot config and visible event, synchronous human multiplayer NOT proven and bot results vary by config 26.11 exact-source event pass: Implement sampled per-bot interval and cumulative progress with persistent plan, rank/result/claims; exact original comparator and finish predicate still open. Static original and 340 native kernel rows matched; exact RNG/shuffle/rank/claims remain partial. See 2026-11-26-hitapps-events-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md"
+      ]
     },
     {
       "id": "hitapps-lava-quest",
       "name": "Hitapps Lava Quest first-try win streak participant presentation",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "S1 shows stage participants and seven first-try wins requirement; actual participant reality/live payouts not verified"
+      "knownLimit": "S1 shows stage participants and seven first-try wins requirement; actual participant reality/live payouts not verified 26.11 exact-source event pass: Implement preselected finalists and memoized feasible dropout trajectory, loss reset/cooldown, per-finalist floor share and claim; preserve first-try and existing legacy claims. Static original and 48 native seed rows matched; bounds/split and full lifecycle static/model only. See 2026-11-26-hitapps-events-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md"
+      ]
     },
     {
       "id": "hitapps-daily-rewards",
@@ -301,25 +307,28 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Native win-streak progress/failure/claim state, live reward amounts/schedule unknown"
+      "knownLimit": "Native win-streak progress/failure/claim state, live reward amounts/schedule unknown 26 Nov: capped stage and overflow, loss current milestone only, joined/progress warning, claim ordered completed milestones, leave after final claim or expired without unclaimed, pending key application. Native arithmetic/gates plus static callers. Live schedule/reward values, original runtime/claim atomicity unknown. See research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-streak-combo-native/README.md"
+      ]
     },
     {
       "id": "hitapps-meta-regions",
       "name": "Hitapps stars/buildings/regions progression",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Native meta-unlock/region building/star model, asset/remote activation and complete economy unknown"
+      "knownLimit": "Unlock/prewarm native matched; multi-step object prerequisites, stars/XP, completion and distinct XP/region rewards, frozen balance and reducer/service architecture statically reconstructed. Original star producer, settlement/dedup, live catalog and asset activation unknown."
     },
     {
       "id": "hitapps-piggy-bank",
       "name": "Hitapps accumulated purchasable piggy-bank rewards",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "S1 piggy bank UI/time and saved currency visible, actual IAP purchase fulfillment/refund unobserved"
+      "knownLimit": "S1 piggy bank UI/time and saved currency visible, actual IAP purchase fulfillment/refund unobserved 27 Nov: Separate min purchase/max fill, clamped accumulation, period activation cap and cycling, pinned rewards. Live values/settlement unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-lives",
@@ -328,7 +337,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "S1 5 lives and temporary infinite-life reward observed, full loss/regen policy unknown"
+      "knownLimit": "S1 5 lives and temporary infinite-life reward observed, full loss/regen policy unknown 26 Nov: finite-life cap, offline elapsed/interval refill, infinite deadline max(now,old)+duration, daily expiry and price power/decade-floor (native kernels); finite spend, infinite bypass, timer callback amount, explicit channel config/purchase caps and transient spend marker verified. Actual life reservation/debit full flow, source midpoint math full execution and active values unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/main/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md"
     },
     {
       "id": "azur-play-pass",
@@ -343,10 +352,10 @@
       "id": "hitapps-rotating-offers",
       "name": "Hitapps starter/event/IAP/offer family and timed eligibility",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 or cross-game research",
-      "knownLimit": "Native offer family configs/thresholds exist, exact real eligible offer triggers and payouts UNKNOWN"
+      "knownLimit": "Native offer family configs/thresholds exist, exact real eligible offer triggers and payouts UNKNOWN 27 Nov: Buy All subfeature: per-variant calendar, options snapshot, purchase pins, priority conditions and eligibility enum. Generic native bodies and live values unresolved. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "unico-win-and-task-streak",
@@ -355,7 +364,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico video S3 (build unverified)",
-      "knownLimit": "S3 distinct task and win streak screens; win-loss resets and grants not exercised #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
+      "knownLimit": "S3 distinct task and win streak screens; win-loss resets and grants not exercised #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: Distinct observed tracks; offline consumer reset/thresholds are own, not source. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate regular-win event excludes Daily, pending gift/claim and conditional milestone rollback; distinct task pools, sequential gating and task/day/streak claims. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "ui-motion-audio-coin",
@@ -373,16 +382,22 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "economy",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Streak 4→2,5→3,6→4,7→5 is verified from video; edge cases Undo and native coin route not fully replayed"
+      "knownLimit": "Streak 4→2,5→3,6→4,7→5 is verified from video; edge cases Undo and native coin route not fully replayed 26 Nov: exact source regular/reject/stock gates, Home and PlayStack resolved branches, repeat final tier and snapshot Undo, Reverted rule; native matrices and win-flow streak coin anchors. Complete producer fact0/coin accumulation+refund and device remain unknown. See research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-streak-combo-native/README.md"
+      ]
     },
     {
       "id": "hitapps-gold-rush-event",
       "name": "Hitapps Gold Rush timed golden-card collection event",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "evidenceTier": "VIDEO_OBSERVED",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "events",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "First-attempt x2 and 90-card/20000 visible example, not universal active event balance 26.11 exact compiled gold placement parameters, independent Unity RNG selection, health4, separate initial vs runtime hidden eligibility; actual event active amount, schedule, full health/bonus and economy remain unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/bbd57ddf0dbc0240f5b9e17c9f0822c5dc25a8cf/research/games/association-solitaire/2026-11-26-hitapps-golden-generator/README.md 26.11 recursive pass: separate GoldenCards runtime decay, activation, count and event numeric kernels now verified. No source proof of coin payout, event tier, first-attempt grant, real config or live schedule. Do not equate activated flag with money receipt. Evidence: https://github.com/DanilaH/mini-games-kit/tree/main/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/"
+      "knownLimit": "First-attempt x2 and 90-card/20000 visible example, not universal active event balance 26.11 exact compiled gold placement parameters, independent Unity RNG selection, health4, separate initial vs runtime hidden eligibility; actual event active amount, schedule, full health/bonus and economy remain unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/bbd57ddf0dbc0240f5b9e17c9f0822c5dc25a8cf/research/games/association-solitaire/2026-11-26-hitapps-golden-generator/README.md 26.11 recursive pass: separate GoldenCards runtime decay, activation, count and event numeric kernels now verified. No source proof of coin payout, event tier, first-attempt grant, real config or live schedule. Do not equate activated flag with money receipt. Evidence: https://github.com/DanilaH/mini-games-kit/tree/main/research/games/association-solitaire/2026-11-26-hitapps-recursive-specials/ 26.11 exact-source event pass: Integrate GoldenCard activation with shared Cascade token buffer, first-gold/difficulty plan, final multiplier/overflow and idempotent event reward; no analytics payout inference. Static original/model evidence; token execution matrices not reached. See 2026-11-26-hitapps-events-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md"
+      ]
     },
     {
       "id": "hitapps-puzzle-gallery",
@@ -397,64 +412,67 @@
       "id": "hitapps-cascade-events",
       "name": "Hitapps cascade-event orchestration and event hooks",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "events",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Native golden applier uses CascadeEventsHook; no full scheduler/remote config or cadence"
+      "knownLimit": "Native golden applier uses CascadeEventsHook; no full scheduler/remote config or cadence 26.11 exact-source event pass: Build single-active event lifecycle, weekly schedule with explicit own boundary, category/gold sources, tentative→final tokens, stage progression and claim queue. Static original/model evidence; token execution matrices not reached. See 2026-11-26-hitapps-events-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md"
+      ]
     },
     {
       "id": "hitapps-digging-event",
       "name": "Hitapps Digging event system",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "events",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Named module/config is not activation or observed minigame rules"
+      "knownLimit": "Native grid/index/margin/gates matched. Authored first launch, later seeded placement (200 attempts + authored fallback), rectangle finds, durability, bonuses, mole chains, stage rewards. Exact seed hash/PRNG, failed fallback, full chain/claim and live maps/config unknown."
     },
     {
       "id": "hitapps-lucky-wheel",
       "name": "Hitapps LuckyWheel prize system",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Named module only; odds, rewards and presentation unknown"
+      "knownLimit": "Native float32 cutoff, min-spin gate, segment flags and upgrade branch matched. Staged deactivation, final repeated sectors, task quotas/used IDs and reward/save flow statically recovered. Full task draw/expiry/receipt, probability display and live weights unknown."
     },
     {
       "id": "hitapps-endless-treasure",
       "name": "Hitapps EndlessTreasure event system",
-      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/3e4ace47f7661535f3408bad0b3fa721a2641fd3/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Named module only; rules, stage caps and active status unknown"
+      "knownLimit": "Native event config rotation matched. Configured Free/Rewarded/Paid step sequence and separate resource progress/pending awards recovered statically; full milestone claims, callback atomicity, schedules and live economy unknown."
     },
     {
       "id": "hitapps-birthday-offer",
       "name": "Hitapps BirthdayOffer contextual sale",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Offer name/config present; triggering conditions and products unknown"
+      "knownLimit": "Offer name/config present; triggering conditions and products unknown 27 Nov: Calendar editions, distinct show/cooldown/purchase state, priority selection, pins; no proven player-birthdate requirement. Live calendar unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-decoy-offer",
       "name": "Hitapps DecoyOffer contextual sale",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Offer config present; real offer UI and eligibility unknown"
+      "knownLimit": "Offer config present; real offer UI and eligibility unknown 27 Nov: Strict min-level/fresh notPaid gate, show cap, schedule, prioritized eligible content and pins. Prices and full lifecycle unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-starter-offer",
       "name": "Hitapps StarterOffer first-time offer",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Config present; actual pricing, eligibility and available IAP unknown"
+      "knownLimit": "Config present; actual pricing, eligibility and available IAP unknown 27 Nov: Level interval, fresh vs active payer gate, offer-type scan/loop, content priority, pins. Live pricing and lifecycle unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-meta-prewarm",
@@ -478,19 +496,19 @@
       "id": "hitapps-win-rewarded-offer",
       "name": "Hitapps WinScreenRvReward offer policy",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "monetization",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "Config exists; actual payout formula/offer trigger and live activity unknown"
+      "knownLimit": "Config exists; actual payout formula/offer trigger and live activity unknown 27 Nov: Static exact total ceilf(f32(multiplier)*f32(level+streak)), extra=total-base; separate recent-payer override (seven placements), ordinary bucket and watch settlement. Live config/Android unknown. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-inapp-shop",
       "name": "Hitapps shop and purchasable booster/soft currency offers",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-16-systems/SYSTEMS.md",
-      "evidenceTier": "METADATA",
+      "evidenceTier": "NATIVE_STATIC",
       "surface": "commerce",
       "originalBuild": "Hitapps 1.26.2 / recorded gameplay",
-      "knownLimit": "ShopConfig/SoftCurrencyConfig/StarterOfferConfig compiled; KYC/store prices and activation unknown"
+      "knownLimit": "ShopConfig/SoftCurrencyConfig/StarterOfferConfig compiled; KYC/store prices and activation unknown 27 Nov: Offer purchase pins, product+screen show accounting, NoAds restore/revoke/receipt metadata. No actual store fulfillment/refunds tested. Evidence: https://github.com/DanilaH/mini-games-kit/blob/13315d7fcd2fbb4a62dc1d2e3b352cba9086655c/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md"
     },
     {
       "id": "hitapps-ingame-banner",
@@ -544,7 +562,10 @@
       "evidenceTier": "NATIVE_STATIC",
       "surface": "meta",
       "originalBuild": "AZUR 1.3.3.8",
-      "knownLimit": "Original AZUR 1.3.3.8 SHA-verified ARM64/metadata: compiled fallback feature unlock5, slots4..8, one parsed 5-step source reward track 2/4/7/10/15 coins; StartLevelSeries→PickRandomTrack→BuildSeries, completion increments stage and slot count. NEW 2026-11-24 typed MoveSummary source proof: five byte fields IsCardRelocation(bit0), IsDeckDraw(bit8), InvolvesWildCard(bit16), PlacedOnCardOrFoundation(bit24), SkippedPlayableWasteCard(bit32), with original ctor MethodDef413. IsProductiveMove requires relocation+placed without wild `(flags&0x01010001)==0x01000001`; HandleMoveExecuted resets on draw+skippedPlayable `(flags&0x100000100)==0x100000100` BEFORE productivity, invalid moves have separate reset. Original reward enum Coins/Hint/Undo/Definition/Shuffle/Joker/Moves; Moves type6 accumulates pending +0x48 and separate commit, not immediate grant. Actual board-event producer/gesture mapping, wild meaning, Undo/recycle, active remote track, stage after fifth, original device/runtime/animation and live rewards remain UNKNOWN. Own current Hitapps-style streak PRODUCT_ADAPTED. Evidence: research/games/association-solitaire/2026-11-24-azur-combo-movesummary-typed-flags/README.md. Original PickRandomTrack uses shared Unity RNG; actual producer paths and global RNG consumption remain UNKNOWN. Older consumer statements are historical, see CURRENT.md. 25 Nov follow-up: Native exhausted moves waits 0.5s then pending_moves_reward gate with timeout 6 scaled seconds; force release commits all pending then active-game defeat recheck. Normal kind6 StepComplete commits moves, level start clears counters. Exact producer, live track, duplicate/save/Undo/win/restart semantics UNKNOWN. PR211 own typed predicates and five coin stages exist; pending Moves lifecycle not implemented in combo.ts. Evidence: https://github.com/DanilaH/mini-games-kit/blob/6d8c51f8b2f6c2d9b0e1315ab49d3a7ef040cb13/research/games/association-solitaire/2026-11-25-azur-unlimited-ladder-recovery-combo/README.md 25 Nov P30 producer/lifecycle pass: GameMove Type0 draw, Type1/2 relocation, Type3 reset excluded by bridge. Wild from target top, immediately beneath source or moved stack Joker; productive target foundation or occupied column. Skip only pre-draw non-Joker waste with legal unlocked occupied non-Joker compatible target, not empty column or category->empty foundation. ResetDeck and Undo use distinct paths, no MoveExecuted; Undo leaves Combo, source positive handler no edge dedupe. Reset clears fill only. BuildSeries clamps slots and reward index, repeats 8/15 after fifth under compiled fallback. OnLevelStarted clears pending and selects fresh track; DTO no Combo fields, loaded-board level-start event path static not runtime observed. Victory waits 1s then combo_animation (6 scaled s timeout/ForceRelease); source sink adapter -> BuyMoves. Active remote tracks, actual runtime event delivery/purchase/animations/save, indirect host instance and all special producer paths UNKNOWN. Consumer PR211 finite fifth-stage, broad waste predicate, virtual Joker and anti-farm dedupe/persisted progress are PRODUCT_ADAPTED; retain old saves, prepare versioned delta. Evidence: https://github.com/DanilaH/mini-games-kit/blob/a3f3b112c170bff6addd8cc39674feafef61c2b1/research/games/association-solitaire/2026-11-25-azur-combo-producers-lifecycle/README.md"
+      "knownLimit": "Original AZUR 1.3.3.8 SHA-verified ARM64/metadata: compiled fallback feature unlock5, slots4..8, one parsed 5-step source reward track 2/4/7/10/15 coins; StartLevelSeries→PickRandomTrack→BuildSeries, completion increments stage and slot count. NEW 2026-11-24 typed MoveSummary source proof: five byte fields IsCardRelocation(bit0), IsDeckDraw(bit8), InvolvesWildCard(bit16), PlacedOnCardOrFoundation(bit24), SkippedPlayableWasteCard(bit32), with original ctor MethodDef413. IsProductiveMove requires relocation+placed without wild `(flags&0x01010001)==0x01000001`; HandleMoveExecuted resets on draw+skippedPlayable `(flags&0x100000100)==0x100000100` BEFORE productivity, invalid moves have separate reset. Original reward enum Coins/Hint/Undo/Definition/Shuffle/Joker/Moves; Moves type6 accumulates pending +0x48 and separate commit, not immediate grant. Actual board-event producer/gesture mapping, wild meaning, Undo/recycle, active remote track, stage after fifth, original device/runtime/animation and live rewards remain UNKNOWN. Own current Hitapps-style streak PRODUCT_ADAPTED. Evidence: research/games/association-solitaire/2026-11-24-azur-combo-movesummary-typed-flags/README.md. Original PickRandomTrack uses shared Unity RNG; actual producer paths and global RNG consumption remain UNKNOWN. Older consumer statements are historical, see CURRENT.md. 25 Nov follow-up: Native exhausted moves waits 0.5s then pending_moves_reward gate with timeout 6 scaled seconds; force release commits all pending then active-game defeat recheck. Normal kind6 StepComplete commits moves, level start clears counters. Exact producer, live track, duplicate/save/Undo/win/restart semantics UNKNOWN. PR211 own typed predicates and five coin stages exist; pending Moves lifecycle not implemented in combo.ts. Evidence: https://github.com/DanilaH/mini-games-kit/blob/6d8c51f8b2f6c2d9b0e1315ab49d3a7ef040cb13/research/games/association-solitaire/2026-11-25-azur-unlimited-ladder-recovery-combo/README.md 25 Nov P30 producer/lifecycle pass: GameMove Type0 draw, Type1/2 relocation, Type3 reset excluded by bridge. Wild from target top, immediately beneath source or moved stack Joker; productive target foundation or occupied column. Skip only pre-draw non-Joker waste with legal unlocked occupied non-Joker compatible target, not empty column or category->empty foundation. ResetDeck and Undo use distinct paths, no MoveExecuted; Undo leaves Combo, source positive handler no edge dedupe. Reset clears fill only. BuildSeries clamps slots and reward index, repeats 8/15 after fifth under compiled fallback. OnLevelStarted clears pending and selects fresh track; DTO no Combo fields, loaded-board level-start event path static not runtime observed. Victory waits 1s then combo_animation (6 scaled s timeout/ForceRelease); source sink adapter -> BuyMoves. Active remote tracks, actual runtime event delivery/purchase/animations/save, indirect host instance and all special producer paths UNKNOWN. Consumer PR211 finite fifth-stage, broad waste predicate, virtual Joker and anti-farm dedupe/persisted progress are PRODUCT_ADAPTED; retain old saves, prepare versioned delta. Evidence: https://github.com/DanilaH/mini-games-kit/blob/a3f3b112c170bff6addd8cc39674feafef61c2b1/research/games/association-solitaire/2026-11-25-azur-combo-producers-lifecycle/README.md 26 Nov: exact owner XAPK reacquired on consumer CI; original ARM64 productive/handler, stage clamp/index, reward/pending commit, fixed-stage loop, positive budget writes verified; prior typed producer/lifecycle findings preserved. Full Android/remote/atomic payout unknown; local r1 adapted policy unchanged. See research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+      "additionalEvidence": [
+        "research/games/association-solitaire/2026-11-26-streak-combo-native/README.md"
+      ]
     },
     {
       "id": "azur-unlimited-moves-offer",
@@ -598,7 +619,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "ads",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Video shows in-game break with +3 coin after return; cannot equate with opt-in rewarded #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier.; S3 shows two pauses in one Daily, 183s apart, not proof of universal interval/cap. Repeated pauses explicitly required by owner #210; source callback and active config unknown."
+      "knownLimit": "Video shows in-game break with +3 coin after return; cannot equate with opt-in rewarded #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier.; S3 shows two pauses in one Daily, 183s apart, not proof of universal interval/cap. Repeated pauses explicitly required by owner #210; source callback and active config unknown. 27 Nov consumer/provenance audit: Current consumer r4 shares action-bound interstitial pause in Campaign/Daily and no +3 grant. Preserve #210; actual source trigger/callback unknown. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate AdBreakPopup reward-enable/count clamp, coin grant method, local/global caps, category/level trigger and skip-after-play-on fields; actual callback/config unknown. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-daily-fortune",
@@ -607,7 +628,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Video shows option; reward probability and redemption not verified #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
+      "knownLimit": "Video shows option; reward probability and redemption not verified #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: Current isolated trial 4/6/10 and three slots is own model; original odds, pool and retry semantics unknown. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate distinct DailyMinigameContext saved cycle/attempts, max(0,count-used), free-first and configured cards/rewards; separate layered FortuneCardsService clover event retained as a candidate system. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-rewarded-theme",
@@ -616,7 +637,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Try Now with video badge observed; exact entitlement and ad callback unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
+      "knownLimit": "Try Now with video badge observed; exact entitlement and ad callback unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: Own 24h amber trial distinct from video Halloween reward; original permanent/temporary grant unknown. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate catalogue available for follow-up; exact entitlement/acquisition and callback still unresolved. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-vip",
@@ -625,7 +646,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "commerce",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "VIP offer in video but no successful payment/receipt or platform policy #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
+      "knownLimit": "VIP offer in video but no successful payment/receipt or platform policy #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: Retain VIP and ten public product names; actual receipt/offer selection still unknown. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate difficulty/failure offer variants mapped for deeper analysis; no live price, offer timing or IAP activation established. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-redeal-restart",
@@ -634,7 +655,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "core",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Video shows changed visible cards and budget on next daily attempt; exact randomization/relief cause unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
+      "knownLimit": "Video shows changed visible cards and budget on next daily attempt; exact randomization/relief cause unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: Rules4 campaign alternative issuance is not original Daily retry; original seed and budget unknown. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate LevelProvider daily override and asset-count path; exact retry generation/budget unknown. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-double-reward",
@@ -643,7 +664,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "monetization",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Button on result; actual rewarded grant/bonus multiplication not shown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
+      "knownLimit": "Button on result; actual rewarded grant/bonus multiplication not shown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: Prior video shows base50, Double It and one 7-move/+14 sample; source multiplier scope not proved. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate WinPopup requests RV and callback finalizes/refreshes; exact multiplied reward component unresolved. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-daily-puzzles",
@@ -652,7 +673,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Daily puzzle observed; actual recurring bank/rotation unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
+      "knownLimit": "Daily puzzle observed; actual recurring bank/rotation unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: Own 28-day pool is modulo date with fixed same-day layout, original daily retry and day generation unknown. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate 28-day completion, missed-day and ad-unlock, reward count/reset paths; separate login calendar retained as additional candidate. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-loss-dialog",
@@ -661,7 +682,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "ux",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Screen seen; exactly +10 for 1500 or video in sample, not default for our economy #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
+      "knownLimit": "Screen seen; exactly +10 for 1500 or video in sample, not default for our economy #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: Keep owner +10/120 continuation, source video +10/1500 sample is not a default. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate catalogue available; exact loss offer config and settlement not established. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "azur-structured-long-campaign",
@@ -688,7 +709,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "meta",
       "originalBuild": "Unico recorded gameplay (version unavailable)",
-      "knownLimit": "Visible theme selection; store unlock and permanent grant conditions unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier."
+      "knownLimit": "Visible theme selection; store unlock and permanent grant conditions unknown #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: Own palette and unlocks distinct from original theme catalog/rights. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate catalogue available; asset/entitlement behavior not promoted to original evidence. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "azur-iap-product-catalog",
@@ -993,7 +1014,7 @@
       "evidenceTier": "VIDEO_OBSERVED",
       "surface": "core",
       "sourceEvidence": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "knownLimit": "S3 video shows level4 Magnet tooltip and glowing slot click instruction; actual activation, target selection, card movement and native algorithm NOT observed #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier.",
+      "knownLimit": "S3 video shows level4 Magnet tooltip and glowing slot click instruction; actual activation, target selection, card movement and native algorithm NOT observed #128/#130: signed public 1.1.10/code37 candidate and native method catalog exist; trusted publisher signer and original device execution UNKNOWN (2026-11-23-unico-native-candidate/README.md). Candidate metadata does not upgrade original-source tier. 27 Nov consumer/provenance audit: P17 trial is Rules3-only, buried face-up waste source and one move are product adaptations, not source-proved. Original signing trust remains unverified; source candidate read-only investigation recorded in https://github.com/DanilaH/mini-games-kit/blob/8130ba2fa1e420acaa29325dda695c7aa5f459d3/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md 27 Nov successful project CI 45888593172: SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC, Candidate target command handles flip/tableau/stock Undo, economy spend and distinct Super Magnet win/pending claim/inventory; exact source pool/order/cost/Undo remains open. Publisher attribution remains UNKNOWN; original evidence tier unchanged. Full candidate register and handoff: https://github.com/DanilaH/mini-games-kit/blob/d7789bcce481e18a13293c8065509cd5fb5c0b6a/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md",
       "originalBuild": "Unico S3 recorded video; native build not authenticated"
     },
     {
@@ -1042,5 +1063,5 @@
       "knownLimit": "Native FindAvailableMove five-class priority and MoveHintSystem.IsUselessJokerColumnToColumnMove are distinct from MoveValidator.IsUselessJokerColumnToColumnMove. Hint filters wouldUncoverHidden, alternate non-Joker stack and previous foundation opportunity; precise original Android chosen hint and live user outcome not fully recovered; source result not a winning-path proof. Numeric original native 17 method / 19 opcode / 14 call proof; PRODUCT_ADAPTED solver-backed consumer route remains default.\n25 Nov helper economy supplement: Acquisition and teaching source subfeature: local unlock2/3 initial/250 coins per charge, free at exact unlock; keep greedy action-selection evidence and consumer solver adaptation. Evidence: https://github.com/DanilaH/mini-games-kit/blob/5ef479201e957b79a6d63e33c7c05eb5583f1b6e/research/games/association-solitaire/2026-11-25-azur-helper-economy/README.md"
     }
   ],
-  "auditRevision": "2026-11-25-solitaire-source-consolidation-v21"
+  "auditRevision": "2026-11-27-unico-candidate-crosswalk"
 }

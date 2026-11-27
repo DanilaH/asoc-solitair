@@ -1,5 +1,22 @@
 # Project contract
 
+## Owner release focus · 27 November 2026
+
+The owner switched the next milestone from expanded reference research to shipping a working MVP with small, low-cost meta. Read [the release focus](docs/porting/MVP_RELEASE_FOCUS_2026-11-27.md) and [PR224 acceptance](docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md). PR224 reconciles developer PR216 with the accumulated research at PR223 without merging research harnesses. The ordinary C8 profile selects Rules4. Exact fixture navigation is available separately in an offline browser build. Verify the signed ordinary build against the exact PR head. Prioritize #195/#205/#210 acceptance, existing retention, physical device/live SDK and store readiness. New reference investigations and larger meta are staged, not permanently excluded: keep 115 canonical IDs, 38 packets, 15 commerce families and nine separate Unico candidates. IAP OFF; no automatic kit pin or policy/balance change. Research CI only in asoc-solitair.
+
+## Unico candidate handoff · 27 November 2026
+
+Read [Unico candidate brief](docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md) and [source PR158](https://github.com/DanilaH/mini-games-kit/pull/158). Successful project research CI 45888593172; signed candidate static only, publisher trust UNKNOWN, zero native execution. Preserve distinct ordinary/Super Magnet, Daily minigame/Fortune Cards/login calendar, win/task streak, shared Coffee and all nine [candidate systems](docs/porting/UNICO_CANDIDATE_SYSTEMS.json). Rules3-only Magnet trial is not Rules4 parity. Preserve #210, 115 canonical IDs/38 packets/15 commerce families, runtime pin and IAP OFF. Reconcile latest developer #216 with all stacked docs branches; no release or status change.
+
+## Hitapps commerce and rewarded source handoff · 27 November 2026
+
+Use [the commerce brief](docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md) and [source research PR157](https://github.com/DanilaH/mini-games-kit/pull/157) for P20/P21/P25. Five families including Buy All, purchase pins, recent-payer RV and ceilf streak-inclusive win bonus. Two successful static source passes and 4976 own-model assertions, no original executed rows. IAP remains OFF; no implicit balance or ads changes. Reconcile developer PR216 with all research handoff branches; retain 115 IDs / 38 packets / 15 commerce families and runtime pin.
+
+
+## P32 meta rewards source handoff · 27 November 2026
+
+Use [the new P32 brief](docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md) and [pinned evidence](https://github.com/DanilaH/mini-games-kit/blob/10cc5a22520912ea26069817d1f4ad52293fb69f/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md) for Digging, Lucky Wheel, Endless Treasure, Regions. 1122 bounded native comparisons; no runtime or activation change. Reconcile developer PR216 Rules4 with research PR217 and this docs-only branch. 115 sources, 38 packets, 15 commerce families and runtime kit pin retained. Do not activate IAP or claim original device/remote parity.
+
 ## Owner follow-up · 26 November 2026
 
 Use [the post-playtest decision](https://github.com/DanilaH/asoc-solitair/issues/210#issuecomment-7185896846) and [implementation and verification notes](docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md). The candidate introduces action-bound Coffee, a tutorial exit guard, earned video Continue without a winning-route proof, layout-based retry, five lives and the versioned unlock track. Coin Continue retains its proof. The upper-slot threshold is L6. Keep the approved Card Table B, exact FTUE Deal IDs, all previous saves and the full research roadmap.
@@ -11,6 +28,18 @@ Use [the post-playtest decision](https://github.com/DanilaH/asoc-solitair/issues
 Owner approved Card Table B with animated reward feedback and assigned the [independent PR211 audit](https://github.com/DanilaH/asoc-solitair/issues/210#issuecomment-7168310228). The runtime kit remains a9325265. Incremental P21 source evidence is pinned to [kit f4542d28](https://github.com/DanilaH/mini-games-kit/blob/f4542d287d17fc085eb2e8e874bd49415a2dedfd/research/games/association-solitaire/2026-11-25-azur-ad-director-unlimited/README.md), alongside the consolidated research snapshot below. The updated #210 ad direction supersedes the old fixed L16/one-Coffee/three-wins limits for the ordinary test candidate. See [P21](docs/porting/P21_AD_PLACEMENTS.md). Keep live/provider gates and the separate earned-receipt path.
 
 The [owner FTUE clarification](https://github.com/DanilaH/asoc-solitair/issues/210#issuecomment-7184786704) authorizes new C8 teaching deal revisions for actual first encounters with misaligned card orders. Keep the old definitions restorable, apply cue contracts to the exact Deal ID, and require evidence of visible and accepted actions. Read the [FTUE passport](docs/qa/issue-210/FTUE_PRESETS.md) before changing an opening route. Keep optional paid/video rights optional and preserve proof before consumption.
+
+## Race / Lava / Cascade / Gold Rush transfer · 26 November 2026
+
+Read [event transfer brief](docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md) and [pinned original-source evidence](https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md). Race sampled interval and cumulative progress (340 native rows), Lava seeded finalist plan (48 native seed rows; feasibility/share static), single-active Cascade with Category Challenge and Gold Rush producers, provisional/final tokens and durable stage claims. 41,753 independent own-model assertions; later native emulation stopped at Lava bounds. Do not equate synthetic checks or static source with original Android. No live remote values required for local own policies; no new event activation by docs. Keep #210, legacy claims, P13 board lifecycle, all 115 IDs /38 packets; regions/digging/wheel/treasure remain separate.
+
+## Streak / Combo transfer · 26 November 2026
+
+Read [P04/P30 source-shaped streak and combo brief](docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md) and [exact original evidence](https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md) (3,091 native matrix rows, both source XAPKs pinned). Hitapps in-game snapshot Undo and win-event milestone-only reset are distinct from AZUR Combo: repeat final tier, typed pre-draw and Joker producers, deferred Moves committed before result accounting. Keep current r1, old saves, anti-farm protection, #210 FTUE and release gates; no automatic economy or remote policy change. Unico separate and retained. Implement locally and attach independent source replay; no whole original Android or live payout parity claimed. All 115 IDs /38 packets retained.
+
+## Recovery transfer · 26 November 2026
+
+Read [P19/P31 recovery and lives handoff](docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md) and [exact original native evidence](https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md) (1130 fixture rows, source-pinned). Version the separate pending-move rights, adaptive revive, transactional stock Undo/refund, finite and infinite lives. Do not infer ordinary leftover carryover, change current #210 economy or activate IAP. Keep current FTUE/save/restart/Continue rules. Server values remain UNKNOWN, not a blocker for own explicit policies. This docs-only stacked handoff retains all 115 IDs and 38 packets; current implementation/acceptance statuses and runtime kit dependency unchanged.
 
 ## Generator transfer · 26 November 2026
 

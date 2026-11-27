@@ -347,8 +347,9 @@ function beforeThirdLoss(previousLosses = 2) {
 
 for (const choice of ['fixed', 'new'] as const) {
   test(`L16 third loss: ${choice} retry commits one life and the chosen identity`, async ({ page }) => {
+    test.skip(choice === 'fixed' && process.env.VITE_HITAPPS_FIXTURES !== '1', 'Exact replay control belongs to the fixture surface');
     const save = beforeThirdLoss();
-    await seedHome(page, save, NOW, '/?qa-levels=1');
+    await seedHome(page, save, NOW);
     await page.locator('#home-play').tap();
     await gameReady(page, level16);
     await move(page, level16, losingPath[level16.initial.movesLeft! - 1]);
@@ -584,6 +585,7 @@ test('failed persistence of timed expiry backs off instead of spinning and resto
 
 for (const direction of ['to-daily', 'to-campaign', 'level-picker'] as const) {
   test(`rebinds the board to a saved deal after ambiguous ${direction} transition`, async ({ page }) => {
+    test.skip(direction === 'level-picker' && process.env.VITE_HITAPPS_FIXTURES !== '1', 'Requires the fixture level picker');
     const daily = dailyForDay(DAY);
     const campaign = content8Dealer[3];
     const save = direction === 'to-campaign' ? profile(daily, 'audit-active-daily') : profile(campaign);
@@ -592,7 +594,7 @@ for (const direction of ['to-daily', 'to-campaign', 'level-picker'] as const) {
       save.platform!.completedCampaign = profile(campaign).platform!.completedCampaign;
     }
     await observeAnalytics(page);
-    await seedHome(page, save, NOW, direction === 'level-picker' ? '/?qa-levels=1' : '/');
+    await seedHome(page, save, NOW);
     await page.evaluate(() => {
       (window as typeof window & { mvpNativeStorage: NativeStorageFixture }).mvpNativeStorage.breakTransition = true;
     });

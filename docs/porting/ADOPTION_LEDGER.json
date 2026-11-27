@@ -179,9 +179,9 @@
   },
   "consumer": "DanilaH/asoc-solitair",
   "ownerIntent": "Full reference-system coverage and staged implementation; no agent-initiated permanent exclusions",
-  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/81da64b3f11acc1a4e4e9ff69c06e3baea5f8481/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
-  "sourceInventoryBlob": "b711111b5876924d7e05553edf428e51b783f915",
-  "sourceInventoryRef": "81da64b3f11acc1a4e4e9ff69c06e3baea5f8481",
+  "sourceInventoryUrl": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/porting/SOURCE_FEATURES.json",
+  "sourceInventoryBlob": "a5d88b3913edced9172a7122f4df296c0bfeb4e5",
+  "sourceInventoryRef": "d91def6f0f2239405a3de9b0f1703dd63cb9ffa4",
   "consumerBaseline": "Content8 PR41 current branch a87cc5094e180a8835dd7b485dea48aae6b79b08 before documentation-only audit; source not yet device/owner accepted",
   "coverageDisclaimer": "115 source features after native original AZUR Shuffle & greedy Hint source proof (kit PR #96). C8 P16 Shuffle remains explicitly PRODUCT_ADAPTED. Zero original Android execution and zero owner exclusions. Older 114-feature docs are historical snapshots.",
   "releaseEvidence": "docs/porting/RELEASE_EVIDENCE_2026-11-21.json",
@@ -190,7 +190,7 @@
       "id": "hitapps-stock-dealer",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "The Rules4 candidate consumes the reused EmbeddedRandom stream for ten destination passes and staged layout, records phase receipts, and publishes independently replayed own deals. The candidate offers different Rules4 layouts at all levels 16–80 under all three supported budgets after the preserved teaching encounters.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/166",
       "stage": "B1",
       "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
@@ -218,7 +218,7 @@
       "id": "hitapps-candidate-priority",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 adds separate source-ordered move production, first-tie weights, a 500-step bot bound, float32 Priority tolerance and independently certified Final boards. Historical competent policies remain separate.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170",
       "stage": "B1",
       "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
@@ -237,7 +237,7 @@
       "id": "hitapps-dynamic-difficulty",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Ordinary C8 retains its ten-outcome policy. Rules4 issuance reads the same durable source slot history and selects independently certified budget variants without changing an active attempt.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "B2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170",
@@ -262,7 +262,7 @@
       "id": "hitapps-easy-deals",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 computes the generation target from the adjusted DTO using min(penalty,0)-decCoef, then searches eligible certified layouts without changing the attempt allowance solely for Easy Deals.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "B2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/170",
@@ -324,15 +324,15 @@
     {
       "id": "hitapps-adbreak",
       "status": "ROADMAPPED",
-      "currentImplementation": "Issue #210 uses one repeatable AdsBreak/Coffee placement in campaign and eligible Daily in the C8 SDK test build. It checks the saved board and shared fullscreen clock at a safe boundary. Remaining move percentage and difficulty caps are optional config; active source values are unknown. See docs/porting/P21_AD_PLACEMENTS.md. Device impression and ILRD are open.",
-      "nextAction": "Prototype in-level configurable opportunities/cooldowns with valid SDK impression attribution Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Current source does not prove the in-level live placement; issue #80 prevents treating attempted show as actual display.",
+      "currentImplementation": "Issue #210 uses one repeatable AdsBreak/Coffee placement in campaign and eligible Daily in the C8 SDK test build. It checks the saved board and shared fullscreen clock at a safe boundary. Remaining move percentage and difficulty caps are optional config; active source values are unknown. See docs/porting/P21_AD_PLACEMENTS.md. Device impression and ILRD are open. 27 Nov source delta (baseline PR216): Payer RV override is not an interstitial cap; preserve current AdsBreak/Coffee policy.",
+      "nextAction": "Prototype in-level configurable opportunities/cooldowns with valid SDK impression attribution Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Current source does not prove the in-level live placement; issue #80 prevents treating attempted show as actual display. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E2"
     },
     {
       "id": "hitapps-stock-restore",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 keeps player stock and recycle separate from the source bot lookahead. The candidate carries over finite stock recovery and the existing prices on Rules4 L16/L22/L30 and on the saved legacy deals.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md. Keep separate player legal deck/recycle economy, native bot stock-lookahead only; test restore/free/price/Unlimited/Undo/Continue without turning simulation policy into player restriction. See docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md. Original full Android execution/active remote remains unverified; no implementation or acceptance upgrade. Implement versioned restore+Undo transaction: actual board-only Undo leaves stockRestores and paid coins unchanged. Original refund decrement/price recompute proven; preserve old saves, refund exact debit once in own product. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
       "reason": "Existing free recycle contract requires a substantive rule/economy redesign",
       "stage": "E1",
       "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md",
@@ -348,18 +348,38 @@
         "implementationBranch": "feat/hitapps-generator-g0-g6",
         "implementationEvidence": "docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md",
         "acceptance": "QA_CANDIDATE_ORIGINAL_RUNTIME_UNOBSERVED"
+      },
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Implement versioned restore+Undo transaction: actual board-only Undo leaves stockRestores and paid coins unchanged. Original refund decrement/price recompute proven; preserve old saves, refund exact debit once in own product."
       }
     },
     {
       "id": "hitapps-revive-offers",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore. Continue после истёкшего Unlimited сохраняет согласованные фазу и бюджет Undo; codec восстанавливает уже записанные active/parked состояния.",
-      "nextAction": "Compare coin/rewarded/segment options and save/device flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
+      "currentImplementation": "Отдельная обычная C8-раздача использует конечные повторы, отдельные цены восстановления, proof-first Revive и временное Unlimited в SaveStore. Continue после истёкшего Unlimited сохраняет согласованные фазу и бюджет Undo; codec восстанавливает уже записанные active/parked состояния. 27 Nov source delta (baseline PR216): Payer RV override and recovery-pending rights are separate; preserve existing recovery handoff.",
+      "nextAction": "Compare coin/rewarded/segment options and save/device flow Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Implement separate persisted pending revive/bubble entitlement and adaptive amount+show/cooldown policy as versioned options; keep +10 and #210 earned/coin proof differences until own policy approved; ordinary leftover carryover unproved. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E1",
       "evidenceRef": "docs/porting/P19_RECOVERY_CONTRACTS.md",
       "evidenceRefs": [
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
-      ]
+      ],
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Implement separate persisted pending revive/bubble entitlement and adaptive amount+show/cooldown policy as versioned options; keep +10 and #210 earned/coin proof differences until own policy approved; ordinary leftover carryover unproved."
+      }
     },
     {
       "id": "azur-coin-moves",
@@ -403,7 +423,7 @@
       "id": "hitapps-golden-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 adds weighted Final placement, health4 with appearance and decay guards, explicit activation, and a separate local reward receipt. Ordinary L27 retains the existing activation payout amount and once-only reward group.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "D1",
       "generatorHandoff": {
         "work": "G3/G5",
@@ -420,7 +440,7 @@
       "id": "hitapps-ordered-category",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 evaluates transfer direction and ordered placement predicates on new boards. The original C8 ranked-rule tutorial and saved IDs remain addressable.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "D1",
       "evidenceRef": "docs/qa/content-v8/CORE_4_SPECIAL_DEALS.md",
@@ -439,7 +459,7 @@
       "id": "hitapps-lockers",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 stores per-card numeric locks, typed keys, accumulated amounts and one-time key flags. The preserved first L18 lesson still uses its original ID. Ordinary Rules4 issuance covers the three-key L18/L66 and the one-key L26 under every supported budget.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "D1",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
@@ -458,7 +478,7 @@
       "id": "hitapps-frozen",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 ice tracks mutable layers and the positive-event thaw gate per card, including reveal/unlock exclusions and booster breaks.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "D1",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/b77af51259a85b8f6302c8ee3a5f7a5405bab954/research/games/association-solitaire/2026-11-23-hitapps-frozen-positive/README.md",
@@ -478,7 +498,7 @@
       "id": "hitapps-bound",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 applies bound-aware root selection and separate Cut, Discard and Unbind transitions to the saved Attached/Detached/None state.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "D1",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
       "generatorHandoff": {
@@ -496,7 +516,7 @@
       "id": "hitapps-magnet-hammer",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 uses separate Starter Final seeds, native-shaped target gates and explicit product effects for unresolved target cases. Tested feature boards exercise the direct inputs independently from old helper previews.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "D1",
       "generatorHandoff": {
         "work": "G2/G5",
@@ -527,7 +547,7 @@
       "id": "hitapps-joker",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 keeps the current manual Joker entitlement and handles the native normal placement override and group boundary on new boards.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "D2",
       "generatorHandoff": {
@@ -626,27 +646,49 @@
       "id": "hitapps-weekend-race",
       "status": "ROADMAPPED",
       "currentImplementation": "MVP U5 leaves new ordinary Weekend Race creation/progression off, while exposing completed unclaimed records already saved under hitapps-weekend-race through a strict claim-only allowlist. Claims use the original event key, reward ID and frozen amount, regardless of age; no new event definition, competition or arbitrary record is activated. Existing P31 isolated calendar/product model remains.",
-      "nextAction": "Complete final-branch browser/physical old-ready, duplicate/failure/reload and last-claim acceptance. Continue the separate full source-to-product bot-race, honest simulator presentation and original calendar/live-config research; this compatibility path neither completes source parity nor excludes the event.",
+      "nextAction": "Replace fixed toy interval with persisted generated interval sequence and cumulative clock progress, truthful bots, stage rank/claims; 340 native rows matched, exact comparator/shuffle and completion/claim partial. See docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md. Preserve legacy claims and owner release gate.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "liveOpsEventHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+        "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+        "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+        "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 388,
+        "modelAssertions": 41753,
+        "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation",
+        "work": "Replace fixed toy interval with persisted generated interval sequence and cumulative clock progress, truthful bots, stage rank/claims; 340 native rows matched, exact comparator/shuffle and completion/claim partial."
+      }
     },
     {
       "id": "hitapps-lava-quest",
       "status": "ROADMAPPED",
       "currentImplementation": "MVP U5 leaves new ordinary Lava Quest creation/progression off, while allowing only already completed unclaimed hitapps-lava-quest rewards through the saved event key/ID/frozen prize. Incomplete/claimed records do not create buttons or new progress. Existing P31 isolated first-attempt/calendar model remains in the project.",
-      "nextAction": "Complete final-branch browser/physical historical-claim failure/reload acceptance. Continue full first-attempt multi-win event, simulator presentation/rewards and original calendar/live-config evidence under the retained source roadmap; claim-only compatibility is not new LiveOps activation.",
+      "nextAction": "Implement finalist target, memoized feasible dropout path, seed lifecycle, loss cooldown, floor share and reward claims. 48 seed rows matched; bounds/split/source full run static/model only. See docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md. Preserve legacy claims and owner release gate.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "liveOpsEventHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+        "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+        "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+        "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 388,
+        "modelAssertions": 41753,
+        "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation",
+        "work": "Implement finalist target, memoized feasible dropout path, seed lifecycle, loss cooldown, floor share and reward claims. 48 seed rows matched; bounds/split/source full run static/model only."
+      }
     },
     {
       "id": "hitapps-daily-rewards",
@@ -659,21 +701,31 @@
       "id": "hitapps-win-streak",
       "status": "ROADMAPPED",
       "currentImplementation": "Existing 5-first-win cycle differs from loss-sensitive WinStreak An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md. Текущий продуктовый цикл из пяти побед отображает прогресс в результате. См. docs/qa/UX_WALLET_PROGRESS.md.",
-      "nextAction": "Define streak failure/reset milestone and test against current cycle without double credits F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "stage": "F1"
+      "nextAction": "Implement distinct event stage/overflow/key/ordered claim ledger, current milestone-only reset, preserve earned-unclaimed on loss and expiry; own event schedule and receipt policy. See docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md.",
+      "stage": "F1",
+      "comboStreakHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+        "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+        "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+        "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 3091,
+        "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained",
+        "work": "Implement distinct event stage/overflow/key/ordered claim ledger, current milestone-only reset, preserve earned-unclaimed on loss and expiry; own event schedule and receipt policy."
+      }
     },
     {
       "id": "hitapps-meta-regions",
       "status": "ROADMAPPED",
-      "currentImplementation": "No star/building/region meta P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Estimate asset pipeline and staged owner-visible progression UI for later season F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "P32 isolated offline prototype in tools/content/region-event-trials.ts; not production runtime. Latest developer baseline PR216 89feea96.",
+      "nextAction": "Implement multi-step prerequisites, stars per level type, XP, two reward paths, frozen region balance and asset lifecycle. Star producer/settlement parity open. Locally actionable; docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md; original device/remote values not verified.",
       "stage": "F3"
     },
     {
       "id": "hitapps-piggy-bank",
       "status": "BLOCKED",
-      "currentImplementation": "No purchase-backed bank and store IAP policy not validated P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Verify legal supported Android store purchase/receipts/payout before feature spec E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "No purchase-backed bank and store IAP policy not validated P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): Single-cap/full-only review model differs from original min/max gates and period cycling.",
+      "nextAction": "Verify legal supported Android store purchase/receipts/payout before feature spec E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "reason": "Unverified available IAP/provider integration and legal payout for current target stores. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
       "stage": "E3"
     },
@@ -681,7 +733,7 @@
       "id": "hitapps-lives",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 lives v2 uses five slots, retaining deficit, refill clock and earned/pending rights. Refill is one life per five minutes, 50 coins or confirmed video. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
-      "nextAction": "Verify the v2 migration and real SDK lifecycle on Android. Original loss and regeneration parameters remain open.",
+      "nextAction": "Verify the v2 migration and real SDK lifecycle on Android. Original loss and regeneration parameters remain open. Implement configurable finite/offline/refill/channel/capped-price and independent stackable InfiniteLives policies, preserve C8 five lives and #210 loss-charge behavior; source full reservation/loss lifecycle incomplete. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
@@ -690,7 +742,17 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Implement configurable finite/offline/refill/channel/capped-price and independent stackable InfiniteLives policies, preserve C8 five lives and #210 loss-charge behavior; source full reservation/loss lifecycle incomplete."
+      }
     },
     {
       "id": "azur-play-pass",
@@ -710,16 +772,27 @@
     {
       "id": "hitapps-rotating-offers",
       "status": "ROADMAPPED",
-      "currentImplementation": "No event-specific commercial offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Inventory eligible offers and verify store purchase capability before implementing any E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "No event-specific commercial offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): One-SKU rotation does not reproduce Buy All variants/options snapshots. Buy All retained as explicit subfeature.",
+      "nextAction": "Inventory eligible offers and verify store purchase capability before implementing any E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3"
     },
     {
       "id": "unico-win-and-task-streak",
       "status": "ROADMAPPED",
       "currentImplementation": "Existing daily streak/5-win milestone, not two standalone events An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md.",
-      "nextAction": "Compare separate reward ledgers; choose distinct milestones without duplicate grants F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "stage": "F1"
+      "nextAction": "Retain separate win/task tracks and existing candidate evidence bounds. Original publisher signer and device remain external; no new source-parity claim. See docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md. 27 Nov candidate investigation: Candidate conditional milestone/zero reset, fail protection, pending claim; eight daily task directions and sequential gating. No source runtime parity. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
+      "stage": "F1",
+      "comboStreakHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+        "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+        "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+        "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 3091,
+        "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained",
+        "work": "Retain separate win/task tracks and existing candidate evidence bounds. Original publisher signer and device remain external; no new source-parity claim."
+      },
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "ui-motion-audio-coin",
@@ -733,15 +806,25 @@
       "id": "hitapps-ingame-streak",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "src/domain/balance.ts STREAK + src/domain/engine.ts transfers; Hitapps specific coin thresholds analogous",
-      "nextAction": "Replay negative invalid-drop/recycle/Undo against original video and Android coin UX",
+      "nextAction": "Version source-like regular/reject/stock producer and reducer; cycle last tier; restore fill and stage snapshot on Undo, transactional provisional rewards and separate win-flow accounting; incomplete fact0/coin accumulation/refund evidence explicit. See docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md.",
       "stage": "D2",
-      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41"
+      "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
+      "comboStreakHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+        "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+        "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+        "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 3091,
+        "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained",
+        "work": "Version source-like regular/reject/stock producer and reducer; cycle last tier; restore fill and stage snapshot on Undo, transactional provisional rewards and separate win-flow accounting; incomplete fact0/coin accumulation/refund evidence explicit."
+      }
     },
     {
       "id": "hitapps-gold-rush-event",
       "status": "ROADMAPPED",
       "currentImplementation": "Rules4 records its own weekly gold event through the existing idempotent event ledger and claim, with reward and schedule separate from changing card health.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md. Integrate P13 board activation with shared Cascade provisional/final event tokens and stage claims; difficulty and first-gold configuration, not direct coin grant. Source multiplier/settlement still partial. See docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md. Preserve legacy claims and owner release gate.",
       "stage": "F2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "evidenceRefs": [
@@ -758,6 +841,17 @@
         "implementationBranch": "feat/hitapps-generator-g0-g6",
         "implementationEvidence": "docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md",
         "acceptance": "QA_CANDIDATE_ORIGINAL_RUNTIME_UNOBSERVED"
+      },
+      "liveOpsEventHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+        "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+        "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+        "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 388,
+        "modelAssertions": 41753,
+        "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation",
+        "work": "Integrate P13 board activation with shared Cascade provisional/final event tokens and stage claims; difficulty and first-gold configuration, not direct coin grant. Source multiplier/settlement still partial."
       }
     },
     {
@@ -777,55 +871,66 @@
       "id": "hitapps-cascade-events",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "No cascade scheduler; general meta only P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Trace native source config/calls to derive event sequencing before porting a generic event lifecycle F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "nextAction": "Implement shared one-active event scheduler, frozen weekly config, distinct category/gold producers, per-attempt provisional/final token flow, overflow and pending claims. Static/model, exact boundaries and lifecycle not fully executed. See docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md. Preserve legacy claims and owner release gate.",
       "stage": "F3",
-      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed",
+      "liveOpsEventHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+        "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+        "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+        "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 388,
+        "modelAssertions": 41753,
+        "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation",
+        "work": "Implement shared one-active event scheduler, frozen weekly config, distinct category/gold producers, per-attempt provisional/final token flow, overflow and pending claims. Static/model, exact boundaries and lifecycle not fully executed."
+      }
     },
     {
       "id": "hitapps-digging-event",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No digging event P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Inspect original event behavior and schema; define adaptation and authoring cost F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "P32 isolated offline prototype in tools/content/region-event-trials.ts; not production runtime. Latest developer baseline PR216 89feea96.",
+      "nextAction": "Implement authored/seeded rectangle placement, 200 attempts/fallback, durability and 1-token hits, bonuses/mole chains, separate stage awards. Exact seed and chain/settlement open. Locally actionable; docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md; original device/remote values not verified.",
       "stage": "F3",
-      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+      "reason": "Bounded native kernels and detailed static lifecycle recovered; full original transaction/config parity remains open. Not a blocker to own adaptation."
     },
     {
       "id": "hitapps-lucky-wheel",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No wheel rewards P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Find original UI/state/odds evidence, then design own optional reward minigame F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "P32 isolated offline prototype in tools/content/region-event-trials.ts; not production runtime. Latest developer baseline PR216 89feea96.",
+      "nextAction": "Implement staged weighted sectors, minSpins, deactivation, upgrade/final repeats, per-difficulty task quotas, persisted event config and token/reward lifecycle. Task sampling/expiry and live weights open. Locally actionable; docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md; original device/remote values not verified.",
       "stage": "F3",
-      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+      "reason": "Bounded native kernels and detailed static lifecycle recovered; full original transaction/config parity remains open. Not a blocker to own adaptation."
     },
     {
       "id": "hitapps-endless-treasure",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No treasure progression event P32 tests this separate rule and durable reward shape as an offline model. See docs/porting/P32_REGION_EVENTS.md.",
-      "nextAction": "Determine native phases and actual gameplay before creating design spec F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "P32 isolated offline prototype in tools/content/region-event-trials.ts; not production runtime. Latest developer baseline PR216 89feea96.",
+      "nextAction": "Implement configured Free/RV/Paid chain, separate resource milestone progress/pending claim, event rotation, persisted period. IAP gated; overflow and full settlement parity open. Locally actionable; docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md; original device/remote values not verified.",
       "stage": "F3",
-      "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
+      "reason": "Bounded native kernels and detailed static lifecycle recovered; full original transaction/config parity remains open. Not a blocker to own adaptation."
     },
     {
       "id": "hitapps-birthday-offer",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No birthday offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Verify actual trigger/privacy/eligibility and legal storefront payments before implementing E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "No birthday offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): Opt-in placeholder differs from source calendar editions and per-edition cooldown/show state.",
+      "nextAction": "Verify actual trigger/privacy/eligibility and legal storefront payments before implementing E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
     {
       "id": "hitapps-decoy-offer",
       "status": "EVIDENCE_GAP",
-      "currentImplementation": "No decoy offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Inspect concrete source display/eligibility and product semantics; avoid guessing from class name E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "No decoy offers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): Two-pack offline comparison differs from eligible-content priority and repeatable schedule.",
+      "nextAction": "Inspect concrete source display/eligibility and product semantics; avoid guessing from class name E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3",
       "reason": "Found source class/video but detailed original behavior or live activation is not reconstructed"
     },
     {
       "id": "hitapps-starter-offer",
       "status": "ROADMAPPED",
-      "currentImplementation": "Basic coin wallet and helper shop; no IAP starter bundle P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Define owner-approved first-play offer and legal store purchase contract E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "Basic coin wallet and helper shop; no IAP starter bundle P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): 72h trial differs from source start/finish level gates and optional offer loop.",
+      "nextAction": "Define owner-approved first-play offer and legal store purchase contract E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3"
     },
     {
@@ -847,15 +952,15 @@
     {
       "id": "hitapps-win-rewarded-offer",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "P20 opt-in preview has a separate flat +20 offer backed by an exact earned receipt. Source values remain unknown. See docs/porting/P20_REWARD_OFFERS.md.",
-      "nextAction": "Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
+      "currentImplementation": "P20 opt-in preview has a separate flat +20 offer backed by an exact earned receipt. Source values remain unknown. See docs/porting/P20_REWARD_OFFERS.md. 27 Nov source delta (baseline PR216): Flat +20 preview differs from original ceilf multiplier including streak; preserve existing approved balance and AZUR base-only variant.",
+      "nextAction": "Prototype receipt-safe opt-in post-win bonus under valid Android rewarded SDK Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E1"
     },
     {
       "id": "hitapps-inapp-shop",
       "status": "ROADMAPPED",
-      "currentImplementation": "Coin-priced hints/Undo/Joker; no original-style IAP/shop tiers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Separate soft-currency helper store vs IAP; verify actual store capabilities and payouts E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "currentImplementation": "Coin-priced hints/Undo/Joker; no original-style IAP/shop tiers P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой. 27 Nov source delta (baseline PR216): Offline catalog/disabled checkout; add pinned original offer snapshot and show-counter identity to receipt policy.",
+      "nextAction": "Separate soft-currency helper store vs IAP; verify actual store capabilities and payouts E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Apply docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md; static source plus own-model evidence, original live/device/receipt gaps remain; no IAP activation.",
       "stage": "E3"
     },
     {
@@ -902,20 +1007,30 @@
       "id": "azur-combo-streak",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Ordinary C8 fresh campaign attempts at L5+ use azur-combo-candidate-r1, thresholds 4..8 and coins 2/4/7/10/15. engine.ts constructs typed flags from own transfer/Joker-buffer/legalCommands/waste state; comboDisposition resets before advances. Transfer-edge dedupe across Undo and finite fifth-stage completion are own rules. Legacy streak preserved; no double series.",
-      "nextAction": "Trace original producers, wildcard/skip/recycle/Undo/invalid effects, stage-after-fifth and pending Moves grant/discard/commit. Compare own producer and preserve versioned saves; measure human economy. No automatic source-policy switch.",
+      "nextAction": "Version repeat last stage, narrow pre-draw skip and Joker producers, reward kinds 0..6, deferred Moves idempotent budget commit before win/defeat; keep r1 and adapted dedupe; no automatic economy change. See docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md.",
       "stage": "F2",
       "reason": "Native handler/reward track established; original producer and deferred Moves lifecycle still unknown. Product candidate implemented, not source accepted.",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
       "evidenceRef": "docs/porting/PR201_RECHECK_2026-11-24.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/201",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d6ad1b7ea0f0f3b8d78373a2d2c5bfb346b22e29/research/games/association-solitaire/2026-11-23-azur-combo-series-original/README.md",
-      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
+      "comboStreakHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+        "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+        "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+        "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 3091,
+        "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained",
+        "work": "Version repeat last stage, narrow pre-draw skip and Joker producers, reward kinds 0..6, deferred Moves idempotent budget commit before win/defeat; keep r1 and adapted dedupe; no automatic economy change."
+      }
     },
     {
       "id": "azur-unlimited-moves-offer",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "MVP F2 retains the ordinary 120-coin/60-second candidate and previously earned contracts. Android timed acquisition requires a fresh usable native recovery-clock reading before debit or consumption; a failed acquisition no longer creates a page-clock timed right. Incomparable saved page/native anchors expire conservatively while active/parked finite budgets, Undo and won/indefinite semantics are preserved. Отсчёт в строке уровня виден вне масштабируемого поля, в том числе при баннерном резерве. Continue и codec согласуют фазу и бюджет после expiry.",
-      "nextAction": "Complete final-branch CI and physical native-clock failure, background/process restart and rollback acceptance. Verify no debit or earned-right consumption on failed acquisition and no extension of incomparable old timers. Candidate value/balance and source lifetime/acquisition policy remain unaccepted; keep full P19 source work.",
+      "nextAction": "Complete final-branch CI and physical native-clock failure, background/process restart and rollback acceptance. Verify no debit or earned-right consumption on failed acquisition and no extension of incomparable old timers. Candidate value/balance and source lifetime/acquisition policy remain unaccepted; keep full P19 source work. Reuse prior 25 Nov attempt-flag and SKU evidence; keep timed rights and implement separate attempt Unlimited option without false original duration claim. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
       "stage": "E1",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
@@ -924,7 +1039,17 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
         "docs/qa/mvp-20261124/INDEPENDENT_AUDIT_FOLLOWUP.md"
       ],
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Reuse prior 25 Nov attempt-flag and SKU evidence; keep timed rights and implement separate attempt Unlimited option without false original duration claim."
+      }
     },
     {
       "id": "azur-offer-campaign",
@@ -982,38 +1107,42 @@
       "id": "unico-coffee-break",
       "status": "ROADMAPPED",
       "currentImplementation": "C8 r4 conditions every repeated in-game pause on a newly saved eligible action, motion settlement, painted prelude and actual SDK readiness. The Unico S3 +3 grant remains a source gap. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
-      "nextAction": "Recover original interruption trigger/type/award; compare shared product pause. SDK/ILRD/native return acceptance. Do not re-add duplicate Coffee UI or infer opt-in from video.",
+      "nextAction": "Recover original interruption trigger/type/award; compare shared product pause. SDK/ILRD/native return acceptance. Do not re-add duplicate Coffee UI or infer opt-in from video. 27 Nov candidate investigation: Current Rules4 shares repeated interstitial pause across Campaign and Daily, no compensation grant; candidate separate reward method and caps/triggers; callback and active values unknown. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
       "stage": "E2",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/4b916c834e99b9208d194e2838dc2c082898ed2d/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-daily-fortune",
       "status": "ROADMAPPED",
       "currentImplementation": "No daily card-choice/second video try P29 distinguishes the independent source and preserves the current 28-deal puzzle bank. See docs/porting/P29_DAILY_REWARDS.md.",
-      "nextAction": "Prototype isolated day-keyed reward selection with once-only claim and odds disclosure F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md.",
-      "stage": "F1"
+      "nextAction": "Prototype isolated day-keyed reward selection with once-only claim and odds disclosure F1–F3 source evidence, full AZUR task enum and functional acceptance dependencies: docs/qa/content-v8/F1_F3_RETENTION_META_SOURCE_TO_PRODUCT_2026-11-21.md. 27 Nov candidate investigation: DailyMinigame cycle/attempt/free-first config distinct from layered Fortune Cards. Nine-slot minimum-progress gate found; RNG/receipt unknown. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
+      "stage": "F1",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-rewarded-theme",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P20 opt-in preview has amber felt for 24 hours after an exact earned receipt, persisted across restart. See docs/porting/P20_REWARD_OFFERS.md.",
-      "nextAction": "Design opt-in themed cosmetic offer, entitlement persistence and receipt grants Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
-      "stage": "E1"
+      "nextAction": "Design opt-in themed cosmetic offer, entitlement persistence and receipt grants Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. 27 Nov candidate investigation: Exact acquisition/entitlement callback unresolved; own preview not original. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
+      "stage": "E1",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-vip",
       "status": "BLOCKED",
       "currentImplementation": "No subscribed VIP entitlement/IAP flow verified P25 tests this distinct family in the disabled offline review model. See docs/porting/P25_COMMERCIAL_FAMILIES.md. Семейство выведено в runtime-витрину C8. Платёжные кнопки отключены до подтверждённой сессии продавца и binding с ценой.",
-      "nextAction": "Confirm legal IAP + Russian self-employed payout/provider before building premium policy E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "nextAction": "Confirm legal IAP + Russian self-employed payout/provider before building premium policy E3 source/catalog/storefront evidence: docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. 27 Nov candidate investigation: Candidate offer variants retained, IAP OFF, no live offer/price inference. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
       "stage": "E3",
-      "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
+      "reason": "Current supported IAP/entitlement provider and legal payout not established; do not treat this as permanent feature exclusion. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-redeal-restart",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 ordinary restart selects a different certified tableau/stock/faceUp layout of the same level when compatible, with atomic debit and issuance. Lesson, fixed Daily and uncovered cases retain their original layout. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
-      "nextAction": "Complete final-branch browser and physical retry/choice acceptance, including legacy L12–15 and retained recovery/Random Joker rights. Capture original Unico Daily repeat conditions, randomization and budget before extending policy or claiming parity.",
+      "nextAction": "Complete final-branch browser and physical retry/choice acceptance, including legacy L12–15 and retained recovery/Random Joker rights. Capture original Unico Daily repeat conditions, randomization and budget before extending policy or claiming parity. 27 Nov candidate investigation: Candidate daily override/asset count, exact retry shuffle and budget unresolved. Own certified alternate layouts retained. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/64",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
       "stage": "B2",
@@ -1022,20 +1151,22 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-double-reward",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "P20 opt-in preview has a separate x2 choice on the result; it shares the canonical win dedup key with other choices. See docs/porting/P20_REWARD_OFFERS.md.",
-      "nextAction": "Compare Unico post-win CTA to AZUR x3 and develop independent rewarded bonus policy Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
-      "stage": "E1"
+      "nextAction": "Compare Unico post-win CTA to AZUR x3 and develop independent rewarded bonus policy Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. 27 Nov candidate investigation: RV request and finalize callback candidate; exact multiply components unresolved. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
+      "stage": "E1",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-daily-puzzles",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "The own local-calendar Daily Level and fixed 28-deal bank remain separate from Bonus and Tasks. MVP F3 sends the active daily attempt dayId with daily_start/daily_completion so these events satisfy the existing analytics contract, including an old attempt resumed on another date. U3 clarifies completed, replay-without-reward and next-local-date states without changing its award ledger.",
-      "nextAction": "Complete final-branch browser/physical actual-date telemetry and repeat/reload acceptance, then verify the permitted analytics export. Compare original Unico seed, failure-retry and award rules separately; the 28-deal own bank and engineering events are not full original-source parity.",
+      "nextAction": "Complete final-branch browser/physical actual-date telemetry and repeat/reload acceptance, then verify the permitted analytics export. Compare original Unico seed, failure-retry and award rules separately; the 28-deal own bank and engineering events are not full original-source parity. 27 Nov candidate investigation: 28-day cycle and missed/unlocked states; separate login calendar candidate. Own fixed date bank not source retry generator. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -1044,16 +1175,18 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "unico-loss-dialog",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "C8 preview 0.20.3 promotes a usable alternative when rewarded video is unavailable. A callback received in background restores the result on foreground for the same exhausted attempt. An earned receipt can resume that attempt. Browser coverage exercises both branches through the Android bridge contract. P18 acceptance reran exact C8 loss positions in two touch profiles and checked the retained credit through SaveStore when daily is active. See docs/porting/P18_CONTINUATION_ACCEPTANCE.md.",
-      "nextAction": "Compare on a physical Android phone with live no-fill, actual earned callbacks and the original Unico loss dialog. Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md.",
+      "nextAction": "Compare on a physical Android phone with live no-fill, actual earned callbacks and the original Unico loss dialog. Current E1/E2 source→product audit: docs/qa/content-v8/E1_E2_MONETIZATION_SOURCE_AND_AD_CADENCE_2026-11-21.md. 27 Nov candidate investigation: Exact loss/receipt policy unknown; current #210 approved continuation unchanged. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
       "stage": "E1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/62",
-      "evidenceRef": "docs/qa/content-v8/CORE_5_LOSS_RECOVERY.md"
+      "evidenceRef": "docs/qa/content-v8/CORE_5_LOSS_RECOVERY.md",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "azur-structured-long-campaign",
@@ -1082,7 +1215,7 @@
       "id": "unico-themes-and-skins",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Own palette/card backs, saved choices and the separate rewarded-theme route remain. MVP U4 only removes the duplicate Home appearance tile while retaining milestone/Settings/reward-preview access. The product still does not claim a Unico-sized theme gallery or original artwork.",
-      "nextAction": "Complete final-branch UI/physical reward and saved-choice acceptance, then continue source unlock/catalog and visual consistency comparison under the full retention roadmap without vendor art.",
+      "nextAction": "Complete final-branch UI/physical reward and saved-choice acceptance, then continue source unlock/catalog and visual consistency comparison under the full retention roadmap without vendor art. 27 Nov candidate investigation: Candidate catalogue only; own palette/art, no vendor assets. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
       "stage": "F1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -1090,7 +1223,8 @@
         "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/c8-audit-203-recovery",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "azur-iap-product-catalog",
@@ -1150,9 +1284,19 @@
       "id": "azur-iap-unlimited-moves-tiers",
       "status": "BLOCKED",
       "currentImplementation": "Три собственных срока показаны в витрине C8. Совместная приёмка P19/P25/P31 связывает подтверждённое право текущего аккаунта с лимитом сертифицированной попытки. SaveStore восстанавливает оставшийся конечный бюджет и Undo после истечения срока или подтверждённого возврата. Оплата отключена до авторизации продавца и SKU с ценой. См. docs/porting/P25_COMMERCIAL_FAMILIES.md.",
-      "nextAction": "Подтвердить условия оригинальных Unlimited Moves/+ /++, допустимый SDK и мерчанта. Проверить платёж, возврат и восстановление на физическом устройстве. См. docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md.",
+      "nextAction": "Подтвердить условия оригинальных Unlimited Moves/+ /++, допустимый SDK и мерчанта. Проверить платёж, возврат и восстановление на физическом устройстве. См. docs/qa/content-v8/E3_IAP_COMMERCE_SOURCE_TO_PRODUCT_2026-11-21.md. Reuse prior 25 Nov evidence, keep entitlement/purchase boundaries and merchant off; no new activation. See docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md.",
       "stage": "E3",
-      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage."
+      "reason": "Target storefront billing / paid entitlement / lawful payout is not yet verified for this project; source catalog is not a deployed store offer. RuStore Pay SDK is unavailable for self-employed without IP from 2026-02-01; NashStore in-app billing/self-employed payout unverified. This blocks live IAP activation, not offline entitlement-system work or permanent roadmap coverage.",
+      "recoveryHandoff": {
+        "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+        "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+        "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+        "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+        "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+        "nativeRows": 1130,
+        "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes",
+        "work": "Reuse prior 25 Nov evidence, keep entitlement/purchase boundaries and merchant off; no new activation."
+      }
     },
     {
       "id": "azur-definition-consumable",
@@ -1339,7 +1483,7 @@
       "id": "hitapps-equality-three-stack-pair-placement",
       "status": "ROADMAPPED",
       "currentImplementation": "Rules4 performs three ordered positive Category and companion exchanges on the advanced seeded stream, preserving card IDs and source positions. Unknown incomplete trials are rejected.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "B3",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/168",
       "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
@@ -1358,7 +1502,7 @@
       "id": "hitapps-feature-seed-one-time-reshuffle",
       "status": "IN_PROGRESS",
       "currentImplementation": "The Rules4 fresh phase reseeds once before eligible patterns, retains that layout on pattern failure and records applied/failed masks. Simulated Shuffle enters already seeded.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "B3",
       "evidenceRef": "docs/qa/content-v8/CORE_2.md",
       "generatorHandoff": {
@@ -1376,7 +1520,7 @@
       "id": "hitapps-initial-shuffle-final-pipeline",
       "status": "IN_PROGRESS",
       "currentImplementation": "Rules4 reuses the phase pipeline with canonical structural input, puzzle/pair redistribution before pattern writes and distinct Final streams after selection.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "B3",
       "evidenceRef": "docs/qa/content-v8/CORE_1.md",
       "generatorHandoff": {
@@ -1394,7 +1538,7 @@
       "id": "hitapps-negative-seed-request-path",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 retains requested and resolved seeds separately and records EmbeddedRandom bounds and values for the selected attempt.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "B1",
       "evidenceRef": "docs/qa/content-v8/HITAPPS_GENERATION_ACCEPTANCE_2026-11-22.md",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/166",
@@ -1413,7 +1557,7 @@
       "id": "hitapps-puzzle-top-bottom-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "Rules4 replaces equal-tag physical halves with an ordinary semantic card and records both consumed identities and the placement marker.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
@@ -1434,7 +1578,7 @@
       "id": "hitapps-bound-scissors-pattern",
       "status": "IMPLEMENTED_UNVERIFIED",
       "currentImplementation": "The Rules4 authoring pass resolves paired coordinates and selects balanced partial masks by squared distance and stable order. Actual Cut, Discard and Unbind are independently exercised.",
-      "nextAction": "Retain historical saves and test the signed Rules4 candidate on Android. Keep original-runtime evidence, local calibration and owner activation separately tracked. See docs/qa/content-v8/HITAPPS_R4_ACCEPTANCE_2026-11-26.md.",
+      "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",
       "evidenceRef": "docs/porting/P09_P12_HITAPPS_SPECIALS_PREVIEW.md",
@@ -1455,11 +1599,12 @@
       "id": "unico-magnet-helper",
       "status": "EVIDENCE_GAP",
       "currentImplementation": "P17 isolated PRODUCT_ADAPTED trial models a legal one-move transfer from buried visible waste to an open foundation with its own attempt receipt and Undo. See docs/porting/P17_UNICO_MAGNET.md. The shipped app has no Unico Magnet; the Hitapps starter card and AZUR Joker remain distinct. P36 recorded the missing original Android trace in docs/porting/P36_ORIGINAL_RUNTIME.md.",
-      "nextAction": "Signed public Unico 1.1.10/code37 candidate and native catalog #128/130 exist. Establish publisher trust or owner-installed splits; recover exact source/target/cost/Undo/unlock. No source tier upgrade from method names.",
+      "nextAction": "Signed public Unico 1.1.10/code37 candidate and native catalog #128/130 exist. Establish publisher trust or owner-installed splits; recover exact source/target/cost/Undo/unlock. No source tier upgrade from method names. 27 Nov candidate investigation: P17 trial Rules3-only; Rules4 needs separate target/command/Undo oracle. Candidate flip/tableau/stock-aware command, spend and Super Magnet claim lifecycle; exact pool/cost unknown. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
       "stage": "D1",
       "reason": "Original native full runtime algorithm/source activation not established; metadata/video/selected branches insufficient for parity",
       "sourceResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/7298a8d805b19e2bd31c9a336cda9a17654a0359/research/games/association-solitaire/2026-11-09-reference/WORD_SOLITAIRE_VIDEO_ANALYSIS_2026-11-09.md",
-      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md"
+      "sourceConsolidationRef": "docs/porting/RESEARCH_CONSOLIDATION_2026-11-25.md",
+      "candidateResearchRef": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md"
     },
     {
       "id": "azur-tutorial-preset-deal",
@@ -1564,6 +1709,15 @@
     "sourceCI": "Initial run 45594363530: zero runner steps; acceptance pending",
     "runtimeKitUnchanged": "a9325265e87583a4872cf6a158e1e881a0d7508e"
   },
+  "mvpReleaseCandidate20261127": {
+    "pullRequest": "https://github.com/DanilaH/asoc-solitair/pull/224",
+    "profile": "c8-release-v1",
+    "build": "0.21.0/code51",
+    "campaignBoardRules": 4,
+    "rules4IssuancePolicy": "hitapps-r4-bank-v1",
+    "evidence": "docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md",
+    "acceptance": "PHYSICAL_ANDROID_LIVE_SDK_HUMAN_BALANCE_OPEN"
+  },
   "generatorHandoff": {
     "date": "2026-11-26",
     "brief": "docs/porting/HITAPPS_GENERATOR_AND_SPECIALS_TZ_2026-11-26.md",
@@ -1575,5 +1729,99 @@
     },
     "scope": "P05–P14 with P19/P31/P33–P37 dependencies; 115 source IDs/38 packets retained; engineering-only; release activation/physical QA separate",
     "remote": "SOURCE_UNKNOWN_NONBLOCKING_FOR_OWN_ADAPTATION"
+  },
+  "recoveryHandoff": {
+    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa/research/games/association-solitaire/2026-11-26-hitapps-recovery-lives/README.md",
+    "brief": "docs/porting/HITAPPS_RECOVERY_LIVES_TZ_2026-11-26.md",
+    "sourcePin": "28675ef1fa2fd8f974f4a05ed97d14e3eb49adfa",
+    "sourceBlob": "5187a337663c440931b2e15643dc329167a3758f",
+    "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "nativeRows": 1130,
+    "scope": "P19/P31 and P18/P25 compatibility; docs only, no price/activation/status changes"
+  },
+  "comboStreakHandoff": {
+    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/41e292bd8322cc76b693273d4230e061b6b3aa49/research/games/association-solitaire/2026-11-26-streak-combo-native/README.md",
+    "brief": "docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md",
+    "sourcePin": "41e292bd8322cc76b693273d4230e061b6b3aa49",
+    "sourceBlob": "16680eb55de091db99bbb7c5d5a6782f4b285e53",
+    "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "nativeRows": 3091,
+    "scope": "P04/P30; Hitapps in-game, WinStreak, AZUR Combo; no runtime activation, no remote research, Unico retained"
+  },
+  "liveOpsEventHandoff": {
+    "sourceRef": "https://github.com/DanilaH/mini-games-kit/blob/5cf02a7796242f43562ce1220c581b155c4ab0dc/research/games/association-solitaire/2026-11-26-hitapps-events-native/README.md",
+    "brief": "docs/porting/HITAPPS_RACE_LAVA_CASCADE_GOLD_TZ_2026-11-26.md",
+    "sourcePin": "5cf02a7796242f43562ce1220c581b155c4ab0dc",
+    "sourceBlob": "adcd53e487b3fb1e27fa2ac21454ab6113ae8e14",
+    "baseline": "9abe68d33dbae03013524f34db74c1cf3908a7e3",
+    "nativeRows": 388,
+    "modelAssertions": 41753,
+    "scope": "P31/P32 with P26 ledger reuse; 340 Race +48 Lava seed native; full Lava and Cascade static/model, execution still partial; no release activation"
+  },
+  "metaRewardsHandoff": {
+    "report": "https://github.com/DanilaH/mini-games-kit/blob/10cc5a22520912ea26069817d1f4ad52293fb69f/research/games/association-solitaire/2026-11-27-hitapps-meta-rewards/README.md",
+    "brief": "docs/porting/HITAPPS_META_REWARDS_TZ_2026-11-27.md",
+    "consumerCodeBaseline": "89feea96e4e1355679f4763e1d435f1afa2f2d4a",
+    "nativeRows": 1122,
+    "scope": "bounded independent original kernels and static lifecycle; not device/runtime/remote parity or product acceptance",
+    "researchCI": "https://github.com/DanilaH/asoc-solitair/actions/runs/45884391974",
+    "sourceIds": [
+      "hitapps-meta-regions",
+      "hitapps-digging-event",
+      "hitapps-lucky-wheel",
+      "hitapps-endless-treasure"
+    ],
+    "consolidation": "docs-only on #217; reconcile developer #216 separately"
+  },
+  "commerceHandoff": {
+    "brief": "docs/porting/HITAPPS_COMMERCE_TZ_2026-11-27.md",
+    "evidence": "https://github.com/DanilaH/mini-games-kit/blob/e620b8f6f14ddaf9a486c5785b00a9b4329202fa/research/games/association-solitaire/2026-11-27-hitapps-commerce/README.md",
+    "kitPR": 157,
+    "sourceCI": [
+      45885901789,
+      45886148828
+    ],
+    "consumerBaseline": "89feea96e4e1355679f4763e1d435f1afa2f2d4a",
+    "sourceIds": [
+      "hitapps-piggy-bank",
+      "hitapps-rotating-offers",
+      "hitapps-birthday-offer",
+      "hitapps-decoy-offer",
+      "hitapps-starter-offer",
+      "hitapps-win-rewarded-offer",
+      "hitapps-inapp-shop",
+      "hitapps-revive-offers",
+      "hitapps-adbreak"
+    ],
+    "ownAssertions": 4976,
+    "originalExecutedRows": 0,
+    "activation": "IAP_OFF; existing reward/ads policies unchanged"
+  },
+  "unicoCandidateHandoff": {
+    "brief": "docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md",
+    "source": "https://github.com/DanilaH/mini-games-kit/blob/d91def6f0f2239405a3de9b0f1703dd63cb9ffa4/research/games/association-solitaire/2026-11-27-unico-mechanics/README.md",
+    "kitPR": 158,
+    "researchPR": 222,
+    "sourceCI": 45888593172,
+    "consumerBaseline": "89feea96e4e1355679f4763e1d435f1afa2f2d4a",
+    "tier": "SIGNED_PUBLIC_CANDIDATE_NATIVE_STATIC",
+    "publisherTrust": "UNKNOWN",
+    "nativeExecutionRows": 0,
+    "sourceIds": [
+      "unico-win-and-task-streak",
+      "unico-coffee-break",
+      "unico-daily-fortune",
+      "unico-rewarded-theme",
+      "unico-vip",
+      "unico-redeal-restart",
+      "unico-double-reward",
+      "unico-daily-puzzles",
+      "unico-loss-dialog",
+      "unico-themes-and-skins",
+      "unico-magnet-helper"
+    ],
+    "candidateRegister": "docs/porting/UNICO_CANDIDATE_SYSTEMS.json",
+    "candidateCount": 9,
+    "scope": "Preserve all 115 canonical IDs / 38 packets / 15 commerce families; nine candidate systems mapped, no exclusion, no status promotion, no runtime/IAP change."
   }
 }

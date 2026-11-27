@@ -9,7 +9,7 @@ export const RANDOM_JOKER_PREVIEW = LEGACY_OWNER_PREVIEW === 'random-joker';
 
 export function allowsRandomJoker(attempt: Attempt, deal: Deal) {
   return deal.randomJokerPreview === 1 && attempt.dealId === deal.id && !attempt.daily &&
-    !attempt.randomJokerUsed && !attempt.board.joker && boardRules(attempt.board) === 3 && attempt.board.phase === 'playing';
+    !attempt.randomJokerUsed && !attempt.board.joker && boardRules(attempt.board) >= 3 && attempt.board.phase === 'playing';
 }
 
 export function placeRandomJoker(attempt: Attempt, deal: Deal, random: (bound: number) => number, makeId: () => string) {

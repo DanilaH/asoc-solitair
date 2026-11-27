@@ -1,4 +1,4 @@
-import { hitappsR4Difficulty, HITAPPS_SOURCE_QA } from '../config/hitapps-r4';
+import { hitappsR4Difficulty, HITAPPS_RULES4_CAMPAIGN } from '../config/hitapps-r4';
 import { adjustedMoveBudget, easyDealTarget, futureDifficultyPenalty } from '../domain/difficulty';
 import { Kind } from '../domain/hitapps-rules';
 import type { Attempt, Card, Deal, Save } from '../domain/types';
@@ -72,7 +72,7 @@ function campaignMechanicsMatch(candidate: Deal, legacy: Deal) {
 }
 
 export function selectHitappsBank(bank: ReturnType<typeof bindHitappsBank>, save: Save, base: Deal, legacy: Deal, previous?: Attempt) {
-  if (!HITAPPS_SOURCE_QA || base.daily || base.campaignLevel === undefined) return;
+  if (!HITAPPS_RULES4_CAMPAIGN || base.daily || base.campaignLevel === undefined) return;
   const current = previous && bank.get(previous.dealId);
   const currentGeometry = current && JSON.stringify([current.deal.initial.tableau, current.deal.initial.stock, current.deal.initial.faceUp]);
   const penalty = futureDifficultyPenalty(save);

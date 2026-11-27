@@ -1,14 +1,15 @@
+import { CAMPAIGN_META, EXTENDED_CHAPTER } from '../config/campaign-meta';
 import { CAMPAIGN_CORE_STAGE1 } from '../config/hitapps-r4';
 import beyondBank from '../content/campaign-v8-beyond-bank.json' with { type: 'json' };
 import { CONTENT8_PREVIEW, type Deal, type Save } from './types';
 export const BEYOND80_PREVIEW = CONTENT8_PREVIEW && import.meta.env?.VITE_CONTENT8_BEYOND80 === '1';
-export const CAMPAIGN_LENGTH = 80 + (BEYOND80_PREVIEW ? beyondBank.length : 0);
+export const CAMPAIGN_LENGTH = EXTENDED_CHAPTER.first - 1 + (CAMPAIGN_META ? EXTENDED_CHAPTER.count : BEYOND80_PREVIEW ? beyondBank.length : 0);
 export const HELPER_UNLOCK = { hint: 3, undo: 4, joker: 8 } as const;
 export const campaignId = (level: number) => `campaign-${String(level).padStart(3, '0')}`;
 export function completedLevels(save: Save): number {
-  const ids = save.platform?.completedCampaign ?? [];
+  const ids = new Set(save.platform?.completedCampaign);
   let count = 0;
-  while (count < CAMPAIGN_LENGTH && ids.includes(campaignId(count + 1))) count++;
+  while (count < CAMPAIGN_LENGTH && ids.has(campaignId(count + 1))) count++;
   return count;
 }
 export const unlockedLevel = (save: Save) => Math.min(CAMPAIGN_LENGTH, completedLevels(save) + 1);

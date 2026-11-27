@@ -44,7 +44,7 @@ public class SolitaireAdsPlugin extends Plugin {
         final PluginCall call;
         final String kind, placement, attempt, mode, dealId;
         final String id = UUID.randomUUID().toString();
-        boolean invoked, shown, earned;
+        boolean invoked, shown, earned, resolved;
         // Memory capture ownership/rejection is distinct from the worker's durable receipt.
         RevenueDelivery.Capture impressionCapture;
         long invokedAt;
@@ -224,7 +224,13 @@ public class SolitaireAdsPlugin extends Plugin {
         if (session != s || s.shown || background || !getActivity().hasWindowFocus()) return;
         long remaining = 8000 - (SystemClock.elapsedRealtime() - s.invokedAt);
         if (remaining > 0) { handler.postDelayed(() -> checkUnshown(s), remaining); return; }
-        event(s.kind, "show_error"); finish(s, "error");
+        event(s.kind, "show_error");
+        // An invoked SDK request without a callback is ambiguous. Release the
+        // WebView without dropping the listener or claiming the session ended.
+        if (!s.resolved) {
+            s.resolved = true;
+            resolve(s.call, false, "error", false);
+        }
     }
     private JSONObject sessionIdentity(Session s) throws org.json.JSONException {
         JSONObject event = new JSONObject();
@@ -281,6 +287,13 @@ public class SolitaireAdsPlugin extends Plugin {
         try { journal.acknowledge(call.getString("id", "")); call.resolve(); }
         catch (Exception error) { call.reject("Earned receipt acknowledgement failed"); }
     }); }
+    @PluginMethod public void rewardOfferIdle(PluginCall call) { handler.post(() -> {
+        try {
+            JSObject result = new JSObject();
+            result.put("idle", session == null && journal.pending() == null && shownJournal.pending() == null);
+            call.resolve(result);
+        } catch (Exception error) { call.reject("Ad journals unavailable"); }
+    }); }
     @PluginMethod public void pendingShown(PluginCall call) { handler.post(() -> {
         try {
             JSONObject notice = shownJournal.pending();
@@ -299,7 +312,12 @@ public class SolitaireAdsPlugin extends Plugin {
         call.resolve();
     }); }
     private void resolve(PluginCall call, boolean shown, String outcome) {
-        JSObject result = new JSObject(); result.put("shown", shown); result.put("outcome", outcome); call.resolve(result);
+        resolve(call, shown, outcome, false);
+    }
+    private void resolve(PluginCall call, boolean shown, String outcome, boolean terminalNoReward) {
+        JSObject result = new JSObject(); result.put("shown", shown); result.put("outcome", outcome);
+        if (terminalNoReward) result.put("terminalNoReward", true);
+        call.resolve(result);
     }
     private void finish(Session s, String outcome) {
         if (session != s) return;
@@ -307,7 +325,7 @@ public class SolitaireAdsPlugin extends Plugin {
         if (rewarded != null) { rewarded.setAdEventListener(null); rewarded = null; }
         if (rewardLoader != null && !s.invoked && s.kind.equals("rewarded")) rewardLoader.cancelLoading();
         if (interstitial != null && s.kind.equals("interstitial")) { interstitial.setAdEventListener(null); interstitial = null; }
-        resolve(s.call, s.shown, outcome);
+        if (!s.resolved) resolve(s.call, s.shown, outcome, !s.earned && (!s.invoked || !s.shown || outcome.equals("dismissed")));
     }
     @PluginMethod public void measureBanner(PluginCall call) { handler.post(() -> {
         if (!available("banner") || background || session!=null || !getActivity().hasWindowFocus()) { call.resolve(); return; }

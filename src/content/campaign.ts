@@ -1,3 +1,5 @@
+import { CAMPAIGN_META, EXTENDED_CHAPTER } from '../config/campaign-meta';
+import { extendedCampaign, extendedRecords } from './campaign-meta-bank';
 import releaseConfig from '../config/c8-release.json' with { type: 'json' };
 import { releaseProfile } from '../config/profile';
 import { LIVEOPS_PREVIEW } from '../domain/campaign-lives';
@@ -31,7 +33,7 @@ import { englishBeyondDeal, localizedCampaignDeal, sameLocalizedLevel } from './
 import { beyond80Deals } from './campaign-v8-beyond';
 import { hitappsDirectorDeals, hitappsDirectorRecords } from './campaign-v8-hitapps-director';
 import { adaptiveBank, selectAdaptiveDeal } from './campaign-v8-adaptive';
-import { BEYOND80_PREVIEW, campaignId } from '../domain/progression';
+import { BEYOND80_PREVIEW, CAMPAIGN_LENGTH, campaignId } from '../domain/progression';
 import { CONTENT8_PREVIEW } from '../domain/types';
 import type { Attempt, Board, BoardCommand, CampaignIssuance, Deal, Save } from '../domain/types';
 import { bindHitappsBank, hitappsGeometry, selectHitappsBank } from './hitapps-r4-bank';
@@ -75,7 +77,7 @@ const variants = new Map([
   return [deal.campaignLevel, { deal, ids: new Set([base.id, deal.id, specialByLevel.get(deal.campaignLevel)?.id, ...content8Special.filter(item => item.campaignLevel === deal.campaignLevel).map(item => item.id)]) }] as const;
 }));
 export const campaignDeals: readonly Deal[] = CONTENT8_PREVIEW
-  ? [...content8Campaign.map(deal => specialByLevel.get(deal.campaignLevel) ?? deal), ...(BEYOND80_PREVIEW ? beyond80Deals : [])]
+  ? [...content8Campaign.map(deal => specialByLevel.get(deal.campaignLevel) ?? deal), ...(CAMPAIGN_META ? extendedCampaign : BEYOND80_PREVIEW ? beyond80Deals : [])]
   : content7Deals;
 const adaptiveBases = [...content8Campaign, ...beyond80Deals, englishBeyondDeal, ...content8Special, ...content8BonusDeals, ...coreSpecialDeals];
 const archivedAdaptive = adaptiveBank(adaptiveBases);
@@ -170,15 +172,38 @@ for (const { deal } of campaignCore.byId.values()) {
   if (all.has(deal.id)) throw Error(`Duplicate immutable deal: ${deal.id}`);
   all.set(deal.id, deal);
 }
+const recentExtended = new Map<number, ReturnType<typeof bindCampaignCore>>();
+function coreFor(level: number) {
+  if (level < EXTENDED_CHAPTER.first) return campaignCore;
+  let bank = recentExtended.get(level);
+  if (!bank) {
+    const template = extendedCampaign[level - EXTENDED_CHAPTER.first];
+    if (!template) throw Error(`Unknown campaign level ${level}`);
+    bank = bindCampaignCore(new Map([[template.id, template]]), new Map(), extendedRecords(level));
+  }
+  recentExtended.delete(level);
+  recentExtended.set(level, bank);
+  if (recentExtended.size > 4) recentExtended.delete(recentExtended.keys().next().value!);
+  return bank;
+}
+function coreById(id: string) {
+  const first = campaignCore.byId.get(id);
+  if (first) return first;
+  const level = Number(/^campaign-ha4-(\d+)-/.exec(id)?.[1]);
+  if (!Number.isSafeInteger(level) || level < EXTENDED_CHAPTER.first ||
+      level >= EXTENDED_CHAPTER.first + EXTENDED_CHAPTER.count) return;
+  return coreFor(level).byId.get(id);
+}
+
 export const hitappsR4Deals = () => hitappsR4Bank.values();
 export const campaignCoreDeals = () => Array.from(campaignCore.byId.values()).filter(entry => !entry.deal.id.endsWith('-m1')).values();
 export const campaignLevelPreview = (deal: Deal | undefined) => CAMPAIGN_CORE_STAGE1 && deal && (deal.campaignLevel ?? 0) <= 15
   ? campaignCore.byLevel.get(deal.campaignLevel!)?.[0]?.deal ?? deal : deal;
-export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
+export const findDeal = (id: string) => all.get(id) ?? coreById(id)?.deal ?? findDaily(id);
 /** Includes every campaign definition that can be restored from a saved Deal ID. */
 export const savedDealDefinitions = () => all.values();
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
-  const r4 = campaignCore.byId.get(dealId) ?? hitappsR4Bank.get(dealId);
+  const r4 = coreById(dealId) ?? hitappsR4Bank.get(dealId);
   if (r4) return r4.deal.campaignLevel === base.campaignLevel;
   dealId = bonusOrigin.get(dealId) ?? dealId;
   dealId = teachingOriginal.get(dealId) ?? releaseSourceById.get(dealId) ?? dealId;
@@ -202,14 +227,14 @@ export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): 
   if (!CONTENT8_PREVIEW) return base;
   const level = base.campaignLevel!;
   const lesson = teachingByLevel.get(level);
-  if (CAMPAIGN_CORE_STAGE1 && level <= 80) {
+  if (CAMPAIGN_CORE_STAGE1 && level <= CAMPAIGN_LENGTH && (level < EXTENDED_CHAPTER.first || CAMPAIGN_META)) {
     const previousDeal = previous && findDeal(previous.dealId);
     const firstEncounter = level > 15 && previousDeal?.campaignLevel !== level &&
       !save.platform?.completedCampaign.includes(campaignId(level));
     // The archived exact demos contain commands whose target positions are part of the lesson.
     if (firstEncounter && lesson?.base.id === base.id) return lesson.deal;
     if (firstEncounter && (base.training || c8CoreTeachingLevels.has(level))) return base;
-    return selectCampaignCore(campaignCore, save, base, previous, previousDeal);
+    return selectCampaignCore(coreFor(level), save, base, previous, previousDeal);
   }
   if (releaseProfile && lesson?.base.id === base.id && !save.platform?.completedCampaign.includes(campaignId(base.campaignLevel!)))
     return lesson.deal;
@@ -245,7 +270,7 @@ const directorRecordsById = new Map(hitappsDirectorRecords.map(record => [record
 
 export function campaignIssuance(save: Save, target: Deal, selected: Deal, previous?: Attempt): CampaignIssuance | undefined {
   if (!releaseProfile || selected.campaignLevel === undefined) return;
-  const core = campaignCore.byId.get(selected.id);
+  const core = coreById(selected.id);
   if (core) return { version: 1, profile: releaseProfile.id, policy: campaignCorePolicy, baseId: core.record.baseId,
     dealId: selected.id, baseBudget: core.record.deal.initial.movesLeft,
     effectiveBudget: selected.initial.movesLeft, source: 'certified-seed',
@@ -290,7 +315,7 @@ function ruleFamily(deal: Deal) {
 /** Pass only replay-certified layouts from the same campaign and rule family. */
 export function selectRetryLayout(save: Save, base: Deal, current: Deal): Deal | undefined {
   const level = base.campaignLevel!;
-  if (CAMPAIGN_CORE_STAGE1 && level <= 80) {
+  if (CAMPAIGN_CORE_STAGE1 && level <= CAMPAIGN_LENGTH && (level < EXTENDED_CHAPTER.first || CAMPAIGN_META)) {
     if (level === 1 || hitappsR4Bank.get(current.id)?.record.use === 'feature-check') return;
     const next = selectCampaignDeal(save, base, save.attempt);
     return layoutFingerprint(next) !== layoutFingerprint(current) ? next : undefined;

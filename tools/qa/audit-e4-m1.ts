@@ -1,23 +1,27 @@
 import assert from 'node:assert/strict';
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { CAMPAIGN_META } from '../../src/config/campaign-meta';
 import { E4_M1, M1 } from '../../src/config/economy';
 import { releaseProfile } from '../../src/config/profile';
+import { dailyForDay } from '../../src/content/daily';
 import { campaignDeals, campaignIssuance, selectCampaignDeal } from '../../src/content/campaign';
 import { BALANCE } from '../../src/domain/balance';
 import { beginDeal } from '../../src/domain/campaign';
 import { claimDailyBonus, openDailyBonusRound, revealDailyBonusCard } from '../../src/domain/events/daily-bonus';
-import { updatePreviewTasks, type TaskPrize } from '../../src/domain/events/daily-tasks';
+import { claimTask, claimTaskMilestone, currentTasks, openWeeklyChest, recordTaskSignal, updatePreviewTasks, type TaskSignal, type TaskPrize } from '../../src/domain/events/daily-tasks';
 import { dispatch, freshSave } from '../../src/domain/engine';
 import { clearUndo } from '../../src/domain/history';
-import { unlockedLevel } from '../../src/domain/progression';
+import { claimWinStreak } from '../../src/domain/events/win-streak';
+import { finishDaily } from '../../src/domain/meta';
+import { CAMPAIGN_LENGTH, campaignId, unlockedLevel } from '../../src/domain/progression';
 
 assert.equal(releaseProfile?.id, 'c8-release-v1');
 assert.equal(releaseProfile.capabilities.purchases, 'off');
 const start = Date.UTC(2026, 10, 23, 12), dayMs = 86_400_000;
-const policy = E4_M1 ? 'e4-m1' : 'pr229';
+const policy = CAMPAIGN_META ? 'm1-stage3' : E4_M1 ? 'e4-m1' : 'pr229';
 const routes: {
   level: number; deal: string; tier: number; steps: number; spare: number;
-  tierBase: number; moves: number; combo: number; meta: number; gross: number; rv: number; hints: number;
+  tierBase: number; moves: number; combo: number; meta: number; gross: number; rv: number; hints: number; draws: number; themes: number;
 }[] = [];
 let save = freshSave(campaignDeals[0], 'economy');
 for (const base of campaignDeals) {
@@ -30,9 +34,12 @@ for (const base of campaignDeals) {
   save.attempt.issuance = campaignIssuance(save, base, deal, previous);
   const opening = { coins: save.profile.coins, hints: save.profile.hints };
   const date = new Date(now).toISOString().slice(0, 10);
+  let draws = 0, themes = 0;
   for (const command of deal.winningPath) {
     const result = dispatch(save, command, deal, date);
     assert(result.accepted, `L${level} ${deal.id}: ${result.reason}`);
+    draws += result.events.filter(event => event.type === 'draw').length;
+    themes += result.events.filter(event => event.type === 'complete').length;
     save = result.next;
     // These are first-clear witnesses without Undo. Test SaveStore and Undo separately.
     clearUndo(save.attempt);
@@ -43,7 +50,8 @@ for (const base of campaignDeals) {
   const win = payout.find(grant => grant.reason === 'win')?.coins ?? 0;
   const victory = save.attempt.victory;
   const payoutCombo = payout.find(grant => grant.reason === 'campaign_combo')?.coins ?? 0;
-  const meta = payout.filter(row => row.reason !== 'win' && row.reason !== 'campaign_combo').reduce((sum, row) => sum + row.coins, 0);
+  const streak = CAMPAIGN_META ? claimWinStreak(save, save.meta?.winStreak?.claimed ?? 0) : undefined;
+  const meta = (streak?.coins ?? 0) + payout.filter(row => row.reason !== 'win' && row.reason !== 'campaign_combo').reduce((sum, row) => sum + row.coins, 0);
   const gross = save.profile.coins - opening.coins;
   const combo = gross - win - meta;
   assert(combo >= payoutCombo);
@@ -51,9 +59,9 @@ for (const base of campaignDeals) {
   const offer = save.rewardOffers?.multiplier?.selected[`win-${save.balanceVersion}-${level}`];
   const rv = offer ? tierBase * (offer === 'win-fivefold' ? 4 : 2) : 0;
   routes.push({ level, deal: deal.id, tier: victory?.tier ?? 0, steps: deal.winningPath.length, spare, tierBase,
-    moves: win - tierBase, combo, meta, gross, rv, hints: save.profile.hints - opening.hints });
+    moves: win - tierBase, combo, meta, gross, rv, draws, themes, hints: save.profile.hints - opening.hints });
 }
-assert.equal(routes.length, 80);
+assert.equal(routes.length, CAMPAIGN_LENGTH);
 assert.equal(save.platform?.receipts.length, 0);
 assert.equal(save.commerce, undefined);
 
@@ -92,6 +100,51 @@ function bonusSequence(trial: number) {
   return prizes;
 }
 
+function taskSupply(withDaily: boolean) {
+  const state = freshSave(campaignDeals[0], 'week-model');
+  const monday = Date.UTC(2026, 10, 30, 12);
+  const calendarState = freshSave(dailyForDay('2026-11-30'), 'calendar-model');
+  return Array.from({ length: 7 }, (_, day) => {
+    const now = monday + day * dayMs, utc = new Date(now).toISOString().slice(0, 10);
+    const dayRoutes = routes.slice(day * 3, day * 3 + 3);
+    const before = { ...state.profile };
+    let dailyIncome = 0, dailyUndo = 0;
+    if (withDaily) {
+      const layout = dailyForDay(utc);
+      calendarState.attempt = freshSave(layout, 'daily-model-' + day).attempt;
+      for (const reward of finishDaily(calendarState, utc)) {
+        dailyIncome += reward.coins;
+        dailyUndo += reward.undos ?? 0;
+      }
+    }
+    if (day >= 2) {
+      (state.platform ??= { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0,
+        lastFullscreenAt: 0, completedCampaign: [] }).completedCampaign = Array.from({ length: (day + 1) * 3 }, (_, i) => campaignId(i + 1));
+      updatePreviewTasks(state, now);
+      const sum = (key: 'gross' | 'draws' | 'themes' | 'steps') => dayRoutes.reduce((count, row) => count + row[key], 0);
+      const extras = withDaily ? dailyForDay(utc) : undefined;
+      const values: Partial<Record<TaskSignal['kind'], number>> = {
+        DailyLogin: 1, CollectDailyBonuses: 1, CompleteLevels: dayRoutes.length + Number(withDaily),
+        WinNoHints: dayRoutes.length + Number(withDaily), DrawCards: sum('draws') + (extras?.winningPath.filter(command => command.type === 'draw').length ?? 0),
+        CollectThemes: sum('themes') + (extras ? Object.values(extras.cards).filter(card => card.leader).length : 0),
+        EarnCoins: sum('gross') + dailyIncome, ExecuteMoves: sum('steps') + (extras?.winningPath.length ?? 0),
+      };
+      const current = currentTasks(state)!;
+      for (const { id, kind } of current.day.tasks) {
+        const channel = kind === 'DailyLogin' ? 'login' : kind === 'CollectDailyBonuses' ? 'daily-bonus'
+          : kind === 'EarnCoins' ? 'wallet' : 'board';
+        recordTaskSignal(state, now, { id: 'audit:' + id, kind, channel, amount: values[kind] ?? 0, attemptId: 'audit-week-model' });
+        claimTask(state, utc, id);
+      }
+      for (const milestone of current.week.milestones) claimTaskMilestone(state, current.week.startUtc, milestone.id);
+      for (const key of state.dailyTasks!.inventory.chestKeys.slice()) openWeeklyChest(state, key);
+    }
+    return { coins: state.profile.coins - before.coins + dailyIncome,
+      hint: state.profile.hints - before.hints, undo: state.profile.undos - before.undos + dailyUndo };
+  });
+}
+const supplies = CAMPAIGN_META ? [taskSupply(false), taskSupply(true)] : undefined;
+
 function simulate(price: typeof controls.E4, basket: Basket, bonus: ReturnType<typeof bonusSequence>, video: boolean, daily: boolean) {
   const repeat = { light: 1, base: 2, heavy: 3 }[basket];
   let balance = 100, denied = 0, views = 0;
@@ -107,11 +160,16 @@ function simulate(price: typeof controls.E4, basket: Basket, bonus: ReturnType<t
     if (prize?.kind === 'MoveHint') inventory.hint += prize.quantity;
     if (prize?.kind === 'Undo') inventory.undo += prize.quantity;
     if (prize?.kind === 'Joker') inventory.joker += prize.quantity;
-    if (day >= 2) { balance += 25; inventory.hint++; }
-    if (day === 3 || day === 5) inventory.undo++;
-    if (day === 6) balance += 100;
+    const supply = supplies?.[Number(daily)][day];
+    if (supply) {
+      balance += supply.coins; inventory.hint += supply.hint; inventory.undo += supply.undo;
+    } else {
+      if (day >= 2) { balance += 25; inventory.hint++; }
+      if (day === 3 || day === 5) inventory.undo++;
+      if (day === 6) balance += 100;
+      if (daily) balance += day === 6 ? 50 : 100; // PR230 research sensitivity.
+    }
     if (day === 4) balance += 100; // Assume the free seasonal claim is earned this week.
-    if (daily) balance += day === 6 ? 50 : 100; // Explicit +650 sensitivity, not the full calendar.
     if (video && (day === 2 || day === 4)) {
       const selected = dayRoutes.find(route => route.rv > 0);
       if (selected) { balance += selected.rv; views++; }
@@ -141,7 +199,7 @@ function simulate(price: typeof controls.E4, basket: Basket, bonus: ReturnType<t
   return { balance, denied, views };
 }
 
-const campaigns = [15, 40, 80].map(level => {
+const campaigns = [...new Set([15, 40, 80, CAMPAIGN_LENGTH])].map(level => {
   const current = routes.slice(0, level);
   return { level, coins: current.reduce((sum, row) => sum + row.gross, 0),
     base: current.reduce((sum, row) => sum + row.tierBase, 0),
@@ -164,7 +222,7 @@ if (E4_M1) {
             medianViews: median(trials.map(row => row.views)) });
         }
 }
-const report = { policy, wins: routes.length, adReceipts: 0, purchases: 0, campaigns, routes, experiments };
+const report = { policy, wins: routes.length, adReceipts: 0, purchases: 0, campaigns, routes, experiments, supplies };
 mkdirSync('.recording/e4-m1', { recursive: true });
 writeFileSync(`.recording/e4-m1/${policy}.json`, JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({ policy, campaigns, experiments }, null, 2));

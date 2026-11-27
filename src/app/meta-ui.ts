@@ -1,3 +1,4 @@
+import { WIN_STREAK, stagedStreak, streakStatus } from '../domain/events/win-streak';
 import { campaignCount, cosmeticUnlocked, currentDailyStreak, daysLabel, dayNumber, localDay } from '../domain/meta';
 import { BALANCE } from '../domain/balance';
 import { CAMPAIGN_LENGTH, dailyModeAvailable } from '../domain/progression';
@@ -5,7 +6,7 @@ import type { Save } from '../domain/types';
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 export const campaignAttempt = (save: Save) => save.attempt.daily ? save.parked?.campaign : save.attempt;
 export const dailyAttempt = (save: Save) => save.attempt.daily ? save.attempt : save.parked?.daily;
-const pips = (count: number) => Array.from({ length: 5 }, (_, i) => `<i class="${i < count ? 'lit' : ''}">✦</i>`).join('');
+const pips = (count: number, goal = 5) => Array.from({ length: goal }, (_, i) => `<i class="${i < count ? 'lit' : ''}">✦</i>`).join('');
 export function renderMeta(save: Save, busy: boolean) {
   const meta = save.meta!, today = localDay(), done = meta.dailyDates.includes(today), daily = dailyAttempt(save), n = Math.min(CAMPAIGN_LENGTH, campaignCount(save)), target = (Math.floor(n / 10) + 1) * 10;
   $('#app').dataset.palette = cosmeticUnlocked(save, 'palette') ? save.settings.palette ?? 'green' : 'green';
@@ -16,11 +17,33 @@ export function renderMeta(save: Save, busy: boolean) {
     $('#daily-play').hidden = noDaily;
     $('#calendar-open').hidden = noDaily;
   }
-  $('#win-cycle-open').hidden = n === 0 || n >= CAMPAIGN_LENGTH; $('#appearance-open').hidden = n === 0;
-  $('#win-cycle-pips').innerHTML = pips(meta.winCycle);
-  $('#cycle-reward').textContent = `+${BALANCE.meta.cycleCoins} монет и подсказка`;
+  const staged = stagedStreak(save);
+  const streak = streakStatus(save);
+  $('#win-cycle-open').hidden = n === 0 || n >= CAMPAIGN_LENGTH && !streak.ready;
+  $('#appearance-open').hidden = n === 0;
+  $('#win-cycle-open strong').textContent = staged ? 'Серия побед' : 'Пять побед';
+  $('#win-cycle-pips').innerHTML = staged ? pips(streak.progress, streak.goal) : pips(meta.winCycle);
+  $('#cycle-reward').textContent = staged ? `+${streak.reward.coins} монет` : `+${BALANCE.meta.cycleCoins} монет и подсказка`;
   $('#calendar-reward-copy').textContent = `За день — ${BALANCE.meta.dailyCoins} монет. Серия из 3 дней: +${BALANCE.meta.day3Coins}. За 7 дней, затем каждые 7: +${BALANCE.meta.day7Coins} и отмена. Пропуск сбрасывает серию.`;
-  $('#win-cycle-count').textContent = `${meta.winCycle} из 5 побед`;
+  $('#win-cycle-count').textContent = staged
+    ? streak.ready ? `Готово наград · ${streak.ready}` : `Ступень ${streak.index + 1} · ${streak.progress}/${streak.goal}`
+    : `${meta.winCycle} из 5 побед`;
+  $('#cycle-title').textContent = staged ? 'Серия побед' : 'Пять побед';
+  $('#cycle-copy').textContent = staged ? 'Первое прохождение уровня кампании добавляет одну победу к текущей ступени.'
+    : `За пять впервые пройденных уровней начисляются ${BALANCE.meta.cycleCoins} монет и подсказка.`;
+  $('#cycle-rule').textContent = staged ? 'После подтверждённого поражения обнуляется текущая ступень. Готовые награды сохраняются.'
+    : 'Перезапуск и смена незавершённого уровня сбрасывают отметки. Отмена хода, продолжение, пауза и ежедневный уровень их сохраняют.';
+  const stages = $('#cycle-stages');
+  stages.hidden = !staged;
+  if (staged) stages.replaceChildren(...WIN_STREAK.map(({ wins, coins, hints }, index) => {
+    const row = document.createElement('li');
+    const progress = index < streak.index ? 'Пройдено' : index === streak.index ? `${streak.progress}/${wins}` : `${wins} побед`;
+    row.textContent = `${progress} · ${coins} монет${hints ? ' и подсказка' : ''}`;
+    return row;
+  }));
+  const claim = $<HTMLButtonElement>('#cycle-claim');
+  claim.hidden = !staged || streak.ready === 0;
+  claim.disabled = busy;
   $('#milestone-title').textContent = n >= CAMPAIGN_LENGTH ? 'Кампания пройдена' : target > CAMPAIGN_LENGTH ? 'Последняя глава' : `Награда за ${target} уровней`;
   $('#milestone-copy').textContent = n >= CAMPAIGN_LENGTH ? 'Оформление и положение колоды' : target > CAMPAIGN_LENGTH ? `До конца осталось ${CAMPAIGN_LENGTH - n}` : target === 10 ? `Стол «Чернила» и ${BALANCE.meta.milestoneCoins} монет` : target === 20 ? `Рубашка «Ромбы» и ${BALANCE.meta.milestoneCoins} монет` : `${BALANCE.meta.milestoneCoins} монет`;
   $('#milestone-fill').style.width = `${n >= CAMPAIGN_LENGTH ? 100 : n % 10 * 10}%`; $('#milestone-progress').textContent = n >= CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : target > CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : `${n % 10} / 10`;

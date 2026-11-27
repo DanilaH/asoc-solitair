@@ -4,7 +4,7 @@ import type { NativeBannerPlacement, NativeBannerPlacementInput } from '@danilah
 import { parseFullscreenShown, parseReceipt, type EarnedReceipt, type FullscreenShown, type AdPlacement } from '../domain/services';
 
 export interface AdRequest { kind: 'rewarded' | 'interstitial'; placement: AdPlacement; attempt: string; dealId: string; mode: 'campaign' | 'daily' }
-export interface AdOutcome { shown: boolean; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
+export interface AdOutcome { shown: boolean; terminalNoReward?: true; outcome: 'dismissed' | 'unavailable' | 'error' | 'cancelled' }
 export interface AdStatus { rewarded: boolean; interstitial: boolean; banner: boolean; mode: string; ready?: boolean; interstitialLoaded?: boolean; campaignApproved?: boolean; livesApproved?: boolean; offersApproved?: boolean }
 export interface AdEvent { kind: 'rewarded' | 'interstitial' | 'banner'; phase: string; placement?: string }
 interface PendingLife { id: string; dealId: string }
@@ -15,6 +15,7 @@ export interface AdsBridge {
   show(request: AdRequest): Promise<AdOutcome>;
   pending(): Promise<{ receipts: unknown[]; activeLife?: PendingLife | null }>;
   acknowledge(options: { id: string }): Promise<void>;
+  rewardOfferIdle?(): Promise<{ idle: boolean }>;
   pendingShown(): Promise<{ shown: unknown | null }>;
   acknowledgeShown(options: { id: string }): Promise<void>;
   cancelPending(): Promise<void>;
@@ -25,7 +26,7 @@ export interface AdsBridge {
   addListener(name: 'adEvent', callback: (event: AdEvent) => void): Promise<PluginListenerHandle>;
 }
 export const disabledStatus: AdStatus = { rewarded: false, interstitial: false, banner: false, mode: 'disabled' };
-const unavailable: AdOutcome = { shown: false, outcome: 'unavailable' };
+const unavailable: AdOutcome = { shown: false, outcome: 'unavailable', terminalNoReward: true };
 const SHOWN_CHECK_MS = 1500;
 
 async function withinShownCheck<T>(work: Promise<T>): Promise<T | undefined> {
@@ -44,6 +45,8 @@ export function createAds(options: {
   beforeShow(request: AdRequest): Promise<void>;
   pendingLife?(): PendingLife | undefined;
   retireLife?(request: PendingLife): Promise<void>;
+  pendingOffer?(): string | undefined;
+  retireOffer?(id: string): Promise<void>;
   onStatus(status: AdStatus): void;
   onEvent(event: AdEvent): void;
 }, bridge?: AdsBridge) {
@@ -105,6 +108,19 @@ export function createAds(options: {
   async function recover(): Promise<void> {
     await Promise.all([recoverEarned(), recoverShown()]);
   }
+  async function reconcileOffer(): Promise<boolean> {
+    const offer = options.pendingOffer?.();
+    if (!offer) return true;
+    if (!alive || !native?.rewardOfferIdle || showing) return false;
+    // Both journals are consulted on the same native handler. An unavailable
+    // snapshot cannot establish that a persisted authorization is terminal.
+    try {
+      await withinShownCheck(recover());
+      const status = await withinShownCheck(native.rewardOfferIdle());
+      if (alive && !showing && status?.idle && options.pendingOffer?.() === offer) await options.retireOffer?.(offer);
+    } catch { /* Preserve the quote for the next foreground/recovery attempt. */ }
+    return options.pendingOffer?.() === undefined;
+  }
   function refresh(): Promise<void> {
     if (!alive || !native) return Promise.resolve();
     if (statusFlight) return statusFlight;
@@ -145,6 +161,10 @@ export function createAds(options: {
       if (native?.discardInterstitial) await withinShownCheck(native.discardInterstitial()).catch(() => undefined);
     },
     refresh, recover,
+    async canAuthorizeOffer() {
+      if (!alive || !native || !status.rewarded || showing) return false;
+      return Boolean(await withinShownCheck(recoverShown())) && await reconcileOffer();
+    },
     prepareInterstitial(): Promise<void> {
       if (!alive || !native || showing || !status.interstitial) return Promise.resolve();
       if (prepareFlight) return prepareFlight;
@@ -156,7 +176,7 @@ export function createAds(options: {
       options.onEvent({ kind: request.kind, phase: 'show_request', placement: request.placement });
       if (!status[request.kind]) { options.onEvent({ kind: request.kind, phase: 'unavailable', placement: request.placement }); return unavailable; }
       showing = true;
-      let ownsActivity = false;
+      let ownsActivity = false, enteredNative = false;
       try {
         // Resolve any persisted display before re-evaluating product cooldown.
         // The game stays available throughout the journal preflight.
@@ -165,6 +185,7 @@ export function createAds(options: {
         options.activity.setBlocked('ad', true);
         await options.beforeShow({ ...request });
         if (!alive) return unavailable;
+        enteredNative = true;
         const result = await native.show({ ...request });
         if (!result.shown) options.onEvent({ kind: request.kind, phase: result.outcome, placement: request.placement });
         if (result.shown) {
@@ -175,7 +196,7 @@ export function createAds(options: {
           })());
         }
         return result;
-      } catch { return { shown: false, outcome: 'error' }; }
+      } catch { return { shown: false, outcome: 'error', ...(!enteredNative && { terminalNoReward: true as const }) }; }
       finally {
         showing = false;
         if (ownsActivity) options.activity.setBlocked('ad', false);

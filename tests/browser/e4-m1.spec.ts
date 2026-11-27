@@ -108,6 +108,7 @@ for (const watch of [false, true]) {
       await video.tap();
       await expect(page.locator('#win-video-status')).toContainText('Видео недоступно');
       expect((await read(page)).profile.coins).toBe(after.profile.coins);
+      expect((await read(page)).rewardOffers?.pending).toHaveLength(0);
       await page.evaluate(() => { (window as unknown as Browser).stage2Ads.fill = true; });
       await video.tap();
     } else await page.locator('#next-level').tap();
@@ -122,6 +123,25 @@ for (const watch of [false, true]) {
     if (record) await page.waitForTimeout(1200);
   });
 }
+
+test('S2-A ordinary Next considers level-start only after the shared cooldown', async ({ page }) => {
+  test.skip(before, 'Ordinary candidate');
+  const deal = findDeal('campaign-c8-dealer-006-bonus-r2')!;
+  const save = play(profileAt(deal, 'stage3-ad-eligible'), deal, deal.winningPath.slice(0, -1));
+  save.campaign!.tutorials.push('intro:bonus-tableau', 'intro:bonus-foundation');
+  save.attempt.teachingAds = { version: 1, ordinary: 2 };
+  await open(page, save);
+  await page.clock.fastForward(121_000);
+  await move(page, deal, deal.winningPath.at(-1)!);
+  await expect(page.locator('#next-level')).toHaveText('Дальше');
+  await page.evaluate(() => { (window as unknown as Browser).stage2Ads.fill = true; });
+  await page.locator('#next-level').tap();
+  await expect(page.locator('#level-number')).toHaveText('УРОВЕНЬ 7');
+  expect((await calls(page)).filter(call => call.method === 'show').map(call => call.options)).toMatchObject([
+    { kind: 'interstitial', placement: 'level-start' },
+  ]);
+  expect((await read(page)).platform!.lastFullscreenAt).toBeGreaterThan(now);
+});
 
 test('Coffee has one fullscreen notice until a fresh preload, cooldown and accepted action', async ({ page }, info) => {
   const save = profileAt(baseline, 'stage2-coffee');

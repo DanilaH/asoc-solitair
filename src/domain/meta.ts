@@ -1,3 +1,5 @@
+import { CAMPAIGN_META } from '../config/campaign-meta';
+import { addWinStreakProgress, finalizeStreakLoss, stagedStreak } from './events/win-streak';
 import { BALANCE } from './balance';
 import type { RewardGrant, Save } from './types';
 export const metaState = (save: Save) => save.meta ??= { version: 1, winCycle: 0, cycles: 0, dailyDates: [], dailyStreak: 0 };
@@ -10,8 +12,8 @@ export function dayNumber(day: string): number {
   return n / 86400000;
 }
 export function campaignCount(save: Save): number {
-  const ids = save.platform?.completedCampaign ?? []; let n = 0;
-  while (ids.includes(`campaign-${String(n + 1).padStart(3, '0')}`)) n++;
+  const ids = new Set(save.platform?.completedCampaign); let n = 0;
+  while (ids.has(`campaign-${String(n + 1).padStart(3, '0')}`)) n++;
   return n;
 }
 export const cosmeticUnlocked = (save: Save, kind: 'palette' | 'cardBack') => campaignCount(save) >= (kind === 'palette' ? 10 : 20);
@@ -29,14 +31,24 @@ export function milestoneRewards(save: Save): RewardGrant[] {
 /** Called only after the first-clear ledger accepts a new campaign id. */
 export function campaignRewards(save: Save): RewardGrant[] {
   const state = metaState(save), rewards = milestoneRewards(save);
+  if (stagedStreak(save)) {
+    addWinStreakProgress(save, 1);
+    return rewards;
+  }
   if (++state.winCycle === 5) {
     state.winCycle = 0; state.cycles++;
     rewards.push(...grant(save, { key: `cycle:${state.cycles}`, reason: 'campaign_win_cycle', label: 'Пять новых побед', coins: BALANCE.meta.cycleCoins, hints: BALANCE.meta.cycleHints }));
   }
   return rewards;
 }
-export function abandonCampaign(save: Save): void { if (!save.attempt.daily && save.attempt.board.phase !== 'won') metaState(save).winCycle = 0; }
-export const dailyRewardEligible = (save: Save, today: string) => save.attempt.daily?.dayId === today && !metaState(save).dailyDates.includes(today);
+export function abandonCampaign(save: Save): void {
+  if (save.attempt.daily || save.attempt.board.phase === 'won') return;
+  if (stagedStreak(save)) {
+    if (save.attempt.board.phase === 'exhausted') finalizeStreakLoss(save);
+  } else metaState(save).winCycle = 0;
+}
+export const dailyRewardEligible = (save: Save, today: string) => save.attempt.daily?.dayId === today && !metaState(save).dailyDates.includes(today) &&
+  (!CAMPAIGN_META || !save.meta?.lastDaily || save.meta.lastDaily <= today);
 export function currentDailyStreak(save: Save, today: string): number {
   const state = metaState(save);
   return state.lastDaily && dayNumber(today) - dayNumber(state.lastDaily) <= 1 ? state.dailyStreak : 0;

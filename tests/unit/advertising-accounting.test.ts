@@ -30,10 +30,15 @@ it.each([true, false])('applies P20 shown once independent of earned ordering (%
   const before = save.profile.coins;
   if (earnedFirst) applyReceipt(save, receipt, { offerNow: 20_100 });
   save = decodeSave(JSON.stringify(save), deal);
-  expect(applyFullscreenShown(save, { ...shown, attempt: save.attempt.id })).toBe('already-applied');
-  expect(applyFullscreenShown(save, { ...shown, placement: 'win-fivefold' })).toBe('already-applied');
+  const unlinkedShow = { ...shown, id: 'unlinked-show', attempt: 'retired-quote', shownAt: 19_000 };
+  expect(applyFullscreenShown(save, unlinkedShow)).toBe('applied');
+  expect(save.platform!.lastFullscreenAt).toBe(19_000);
+  applyReceipt(save, { ...receipt, id: 'unlinked-earn', attempt: unlinkedShow.attempt }, { offerNow: 19_100 });
+  applyReceipt(save, { ...receipt, id: 'mismatched-earn', placement: 'win-fivefold' }, { offerNow: 19_100 });
+  expect(save.profile.coins).toBe(before + (earnedFirst ? 100 : 0));
   expect(applyFullscreenShown(save, shown)).toBe('applied');
   expect(applyFullscreenShown(save, shown)).toBe('already-applied');
+  expect(applyFullscreenShown(save, unlinkedShow)).toBe('already-applied');
   expect(save.platform!.lastFullscreenAt).toBe(20_000);
   expect(save.profile.coins).toBe(before + (earnedFirst ? 100 : 0));
   applyReceipt(save, receipt, { offerNow: 20_100 });

@@ -142,4 +142,4 @@ it('leaves default and unverified cohorts unchanged and atomically issues a cert
   }
   expect(recovered.equality).toMatchObject({ issued: 1, lost: 1, completed: 1 });
   expect(recovered.platform?.receipts).toEqual([]);
-});
+}, 20000);

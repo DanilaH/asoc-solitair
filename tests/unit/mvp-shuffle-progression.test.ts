@@ -1,4 +1,4 @@
-import { afterAll, describe, expect, it } from 'vitest';
+import { afterAll, describe, expect, it, vi } from 'vitest';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { campaignDeals, campaignIssuance, findDeal, integratedCampaignDeals, isCurrentCampaignDeal, selectCampaignDeal } from '../../src/content/campaign';
@@ -16,6 +16,8 @@ import { decodeSave, SaveStore } from '../../src/platform/storage';
 import { advance } from '../../tools/qa/gameplay-oracle';
 import { shuffleIntroWitness, shuffleProgressionWitnesses } from '../fixtures/mvp-shuffle';
 import type { Board, BoardCommand, Deal } from '../../src/domain/types';
+
+vi.hoisted(() => vi.stubEnv('VITE_ASOC_ARCHIVE_227', '1'));
 
 const now = Date.UTC(2026, 10, 24, 12);
 const evidence: unknown[] = [];

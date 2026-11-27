@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { campaignDeals, campaignIssuance, findDeal, hitappsR4Deals, layoutFingerprint, savedDealDefinitions,
+import { campaignDeals, campaignIssuance, findDeal, campaignCoreDeals, hitappsR4Deals, layoutFingerprint, savedDealDefinitions,
   selectCampaignDeal, selectRetryLayout } from '../../src/content/campaign';
 import { hitappsR4Difficulty } from '../../src/config/hitapps-r4';
 import { beginDeal } from '../../src/domain/campaign';
@@ -23,24 +23,25 @@ const teaching = new Map<number, string>([
   [17, 'campaign-c8-ftue-017-r1'], [18, 'campaign-c8-special-018'], [19, 'campaign-c8-ftue-019-r1'],
   [24, 'campaign-c8-ftue-024-r1'], [26, 'campaign-c8-special-026-core-special-r1'],
   [27, 'campaign-c8-wave-027-core-special-r1'], [28, 'campaign-c8-ftue-028-r1'],
-  [30, 'campaign-c8-bonus-030-c8-core-r1-shuffle-r1-rights-r1'], [32, 'campaign-c8-ftue-032-r1'],
+  [32, 'campaign-c8-ftue-032-r1'],
 ]);
 assert.equal(campaignDeals.length, 80);
 let session = freshSave(selectCampaignDeal(freshSave(campaignDeals[0], 'campaign-audit-template'), campaignDeals[0]), 'campaign-audit-1');
 const firstTraversal = campaignDeals.map((base, index) => {
   const level = index + 1;
   assert.equal(unlockedLevel(session), level);
-  const deal = index ? selectCampaignDeal(session, base, session.attempt) : findDeal(session.attempt.dealId)!;
+  const previous = index ? session.attempt : undefined;
+  const deal = index ? selectCampaignDeal(session, base, previous) : findDeal(session.attempt.dealId)!;
   if (index) beginDeal(session, deal, `campaign-audit-${level}`, findDeal(session.attempt.dealId));
-  if ([26, 27, 30].includes(level)) {
+  if ([26, 27].includes(level)) {
     const lesson = findDeal(teaching.get(level)!)!;
     assert.equal(layoutFingerprint(deal), layoutFingerprint(lesson));
     assert.deepEqual(deal.winningPath, lesson.winningPath);
     assert.equal(deal.shuffleCost, lesson.shuffleCost);
     assert.equal(deal.initial.rulesVersion, lesson.initial.rulesVersion);
   } else if (teaching.has(level)) assert.equal(deal.id, teaching.get(level), `L${level} lesson changed during campaign`);
-  else if (level >= 16) assert.equal(deal.initial.rulesVersion, 4, `L${level} fell back during campaign`);
-  const passport = campaignIssuance(session, base, deal);
+  else assert.equal(deal.initial.rulesVersion, 4, `L${level} fell back during campaign`);
+  const passport = campaignIssuance(session, base, deal, previous);
   if (passport) session.attempt.issuance = passport;
   let independent = deal.initial;
   for (const [move, command] of deal.winningPath.entries()) {
@@ -95,10 +96,13 @@ const issuance = campaign.map(base => {
 const rows = [], coverage = { normal: [], hard: [], superhard: [] } as Record<string, { cost: number; spare: number; branch: number; ratio: number }[]>;
 const seenLevels = new Set<number>(), routes = new Set<string>();
 let checkedEdges = 0;
-for (const { deal, record, hash, penalty } of hitappsR4Deals()) {
+const archivedR4 = [...hitappsR4Deals()];
+const archiveRecords = new Set(archivedR4.map(row => row.record.deal.id));
+const currentAdditions = [...campaignCoreDeals()].filter(row => !archiveRecords.has(row.record.deal.id));
+for (const { deal, record, hash, penalty } of [...archivedR4, ...currentAdditions]) {
   const proof = certifySourceRoute(deal, deal.winningPath);
   assert(proof && proof.cost === record.cost && proof.routeHash === record.routeHash);
-  assert.equal(hash, authoringHash([deal.initial, deal.cards, deal.hitapps]));
+  assert.equal(hash, authoringHash([deal.initial, deal.cards, deal.hitapps]), deal.id);
   if (penalty || record.use !== 'campaign') continue;
   assert.equal(proof.traceHash, record.traceHash);
   let board = deal.initial;
@@ -122,13 +126,13 @@ for (const { deal, record, hash, penalty } of hitappsR4Deals()) {
   seenLevels.add(level);
   routes.add(proof.routeHash);
   const row = { level, id: deal.id, seed: record.seed, tier, budget, cost: proof.cost, spare: proof.reserve, branch,
-    ratio: proof.cost / budget, target: target ?? null, reachesEasyTarget: target !== undefined && proof.cost <= target,
+    ratio: budget ? proof.cost / budget : 0, target: target ?? null, reachesEasyTarget: target !== undefined && proof.cost <= target,
     ...(process.env.HITAPPS_AUDIT_BOTS === '1' && { bots: ['Priority', 'Equality'].map(name => {
       const bot = runSourceBot(deal, name as 'Priority' | 'Equality');
       return { id: bot.policyId, status: bot.status, cost: bot.steps, reason: bot.lossReason };
     }) }) };
   rows.push(row);
-  coverage[tier].push(row);
+  if (budget) coverage[tier].push(row);
 }
 const quantiles = (values: number[]) => {
   if (!values.length) return null;
@@ -139,7 +143,7 @@ const summary = Object.fromEntries(Object.entries(coverage).map(([tier, values])
   spareP10P50P90: quantiles(values.map(row => row.spare)), costRatioP10P50P90: quantiles(values.map(row => row.ratio)),
   decisionP10P50P90: quantiles(values.map(row => row.branch)) }]));
 const report = { archive: archive.length, verifiedSeededRoutes: rows.length, distinctRoutes: routes.size, verifiedSeededEdges: checkedEdges,
-  actualCampaignCoverage: [...seenLevels].sort((a, b) => a - b), fallbackLevels: Array.from({ length: 65 }, (_, index) => index + 16)
+  actualCampaignCoverage: [...seenLevels].sort((a, b) => a - b), fallbackLevels: Array.from({ length: 80 }, (_, index) => index + 1)
     .filter(level => !seenLevels.has(level)), meetsEasyTarget: rows.filter(row => row.reachesEasyTarget).length,
   originalRuntime: 'UNOBSERVED', skill: 'bot-and-solver-distributions', summary, issuance, firstTraversal, rows };
 assert(rows.length > 0, 'Candidate must contain a certified fresh seed');

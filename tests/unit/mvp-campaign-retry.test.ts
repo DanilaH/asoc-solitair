@@ -52,7 +52,7 @@ describe.skipIf(!releaseProfile)('explicit adaptive retry', () => {
     expect(quote.selected.shuffleCost).toBe('charge');
     expect(quote.selected.recovery).toBeUndefined();
     expect(commitAdaptiveRetry(save, quote, 'budget-retry', 110)).toBe('started');
-    expect(save.attempt.issuance).toMatchObject({ source: 'certified-seed', policy: 'hitapps-r4-bank-v1', dealId: quote.selected.id,
+    expect(save.attempt.issuance).toMatchObject({ source: 'certified-seed', policy: 'campaign-core-stage1-v1', dealId: quote.selected.id,
       effectiveBudget: quote.selected.initial.movesLeft });
     expect(decodeSave(JSON.stringify(save), findDeal)).toEqual(save);
   });
@@ -81,7 +81,7 @@ describe.skipIf(!releaseProfile)('explicit adaptive retry', () => {
     expect(store.state.campaignLives?.remaining).toBe(LIVES_RULES.max - 1);
     expect(store.state.attempt.director).toMatchObject({ restarts: 3, previousLosses: 3 });
     expect(store.state.attempt.sourceDifficulty).toEqual({ outcome: 'Restart', restarts: 3 });
-    expect(store.state.attempt.issuance).toMatchObject({ dealId: quote.selected.id, source: 'certified-seed', policy: 'hitapps-r4-bank-v1' });
+    expect(store.state.attempt.issuance).toMatchObject({ dealId: quote.selected.id, source: 'certified-seed', policy: 'campaign-core-stage1-v1' });
     expect(store.state.randomJokers?.grants).toEqual([{ version: 1, id: 'old-paid-unused', source: 'coins', cost: 250, issuedAt: 10 }]);
     mode = 'ok';
     const reopened = new SaveStore(disk, findDeal, () => save);

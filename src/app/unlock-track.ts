@@ -1,7 +1,8 @@
+import { CAMPAIGN_CORE_STAGE1 } from '../config/hitapps-r4';
 import { completedLevels, dailyModeAvailable, dailyTasksAvailable, HELPER_UNLOCK, RELEASE_UNLOCK } from '../domain/progression';
 import type { Save } from '../domain/types';
 
-export const unlockCatalog = [
+const historicalUnlocks = [
   { id: 'bonus', at: RELEASE_UNLOCK.bonus - 1, icon: 'gift', name: 'Бонус дня' },
   { id: 'hint', at: HELPER_UNLOCK.hint - 1, icon: 'hint', name: 'Подсказка' },
   { id: 'undo', at: HELPER_UNLOCK.undo - 1, icon: 'undo', name: 'Отмена' },
@@ -25,7 +26,13 @@ export const unlockCatalog = [
   { id: 'hammer', at: 31, icon: 'draw', name: 'Молоток' },
 ] as const;
 
-type Feature = (typeof unlockCatalog)[number];
+type Feature = Pick<(typeof historicalUnlocks)[number], 'id' | 'icon'> & { at: number; name: string };
+const contextual = new Set<string>(['hint', 'undo', 'joker', 'recovery', 'shuffle']);
+export const unlockCatalog = CAMPAIGN_CORE_STAGE1 ? historicalUnlocks
+  .filter(feature => !contextual.has(feature.id))
+  .map(feature => feature.id === 'tableau' ? { ...feature, at: RELEASE_UNLOCK.foundation - 1 } :
+    feature.id === 'foundation' ? { ...feature, name: 'Дополнительное место для темы' } : feature)
+  .sort((left, right) => left.at - right.at) : historicalUnlocks;
 export function unlockTrack(save: Save) {
   const wins = completedLevels(save);
   const grandfathered = (feature: Feature) => feature.id === 'daily' ? dailyModeAvailable(save) :

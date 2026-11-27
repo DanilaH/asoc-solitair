@@ -28,15 +28,17 @@ export function certifySourceRoute(deal: Deal, path: readonly BoardCommand[], re
   const steps: string[] = [];
   for (const action of path) {
     const actual = applyBoard(board, action, deal), independent = advanceRules4(board, action, deal);
+    const consumed = independent && (board.movesLeft === null
+      ? independent.hitapps!.move - board.hitapps!.move : board.movesLeft - independent.movesLeft!);
     if (typeof actual === 'string' || !independent || !isDeepStrictEqual(actual.board, independent) ||
-        actual.consumedMoves !== board.movesLeft! - independent.movesLeft!) throw Error(`Rules4 oracle disagrees at ${deal.id} step ${steps.length + 1}`);
+        actual.consumedMoves !== consumed) throw Error(`Rules4 oracle disagrees at ${deal.id} step ${steps.length + 1}`);
     cost += actual.consumedMoves;
     branches += actual.events.filter(event => !['transfer', 'draw', 'recycle', 'flip'].includes(event.type)).length;
     steps.push(authoringHash([action, independent, actual.events]));
     board = independent;
   }
-  if (board.phase !== 'won' || board.movesLeft === null || board.movesLeft < reserve) return;
-  return { cost, reserve: board.movesLeft, routeHash: authoringHash(path), traceHash: authoringHash(steps), automaticFacts: branches };
+  if (board.phase !== 'won' || (board.movesLeft ?? 0) < reserve) return;
+  return { cost, reserve: board.movesLeft ?? 0, routeHash: authoringHash(path), traceHash: authoringHash(steps), automaticFacts: branches };
 }
 
 export function authorSourceCandidate(template: Deal, options: {

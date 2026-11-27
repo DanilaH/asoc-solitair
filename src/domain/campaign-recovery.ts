@@ -1,6 +1,7 @@
 import { applyBoard } from './engine';
 import { recordUndo } from './history';
 import { activePurchaseGoods } from './commerce/orders';
+import { campaignCoreDealId } from '../config/hitapps-r4';
 import { releaseProfile } from '../config/profile';
 import { LEGACY_OWNER_PREVIEW, OWNER_ACCEPTANCE_PREVIEW } from './types';
 import type { Attempt, Board, Deal, Save, RecoveryClockReading } from './types';
@@ -35,8 +36,11 @@ export function restoreCampaignStock(save: Save, deal: Deal, quote: { attemptId:
 
 interface UnlimitedGrant { id: string; attemptId: string; until?: number; purchaseRef?: string }
 
+export const supportsUnlimited = (deal: Deal) => Boolean(deal.recovery ||
+  (campaignCoreDealId(deal.id) && deal.extraHelpers && deal.initial.movesLeft !== null));
+
 function unlimitedEligible(attempt: Attempt, deal: Deal) {
-  return Boolean(deal.recovery && !attempt.daily && attempt.dealId === deal.id &&
+  return Boolean(supportsUnlimited(deal) && !attempt.daily && attempt.dealId === deal.id &&
     attempt.board.movesLeft !== null && attempt.board.phase === 'playing');
 }
 
@@ -47,7 +51,7 @@ export function beginUnlimited(save: Save, deal: Deal, grant: Omit<UnlimitedGran
 type UnlimitedAccess = NonNullable<Attempt['unlimitedAccess']>;
 
 export function validUnlimitedAccess(access: UnlimitedAccess, attempt: Attempt, deal: Deal) {
-  return Boolean(access && deal.recovery && !deal.daily && access.version === 1 &&
+  return Boolean(access && supportsUnlimited(deal) && !deal.daily && access.version === 1 &&
     typeof access.id === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(access.id) && access.attemptId === attempt.id &&
     ['rewarded', 'campaign', 'coins'].includes(access.source) &&
     Number.isSafeInteger(access.issuedAt) && access.issuedAt >= 0 &&

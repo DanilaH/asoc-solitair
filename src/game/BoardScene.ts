@@ -252,7 +252,8 @@ export class BoardScene extends Phaser.Scene {
         crown.fillStyle(0xd0a16b).beginPath().moveTo(x, y).lineTo(x + 5, y + 7).lineTo(x + 9, y - 2).lineTo(x + 13, y + 7).lineTo(x + 18, y).lineTo(x + 16, y + 15).lineTo(x + 2, y + 15).closePath().fillPath();
       }
       const title = categoryCaption(card.text);
-      caption = this.label(0, 0, title, 28, '#294d5d', this.cardH - 72).setOrigin(.5);
+      if (image) content.add(this.add.image(0, -23, image).setDisplaySize(61, 61));
+      caption = this.label(0, image ? 36 : 0, title, image ? 22 : 28, '#294d5d', this.cardH - 72).setOrigin(.5);
       content.add(caption);
       strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: releaseProfile ? '#483b36' : '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);

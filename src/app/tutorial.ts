@@ -8,6 +8,7 @@ import { frozenLayers } from '../domain/frozen-cards';
 import { isBoundCard } from '../domain/bound-cards';
 import { isPictureJoined } from '../domain/puzzle-pairs';
 import { hammerCard, matchingStock } from '../domain/starter-boosters';
+import { campaignCoreDealId } from '../config/hitapps-r4';
 import { releaseProfile } from '../config/profile';
 import { canShuffle } from '../domain/proof-shuffle';
 import { openingShuffleProof } from '../domain/shuffle-intro-proof';
@@ -37,7 +38,8 @@ export function recordLearning(save: Save, before: Board, action: BoardCommand, 
     action.to.index === bonusOffer(deal, action.to.kind)?.index) markTutorial(save, `learn:bonus-${action.to.kind}`);
   if (releaseProfile && hasReleaseLesson(deal)) return;
   if (action.type === 'recycle' && deal.training) markTutorial(save, 'learn:recycle');
-  if (action.type === 'transfer' && action.from.kind === 'waste' && deal.training === 'stock') markTutorial(save, 'learn:waste');
+  if (action.type === 'transfer' && action.from.kind === 'waste' &&
+      (deal.training === 'stock' || campaignCoreDealId(deal.id) && (deal.campaignLevel ?? 0) <= 2)) markTutorial(save, 'learn:waste');
   if (action.type === 'transfer' && action.to.kind === 'tableau' && before.tableau[action.to.index].length === 0 && deal.training === 'planning')
     markTutorial(save, 'learn:buffer');
   if (deal.training === 'planning' && action.type === 'transfer' && action.to.kind === 'foundation' &&
@@ -249,6 +251,30 @@ function isBoardCommand(command: Command): command is BoardCommand {
   return command.type === 'transfer' || command.type === 'draw' || command.type === 'recycle';
 }
 
+function coreOpeningLesson(save: Save, deal: Deal): Guidance | undefined {
+  const board = save.attempt.board, level = deal.campaignLevel!;
+  if (completedLevels(save) >= level) return;
+  const pending = (id: string) => !seenTutorial(save, id);
+  const guide = (copy: string, predicate: (command: BoardCommand) => boolean) => {
+    const commands = legalCommands(board, deal);
+    const preferred = knownContinuation(board, deal)?.[0];
+    const action = preferred && predicate(preferred) ? preferred : commands.find(predicate);
+    return action ? { action, copy, authored: true as const } : undefined;
+  };
+  if (level === 1) {
+    if (pending('learn:category')) return guide('Перенесите тему в верхний слот.', action => skillFor(board, action, deal) === 'category');
+    if (pending('learn:match')) return guide('Соедините карты одной темы.', action => skillFor(board, action, deal) === 'match');
+    if (pending('learn:stock')) return guide('Коснитесь колоды, чтобы открыть карту.', action => action.type === 'draw');
+  }
+  if (level <= 2 && pending('learn:waste')) return guide('Перенесите открытую карту из сброса.', action => action.type === 'transfer' && action.from.kind === 'waste');
+  if (level === 3 || level === 4) {
+    const cue = openingLesson(save, deal);
+    return cue && { ...cue, accepts: undefined };
+  }
+  if (level === 5 && !board.stock.length && board.waste.length && pending('learn:recycle'))
+    return guide('Коснитесь пустой колоды, чтобы вернуть карты из сброса.', action => action.type === 'recycle');
+}
+
 /** Observe accepted state: teaching never moves cards or spends resources. */
 export function lesson(save: Save, deal: Deal): Guidance | undefined {
   if (save.attempt.board.phase !== 'playing') return;
@@ -271,6 +297,7 @@ export function lesson(save: Save, deal: Deal): Guidance | undefined {
     if (action) return { action, copy: kind === 'foundation'
       ? 'Поставьте тему в новый слот.' : 'Переложите карту в столбец.' };
   }
+  if (campaignCoreDealId(deal.id)) return coreOpeningLesson(save, deal);
   if (deal.training) {
     if (completedLevels(save) >= (deal.campaignLevel ?? Infinity) && !save.attempt.lessonHint) return;
     return openingLesson(save, deal);

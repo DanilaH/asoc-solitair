@@ -1,7 +1,7 @@
 import { validProductOffers } from '../domain/commerce/product-offers';
 import { validCombo } from '../domain/events/combo';
 import { validDailyBonus } from '../domain/events/daily-bonus';
-import { validUnlimitedAccess, validUnlimitedClock } from '../domain/campaign-recovery';
+import { supportsUnlimited, validUnlimitedAccess, validUnlimitedClock } from '../domain/campaign-recovery';
 import { migrateRandomJokerRights, validRandomJokerAccess, validRandomJokerRights } from '../domain/random-joker-rights';
 import { validLavaRun } from '../domain/events/campaign-liveops';
 import { releaseProfile } from '../config/profile';
@@ -167,6 +167,11 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
     !['unknown-cohort', 'not-eligible'].includes(issuance.equality) ||
     !['authored', 'director-r1', 'budget-r2', 'certified-seed'].includes(issuance.source) ||
     (issuance.source === 'certified-seed') !== Boolean(issuance.seed) ||
+    (issuance.rotation !== undefined && (!issuance.rotation || issuance.rotation.level !== deal.campaignLevel ||
+      !natural(issuance.rotation.seed) || issuance.rotation.seed > 0xffffffff ||
+      !Array.isArray(issuance.rotation.used) || !issuance.rotation.used.length || issuance.rotation.used.length > 16 ||
+      new Set(issuance.rotation.used).size !== issuance.rotation.used.length ||
+      !issuance.rotation.used.every(id => typeof id === 'string' && /^[\w-]{1,100}$/.test(id)))) ||
     (issuance.seed && (!natural(issuance.seed.value) || ![issuance.seed.inputHash, issuance.seed.boardHash, issuance.seed.routeHash]
       .every(value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)))))) throw Error('Повреждён паспорт раздачи');
   const director = save.attempt.director;
@@ -188,7 +193,7 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
   if (save.attempt.unlimitedAccess !== undefined && !validUnlimitedAccess(save.attempt.unlimitedAccess, save.attempt, deal))
     throw Error('Повреждено право на ходы без лимита');
   if ((save.attempt.stockRestores !== undefined && (!deal.recovery || !natural(save.attempt.stockRestores))) ||
-      (unlimited !== undefined && (!deal.recovery || !unlimited || unlimited.version !== 1 ||
+      (unlimited !== undefined && (!supportsUnlimited(deal) || !unlimited || unlimited.version !== 1 ||
         !/^[A-Za-z0-9_-]{1,100}$/.test(unlimited.id) || !natural(unlimited.issuedAt) ||
         (unlimited.until !== undefined && (!natural(unlimited.until) || unlimited.until <= unlimited.issuedAt)) ||
         (unlimited.purchaseRef !== undefined && (typeof unlimited.purchaseRef !== 'string' ||

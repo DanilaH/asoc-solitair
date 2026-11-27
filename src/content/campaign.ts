@@ -34,7 +34,9 @@ import { adaptiveBank, selectAdaptiveDeal } from './campaign-v8-adaptive';
 import { BEYOND80_PREVIEW, campaignId } from '../domain/progression';
 import { CONTENT8_PREVIEW } from '../domain/types';
 import type { Attempt, Board, BoardCommand, CampaignIssuance, Deal, Save } from '../domain/types';
-import { bindHitappsBank, selectHitappsBank } from './hitapps-r4-bank';
+import { bindHitappsBank, hitappsGeometry, selectHitappsBank } from './hitapps-r4-bank';
+import { CAMPAIGN_CORE_STAGE1, campaignCorePolicy } from '../config/hitapps-r4';
+import { bindCampaignCore, recordCoreRotation, selectCampaignCore } from './campaign-core-stage1';
 
 export interface CampaignRecord {
   id: string; version: number; campaignLevel: number; title: string; topics: TopicSelection[];
@@ -163,12 +165,20 @@ for (const { deal } of hitappsR4Bank.values()) {
   if (all.has(deal.id)) throw Error(`Duplicate immutable deal: ${deal.id}`);
   all.set(deal.id, deal);
 }
+const campaignCore = bindCampaignCore(all, hitappsR4Bank);
+for (const { deal } of campaignCore.byId.values()) {
+  if (all.has(deal.id)) throw Error(`Duplicate immutable deal: ${deal.id}`);
+  all.set(deal.id, deal);
+}
 export const hitappsR4Deals = () => hitappsR4Bank.values();
+export const campaignCoreDeals = () => campaignCore.byId.values();
+export const campaignLevelPreview = (deal: Deal | undefined) => CAMPAIGN_CORE_STAGE1 && deal && (deal.campaignLevel ?? 0) <= 15
+  ? campaignCore.byLevel.get(deal.campaignLevel!)?.[0]?.deal ?? deal : deal;
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);
 /** Includes every campaign definition that can be restored from a saved Deal ID. */
 export const savedDealDefinitions = () => all.values();
 export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
-  const r4 = hitappsR4Bank.get(dealId);
+  const r4 = campaignCore.byId.get(dealId) ?? hitappsR4Bank.get(dealId);
   if (r4) return r4.deal.campaignLevel === base.campaignLevel;
   dealId = bonusOrigin.get(dealId) ?? dealId;
   dealId = teachingOriginal.get(dealId) ?? releaseSourceById.get(dealId) ?? dealId;
@@ -190,21 +200,36 @@ export function isCurrentCampaignDeal(dealId: string, base: Deal): boolean {
 }
 export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): Deal {
   if (!CONTENT8_PREVIEW) return base;
-  const lesson = base.campaignLevel !== undefined ? teachingByLevel.get(base.campaignLevel) : undefined;
+  const level = base.campaignLevel!;
+  const lesson = teachingByLevel.get(level);
+  if (CAMPAIGN_CORE_STAGE1 && level <= 80) {
+    const previousDeal = previous && findDeal(previous.dealId);
+    const firstEncounter = level > 15 && previousDeal?.campaignLevel !== level &&
+      !save.platform?.completedCampaign.includes(campaignId(level));
+    // The archived exact demos contain commands whose target positions are part of the lesson.
+    if (firstEncounter && lesson?.base.id === base.id) return lesson.deal;
+    if (firstEncounter && (base.training || c8CoreTeachingLevels.has(level))) return base;
+    return selectCampaignCore(campaignCore, save, base, previous, previousDeal);
+  }
   if (releaseProfile && lesson?.base.id === base.id && !save.platform?.completedCampaign.includes(campaignId(base.campaignLevel!)))
     return lesson.deal;
   if (!releaseProfile && RECOVERY_GAMEPLAY && base.id === recoveryBase.id) return recoveryDeal;
   if (RANDOM_JOKER_PREVIEW && base.id === jokerBase.id) return randomJokerDeal;
-  const selected = localizedCampaignDeal(save, selectC8Deal(save, base, previous));
-  const original = previous && (bonusOrigin.get(previous.dealId) ?? previous.dealId);
-  const previousSource = original && (releaseSourceById.get(original) ?? original);
-  const candidate = selectAdaptiveDeal(save, selected, lateAdaptive, previousSource ? { ...previous!, dealId: previousSource } : previous);
-  if (!releaseProfile) return candidate;
-  const composed = composeReleaseDeal(candidate), level = base.campaignLevel!;
+  const composed = campaignAuthoringTemplate(save, base, previous);
+  if (!releaseProfile) return composed;
   const firstClear = !save.platform?.completedCampaign.includes(campaignId(level));
   if ((base.training || c8CoreTeachingLevels.has(level)) && firstClear ||
       level === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1')) return composed;
   return selectHitappsBank(hitappsR4Bank, save, base, composed, previous) ?? composed;
+}
+
+/** Offline authoring starts from the authored card and mechanic contract. */
+export function campaignAuthoringTemplate(save: Save, base: Deal, previous?: Attempt): Deal {
+  const selected = localizedCampaignDeal(save, selectC8Deal(save, base, previous));
+  const original = previous && (bonusOrigin.get(previous.dealId) ?? previous.dealId);
+  const previousSource = original && (releaseSourceById.get(original) ?? original);
+  const candidate = selectAdaptiveDeal(save, selected, lateAdaptive, previousSource ? { ...previous!, dealId: previousSource } : previous);
+  return releaseProfile ? composeReleaseDeal(candidate) : candidate;
 }
 
 function composeReleaseDeal(candidate: Deal): Deal {
@@ -218,8 +243,14 @@ function composeReleaseDeal(candidate: Deal): Deal {
 
 const directorRecordsById = new Map(hitappsDirectorRecords.map(record => [record.id, record]));
 
-export function campaignIssuance(save: Save, target: Deal, selected: Deal): CampaignIssuance | undefined {
+export function campaignIssuance(save: Save, target: Deal, selected: Deal, previous?: Attempt): CampaignIssuance | undefined {
   if (!releaseProfile || selected.campaignLevel === undefined) return;
+  const core = campaignCore.byId.get(selected.id);
+  if (core) return { version: 1, profile: releaseProfile.id, policy: campaignCorePolicy, baseId: core.record.baseId,
+    dealId: selected.id, baseBudget: core.record.deal.initial.movesLeft,
+    effectiveBudget: selected.initial.movesLeft, source: 'certified-seed',
+    seed: { value: core.record.seed, inputHash: core.record.sourceHash, boardHash: core.hash, routeHash: core.record.routeHash },
+    rotation: recordCoreRotation(core, previous), equality: selected.campaignLevel >= 16 ? 'unknown-cohort' : 'not-eligible' };
   const r4 = hitappsR4Bank.get(selected.id);
   if (r4) return { version: 1, profile: releaseProfile.id, policy: releaseProfile.policies.rules4Issuance, baseId: r4.record.baseId,
     dealId: selected.id, baseBudget: findDeal(r4.record.baseId)?.initial.movesLeft ?? null, effectiveBudget: selected.initial.movesLeft,
@@ -248,8 +279,7 @@ export function campaignRedeal(attempt: Attempt): Deal | undefined {
 }
 
 
-export const layoutFingerprint = (deal: Deal) =>
-  JSON.stringify([deal.initial.tableau, deal.initial.stock, deal.initial.faceUp]);
+export const layoutFingerprint = hitappsGeometry;
 
 function ruleFamily(deal: Deal) {
   return JSON.stringify([Object.keys(deal.cards).sort(), deal.lock?.requiredKeys.length, deal.frozen, deal.bound, deal.puzzle,
@@ -260,6 +290,11 @@ function ruleFamily(deal: Deal) {
 /** Pass only replay-certified layouts from the same campaign and rule family. */
 export function selectRetryLayout(save: Save, base: Deal, current: Deal): Deal | undefined {
   const level = base.campaignLevel!;
+  if (CAMPAIGN_CORE_STAGE1 && level <= 80) {
+    if (level === 1 || hitappsR4Bank.get(current.id)?.record.use === 'feature-check') return;
+    const next = selectCampaignDeal(save, base, save.attempt);
+    return layoutFingerprint(next) !== layoutFingerprint(current) ? next : undefined;
+  }
   const mastered = save.platform?.completedCampaign.includes(campaignId(level));
   if (!mastered && (level <= 4 || teachingByLevel.has(level) || c8CoreTeachingLevels.has(level) ||
       level === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1'))) return;

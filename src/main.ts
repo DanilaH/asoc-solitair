@@ -6,7 +6,7 @@ import { claimDailyBonus, dailyBonusState, openDailyBonusRound, revealDailyBonus
 import { grantShuffleIntro, hasFutureShuffleUse, SHUFFLE_LEVELS } from './domain/shuffle-progression';
 import { commitAdaptiveRetry, quoteAdaptiveRetry, quoteLayoutRetry } from './app/campaign-retry';
 import { releaseProfile } from './config/profile';
-import { HITAPPS_FIXTURE_UI } from './config/hitapps-r4';
+import { CAMPAIGN_CORE_STAGE1, HITAPPS_FIXTURE_UI, campaignCoreDealId } from './config/hitapps-r4';
 import { OFFER_CAMPAIGNS_PREVIEW } from './domain/commerce/offer-campaigns';
 import { mountOfferCampaignPreview } from './app/offer-campaign-preview';
 import { authorizeLifeVideo, cancelLifeVideo, LIVEOPS_PREVIEW, LIVES_PREVIEW, LIVES_RULES, matchesLifeVideo, mayStartCampaignAttempt, refillCampaignLife, refreshCampaignLives } from './domain/campaign-lives';
@@ -16,7 +16,7 @@ import { createStorefront } from './platform/storefront';
 import { claimShopProgress, freeCampaignBonusState, PASS_GOAL, PIGGY_LIMIT, productLabels, recordFreeCampaignClear, recordStoreClear, settleFreeCampaignBonus, showProductGoods, storefrontView, STOREFRONT_PREVIEW, type FreeCampaignBonusGrant } from './domain/commerce/storefront';
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
 import { AD_BREAK_GAP_MS, adBreakBlocker, adFree, coffeeBlocker, coffeeEligibleAt, releaseAdCadence, releasePlacementEligible, type CampaignInterstitialPlacement, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee } from './domain/campaign-advertising';
-import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, requiresNativeRecoveryClock, restoreCampaignStock, restoreQuote, unlimitedRemaining, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
+import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, requiresNativeRecoveryClock, restoreCampaignStock, restoreQuote, supportsUnlimited, unlimitedRemaining, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
 import { allowsRandomJoker, buyRandomJokerAccess, placeRandomJoker, randomJokerCount, randomJokerReady, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
 import { GENERATION_PREVIEW, recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
@@ -24,7 +24,7 @@ import Phaser from 'phaser';
 import { getBackingStoreSize, getRenderPixelRatio } from '@danilah/mini-games-kit/core';
 import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
-import { campaignIssuance, campaignDeals, campaignRedeal, findDeal, hitappsR4Deals, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
+import { campaignIssuance, campaignDeals, campaignLevelPreview, campaignRedeal, findDeal, hitappsR4Deals, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
 import { CAMPAIGN_LENGTH, HELPER_UNLOCK, RELEASE_UNLOCK, dailyTasksAvailable, dailyModeAvailable, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
 import { beginDeal } from './domain/campaign';
 import { canSwitchCardLanguage, localizedCampaignDeal, LOCALE_PREVIEW } from './content/campaign-v8-locale';
@@ -80,10 +80,12 @@ const integratedOffers = releaseProfile?.capabilities.rewardOffers === 'sdk-acce
 const rewardOffersEnabled = (REWARD_OFFER_PREVIEW || integratedOffers) && !AZUR_VICTORY_QA;
 const casual = Boolean(releaseProfile);
 const qaLevelPicker = HITAPPS_FIXTURE_UI;
+const sequentialCampaign = CAMPAIGN_CORE_STAGE1 && !qaLevelPicker;
 if (casual) {
   document.documentElement.dataset.casual = 'true';
   $('#app').dataset.casual = 'true';
   configureCasualHome(qaLevelPicker);
+  if (sequentialCampaign) $('#level-picker-open').hidden = true;
   configureCasualDialogs();
   for (const [selector, icon] of [['#restart', 'cycle'], ['#levels-open', 'link']] as const)
     $(selector).prepend(casualIcon(icon));
@@ -166,6 +168,7 @@ function closeDialogs() {
   runtime.activity.setBlocked('modal', false);
 }
 function openDialog(selector: string, preserveCoins = false, back?: () => void) {
+  if (sequentialCampaign && selector === '#level-picker') return;
   const entering = !dialogs.some(d => d.open);
   peekCard(null); clearPraise(); scene?.clearFeedback(); clearDialogs(preserveCoins); scene?.cancel();
   const dialog = $<HTMLDialogElement>(selector);
@@ -237,7 +240,8 @@ function positionBonusSlots(save: Save) {
     button.hidden = !offer;
     if (offer) {
       const face = button.querySelector('.board-bonus-face')!;
-      if (casual && !face.querySelector('.video-glyph')) face.prepend(videoGlyph());
+      if (casual && !campaignCoreDealId(deal.id) && !face.querySelector('.video-glyph')) face.prepend(videoGlyph());
+      if (campaignCoreDealId(deal.id)) face.querySelector('.video-glyph')?.remove();
       const width = offer.width * frame.unit;
       const touchWidth = Math.min(Math.max(44, width), width + GRID_GAP * frame.unit);
       const faceLeft = frame.offsetX + (offer.x - offer.width / 2) * frame.unit;
@@ -282,7 +286,12 @@ try {
   let firstLaunch = false;
   const store = new SaveStore(createStorage(), findDeal, () => {
     firstLaunch = true;
-    return freshSave(deal, crypto.randomUUID());
+    const fresh = freshSave(campaignDeals[0], crypto.randomUUID());
+    if (!CAMPAIGN_CORE_STAGE1) return fresh;
+    const opening = selectCampaignDeal(fresh, campaignDeals[0]);
+    const issued = freshSave(opening, fresh.attempt.id);
+    issued.attempt.issuance = campaignIssuance(issued, campaignDeals[0], opening, fresh.attempt);
+    return issued;
   }, AZUR_VICTORY_QA ? AZUR_VICTORY_SAVE_KEY : undefined);
   await document.fonts.load('800 20px Nunito').catch(() => []);
   const recoveryTime = createRecoveryClock();
@@ -432,9 +441,16 @@ try {
     element.dataset.unlocked = String(justUnlocked);
   }
   const nextLevelButton = $<HTMLButtonElement>('#next-level');
+  const nextCampaignLevel = () => sequentialCampaign
+    ? completedLevels(save) < CAMPAIGN_LENGTH ? unlockedLevel(save) : undefined
+    : deal.campaignLevel && deal.campaignLevel < CAMPAIGN_LENGTH ? deal.campaignLevel + 1 : undefined;
+  const nextCampaignDeal = () => {
+    const level = nextCampaignLevel();
+    return save.attempt.daily || level === undefined ? undefined : campaignLevelPreview(campaignDeals[level - 1]);
+  };
   function setNextLevelText(text: string) {
     nextLevelButton.textContent = text;
-    const target = !save.attempt.daily ? campaignDeals[deal.campaignLevel ?? 0] : undefined;
+    const target = nextCampaignDeal();
     if (!casual || !difficultyLabel(target)) return;
     const line = document.createElement('small');
     line.append(document.createTextNode('Уровень ' + target!.campaignLevel), difficultyBadge(target));
@@ -1166,8 +1182,9 @@ try {
       ? (instruction.jokerColumn === undefined ? 'Коснитесь отмеченного столбца, чтобы поставить Джокера.'
         : 'Для примера коснитесь выделенного столбца с камнем.')
       : instruction?.copy ?? sourceNote ?? (casual && screen === 'game' ? (firstBonusOffer(save, deal) === 'foundation'
-        ? 'Дополнительный слот можно открыть за монеты или видео.' : firstBonusOffer(save, deal) === 'tableau'
-          ? 'Дополнительный столбец можно открыть за монеты или видео.' : specialRuleNote(save, deal)?.copy) : binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
+        ? (campaignCoreDealId(deal.id) ? 'Доп. место для темы освобождает верхний ряд.' : 'Дополнительный слот можно открыть за монеты или видео.')
+        : firstBonusOffer(save, deal) === 'tableau'
+          ? (campaignCoreDealId(deal.id) ? 'Доп. столбец даёт место для сортировки карт.' : 'Дополнительный столбец можно открыть за монеты или видео.') : specialRuleNote(save, deal)?.copy) : binding ? 'Перенесите ножницы в верхний слот, чтобы разрезать связь.'
         : ice ? 'Соберите тему, чтобы снять один слой льда.'
         : puzzle ? 'Соедините половины в столбце и перенесите пару в слот темы.' : goldNote ?? boosterNote);
     lessonNote = { copy: note, action: instruction?.copy ? instruction.action : undefined };
@@ -1348,9 +1365,9 @@ try {
       { icon: 'book', name: 'Объяснения', count: definitionCount(save), source: 'Бонус дня и задания', usable: playing,
         condition: 'В просмотре слова через Aa' },
       { icon: 'cycle', name: 'Перемешивания', count: save.dailyTasks?.inventory.shuffles ?? 0, source: 'Награды', usable: playing && canShuffle(save, deal),
-        condition: 'Уровни ' + SHUFFLE_LEVELS.join(', ') },
+        condition: CAMPAIGN_CORE_STAGE1 ? 'Когда на доске можно перемешать скрытые карты' : 'Уровни ' + SHUFFLE_LEVELS.join(', ') },
       { icon: 'joker', name: 'Случайные Джокеры', count: randomJokerCount(save), source: 'Монеты за отдельный заряд', usable: playing && canRequestRandomJoker(),
-        condition: 'На уровне 16, один на раздачу' },
+        condition: CAMPAIGN_CORE_STAGE1 ? 'Один на подходящую раздачу кампании' : 'На уровне 16, один на раздачу' },
     ] as const;
     function renderRows(group: string, list: string, usable: boolean) {
       const entries = rows.filter(row => (row.usable && row.count > 0) === usable);
@@ -1371,8 +1388,11 @@ try {
     renderRows('#helper-inventory-now', '#helper-inventory-list', true);
     renderRows('#helper-inventory-future', '#helper-inventory-later', false);
     const count = save.dailyTasks?.inventory.shuffles ?? 0, shuffleNote = $('#shuffle-stock-note');
-    shuffleNote.hidden = !count && unlockedLevel(save) < SHUFFLE_LEVELS[0];
-    shuffleNote.textContent = count ? 'В запасе ' + count + ' перемешиваний. ' +
+    shuffleNote.hidden = !count && (CAMPAIGN_CORE_STAGE1 ? !dailyTasksAvailable(save) : unlockedLevel(save) < SHUFFLE_LEVELS[0]);
+    shuffleNote.textContent = CAMPAIGN_CORE_STAGE1
+      ? count ? `В запасе ${count}. ${canShuffle(save, deal) ? 'Перемешать можно на этой доске.' : 'Заряды сохранены для подходящего поля.'}`
+        : hasFutureShuffleUse(save) ? 'Заряд может выпасть в бонусе дня.' : ''
+      : count ? 'В запасе ' + count + ' перемешиваний. ' +
       (canShuffle(save, deal) ? 'Кнопка «Перемешать» доступна на доске.' : hasFutureShuffleUse(save)
         ? 'Применяются на уровнях ' + SHUFFLE_LEVELS.join(', ') + '.' : 'Можно использовать при повторной игре на уровнях ' + SHUFFLE_LEVELS.join(', ') + '.')
       : 'Перемешивания закончились. ' + (hasFutureShuffleUse(save) ? 'Новый заряд может выпасть в бонусе дня.' : 'Поддерживаемые уровни уже пройдены.');
@@ -1515,7 +1535,7 @@ try {
     $('#result-undo').textContent = save.profile.undos ? 'Отменить последний ход' : 'Получить отмену';
     finishRewardClaim();
     nextLevelButton.hidden = !won;
-    const next = daily ? undefined : campaignDeals[deal.campaignLevel ?? 0];
+    const next = nextCampaignDeal();
     const nextDifficulty = setDifficulty(nextLevelButton, next);
     const nextLabel = casual ? (daily || !next ? 'На главную' : 'Дальше') : daily ? 'На главную' : !next ? 'К уровням' :
       `${nextDifficulty ? nextDifficulty + ' уровень' : 'Уровень'} ${next.campaignLevel} →`;
@@ -2322,16 +2342,18 @@ try {
     const parts = label.split(' · ');
     const homeDeal = current || campaign && (!outcomeViewed || save.attempt.daily)
       ? campaignDeal : completed === CAMPAIGN_LENGTH ? undefined : campaignDeals[unlocked - 1];
-    const homeDifficulty = setDifficulty($('#home-play'), homeDeal);
+    const homeDifficulty = setDifficulty($('#home-play'), current ? homeDeal : campaignLevelPreview(homeDeal));
     const finished = casual && !current && completed === CAMPAIGN_LENGTH;
-    const level = Object.assign(document.createElement('small'), { textContent: parts[1] ?? (completed === CAMPAIGN_LENGTH ? 'Кампания пройдена' : 'Кампания') });
+    const campaignClosed = sequentialCampaign && finished && (!campaign || outcomeViewed);
+    const level = Object.assign(document.createElement('small'), { textContent: campaignClosed ? `Все ${CAMPAIGN_LENGTH} уровней` : parts[1] ?? (completed === CAMPAIGN_LENGTH ? 'Кампания пройдена' : 'Кампания') });
     if (homeDifficulty) {
       if (casual) level.append(difficultyBadge(homeDeal));
       else level.textContent += ' · ' + homeDifficulty;
     }
     if (casual) renderUnlockTrack($('#home-unlock-track'));
-    $('#home-play').replaceChildren(document.createTextNode(finished && !outcomeViewed ? 'Итоги' : parts[0]), level);
-    $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy;
+    $('#home-play').replaceChildren(document.createTextNode(campaignClosed ? 'Кампания пройдена' : finished && !outcomeViewed ? 'Итоги' : parts[0]), level);
+    $<HTMLButtonElement>('#home-play').disabled = !ready || saving || serviceBusy || campaignClosed;
+    if (sequentialCampaign) return;
     const focusId = campaign?.id ?? 'new';
     if (chapterAttemptId !== focusId) {
       chapterAttemptId = focusId;
@@ -2493,7 +2515,8 @@ try {
     setInput(); scene?.setDeal(deal, animate);
   }
   async function openLevel(level: number, confirmed = false, announce = true, redeal?: { attemptId: string; dealId: string }, sourceDealId?: string) {
-    if (!alive || !ready || saving || serviceBusy || store.needsRecovery || level < 1 || level > unlockedLevel(save)) return;
+    if (!alive || !ready || saving || serviceBusy || store.needsRecovery || level < 1 || level > unlockedLevel(save) ||
+      (sequentialCampaign && (level !== unlockedLevel(save) || completedLevels(save) === CAMPAIGN_LENGTH))) return;
     const exact = sourceDealId && HITAPPS_FIXTURE_UI ? findDeal(sourceDealId) : undefined;
     if (sourceDealId && (!exact?.hitapps || exact.campaignLevel !== level)) return;
     if (redeal && (redeal.attemptId !== save.attempt.id || campaignRedeal(save.attempt)?.id !== redeal.dealId)) return;
@@ -2537,7 +2560,7 @@ try {
           if (next.attempt.daily) switchMode(next, 'campaign', previousDeal ?? selected, crypto.randomUUID());
           const equalityBase = GENERATION_PREVIEW && selected.adaptive?.baseId === target.id ? target : selected;
           beginDeal(next, selected, crypto.randomUUID(), previousDeal, redeal ? undefined : equalityPreviewPolicy, equalityBase);
-          const issuance = campaignIssuance(next, target, findDeal(next.attempt.dealId) ?? selected);
+          const issuance = campaignIssuance(next, target, findDeal(next.attempt.dealId) ?? selected, previous);
           if (issuance) next.attempt.issuance = issuance;
           return true;
         });
@@ -2724,7 +2747,7 @@ try {
   $('#home-play').addEventListener('click', () => {
     if (save.attempt.daily) { void activateMode('campaign'); return; }
     if (save.attempt.board.phase === 'playing' || !outcomeViewed) showGame();
-    else if (completedLevels(save) === CAMPAIGN_LENGTH) { renderMeta(save, saving); openDialog('#level-picker'); }
+    else if (completedLevels(save) === CAMPAIGN_LENGTH) { if (!sequentialCampaign) openDialog('#level-picker'); }
     else void openLevel(unlockedLevel(save));
   }, domOptions);
   $('#daily-play').addEventListener('click', () => { if (dailyModeAvailable(save)) void activateMode('daily'); }, domOptions);
@@ -2770,12 +2793,13 @@ try {
   $('#chapter-next').addEventListener('click', () => { if (chapterPage < Math.ceil(CAMPAIGN_LENGTH / 20) - 1) { chapterPage++; renderHome(); } }, domOptions);
   $('#level-grid').addEventListener('click', event => {
     const button = (event.target as Element).closest<HTMLButtonElement>('[data-level]');
-    if (button && !button.disabled) void openLevel(Number(button.dataset.level));
+    if (!sequentialCampaign && button && !button.disabled) void openLevel(Number(button.dataset.level));
   }, domOptions);
   nextLevelButton.addEventListener('click', () => {
     if (startRewardClaim()) return;
-    if (save.attempt.daily || deal.campaignLevel === CAMPAIGN_LENGTH) goHome();
-    else void openLevel((deal.campaignLevel ?? 0) + 1);
+    const level = nextCampaignLevel();
+    if (save.attempt.daily || level === undefined) goHome();
+    else void openLevel(level);
   }, domOptions);
   if (dailyBonusEnabled) {
     async function showDailyBonus(fromHelpers = false) {
@@ -2977,8 +3001,10 @@ try {
   function requestRestart(confirm = false) {
     localeRestartAttempt = undefined;
     const hasBonus = bonusKinds.some(kind => pilesFor(save.attempt.board, kind).length > pilesFor(deal.initial, kind).length);
-    if (save.attempt.board.phase !== 'won' && (confirm || save.attempt.telemetry?.started || hasBonus)) {
-      $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${hasBonus ? ' Дополнительные места закроются.' : ''}${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`;
+    const changedLayout = quoteLayoutRetry(save);
+    if (save.attempt.board.phase !== 'won' && (confirm || save.attempt.telemetry?.started || hasBonus || changedLayout)) {
+      const start = changedLayout ? 'Начнётся новый расклад этого уровня.' : 'Карты вернутся на исходные места.';
+      $('#restart-confirm-copy').textContent = `${start} Потраченные помощники не восстановятся.${hasBonus ? ' Дополнительные места закроются.' : ''}${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`;
       openDialog('#restart-confirm');
     }
     else void replay();
@@ -3045,8 +3071,12 @@ try {
         offerFact({ trigger: OfferTrigger.LevelStarted, key: 'start' });
       } else if (status === 'lives') {
         blockedLifeLevel = ordinary ? undefined : quote.level; retryLifeRestart = ordinary; openLives();
-      } else outcome();
+      } else if (save.attempt.board.phase === 'playing') showGame();
+      else outcome();
     } catch {
+      if (save.attempt.board.phase === 'playing') {
+        showGame(); message('Не удалось сохранить новый расклад. Попробуйте ещё раз.', true); return;
+      }
       outcome();
       $('#result-continue-error').textContent = store.needsRecovery ? 'Проверьте, сохранилась ли новая попытка.' : 'Не удалось сохранить новую попытку. Попробуйте ещё раз.';
       $('#result-continue-error').hidden = false;
@@ -3522,7 +3552,7 @@ try {
     $(selector).addEventListener('click', () => { void restoreStock(); }, domOptions);
   }
   $('#unlimited-preview').addEventListener('click', async () => {
-    if (!recoveryEnabled() || !deal.recovery || saving || serviceBusy) return;
+    if (!recoveryEnabled() || !supportsUnlimited(deal) || saving || serviceBusy) return;
     const source = deal, attemptId = save.attempt.id, accountId = unlimitedAccount();
     unlimitedError = undefined; serviceBusy = true; renderHud();
     try {

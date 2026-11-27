@@ -10,22 +10,25 @@ export interface SourceRecord {
   baseId: string; deal: Omit<Deal, 'cards'>; changedCards: Record<string, Card>;
   sourceHash: string; boardHash: string; traceHash: string; routeHash: string; receiptHash: string;
   basicRuntime: 'rules4-independent-oracle-v1';
-  campaignPolicy?: 'c8-coverage-v1';
+  campaignPolicy?: 'c8-coverage-v1' | 'core-stage1-opening-v1';
   language?: 'ru' | 'en';
   budgets?: Readonly<Record<string, { moves: number; hash: string }>>;
 }
 export { sourceRecords };
 
-export function bindHitappsBank(known: ReadonlyMap<string, Deal>) {
+export function bindHitappsBank(known: ReadonlyMap<string, Deal>, records = sourceRecords) {
   const byId = new Map<string, { record: SourceRecord; deal: Deal; hash: string; penalty: number }>();
-  for (const record of sourceRecords) {
+  for (const record of records) {
     if (record.basicRuntime !== 'rules4-independent-oracle-v1' || record.deal.initial.rulesVersion !== 4 ||
         !record.deal.hitapps || !record.deal.winningPath.length || record.cost <= 0 || byId.has(record.deal.id))
       throw Error('Invalid bundled Hitapps candidate');
     const original = known.get(record.baseId);
     if (!original) throw Error(`Missing Hitapps base ${record.baseId}`);
-    const cards = Object.fromEntries(Object.entries({ ...original.cards, ...record.changedCards })
-      .filter(([id]) => Object.hasOwn(record.deal.initial.hitapps!.cards, id)));
+    const population = { ...original.cards, ...record.changedCards };
+    const ids = Object.keys(record.deal.initial.hitapps!.cards);
+    const cards = record.campaignPolicy === 'core-stage1-opening-v1'
+      ? Object.fromEntries(ids.map(id => [id, population[id]]))
+      : Object.fromEntries(Object.entries(population).filter(([id]) => ids.includes(id)));
     if (Object.keys(record.deal.initial.hitapps!.cards).some(id => !cards[id])) throw Error(`Missing cards in ${record.deal.id}`);
     const deal = { ...record.deal, cards };
     if (!record.campaignPolicy) deal.bonusSlots = progressiveBonusDeal(deal).bonusSlots;
@@ -42,16 +45,16 @@ export function bindHitappsBank(known: ReadonlyMap<string, Deal>) {
   return byId;
 }
 
-function campaignMechanicsMatch(candidate: Deal, legacy: Deal) {
+function campaignMechanicsMatch(candidate: Deal, legacy: Deal, matchEconomy: boolean) {
   const left = candidate.recovery, right = legacy.recovery;
-  if (left?.restoreBase !== right?.restoreBase || left?.restoreIncrement !== right?.restoreIncrement ||
+  if (matchEconomy && (left?.restoreBase !== right?.restoreBase || left?.restoreIncrement !== right?.restoreIncrement ||
       candidate.shufflePolicy !== legacy.shufflePolicy || candidate.shuffleCost !== legacy.shuffleCost ||
       candidate.randomJokerPreview !== legacy.randomJokerPreview || candidate.randomJokerCost !== legacy.randomJokerCost ||
       candidate.extraHelpers?.randomJokerCoins !== legacy.extraHelpers?.randomJokerCoins ||
       candidate.extraHelpers?.unlimitedCoins !== legacy.extraHelpers?.unlimitedCoins ||
       candidate.extraHelpers?.unlimitedMs !== legacy.extraHelpers?.unlimitedMs ||
       candidate.bonusSlots?.foundation?.coins !== legacy.bonusSlots?.foundation?.coins ||
-      candidate.bonusSlots?.tableau?.coins !== legacy.bonusSlots?.tableau?.coins) return false;
+      candidate.bonusSlots?.tableau?.coins !== legacy.bonusSlots?.tableau?.coins)) return false;
   const cards = Object.values(candidate.initial.hitapps!.cards);
   const legacyStarters = Object.values(legacy.starter?.cards ?? {});
   const layers = cards.filter(card => card.ice > 0).map(card => card.ice).sort((a, b) => a - b);
@@ -65,11 +68,14 @@ function campaignMechanicsMatch(candidate: Deal, legacy: Deal) {
     cards.filter(card => card.bound === 2).length === Object.keys(legacy.bound?.scissorsByCard ?? {}).length &&
     cards.filter(card => card.scissors).length === Object.keys(legacy.bound?.scissorsByCard ?? {}).length &&
     candidate.hitapps!.assemblies.length === (legacy.puzzle?.pairs.length ?? 0) &&
-    golden?.total === legacy.golden?.ids.length && golden?.coinsPerActivation === legacy.golden?.coinsPerCard &&
+    golden?.total === legacy.golden?.ids.length && (!matchEconomy || golden?.coinsPerActivation === legacy.golden?.coinsPerCard) &&
     golden?.rewardGroup === (legacy.golden && (legacy.golden.rewardGroup ?? legacy.id)) &&
     cards.filter(card => card.kind === Kind.magnet).length === legacyStarters.filter(kind => kind === 'magnet').length &&
     cards.filter(card => card.kind === Kind.hammer).length === legacyStarters.filter(kind => kind === 'hammer').length;
 }
+
+export const hitappsGeometry = (deal: Deal) => JSON.stringify([deal.initial.tableau, deal.initial.stock, deal.initial.faceUp]);
+export const sameHitappsMechanics = (candidate: Deal, legacy: Deal) => campaignMechanicsMatch(candidate, legacy, false);
 
 export function selectHitappsBank(bank: ReturnType<typeof bindHitappsBank>, save: Save, base: Deal, legacy: Deal, previous?: Attempt) {
   if (!HITAPPS_RULES4_CAMPAIGN || base.daily || base.campaignLevel === undefined) return;
@@ -79,7 +85,7 @@ export function selectHitappsBank(bank: ReturnType<typeof bindHitappsBank>, save
   const language = base.campaignLevel === 81 ? save.settings.contentLanguage ?? 'ru' : 'ru';
   const pool = [...bank.values()].filter(({ deal, record }) => record.use === 'campaign' && deal.campaignLevel === base.campaignLevel &&
     (record.language ?? 'ru') === language && deal.difficultyTier === base.difficultyTier &&
-    campaignMechanicsMatch(deal, legacy) &&
+    campaignMechanicsMatch(deal, legacy, true) &&
     (!currentGeometry || currentGeometry !== JSON.stringify([deal.initial.tableau, deal.initial.stock, deal.initial.faceUp])));
   const level = base.campaignLevel, difficulty = base.difficultyTier ?? 'normal';
   const budget = base.initial.movesLeft;

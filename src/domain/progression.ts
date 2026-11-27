@@ -1,3 +1,4 @@
+import { CAMPAIGN_CORE_STAGE1 } from '../config/hitapps-r4';
 import beyondBank from '../content/campaign-v8-beyond-bank.json' with { type: 'json' };
 import { CONTENT8_PREVIEW, type Deal, type Save } from './types';
 export const BEYOND80_PREVIEW = CONTENT8_PREVIEW && import.meta.env?.VITE_CONTENT8_BEYOND80 === '1';
@@ -12,6 +13,7 @@ export function completedLevels(save: Save): number {
 }
 export const unlockedLevel = (save: Save) => Math.min(CAMPAIGN_LENGTH, completedLevels(save) + 1);
 export function helperUnlocked(save: Save, helper: 'hint' | 'undo' | 'joker', deal?: Deal): boolean {
+  if (CAMPAIGN_CORE_STAGE1 && !deal?.daily && (deal?.campaignLevel ?? 0) > 1) return true;
   return (!deal?.daily && deal?.campaignLevel === undefined) || unlockedLevel(save) >= HELPER_UNLOCK[helper];
 }
 export function seenTutorial(save: Save, id: string): boolean { return save.campaign?.tutorials.includes(id) ?? false; }

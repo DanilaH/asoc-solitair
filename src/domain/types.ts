@@ -88,6 +88,7 @@ export interface CampaignIssuance {
   source: 'authored' | 'director-r1' | 'budget-r2' | 'certified-seed';
   seed?: { value: number; inputHash: string; boardHash: string; routeHash: string };
   equality: 'unknown-cohort' | 'not-eligible';
+  rotation?: { level: number; seed: number; used: string[] };
 }
 type UnlimitedClock = { timeline: string; elapsed: number; wall: number };
 export interface RecoveryClockReading { timeline: string; elapsed: number; native?: true }

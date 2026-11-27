@@ -64,10 +64,11 @@ jobs:
       - run: npm run qa:content7
         env:
           C7_REQUIRE_UI: '1'
-      - name: Verify the integrated profile through the campaign UI
+      - name: Verify the archived PR227 profile through the campaign UI
         env:
           VITE_ASOC_PROFILE: c8-release-v1
           ASOC_AD_MODE: disabled
+          VITE_ASOC_ARCHIVE_227: '1'
         run: |
           npm run build
           npm run test:browser -- tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts
@@ -217,6 +218,16 @@ jobs:
         env:
           ASOC_QA_C8_GEOMETRY: '1'
         run: npx vitest run tests/unit/c8-ui-geometry.test.ts --disableConsoleIntercept | tee .recording/c8-grid.txt
+      - name: Verify new campaign issuance and retained saves through ordinary touch UI
+        env:
+          ASOC_CORE_RECORD: '1'
+        run: npx playwright test tests/browser/campaign-core-stage1.spec.ts tests/browser/hitapps-rules4.spec.ts tests/browser/functional-audit-225.spec.ts --output=test-results/campaign-core-stage1
+      - name: Build the archived PR227 policy for historical UI contracts
+        env:
+          VITE_ASOC_ARCHIVE_227: '1'
+        run: |
+          cp dist/release-manifest.json .recording/ordinary-release-manifest.json
+          npm run build
       - name: Audit C8 release geometry and capture its UI
         env:
           ASOC_CASUAL_RECORD: '1'
@@ -227,13 +238,11 @@ jobs:
         run: npx playwright test tests/browser/c8-ftue-presets.spec.ts --output=test-results/c8-ftue-presets
       - name: Verify saved rights and reward lifecycle through ordinary touch UI
         run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts --output=test-results/mvp-cohesion
-      - name: Verify release Rules4 issuance, resume, and campaign ending through ordinary touch UI
-        run: npx playwright test tests/browser/hitapps-rules4.spec.ts tests/browser/functional-audit-225.spec.ts --output=test-results/hitapps-rules4
       - name: Verify the offline fixture build separately
         env:
           VITE_HITAPPS_FIXTURES: '1'
+          VITE_ASOC_ARCHIVE_227: '1'
         run: |
-          cp dist/release-manifest.json .recording/ordinary-release-manifest.json
           npm run build
           npx playwright test tests/browser/hitapps-rules4.spec.ts tests/browser/mvp-cohesion-core.spec.ts --grep 'candidate picker|exact replay|fixed retry|ambiguous level-picker' --output=test-results/hitapps-fixtures
       - uses: actions/upload-artifact@v4
@@ -245,7 +254,7 @@ jobs:
             test-results/mvp-cohesion/
             test-results/c8-ui/
             test-results/c8-ftue-presets/
-            test-results/hitapps-rules4/
+            test-results/campaign-core-stage1/
             test-results/hitapps-fixtures/
             .recording/c8-grid.txt
             .recording/mvp-unit-results.json

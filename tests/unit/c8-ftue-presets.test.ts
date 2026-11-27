@@ -1,4 +1,4 @@
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { campaignDeals, campaignIssuance, findDeal, integratedCampaignDeals, isCurrentCampaignDeal, selectCampaignDeal } from '../../src/content/campaign';
 import { c8TeachingPresets } from '../../src/content/campaign-v8-ftue';
 import { dailyForDay } from '../../src/content/daily';
@@ -12,6 +12,8 @@ import type { Board, Command, Deal } from '../../src/domain/types';
 import { decodeSave } from '../../src/platform/storage';
 import { eventProvesStep, isLessonBoardCommand, lessonMarker, recordReleaseLearning, releaseLessonStep, releaseLessonSteps } from '../../src/app/c8-tutorial';
 import { advance, search } from '../../tools/qa/gameplay-oracle';
+
+vi.hoisted(() => vi.stubEnv('VITE_ASOC_ARCHIVE_227', '1'));
 
 function progress(deal: Deal) {
   const save = freshSave(deal, 'ftue-proof');

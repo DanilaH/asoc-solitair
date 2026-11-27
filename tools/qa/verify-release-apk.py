@@ -6,7 +6,9 @@ from zipfile import ZipFile
 
 manifest = Path("dist/release-manifest.json").read_bytes()
 profile = json.loads(manifest)
-if profile.get("fixtureNavigation") is not False or profile.get("campaignBoardRulesVersion") != 4:
+if (profile.get("fixtureNavigation") is not False or profile.get("archivedCampaign") is not False
+        or profile.get("campaignBoardRulesVersion") != 4
+        or profile["policies"].get("campaignCore") != "campaign-core-stage1-v1"):
     raise ValueError("Expected ordinary Rules4 issuance and no fixture navigation")
 prefix = "assets/public/"
 with ZipFile(sys.argv[1]) as apk:

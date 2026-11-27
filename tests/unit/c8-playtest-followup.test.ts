@@ -72,9 +72,10 @@ describe.skipIf(!releaseProfile)('ordinary release follow-up', () => {
   it('protects the last teaching action and two accepted independent moves across save/load', () => {
     const save = profileAt(6), deal = selectCampaignDeal(save, campaignDeals[5]);
     save.attempt = freshSave(deal, 'bonus-lesson').attempt;
-    expect(deal.bonusSlots).toEqual({ foundation: { coins: 100 }, tableau: undefined });
-    expect(activelyTeaching(save, deal)).toBe(true);
-    save.campaign = { version: 1, tutorials: ['intro:bonus-foundation'] };
+    expect(deal.bonusSlots).toEqual({ foundation: { coins: 100 }, tableau: { coins: 60 } });
+    // The optional offer waits until both parts of the board are occupied.
+    expect(activelyTeaching(save, deal)).toBe(false);
+    save.campaign = { version: 1, tutorials: ['intro:bonus-tableau'] };
     recordTeachingAction(save, deal, true, true);
     expect(teachingProtected(save, deal)).toBe(true);
     const reopened = decodeSave(JSON.stringify(save), findDeal);
@@ -92,7 +93,7 @@ describe.skipIf(!releaseProfile)('ordinary release follow-up', () => {
     expect(dailyModeAvailable(six)).toBe(true);
     expect(dailyTasksAvailable(six)).toBe(false);
     expect(dailyTasksAvailable(seven)).toBe(true);
-    expect(unlockedBetween(before, six).map(item => item.id)).toEqual(['foundation', 'daily']);
+    expect(unlockedBetween(before, six).map(item => item.id)).toEqual(['foundation', 'daily', 'tableau']);
     expect(unlockTrack(six).features.map(item => item.id)).toEqual(['tasks']);
     delete before.unlockSchedule;
     const legacy = decodeSave(JSON.stringify(before), findDeal);
@@ -100,24 +101,15 @@ describe.skipIf(!releaseProfile)('ordinary release follow-up', () => {
     expect(dailyTasksAvailable(legacy)).toBe(true);
   });
 
-  it('covers every ordinary L6–80 first issuance and L30 after its Shuffle lesson', () => {
-    const protectedLevels: number[] = [], uncovered: number[] = [];
-    for (const base of campaignDeals.slice(5, 80)) {
+  it('selects fresh Rules4 geometry even after a previously protected teaching deal', () => {
+    for (const base of campaignDeals.slice(1, 80)) {
       const level = base.campaignLevel!, save = profileAt(level), deal = selectCampaignDeal(save, base);
       save.attempt = freshSave(deal, 'retry-coverage').attempt;
       save.attempt.board = { ...save.attempt.board, phase: 'exhausted', movesLeft: 0 };
-      if (level === 30) {
-        expect(quoteLayoutRetry(save)).toBeUndefined();
-        save.campaign = { version: 1, tutorials: [lessonMarker('shuffle-used')] };
-      } else if (deal.training || hasReleaseLesson(deal)) {
-        protectedLevels.push(level);
-        expect(quoteLayoutRetry(save)).toBeUndefined();
-        continue;
-      }
-      if (quoteLayoutRetry(save)?.level !== level) uncovered.push(level);
+      const retry = quoteLayoutRetry(save);
+      expect(retry?.level, `L${level}`).toBe(level);
+      expect(retry?.selected.initial.rulesVersion, `L${level}`).toBe(4);
     }
-    expect(protectedLevels).toEqual([8, 17, 18, 19, 24, 26, 27, 28, 32]);
-    expect(uncovered).toEqual([]);
   });
 
   it.each([6, 11, 16, 35, 45, 66, 80])('issues a different certified layout on two successive losses at L%i', level => {

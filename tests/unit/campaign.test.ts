@@ -1,3 +1,4 @@
+import { CAMPAIGN_CORE_STAGE1 } from '../../src/config/hitapps-r4';
 import { describe, expect, it } from 'vitest';
 import { findDeal } from '../../src/content/campaign';
 import { content7Deals as campaignDeals } from '../../src/content/campaign-v7';
@@ -39,11 +40,11 @@ describe('linear campaign ownership', () => {
     save=win(save,0); expect(completedLevels(save)).toBe(1); expect(save.platform!.completedCampaign).toHaveLength(1);
     expect(save.profile.wins).toBe(2);
   });
-  it('opens Hint on 3 / Undo on 4; the first valid Hint demo is free and durable', () => {
+  it('keeps the first valid Hint demo free and durable', () => {
     let save=freshSave(campaignDeals[0],'a'); expect(helperUnlocked(save,'hint',campaignDeals[0])).toBe(false);
     expect(dispatch(save,{type:'hint',revision:0,action:campaignDeals[0].winningPath[0]},campaignDeals[0]).accepted).toBe(false);
     save=win(save,0);beginDeal(save,campaignDeals[1],'b');save=win(save,1);beginDeal(save,campaignDeals[2],'c');
-    expect(helperUnlocked(save,'hint',campaignDeals[2])).toBe(true);expect(helperUnlocked(save,'undo',campaignDeals[2])).toBe(false);
+    expect(helperUnlocked(save,'hint',campaignDeals[2])).toBe(true);expect(helperUnlocked(save,'undo',campaignDeals[2])).toBe(CAMPAIGN_CORE_STAGE1);
     const hints=save.profile.hints, board=structuredClone(save.attempt.board);
     const first=dispatch(save,{type:'hint',revision:save.revision,action:campaignDeals[2].winningPath[0]},campaignDeals[2]);
     expect(first.accepted).toBe(true);save=decodeSave(JSON.stringify(first.next),findDeal);

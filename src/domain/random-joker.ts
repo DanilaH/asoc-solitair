@@ -1,4 +1,4 @@
-import { applyBoard, assertBoard, boardRules, legalCommands, placeJoker } from './engine';
+import { applyBoard, assertBoard, boardRules, isLocked, legalCommands, placeJoker } from './engine';
 import { knownContinuation, solve } from './solver';
 import { LEGACY_OWNER_PREVIEW } from './types';
 import { migrateRandomJokerRights, randomJokerCount, unusedRandomJoker } from './random-joker-rights';
@@ -9,7 +9,8 @@ export const RANDOM_JOKER_PREVIEW = LEGACY_OWNER_PREVIEW === 'random-joker';
 
 export function allowsRandomJoker(attempt: Attempt, deal: Deal) {
   return deal.randomJokerPreview === 1 && attempt.dealId === deal.id && !attempt.daily &&
-    !attempt.randomJokerUsed && !attempt.board.joker && boardRules(attempt.board) >= 3 && attempt.board.phase === 'playing';
+    !attempt.randomJokerUsed && !attempt.board.joker &&
+    attempt.board.tableau.some((pile, column) => pile.length > 0 && !isLocked(attempt.board, column, deal)) && boardRules(attempt.board) >= 3 && attempt.board.phase === 'playing';
 }
 
 export function placeRandomJoker(attempt: Attempt, deal: Deal, random: (bound: number) => number, makeId: () => string) {

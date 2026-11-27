@@ -161,7 +161,7 @@ test('a URL cannot enable fixture controls in the release build', async ({ page 
   await expect(page.locator('#replay')).toBeVisible();
 });
 
-test('the finished campaign lets the player select a level without entering QA', async ({ page }, info) => {
+test('the finished campaign keeps Daily accessible and never opens the level picker', async ({ page }, info) => {
   test.skip(fixtureBuild, 'Requires the ordinary release build');
   const { deal } = [...hitappsR4Deals()].find(row => row.record.use === 'campaign' && row.penalty === 0 && row.deal.campaignLevel === 80)!;
   let save = profile(deal, 'hitapps-production-completed');
@@ -179,20 +179,14 @@ test('the finished campaign lets the player select a level without entering QA',
   await next.tap();
   if (await next.isVisible()) await next.tap();
   const home = page.locator('#home-play');
-  await expect(home).toContainText('Выбрать уровень');
-  await home.tap();
-  await expect(page.locator('#level-picker')).toBeVisible();
-  await expect(page.locator('#source-deal-list button')).toHaveCount(0);
-  const last = page.locator('#level-80');
-  await expect(last).toBeEnabled();
-  await expect(last.locator('.difficulty-chip')).toHaveText('Очень сложный');
-  const button = (await last.boundingBox())!, chip = (await last.locator('.difficulty-chip').boundingBox())!;
-  expect(chip.height).toBeLessThanOrEqual(21);
-  expect(chip.y + chip.height).toBeLessThanOrEqual(button.y + button.height);
-  await page.screenshot({ path: info.outputPath('completed-campaign-picker.png'), scale: 'css' });
-  await page.locator('#level-80').tap();
-  await expect.poll(async () => (await read(page)).attempt.id).not.toBe(save.attempt.id);
-  expect((await read(page)).attempt.board.rulesVersion).toBe(4);
+  await expect(home).toContainText('Кампания пройдена');
+  await expect(home).toBeDisabled();
+  await expect(page.locator('#daily-play')).toBeVisible();
+  await expect(page.locator('#level-picker')).toBeHidden();
+  await expect(page.locator('#level-picker-open')).toBeHidden();
+  await expect(page.locator('#level-grid button')).toHaveCount(0);
+  expect((await read(page)).attempt.id).toBe(save.attempt.id);
+  await page.screenshot({ path: info.outputPath('completed-campaign.png'), scale: 'css' });
 });
 
 test('the exact replay still keeps the same Rules4 layout and only charges one life', async ({ page }) => {

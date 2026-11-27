@@ -136,6 +136,12 @@ test('UI-02–05 and UI-08 paper sheets, long wallet, legacy album and focus ret
     await open(page, button, dialog);
     const metrics = await anchors(page, dialog, action);
     if (!before) expect(metrics, shot).toMatchObject({ overlap: false, oversize: false, clipped: false, target: true });
+    if (!before && dialog === '#picture-dialog') {
+      const lines = await page.locator('#picture-title').evaluate(node => {
+        const range = document.createRange(); range.selectNodeContents(node); return range.getClientRects().length;
+      });
+      expect(lines).toBe(2);
+    }
     await capture(page, info, shot);
     if (!before && dialog === '#appearance') {
       await expect(page.locator(dialog)).toHaveAttribute('data-scroll-down', '');

@@ -109,3 +109,4 @@ html[data-reduced=true] [data-casual] #calendar .stamp-new{animation:none}
   [data-casual] #calendar .calendar-day{height:28px}
   [data-casual] #calendar-summary{margin:4px 0 8px}
 }
+[data-casual] #picture-dialog #picture-title{font-size:clamp(19px,5.2vw,27px);text-wrap:balance}

@@ -191,6 +191,9 @@ test('Coffee has one fullscreen notice until a fresh preload, cooldown and accep
   save.settings.reducedMotion = false;
   await open(page, save);
   await page.clock.fastForward(181_000);
+  await page.bringToFront();
+  await expect.poll(() => page.evaluate(() => document.hasFocus())).toBe(true);
+  await page.evaluate(() => (window as unknown as Browser).stage2Ads.preload());
   const label = page.locator('.coffee-pause-label');
   await move(page, baseline, baseline.winningPath[0]);
   await expect(label).toBeVisible();

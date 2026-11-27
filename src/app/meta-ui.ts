@@ -3,6 +3,7 @@ import { campaignCount, cosmeticUnlocked, currentDailyStreak, daysLabel, dayNumb
 import { BALANCE } from '../domain/balance';
 import { CAMPAIGN_LENGTH, dailyModeAvailable } from '../domain/progression';
 import type { Save } from '../domain/types';
+import { casualIcon, prizeToken, progressTrack, taskProgressBaseline } from './casual-ui';
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) => document.querySelector<T>(selector)!;
 export const campaignAttempt = (save: Save) => save.attempt.daily ? save.parked?.campaign : save.attempt;
 export const dailyAttempt = (save: Save) => save.attempt.daily ? save.attempt : save.parked?.daily;
@@ -29,26 +30,39 @@ export function renderMeta(save: Save, busy: boolean) {
     ? streak.ready ? `Готово наград · ${streak.ready}` : `Ступень ${streak.index + 1} · ${streak.progress}/${streak.goal}`
     : `${meta.winCycle} из 5 побед`;
   $('#cycle-title').textContent = staged ? 'Серия побед' : 'Пять побед';
-  $('#cycle-copy').textContent = staged ? 'Первое прохождение уровня кампании добавляет одну победу к текущей ступени.'
+  $('#cycle-copy').textContent = staged ? (streak.ready ? `Готовых наград: ${streak.ready}` : `Круг ${Math.floor((meta.winStreak?.earned ?? 0) / WIN_STREAK.length) + 1} · ступень ${streak.index + 1} из ${WIN_STREAK.length}`)
     : `За пять впервые пройденных уровней начисляются ${BALANCE.meta.cycleCoins} монет и подсказка.`;
-  $('#cycle-rule').textContent = staged ? 'После подтверждённого поражения обнуляется текущая ступень. Готовые награды сохраняются.'
+  $('#cycle-rule').textContent = staged ? 'Считаются первые победы в кампании. Поражение сбрасывает прогресс текущей ступени, готовые награды сохраняются.'
     : 'Перезапуск и смена незавершённого уровня сбрасывают отметки. Отмена хода, продолжение, пауза и ежедневный уровень их сохраняют.';
   const stages = $('#cycle-stages');
   stages.hidden = !staged;
   if (staged) stages.replaceChildren(...WIN_STREAK.map(({ wins, coins, hints }, index) => {
     const row = document.createElement('li');
-    const progress = index < streak.index ? 'Пройдено' : index === streak.index ? `${streak.progress}/${wins}` : `${wins} побед`;
-    row.textContent = `${progress} · ${coins} монет${hints ? ' и подсказка' : ''}`;
+    const progress = index < streak.index ? wins : index === streak.index ? streak.progress : 0;
+    row.dataset.stage = index < streak.index ? 'complete' : index === streak.index ? 'current' : 'locked';
+    const amount = document.createElement('strong');
+    amount.textContent = `${progress}/${wins} побед`;
+    const copy = document.createElement('span');
+    copy.append(amount, progressTrack(progress, wins));
+    const rewards = document.createElement('span'); rewards.className = 'series-prizes';
+    rewards.append(prizeToken({ kind: 'Coins', quantity: coins }));
+    if (hints) rewards.append(prizeToken({ kind: 'MoveHint', quantity: hints }));
+    rewards.setAttribute('aria-label', `${coins} монет${hints ? ' и подсказка' : ''}`);
+    row.append(casualIcon(index < streak.index ? 'medal' : index === streak.index ? 'gift' : 'lock'), copy, rewards);
     return row;
   }));
   const claim = $<HTMLButtonElement>('#cycle-claim');
-  claim.hidden = !staged || streak.ready === 0;
-  claim.disabled = busy;
+  $('#cycle-claim-slot').hidden = !staged;
+  claim.hidden = !staged || !streak.ready;
+  claim.disabled = busy || !streak.ready;
+  const claimStatus = $('#cycle-claim-empty');
+  claimStatus.hidden = !staged || Boolean(streak.ready);
+  claimStatus.textContent = meta.winStreak?.claimed ? 'Готовые награды получены' : 'Награда после завершения ступени';
   $('#milestone-title').textContent = n >= CAMPAIGN_LENGTH ? 'Кампания пройдена' : target > CAMPAIGN_LENGTH ? 'Последняя глава' : `Награда за ${target} уровней`;
   $('#milestone-copy').textContent = n >= CAMPAIGN_LENGTH ? 'Оформление и положение колоды' : target > CAMPAIGN_LENGTH ? `До конца осталось ${CAMPAIGN_LENGTH - n}` : target === 10 ? `Стол «Чернила» и ${BALANCE.meta.milestoneCoins} монет` : target === 20 ? `Рубашка «Ромбы» и ${BALANCE.meta.milestoneCoins} монет` : `${BALANCE.meta.milestoneCoins} монет`;
   $('#milestone-fill').style.width = `${n >= CAMPAIGN_LENGTH ? 100 : n % 10 * 10}%`; $('#milestone-progress').textContent = n >= CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : target > CAMPAIGN_LENGTH ? `${n} / ${CAMPAIGN_LENGTH}` : `${n % 10} / 10`;
   $('#daily-date').textContent = new Date(`${today}T12:00:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
-  $('#daily-status').textContent = done ? `Готово · серия ${currentDailyStreak(save, today)} дн.` : daily?.daily?.dayId === today && daily.board.phase === 'playing' ? 'Продолжить' : '';
+  $('#daily-status').textContent = done ? 'Готово' : daily?.daily?.dayId === today && daily.board.phase === 'playing' ? 'Начата' : '';
   const dailyStarted = daily?.daily?.dayId === today && daily.board.phase === 'playing';
   $('#daily-play').dataset.dailyState = done ? 'complete' : dailyStarted ? 'started' : 'ready';
   $('#daily-play').setAttribute('aria-label', done ? 'Повторить ежедневный уровень без награды' :
@@ -58,13 +72,14 @@ export function renderMeta(save: Save, busy: boolean) {
   $('#daily-resume-old').textContent = daily?.daily ? `Доиграть ${new Date(daily.daily.dayId + 'T12:00:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })} · тренировка` : '';
   $('#calendar-summary').textContent = `${daysLabel(currentDailyStreak(save, today))} подряд · всего ${meta.dailyDates.length} завершено`;
   const date = new Date(), year = date.getFullYear(), month = date.getMonth();
-  $('#calendar-month').textContent = date.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+  $('#calendar-month').textContent = `${date.toLocaleDateString('ru-RU', { month: 'long' })} ${year}`;
   const grid = $('#calendar-grid'); grid.replaceChildren();
   const weekday = (new Date(year, month, 1).getDay() + 6) % 7;
   for (let i = 0; i < weekday; i++) grid.append(document.createElement('span'));
   for (let day = 1; day <= new Date(year, month + 1, 0).getDate(); day++) {
     const id = localDay(new Date(year, month, day)), cell = document.createElement('span'), complete = meta.dailyDates.includes(id);
     cell.textContent = String(day); cell.className = `calendar-day${complete ? ' complete' : ''}${id === today ? ' today' : ''}${dayNumber(id) > dayNumber(today) ? ' future' : ''}`;
+    if (complete && id === today && $<HTMLDialogElement>('#calendar').open && taskProgressBaseline(`calendar:${id}`, 1) === 0) cell.classList.add('stamp-new');
     cell.setAttribute('aria-label', `${id}${complete ? ', выполнено' : id === today ? ', сегодня' : ''}`); grid.append(cell);
   }
   const preview = $('#appearance-preview');

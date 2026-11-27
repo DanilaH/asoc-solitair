@@ -56,6 +56,19 @@ export function winStamps(count: number): HTMLElement {
   return line;
 }
 
+export function observeScrollEdges(body: HTMLElement) {
+  const frame = body.parentElement!;
+  const update = () => {
+    const remaining = body.scrollHeight - body.clientHeight - body.scrollTop;
+    frame.toggleAttribute('data-scroll-down', body.clientHeight > 0 && remaining > 2);
+    frame.toggleAttribute('data-scroll-up', body.clientHeight > 0 && body.scrollTop > 2);
+  };
+  body.addEventListener('scroll', update, { passive: true });
+  new ResizeObserver(update).observe(body);
+  new MutationObserver(update).observe(body, { childList: true, subtree: true });
+  update();
+}
+
 export function configureCasualHome(allowLevelPicker: boolean) {
   const home = document.querySelector<HTMLElement>('#home')!;
   home.setAttribute('aria-label', 'Главная');
@@ -86,6 +99,7 @@ export function configureCasualHome(allowLevelPicker: boolean) {
   if (allowLevelPicker) tray.append(button('level-picker-open'));
   button('wallet-anchor').after(button('campaign-lives-open'));
   home.append(tray);
+  observeScrollEdges(home);
 }
 
 export function configureCasualDialogs() {
@@ -96,8 +110,14 @@ export function configureCasualDialogs() {
     'campaign-liveops': 'medal', 'random-joker-warning': 'joker', 'shuffle-warning': 'cycle',
   };
   for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog')) {
-    if (dialog.id === 'result') continue;
     dialog.classList.add('casual-dialog');
+    const body = dialog.querySelector<HTMLElement>('.sheet-body, #pause-options');
+    if (body) observeScrollEdges(body);
+    if (['result', 'daily-bonus-dialog', 'daily-tasks-dialog', 'picture-dialog', 'cycle-info'].includes(dialog.id)) {
+      const counters = document.createElement('div');
+      counters.className = 'reward-counts'; counters.setAttribute('role', 'status');
+      dialog.append(counters);
+    }
     const title = document.getElementById(dialog.getAttribute('aria-labelledby') ?? '');
     const icon = icons[dialog.id];
     if (!title || !icon) continue;

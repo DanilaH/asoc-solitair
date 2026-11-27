@@ -15,7 +15,7 @@ if (record) test.use({ video: 'on' });
 const baseline = findDeal('campaign-c8-wave-016-c8-core-r1-rights-r1')!;
 const now = Date.UTC(2026, 10, 27, 12);
 type Call = { method: string; options: Record<string, string> };
-type Browser = Window & { stage2Ads: { calls: Call[]; fill: boolean; preload: () => void; replay: () => void } };
+type Browser = Window & { stage2Ads: { calls: Call[]; fill: boolean; preload: () => void; replay: () => void; hang: boolean; foreground: boolean; nativeSession: 'active' | 'awaiting-terminal' | 'idle' } };
 const game = (page: Page) => page.locator('#game-root');
 const calls = (page: Page) => page.evaluate(() => (window as unknown as Browser).stage2Ads.calls);
 const showCount = async (page: Page) => (await calls(page)).filter(call => call.method === 'show').length;
@@ -30,7 +30,7 @@ async function open(page: Page, save: Save, withAds = true) {
     const calls: Call[] = [];
     let loaded = true, shown: object | null = null, earned: object | null = null, original: object | null = null;
     let onAd: ((event: object) => void) | undefined;
-    const stage2Ads = { calls, fill: false,
+    const stage2Ads = { calls, fill: false, hang: false, foreground: true, nativeSession: 'idle' as Browser['stage2Ads']['nativeSession'],
       preload: () => { loaded = true; onAd?.({ kind: 'interstitial', phase: 'loaded' }); },
       replay: () => { earned = original; onAd?.({ kind: 'rewarded', phase: 'earned' }); } };
     const headers = (name: string, methods: string[], events = false) => ({ name,
@@ -44,7 +44,7 @@ async function open(page: Page, save: Save, withAds = true) {
           headers('SolitaireAudio', ['configure'], true), headers('SolitaireFeedback', ['pulse', 'cancel']),
           headers('SolitaireAnalytics', ['report']),
           headers('SolitaireAds', ['status', 'prepareInterstitial', 'discardInterstitial', 'show', 'pending', 'acknowledge',
-            'pendingShown', 'acknowledgeShown', 'hideBanner', 'measureBanner', 'placeBanner', 'dispose'], true),
+            'pendingShown', 'acknowledgeShown', 'fullscreenState', 'hideBanner', 'measureBanner', 'placeBanner', 'dispose'], true),
         ],
         async nativeCallback(plugin: string, _method: string, _options: object, callback: (event: object) => void) {
           if (plugin === 'SolitaireAds') onAd = callback;
@@ -64,6 +64,7 @@ async function open(page: Page, save: Save, withAds = true) {
           if (method === 'discardInterstitial') loaded = false;
           if (method === 'pending') return { receipts: earned ? [earned] : [], activeLife: null };
           if (method === 'pendingShown') return { shown };
+          if (method === 'fullscreenState') return { foreground: stage2Ads.foreground, session: stage2Ads.nativeSession, shown: stage2Ads.nativeSession !== 'idle' };
           if (method === 'acknowledge') earned = null;
           if (method === 'acknowledgeShown') shown = null;
           if (method === 'measureBanner') {
@@ -73,7 +74,13 @@ async function open(page: Page, save: Save, withAds = true) {
           if (method === 'show') {
             if (!stage2Ads.fill) return { shown: false, outcome: 'unavailable' };
             shown = { ...options, schema: 1, id: 'stage2-display', shownAt: Date.now() };
-            if (options.kind === 'rewarded') earned = original = { ...options, schema: 1, id: 'stage2-earned' };
+            if (options.kind === 'rewarded') original = { ...options, schema: 1, id: 'stage2-earned' };
+            if (stage2Ads.hang) {
+              stage2Ads.nativeSession = 'active'; stage2Ads.foreground = false;
+              onAd?.({ kind: options.kind, phase: 'show' });
+              return new Promise(() => undefined);
+            }
+            if (options.kind === 'rewarded') earned = original;
             return { shown: true, outcome: 'dismissed' };
           }
           return {};
@@ -134,7 +141,9 @@ test('S2-A ordinary Next considers level-start only after the shared cooldown', 
   await page.clock.fastForward(121_000);
   await move(page, deal, deal.winningPath.at(-1)!);
   await expect(page.locator('#next-level')).toHaveText('Дальше');
-  await page.evaluate(() => { (window as unknown as Browser).stage2Ads.fill = true; });
+  await page.bringToFront();
+  await expect.poll(() => page.evaluate(() => document.hasFocus())).toBe(true);
+  await page.evaluate(() => { const mock = (window as unknown as Browser).stage2Ads; mock.fill = true; mock.preload(); });
   await page.locator('#next-level').tap();
   await expect(page.locator('#level-number')).toHaveText('УРОВЕНЬ 7');
   expect((await calls(page)).filter(call => call.method === 'show').map(call => call.options)).toMatchObject([
@@ -143,11 +152,48 @@ test('S2-A ordinary Next considers level-start only after the shared cooldown', 
   expect((await read(page)).platform!.lastFullscreenAt).toBeGreaterThan(now);
 });
 
+test('S3-A restores ordinary controls after a shown video loses dismissal', async ({ page }, info) => {
+  test.skip(before, 'Ordinary candidate');
+  const deal = findDeal('campaign-c8-dealer-006-bonus-r2')!;
+  const save = play(profileAt(deal, 'stage4-lost-dismiss'), deal, deal.winningPath.slice(0, -1));
+  await open(page, save);
+  await move(page, deal, deal.winningPath.at(-1)!);
+  await expect(page.locator('#result')).toBeVisible();
+  const earned = (await read(page)).profile.coins;
+  await page.evaluate(() => { const mock = (window as unknown as Browser).stage2Ads; mock.fill = mock.hang = true; });
+  await page.locator('#win-video-claim').tap();
+  await expect.poll(() => showCount(page)).toBe(1);
+  await page.clock.fastForward(4500);
+  await expect(page.locator('#result')).toBeHidden();
+  expect((await read(page)).profile.coins).toBe(earned);
+  await page.evaluate(() => {
+    const mock = (window as unknown as Browser).stage2Ads;
+    mock.foreground = true; mock.nativeSession = 'awaiting-terminal';
+  });
+  await page.clock.fastForward(4500);
+  await expect(page.locator('#result')).toBeVisible();
+  if (record) await page.screenshot({ path: info.outputPath('s3-a-recovered.png'), scale: 'css' });
+  await page.clock.fastForward(2500);
+  await page.locator('#win-video-claim').tap();
+  expect(await showCount(page)).toBe(1);
+  await page.locator('#next-level').tap();
+  await expect(page.locator('#level-number')).toHaveText('УРОВЕНЬ 7');
+  await page.evaluate(() => (window as unknown as Browser).stage2Ads.replay());
+  await expect.poll(async () => (await read(page)).profile.coins).toBeGreaterThan(earned);
+  const final = (await read(page)).profile.coins;
+  await page.evaluate(() => (window as unknown as Browser).stage2Ads.replay());
+  await expect.poll(async () => (await calls(page)).filter(call => call.method === 'acknowledge').length).toBe(2);
+  expect((await read(page)).profile.coins).toBe(final);
+});
+
 test('Coffee has one fullscreen notice until a fresh preload, cooldown and accepted action', async ({ page }, info) => {
   const save = profileAt(baseline, 'stage2-coffee');
   save.settings.reducedMotion = false;
   await open(page, save);
   await page.clock.fastForward(181_000);
+  await page.bringToFront();
+  await expect.poll(() => page.evaluate(() => document.hasFocus())).toBe(true);
+  await page.evaluate(() => (window as unknown as Browser).stage2Ads.preload());
   const label = page.locator('.coffee-pause-label');
   await move(page, baseline, baseline.winningPath[0]);
   await expect(label).toBeVisible();

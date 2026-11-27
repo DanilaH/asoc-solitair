@@ -4,7 +4,8 @@ import { CAMPAIGN_META } from '../../src/config/campaign-meta';
 import { E4_M1, M1 } from '../../src/config/economy';
 import { releaseProfile } from '../../src/config/profile';
 import { dailyForDay } from '../../src/content/daily';
-import { campaignDeals, campaignIssuance, selectCampaignDeal } from '../../src/content/campaign';
+import { campaignDeals, campaignIssuance, selectCampaignDeal, findDeal } from '../../src/content/campaign';
+import { coffeeBlocker, releasePlacementEligible } from '../../src/domain/campaign-advertising';
 import { BALANCE } from '../../src/domain/balance';
 import { beginDeal } from '../../src/domain/campaign';
 import { claimDailyBonus, openDailyBonusRound, revealDailyBonusCard } from '../../src/domain/events/daily-bonus';
@@ -20,7 +21,7 @@ assert.equal(releaseProfile.capabilities.purchases, 'off');
 const start = Date.UTC(2026, 10, 23, 12), dayMs = 86_400_000;
 const policy = CAMPAIGN_META ? 'm1-stage3' : E4_M1 ? 'e4-m1' : 'pr229';
 const routes: {
-  level: number; deal: string; tier: number; steps: number; spare: number;
+  level: number; deal: string; tier: number; steps: number; spare: number; cards: number; illustrated: number;
   tierBase: number; moves: number; combo: number; meta: number; gross: number; rv: number; hints: number; draws: number; themes: number;
 }[] = [];
 let save = freshSave(campaignDeals[0], 'economy');
@@ -59,6 +60,7 @@ for (const base of campaignDeals) {
   const offer = save.rewardOffers?.multiplier?.selected[`win-${save.balanceVersion}-${level}`];
   const rv = offer ? tierBase * (offer === 'win-fivefold' ? 4 : 2) : 0;
   routes.push({ level, deal: deal.id, tier: victory?.tier ?? 0, steps: deal.winningPath.length, spare, tierBase,
+    cards: Object.keys(deal.cards).length, illustrated: Object.values(deal.cards).filter(card => card.image).length,
     moves: win - tierBase, combo, meta, gross, rv, draws, themes, hints: save.profile.hints - opening.hints });
 }
 assert.equal(routes.length, CAMPAIGN_LENGTH);
@@ -100,13 +102,13 @@ function bonusSequence(trial: number) {
   return prizes;
 }
 
-function taskSupply(withDaily: boolean) {
+function taskSupply(withDaily: boolean, firstLevel = 1) {
   const state = freshSave(campaignDeals[0], 'week-model');
   const monday = Date.UTC(2026, 10, 30, 12);
   const calendarState = freshSave(dailyForDay('2026-11-30'), 'calendar-model');
   return Array.from({ length: 7 }, (_, day) => {
     const now = monday + day * dayMs, utc = new Date(now).toISOString().slice(0, 10);
-    const dayRoutes = routes.slice(day * 3, day * 3 + 3);
+    const dayRoutes = routes.slice(firstLevel - 1 + day * 3, firstLevel - 1 + day * 3 + 3);
     const before = { ...state.profile };
     let dailyIncome = 0, dailyUndo = 0;
     if (withDaily) {
@@ -117,9 +119,9 @@ function taskSupply(withDaily: boolean) {
         dailyUndo += reward.undos ?? 0;
       }
     }
-    if (day >= 2) {
+    if (firstLevel > 1 || day >= 2) {
       (state.platform ??= { receipts: [], continuedAttempts: [], continueCredits: 0, winsSinceInterstitial: 0,
-        lastFullscreenAt: 0, completedCampaign: [] }).completedCampaign = Array.from({ length: (day + 1) * 3 }, (_, i) => campaignId(i + 1));
+        lastFullscreenAt: 0, completedCampaign: [] }).completedCampaign = Array.from({ length: firstLevel - 1 + (day + 1) * 3 }, (_, i) => campaignId(i + 1));
       updatePreviewTasks(state, now);
       const sum = (key: 'gross' | 'draws' | 'themes' | 'steps') => dayRoutes.reduce((count, row) => count + row[key], 0);
       const extras = withDaily ? dailyForDay(utc) : undefined;
@@ -145,12 +147,13 @@ function taskSupply(withDaily: boolean) {
 }
 const supplies = CAMPAIGN_META ? [taskSupply(false), taskSupply(true)] : undefined;
 
-function simulate(price: typeof controls.E4, basket: Basket, bonus: ReturnType<typeof bonusSequence>, video: boolean, daily: boolean) {
+function simulate(price: typeof controls.E4, basket: Basket, bonus: ReturnType<typeof bonusSequence>, video: boolean, daily: boolean,
+  firstLevel = 1, budget = 100, weekSupply = supplies, empty = false) {
   const repeat = { light: 1, base: 2, heavy: 3 }[basket];
-  let balance = 100, denied = 0, views = 0;
-  const inventory = { hint: 3, undo: 5, joker: 1 };
+  let balance = budget, denied = 0, views = 0, walletViews = 0, winViews = 0;
+  const inventory = empty ? { hint: 0, undo: 0, joker: 0 } : { hint: 3, undo: 5, joker: 1 };
   for (let day = 0; day < 7; day++) {
-    const dayRoutes = routes.slice(day * 3, day * 3 + 3);
+    const dayRoutes = routes.slice(firstLevel - 1 + day * 3, firstLevel - 1 + day * 3 + 3);
     balance += price.free + dayRoutes.reduce((sum, row) => sum + row.tierBase + Math.floor(row.moves / 2) +
       Math.floor(row.combo / 2) + row.meta, 0);
     inventory.hint += dayRoutes.reduce((sum, row) => sum + row.hints, 0);
@@ -160,7 +163,7 @@ function simulate(price: typeof controls.E4, basket: Basket, bonus: ReturnType<t
     if (prize?.kind === 'MoveHint') inventory.hint += prize.quantity;
     if (prize?.kind === 'Undo') inventory.undo += prize.quantity;
     if (prize?.kind === 'Joker') inventory.joker += prize.quantity;
-    const supply = supplies?.[Number(daily)][day];
+    const supply = weekSupply?.[Number(daily)][day];
     if (supply) {
       balance += supply.coins; inventory.hint += supply.hint; inventory.undo += supply.undo;
     } else {
@@ -172,7 +175,7 @@ function simulate(price: typeof controls.E4, basket: Basket, bonus: ReturnType<t
     if (day === 4) balance += 100; // Assume the free seasonal claim is earned this week.
     if (video && (day === 2 || day === 4)) {
       const selected = dayRoutes.find(route => route.rv > 0);
-      if (selected) { balance += selected.rv; views++; }
+      if (selected) { balance += selected.rv; views++; winViews++; }
     }
     const request: Array<keyof Omit<typeof controls.E4, 'free'>> = Array.from({ length: repeat }, () => ['hint', 'undo'] as const).flat();
     if (day === 1) request.push('lower');
@@ -189,14 +192,14 @@ function simulate(price: typeof controls.E4, basket: Basket, bonus: ReturnType<t
       }
       if (balance < price[kind] && video && !walletUsed) {
         balance += M1.videoWallet;
-        views++;
+        views++; walletViews++;
         walletUsed = true;
       }
       if (balance < price[kind]) { denied++; continue; }
       balance -= price[kind];
     }
   }
-  return { balance, denied, views };
+  return { balance, denied, views, walletViews, winViews };
 }
 
 const campaigns = [...new Set([15, 40, 80, CAMPAIGN_LENGTH])].map(level => {
@@ -222,7 +225,61 @@ if (E4_M1) {
             medianViews: median(trials.map(row => row.views)) });
         }
 }
-const report = { policy, wins: routes.length, adReceipts: 0, purchases: 0, campaigns, routes, experiments, supplies };
+function cadenceEvidence(firstLevel: number, secondsPerMove: number, fill: boolean) {
+  let levelStart = 0, coffee = 0, display = 0;
+  for (let day = 0; day < 7; day++) {
+    const launchedAt = start + day * dayMs;
+    let now = launchedAt, retryAt = now;
+    for (const row of routes.slice(firstLevel - 1 + day * 3, firstLevel - 1 + (day + 1) * 3)) {
+      const deal = findDeal(row.deal)!;
+      const sample = freshSave(deal, 'ad-sample');
+      sample.platform = { receipts: [], continuedAttempts: [], continueCredits: 0,
+        completedCampaign: Array.from({ length: row.level - 1 }, (_, index) => campaignId(index + 1)),
+        winsSinceInterstitial: 0, lastFullscreenAt: display };
+      if (now >= retryAt && releasePlacementEligible(sample, row.level, 'level-start', now, launchedAt)) {
+        levelStart++;
+        if (fill) { display = now; sample.platform.lastFullscreenAt = now; }
+        else retryAt = now + 30_000;
+      }
+      sample.attempt.telemetry = { started: true, finished: false, activeMs: 0 };
+      let previous = sample;
+      for (const cmd of deal.winningPath) {
+        now += secondsPerMove * 1000;
+        const result = dispatch(previous, cmd, deal);
+        assert(result.accepted);
+        previous = result.next;
+        clearUndo(previous.attempt);
+        if (now >= retryAt && !coffeeBlocker(previous, deal, now, launchedAt, true, true)) {
+          coffee++;
+          if (fill) { display = now; previous.platform!.lastFullscreenAt = now; }
+          else retryAt = now + 30_000;
+        }
+      }
+    }
+  }
+  return { secondsPerMove, fill, levelStart, coffee };
+}
+const late = CAMPAIGN_META ? [81, 150, 180].map(first => {
+  const sample = routes.slice(first - 1, first + 20);
+  assert.equal(sample.length, 21);
+  const local = [taskSupply(false, first), taskSupply(true, first)];
+  const prizes = Array.from({ length: 1000 }, (_, trial) => bonusSequence(trial));
+  const mean = (series: number[]) => series.reduce((sum, value) => sum + value, 0) / series.length;
+  const basketRows = [false, true].flatMap(empty => (['light', 'base', 'heavy'] as const).flatMap(basket =>
+    [false, true].flatMap(daily => [false, true].map(video => {
+      const trials = prizes.map(bonus => simulate(controls.M1, basket, bonus, video, daily, first, empty ? 0 : 100, local, empty));
+      return { basket, daily, video, empty, deniedPercent: trials.filter(x => x.denied > 0).length / 10,
+        averageVideo: mean(trials.map(x => x.views)), averageWalletVideo: mean(trials.map(x => x.walletViews)), averageWinVideo: mean(trials.map(x => x.winViews)),
+        averageRemainingCoins: mean(trials.map(x => x.balance)) };
+    }))));
+  const sums = (key: 'gross' | 'rv' | 'combo' | 'moves' | 'tierBase' | 'meta' | 'steps') => sample.reduce((sum, row) => sum + row[key], 0);
+  return { levels: [first, first + 20], cards: sample.map(row => row.cards), reserves: sample.map(row => row.spare),
+    steps: sums('steps'), routeSteps: sample.map(row => row.steps), illustrated: sample.filter(row => row.illustrated > 0).length,
+    earnings: sums('gross'), base: sums('tierBase'), remainingMoves: sums('moves'), combo: sums('combo'), meta: sums('meta'),
+    rewardedWinOffers: sample.filter(row => row.rv > 0).length, potentialWinBoost: sums('rv'), weeklySupply: local, basketRows,
+    cadence: [2, 4].flatMap(seconds => [false, true].map(fill => cadenceEvidence(first, seconds, fill))) };
+}) : undefined;
+const report = { policy, wins: routes.length, adReceipts: 0, purchases: 0, campaigns, routes, experiments, supplies, late };
 mkdirSync('.recording/e4-m1', { recursive: true });
 writeFileSync(`.recording/e4-m1/${policy}.json`, JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({ policy, campaigns, experiments }, null, 2));

@@ -230,6 +230,52 @@ describe('durable native fullscreen cadence', () => {
     } finally { ads.destroy(); }
   });
 
+  it.each([true, false])('recovers presentation on confirmed foreground and preserves late earned (%s shown)', async shown => {
+    vi.useFakeTimers();
+    const b = bridge(), save = fresh();
+    const activity = new GameplayActivityCoordinator(() => undefined, () => undefined);
+    const old = deferred<Awaited<ReturnType<AdsBridge['show']>>>();
+    vi.mocked(b.api.show).mockImplementationOnce(() => old.promise);
+    let state: Awaited<ReturnType<NonNullable<AdsBridge['fullscreenState']>>> = { foreground: false, session: 'active', shown };
+    b.api.fullscreenState = vi.fn(async () => state);
+    const shownRecord = { ...displayed, kind: 'rewarded', placement: 'hint' } as const;
+    b.api.pendingShown = vi.fn(async () => ({ shown: shown ? shownRecord : null }));
+    let earned: EarnedReceipt[] = [];
+    b.api.pending = vi.fn(async () => ({ receipts: earned }));
+    const ads = createAds({ activity, beforeShow: async () => undefined, onStatus: () => undefined, onEvent: () => undefined,
+      commit: async value => applyReceipt(save, value), commitShown: async value => applyFullscreenShown(save, value),
+    }, b.api);
+    try {
+      await ads.refresh();
+      const presentation = ads.show(rewarded);
+      await vi.advanceTimersByTimeAsync(3200);
+      expect(activity.isBlocked()).toBe(true);
+      expect(save.profile.hints).toBe(3);
+      state = { foreground: true, session: 'active', shown };
+      await vi.advanceTimersByTimeAsync(1600);
+      expect(activity.isBlocked()).toBe(true);
+      state = { foreground: true, session: 'awaiting-terminal', shown };
+      await vi.advanceTimersByTimeAsync(1600);
+      expect(await presentation).toEqual({ shown, outcome: 'error', pendingTerminal: true });
+      expect(activity.isBlocked()).toBe(false);
+      expect(await ads.canAuthorizeOffer()).toBe(false);
+      await ads.show(rewarded);
+      expect(b.api.show).toHaveBeenCalledTimes(1);
+      expect(save.profile.hints).toBe(3);
+      earned = [receipt, receipt];
+      b.emit({ kind: 'rewarded', phase: 'earned' });
+      await ads.recover();
+      expect(save.profile.hints).toBe(5);
+      expect(save.platform?.lastFullscreenAt).toBe(shown ? displayed.shownAt : 0);
+      old.resolve({ shown, outcome: 'dismissed' });
+      state = { foreground: true, session: 'idle', shown: false };
+      expect(await ads.canAuthorizeOffer()).toBe(true);
+      await ads.show(rewarded);
+      expect(b.api.show).toHaveBeenCalledTimes(2);
+      expect(save.profile.hints).toBe(5);
+    } finally { ads.destroy(); }
+  });
+
   it('replays a pending rewarded display after a failed write and only credits a later earned receipt', async () => {
     const m = memory(), store = new SaveStore(m.storage, deal, withLegacyCadence);
     const original = await store.open(), b = bridge(), ads = receiver(store, b);

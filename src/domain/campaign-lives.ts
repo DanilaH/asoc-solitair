@@ -1,3 +1,4 @@
+import { E4_M1, M1 } from '../config/economy';
 import { recordLiveOpsLoss } from './events/campaign-liveops';
 import { releaseProfile } from '../config/profile';
 import { LEGACY_OWNER_PREVIEW, OWNER_ACCEPTANCE_PREVIEW } from './types';
@@ -5,7 +6,7 @@ import type { Attempt, Save } from './types';
 
 export const LIVEOPS_PREVIEW = LEGACY_OWNER_PREVIEW === 'lives' || OWNER_ACCEPTANCE_PREVIEW;
 export const LIVES_PREVIEW = releaseProfile?.capabilities.lives === 'active' || LIVEOPS_PREVIEW;
-export const LIVES_RULES = { max: 5, refillMs: 5 * 60_000, coinPrice: 50 } as const;
+export const LIVES_RULES = { max: 5, refillMs: 5 * 60_000, coinPrice: E4_M1 ? M1.life : 50 } as const;
 const natural = (n: unknown): n is number => Number.isSafeInteger(n) && (n as number) >= 0;
 const token = (value: unknown): value is string => typeof value === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(value);
 

@@ -11,6 +11,7 @@ interface PendingLife { id: string; dealId: string }
 export interface AdsBridge {
   status(): Promise<AdStatus>;
   prepareInterstitial(): Promise<void>;
+  discardInterstitial?(): Promise<void>;
   show(request: AdRequest): Promise<AdOutcome>;
   pending(): Promise<{ receipts: unknown[]; activeLife?: PendingLife | null }>;
   acknowledge(options: { id: string }): Promise<void>;
@@ -49,6 +50,7 @@ export function createAds(options: {
   const native = bridge ?? (Capacitor.isNativePlatform() ? registerPlugin<AdsBridge>('SolitaireAds') : undefined);
   let alive = true, showing = false;
   let retryDelay = 1000;
+  let interstitialEpoch = 0, readinessRevision = 0;
   let status = disabledStatus;
   let listener: PluginListenerHandle | undefined;
   let recoveryFlight: Promise<void> | undefined, shownFlight: Promise<boolean> | undefined, prepareFlight: Promise<void> | undefined, statusFlight: Promise<void> | undefined;
@@ -106,27 +108,42 @@ export function createAds(options: {
   function refresh(): Promise<void> {
     if (!alive || !native) return Promise.resolve();
     if (statusFlight) return statusFlight;
+    const revision = readinessRevision;
     statusFlight = native.status().then(value => {
       if (!alive) return;
-      status = value; options.onStatus({ ...status });
+      if (revision === readinessRevision) {
+        if (value.interstitialLoaded && !status.interstitialLoaded) interstitialEpoch++;
+        status = value;
+      } else status = { ...value, interstitialLoaded: status.interstitialLoaded };
+      options.onStatus({ ...status });
     }).catch(() => undefined).finally(() => { statusFlight = undefined; });
     return statusFlight;
   }
   if (native) {
     void native.addListener('adEvent', event => {
       if (!alive) return;
-      if (event.kind === 'interstitial' && ['loaded', 'load_error', 'show', 'show_error', 'dismiss'].includes(event.phase))
+      if (event.kind === 'interstitial' && ['loaded', 'load_error', 'show', 'show_error', 'dismiss', 'discarded'].includes(event.phase)) {
+        readinessRevision++;
+        if (event.phase === 'loaded') interstitialEpoch++;
         status = { ...status, interstitialLoaded: event.phase === 'loaded' };
+      }
+      if (event.phase === 'initialized') void refresh();
       options.onEvent(event);
       if (['earned', 'receipt_pending', 'dismiss'].includes(event.phase)) void recoverEarned();
       if (event.phase === 'show') void recoverShown();
-    }).then(handle => { if (!alive) void handle.remove().catch(() => undefined); else listener = handle; }).catch(() => undefined);
+    }).then(handle => { if (!alive) void handle.remove().catch(() => undefined); else { listener = handle; void refresh(); } }).catch(() => undefined);
     void refresh(); void recover(); schedule();
   }
   return {
     get status() { return status; },
     get bridge() { return native; },
     get showing() { return showing; },
+    get interstitialEpoch() { return interstitialEpoch; },
+    async discardInterstitial() {
+      readinessRevision++;
+      status = { ...status, interstitialLoaded: false };
+      if (native?.discardInterstitial) await withinShownCheck(native.discardInterstitial()).catch(() => undefined);
+    },
     refresh, recover,
     prepareInterstitial(): Promise<void> {
       if (!alive || !native || showing || !status.interstitial) return Promise.resolve();

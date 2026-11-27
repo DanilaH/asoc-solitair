@@ -1,10 +1,13 @@
+import { E4_M1, M1, M1_ID } from '../config/economy';
 import { RELEASE_UNLOCK, unlockedLevel } from './progression';
 import { BALANCE } from './balance';
 import type { Deal, Save } from './types';
 
 export const REWARD_OFFER_PREVIEW = import.meta.env?.VITE_CONTENT8_REWARD_OFFERS === '1';
 const DAY = 86_400_000;
-const SHOP_COINS = 30;
+const LEGACY_SHOP_COINS = 30;
+export const SHOP_FREE_COINS = E4_M1 ? M1.freeWallet : LEGACY_SHOP_COINS;
+export const SHOP_VIDEO_COINS = E4_M1 ? M1.videoWallet : LEGACY_SHOP_COINS;
 const shopDayKey = (key: string) => /^shop-utc-(0|[1-9]\d*)$/.test(key);
 const utcDay = (now: number) => Math.floor(now / DAY);
 const factors = { 'win-double': 2, 'win-triple': 3, 'win-fivefold': 5, 'win-flat': 1 } as const;
@@ -27,6 +30,7 @@ interface OfferShowContext {
 const MAX_SHOW_CONTEXTS = 64;
 
 interface PendingOffer {
+  economy?: typeof M1_ID;
   id: string;
   kind: OfferPlacement;
   dealId: string;
@@ -55,7 +59,7 @@ export function validRewardOffers(value: RewardOffers): boolean {
       (value.shop.earnedDay === undefined || (natural(value.shop.earnedDay) && value.shop.earnedDay <= value.shop.freeDay)))) &&
     Array.isArray(value.pending) && value.pending.every(offer => offer && token(offer.id) && token(offer.dealId) &&
       isOfferPlacement(offer.kind) && natural(offer.at) && natural(offer.amount) &&
-      (offer.kind === 'shop-free-coins' ? (offer.key === 'shop' || shopDayKey(offer.key)) && offer.amount === SHOP_COINS :
+      (offer.kind === 'shop-free-coins' ? (offer.key === 'shop' || shopDayKey(offer.key)) && (offer.economy === M1_ID ? offer.amount === M1.videoWallet && shopDayKey(offer.key) : offer.economy === undefined && offer.amount === LEGACY_SHOP_COINS) :
         offer.kind === 'rewarded-theme' ? offer.key === 'theme' && offer.amount === 0 : winKey(offer.key) && offer.amount > 0)) &&
     new Set(value.pending.map(offer => offer.id)).size === value.pending.length &&
     (value.shows === undefined || (Array.isArray(value.shows) && value.shows.length <= MAX_SHOW_CONTEXTS &&
@@ -72,7 +76,7 @@ export function rewardOfferState(save: Save): RewardOffers {
   return save.rewardOffers ??= { version: 1, pending: [], settledWins: [], freeAfter: 0, themeUntil: 0, definitions: 1 };
 }
 
-export const COIN_WALLET_LEVEL = RELEASE_UNLOCK.recovery;
+export const COIN_WALLET_LEVEL = E4_M1 ? 2 : RELEASE_UNLOCK.recovery;
 export function canClaimShopCoins(save: Save, deal: Deal, now: number, wallet = false) {
   const eligible = wallet ? unlockedLevel(save) >= COIN_WALLET_LEVEL :
     !save.attempt.daily && save.attempt.dealId === deal.id && (deal.campaignLevel ?? 0) >= 16 && save.attempt.board.phase === 'playing';
@@ -80,10 +84,10 @@ export function canClaimShopCoins(save: Save, deal: Deal, now: number, wallet = 
     utcDay(now) > (save.rewardOffers?.shop?.freeDay ?? -1);
 }
 export function claimShopCoins(save: Save, deal: Deal, now: number, wallet = false) {
-  if (!canClaimShopCoins(save, deal, now, wallet) || !natural(save.profile.coins + SHOP_COINS)) return false;
+  if (!canClaimShopCoins(save, deal, now, wallet) || !natural(save.profile.coins + SHOP_FREE_COINS)) return false;
   const state = rewardOfferState(save);
   state.shop = { ...state.shop, version: 1, freeDay: utcDay(now) };
-  save.profile.coins += SHOP_COINS;
+  save.profile.coins += SHOP_FREE_COINS;
   save.revision++;
   return true;
 }
@@ -91,27 +95,47 @@ export function claimShopCoins(save: Save, deal: Deal, now: number, wallet = fal
 export function selectedWinMultiplier(save: Save, deal: Deal): 'win-triple' | 'win-fivefold' | undefined {
   const victory = save.attempt.victory;
   if (!victory || victory.tier < 1 || victory.tier > 3 || !deal.campaignLevel || save.attempt.board.phase !== 'won') return;
+  if (victory.policy === M1_ID && deal.campaignLevel < M1.videoLevel) return;
   const schedule = save.rewardOffers?.multiplier;
   const selected = schedule?.selected[`win-${victory.balanceVersion}-${deal.campaignLevel}`];
   return selected ?? (((schedule?.eligible ?? 0) + 1) % 3 === 0 ? 'win-fivefold' : 'win-triple');
 }
 
-export function offerQuote(save: Save, deal: Deal, kind: OfferPlacement, now: number, componentMultiplier = false) {
+/** Every eligible first clear owns one selection even if the SDK has no fill. */
+export function recordM1WinOffer(save: Save, deal: Deal) {
+  const victory = save.attempt.victory;
+  if (victory?.policy !== M1_ID || !deal.campaignLevel || deal.campaignLevel < M1.videoLevel ||
+      victory.tier < 1 || victory.tier > 3) return;
+  const state = rewardOfferState(save);
+  const schedule = state.multiplier ??= { version: 1, eligible: 0, selected: {} };
+  const key = `win-${victory.balanceVersion}-${deal.campaignLevel}`;
+  if (!schedule.selected[key]) {
+    schedule.eligible++;
+    schedule.selected[key] = schedule.eligible % 3 === 0 ? 'win-fivefold' : 'win-triple';
+  }
+}
+
+function settledWin(state: RewardOffers | undefined, key: string) {
+  const level = key.slice(key.lastIndexOf('-'));
+  return state?.settledWins.some(old => old === key || E4_M1 && winKey(key) && old.endsWith(level));
+}
+
+export function offerQuote(save: Save, deal: Deal, kind: OfferPlacement, now: number, componentMultiplier = false): Pick<PendingOffer, 'key' | 'amount' | 'economy'> | undefined {
   const state = save.rewardOffers;
   if (!natural(now) || !natural(now + DAY) || save.attempt.daily || !isOfferPlacement(kind) || save.attempt.dealId !== deal.id) return;
   if (kind === 'shop-free-coins') {
     if (now < (state?.freeAfter ?? 0)) return;
-    if (!componentMultiplier) return { key: 'shop', amount: SHOP_COINS };
+    if (!componentMultiplier) return { key: 'shop', amount: LEGACY_SHOP_COINS };
     const day = utcDay(now), shop = state?.shop;
     if (shop?.freeDay !== day || shop.earnedDay === day) return;
-    return { key: `shop-utc-${day}`, amount: SHOP_COINS };
+    return { key: `shop-utc-${day}`, amount: SHOP_VIDEO_COINS, ...(E4_M1 && { economy: M1_ID }) };
   }
   if (kind === 'rewarded-theme') return now >= (state?.themeUntil ?? 0) ? { key: 'theme', amount: 0 } : undefined;
   const { attempt } = save;
   if (!deal.campaignLevel || attempt.board.phase !== 'won') return;
   const victory = attempt.victory;
   const key = `win-${componentMultiplier ? victory?.balanceVersion ?? save.balanceVersion : save.balanceVersion}-${deal.campaignLevel}`;
-  if (state?.settledWins.includes(key)) return;
+  if (settledWin(state, key)) return;
   const grant = attempt.payout?.find(entry => entry.reason === 'win' && entry.key === `win:${attempt.id}`);
   if (!grant || !save.profile.rewards.includes(grant.key)) return;
 
@@ -162,7 +186,7 @@ export function settleRewardOffer(save: Save, earned: { attempt: string; dealId:
   const state = save.rewardOffers;
   const offer = state?.pending.find(entry => entry.id === earned.attempt && entry.dealId === earned.dealId && entry.kind === earned.placement);
   if (!state || !offer || earned.mode !== 'campaign' || !natural(now) || !natural(Math.max(offer.at, now) + DAY)) return false;
-  if (state.settledWins.includes(offer.key) || (offer.key === 'shop' && offer.at < state.freeAfter) ||
+  if (settledWin(state, offer.key) || (offer.key === 'shop' && offer.at < state.freeAfter) ||
     (offer.key === 'theme' && offer.at < state.themeUntil)) return false;
   if (!natural(save.profile.coins + offer.amount)) return false;
   const day = shopDayKey(offer.key) ? Number(offer.key.slice('shop-utc-'.length)) : undefined;
@@ -170,7 +194,7 @@ export function settleRewardOffer(save: Save, earned: { attempt: string; dealId:
   state.pending = state.pending.filter(entry => entry.key !== offer.key);
   if (day !== undefined) {
     state.shop!.earnedDay = Math.max(day, state.shop!.earnedDay ?? -1);
-    state.freeAfter = Math.max(offer.at, now) + DAY;
+    state.freeAfter = Math.max(state.freeAfter, Math.max(offer.at, now) + (offer.economy === M1_ID ? M1.videoWalletGapMs : DAY));
   } else if (offer.key === 'shop') state.freeAfter = Math.max(offer.at, now) + DAY;
   else if (offer.key === 'theme') state.themeUntil = Math.max(offer.at, now) + DAY;
   else state.settledWins.push(offer.key);

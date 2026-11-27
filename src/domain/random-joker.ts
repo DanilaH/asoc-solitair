@@ -1,3 +1,4 @@
+import { clearUndo } from './history';
 import { applyBoard, assertBoard, boardRules, isLocked, legalCommands, placeJoker } from './engine';
 import { knownContinuation, solve } from './solver';
 import { LEGACY_OWNER_PREVIEW } from './types';
@@ -104,7 +105,7 @@ export function settleRandomJoker(save: Save, deal: Deal, request: {
     attempt.randomJokerAccess = { ...owned };
   }
   attempt.board = board;
-  attempt.undo = [];
+  clearUndo(attempt);
   attempt.randomJokerUsed = true;
   save.profile.jokers -= cost;
   save.revision++;

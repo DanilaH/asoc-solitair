@@ -1,17 +1,19 @@
+import { E4_M1 } from '../config/economy';
+import { recordM1WinOffer } from './reward-offers';
 import { comboDisposition, COMBO_STAGES } from './events/combo';
 import { releaseProfile } from '../config/profile';
 import { migrateRandomJokerRights } from './random-joker-rights';
 import { BALANCE_VERSION, CONTENT8_PREVIEW, CONTENT_VERSION, RULES_VERSION } from './types';
-import { quoteVictoryReward, victoryDifficulty, type VictoryRewardConfig } from './azur-victory-reward';
+import { M1_VICTORY, quoteVictoryReward, victoryDifficulty, type VictoryRewardConfig } from './azur-victory-reward';
 import { BALANCE } from './balance';
 import { carryCampaignRestart, recordCampaignExhaustion } from './difficulty';
-import { freeHintDemo, freeJokerPractice, freeUndoPractice, helperUnlocked, markTutorial, seenTutorial } from './progression';
+import { freeHintDemo, freeJokerPractice, freeUndoPractice, helperUnlocked, campaignId, markTutorial, seenTutorial } from './progression';
 import { carryEqualityRestart, recordEqualityOutcome } from './equality-issuance';
 import type { Attempt, Board, BoardCommand, Command, Deal, GameEvent, Location, Result, Save } from './types';
 
 import { abandonCampaign, dailyRewardEligible, finishDaily } from './meta';
 import { markCampaignWin } from './services';
-import { recordUndo } from './history';
+import { pendingRestoreRefund, recordUndo } from './history';
 import { bonusKinds, bonusOffer, pilesFor } from './bonus-slots';
 import { frozenLayers } from './frozen-cards';
 import { isBoundCard } from './bound-cards';
@@ -26,7 +28,8 @@ export function freshAttempt(deal: Deal, id: string): Attempt {
   return { id, dealId: deal.id,
     ...(releaseProfile?.capabilities.retention === 'c8-retention-candidate-r1' ? { verifiedTaskHints: 0 } : {}),
     ...(releaseProfile && !deal.daily && (deal.campaignLevel ?? 0) >= 5 ?
-      { combo: { version: 1 as const, policy: 'azur-combo-candidate-r1' as const, stage: 0, progress: 0 } } : {}),
+      { combo: { version: 1 as const, policy: E4_M1 ? 'azur-combo-deferred-r2' as const : 'azur-combo-candidate-r1' as const,
+        ...(E4_M1 ? { pending: 0 } : {}), stage: 0, progress: 0 } } : {}),
     ...(deal.daily ? { daily: { dayId: deal.daily.dayId, contentVersion: deal.daily.contentVersion } } : {}), board: structuredClone(deal.initial), undo: [], streak: { tier: 0, progress: 0, coins: 0, counted: [] } };
 }
 export function freshSave(deal: Deal, id: string): Save {
@@ -205,18 +208,28 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     abandonCampaign(next);
     next.attempt = freshAttempt(deal, cmd.attemptId); events = [{ type: 'restart' }];
     if (attempt.issuance) next.attempt.issuance = attempt.issuance;
-    if (attempt.combo) next.attempt.combo = { ...attempt.combo, stage: 0, progress: 0 };
-    else delete next.attempt.combo;
+    if (!E4_M1) {
+      if (attempt.combo) next.attempt.combo = { ...attempt.combo, stage: 0, progress: 0 };
+      else delete next.attempt.combo;
+    }
     if (next.dailyTasks) next.attempt.verifiedTaskHints = 0;
     carryEqualityRestart(next, attempt);
     if (trackDifficulty && attempt.board.phase !== 'won') carryCampaignRestart(attempt, next.attempt);
   } else if (cmd.type === 'undo') {
     if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || (next.profile.undos <= 0 && !freeUndoPractice(input, deal))) return refuse('Нет доступной отмены');
+    const refund = pendingRestoreRefund(attempt);
+    if (refund && !Number.isSafeInteger(next.profile.coins + refund.debit)) return refuse('Кошелёк переполнен');
     delete attempt.lessonHint; const restored = attempt.undo.pop()!;
+    if (refund) {
+      next.profile.coins += refund.debit;
+      attempt.stockRestores = refund.ordinal - 1;
+      attempt.restoreUndo!.entries.pop();
+      if (attempt.restoreUndo!.entries.length === 0) delete attempt.restoreUndo;
+    }
     if (attempt.unlimited && !attempt.unlimited.expired && restored.movesLeft !== null) {
       restored.retainedMoves = restored.movesLeft; restored.movesLeft = null; restored.phase = 'playing';
     }
-    attempt.board = restored; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; if (next.profile.undos > 0) next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo' }];
+    attempt.board = restored; if (attempt.telemetry && attempt.board.phase === 'playing') attempt.telemetry.finished = false; if (next.profile.undos > 0) next.profile.undos--; markTutorial(next, 'undo-used'); events = [{ type: 'undo', ...(refund?.debit && { amount: refund.debit }) }];
   } else if (cmd.type === 'place-joker') {
     if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || (next.profile.jokers <= 0 && !freeJokerPractice(input, deal))) return refuse('В этой попытке Джокер недоступен');
     const placed = placeJoker(attempt.board, cmd.column, deal);
@@ -242,6 +255,11 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     recordUndo(attempt); attempt.board = result.board; events = result.events;
     recordEqualityOutcome(next, attempt);
     if (trackDifficulty && attempt.board.phase === 'exhausted') recordCampaignExhaustion(attempt);
+    if (E4_M1 && !deal.daily && (deal.campaignLevel ?? 0) >= 5 && attempt.combo?.policy !== 'azur-combo-deferred-r2') {
+      const previous = attempt.combo;
+      attempt.combo = { version: 1, policy: 'azur-combo-deferred-r2', stage: Math.min(previous?.stage ?? 0, COMBO_STAGES.length - 1),
+        progress: previous?.progress ?? 0, pending: 0 };
+    }
     const combo = attempt.combo, before = input.attempt.board;
     const relocation = cmd.type === 'transfer' && !cmd.scissors;
     const disposition = combo ? comboDisposition({
@@ -255,7 +273,9 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
         legalCommands(before, deal).some(action => action.type === 'transfer' && action.from.kind === 'waste'),
     }) : relocation ? 'advance' : 'neutral';
     if (combo && disposition === 'reset') combo.progress = 0;
-    const tier = combo ? COMBO_STAGES[combo.stage] : STREAK[attempt.streak.tier];
+    const deferred = combo?.policy === 'azur-combo-deferred-r2';
+    const eligibleCombo = !E4_M1 || Boolean(combo && deal.campaignLevel && !next.platform?.completedCampaign.includes(campaignId(deal.campaignLevel)));
+    const tier = eligibleCombo ? combo ? COMBO_STAGES[combo.stage] : STREAK[attempt.streak.tier] : undefined;
     if (relocation && disposition === 'advance' && tier) {
       // Keep the shared transfer-edge dedupe across Undo.
       const endpoints = [cmd.from.kind + cmd.from.index, cmd.to.kind + cmd.to.index].sort().join(':');
@@ -266,12 +286,15 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
         progress.progress++;
         if (progress.progress >= tier.count) {
           const amount = !attempt.daily || dailyRewardEligible(next, today) ? tier.coins : 0;
-          next.profile.coins += amount;
-          attempt.streak.coins += amount;
+          if (deferred) combo.pending = (combo.pending ?? 0) + amount;
+          else {
+            next.profile.coins += amount;
+            attempt.streak.coins += amount;
+          }
           progress.progress = 0;
-          if (combo) combo.stage++;
+          if (combo) combo.stage = deferred ? Math.min(combo.stage + 1, COMBO_STAGES.length - 1) : combo.stage + 1;
           else attempt.streak.tier = Math.min(3, attempt.streak.tier + 1);
-          if (amount) events.push({ type: 'coins', amount });
+          if (amount) events.push({ type: deferred ? 'combo-bank' : 'coins', amount });
         }
       }
     }
@@ -283,20 +306,32 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
         events.push(...rewards.map(r => ({ type: 'meta-reward' as const, amount: r.coins, reason: r.reason })));
       } else {
         const rewardKey = `win:${attempt.id}`;
-        if (!next.profile.rewards.includes(rewardKey)) {
+        const first = !deal.campaignLevel || !next.platform?.completedCampaign.includes(campaignId(deal.campaignLevel));
+        if (E4_M1 && !first) {
+          attempt.payout = [];
+          if (deferred) combo.pending = 0;
+          events.push({ type: 'win', amount: 0 });
+        } else if (!next.profile.rewards.includes(rewardKey)) {
           const tier = victoryDifficulty(deal);
-          const parts = victoryReward && deal.campaignLevel !== undefined
-            ? quoteVictoryReward(victoryReward, tier, attempt.board.movesLeft)
+          const policy = victoryReward ?? (E4_M1 ? M1_VICTORY : undefined);
+          const parts = policy && deal.campaignLevel !== undefined
+            ? quoteVictoryReward(policy, tier, attempt.board.movesLeft)
             : { base: BALANCE.winCoins, bonus: BALANCE.coinsPerRemainingMove * (attempt.board.movesLeft ?? 0) };
           const amount = parts.base + parts.bonus;
           if (deal.campaignLevel !== undefined) attempt.victory = {
-            version: 1, rewardKey, policy: victoryReward?.id ?? 'existing-balance-v3',
+            version: 1, rewardKey, policy: policy?.id ?? 'existing-balance-v3',
             tier, tierBase: parts.base, movesBonus: parts.bonus,
             contentVersion: next.contentVersion, balanceVersion: next.balanceVersion,
           };
-          if (victoryReward && !Number.isSafeInteger(next.profile.coins + amount)) throw new RangeError('Wallet overflow');
-          next.profile.coins += amount; next.profile.wins++; next.profile.rewards.push(rewardKey);
+          const banked = deferred && first ? combo.pending ?? 0 : 0;
+          if (!Number.isSafeInteger(next.profile.coins + amount + banked)) throw new RangeError('Wallet overflow');
+          next.profile.coins += amount + banked; next.profile.wins++; next.profile.rewards.push(rewardKey);
           attempt.payout = [{ key: rewardKey, reason: 'win', label: 'За победу и оставшиеся ходы', coins: amount }, ...markCampaignWin(next, deal.id, deal.campaignLevel)];
+          if (banked) {
+            attempt.payout.push({ key: rewardKey + ':combo', reason: 'campaign_combo', label: 'Комбо', coins: banked });
+            combo!.pending = 0;
+          }
+          if (attempt.victory?.policy === M1_VICTORY.id) recordM1WinOffer(next, deal);
           const goldenReward = claimGoldenCards(next, deal);
           if (goldenReward) attempt.payout.push(goldenReward);
           events.push({ type: 'win', amount });

@@ -12,4 +12,4 @@ export const HITAPPS_FIXTURE_UI = import.meta.env?.VITE_HITAPPS_FIXTURES === '1'
 export const campaignCorePolicy = 'campaign-core-stage1-v1';
 export const CAMPAIGN_CORE_STAGE1 = releaseProfile?.policies.campaignCore === campaignCorePolicy &&
   import.meta.env?.VITE_ASOC_ARCHIVE_227 !== '1';
-export const campaignCoreDealId = (id: string) => id.endsWith('-core-stage1-v1');
+export const campaignCoreDealId = (id: string) => /-core-stage1-v1(?:-m1)?$/.test(id);

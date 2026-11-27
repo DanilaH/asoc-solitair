@@ -1,3 +1,4 @@
+import { E4_M1, M1 } from '../config/economy';
 import type { ProductOffers } from './commerce/product-offers';
 import type { Combo } from './events/combo';
 import type { DailyBonus } from './events/daily-bonus';
@@ -19,7 +20,8 @@ export const CONTENT8_PREVIEW = Boolean(releaseProfile) || import.meta.env?.VITE
 export const LEGACY_OWNER_PREVIEW = releaseProfile ? undefined : import.meta.env?.VITE_C8_OWNER_PREVIEW;
 export const OWNER_ACCEPTANCE_PREVIEW = LEGACY_OWNER_PREVIEW === 'acceptance';
 export const CONTENT_VERSION = CONTENT8_PREVIEW ? 8 : 7;
-export const BALANCE_VERSION = 3;
+export const LEGACY_BALANCE_VERSION = 3;
+export const BALANCE_VERSION = E4_M1 ? M1.version : LEGACY_BALANCE_VERSION;
 export interface Card {
   id: string; category: string; text: string; leader?: boolean; image?: string; rank?: number; ordered?: boolean; keyId?: string; explanation: string;
 }
@@ -110,6 +112,7 @@ export interface Attempt {
   adBreakShown?: true;
   coffeeRequested?: true;
   stockRestores?: number;
+  restoreUndo?: { version: 1; entries: { frame: number; ordinal: number; debit: number }[] };
   revive?: { version: 1; channel: 'coins' | 'earned'; moves: number; price: number };
   unlimitedAccess?: {
     version: 1; id: string; attemptId: string; source: 'rewarded' | 'campaign' | 'coins';
@@ -143,7 +146,7 @@ export interface PlatformState {
   lastFullscreenAt: number;
   fullscreenCadence?: { version: 1; lastShownId: string };
 }
-export interface RewardGrant { key: string; reason: 'win' | 'campaign_milestone' | 'campaign_win_cycle' | 'daily_completion' | 'daily_streak_milestone' | 'golden_cards'; label: string; coins: number; hints?: number; undos?: number }
+export interface RewardGrant { key: string; reason: 'win' | 'campaign_combo' | 'campaign_milestone' | 'campaign_win_cycle' | 'daily_completion' | 'daily_streak_milestone' | 'golden_cards'; label: string; coins: number; hints?: number; undos?: number }
 export interface MetaState { version: 1; winCycle: number; cycles: number; dailyDates: string[]; dailyStreak: number; lastDaily?: string }
 export interface EqualityIssuanceState {
   version: 1;
@@ -182,7 +185,7 @@ export interface Save {
   randomJokers?: { version: 1; grants: RandomJokerAccess[] };
 }
 export interface GameEvent {
-  type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward' | 'ice' | 'cut' | 'unbind' | 'discard' | 'assemble' | 'gold';
+  type: 'transfer' | 'draw' | 'recycle' | 'flip' | 'complete' | 'coins' | 'combo-bank' | 'win' | 'undo' | 'invalid' | 'hint' | 'restart' | 'joker' | 'key' | 'unlock' | 'meta-reward' | 'ice' | 'cut' | 'unbind' | 'discard' | 'assemble' | 'gold';
   cards?: string[]; category?: string; amount?: number; reason?: string; cause?: 'magnet' | 'hammer';
 }
 export interface Result { next: Save; accepted: boolean; events: GameEvent[]; reason?: string }

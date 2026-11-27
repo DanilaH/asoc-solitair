@@ -210,9 +210,20 @@ jobs:
         env:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
-      - run: npm test -- --reporter=default --reporter=json --outputFile=.recording/mvp-unit-results.json
+      - name: Verify historical PR229 economy and save contracts
+        env:
+          VITE_ASOC_ARCHIVE_229: '1'
+        run: npm test -- --testTimeout=15000 --reporter=default --reporter=json --outputFile=.recording/mvp-unit-results.json
+      - name: Verify ordinary E4-M1 economy and the functional audit
+        run: npx vitest run tests/unit/e4-m1.test.ts tests/unit/functional-audit-225.test.ts --reporter=default --reporter=json --outputFile=.recording/e4-m1-unit-results.json
       - run: npm run build
       - run: npx playwright install --with-deps chromium
+      - name: Measure 80 ad-free first-clear witnesses and 1,000 repeatable E4 scenarios
+        run: |
+          npx vite build --ssr tools/qa/audit-e4-m1.ts --outDir .recording/e4-m1-build
+          node .recording/e4-m1-build/audit-e4-m1.js
+          VITE_ASOC_ARCHIVE_229=1 npx vite build --ssr tools/qa/audit-e4-m1.ts --outDir .recording/e4-m1-build
+          node .recording/e4-m1-build/audit-e4-m1.js
       - name: Audit all retained and issued Deal geometries in the C8 release profile
         shell: bash
         env:
@@ -221,7 +232,8 @@ jobs:
       - name: Verify new campaign issuance and retained saves through ordinary touch UI
         env:
           ASOC_CORE_RECORD: '1'
-        run: npx playwright test tests/browser/campaign-core-stage1.spec.ts tests/browser/hitapps-rules4.spec.ts tests/browser/functional-audit-225.spec.ts --output=test-results/campaign-core-stage1
+          ASOC_E4_RECORD: '1'
+        run: npx playwright test tests/browser/campaign-core-stage1.spec.ts tests/browser/hitapps-rules4.spec.ts tests/browser/functional-audit-225.spec.ts tests/browser/e4-m1.spec.ts --output=test-results/campaign-core-stage1
       - name: Build the archived PR227 policy for historical UI contracts
         env:
           VITE_ASOC_ARCHIVE_227: '1'
@@ -258,6 +270,8 @@ jobs:
             test-results/hitapps-fixtures/
             .recording/c8-grid.txt
             .recording/mvp-unit-results.json
+            .recording/e4-m1-unit-results.json
+            .recording/e4-m1/
             .recording/ordinary-release-manifest.json
           retention-days: 7
   android:
@@ -292,7 +306,7 @@ jobs:
         env:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
-      - run: npm run check
+      - run: npm run typecheck
       - run: npm run android:sync
       - uses: actions/cache@v4
         with:

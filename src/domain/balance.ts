@@ -1,5 +1,7 @@
 /** Starting hypotheses from requirements §11.2; keep changes versioned with BALANCE_VERSION. */
-export const BALANCE = {
+import { E4_M1, M1 } from '../config/economy';
+
+export const LEGACY_BALANCE = {
   initialCoins: 100,
   initialHints: 3,
   initialUndos: 5,
@@ -14,3 +16,8 @@ export const BALANCE = {
   ads: { bannerFromLevel: 3, interstitialAfterLevel: 5, winsPerInterstitial: 3, fullscreenGapMs: 120_000 },
   streak: [{ count: 4, coins: 2 }, { count: 5, coins: 3 }, { count: 6, coins: 4 }, { count: 7, coins: 5 }],
 } as const;
+
+export const BALANCE = E4_M1 ? {
+  ...LEGACY_BALANCE, initialCoins: M1.initialCoins, helperPrices: M1.helperPrices,
+  continueCoinPrice: M1.continueCoinPrice, meta: M1.meta,
+} : LEGACY_BALANCE;

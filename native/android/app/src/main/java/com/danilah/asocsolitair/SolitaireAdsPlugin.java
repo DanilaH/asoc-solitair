@@ -64,6 +64,7 @@ public class SolitaireAdsPlugin extends Plugin {
                     if (destroyed) return;
                     interLoader = new InterstitialAdLoader(getContext());
                     rewardLoader = new RewardedAdLoader(getContext()); ready = true;
+                    event("interstitial", "initialized");
                 }));
             } catch (RuntimeException ignored) { event("interstitial", "init_error"); }
         });
@@ -153,6 +154,17 @@ public class SolitaireAdsPlugin extends Plugin {
                 }
             });
         } catch (RuntimeException error) { timeout.run(); }
+    }); }
+    @PluginMethod public void discardInterstitial(PluginCall call) { handler.post(() -> {
+        if (session == null) {
+            preloadGeneration++;
+            if (preparing && interLoader != null) interLoader.cancelLoading();
+            preparing = false;
+            if (interstitial != null) interstitial.setAdEventListener(null);
+            interstitial = null;
+            event("interstitial", "discarded");
+        }
+        call.resolve();
     }); }
     @PluginMethod public void show(PluginCall call) { handler.post(() -> {
         String kind = call.getString("kind", ""), placement = call.getString("placement", "");
@@ -309,7 +321,8 @@ public class SolitaireAdsPlugin extends Plugin {
             int width=(int)Math.floor((left+slot)*scale)-(int)Math.ceil(left*scale);
             if (width<=0) { call.resolve(); return; }
             if (banner==null || width!=bannerWidth) {
-                destroyBanner(); bannerWidth=width;
+                if (banner != null) destroyBanner();
+                bannerWidth=width;
                 banner=new BannerAdView(getActivity());
                 int dp=(int)Math.floor(width/getContext().getResources().getDisplayMetrics().density);
                 banner.setAdSize(BannerAdSize.sticky(getContext(),dp));
@@ -371,7 +384,18 @@ public class SolitaireAdsPlugin extends Plugin {
                     public void onAdClicked() {}
                     public void onImpression(@Nullable ImpressionData data) { if (banner==target) recordImpression("banner", "campaign-banner", UUID.randomUUID().toString(), data); }
                 });
-                event("banner","request");target.loadAd(new AdRequest.Builder(unit("banner")).build());
+                event("banner","request");
+                handler.postDelayed(() -> {
+                    if (banner != target || bannerLoaded || bannerRetryAt != Long.MAX_VALUE || destroyed) return;
+                    destroyBanner();
+                    bannerRetryAt = SystemClock.elapsedRealtime() + 30000;
+                    event("banner", "load_error");
+                }, 15000);
+                try { target.loadAd(new AdRequest.Builder(unit("banner")).build()); }
+                catch (RuntimeException error) {
+                    bannerRetryAt = SystemClock.elapsedRealtime() + 30000;
+                    event("banner", "load_error");
+                }
             }
             call.resolve();
         } catch (Exception e) { hide();call.reject("Banner placement failed"); }

@@ -70,7 +70,8 @@ html[data-casual] {
 [data-casual] #weekly-main #daily-tasks-week-title{display:block;font-size:15px;margin:2px 1px 6px}
 [data-casual] #weekly-main #daily-tasks-medals{margin:3px 0 5px;min-height:37px}
 [data-casual] #daily-tasks-milestones{display:grid;grid-template-columns:1fr;gap:4px}
-[data-casual] #daily-tasks-milestones button{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;text-align:start;gap:7px;min-height:44px;margin:0;padding:4px 7px;font-size:12px;line-height:1.14}
+[data-casual] #daily-tasks-milestones button{min-height:44px;margin:0;padding:4px 7px;font-size:12px;line-height:1.14}
+[data-casual] #daily-tasks-milestones button:has(>.casual-icon){display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;text-align:start;gap:7px}
 [data-casual] #daily-tasks-milestones button small{display:block;font-size:11px;margin-top:3px;font-weight:700}
 [data-casual] #daily-tasks-milestones button b{justify-self:end;font-size:11px}
 [data-casual] #daily-tasks-milestones button[data-week-claim=ready]{background:linear-gradient(#ffe8ae,#ffda8f);border-color:#c79042;color:#5b3918}

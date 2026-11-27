@@ -1,4 +1,5 @@
 import { CAMPAIGN_META } from './config/campaign-meta';
+import { M1_RETENTION } from './config/retention-m1';
 import { claimWinStreak, stagedStreak, streakStatus } from './domain/events/win-streak';
 import { E4_M1, M1, M1_ID } from './config/economy';
 import { ordinaryProgress } from './domain/ordinary-progress';
@@ -2077,15 +2078,17 @@ try {
       const ready = !claimed && week.totalMedals >= entry.medals;
       const rewards = [entry.prize, ...(entry.bundle ?? [])].map(prizeLabel).join(' + ') + (entry.chest ? ' + сундук' : '');
       const status = claimed ? 'Получено' : ready ? 'Забрать' : 'Закрыто';
-      claim.setAttribute('aria-label', `${entry.medals} мед. · ${rewards} · ${status}`);
       claim.dataset.weekClaim = claimed ? 'claimed' : ready ? 'ready' : 'locked';
       claim.disabled = busy || !ready;
-      const description = document.createElement('span');
-      const threshold = document.createElement('strong'); threshold.textContent = entry.medals + ' мед.';
-      const prize = document.createElement('small'); prize.textContent = rewards;
-      description.append(threshold, prize);
-      claim.append(prizeIcon(entry.chest ? 'RandomBoostersChest' : entry.prize.kind), description,
-        Object.assign(document.createElement('b'), { textContent: status }));
+      if (casual && week.catalog === M1_RETENTION.id) {
+        claim.setAttribute('aria-label', `${entry.medals} мед. · ${rewards} · ${status}`);
+        const description = document.createElement('span');
+        const threshold = document.createElement('strong'); threshold.textContent = entry.medals + ' мед.';
+        const prize = document.createElement('small'); prize.textContent = rewards;
+        description.append(threshold, prize);
+        claim.append(prizeIcon(entry.chest ? 'RandomBoostersChest' : entry.prize.kind), description,
+          Object.assign(document.createElement('b'), { textContent: status }));
+      } else claim.textContent = `${entry.medals} мед. · ${claimed ? 'Получено' : rewards}`;
       claim.addEventListener('click', () => {
         if (saving || serviceBusy) return;
         const origin = claim.getBoundingClientRect(), previousSave = save;

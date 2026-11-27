@@ -1,3 +1,4 @@
+import { M1_ID } from '../config/economy';
 import type { Deal } from './types';
 
 export interface VictoryRewardConfig {
@@ -27,6 +28,8 @@ export const AZUR_VICTORY_DEFAULTS: VictoryRewardConfig = Object.freeze({
   extreme: 200,
   fallback: 100,
 });
+
+export const M1_VICTORY: VictoryRewardConfig = Object.freeze({ ...AZUR_VICTORY_DEFAULTS, id: M1_ID, provenance: 'PRODUCT_POLICY' });
 
 export const AZUR_VICTORY_QA = import.meta.env?.VITE_AZUR_VICTORY_QA === '1';
 export const AZUR_VICTORY_SAVE_KEY = `asoc-solitaire.qa.${AZUR_VICTORY_DEFAULTS.id}`;

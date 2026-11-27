@@ -115,9 +115,8 @@ export function openDailyBonusRound(save: Save, now: number, roundId: string, ra
   if (state.phase === 'unavailable' || state.phase === 'locked' || state.phase === 'future') return;
   if (previous && !state.canStartRound) return previous;
   if (!/^[a-zA-Z0-9_-]{1,100}$/.test(roundId)) return;
-  const pool = catalog === 'offline-r1'
-    ? offlinePool.filter(prize => prize.kind !== 'Shuffle' || hasFutureShuffleUse(save))
-    : AZUR_BONUS_POOL;
+  const pool = (catalog === 'offline-r1' ? offlinePool : AZUR_BONUS_POOL)
+    .filter(prize => prize.kind !== 'Shuffle' || hasFutureShuffleUse(save));
   const columns: TaskPrize[] = [];
   for (let i = 0; i < 4; i++) {
     const eligible = pool.filter(row => !columns.some(prize => conflictKey(prize) === conflictKey(row)));

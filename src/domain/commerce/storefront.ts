@@ -1,3 +1,4 @@
+import { E4_M1, M1 } from '../../config/economy';
 import { LEGACY_OWNER_PREVIEW } from '../../domain/types';
 import { activePurchaseGoods } from './orders';
 import { PRODUCTS, CHECKOUT_PRODUCT_INDEX, type ProductGood } from './catalog';
@@ -9,7 +10,7 @@ import { CAMPAIGN_LENGTH, completedLevels } from '../progression';
 export const STOREFRONT_PREVIEW = LEGACY_OWNER_PREVIEW === 'storefront' || OWNER_ACCEPTANCE_PREVIEW;
 const natural = (n: unknown): n is number => Number.isSafeInteger(n) && (n as number) >= 0;
 export interface StoreProgress {
-  version: 1; season: string; clears: number; piggy: number; freeClaimed?: true;
+  version: 1; season: string; clears: number; piggy: number; freeClaimed?: true; freeCoins?: 100;
   premiumClaimed?: string; piggyGrant?: string;
 }
 export const productLabels = {
@@ -33,7 +34,7 @@ function period(now: number) {
 export function recordStoreClear(save: Save, now: number) {
   const season = period(now);
   if (!season || (save.storeProgress && save.storeProgress.season > season.id)) return false;
-  if (save.storeProgress?.season !== season.id) save.storeProgress = { version: 1, season: season.id, clears: 0, piggy: 0 };
+  if (save.storeProgress?.season !== season.id) save.storeProgress = { version: 1, season: season.id, clears: 0, piggy: 0, ...(E4_M1 && { freeCoins: M1.monthly as 100 }) };
   const data = save.storeProgress;
   if (!natural(data.clears + 1)) return false;
   data.clears++;
@@ -43,24 +44,24 @@ export function recordStoreClear(save: Save, now: number) {
 }
 export function validStoreProgress(data: StoreProgress) {
   return Boolean(data && data.version === 1 && /^[0-9]{4}-(0[1-9]|1[0-2])$/.test(data.season) &&
-    natural(data.clears) && natural(data.piggy) && data.piggy <= PIGGY_LIMIT &&
+    (data.freeCoins === undefined || data.freeCoins === M1.monthly) && natural(data.clears) && natural(data.piggy) && data.piggy <= PIGGY_LIMIT &&
     (data.freeClaimed === undefined || data.freeClaimed === true) &&
     [data.premiumClaimed, data.piggyGrant].every(id => id === undefined || typeof id === 'string' && id.length <= 300));
 }
 
-export interface FreeCampaignBonusGrant { season: string; coins: 10 }
+export interface FreeCampaignBonusGrant { season: string; coins: number }
 
 /** Settle a recorded earned free reward, including an older month, before its record can reset.
  * This is the ordinary no-IAP product policy; paid tracks keep their existing owner.
  */
 export function settleFreeCampaignBonus(save: Save, now: number): FreeCampaignBonusGrant | undefined {
-  const season = period(now), data = save.storeProgress;
+  const season = period(now), data = save.storeProgress, coins = data?.freeCoins ?? 10;
   if (!season || !data || !validStoreProgress(data) || data.season > season.id ||
-      data.clears < PASS_GOAL || data.freeClaimed || !natural(save.profile.coins + 10)) return;
+      data.clears < PASS_GOAL || data.freeClaimed || !natural(save.profile.coins + coins)) return;
   data.freeClaimed = true;
-  save.profile.coins += 10;
+  save.profile.coins += coins;
   save.revision++;
-  return { season: data.season, coins: 10 };
+  return { season: data.season, coins };
 }
 
 /** Caller invokes once for an accepted campaign first clear, inside that win's SaveStore mutation.
@@ -108,7 +109,7 @@ export function claimShopProgress(save: Save, now: number, track: 'free'|'premiu
     if (data.clears < PASS_GOAL) return false;
     if (track === 'free') {
       if (data.freeClaimed) return false;
-      data.freeClaimed = true; save.profile.coins += 10;
+      data.freeClaimed = true; save.profile.coins += data.freeCoins ?? 10;
     } else {
       const grant = goods.find(item => item.good.type === 'pass');
       if (!grant || data.premiumClaimed) return false;

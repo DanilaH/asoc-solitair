@@ -1,5 +1,5 @@
 import { applyBoard, boardKey, isLocked } from './engine';
-import { recordUndo } from './history';
+import { clearUndo, recordUndo } from './history';
 import type { Board, BoardCommand, Deal, Save } from './types';
 
 export interface ShuffleRequest {
@@ -69,7 +69,7 @@ export function commitShuffle(save: Save, deal: Deal, request: ShuffleRequest, r
     board = result.board;
   }
   if (board.phase !== 'won') return false;
-  if (deal.shufflePolicy === 'hidden-pool-r1') attempt.undo = [];
+  if (deal.shufflePolicy === 'hidden-pool-r1') clearUndo(attempt);
   else recordUndo(attempt);
   attempt.board = next;
   attempt.shuffleUsed = true;

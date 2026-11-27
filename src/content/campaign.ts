@@ -171,7 +171,7 @@ for (const { deal } of campaignCore.byId.values()) {
   all.set(deal.id, deal);
 }
 export const hitappsR4Deals = () => hitappsR4Bank.values();
-export const campaignCoreDeals = () => campaignCore.byId.values();
+export const campaignCoreDeals = () => Array.from(campaignCore.byId.values()).filter(entry => !entry.deal.id.endsWith('-m1')).values();
 export const campaignLevelPreview = (deal: Deal | undefined) => CAMPAIGN_CORE_STAGE1 && deal && (deal.campaignLevel ?? 0) <= 15
   ? campaignCore.byLevel.get(deal.campaignLevel!)?.[0]?.deal ?? deal : deal;
 export const findDeal = (id: string) => all.get(id) ?? findDaily(id);

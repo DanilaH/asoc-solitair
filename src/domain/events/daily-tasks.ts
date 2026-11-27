@@ -1,3 +1,4 @@
+import { E4_M1, M1 } from '../../config/economy';
 import { releaseProfile } from '../../config/profile';
 import { CAMPAIGN_LENGTH, completedLevels } from '../progression';
 import { rewardOfferState } from '../reward-offers';
@@ -186,7 +187,7 @@ export function acceptedTaskSignals(before: Save, result: Result, cmd: Command, 
   report('UseHints', events.filter(event => event.type === 'hint').length);
   report('UseJokers', events.filter(event => event.type === 'joker').length);
   report('UseRollbacks', events.filter(event => event.type === 'undo').length);
-  report('EarnCoins', next.profile.coins - before.profile.coins);
+  if (cmd.type !== 'undo') report('EarnCoins', next.profile.coins - before.profile.coins);
   return signals;
 }
 
@@ -348,8 +349,10 @@ export function updatePreviewTasks(save: Save, now: number, useSourceCatalog = s
   const fourth: TaskTarget = releaseTasks && day % 3 === 2
     ? finishedCampaign ? earnedRows[3] : { id: 'no-hint', kind: 'WinNoHints', target: 1, prize: { kind: 'Medals', quantity: 2 } }
     : day % 2 ? earnedRows[3] : finishedCampaign ? { ...earnedRows[4], id: 'theme-undo', kind: 'CollectThemes' } : earnedRows[4];
-  scheduleTasks(save, now, [...earnedRows.slice(0, 3), fourth],
-    [{ id: 'week', medals: 5, prize: { kind: 'Coins', quantity: 20 } }], catalog);
+  const rows = [...earnedRows.slice(0, 3), fourth].map(row => E4_M1 && row.prize.kind === 'Coins'
+    ? { ...row, prize: { ...row.prize, quantity: M1.taskCoins } } : row);
+  scheduleTasks(save, now, rows,
+    [{ id: 'week', medals: 5, prize: { kind: 'Coins', quantity: E4_M1 ? M1.weekly : 20 } }], catalog);
 }
 
 export const shouldScheduleTasks = (save: Save, now: number) => (utcKey(now) ?? '') > (save.dailyTasks?.lastUtc ?? '');

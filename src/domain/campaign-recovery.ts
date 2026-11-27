@@ -26,9 +26,10 @@ export function restoreCampaignStock(save: Save, deal: Deal, quote: { attemptId:
   // Use the ordinary stock transition with one separately authorized recycle.
   const result = applyBoard({ ...attempt.board, recyclesLeft: 1 }, { type: 'recycle' }, deal);
   if (typeof result === 'string') return false;
-  recordUndo(attempt);
+  const ordinal = (attempt.stockRestores ?? 0) + 1;
+  recordUndo(attempt, { ordinal, debit: cost });
   attempt.board = result.board;
-  attempt.stockRestores = (attempt.stockRestores ?? 0) + 1;
+  attempt.stockRestores = ordinal;
   save.profile.coins -= cost;
   save.revision++;
   return true;

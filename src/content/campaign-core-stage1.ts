@@ -1,3 +1,6 @@
+import { E4_M1, M1 } from '../config/economy';
+import stage2Specials from './hitapps-r4-bank/stage2-specials.json' with { type: 'json' };
+import type { SourceRecord } from './hitapps-r4-bank';
 import { campaignCorePolicy, hitappsR4Difficulty } from '../config/hitapps-r4';
 import { adjustedMoveBudget, easyDealTarget, futureDifficultyPenalty } from '../domain/difficulty';
 import type { Attempt, CampaignIssuance, Deal, Save } from '../domain/types';
@@ -34,7 +37,7 @@ function coreDeal(source: Deal): Deal {
 export function bindCampaignCore(known: ReadonlyMap<string, Deal>, archived: Bank) {
   const byId = new Map<string, Layout>(), byLevel = new Map<number, Layout[]>();
   const identities = new Map<string, string>();
-  const additions = bindHitappsBank(known, [...openingSourceRecords, ...lateSourceRecords]);
+  const additions = bindHitappsBank(known, [...openingSourceRecords, ...lateSourceRecords, ...stage2Specials as unknown as SourceRecord[]]);
   for (const { record, deal: source, hash, penalty } of [...additions.values(), ...archived.values()]) {
     const level = source.campaignLevel!;
     if (record.use !== 'campaign' || level > 80) continue;
@@ -45,6 +48,16 @@ export function bindCampaignCore(known: ReadonlyMap<string, Deal>, archived: Ban
     const deal = coreDeal(source);
     const entry = { deal, record, hash, penalty, geometryId, geometry };
     byId.set(deal.id, entry);
+    const m1: Deal = { ...deal, id: deal.id + '-m1',
+      ...(deal.bonusSlots && { bonusSlots: {
+        ...(deal.bonusSlots.foundation && { foundation: { coins: M1.upperSlot } }),
+        ...(deal.bonusSlots.tableau && { tableau: { coins: M1.lowerSlot } }),
+      } }),
+      ...(deal.recovery && { recovery: { ...deal.recovery, restoreBase: M1.restoreBase, restoreIncrement: M1.restoreStep } }),
+      ...(deal.extraHelpers && { extraHelpers: { ...deal.extraHelpers, randomJokerCoins: M1.randomJoker, unlimitedCoins: M1.unlimited } }),
+    };
+    byId.set(m1.id, { ...entry, deal: m1 });
+    if (!E4_M1 && stage2Specials.some(row => row.deal.id === record.deal.id)) continue;
     if (!byLevel.has(level)) byLevel.set(level, []);
     byLevel.get(level)!.push(entry);
   }
@@ -101,5 +114,6 @@ export function selectCampaignCore(bank: ReturnType<typeof bindCampaignCore>, sa
     return seededRank(`${rotation.seed}:${a.geometryId}`) - seededRank(`${rotation.seed}:${b.geometryId}`) ||
       a.geometryId.localeCompare(b.geometryId);
   });
-  return pool[0].deal;
+  const selected = pool[0].deal;
+  return E4_M1 ? bank.byId.get(selected.id + '-m1')!.deal : selected;
 }

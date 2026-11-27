@@ -1,3 +1,5 @@
+import { E4_M1, M1 } from '../config/economy';
+import { validRestoreUndo } from '../domain/history';
 import { validProductOffers } from '../domain/commerce/product-offers';
 import { validCombo } from '../domain/events/combo';
 import { validDailyBonus } from '../domain/events/daily-bonus';
@@ -12,7 +14,7 @@ import { validCampaignAds } from '../domain/campaign-advertising';
 import { Capacitor, registerPlugin } from '@capacitor/core';
 import type { StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { dayNumber, metaState, milestoneRewards } from '../domain/meta';
-import { BALANCE } from '../domain/balance';
+import { BALANCE, LEGACY_BALANCE } from '../domain/balance';
 import { validRewardOffers } from '../domain/reward-offers';
 import { validOfferCampaignJournal } from '../domain/commerce/offer-campaigns';
 import { validCommerceJournal } from '../domain/commerce/orders';
@@ -48,14 +50,15 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
   if (!deal) throw Error('Неизвестная раздача. Сохранение оставлено без изменений.');
   const legacy = save.rulesVersion === 1 && save.balanceVersion === 1 && ((save.contentVersion === 1 && deal.id === 'intro-001') || (save.contentVersion === 2 && (deal.campaignLevel ?? 0) <= 20));
   const previous = save.rulesVersion === 2 && ((save.contentVersion === 3 && save.balanceVersion === 2) || (save.contentVersion === 4 && save.balanceVersion === 3));
-  const v2 = save.rulesVersion === 2 && save.contentVersion === 5 && save.balanceVersion === BALANCE_VERSION;
-  const archived = save.rulesVersion === 3 && save.contentVersion === 5 && save.balanceVersion === BALANCE_VERSION;
-  const content6 = save.rulesVersion === 3 && save.contentVersion === 6 && save.balanceVersion === BALANCE_VERSION;
-  const content7 = CONTENT_VERSION === 8 && save.rulesVersion === 3 && save.contentVersion === 7 && save.balanceVersion === BALANCE_VERSION;
+  const v2 = save.rulesVersion === 2 && save.contentVersion === 5 && save.balanceVersion === 3;
+  const archived = save.rulesVersion === 3 && save.contentVersion === 5 && save.balanceVersion === 3;
+  const content6 = save.rulesVersion === 3 && save.contentVersion === 6 && save.balanceVersion === 3;
+  const content7 = CONTENT_VERSION === 8 && save.rulesVersion === 3 && save.contentVersion === 7 && save.balanceVersion === 3;
   const attempts=[save.attempt,...Object.values(save.parked??{})];
   const prematureIdentity = attempts.some(a => a && [6, 7, 8].some(revision =>
     save.contentVersion < revision && a.dealId.startsWith(`campaign-c${revision}-`)));
-  const migration = legacy || previous || v2 || archived || content6 || content7;
+  const economyUpgrade = E4_M1 && save.rulesVersion === RULES_VERSION && save.contentVersion === CONTENT_VERSION && save.balanceVersion === 3;
+  const migration = legacy || previous || v2 || archived || content6 || content7 || economyUpgrade;
   if (save.schema !== 1 || (!migration && (save.rulesVersion !== RULES_VERSION || save.contentVersion !== CONTENT_VERSION || save.balanceVersion !== BALANCE_VERSION)) || save.attempt.dealId !== deal.id || prematureIdentity) throw Error('Сохранение другой версии. Исходные данные оставлены на устройстве.');
   // Tag every active/parked board before advancing the envelope. Undo may never change rules.
   const previousRules = save.rulesVersion < 3;
@@ -188,10 +191,11 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
   const revive = save.attempt.revive;
   if (revive !== undefined && (!deal.recovery || !save.attempt.continued || !revive || revive.version !== 1 ||
       !['coins', 'earned'].includes(revive.channel) || revive.moves !== BALANCE.continueMoves ||
-      revive.price !== (revive.channel === 'coins' ? BALANCE.continueCoinPrice : 0))) throw Error('Повреждено возрождение');
+      (revive.channel === 'coins' ? ![LEGACY_BALANCE.continueCoinPrice, M1.continueCoinPrice].includes(revive.price as 120 | 900) : revive.price !== 0))) throw Error('Повреждено возрождение');
   const unlimited = save.attempt.unlimited;
   if (save.attempt.unlimitedAccess !== undefined && !validUnlimitedAccess(save.attempt.unlimitedAccess, save.attempt, deal))
     throw Error('Повреждено право на ходы без лимита');
+  if (!validRestoreUndo(save.attempt, deal)) throw Error('Повреждён возврат за колоду');
   if ((save.attempt.stockRestores !== undefined && (!deal.recovery || !natural(save.attempt.stockRestores))) ||
       (unlimited !== undefined && (!supportsUnlimited(deal) || !unlimited || unlimited.version !== 1 ||
         !/^[A-Za-z0-9_-]{1,100}$/.test(unlimited.id) || !natural(unlimited.issuedAt) ||
@@ -266,7 +270,7 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
         grant.key === victory.rewardKey && grant.reason === 'win' && grant.coins === victory.tierBase + victory.movesBonus))) {
     throw Error('Повреждена выплата победы');
   }
-  if (save.attempt.payout && (!Array.isArray(save.attempt.payout) || save.attempt.payout.some(r => !strings([r.key]) || !natural(r.coins) || !['win', 'campaign_milestone', 'campaign_win_cycle', 'daily_completion', 'daily_streak_milestone', 'golden_cards'].includes(r.reason) || typeof r.label !== 'string' || r.label.length > 200 || (r.hints !== undefined && !natural(r.hints)) || (r.undos !== undefined && !natural(r.undos))))) throw Error('Повреждён результат');
+  if (save.attempt.payout && (!Array.isArray(save.attempt.payout) || save.attempt.payout.some(r => !strings([r.key]) || !natural(r.coins) || !['win', 'campaign_combo', 'campaign_milestone', 'campaign_win_cycle', 'daily_completion', 'daily_streak_milestone', 'golden_cards'].includes(r.reason) || typeof r.label !== 'string' || r.label.length > 200 || (r.hints !== undefined && !natural(r.hints)) || (r.undos !== undefined && !natural(r.undos))))) throw Error('Повреждён результат');
   if (save.unlockSchedule !== undefined && (!save.unlockSchedule || save.unlockSchedule.version !== 1 ||
     [save.unlockSchedule.legacyDaily, save.unlockSchedule.legacyTasks].some(flag => flag !== undefined && flag !== true)))
     throw Error('Повреждена история открытий');

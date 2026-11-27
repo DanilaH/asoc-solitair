@@ -102,3 +102,6 @@ export const c8TeachingPresets = presets.map(preset => {
   };
   return { deal, base, skill: preset.skill };
 });
+
+// The authored core variants demonstrate the one-key lock and golden cards.
+export const c8CoreTeachingLevels: ReadonlySet<number> = new Set([26, 27]);

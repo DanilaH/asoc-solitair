@@ -21,7 +21,8 @@ const campaign = campaignDeals.slice(15, 80);
 assert.equal(campaign.length, 65);
 const teaching = new Map<number, string>([
   [17, 'campaign-c8-ftue-017-r1'], [18, 'campaign-c8-special-018'], [19, 'campaign-c8-ftue-019-r1'],
-  [24, 'campaign-c8-ftue-024-r1'], [28, 'campaign-c8-ftue-028-r1'],
+  [24, 'campaign-c8-ftue-024-r1'], [26, 'campaign-c8-special-026-core-special-r1'],
+  [27, 'campaign-c8-wave-027-core-special-r1'], [28, 'campaign-c8-ftue-028-r1'],
   [30, 'campaign-c8-bonus-030-c8-core-r1-shuffle-r1-rights-r1'], [32, 'campaign-c8-ftue-032-r1'],
 ]);
 assert.equal(campaignDeals.length, 80);
@@ -31,11 +32,12 @@ const firstTraversal = campaignDeals.map((base, index) => {
   assert.equal(unlockedLevel(session), level);
   const deal = index ? selectCampaignDeal(session, base, session.attempt) : findDeal(session.attempt.dealId)!;
   if (index) beginDeal(session, deal, `campaign-audit-${level}`, findDeal(session.attempt.dealId));
-  if (level === 30) {
+  if ([26, 27, 30].includes(level)) {
     const lesson = findDeal(teaching.get(level)!)!;
     assert.equal(layoutFingerprint(deal), layoutFingerprint(lesson));
     assert.deepEqual(deal.winningPath, lesson.winningPath);
     assert.equal(deal.shuffleCost, lesson.shuffleCost);
+    assert.equal(deal.initial.rulesVersion, lesson.initial.rulesVersion);
   } else if (teaching.has(level)) assert.equal(deal.id, teaching.get(level), `L${level} lesson changed during campaign`);
   else if (level >= 16) assert.equal(deal.initial.rulesVersion, 4, `L${level} fell back during campaign`);
   const passport = campaignIssuance(session, base, deal);

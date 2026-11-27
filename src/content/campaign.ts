@@ -10,7 +10,7 @@ import { modifierDeals } from './modifiers';
 import data from './campaign.json' with { type: 'json' };
 import { coreSpecialBaseIds, coreSpecialDeals } from './campaign-v8-integrated-specials';
 import { content8Special, content8SpecialRestart } from './campaign-v8-special';
-import { c8TeachingPresets } from './campaign-v8-ftue';
+import { c8CoreTeachingLevels, c8TeachingPresets } from './campaign-v8-ftue';
 import { content8BonusDeals, progressiveBonusDeal } from './campaign-v8-bonus';
 import { content8FrozenDeal } from './campaign-v8-frozen';
 import { content8BoundDeal } from './campaign-v8-bound';
@@ -200,9 +200,10 @@ export function selectCampaignDeal(save: Save, base: Deal, previous?: Attempt): 
   const previousSource = original && (releaseSourceById.get(original) ?? original);
   const candidate = selectAdaptiveDeal(save, selected, lateAdaptive, previousSource ? { ...previous!, dealId: previousSource } : previous);
   if (!releaseProfile) return candidate;
-  const composed = composeReleaseDeal(candidate);
-  if (base.training && !save.platform?.completedCampaign.includes(campaignId(base.campaignLevel!)) ||
-      base.campaignLevel === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1')) return composed;
+  const composed = composeReleaseDeal(candidate), level = base.campaignLevel!;
+  const firstClear = !save.platform?.completedCampaign.includes(campaignId(level));
+  if ((base.training || c8CoreTeachingLevels.has(level)) && firstClear ||
+      level === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1')) return composed;
   return selectHitappsBank(hitappsR4Bank, save, base, composed, previous) ?? composed;
 }
 
@@ -260,7 +261,7 @@ function ruleFamily(deal: Deal) {
 export function selectRetryLayout(save: Save, base: Deal, current: Deal): Deal | undefined {
   const level = base.campaignLevel!;
   const mastered = save.platform?.completedCampaign.includes(campaignId(level));
-  if (!mastered && (level <= 4 || teachingByLevel.has(level) ||
+  if (!mastered && (level <= 4 || teachingByLevel.has(level) || c8CoreTeachingLevels.has(level) ||
       level === releaseConfig.policies.chargedShuffleLevel && !save.campaign?.tutorials.includes('ftue:shuffle-used:r1'))) return;
   const source = hitappsR4Bank.get(current.id);
   if (source && source.record.use !== 'campaign') return;

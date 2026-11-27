@@ -135,3 +135,7 @@ html[data-reduced=true] [data-casual] #calendar .stamp-new{animation:none}
 
 [data-casual] #privacy-dialog .sheet-body{font-size:13px;line-height:1.5}
 [data-casual] #privacy-dialog h2{font-size:19px}
+[data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone){grid-template-columns:minmax(128px,1fr) minmax(0,1fr)}
+[data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone[hidden]){grid-template-columns:1fr}
+[data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone) #daily-tasks-medals{grid-template-columns:20px minmax(65px,1fr) 20px;gap:4px;padding:4px 5px;font-size:12px}
+[data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone) #daily-tasks-medals>.casual-icon{width:20px;height:20px}

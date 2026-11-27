@@ -207,6 +207,7 @@ test('UI-07 and UI-10 keep series and weekly anchors through a committed chest',
     })).toBe(true);
     await capture(page, info, 'RC233-week-' + width + 'x' + height);
     await expect(body).toBeVisible();
+    expect(await page.locator('#daily-tasks-medals > span').evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
   }
   await capture(page, info, 'UI10-week');
   if (await page.locator('#daily-tasks-week-details').isVisible()) await page.locator('#daily-tasks-week-details>summary').tap();

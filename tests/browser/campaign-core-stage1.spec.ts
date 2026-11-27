@@ -94,7 +94,7 @@ test('cold start through L6, with real touch, short lessons and a new L6 layout'
     }
     await play(page, deal, deal.winningPath);
     await expect(page.locator('#result')).toBeVisible();
-    const next = page.locator('#next-level');
+    const next = page.locator('#result[open] #next-level');
     await next.tap();
     if (await next.isVisible() && await page.locator('#result').getAttribute('data-reward-phase') === 'claimed') await next.tap();
   }

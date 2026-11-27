@@ -178,7 +178,7 @@ test('the finished campaign keeps Daily accessible and never opens the level pic
   expect(save.attempt.board.phase).toBe('won');
   await launch(page, save);
   await page.locator('#home-play').tap();
-  const next = page.locator('#next-level');
+  const next = page.locator('#result[open] #next-level');
   await expect(next).toBeVisible();
   await next.tap();
   if (await next.isVisible()) await next.tap();

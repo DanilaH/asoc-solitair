@@ -106,7 +106,7 @@ export function configureCasualDialogs() {
   const icons: Record<string, Icon> = {
     settings: 'looks', helpers: 'hint', 'coins-dialog': 'coin', 'campaign-lives': 'heart', calendar: 'daily',
     appearance: 'looks', 'cycle-info': 'gift', 'picture-dialog': 'album', 'bonus-offer': 'link',
-    'inspect-dialog': 'book', 'daily-tasks-dialog': 'task', 'daily-bonus-dialog': 'gift',
+    'privacy-dialog': 'book', 'inspect-dialog': 'book', 'daily-tasks-dialog': 'task', 'daily-bonus-dialog': 'gift',
     'campaign-liveops': 'medal', 'random-joker-warning': 'joker', 'shuffle-warning': 'cycle',
   };
   for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog')) {

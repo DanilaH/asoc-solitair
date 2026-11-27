@@ -1,3 +1,4 @@
+import privacyPolicy from './app/privacy.html?raw';
 import { CAMPAIGN_META } from './config/campaign-meta';
 import { M1_RETENTION } from './config/retention-m1';
 import { claimWinStreak, stagedStreak, streakStatus } from './domain/events/win-streak';
@@ -2067,7 +2068,7 @@ try {
     chest.textContent = chestCount > 1 ? `Открыть сундук · ${chestCount}` : 'Открыть сундук';
     weeklyMain.toggleAttribute('data-week-ladder', casual && multiWeek);
     if (casual && multiWeek) {
-      if (taskBody.firstElementChild !== weeklyMain) taskBody.prepend(weeklyMain);
+      $('#daily-tasks-list').after(weeklyMain);
       if (!weeklyMain.contains(medals)) $('#daily-tasks-week-title').after(medals);
     } else if (taskBody.firstElementChild === weeklyMain) {
       $('#daily-tasks-list').after(weeklyMain);
@@ -2098,6 +2099,20 @@ try {
       });
       return claim;
     }) : []));
+    const weekDetails = $<HTMLDetailsElement>('#daily-tasks-week-details');
+    weekDetails.hidden = !multiWeek;
+    if (week?.catalog !== M1_RETENTION.id) weekDetails.open = true;
+    const readyMilestone = $<HTMLButtonElement>('#daily-tasks-ready-milestone');
+    const firstReady = milestones.querySelector<HTMLButtonElement>('button[data-week-claim=ready]');
+    readyMilestone.hidden = !firstReady;
+    readyMilestone.disabled = busy;
+    readyMilestone.textContent = firstReady ? 'Получить · ' + (firstReady.getAttribute('aria-label')?.split(' · ')[1] ?? firstReady.textContent) : '';
+    readyMilestone.onclick = () => firstReady?.click();
+    if (casual && multiWeek) {
+      const readyRow = $('#daily-tasks-ready');
+      readyRow.hidden = false;
+      readyRow.replaceChildren(medals, readyMilestone);
+    }
     const archive = $<HTMLDetailsElement>('#daily-tasks-previous');
     archive.hidden = !state.previous.length;
     if (!state.previous.length) archive.open = false;
@@ -2918,6 +2933,8 @@ try {
     else openWallet();
   }, domOptions);
   $('#helpers-coins-open').addEventListener('click', () => openWallet(() => openHelpers(helperFocus, false, helperResource)), domOptions);
+  $('#privacy-copy').innerHTML = privacyPolicy;
+  $('#privacy-open').addEventListener('click', () => openChildDialog('#privacy-dialog', '#settings', $('#privacy-open')), domOptions);
   $('#appearance-settings').addEventListener('click', () => {
     renderMeta(save, saving);
     openChildDialog('#appearance', '#settings', $('#appearance-settings'));

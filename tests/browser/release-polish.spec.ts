@@ -152,6 +152,11 @@ test('UI-02–05 and UI-08 paper sheets, long wallet, legacy album and focus ret
       await capture(page, info, 'UI03-appearance-end');
     }
     if (dialog === '#settings') {
+      await page.locator('#privacy-open').scrollIntoViewIfNeeded();
+      await open(page, '#privacy-open', '#privacy-dialog');
+      await expect(page.locator('#privacy-copy')).toContainText('Yandex Mobile Ads');
+      await page.locator('#privacy-dialog .sheet-actions button').tap();
+      await expect(page.locator('#privacy-open')).toBeFocused();
       await open(page, '#helpers-open', '#helpers');
       if (!before) expect(await page.locator('#hint-offer h3').evaluate(n => getComputedStyle(n, '::before').content)).toBe('none');
       await capture(page, info, 'UI08-helpers');
@@ -191,7 +196,21 @@ test('UI-07 and UI-10 keep series and weekly anchors through a committed chest',
   await capture(page, info, 'UI07-series-claimed');
   await page.locator('#cycle-info .close').tap();
   await open(page, '#daily-tasks-open', '#daily-tasks-dialog');
+  for (const [width, height] of [[320, 480], [320, 568], [360, 640]]) {
+    await page.setViewportSize({ width, height });
+    const firstTask = page.locator('#daily-tasks-list>section').first();
+    const body = page.locator('#daily-tasks-dialog .sheet-body');
+    await expect(page.locator('#daily-tasks-week-details')).not.toHaveAttribute('open');
+    expect(await firstTask.evaluate(node => {
+      const r = node.getBoundingClientRect(), body = node.closest('.sheet-body')!.getBoundingClientRect();
+      return r.top >= body.top && r.bottom <= body.bottom;
+    })).toBe(true);
+    await capture(page, info, 'RC233-week-' + width + 'x' + height);
+    await expect(body).toBeVisible();
+  }
   await capture(page, info, 'UI10-week');
+  if (await page.locator('#daily-tasks-week-details').isVisible()) await page.locator('#daily-tasks-week-details>summary').tap();
+  await capture(page, info, 'RC233-week-expanded');
   const weekly = page.locator('#daily-tasks-milestones button');
   await weekly.last().tap();
   await page.locator('#task-chest-open').tap();

@@ -1,6 +1,11 @@
 name: Signed Android release
 on:
   workflow_dispatch:
+    inputs:
+      expected_commit:
+        description: Full SHA accepted for this candidate
+        required: true
+        type: string
 permissions:
   contents: read
 jobs:
@@ -15,6 +20,8 @@ jobs:
       ASOC_REWARD_OFFERS_ADS_READY: ${{ vars.ASOC_REWARD_OFFERS_ADS_READY }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.expected_commit }}
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -37,6 +44,25 @@ jobs:
         env:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
+      - name: Check production prerequisites without exposing their values
+        env:
+          ASOC_STORE_BASE64: ${{ secrets.ASOC_STORE_BASE64 }}
+          ASOC_STORE_PASSWORD: ${{ secrets.ASOC_STORE_PASSWORD }}
+          ASOC_KEY_ALIAS: ${{ secrets.ASOC_KEY_ALIAS }}
+          ASOC_KEY_PASSWORD: ${{ secrets.ASOC_KEY_PASSWORD }}
+          YANDEX_BANNER_AD_UNIT_ID: ${{ secrets.YANDEX_BANNER_AD_UNIT_ID }}
+          YANDEX_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.YANDEX_INTERSTITIAL_AD_UNIT_ID }}
+          YANDEX_REWARDED_AD_UNIT_ID: ${{ secrets.YANDEX_REWARDED_AD_UNIT_ID }}
+          APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
+          ASOC_OWNER_ADS_READY: ${{ vars.ASOC_OWNER_ADS_READY }}
+          ASOC_OWNER_LIVES_ADS_READY: ${{ vars.ASOC_OWNER_LIVES_ADS_READY }}
+          ASOC_REWARD_OFFERS_ADS_READY: ${{ vars.ASOC_REWARD_OFFERS_ADS_READY }}
+        run: node tools/qa/release-readiness.mjs --require
+
+      - name: Verify accepted source identity
+        env:
+          EXPECTED_COMMIT: ${{ inputs.expected_commit }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
       - run: npm run check && npm run android:sync
       - name: Build using configured signing identity
         env:
@@ -59,10 +85,16 @@ jobs:
       - run: |
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs native/android/app/build/outputs/apk/release/app-release.apk
           python3 tools/qa/verify-release-apk.py native/android/app/build/outputs/apk/release/app-release.apk
+          python3 tools/qa/verify-release-apk.py native/android/app/build/outputs/bundle/release/app-release.aab
+          jarsigner -J-Duser.language=en -verify native/android/app/build/outputs/bundle/release/app-release.aab | tee .recording/aab-signature.txt
+          grep -q "jar verified." .recording/aab-signature.txt
+          sha256sum native/android/app/build/outputs/apk/release/app-release.apk native/android/app/build/outputs/bundle/release/app-release.aab > .recording/production-SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
           name: asoc-solitair-signed
           path: |
+            .recording/production-SHA256SUMS
+            .recording/release-readiness.json
             dist/release-manifest.json
             native/android/app/build/outputs/apk/release/*.apk
             native/android/app/build/outputs/bundle/release/*.aab

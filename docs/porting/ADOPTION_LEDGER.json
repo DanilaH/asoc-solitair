@@ -1,5 +1,18 @@
 {
   "schema": "consumer-adoption-ledger-v1",
+  "releaseCandidate233": {
+    "issue": "https://github.com/DanilaH/asoc-solitair/issues/233",
+    "base": "818e6d4d539ab5df6a8ed9490671b8f2acc9ca34",
+    "implementationBranch": "feat/233-release-candidate",
+    "evidence": "docs/release/RC233_ANDROID.md",
+    "scope": [
+      "R4-UI-A",
+      "R4-UI-B",
+      "production-readiness",
+      "RuStore-package"
+    ],
+    "acceptance": "DEVICE_LIVE_SIGNING_AND_OWNER_STORE_APPROVAL_PENDING"
+  },
   "releasePolish226": {
     "issue": "https://github.com/DanilaH/asoc-solitair/issues/226#issuecomment-7224737015",
     "base": "1dead90632f5f86a93066ae2d2ff8d5363d930a2",

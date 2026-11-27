@@ -703,7 +703,8 @@ test('shows a readable Unlimited timer and permits stock recovery at 320x480 wit
   await expect.poll(async () => (await read(page)).attempt.stockRestores).toBe(1);
   await expect(restore).toBeHidden();
   await page.locator('#undo').tap();
-  await expect(restore).toHaveText('Восстановить · 60 монет');
-  await expect(restore).toBeDisabled();
+  await expect(restore).toHaveText('Восстановить бесплатно');
+  await expect(restore).toBeEnabled();
+  expect((await read(page)).attempt.stockRestores).toBe(0);
   expect((await read(page)).profile.coins).toBe(0);
 });

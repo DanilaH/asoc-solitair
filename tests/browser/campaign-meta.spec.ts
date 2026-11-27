@@ -93,7 +93,12 @@ test('uses the existing win and task screens for staged claims', async ({ page }
   await page.locator('#cycle-info button[data-close]').last().tap();
   await page.locator('#daily-tasks-open').tap();
   await expect(page.locator('#daily-tasks-dialog')).toBeVisible();
-  if (!before) await expect(page.locator('#daily-tasks-milestones button')).toHaveCount(5);
+  if (!before) {
+    await expect(page.locator('#daily-tasks-dialog .sheet-body #daily-tasks-milestones button')).toHaveCount(5);
+    const medalValue = page.locator('#daily-tasks-medals > span:has(.casual-track)');
+    await expect(medalValue).toHaveText('1000/1000');
+    expect(await medalValue.evaluate(value => value.scrollWidth <= value.clientWidth)).toBe(true);
+  }
   if (record) await page.screenshot({ path: info.outputPath('week.png'), scale: 'css' });
   if (!before) {
     await page.locator('#daily-tasks-milestones button').last().tap();

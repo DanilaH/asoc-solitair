@@ -199,7 +199,10 @@ html[data-casual] #app>.victory-particles{position:fixed;z-index:14;width:0;heig
 [data-casual] .reward-counts>span{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;background:#ecdfb0;border:1px solid #dbc38a;border-radius:9px;color:#593d21;font-size:13px;font-weight:900;font-variant-numeric:tabular-nums}
 [data-casual] .reward-counts .casual-icon{width:22px;height:22px}
 [data-casual] #daily-tasks-dialog .weekly-ready{display:grid;grid-template-columns:minmax(74px,.75fr) minmax(0,1.25fr);gap:6px;align-items:center}
+[data-casual] #daily-tasks-dialog .weekly-ready:has(>#daily-tasks-medals:only-child){grid-template-columns:minmax(0,1fr)}
 [data-casual] #daily-tasks-dialog .weekly-ready button{min-height:48px;margin:0;padding:4px 9px}
+[data-casual] #daily-tasks-dialog .sheet-body>#daily-tasks-milestones:first-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-bottom:8px}
+[data-casual] #daily-tasks-dialog .sheet-body>#daily-tasks-milestones:first-child button{min-height:44px;margin:0;padding:4px 6px}
 @media(max-height:520px){
   [data-casual] #home .brand-scene{min-height:104px;padding-block:2px 5px}
   [data-casual] #home .brand-scene .linked-emblem{width:min(55%,154px)}

@@ -2059,9 +2059,12 @@ try {
     chest.textContent = chestCount > 1 ? `Открыть сундук · ${chestCount}` : 'Открыть сундук';
     if (casual && week && multiWeek && week.milestones.some(item =>
       item.medals <= week.totalMedals && !week.claimedMilestones.includes(item.id))) {
-      $('#daily-tasks-ready').hidden = false;
-      $('#daily-tasks-ready').append(medals, milestones);
-    } else if (milestones.parentElement?.id === 'daily-tasks-ready') {
+      const readyRow = $('#daily-tasks-ready');
+      readyRow.hidden = false;
+      if (!readyRow.contains(medals)) readyRow.append(medals);
+      const body = $('#daily-tasks-dialog .sheet-body');
+      if (body.firstElementChild !== milestones) body.prepend(milestones);
+    } else if (milestones.parentElement?.firstElementChild === milestones) {
       $('#daily-tasks-legacy-week').after(medals, milestones);
     }
     milestones.replaceChildren(...(week && multiWeek ? week.milestones.map(entry => {

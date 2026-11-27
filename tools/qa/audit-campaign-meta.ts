@@ -91,6 +91,8 @@ for (let index = 0; index < DAILY_CALENDAR.count; index++) {
   const day = turnDate(index), deal = dailyForDay(day);
   assert.equal(deal.initial.rulesVersion, 4);
   assert.equal(deal.daily?.contentVersion, 2);
+  const proof = certifySourceRoute(deal, deal.winningPath);
+  assert(proof && proof.reserve >= 0, day);
   const layout = authoringHash([deal.initial.tableau, deal.initial.stock].map(group =>
     (group as (string | string[])[]).map(id => Array.isArray(id) ? id.map(card => deal.cards[card].text) : deal.cards[id].text)));
   assert(!layoutIds.has(layout), day);

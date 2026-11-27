@@ -321,7 +321,8 @@ public class SolitaireAdsPlugin extends Plugin {
             int width=(int)Math.floor((left+slot)*scale)-(int)Math.ceil(left*scale);
             if (width<=0) { call.resolve(); return; }
             if (banner==null || width!=bannerWidth) {
-                destroyBanner(); bannerWidth=width;
+                if (banner != null) destroyBanner();
+                bannerWidth=width;
                 banner=new BannerAdView(getActivity());
                 int dp=(int)Math.floor(width/getContext().getResources().getDisplayMetrics().density);
                 banner.setAdSize(BannerAdSize.sticky(getContext(),dp));

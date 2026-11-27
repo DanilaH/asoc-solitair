@@ -1,5 +1,9 @@
 # Project contract
 
+## Owner release focus · 27 November 2026
+
+The owner switched the next milestone from expanded reference research to shipping a working MVP with small, low-cost meta. Read [the release focus and audited blocker](docs/porting/MVP_RELEASE_FOCUS_2026-11-27.md) before selecting work. Resolve and reconcile developer PR216 with latest research PR223 and their actual descendants; do not merge research harnesses into product. Production Rules4 selection is still gated by a QA flag that also exposes fixture navigation; split the two and verify the actual signed ordinary build. Prioritize #195/#205/#210 acceptance, existing retention, physical device/live SDK and store readiness. New reference investigations and larger meta are staged, not permanently excluded: keep 115 canonical IDs, 38 packets, 15 commerce families and nine separate Unico candidates. IAP OFF; no automatic kit pin or policy/balance change. Research CI only in asoc-solitair.
+
 ## Owner follow-up · 26 November 2026
 
 Use [the post-playtest decision](https://github.com/DanilaH/asoc-solitair/issues/210#issuecomment-7185896846) and [implementation and verification notes](docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md). The candidate introduces action-bound Coffee, a tutorial exit guard, earned video Continue without a winning-route proof, layout-based retry, five lives and the versioned unlock track. Coin Continue retains its proof. The upper-slot threshold is L6. Keep the approved Card Table B, exact FTUE Deal IDs, all previous saves and the full research roadmap.

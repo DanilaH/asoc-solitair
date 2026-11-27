@@ -15,6 +15,7 @@ export function advanceRules4(input: Board, action: BoardCommand, deal: Deal): B
   const family = (id: string) => deal.cards[id].category;
   const pileAt = ({ kind, index }: Location) => kind === 'tableau' ? next.tableau[index] : kind === 'foundation'
     ? next.foundations[index] : index === 0 ? next.waste : undefined;
+  const support = (pile: string[] | undefined) => next.joker && pile === next.tableau[next.joker.column] ? next.joker.boundary : 0;
   const stamp = (id: string, flag: number) => {
     const card = metadata[id];
     card.changed = flag | (card.changedAt === turn ? card.changed : 0);
@@ -48,6 +49,7 @@ export function advanceRules4(input: Board, action: BoardCommand, deal: Deal): B
     if (lock.collected >= lock.required) { unlocks.add(receiver); stamp(receiver, 4); }
   };
   const replacePair = (pile: string[], last: readonly string[]) => {
+    if (pile.length - 2 < support(pile)) return;
     const low = pile[pile.length - 2], high = pile[pile.length - 1];
     const match = deal.hitapps!.assemblies.find(row => row.halves.includes(low) && row.halves.includes(high) && low !== high);
     if (!match || !last.some(card => card === low || card === high) || !metadata[low].puzzle || metadata[low].puzzle !== metadata[high].puzzle) return;
@@ -79,10 +81,10 @@ export function advanceRules4(input: Board, action: BoardCommand, deal: Deal): B
       const origin = action.from.kind !== 'foundation' ? pileAt(action.from) : undefined;
       const target = pileAt(action.to);
       if (action.scissors) {
-        const carrier = origin?.at(-1);
+        const carrier = origin?.slice(support(origin)).at(-1);
         if (action.scissors !== 'unbind' && (!carrier || !exposed(carrier) || !metadata[carrier].scissors)) return null;
         const desired = action.scissors === 'cut' ? 2 : 1;
-        const candidate = action.to.kind === 'tableau' && target ? target.slice().reverse().find(id => exposed(id) && metadata[id].bound === desired) : undefined;
+        const candidate = action.to.kind === 'tableau' && target ? target.slice(support(target)).reverse().find(id => exposed(id) && metadata[id].bound === desired) : undefined;
         if (action.scissors !== 'discard' && !candidate) return null;
         if (candidate) metadata[candidate].bound = action.scissors === 'cut' ? 1 : 0;
         if (action.scissors !== 'unbind') metadata[carrier!].scissors = false;
@@ -105,16 +107,21 @@ export function advanceRules4(input: Board, action: BoardCommand, deal: Deal): B
           position = action.root;
         }
       }
-      const group = origin.slice(position), root = group[0], card = metadata[root], recipient = target.at(-1), home = action.to.kind === 'foundation';
-      const onJoker = !home && next.joker?.column === action.to.index;
-      if (onJoker && target.length !== next.joker!.boundary) return null;
+      const group = origin.slice(position), root = group[0], card = metadata[root], home = action.to.kind === 'foundation';
+      const onJoker = support(target) > 0;
+      if (onJoker) {
+        const underneath = target.at(-1);
+        if (target.length !== support(target) || special(root) || deal.hitapps.assemblies.some(pair =>
+          underneath !== undefined && underneath !== root && pair.halves.includes(underneath) && pair.halves.includes(root))) return null;
+      }
+      const recipient = onJoker ? undefined : target.at(-1);
       const ascending = group.find(id => metadata[id].kind === 0);
       const receiver = recipient ? metadata[recipient] : undefined;
-      const sourceBinding = action.from.kind === 'tableau' ? resolvedBinding(origin, position) : 0;
+      const sourceBinding = action.from.kind === 'tableau' ? resolvedBinding(origin.slice(boundary), position - boundary) : 0;
       let pull: string | undefined;
       if (card.kind === 5 && recipient && receiver) {
         const order = receiver.order && !receiver.puzzle ? receiver.order + (home ? 1 : -1) : -1;
-        const candidates = next.tableau.flatMap((column, index) => !home && index === action.to.index ? [] : column.slice(-1))
+        const candidates = next.tableau.flatMap((column, index) => (!home && index === action.to.index) || column.length === support(column) ? [] : column.slice(-1))
           .concat(next.waste.slice(-1), next.stock).filter(id => id !== sourceTop);
         pull = candidates.find(id => {
           const value = metadata[id];
@@ -154,7 +161,10 @@ export function advanceRules4(input: Board, action: BoardCommand, deal: Deal): B
         else if (card.kind === 5 && pull) {
           const from = [next.stock, next.waste, ...next.tableau].find(pile => pile.includes(pull!))!;
           from.splice(from.indexOf(pull), 1);
-          if (next.tableau.includes(from)) reveal(from.at(-1));
+          if (next.tableau.includes(from)) {
+            if (support(from) && from.length === support(from)) delete next.joker;
+            reveal(from.at(-1));
+          }
           reveal(pull);
           target.push(pull);
           stamp(pull, 2);
@@ -174,7 +184,7 @@ export function advanceRules4(input: Board, action: BoardCommand, deal: Deal): B
     }
   }
   const suffixKeys = next.tableau.flatMap(column => {
-    const reversed = column.slice().reverse();
+    const reversed = column.slice(support(column)).reverse();
     const boundary = reversed.findIndex(id => !eligible(id));
     return boundary < 0 ? reversed : reversed.slice(0, boundary);
   });

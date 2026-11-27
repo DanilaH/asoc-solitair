@@ -191,7 +191,7 @@ describe('durable native fullscreen cadence', () => {
     } finally { ads.destroy(); }
   });
 
-  it('persists an actual show before dismissal and ignores repeated or differently bound SDK notices', async () => {
+  it('persists the display before dismissal and keeps late global cadence independent of the next attempt', async () => {
     const m = memory(), store = new SaveStore(m.storage, deal, withLegacyCadence);
     const original = await store.open(), b = bridge(), ads = receiver(store, b);
     let pending: FullscreenShown | null = null;
@@ -220,7 +220,12 @@ describe('durable native fullscreen cadence', () => {
       for (const value of [displayed, { ...displayed, id: 'late-sdk-display', shownAt: 510_000 }]) {
         pending = value; b.emit({ kind: 'interstitial', phase: 'show' }); await ads.recover();
       }
-      expect(JSON.parse(m.raw()!)).toEqual(progressed);
+      expect(store.state.platform).toMatchObject({
+        lastFullscreenAt: 510_000, winsSinceInterstitial: 1,
+        fullscreenCadence: { version: 1, lastShownId: 'late-sdk-display' },
+      });
+      expect(store.state.attempt).toEqual(progressed.attempt);
+      expect(store.state.profile).toEqual(progressed.profile);
       expect(b.api.acknowledgeShown).toHaveBeenCalledTimes(3);
     } finally { ads.destroy(); }
   });

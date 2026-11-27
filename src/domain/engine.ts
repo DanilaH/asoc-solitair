@@ -18,7 +18,7 @@ import { isBoundCard } from './bound-cards';
 import { puzzleError } from './puzzle-pairs';
 import { claimGoldenCards } from './golden-cards';
 import { hammerCard, matchingStock } from './starter-boosters';
-import { assertHitappsBoard, hitappsCommands, hitappsPacket, hitappsStateKey, hitappsStep } from './hitapps-board';
+import { assertHitappsBoard, hitappsCommands, hitappsPacket, hitappsStateKey, hitappsStep, jokerConflict } from './hitapps-board';
 
 export const STREAK = BALANCE.streak;
 export const boardRules = (board: Board): 2 | 3 | 4 => board.rulesVersion ?? RULES_VERSION;
@@ -72,6 +72,7 @@ function orderError(ids: string[], deal: Deal): string | undefined {
 export function placeJoker(board: Board, column: number, deal: Deal): Board | string {
   if (board.phase !== 'playing' || board.joker) return 'Джокер уже на поле';
   if (!Number.isInteger(column) || !board.tableau[column]?.length || isLocked(board, column, deal)) return 'Выберите непустой открытый столбец';
+  if (board.rulesVersion === 4 && !board.faceUp.includes(board.tableau[column].at(-1)!)) return 'Выберите открытый столбец';
   if (frozenLayers(board, deal, board.tableau[column].at(-1))) return 'Сначала снимите лёд с карты';
   if (isBoundCard(board, deal, board.tableau[column].at(-1))) return 'Сначала разрежьте связь ножницами';
   const next = structuredClone(board);
@@ -231,7 +232,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     events = [{ type: 'hint' }];
   } else {
     const result = applyBoard(attempt.board, cmd, deal);
-    if (typeof result === 'string') return refuse(result, cmd.type === 'transfer' && attempt.board.phase === 'playing');
+    if (typeof result === 'string') return refuse(result, result !== jokerConflict && cmd.type === 'transfer' && attempt.board.phase === 'playing');
     if (attempt.lessonHint) {
       if (sameBoardCommand(attempt.lessonHint, cmd)) markTutorial(next, 'hint-practiced');
       delete attempt.lessonHint;
@@ -350,15 +351,15 @@ export function boardKey(board: Board): string {
   return JSON.stringify(identity);
 }
 export function assertBoard(board: Board, deal: Deal): void {
+  if (board.rulesVersion === 4) {
+    if (!board.hitapps || deal.initial.rulesVersion !== 4) throw Error('Отсутствует состояние специальных правил');
+    return assertHitappsBoard({ ...board, hitapps: board.hitapps }, deal);
+  }
   if (board.joker) {
     const j = board.joker;
     if (!Number.isInteger(j.column) || !Number.isInteger(j.boundary) || j.boundary < 1 || !board.tableau[j.column] || j.boundary > board.tableau[j.column].length || isLocked(board, j.column, deal)) throw Error('Некорректный Джокер');
     if (j.card && (deal.randomJokerPreview !== 1 || j.card.version !== 1 || j.card.nativeType !== 2 || j.card.faceUp !== true ||
       !/^azj-[A-Za-z0-9_-]{1,60}$/.test(j.card.id) || Object.hasOwn(deal.cards, j.card.id))) throw Error('Повреждена карта случайного Джокера');
-  }
-  if (board.rulesVersion === 4) {
-    if (!board.hitapps || deal.initial.rulesVersion !== 4) throw Error('Отсутствует состояние специальных правил');
-    return assertHitappsBoard({ ...board, hitapps: board.hitapps }, deal);
   }
   if (board.hitapps || deal.hitapps) throw Error('Несовместимые правила попытки');
   if (board.rulesVersion !== undefined && board.rulesVersion !== 2 && board.rulesVersion !== 3) throw Error('Неизвестные правила попытки');

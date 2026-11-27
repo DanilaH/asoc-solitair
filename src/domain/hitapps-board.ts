@@ -22,6 +22,19 @@ const open = (board: ActiveBoard, id: string) => board.faceUp.includes(id);
 const hiddenOrLocked = (board: ActiveBoard, id: string) => !open(board, id) || activeLocker(board.hitapps.cards[id]);
 const available = (board: ActiveBoard, id: string) => !hiddenOrLocked(board, id) && board.hitapps.cards[id].ice === 0;
 const sameLocation = (left: Location, right: Location) => left.kind === right.kind && left.index === right.index;
+const socketEdge = (board: Board, column: number) => board.joker?.column === column ? board.joker.boundary : 0;
+const visibleSegment = (board: ActiveBoard, loc: Location) => loc.kind === 'tableau'
+  ? (board.tableau[loc.index] ?? []).slice(socketEdge(board, loc.index)) : sourcePile(board, loc)?.slice(-1) ?? [];
+export const jokerConflict = 'Джокер отделяет эти карты';
+
+function crossesJoker(board: ActiveBoard, deal: Deal, to: Location, moving: string[]) {
+  if (to.kind !== 'tableau' || board.joker?.column !== to.index || !moving.length) return false;
+  const pile = board.tableau[to.index];
+  if (pile.length !== board.joker.boundary) return false;
+  if (isStarter(board.hitapps.cards[moving[0]].kind)) return true;
+  const below = pile.at(-1), above = moving[0];
+  return Boolean(below && deal.hitapps?.assemblies.some(pair => below !== above && pair.halves.includes(below) && pair.halves.includes(above)));
+}
 
 function binding(board: ActiveBoard, deal: Deal, ids: string[], position: number) {
   return boundStatus(ids.map(id => ({ available: available(board, id), kind: board.hitapps.cards[id].kind,
@@ -31,7 +44,7 @@ function binding(board: ActiveBoard, deal: Deal, ids: string[], position: number
 export function hitappsPacket(board: ActiveBoard, index: number, deal: Deal, requestedRoot?: number) {
   const column = board.tableau[index], top = column?.at(-1);
   if (!top || !available(board, top)) return [];
-  const edge = board.joker?.column === index ? board.joker.boundary : 0;
+  const edge = socketEdge(board, index);
   if (column.length <= edge) return [];
   let first = column.length - 1;
   while (first > edge) {
@@ -58,7 +71,7 @@ export function hitappsSources(board: ActiveBoard, from: Location, deal: Deal, r
 
 function sourcePlans(board: ActiveBoard, except: Location) {
   return [
-    ...board.tableau.flatMap((column, index) => sameLocation(except, { kind: 'tableau', index }) ? [] : column.slice(-1)),
+    ...board.tableau.flatMap((column, index) => sameLocation(except, { kind: 'tableau', index }) || column.length === socketEdge(board, index) ? [] : column.slice(-1)),
     ...board.waste.slice(-1),
     ...board.stock,
   ];
@@ -80,18 +93,18 @@ function magnetChoice(board: ActiveBoard, deal: Deal, from: Location, to: Locati
 }
 
 function evaluation(board: ActiveBoard, deal: Deal, from: Location, to: Location, moving: string[]) {
-  if (to.kind === 'waste' || sameLocation(from, to) || !moving.length) return;
+  if (to.kind === 'waste' || sameLocation(from, to) || !moving.length || crossesJoker(board, deal, to, moving)) return;
   const home = to.kind === 'foundation', ids = (home ? board.foundations : board.tableau)[to.index];
   if (!ids) return;
-  const data = board.hitapps.cards, id = moving[0], source = data[id], top = ids.at(-1), target = top ? data[top] : undefined;
   const socket = !home && board.joker?.column === to.index;
+  const data = board.hitapps.cards, id = moving[0], source = data[id], top = socket ? undefined : ids.at(-1), target = top ? data[top] : undefined;
   if (socket && ids.length !== board.joker!.boundary) return;
-  const sourceColumn = sourcePile(board, from), attached = from.kind === 'tableau' && sourceColumn
+  const sourceColumn = visibleSegment(board, from), attached = from.kind === 'tableau' && sourceColumn.length
     ? binding(board, deal, sourceColumn, sourceColumn.indexOf(id)) : 0;
   const choice = top && source.kind === Kind.magnet ? magnetChoice(board, deal, from, to, top) : undefined;
   const targetLocked = Boolean(target && activeLocker(target));
   const verdict = placerVerdict(home ? 'home' : 'play', source, {
-    occupied: ids.length > 0, locked: targetLocked, frozen: Boolean(target?.ice), bound: attached,
+    occupied: Boolean(top), locked: targetLocked, frozen: Boolean(target?.ice), bound: attached,
     hammer: Boolean(top && hammerAllowed(home ? 3 : 2, false, ids.length, target!.kind, !open(board, top))),
     magnet: Boolean(top && magnetAllowed(home ? 3 : 2, false, ids.length, target!.kind, !open(board, top),
       Boolean(target!.ice), targetLocked, home ? 0 : binding(board, deal, ids, ids.length - 1), Boolean(choice), Boolean(choice))),
@@ -120,9 +133,9 @@ function expose(board: ActiveBoard, id: string | undefined, events: GameEvent[])
 
 function collectKeys(board: ActiveBoard, events: GameEvent[]) {
   const { cards, move } = board.hitapps;
-  for (const id of [...board.waste.slice(-1), ...board.tableau.flatMap(column => {
+  for (const id of [...board.waste.slice(-1), ...board.tableau.flatMap((column, index) => {
     const suffix: string[] = [];
-    for (let position = column.length - 1; position >= 0 && available(board, column[position]); position--) suffix.push(column[position]);
+    for (let position = column.length - 1; position >= socketEdge(board, index) && available(board, column[position]); position--) suffix.push(column[position]);
     return suffix;
   })]) {
     const key = cards[id].key;
@@ -142,6 +155,7 @@ function collectKeys(board: ActiveBoard, events: GameEvent[]) {
 function assemble(board: ActiveBoard, deal: Deal, target: string[], moved: string[], events: GameEvent[]) {
   const [first, second] = target.slice(-2);
   if (!first || !second || !moved.some(id => id === first || id === second)) return;
+  if (board.joker && target === board.tableau[board.joker.column] && target.length - 2 < board.joker.boundary) return;
   const data = board.hitapps.cards, tag = data[first].puzzle;
   if (!tag || tag !== data[second].puzzle) return;
   const match = deal.hitapps?.assemblies.find(row => row.tag === tag && row.halves.includes(first) && row.halves.includes(second));
@@ -229,7 +243,11 @@ function effectOfStarter(board: ActiveBoard, deal: Deal, target: NonNullable<Ret
   } else if (kind === Kind.magnet && target.choice) {
     const from = [board.stock, board.waste, ...board.tableau].find(pile => pile.includes(target.choice!))!;
     from.splice(from.indexOf(target.choice), 1);
-    if (board.tableau.includes(from)) expose(board, from.at(-1), events);
+    const donor = board.tableau.indexOf(from);
+    if (donor >= 0) {
+      if (board.joker?.column === donor && from.length === board.joker.boundary) delete board.joker;
+      expose(board, from.at(-1), events);
+    }
     expose(board, target.choice, events);
     target.ids.push(target.choice);
     marks(board.hitapps.cards[target.choice], board.hitapps.move, Change.placed);
@@ -247,8 +265,8 @@ function effectOfStarter(board: ActiveBoard, deal: Deal, target: NonNullable<Ret
 
 function scissors(board: ActiveBoard, cmd: Transfer, events: GameEvent[]) {
   const data = board.hitapps.cards;
-  const from = sourcePile(board, cmd.from)?.at(-1);
-  const target = cmd.to.kind === 'tableau' ? [...(board.tableau[cmd.to.index] ?? [])].reverse() : [];
+  const from = visibleSegment(board, cmd.from).at(-1);
+  const target = cmd.to.kind === 'tableau' ? visibleSegment(board, cmd.to).reverse() : [];
   if (cmd.scissors === 'unbind') {
     const id = target.find(id => open(board, id) && data[id].bound === 1);
     if (!id) return false;
@@ -289,10 +307,15 @@ export function hitappsStep(input: ActiveBoard, command: BoardCommand, deal: Dea
     board.faceUp = board.faceUp.filter(id => !board.stock.includes(id));
     events.push({ type: 'recycle' });
   } else if (command.scissors) {
-    if (!scissors(board, command, events)) return 'Ножницы недоступны для этой карты';
+    if (!scissors(board, command, events)) {
+      if ([command.from, command.to].some(location => location.kind === 'tableau' && location.index === board.joker?.column))
+        return jokerConflict;
+      return 'Ножницы недоступны для этой карты';
+    }
   } else {
     const moving = hitappsSources(board, command.from, deal, command.root);
     const from = sourcePile(board, command.from);
+    if (crossesJoker(board, deal, command.to, moving)) return jokerConflict;
     const target = evaluation(board, deal, command.from, command.to, moving);
     if (!target || !from) return 'Сюда нельзя перенести карты';
     const position = from.length - moving.length, root = state.cards[moving[0]], starter = isStarter(root.kind);
@@ -352,12 +375,13 @@ export function hitappsCommands(board: ActiveBoard, deal: Deal) {
         }
       }
     }
-    if (pile?.at(-1) && board.hitapps.cards[pile.at(-1)!].scissors && open(board, pile.at(-1)!)) {
-      for (const to of sources.slice(1)) if (board.tableau[to.index].some(id => open(board, id) && board.hitapps.cards[id].bound === 2))
+    const segment = visibleSegment(board, from), top = segment.at(-1);
+    if (top && board.hitapps.cards[top].scissors && open(board, top)) {
+      for (const to of sources.slice(1)) if (visibleSegment(board, to).some(id => open(board, id) && board.hitapps.cards[id].bound === 2))
         commands.push({ type: 'transfer', from, to, scissors: 'cut' });
       commands.push({ type: 'transfer', from, to: from, scissors: 'discard' });
     }
-    if (from.kind === 'tableau' && pile?.some(id => open(board, id) && board.hitapps.cards[id].bound === 1))
+    if (from.kind === 'tableau' && segment.some(id => open(board, id) && board.hitapps.cards[id].bound === 1))
       commands.push({ type: 'transfer', from, to: from, scissors: 'unbind' });
   }
   if (board.stock.length) commands.push({ type: 'draw' });
@@ -385,6 +409,7 @@ export function hitappsStateKey(state: HitappsBoardState) {
 export function assertHitappsBoard(board: ActiveBoard, deal: Deal) {
   const config = deal.hitapps, state = board.hitapps;
   const nat = (value: number, maximum = Number.MAX_SAFE_INTEGER) => Number.isSafeInteger(value) && value >= 0 && value <= maximum;
+  assertHitappsJoker(board, deal);
   if (config?.policy !== 'hitapps-rules4-v1' || !nat(state.move) || !nat(state.generatedGold) || !Array.isArray(state.spent))
     throw Error('Некорректная версия специальных правил');
   const deck = [...board.tableau.flat(), ...board.foundations.flat(), ...board.stock, ...board.waste, ...board.collected, ...state.spent];
@@ -426,4 +451,39 @@ export function assertHitappsBoard(board: ActiveBoard, deal: Deal) {
     throw Error('Некорректный запас повторов');
   if (state.generatedGold !== Object.values(state.cards).filter(card => card.gold).length ||
       state.generatedGold > (config.gold?.total ?? 0)) throw Error('Некорректный счётчик золотых карт');
+}
+
+
+function assertHitappsJoker(board: ActiveBoard, deal: Deal) {
+  const socket = board.joker;
+  if (!socket) return;
+  const pile = board.tableau[socket.column];
+  if (!Number.isInteger(socket.column) || !Number.isInteger(socket.boundary) || socket.boundary < 1 ||
+      !pile || socket.boundary > pile.length || !open(board, pile[socket.boundary - 1]) ||
+      (!board.hitapps.cards[pile[socket.boundary - 1]] || activeLocker(board.hitapps.cards[pile[socket.boundary - 1]])) ||
+      pile.slice(socket.boundary).some(id => !open(board, id))) throw Error('Некорректный Джокер');
+  const card = socket.card;
+  if (card && (deal.randomJokerPreview !== 1 || card.version !== 1 || card.nativeType !== 2 || card.faceUp !== true ||
+      !/^azj-[A-Za-z0-9_-]{1,60}$/.test(card.id) || Object.hasOwn(deal.cards, card.id))) throw Error('Повреждена карта случайного Джокера');
+}
+
+/** Retire only the dangling support proven by the immediately preceding snapshot.
+ * 0.21.0 consumed a hammer from waste and pushed the former support card to waste.
+ */
+export function repairHammerJoker(board: Board, prior: Board | undefined, deal: Deal) {
+  const socket = board.joker, state = board.hitapps;
+  if (board.rulesVersion !== 4 || !socket || !state || prior?.rulesVersion !== 4 || !prior.hitapps ||
+      JSON.stringify(prior.joker) !== JSON.stringify(socket)) return;
+  const oldColumn = prior.tableau[socket.column], column = board.tableau[socket.column], hammer = prior.waste.at(-1);
+  if (!oldColumn || !column || oldColumn.length !== socket.boundary || column.length !== socket.boundary - 1 ||
+      !hammer || prior.hitapps.cards[hammer]?.kind !== Kind.hammer || state.move !== prior.hitapps.move + 1) return;
+  const equal = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+  if (!equal(board.tableau, prior.tableau.map((pile, index) => index === socket.column ? pile.slice(0, -1) : pile)) ||
+      !equal(board.waste, [...prior.waste.slice(0, -1), oldColumn.at(-1)]) ||
+      !equal(state.spent, [...prior.hitapps.spent, hammer]) || !equal(board.stock, prior.stock)) return;
+  assertHitappsBoard({ ...prior, hitapps: prior.hitapps }, deal);
+  const repaired = { ...board, hitapps: state };
+  delete repaired.joker;
+  assertHitappsBoard(repaired, deal);
+  return repaired;
 }

@@ -130,6 +130,9 @@ export function createAds(options: {
       if (!status[request.kind]) { options.onEvent({ kind: request.kind, phase: 'unavailable', placement: request.placement }); return unavailable; }
       showing = true; options.activity.setBlocked('ad', true);
       try {
+        // Resolve any persisted display before re-evaluating product cooldown.
+        // A storage failure only defers fullscreen ads.
+        if (!await recoverShown() || !alive) return unavailable;
         await options.beforeShow({ ...request });
         if (!alive) return unavailable;
         const result = await native.show({ ...request });

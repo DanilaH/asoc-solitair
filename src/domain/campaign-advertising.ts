@@ -91,8 +91,8 @@ export function releaseLevelAdEligible(save: Save, target: number, now: number, 
   return !save.attempt.daily && target >= policy.minimumLevel && !adFree(save, now) &&
     now >= Math.max(launchedAt + policy.startupMs, (save.platform?.lastFullscreenAt ?? 0) + policy.spacingMs);
 }
-export function recordCoffeeDisplay(save: Save, deal?: Deal) {
-  const { attempt } = save, data = state(save);
+export function recordCoffeeDisplay(save: Save, deal?: Deal, attempt = save.attempt) {
+  const data = state(save);
   const history = data.coffeeDisplays ?? [];
   const previous = history.find(row => row.attemptId === attempt.id && row.dealId === attempt.dealId);
   const next: CoffeeDisplay = {
@@ -117,8 +117,8 @@ export function adBreakBlocker(save: Save, deal: Deal, now: number, launchedAt: 
 export function eligibleAdBreak(save: Save, deal: Deal, now: number, launchedAt: number, approved: boolean, idle: boolean) {
   return adBreakBlocker(save, deal, now, launchedAt, approved, idle) === undefined;
 }
-export function recordAdBreakShown(save: Save, level: number) {
-  save.attempt.adBreakShown = true;
+export function recordAdBreakShown(save: Save, level: number, attempt = save.attempt) {
+  attempt.adBreakShown = true;
   if (!state(save).shownLevels.includes(level)) state(save).shownLevels.push(level);
 }
 

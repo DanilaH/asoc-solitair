@@ -38,7 +38,7 @@ import { renderMeta, campaignAttempt, dailyAttempt } from './app/meta-ui';
 import { activelyTeaching, firstBonusOffer, recordTeachingAction, teachingProtected } from './app/teaching-protection';
 import { lessonMarker, recordReleaseLearning } from './app/c8-tutorial';
 import { coversPlayableWaste, lesson, recordLearning, ruleIntroduction, ruleIntroMarker, specialRuleNote, type RuleIntro } from './app/tutorial';
-import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, legalCommands, STREAK } from './domain/engine';
+import { boardKey, boardRules, canReachTransfer, dispatch, freshSave, legalCommands, placeJoker, STREAK } from './domain/engine';
 import { BALANCE } from './domain/balance';
 import { AZUR_VICTORY_DEFAULTS, AZUR_VICTORY_QA, AZUR_VICTORY_SAVE_KEY, quoteVictoryReward, victoryDifficulty } from './domain/azur-victory-reward';
 import { frozenLayers } from './domain/frozen-cards';
@@ -48,9 +48,9 @@ import { TASKS_PREVIEW, acceptedTaskSignals, claimTask, claimTaskMilestone, task
 import { PICTURE_PREVIEW, PICTURE_PRICES, PICTURE_TITLE, claimPicture, observePictureClock, openPictureEvent, pictureClosed, pictureTokens, recordPictureWin, revealPicturePart } from './domain/events/picture';
 import { REWARD_OFFER_PREVIEW, COIN_WALLET_LEVEL, canClaimShopCoins, claimShopCoins, definitionCount, isOfferPlacement, offerLabels, offerQuote, offerShowContext, prepareRewardOffer, selectedWinMultiplier, revealRelatedWord, type OfferPlacement, type WinOffer } from './domain/reward-offers';
 import { openingShuffleProof } from './domain/shuffle-intro-proof';
-import { canShuffle, commitShuffle, type ShuffleRequest } from './domain/proof-shuffle';
+import { canShuffle, commitShuffle, prepareShuffleBoard, type ShuffleRequest } from './domain/proof-shuffle';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
-import { bonusKinds, bonusOffer, bonusPlacements, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
+import { bonusKinds, bonusOffer, bonusPlacements, openBonusSlot, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
 import { CARD_H, GRID_GAP, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
@@ -592,7 +592,7 @@ try {
       boardKey(next.attempt.board) === opportunity.boardKey &&
       next.attempt.dealId === opportunity.dealId && !training() &&
       runtime.activity.getBlockReasons().every(reason => reason === ownBlock) &&
-      !teachingProtected(next, deal);
+      !teachingProtected(next, deal) && !noOrdinaryMoves(next.attempt.board);
   }
   function pauseReady() { return ads.status.interstitial && ads.status.interstitialLoaded === true; }
   function pauseFieldSettled() {
@@ -989,6 +989,45 @@ try {
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
   const hasTransfer = new WeakMap<Save['attempt']['board'], boolean>();
+  const stuckBoards = new WeakMap<Save['attempt']['board'], boolean>();
+  let deadEndPaint = 0;
+  function noOrdinaryMoves(board: Save['attempt']['board']) {
+    if (board.phase !== 'playing' || board.stock.length || board.waste.length && board.recyclesLeft !== 0 ||
+        hasTransfer.get(board) === true) return false;
+    if (!stuckBoards.has(board)) stuckBoards.set(board, legalCommands(board, deal).length === 0);
+    return stuckBoards.get(board)!;
+  }
+  function renderDeadEnd() {
+    cancelAnimationFrame(deadEndPaint);
+    const panel = $('#dead-end'), { attempt, profile } = save;
+    const applicable = ready && screen === 'game' && !saving && !serviceBusy && !store.needsRecovery &&
+      !recoveryClockBlocked() && !inspectMode && !runtime.activity.isBlocked() &&
+      !currentLesson()?.accepts && noOrdinaryMoves(attempt.board);
+    panel.hidden = !applicable || !pauseFieldSettled();
+    if (panel.hidden) {
+      if (applicable) deadEndPaint = requestAnimationFrame(renderDeadEnd);
+      return;
+    }
+    const canAct = (board: Save['attempt']['board']) => legalCommands(board, deal).length > 0;
+    const previous = attempt.undo.at(-1);
+    $('#dead-end-undo').hidden = !(profile.undos > 0 && helperUnlocked(save, 'undo', deal) && previous && canAct(previous));
+    $('#dead-end-joker').hidden = !(profile.jokers > 0 && !attempt.jokerUsed && helperUnlocked(save, 'joker', deal) &&
+      attempt.board.tableau.some((_, index) => {
+        const candidate = placeJoker(attempt.board, index, deal);
+        return typeof candidate !== 'string' && canAct(candidate);
+      }));
+    const restore = restoreQuote(attempt, deal);
+    $('#dead-end-restore').hidden = !recoveryEnabled() || restore === undefined || profile.coins < restore;
+    $('#dead-end-shuffle').hidden = !canShuffle(save, deal) || ![0, 1].some(seed => {
+      const candidate = prepareShuffleBoard(attempt.board, deal, seed);
+      return candidate && canAct(candidate);
+    });
+    for (const kind of bonusKinds) {
+      const offer = bonusOffer(deal, kind);
+      const preview = offer && profile.coins >= offer.coins ? { ...attempt, undo: [], board: structuredClone(attempt.board) } : undefined;
+      $(`#dead-end-${kind}`).hidden = !preview || !openBonusSlot(preview, deal, kind) || !canAct(preview.board);
+    }
+  }
   function renderUnlimitedTime() {
     const timed = save.attempt.unlimited;
     const left = timed && save.attempt.board.phase === 'playing'
@@ -1052,7 +1091,8 @@ try {
     else shuffle.setAttribute('aria-describedby', shuffleCount.id);
     $('#game').dataset.exhausted = String(board.phase === 'exhausted');
     if (screen === 'game' && board.phase === 'playing' && !hasTransfer.has(board)) hasTransfer.set(board, canReachTransfer(board, deal));
-    $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false;
+    $('#no-transfer').hidden = screen !== 'game' || board.phase !== 'playing' || hasTransfer.get(board) !== false || noOrdinaryMoves(board);
+    renderDeadEnd();
     $('#app').dataset.practice = String(training());
     $('#app').dataset.lesson = String(Boolean(deal.training || deal.frozen || deal.bound || deal.puzzle || deal.golden || deal.starter));
     $('#level-number').textContent = deal.daily ? `${training() ? 'ТРЕНИРОВКА' : 'ДЕНЬ'} · ${deal.daily.dayId}` : deal.campaignLevel ? `УРОВЕНЬ ${deal.campaignLevel}` : 'ПРОБНАЯ РАЗДАЧА';
@@ -2236,8 +2276,9 @@ try {
     if (serviceBusy || saving || store.needsRecovery) return;
     const expected = save.attempt.id;
     const quote = casual && !sameLayout ? quoteLayoutRetry(save) : undefined;
+    const stuck = noOrdinaryMoves(save.attempt.board);
     serviceBusy = true; closeDialogs();
-    await showTransitionAd(deal.campaignLevel);
+    if (!stuck) await showTransitionAd(deal.campaignLevel);
     serviceBusy = false;
     const restart = async () => {
       if (!alive || save.attempt.id !== expected) return;
@@ -2627,7 +2668,7 @@ try {
       activePointers.clear();
     } else scheduleAdBreak();
     if (runtime.activity.getBlockReasons().some(reason => reason !== 'shuffle')) cancelShuffle?.();
-    setInput(); updateBanner();
+    setInput(); updateBanner(); renderDeadEnd();
     if (screen === 'game' && runtime.activity.getBlockReasons().every(r => r === 'modal') && ready) {
       scene?.sync();
       if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs();
@@ -2933,15 +2974,23 @@ try {
   }, domOptions);
   $('#undo').addEventListener('click', () => { if (!save.profile.undos && !freeUndoPractice(save, deal)) openHelpers('undo'); else void execute({ type: 'undo' }); }, domOptions);
   $('#inspect').addEventListener('click', () => { setInspect(!inspectMode); if (!inspectMode) showGuidance(); }, domOptions);
-  $('#restart').addEventListener('click', () => {
+  function requestRestart(confirm = false) {
     localeRestartAttempt = undefined;
     const hasBonus = bonusKinds.some(kind => pilesFor(save.attempt.board, kind).length > pilesFor(deal.initial, kind).length);
-    if (save.attempt.board.phase !== 'won' && (save.attempt.telemetry?.started || hasBonus)) {
+    if (save.attempt.board.phase !== 'won' && (confirm || save.attempt.telemetry?.started || hasBonus)) {
       $('#restart-confirm-copy').textContent = `Карты вернутся на исходные места. Потраченные помощники не восстановятся.${hasBonus ? ' Дополнительные места закроются.' : ''}${save.attempt.daily ? '' : ' Текущие отметки пяти побед сбросятся.'}${boardRules(save.attempt.board) < boardRules(deal.initial) ? ' В новой партии тему сначала нужно перенести в верхний слот.' : ''}`;
       openDialog('#restart-confirm');
     }
     else void replay();
-  }, domOptions);
+  }
+  $('#restart').addEventListener('click', () => requestRestart(), domOptions);
+  $('#dead-end-restart').addEventListener('click', () => requestRestart(true), domOptions);
+  for (const [action, button] of [['undo', 'undo'], ['joker', 'joker'], ['restore', 'stock-recovery-button'],
+    ['shuffle', 'proof-shuffle'], ['foundation', 'bonus-foundation'], ['tableau', 'bonus-tableau']]) {
+    $(`#dead-end-${action}`).addEventListener('click', () => {
+      if (!$(`#dead-end-${action}`).hidden && !$('#dead-end').hidden) $<HTMLButtonElement>(`#${button}`).click();
+    }, domOptions);
+  }
   if (LOCALE_PREVIEW) {
     $('#card-language').addEventListener('change', event => {
       const language = (event.target as HTMLSelectElement).value;
@@ -3655,7 +3704,7 @@ try {
   const cleanup = () => {
     if (!alive) return; clearPraise(); clearActionFeedback(); alive = false; clearTimeout(workerDeadline); clearTimeout(outcomeTimer); clearTimeout(messageTimer);
     cancelPause('dispose');
-    telemetry.track('session_end'); clearInterval(checkpoint); clearInterval(dayRefresh); clearInterval(countdownTick); clearInterval(recoveryHudTick); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
+    telemetry.track('session_end'); cancelAnimationFrame(deadEndPaint); clearInterval(checkpoint); clearInterval(dayRefresh); clearInterval(countdownTick); clearInterval(recoveryHudTick); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     finishRewardClaim();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
     clearTimeout(themeExpiry); worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);

@@ -45,6 +45,8 @@ export interface DailyTaskJournal {
   lastUtc: string;
   weeks: Week[];
   seenSignals: string[];
+  signalHistoryVersion?: 1;
+  retiredGameRevision?: number;
   hintedAttempts: string[];
   loginDaysUtc: string[];
   inventory: { definitions: number; shuffles: number; chestKeys: string[]; cardBack: boolean };
@@ -74,11 +76,39 @@ function validTask(prize: TaskTarget): boolean {
 const uniqueTokens = (items: unknown): items is string[] => Array.isArray(items) &&
   items.every(token) && new Set(items).size === items.length;
 
+function gameRevision(id: string) {
+  const match = /^game:[A-Za-z0-9_-]{1,100}:(\d+):([A-Za-z]+)$/.exec(id);
+  const revision = match && Number(match[1]);
+  return match && Object.hasOwn(channel, match[2]) && typeof revision === 'number' && natural(revision) ? revision : undefined;
+}
+
+function retireGameSignals(state: DailyTaskJournal) {
+  state.seenSignals = state.seenSignals.filter(id => {
+    const revision = gameRevision(id);
+    if (revision !== undefined) {
+      state.retiredGameRevision = Math.max(state.retiredGameRevision ?? 0, revision);
+      return false;
+    }
+    return !/^login:\d{4}-\d{2}-\d{2}$/.test(id) || !state.loginDaysUtc.includes(id.slice(6));
+  });
+}
+
+export function migrateTaskSignalHistory(save: Save) {
+  const state = save.dailyTasks;
+  if (!state || state.signalHistoryVersion === 1) return;
+  retireGameSignals(state);
+  const active = new Set([save.attempt.id, save.parked?.campaign?.id, save.parked?.daily?.id]);
+  state.hintedAttempts = state.hintedAttempts.filter(id => active.has(id));
+  state.signalHistoryVersion = 1;
+}
+
 const validMilestone = (milestone: WeekMilestone) => Boolean(milestone &&
   validTask({ id: milestone.id, kind: 'DailyLogin', target: milestone.medals, prize: milestone.prize }) &&
   (milestone.bundle === undefined || (Array.isArray(milestone.bundle) && milestone.bundle.every(validPrize))));
 export function validDailyTasks(state: DailyTaskJournal): boolean {
   return Boolean(state && state.version === 1 && realDate(state.lastUtc) && uniqueTokens(state.seenSignals) &&
+    (state.signalHistoryVersion === undefined || state.signalHistoryVersion === 1) &&
+    (state.retiredGameRevision === undefined || state.signalHistoryVersion === 1 && natural(state.retiredGameRevision)) &&
     uniqueTokens(state.hintedAttempts) && uniqueTokens(state.loginDaysUtc) && state.loginDaysUtc.every(realDate) &&
     state.inventory && natural(state.inventory.definitions) && natural(state.inventory.shuffles) &&
     typeof state.inventory.cardBack === 'boolean' && uniqueTokens(state.inventory.chestKeys) &&
@@ -100,7 +130,7 @@ export function scheduleTasks(save: Save, now: number, definitions: readonly Tas
   if (!utc || !definitions.length || !milestones.every(validMilestone) ||
     new Set(milestones.map(item => item.id)).size !== milestones.length || definitions.some(definition => !validTask(definition)) ||
     new Set(definitions.map(definition => definition.id)).size !== definitions.length || utc < (save.dailyTasks?.lastUtc ?? '')) return false;
-  const state = save.dailyTasks ??= { version: 1, lastUtc: utc, weeks: [], seenSignals: [], hintedAttempts: [], loginDaysUtc: [],
+  const state = save.dailyTasks ??= { version: 1, lastUtc: utc, weeks: [], seenSignals: [], signalHistoryVersion: 1, hintedAttempts: [], loginDaysUtc: [],
     inventory: { definitions: 0, shuffles: 0, chestKeys: [], cardBack: false } };
   const weekStart = weekOf(utc);
   let week = state.weeks.find(entry => entry.startUtc === weekStart);
@@ -109,6 +139,7 @@ export function scheduleTasks(save: Save, now: number, definitions: readonly Tas
     state.weeks.push(week);
   }
   if (week.days.some(day => day.utc === utc)) return false;
+  if (state.lastUtc !== utc) retireGameSignals(state);
   state.lastUtc = utc;
   week.days.push({ utc, tasks: definitions.map(definition => ({ ...structuredClone(definition), progress: 0 })) });
   return true;
@@ -119,15 +150,20 @@ export function recordTaskSignal(save: Save, now: number, signal: TaskSignal): b
   if (!state || !day || utc !== state.lastUtc || !token(signal.id) || !Object.hasOwn(channel, signal.kind) ||
     channel[signal.kind] !== signal.channel || !natural(signal.amount) || !signal.amount ||
     (signal.attemptId !== undefined && !token(signal.attemptId))) return false;
-  const key = signal.kind === 'DailyLogin' ? `login:${utc}` : signal.id;
-  if (state.seenSignals.includes(key)) return false;
+  const revision = gameRevision(signal.id);
+  if (revision !== undefined && revision <= (state.retiredGameRevision ?? -1)) return false;
+  const login = signal.kind === 'DailyLogin';
+  const key = login ? `login:${utc}` : signal.id;
+  if (state.seenSignals.includes(key) || login && state.loginDaysUtc.includes(utc)) return false;
   if (signal.kind === 'WinNoHints' && (!signal.attemptId || state.hintedAttempts.includes(signal.attemptId))) return false;
-  if (signal.kind === 'UseHints' && signal.attemptId && !state.hintedAttempts.includes(signal.attemptId)) state.hintedAttempts.push(signal.attemptId);
-  if (signal.kind === 'DailyLogin') state.loginDaysUtc.push(utc);
-  state.seenSignals.push(key);
-  for (const task of day.tasks) {
-    if (task.kind === signal.kind && !task.claimed) task.progress += Math.min(signal.amount, task.target - task.progress);
-  }
+  const tasks = day.tasks.filter(task => task.kind === signal.kind && !task.claimed && task.progress < task.target);
+  const hinted = signal.kind === 'UseHints' && revision === undefined && signal.attemptId && !state.hintedAttempts.includes(signal.attemptId)
+    ? signal.attemptId : undefined;
+  if (hinted) state.hintedAttempts.push(hinted);
+  if (login) state.loginDaysUtc.push(utc);
+  if (!tasks.length) return login || hinted !== undefined;
+  if (!login) state.seenSignals.push(key);
+  for (const task of tasks) task.progress += Math.min(signal.amount, task.target - task.progress);
   return true;
 }
 

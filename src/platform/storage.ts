@@ -10,7 +10,7 @@ import { migrateCampaignLives, validCampaignLives } from '../domain/campaign-liv
 import { validStoreProgress } from '../domain/commerce/storefront';
 import { validCampaignAds } from '../domain/campaign-advertising';
 import { Capacitor, registerPlugin } from '@capacitor/core';
-import { JsonStorageRepository, type StorageAdapter } from '@danilah/mini-games-kit/platform';
+import type { StorageAdapter } from '@danilah/mini-games-kit/platform';
 import { dayNumber, metaState, milestoneRewards } from '../domain/meta';
 import { BALANCE } from '../domain/balance';
 import { validRewardOffers } from '../domain/reward-offers';
@@ -18,11 +18,13 @@ import { validOfferCampaignJournal } from '../domain/commerce/offer-campaigns';
 import { validCommerceJournal } from '../domain/commerce/orders';
 import { validEventLedger } from '../domain/events/ledger';
 import { validPicture } from '../domain/events/picture';
-import { validDailyTasks } from '../domain/events/daily-tasks';
+import { migrateTaskSignalHistory, validDailyTasks } from '../domain/events/daily-tasks';
 import { applyBoard, assertBoard, boardRules } from '../domain/engine';
+import { repairHammerJoker } from '../domain/hitapps-board';
+import { parseSavedState, serializeSave } from './save-undo';
 import { MAX_UNDO_HISTORY } from '../domain/history';
 import { DIFFICULTY_WINDOW } from '../domain/difficulty';
-import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION, type CampaignOutcome, type Deal, type Save } from '../domain/types';
+import { BALANCE_VERSION, CONTENT_VERSION, RULES_VERSION, type Attempt, type CampaignOutcome, type Deal, type Save } from '../domain/types';
 
 export const SAVE_KEY = 'asoc-solitaire.save.v1';
 interface StorageBridge {
@@ -41,7 +43,7 @@ const natural = (n: unknown) => Number.isSafeInteger(n) && (n as number) >= 0;
 const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every(s => typeof s === 'string' && s.length <= 200) && new Set(v).size === v.length;
 export type DealSource = Deal | ((id: string) => Deal | undefined);
 export function decodeSave(raw: string, source: DealSource, migrateRights = true): Save {
-  const save = JSON.parse(raw) as Save;
+  const save = parseSavedState(raw);
   const deal = typeof source === 'function' ? source(save.attempt?.dealId) : source;
   if (!deal) throw Error('Неизвестная раздача. Сохранение оставлено без изменений.');
   const legacy = save.rulesVersion === 1 && save.balanceVersion === 1 && ((save.contentVersion === 1 && deal.id === 'intro-001') || (save.contentVersion === 2 && (deal.campaignLevel ?? 0) <= 20));
@@ -73,6 +75,9 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
   }
   if (legacy || previous) save.profile.jokers ??= BALANCE.initialJokers;
   if (migration) { save.rulesVersion = RULES_VERSION; save.contentVersion = CONTENT_VERSION; save.balanceVersion = BALANCE_VERSION; }
+  const history = save.attempt.undo;
+  for (let i = 1; i < history.length; i++) history[i] = repairHammerJoker(history[i], history[i - 1], deal) ?? history[i];
+  save.attempt.board = repairHammerJoker(save.attempt.board, history.at(-1), deal) ?? save.attempt.board;
   assertBoard(save.attempt.board, deal);
   if (save.attempt.verifiedTaskHints !== undefined && !natural(save.attempt.verifiedTaskHints)) throw Error('Повреждён учёт подсказок');
   if (save.attempt.lessonHint !== undefined) {
@@ -264,7 +269,10 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
     const legacyDaily = dailyModeAvailable(save), legacyTasks = dailyTasksAvailable(save);
     save.unlockSchedule = { version: 1, ...(legacyDaily ? { legacyDaily: true } : {}), ...(legacyTasks ? { legacyTasks: true } : {}) };
   }
-  if (migrateRights) migrateRandomJokerRights(save);
+  if (migrateRights) {
+    migrateRandomJokerRights(save);
+    migrateTaskSignalHistory(save);
+  }
   return save;
 }
 
@@ -274,11 +282,33 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
 export class SaveStore {
   onChange?: (save: Save) => void;
   private tail: Promise<unknown> = Promise.resolve();
-  private uncertain: { before: string; after: string; next: Save } | undefined;
-  private repository: JsonStorageRepository<Save>;
+  private uncertain: { before: string | null; after: string; next: Save } | undefined;
+  private durableRaw: string | null = null;
   private value!: Save;
-  constructor(private adapter: StorageAdapter, private deal: DealSource, createDefault: () => Save, private key = SAVE_KEY) {
-    this.repository = new JsonStorageRepository({ storage: adapter, key, createDefault, codec: { decode: value => decodeSave(JSON.stringify(value), deal) } });
+  constructor(private adapter: StorageAdapter, private deal: DealSource, private createDefault: () => Save, private key = SAVE_KEY) {}
+  private resolveDeal(attempt: Attempt) {
+    const deal = typeof this.deal === 'function' ? this.deal(attempt.dealId) : this.deal;
+    if (deal?.id !== attempt.dealId) throw Error('Неизвестная раздача. Сохранение оставлено без изменений.');
+    return deal;
+  }
+  private async persist(raw: string) {
+    if (new TextEncoder().encode(raw).byteLength > 4_194_304)
+      throw Error('Сохранение превышает 4 МиБ. Последняя сохранённая партия осталась на устройстве.');
+    await this.adapter.setItem(this.key, raw);
+  }
+  private validateBoards(next: Save) {
+    const previous = [this.value.attempt, ...Object.values(this.value.parked ?? {})];
+    for (const attempt of [next.attempt, ...Object.values(next.parked ?? {})]) {
+      if (!attempt || attempt.board.rulesVersion !== 4) continue;
+      const deal = this.resolveDeal(attempt);
+      const before = previous.find(entry => entry?.id === attempt.id && entry.dealId === attempt.dealId);
+      assertBoard(attempt.board, deal);
+      // Validate the new tail, including the replacement at the 300-frame cap.
+      // Earlier frames already passed decode or commit. Rights only alter their
+      // budgets or append an empty slot through the existing domain helpers.
+      const from = Math.max(0, (before?.undo.length ?? 0) - 1);
+      for (let i = from; i < attempt.undo.length; i++) assertBoard(attempt.undo[i], deal);
+    }
   }
   get state(): Save { return this.value; }
   get needsRecovery(): boolean { return Boolean(this.uncertain); }
@@ -286,24 +316,31 @@ export class SaveStore {
     // A failed native read never becomes a fresh game. Import legacy WebView state only when native is definitely empty.
     const nativeRaw = await this.adapter.getItem(this.key);
     const legacy = this.key === SAVE_KEY && nativeRaw === null && Capacitor.isNativePlatform() ? localStorage.getItem(SAVE_KEY) : null;
-    this.value = legacy === null ? await this.repository.load() : decodeSave(legacy, this.deal);
-    await this.repository.write(this.value);
+    const input = nativeRaw ?? legacy;
+    this.value = input === null ? this.createDefault() : decodeSave(input, this.deal);
+    const raw = serializeSave(this.value);
+    if (raw !== nativeRaw) await this.persist(raw);
+    this.durableRaw = raw;
     return this.value;
   }
   mutate<T>(change: (next: Save) => T): Promise<T> {
     const task = this.tail.then(async () => {
       if (this.uncertain) await this.recover();
       const next = structuredClone(this.value), result = change(next);
-      if (JSON.stringify(next) === JSON.stringify(this.value)) return result;
+      let after = serializeSave(next);
+      if (after === this.durableRaw) return result;
+      this.validateBoards(next);
       // Changes outside the engine, e.g. telemetry markers, still get a monotonically increasing revision.
-      if (next.revision <= this.value.revision) next.revision = this.value.revision + 1;
-      const pending = { before: JSON.stringify(this.value), after: JSON.stringify(next), next };
-      try { await this.repository.write(next); }
+      if (next.revision <= this.value.revision) { next.revision = this.value.revision + 1; after = serializeSave(next); }
+      const pending = { before: this.durableRaw, after, next };
+      try { await this.persist(after); }
       catch {
         this.uncertain = pending;
         const applied = await this.recover();
-        if (!applied) throw Error('Не удалось сохранить. Повторите действие.');
+        if (!applied) throw Error('Не удалось сохранить. Последняя сохранённая партия осталась на устройстве.');
+        return result;
       }
+      this.durableRaw = after;
       this.value = next; this.onChange?.(this.value); return result;
     });
     this.tail = task.catch(() => undefined); return task;
@@ -311,7 +348,7 @@ export class SaveStore {
   async recover(): Promise<boolean> {
     if (!this.uncertain) return true;
     const pending = this.uncertain, raw = await this.adapter.getItem(this.key);
-    if (raw === pending.after) { this.value = pending.next; this.uncertain = undefined; this.onChange?.(this.value); return true; }
+    if (raw === pending.after) { this.durableRaw = raw; this.value = pending.next; this.uncertain = undefined; this.onChange?.(this.value); return true; }
     if (raw === pending.before) { this.uncertain = undefined; return false; }
     throw Error('Сохранение ожидает проверки. Попробуйте ещё раз.');
   }

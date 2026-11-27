@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { findDeal, layoutFingerprint } from '../../src/content/campaign';
+import { LIVES_RULES } from '../../src/domain/campaign-lives';
 import { applyBoard, freshSave, sourceCards } from '../../src/domain/engine';
 import type { BoardCommand, Deal } from '../../src/domain/types';
 import { boardFrame, cardMetrics, layout } from '../../src/game/layout';
@@ -132,5 +133,5 @@ test('L6 voluntary restart creates a second playable board without losing a life
   if (record) await page.screenshot({ path: info.outputPath('L6-restart-2.png'), scale: 'css' });
   await play(page, next, next.winningPath);
   await expect(page.locator('#result')).toBeVisible();
-  expect((await read(page)).campaignLives?.remaining).toBe(before.campaignLives?.remaining);
+  expect((await read(page)).campaignLives?.remaining).toBe(before.campaignLives?.remaining ?? LIVES_RULES.max);
 });

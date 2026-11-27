@@ -152,6 +152,7 @@ it('buys, places, and restores the paid Random Joker on a certified Rules4 L16',
     expect(result.accepted).toBe(true);
     save = result.next;
   }
+  const coins = save.profile.coins;
   expect(buyRandomJokerAccess(save, deal, 'paid-rules4-joker', 100)).toBe(true);
   const path: BoardCommand[] = [
     { type: 'transfer', from: { kind: 'tableau', index: 2 }, to: { kind: 'tableau', index: column }, root: 6 },
@@ -160,7 +161,7 @@ it('buys, places, and restores the paid Random Joker on a certified Rules4 L16',
   ];
   const proof = { attemptId: save.attempt.id, revision: save.revision, column, id: 'azj-rules4', path };
   expect(settleRandomJoker(save, deal, proof)).toBe(true);
-  expect(save.profile.coins).toBe(250);
+  expect(save.profile.coins).toBe(coins - 250);
   expect(randomJokerCount(save)).toBe(0);
   expect(save.attempt.undo).toHaveLength(0);
   save = decodeSave(JSON.stringify(save), findDeal);

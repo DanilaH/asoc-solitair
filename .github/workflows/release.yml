@@ -63,7 +63,11 @@ jobs:
         env:
           EXPECTED_COMMIT: ${{ inputs.expected_commit }}
         run: test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
-      - run: npm run check && npm run android:sync
+      - name: Verify historical contracts in their ordinary baseline
+        run: env -u VITE_ASOC_PROFILE npm run check
+      - name: Verify current Rules4, M1 and save contracts
+        run: npx vitest run tests/unit/campaign-meta.test.ts tests/unit/e4-m1.test.ts tests/unit/functional-audit-225.test.ts --testTimeout=30000
+      - run: npm run android:sync
       - name: Build using configured signing identity
         env:
           YANDEX_BANNER_AD_UNIT_ID: ${{ secrets.YANDEX_BANNER_AD_UNIT_ID }}

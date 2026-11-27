@@ -1,4 +1,4 @@
-import { matchesLifeShow, settleLifeVideo } from './campaign-lives';
+import { settleLifeVideo } from './campaign-lives';
 import { isCampaignInterstitial, recordAdBreakShown, recordCoffeeDisplay, settleCoffee, type CampaignInterstitialPlacement } from './campaign-advertising';
 import { campaignRewards } from './meta';
 import { isOfferPlacement, offerShowContext, settleRewardOffer, type OfferPlacement } from './reward-offers';
@@ -47,27 +47,24 @@ export function parseFullscreenShown(value: unknown): FullscreenShown {
 
 /** The native journal owns one verified show until this independent effect is durable. */
 export function applyFullscreenShown(save: Save, shown: FullscreenShown, level?: number, repeatableDeal?: Deal): 'applied' | 'already-applied' {
-  const attempt = save.attempt;
-  const verifiedLife = shown.placement === 'life-refill' && matchesLifeShow(save, shown.attempt, shown.dealId);
-  const offerPlacement = isOfferPlacement(shown.placement);
-  const verifiedOffer = offerPlacement && shown.kind === 'rewarded' && Boolean(offerShowContext(save, shown));
-  if (offerPlacement && !verifiedOffer) return 'already-applied';
-  const verifiedContinue = shown.placement === 'continue' && shown.kind === 'rewarded' && Boolean(findContinueVideo(save, shown));
-  if (!verifiedLife && !verifiedOffer && !verifiedContinue && (shown.attempt !== attempt.id || shown.dealId !== attempt.dealId || shown.mode !== (attempt.daily ? 'daily' : 'campaign'))) {
-    return 'already-applied';
-  }
+  if (isOfferPlacement(shown.placement) && (shown.kind !== 'rewarded' || !offerShowContext(save, shown))) return 'already-applied';
   const state = platformState(save);
-  if (state.fullscreenCadence &&
-    (shown.id === state.fullscreenCadence.lastShownId || shown.shownAt <= state.lastFullscreenAt)) {
+  if (shown.id === state.fullscreenCadence?.lastShownId || shown.shownAt <= state.lastFullscreenAt) {
     return 'already-applied';
   }
-  // Before the first verified show, the historical attempt time remains a conservative floor.
+  // Only the native shown journal calls this path. A late display still gates
+  // future fullscreen ads even after the attempt or reward quote has gone.
   state.lastFullscreenAt = shown.shownAt;
   state.fullscreenCadence = { version: 1, lastShownId: shown.id };
-  if (shown.kind === 'interstitial') state.winsSinceInterstitial = 0;
-  if (shown.placement === 'ads-break' && shown.kind === 'interstitial') {
-    if (repeatableDeal) recordCoffeeDisplay(save, repeatableDeal);
-    else if (level !== undefined && shown.mode === 'campaign') recordAdBreakShown(save, level);
+  const matches = (attempt: Save['attempt']) => shown.attempt === attempt.id && shown.dealId === attempt.dealId &&
+    shown.mode === (attempt.daily ? 'daily' : 'campaign');
+  const attempt = [save.attempt, save.parked?.[shown.mode]].find(entry => entry && matches(entry));
+  if (attempt && shown.kind === 'interstitial') {
+    if (attempt === save.attempt) state.winsSinceInterstitial = 0;
+    if (shown.placement === 'ads-break') {
+      if (repeatableDeal) recordCoffeeDisplay(save, repeatableDeal, attempt);
+      else if (level !== undefined && shown.mode === 'campaign') recordAdBreakShown(save, level, attempt);
+    }
   }
   return 'applied';
 }

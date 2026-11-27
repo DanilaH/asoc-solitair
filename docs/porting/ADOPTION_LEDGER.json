@@ -1,5 +1,13 @@
 {
   "schema": "consumer-adoption-ledger-v1",
+  "functionalAudit225": {
+    "issue": "https://github.com/DanilaH/asoc-solitair/issues/225",
+    "base": "9eab55ba6f5406981c28aadee1c5a922ba703fdb",
+    "implementationBranch": "fix/mvp-functional-audit-225",
+    "evidence": "docs/qa/functional-audit-225.md",
+    "affected": ["Rules4 Joker / Hammer / Magnet / Scissors / Puzzle", "fullscreen cadence", "Daily Tasks", "SaveStore / Undo", "dead-end recovery"],
+    "acceptance": "DEVICE_AND_LIVE_SDK_PENDING"
+  },
   "deliveryBrief": {
     "asOf": "2026-11-24",
     "codeRef": "c4215e18d54927a5ac73a350876f29852aa36861",

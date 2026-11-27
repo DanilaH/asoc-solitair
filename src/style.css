@@ -653,3 +653,11 @@ html[data-reduced=true] .coin-debit{animation:none}
 #daily-bonus-dialog .sheet-actions{grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr);gap:7px;padding-top:9px}
 #daily-bonus-dialog .sheet-actions:has(#daily-bonus-new[hidden]):has(#daily-bonus-claim[hidden]){grid-template-columns:1fr}
 #daily-bonus-dialog .sheet-actions button{font-size:15px;padding-inline:5px}
+
+
+#dead-end { grid-area:1 / 1; align-self:center; z-index:1; padding:3px 0; text-align:center; color:#eaf5ec; background:#16474a; border-radius:8px }
+#dead-end-label { margin:0 0 3px; font-size:12px; font-weight:800 }
+.dead-end-actions { max-width:100%; display:flex; flex-wrap:wrap; justify-content:center; gap:3px }
+.dead-end-actions .secondary { min-height:32px; margin:0; padding:3px 7px; font-size:11px; line-height:1.15 }
+#feedback-row:has(#dead-end:not([hidden])) { height:auto; min-height:48px }
+#feedback-row:has(#dead-end:not([hidden])) :is(#no-transfer,#lesson-note,#stock-recovery,#praise) { visibility:hidden }

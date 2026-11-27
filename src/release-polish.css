@@ -111,3 +111,31 @@ html[data-reduced=true] [data-casual] #calendar .stamp-new{animation:none}
   [data-casual] #calendar-summary{margin:4px 0 8px}
 }
 [data-casual] #picture-dialog #picture-title{font-size:clamp(19px,5.2vw,27px);text-wrap:balance}
+
+/* RC233: titles and balances have separate rows on narrow sheets. */
+[data-casual] .casual-dialog-title h2{overflow-wrap:normal;word-break:normal}
+[data-casual] #helpers .helper-offer h3{font-size:13px}
+[data-casual] #helpers .helper-offer h3 .casual-icon{width:18px;height:18px}
+[data-casual] #helpers .helper-offer h3 span{flex-basis:100%;margin:0;font-size:11px}
+[data-casual] #weekly-main[data-week-ladder]{padding:6px 8px}
+[data-casual] #weekly-main #daily-tasks-week-title{font-size:13px;margin:0 0 2px}
+[data-casual] #weekly-main #daily-tasks-medals{min-height:0;margin:2px 0}
+[data-casual] #daily-tasks-week-details>summary{min-height:44px;display:flex;align-items:center;font-size:12px;font-weight:800;color:var(--table-ink);cursor:pointer}
+[data-casual] #daily-tasks-week-details>summary::before{content:'▸';margin-inline-end:6px}
+[data-casual] #daily-tasks-week-details[open]>summary::before{content:'▾'}
+[data-casual] #daily-tasks-ready-milestone{min-height:44px;margin:5px 0 0;padding:6px;font-size:12px}
+@media(max-width:380px){
+  [data-casual] #campaign-lives .sheet-heading{grid-template-columns:minmax(0,1fr) 47px}
+  [data-casual] #campaign-lives #lives-wallet-anchor{grid-column:1/-1;grid-row:2;justify-self:center}
+  [data-casual] #campaign-lives .sheet-heading h2{white-space:nowrap}
+}
+
+[data-casual] #daily-tasks-ready #daily-tasks-ready-milestone{min-height:44px;margin:0;font-size:12px}
+[data-casual] #daily-tasks-ready #daily-tasks-medals{margin:0;min-height:44px}
+
+[data-casual] #privacy-dialog .sheet-body{font-size:13px;line-height:1.5}
+[data-casual] #privacy-dialog h2{font-size:19px}
+[data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone){grid-template-columns:minmax(128px,1fr) minmax(0,1fr)}
+[data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone[hidden]){grid-template-columns:1fr}
+[data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone) #daily-tasks-medals{grid-template-columns:20px minmax(65px,1fr) 20px;gap:4px;padding:4px 5px;font-size:12px}
+[data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone) #daily-tasks-medals>.casual-icon{width:20px;height:20px}

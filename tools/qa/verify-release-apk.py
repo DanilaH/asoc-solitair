@@ -12,7 +12,12 @@ if (profile.get("fixtureNavigation") is not False or profile.get("archivedCampai
         or profile["policies"].get("campaignCore") != "campaign-core-stage1-v1"
         or profile["policies"].get("campaignEconomy") != "e4-m1-r1" or profile["balanceVersion"] != 4):
     raise ValueError("Expected ordinary Rules4 issuance and no fixture navigation")
-prefix = "assets/public/"
+if profile["apkVariant"] == "release" and profile["sdkMode"] == "live":
+    if (profile["packageId"] != "com.danilah.asocsolitair"
+            or profile["capabilities"]["purchases"] != "off"
+            or not all(profile["sdkCapabilities"].values())):
+        raise ValueError("Store build requires production package, advertising approvals and IAP off")
+prefix = "base/assets/public/" if sys.argv[1].endswith(".aab") else "assets/public/"
 with ZipFile(sys.argv[1]) as apk:
     if apk.read(prefix + "release-manifest.json") != manifest:
         raise ValueError("APK and web manifests differ")

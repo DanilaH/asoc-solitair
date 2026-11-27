@@ -224,7 +224,7 @@ export class BoardScene extends Phaser.Scene {
   }
   private label(x: number, y: number, text: string, size: number, color: string, maxHeight = Infinity) {
     const width = this.cardW - (releaseProfile ? 12 : 18);
-    const label = this.add.text(x, y, cardCaption(text, text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size}px`, fontStyle: 'bold', color, align: 'center', lineSpacing: -2, wordWrap: { width, useAdvancedWrap: Boolean(releaseProfile) } }).setOrigin(.5, 0);
+    const label = this.add.text(x, y, cardCaption(text, Boolean(releaseProfile) || text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size}px`, fontStyle: 'bold', color, align: 'center', lineSpacing: -2, wordWrap: { width, useAdvancedWrap: false } }).setOrigin(.5, 0);
     label.setScale(Math.min(1, width / Math.max(1, label.width), maxHeight / Math.max(1, label.height)));
     return label;
   }

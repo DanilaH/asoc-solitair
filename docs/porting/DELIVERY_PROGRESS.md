@@ -197,3 +197,7 @@
 
 **KIT IMPACT:** REUSE current framework; record future actual feedback separately.
 
+
+## №233 · финальная приёмка 0.21.6 (57)
+
+Переносы целых слов и редакторских слогов, компактная недельная выдача, независимая проверка production prerequisites в CI. Rules4/M1, immutable content, SaveStore и 115/38/15/9 сохраняются. Физические SDK и production-подпись проверяются отдельно. [Протокол и действия владельца](../release/RC233_ANDROID.md). Материалы витрины хранятся в design/asoc-solitair/rustore.

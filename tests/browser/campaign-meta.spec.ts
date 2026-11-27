@@ -101,6 +101,7 @@ test('uses the existing win and task screens for staged claims', async ({ page }
   }
   if (record) await page.screenshot({ path: info.outputPath('week.png'), scale: 'css' });
   if (!before) {
+    if (await page.locator('#daily-tasks-week-details').isVisible()) await page.locator('#daily-tasks-week-details>summary').tap();
     await page.locator('#daily-tasks-milestones button').last().tap();
     await page.locator('#task-chest-open').tap();
     await expect(page.locator('#task-chest-prize')).toContainText('отмен');

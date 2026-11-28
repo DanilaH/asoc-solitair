@@ -14,6 +14,8 @@ Base PR234 HEAD was checked twice against `aeb86300005c368ac19f4e647070a1430ab28
 
 The already noted PR234 inventory label wrap is shortened to «Перемешать». The existing helpers/inventory layout is retained.
 
+The additional inventory-only → helper purchase path was also reproduced in the first patch and then guarded. `logTaskAction` now requires actual Tasks availability before scheduling or recording a helper task. The browser CA-01 case claims an old Shuffle, reloads, buys a Hint and asserts zero task weeks and a hidden Tasks button. Early resource ownership cannot indirectly unlock the schedule through another helper.
+
 ## Controlled helper comparison
 
 Raw [baseline](ca236/before.json) comes from a separate clean base worktree. [Local corrected output](ca236/after-local.json) records the same deal IDs and prefixes; those identities were compared before summarizing. `tools/qa/audit-ca236.ts` is compiled in each checkout with ordinary `c8-release-v1`. Baseline compatibility branches in this audit harness do not enter the app. 11 selected deviations and60 deterministic randomized off-witness positions are independently witnessed, including12 Daily dates. These are controlled regression samples, not estimates of player win rate or all-state solver completeness.

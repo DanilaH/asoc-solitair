@@ -52,6 +52,13 @@ test('CA-01 old early Shuffle prize claims, reloads and leaves Tasks locked', as
   await page.reload(); await expect(page.locator('#app')).toHaveAttribute('data-ready','true');
   expect((await read(page)).dailyTasks?.inventory.shuffles).toBe(2);
   await expect(page.locator('#daily-tasks-open')).toBeHidden();
+  await page.locator('#home-play').tap();
+  await helpers(page);
+  const hints=(await read(page)).profile.hints;
+  await page.locator('#buy-hint').tap();
+  await expect.poll(async()=>(await read(page)).profile.hints).toBe(hints+1);
+  expect((await read(page)).dailyTasks?.weeks).toEqual([]);
+  await expect(page.locator('#daily-tasks-open')).toHaveAttribute('hidden');
 });
 test('CA-02 new layout retains prior losses, restart count and lives', async ({page},info) => {
   const {save}=fixture(6); save.attempt.director={restarts:2,previousLosses:2};

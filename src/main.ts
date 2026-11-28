@@ -1879,7 +1879,7 @@ try {
     id = `game:${next.attempt.id}:${next.revision}:${kind}`) {
     const now = Date.now();
     syncRetention(next, now);
-    if (!next.dailyTasks) return;
+    if (!next.dailyTasks || !dailyTasksAvailable(next)) return;
     if (TASKS_PREVIEW) updatePreviewTasks(next, now);
     recordTaskSignal(next, now, { id, kind, channel, amount });
   }

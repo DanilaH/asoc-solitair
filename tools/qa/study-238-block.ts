@@ -42,7 +42,7 @@ assert(E4_M1 && releaseProfile?.id==='c8-release-v1');
 assert.equal(campaignDeals.length,200);
 const family=process.argv[2]??'current', channel=process.argv[3]??'free';
 assert(['current','five','azur'].includes(family));assert(['free','rv','rv-nofill'].includes(channel));
-const supply=process.argv[4]??'full';
+const supply=process.argv[4]??'partial';
 const slope=Number(process.argv[5]??5);
 assert(['partial','no-optional'].includes(supply));assert([2,5].includes(slope));
 const voluntary=channel!=='free';
@@ -443,7 +443,7 @@ for(let level=1;level<=lastLevel;level++){
   const prePenalty=futureDifficultyPenalty(save);
   startLevel(level);
   let status='guided',attempts=1,assisted=false;
-  const initialId=current.id, initialBudget=current.initial.movesLeft;
+  const initialId=current.id, initialBudget=current.initial.movesLeft,initialGeometry=geometry(current),initialPopulation=populationKey(current);
   if(level<=15)scripted();
   else{
     status=play();
@@ -466,7 +466,7 @@ for(let level=1;level<=lastLevel;level++){
   dayWins++;
   const reconciled=M1.initialCoins+Object.values(money).reduce((a,b)=>a+b,0);
   assert.equal(save.profile.coins,reconciled,'wallet reconciliation L'+level);
-  rows.push({level,day:dayIndex,initialId,finalId:current.id,initialBudget,attempts,scripted:level<=15||assisted,
+  rows.push({level,day:dayIndex,initialId,initialGeometry,initialPopulation,finalId:current.id,initialBudget,attempts,scripted:level<=15||assisted,
     firstPolicyWin:level>15&&attempts===1,policyWin:level>15&&!assisted,cards:size(current),groups:groups(current),
     penaltyBefore:prePenalty,penaltyAfter:futureDifficultyPenalty(save),walletBefore:wallet,wallet:save.profile.coins,
     hints:save.profile.hints,undos:save.profile.undos,jokers:save.profile.jokers,shuffles:save.dailyTasks?.inventory.shuffles??0,
@@ -480,9 +480,11 @@ for(let level=1;level<=lastLevel;level++){
   }
 }
 assert(checkpoint);
+const lateRows=rows.filter(r=>Number(r.level)>=81);
+assert.equal(new Set(lateRows.map(r=>r.initialGeometry)).size,lastLevel-80,'nonrepeating first issuance');
 const diff=(a:Record<string,number>,b:Record<string,number>)=>Object.fromEntries([...new Set([...Object.keys(a),...Object.keys(b)])].map(k=>[k,(a[k]??0)-(b[k]??0)]));
 const result={head,family,channel,supply,slope,levels:completedLevels(save),wallet:save.profile.coins,minWallet,minWalletLate,days:dayIndex+1,
-  stats,money,checkpoint,late:{levels:lastLevel-80,netCoins:save.profile.coins-checkpoint.wallet,stats:diff(stats,checkpoint.stats),money:diff(money,checkpoint.money)},
+  stats,money,checkpoint,late:{levels:lastLevel-80,distinctLayouts:new Set(lateRows.map(r=>r.initialGeometry)).size,distinctPopulations:new Set(lateRows.map(r=>r.initialPopulation)).size,netCoins:save.profile.coins-checkpoint.wallet,stats:diff(stats,checkpoint.stats),money:diff(money,checkpoint.money)},
   inventory:{hint:save.profile.hints,undo:save.profile.undos,joker:save.profile.jokers,shuffle:save.dailyTasks?.inventory.shuffles??0},
   block: block.map(({deal,...entry})=>entry)};
 writeFileSync(outDir+'/summary.json',JSON.stringify(result,null,2));console.log('STUDY238_BLOCK_SUMMARY '+JSON.stringify(result));

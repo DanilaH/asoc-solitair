@@ -6,14 +6,14 @@ permissions:
   contents: read
 jobs:
   research-238:
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'research/238-paired-longitudinal')
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'research/238-paired-supply-sensitivity')
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     strategy:
       fail-fast: false
       matrix:
         family: [current, five, azur]
-        channel: [free, rv]
+        scenario: [{supply: no-daily, slope: 5}, {supply: no-optional, slope: 5}, {supply: full, slope: 2}]
     env:
       VITE_ASOC_PROFILE: c8-release-v1
       ASOC_AD_MODE: disabled
@@ -36,11 +36,11 @@ jobs:
       - name: Run longitudinal actual-domain model
         run: |
           npx vite build --ssr tools/qa/study-238-long.ts --outDir .recording/study238-long-build
-          node .recording/study238-long-build/study-238-long.js ${{ matrix.family }} ${{ matrix.channel }}
+          node .recording/study238-long-build/study-238-long.js ${{ matrix.family }} free ${{ matrix.scenario.supply }} ${{ matrix.scenario.slope }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: study-238-long-${{ matrix.family }}-${{ matrix.channel }}
+          name: study-238-sensitivity-${{ matrix.family }}-${{ matrix.scenario.supply }}-${{ matrix.scenario.slope }}
           path: .recording/study238-long/
           retention-days: 14
   web:

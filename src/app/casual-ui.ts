@@ -2,7 +2,7 @@ export const casualIcons = {
   coin: 'art/generated/coin.webp', heart: 'art/ui/heart.webp', gift: 'art/ui/gift.webp',
   medal: 'art/ui/medal.webp', task: 'art/ui/task.webp', daily: 'art/generated/daily.webp',
   looks: 'art/generated/looks.webp', hint: 'art/generated/hint.webp', undo: 'art/generated/undo.webp',
-  joker: 'art/generated/joker.webp', cycle: 'art/generated/cycle.webp', key: 'art/generated/key.webp',
+  joker: 'art/generated/joker.webp', shuffle: 'art/ui/shuffle.svg', cycle: 'art/generated/cycle.webp', key: 'art/generated/key.webp',
   dailyDeal: 'art/ui/daily-deal.webp', draw: 'art/ui/draw-stack.webp', link: 'art/ui/category-link.webp',
   album: 'art/ui/keepsake-album.webp', book: 'art/generated/book.webp', lock: 'art/generated/lock.webp', milestone: 'art/generated/milestone.webp',
 };
@@ -15,7 +15,7 @@ export function casualIcon(key: Icon, className = 'casual-icon'): HTMLImageEleme
 }
 const prizeArt: Record<string, Icon> = {
   Coins: 'coin', MoveHint: 'hint', Undo: 'undo', Medals: 'medal', Joker: 'joker',
-  Definition: 'book', Shuffle: 'cycle', CardBack: 'looks', RandomBoostersChest: 'gift',
+  Definition: 'book', Shuffle: 'shuffle', CardBack: 'looks', RandomBoostersChest: 'gift',
 };
 export function prizeIcon(kind: string): HTMLImageElement { return casualIcon(prizeArt[kind] ?? 'gift'); }
 
@@ -107,7 +107,7 @@ export function configureCasualDialogs() {
     settings: 'looks', helpers: 'hint', 'coins-dialog': 'coin', 'campaign-lives': 'heart', calendar: 'daily',
     appearance: 'looks', 'cycle-info': 'gift', 'picture-dialog': 'album', 'bonus-offer': 'link',
     'privacy-dialog': 'book', 'inspect-dialog': 'book', 'daily-tasks-dialog': 'task', 'daily-bonus-dialog': 'gift',
-    'campaign-liveops': 'medal', 'random-joker-warning': 'joker', 'shuffle-warning': 'cycle',
+    'campaign-liveops': 'medal', 'random-joker-warning': 'joker', 'shuffle-warning': 'shuffle',
   };
   for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog')) {
     dialog.classList.add('casual-dialog');

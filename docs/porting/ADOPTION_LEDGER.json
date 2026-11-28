@@ -2032,5 +2032,32 @@
     "candidate": "separate21-position A/B;72 unique layouts, both reserve policies and exact adaptive certificates; fresh-install-only checkpoint; candidate-only applied Hint settlement",
     "sourceStatuses": "UNCHANGED; all115/38/15/9 retained",
     "acceptance": "EXACT_HEAD_PROJECT_CI_AND_APK_REPORT; PHYSICAL_ANDROID_TEST_SDK_AND_HUMAN_BALANCE_PENDING"
+  },
+  "uiUxFeel250": {
+    "issue": "https://github.com/DanilaH/asoc-solitair/issues/250",
+    "base": "3e1b61814016b92cf7aef3aba9573d22228aa715",
+    "implementationBranch": "feat/250-ui-ux-feel",
+    "evidence": "docs/qa/UI250_POLISH.md",
+    "scope": [
+      "UX01",
+      "UX02",
+      "UX03",
+      "UX04",
+      "UX05",
+      "UX06",
+      "UX07"
+    ],
+    "authority": "PRODUCT_ADAPTED",
+    "acceptance": "CI_AND_DEVICE_VERIFICATION_IN_PROGRESS",
+    "preserves": [
+      "M1",
+      "Rules4",
+      "FTUE",
+      "old definitions/saves/rights",
+      "issue246 ordinary/A/B",
+      "115/38/15/9",
+      "Card Table B",
+      "test advertisements"
+    ]
   }
 }

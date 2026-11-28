@@ -93,7 +93,7 @@ async function geometry(page: Page, deal: Deal) {
   const save = await read(page), area = (await page.locator('#game-root').boundingBox())!;
   const frame = boardFrame(area.width, area.height, save.settings.deckPosition, deal);
   const model = layout(save.attempt.board, deal, frame, save.settings.deckSide, save.settings.deckPosition);
-  const point = ({ x, y }: { x: number; y: number }) => ({ x: area.x + x * frame.unit, y: area.y + y * frame.unit });
+  const point = ({ x, y }: { x: number; y: number }) => ({ x: area.x + frame.offsetX + x * frame.unit, y: area.y + y * frame.unit });
   return { save, area, frame, model, point };
 }
 

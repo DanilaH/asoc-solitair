@@ -14,7 +14,7 @@ import { UI_ART, artUrl, cardArtwork } from './art';
 import type { Pose, Target } from './layout';
 import { specialCardCues, type SpecialCardCue } from './special-card-feedback';
 
-interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text; puzzleLabel?: Phaser.GameObjects.Text; sourceBadge?: Phaser.GameObjects.Text; puzzleArt?: { half: Phaser.GameObjects.Image; full: Phaser.GameObjects.Image } }
+interface CardView { node: Phaser.GameObjects.Container; face: Phaser.GameObjects.Container; back: Phaser.GameObjects.Container; badge: Phaser.GameObjects.Text; content: Phaser.GameObjects.Container; caption?: Phaser.GameObjects.Text; categoryArt?: Phaser.GameObjects.Image; strip?: Phaser.GameObjects.Text | Phaser.GameObjects.Image; stripText?: string; backArt: Phaser.GameObjects.Image; shadow: Phaser.GameObjects.Image; shade: Phaser.GameObjects.Image; ice?: Phaser.GameObjects.Text; binding?: Phaser.GameObjects.Text; puzzleLabel?: Phaser.GameObjects.Text; sourceBadge?: Phaser.GameObjects.Text; puzzleArt?: { half: Phaser.GameObjects.Image; full: Phaser.GameObjects.Image } }
 interface Options {
   deal: Deal; getSave(): Save; reducedMotion(): boolean; command(command: Command): void; sound(name: string): void; allows?(command: BoardCommand): boolean;
   praise(text: string): void; jokerMode?(active: boolean): void; inspect(id: string): void; ready(scene: BoardScene, newDeal: boolean, dealId: string): void;
@@ -178,10 +178,10 @@ export class BoardScene extends Phaser.Scene {
     }
     this.foundationArt = this.add.graphics().setDepth(200);
     this.foundationTitles = Array.from({ length: slotCount(this.options.deal, 'foundation') }, () =>
-      this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '22px', fontStyle: 'bold', color: '#462a25' }).setOrigin(.5).setDepth(201));
+      this.add.text(0, 0, '', { fontFamily: 'Nunito, Arial', fontSize: '26px', fontStyle: 'bold', color: '#462a25' }).setOrigin(.5).setDepth(201));
     this.world.add([this.foundationArt, ...this.foundationTitles]);
     const gold = this.add.image(0, 0, 'art-card-category').setDisplaySize(this.cardW, this.cardH);
-    this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 16, '#705328'), this.add.image(0, 5, 'art-joker').setDisplaySize(78, 78)]).setVisible(false);
+    this.jokerArt = this.add.container(0, 0, [gold, this.label(0, -this.cardH / 2 + 12, 'ДЖОКЕР', 26, '#705328'), this.add.image(0, 5, 'art-joker').setDisplaySize(78, 78)]).setVisible(false);
     this.jokerBadge = this.add.container(0, 0, [this.add.circle(0, 0, 11, 0xf1cc73).setStrokeStyle(1, 0xffecc0), this.add.text(0, 0, '✦', { fontFamily: 'Nunito, Arial', fontSize: '15px', color: '#715321' }).setOrigin(.5)]).setDepth(425).setVisible(false);
     const lock = this.add.image(0, 0, 'art-card-back-diamonds').setDisplaySize(this.cardW, this.cardH).setTint(0x9198b9);
     this.lockCount = this.label(0, 36, `0 / ${this.lockGoal}`, 21, '#ffe6a1');
@@ -224,7 +224,7 @@ export class BoardScene extends Phaser.Scene {
   }
   private label(x: number, y: number, text: string, size: number, color: string, maxHeight = Infinity) {
     const width = this.cardW - (releaseProfile ? 12 : 18);
-    const label = this.add.text(x, y, cardCaption(text, Boolean(releaseProfile) || text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size}px`, fontStyle: 'bold', color, align: 'center', lineSpacing: -2, wordWrap: { width, useAdvancedWrap: false } }).setOrigin(.5, 0);
+    const label = this.add.text(x, y, cardCaption(text, Boolean(releaseProfile) || text.length > 10), { fontFamily: 'Nunito, Arial', fontSize: `${size}px`, fontStyle: 'bold', color, align: 'center', lineSpacing: -4, wordWrap: { width, useAdvancedWrap: false } }).setOrigin(.5, 0);
     label.setScale(Math.min(1, width / Math.max(1, label.width), maxHeight / Math.max(1, label.height)));
     return label;
   }
@@ -242,21 +242,22 @@ export class BoardScene extends Phaser.Scene {
     const g = this.add.image(0, 0, card.leader ? 'art-card-category' : 'art-card-face').setDisplaySize(this.cardW, this.cardH);
     const content = this.add.container(0, 0); face.add([g, content]);
     let puzzleArt: CardView['puzzleArt'];
+    let categoryArt: Phaser.GameObjects.Image | undefined;
     let caption: Phaser.GameObjects.Text | undefined, strip: Phaser.GameObjects.Text | Phaser.GameObjects.Image | undefined;
     const image = cardArtwork(card, this.options.deal);
     const half = puzzleHalf(this.options.deal, id);
     if (card.leader) {
-      if (card.ordered) content.add(this.label(0, -this.cardH / 2 + 11, 'ПО ПОРЯДКУ', 14, '#294d5d'));
+      if (card.ordered) content.add(this.label(0, -this.cardH / 2 + 8, '1 → 2', 26, '#294d5d'));
       else {
         const x = -this.cardW / 2 + 12, y = -this.cardH / 2 + 12;
         const crown = this.add.graphics(); content.add(crown);
         crown.fillStyle(0xd0a16b).beginPath().moveTo(x, y).lineTo(x + 5, y + 7).lineTo(x + 9, y - 2).lineTo(x + 13, y + 7).lineTo(x + 18, y).lineTo(x + 16, y + 15).lineTo(x + 2, y + 15).closePath().fillPath();
       }
-      const title = categoryCaption(card.text);
-      if (image) content.add(this.add.image(0, -23, image).setDisplaySize(61, 61));
-      caption = this.label(0, image ? 36 : 0, title, image ? 24 : 30, '#203e48', image ? 60 : this.cardH - 70).setOrigin(.5);
+      const title = categoryCaption(card.text, this.options.deal);
+      if (image) { categoryArt = this.add.image(0, -40, image).setDisplaySize(44,44); content.add(categoryArt); }
+      caption = this.label(0, image ? 15 : -4, title, image ? 30 : 32, '#203e48', image ? 62 : 104).setOrigin(.5);
       content.add(caption);
-      strip = this.add.text(0, 0, categoryCaption(card.text), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: releaseProfile ? '#483b36' : '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
+      strip = this.add.text(0, 0, categoryCaption(card.text, this.options.deal), { fontFamily: 'Nunito, Arial', fontSize: '16px', color: releaseProfile ? '#483b36' : '#8c7257', fontStyle: 'bold' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 18) / strip.width)); face.add(strip); strip.setVisible(false);
     } else if (image) {
       const size = Math.min(104, this.cardW - 22);
@@ -275,7 +276,7 @@ export class BoardScene extends Phaser.Scene {
       content.add(illustration);
       strip = this.add.image(0, -this.cardH / 2 + 11, image).setDisplaySize(18, 18); face.add(strip); strip.setVisible(false);
     } else {
-      caption = this.label(0, 0, card.text, 31, '#203e48', this.cardH - 70); caption.setOrigin(.5); content.add(caption);
+      caption = this.label(0, -4, card.text, 30, '#203e48', 104); caption.setOrigin(.5); content.add(caption);
       strip = this.add.text(0, 0, card.text.length > 12 ? card.text.slice(0, 11) + '…' : card.text, { fontFamily: 'Nunito, Arial', fontSize: '16px', fontStyle: 'bold', color: releaseProfile ? '#39505d' : '#79909c' }).setOrigin(.5);
       strip.setScale(Math.min(1, (this.cardW - 14) / strip.width)); face.add(strip); strip.setVisible(false);
     }
@@ -283,35 +284,35 @@ export class BoardScene extends Phaser.Scene {
       const key = this.add.image(this.cardW / 2 - 23, -this.cardH / 2 + 23, 'art-key').setDisplaySize(30, 30);
       content.add(key);
     }
-    const badge = this.label(0, card.leader && !card.ordered ? -this.cardH / 2 + 13 : this.cardH / 2 - 30, '', 20, '#694729'); content.add(badge);
+    const badge = this.label(0, this.cardH / 2 - 18, '', 26, '#694729'); content.add(badge);
     const ice = this.options.deal.frozen?.layers[id]
-      ? this.add.text(0, -this.cardH / 2 + 8, '', { fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold',
+      ? this.add.text(0, -this.cardH / 2 + 8, '', { fontFamily: 'Nunito, Arial', fontSize: '26px', fontStyle: 'bold',
         color: '#154560', backgroundColor: '#c7ebf6', padding: { x: 5, y: 2 } }).setOrigin(.5, 0).setVisible(false)
       : undefined;
     if (ice) face.add(ice);
     const links = this.options.deal.bound?.scissorsByCard;
     const bindingName = links?.[id] ? 'Связь' : Object.values(links ?? {}).includes(id) ? 'Ножницы' : '';
     const binding = bindingName ? this.add.text(0, -this.cardH / 2 + 8, bindingName, {
-      fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#572954',
+      fontFamily: 'Nunito, Arial', fontSize: '26px', fontStyle: 'bold', color: '#572954',
       backgroundColor: '#f3dcef', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0).setVisible(false) : undefined;
     if (binding) face.add(binding);
     const puzzleLabel = half ? this.add.text(0, -this.cardH / 2 + 8, half === 'top' ? 'Верх' : 'Низ', {
-      fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#2d532d',
+      fontFamily: 'Nunito, Arial', fontSize: '26px', fontStyle: 'bold', color: '#2d532d',
       backgroundColor: '#ddf1ce', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0) : undefined;
     if (puzzleLabel) face.add(puzzleLabel);
     if (this.options.deal.golden?.ids.includes(id)) face.add(this.add.text(0, -this.cardH / 2 + 8, 'Золото', {
-      fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#533408',
+      fontFamily: 'Nunito, Arial', fontSize: '26px', fontStyle: 'bold', color: '#533408',
       backgroundColor: '#f9dfa4', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0));
     const booster = this.options.deal.starter?.cards[id];
-    if (booster) face.add(this.add.text(0, -this.cardH / 2 + 8, booster === 'magnet' ? 'Магнит' : 'Усилитель', {
-      fontFamily: 'Nunito, Arial', fontSize: '17px', fontStyle: 'bold', color: '#563514',
+    if (booster) face.add(this.add.text(0, -this.cardH / 2 + 8, booster === 'magnet' ? 'Магнит' : 'Бустер', {
+      fontFamily: 'Nunito, Arial', fontSize: '26px', fontStyle: 'bold', color: '#563514',
       backgroundColor: '#f7ddc0', padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0));
     const sourceBadge = this.options.deal.hitapps ? this.add.text(0, -this.cardH / 2 + 8, '', {
-      fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold', color: '#393347', backgroundColor: '#f6eacb',
+      fontFamily: 'Nunito, Arial', fontSize: '26px', fontStyle: 'bold', color: '#393347', backgroundColor: '#f6eacb',
       padding: { x: 4, y: 2 },
     }).setOrigin(.5, 0).setVisible(false) : undefined;
     if (sourceBadge) face.add(sourceBadge);
@@ -319,7 +320,7 @@ export class BoardScene extends Phaser.Scene {
     this.paintBack(b);
     const shade = this.add.image(0, 0, shadeKey).setAlpha(0);
     back.add(b); node.add([shadow, face, back, shade]); this.world.add(node);
-    return { node, face, back, badge, content, caption, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice, binding, puzzleLabel, puzzleArt, sourceBadge };
+    return { node, face, back, badge, content, caption, categoryArt, strip, stripText: strip instanceof Phaser.GameObjects.Text ? strip.text : undefined, backArt: b, shadow, shade, ice, binding, puzzleLabel, puzzleArt, sourceBadge };
   }
   private paintBack(b: Phaser.GameObjects.Image) {
     const diamonds = this.options.getSave().settings.cardBack === 'diamonds';
@@ -331,7 +332,10 @@ export class BoardScene extends Phaser.Scene {
     copy.node.setPosition(source.node.x, source.node.y).setScale(source.node.scaleX, source.node.scaleY).setAlpha(source.node.alpha).setAngle(source.node.angle).setVisible(true);
     copy.face.setVisible(source.face.visible); copy.back.setVisible(source.back.visible);
     copy.content.setVisible(source.content.visible); copy.caption?.setVisible(source.caption?.visible ?? true);
-    copy.badge.setText(source.badge.text).setY(source.badge.y).setVisible(source.badge.visible);
+    copy.badge.setText(source.badge.text).setPosition(source.badge.x, source.badge.y).setVisible(source.badge.visible);
+    if(source.caption && copy.caption)copy.caption.setPosition(source.caption.x,source.caption.y).setScale(source.caption.scaleX,source.caption.scaleY);
+    if(source.categoryArt && copy.categoryArt)copy.categoryArt.setPosition(source.categoryArt.x,source.categoryArt.y).setDisplaySize(source.categoryArt.displayWidth,source.categoryArt.displayHeight);
+    if(source.sourceBadge && copy.sourceBadge)copy.sourceBadge.setText(source.sourceBadge.text).setColor(source.sourceBadge.style.color).setBackgroundColor(source.sourceBadge.style.backgroundColor).setScale(source.sourceBadge.scaleX).setVisible(source.sourceBadge.visible);
     if (source.ice) copy.ice?.setText(source.ice.text).setVisible(source.ice.visible);
     if (source.binding) copy.binding?.setY(source.binding.y).setVisible(source.binding.visible);
     if (source.puzzleArt && copy.puzzleArt) {
@@ -512,10 +516,10 @@ export class BoardScene extends Phaser.Scene {
       const leader = ids.map(id => this.options.deal.cards[id]).find(card => card.leader), title = this.foundationTitles[i];
       title.setVisible(Boolean(leader)); if (!leader) return;
       const { x, y } = target, total = Object.values(this.options.deal.cards).filter(card => card.category === leader.category && !card.leader).length, count = ids.length - 1;
-      const tabLeft = x - this.cardW / 2 + 2, tabTop = y - this.cardH / 2 - 29;
-      this.foundationArt.fillStyle(0xffdbac).fillRoundedRect(tabLeft, tabTop, this.cardW - 4, 28, 14);
-      this.foundationArt.lineStyle(1.5, 0xb98158).strokeRoundedRect(tabLeft, tabTop, this.cardW - 4, 28, 14);
-      title.setText(categoryCaption(leader.text)).setPosition(x, y - this.cardH / 2 - 15).setScale(1);
+      const tabLeft = x - this.cardW / 2 + 2, tabTop = y - this.cardH / 2 - 32;
+      this.foundationArt.fillStyle(0xffdbac).fillRoundedRect(tabLeft, tabTop, this.cardW - 4, 31, 14);
+      this.foundationArt.lineStyle(1.5, 0xb98158).strokeRoundedRect(tabLeft, tabTop, this.cardW - 4, 31, 14);
+      title.setText(categoryCaption(leader.text, this.options.deal)).setPosition(x, y - this.cardH / 2 - 17).setScale(1);
       title.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, title.width)));
       for (let dot = 0; dot < total; dot++) {
         const px = x + (dot - (total - 1) / 2) * Math.min(11, (this.cardW - 30) / Math.max(1, total));
@@ -619,16 +623,25 @@ export class BoardScene extends Phaser.Scene {
       if (view.sourceBadge && special) {
         const [text, ink, paper] = activeLocker(special) ? [`◆ ${special.lock!.collected}/${special.lock!.required}`, '#5a326e', '#f0e2fb']
           : special.ice ? [`❄ Лёд ${special.ice}`, '#154560', '#c7ebf6']
-          : special.scissors ? ['✂ Ножницы', '#572954', '#f3dcef']
-          : special.bound === 2 ? ['⌁ Связь', '#572954', '#f3dcef'] : special.bound === 1 ? ['Разрезано', '#572954', '#f3dcef']
+          : special.scissors ? ['Ножницы', '#572954', '#f3dcef']
+          : special.bound === 2 ? ['⌁ Связь', '#572954', '#f3dcef'] : special.bound === 1 ? ['Снято', '#572954', '#f3dcef']
           : special.key && !special.key.used ? [`Ключ ×${special.key.amount}`, '#5a326e', '#f0e2fb']
-          : special.gold?.health ? [`✦ Золото ${special.gold.health}`, '#533408', '#f9dfa4']
+          : special.gold?.health ? [`Золото ${special.gold.health}`, '#533408', '#f9dfa4']
           : special.order ? [`№${special.order}`, '#28535a', '#d8eee7'] : ['', '', ''];
         view.sourceBadge.setText(text).setColor(ink).setBackgroundColor(paper).setScale(1);
-        view.sourceBadge.setScale(Math.min(1, (this.cardW - 14) / Math.max(1, view.sourceBadge.width))).setVisible(pose.faceUp && Boolean(text));
+        view.sourceBadge.setScale(Math.min(1, (this.cardW - 8) / Math.max(1, view.sourceBadge.width))).setVisible(pose.faceUp && Boolean(text));
       }
       view.puzzleLabel?.setVisible(pose.faceUp && !view.ice?.visible && !view.binding?.visible && !view.sourceBadge?.visible && !view.puzzleArt?.full.visible);
       const def = this.options.deal.cards[pose.id];
+      if (view.caption) {
+        const specialHeader = Boolean(view.sourceBadge?.visible || view.ice?.visible || view.binding?.visible || view.puzzleLabel?.visible || def.ordered);
+        const maxHeight = specialHeader ? def.leader ? 80 : 84 : view.categoryArt ? 62 : 104;
+        view.caption.setY(specialHeader ? def.leader ? 0 : 7 : view.categoryArt ? 15 : -4)
+          .setScale(Math.min(1,(this.cardW-12)/Math.max(1,view.caption.width),maxHeight/Math.max(1,view.caption.height)));
+        if(view.categoryArt) view.categoryArt.setPosition(specialHeader ? -48 : 0, specialHeader ? 65 : -40).setDisplaySize(specialHeader ? 24 : 44,specialHeader ? 24 : 44);
+        view.badge.setX(specialHeader && view.categoryArt ? 15 : 0);
+      }
+
       if (previousCollected.has(pose.id) && events.some(e => e.type === 'undo')) {
         // A reloaded save has no old sprite positions. Restore from an actual
         // upper area, never the factory's (0,0); no presentation data is saved.
@@ -650,7 +663,7 @@ export class BoardScene extends Phaser.Scene {
       if (foundation) {
         view.badge.setText(def.ordered || def.rank ? view.badge.text : '');
         view.badge.setY(-this.cardH / 2 + 13);
-      } else view.badge.setY(def.leader && !def.ordered ? -this.cardH / 2 + 13 : this.cardH / 2 - 30);
+      } else view.badge.setY(this.cardH / 2 - 18);
       const column = group >= 0 ? tableauPresentation(board, this.options.deal, group) : [], nextId = column[column.indexOf(pose.id) + 1];
       const next = group >= 0 && nextId ? this.metrics.poses.find(p => p.id === nextId) : undefined;
       const support = this.metrics.joker;
@@ -661,9 +674,9 @@ export class BoardScene extends Phaser.Scene {
       const coveredCaption = band < this.cardH - 1;
       // Centre the preview in exposed paper, leaving both the rim and the
       // incoming card clear. A squeezed band yields no misleading fragment.
-      const previewRoom = Math.max(0, band - (rearWaste ? 10 : 20));
+      const previewRoom = Math.max(0, band - (rearWaste ? 8 : 10));
       if (view.strip instanceof Phaser.GameObjects.Text) {
-        view.strip.setFontSize(rearWaste ? 24 : 18).setColor('#3a3028').setText(rearWaste ? def.leader ? categoryCaption(def.text) : def.text : view.stripText!).setOrigin(.5).setScale(1);
+        view.strip.setFontSize(rearWaste ? 26 : 26).setColor('#3a3028').setText(rearWaste ? def.leader ? categoryCaption(def.text, this.options.deal) : def.text : view.stripText!).setOrigin(.5).setScale(1);
         view.strip.setScale(Math.min(1, (rearWaste ? this.cardH - 18 : this.cardW - 19) / Math.max(1, view.strip.width), previewRoom / Math.max(1, view.strip.height)));
       } else if (view.strip) { const size = Math.min(rearWaste ? 24 : 22, previewRoom); view.strip.setDisplaySize(Math.max(1, size), Math.max(1, size)); }
       if (view.strip) {
@@ -855,7 +868,7 @@ export class BoardScene extends Phaser.Scene {
     if (previousId) {
       const y = -this.cardH / 2 - 12;
       const background = this.add.graphics().fillStyle(0xedbb8d).fillRoundedRect(-this.cardW / 2 + 5, y - 14, this.cardW - 10, 29, 7);
-      const title = this.add.text(0, y, categoryCaption(this.options.deal.cards[leaderId].text), { fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold', color: '#886347' }).setOrigin(.5);
+      const title = this.add.text(0, y, categoryCaption(this.options.deal.cards[leaderId].text,this.options.deal), { fontFamily: 'Nunito, Arial', fontSize: '18px', fontStyle: 'bold', color: '#886347' }).setOrigin(.5);
       title.setScale(Math.min(1, (this.cardW - 18) / Math.max(1, title.width)));
       header = this.add.container(0, 0, [background, title]); node.addAt(header, 0);
     }

@@ -29,7 +29,7 @@ async function touch(page:Page,deal:Deal,action:BoardCommand){
   else if(action.scissors==='unbind'||action.scissors==='discard')await page.getByRole('button',{name:action.scissors==='unbind'?'Снять связь':'Убрать ножницы',exact:false}).first().tap();
   else{
     const cards=sourceCards(board,action.from,deal,action.root),id=action.scissors?board.tableau[action.from.index].at(-1)!:cards[0];
-    const source=grid.poses.find(p=>p.id===id)!,below=grid.poses.find(p=>p.id===cards[1]);
+    const source=grid.poses.find(p=>p.id===id)!,below=grid.poses.filter(p=>p.id!==source.id&&p.depth>source.depth&&Math.abs(p.x-source.x)<1&&p.y>=source.y&&p.y-source.y<cardMetrics(deal).height).sort((a,b)=>a.y-b.y)[0];
     const y=below?(source.y+below.y)/2-cardMetrics(deal).height/2:source.y;
     const target=grid.targets.find(t=>t.location.kind===action.to.kind&&t.location.index===action.to.index)!;
     await tap(source.x,y);await tap(target.x,target.y);

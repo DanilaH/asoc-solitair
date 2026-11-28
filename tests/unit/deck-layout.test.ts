@@ -93,16 +93,29 @@ it('fits five individually tappable columns on one left-aligned grid with either
   }
 });
 
-it('keeps either deck flush to its edge without spreading the waste fan on a short wide screen', () => {
+it('centers a bounded wide table and keeps stock and a stable waste fan in their own rail', () => {
   const board = withFan(introDeal), { width: cardWidth } = cardMetrics(introDeal);
   for (const row of ['top', 'bottom'] as const) {
     const frame = boardFrame(752, 350, row, introDeal);
     const left = layout(board, introDeal, frame, 'left', row);
     const right = layout(board, introDeal, frame, 'right', row);
-    expect((left.stock.x - cardWidth / 2) * frame.unit).toBeCloseTo(0);
-    expect((right.stock.x + cardWidth / 2) * frame.unit).toBeCloseTo(752);
+    expect(frame.sideDeck).toBe(true);
+    expect(frame.offsetX*2+frame.width*frame.unit).toBeCloseTo(752);
+    expect(left.stock.x+right.stock.x).toBeCloseTo(frame.width);
     const fan = left.poses.filter(pose => board.waste.includes(pose.id));
-    expect(fan.map(pose => pose.x - left.stock.x)).toEqual([cardWidth + 14, cardWidth + 53, cardWidth + 92]);
+    expect(fan.map(pose => pose.x - left.stock.x)).toEqual([-39,0,39]);
     for (const pose of fan) expect(right.poses.find(card => card.id === pose.id)!.x + pose.x).toBeCloseTo(frame.width);
+    for(const g of [left,right])for(const p of g.poses){
+      expect(p.x-cardWidth/2).toBeGreaterThanOrEqual(0);
+      expect(p.x+cardWidth/2).toBeLessThanOrEqual(frame.width);
+    }
+    for(const side of ['left','right']as const){
+      let save=freshSave(introDeal,'rail-fan');const previous=new Map<string,number>();
+      for(let n=0;n<3;n++){
+        save=dispatch(save,{type:'draw'},introDeal).next;const g=layout(save.attempt.board,introDeal,frame,side,row);
+        for(const[id,x]of previous)expect(g.poses.find(p=>p.id===id)!.x).toBe(x);
+        for(const p of g.poses.filter(p=>save.attempt.board.waste.includes(p.id)))previous.set(p.id,p.x);
+      }
+    }
   }
 });

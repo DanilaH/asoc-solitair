@@ -37,8 +37,8 @@ html[data-casual] {
   content:attr(data-task-claims);position:absolute;inset:2px 2px auto auto;min-width:15px;height:15px;
   line-height:15px;padding:0 2px;border-radius:8px;background:#ffdc9b;color:#523215;font-size:10px;font-weight:900;
 }
-[data-casual] #campaign-monthly-bonus{grid-template-columns:21px auto minmax(18px,1fr) auto auto;color:#fff0cc}
-[data-casual] #campaign-monthly-bonus strong{font-size:11px;line-height:1.15;text-align:start}
+[data-casual] #campaign-monthly-bonus{grid-template-columns:21px auto minmax(18px,1fr) auto auto;color:#345746}
+[data-casual] #campaign-monthly-bonus strong{font-size:12px;line-height:1.2;text-align:start}
 [data-casual] #campaign-monthly-bonus .prize-token{color:#513d27}
 #app[data-casual][data-screen=home][data-scroll-down] #home{box-shadow:inset 0 -3px 0 #bdad7c70}
 @media(max-height:560px){
@@ -133,9 +133,100 @@ html[data-reduced=true] [data-casual] #calendar .stamp-new{animation:none}
 [data-casual] #daily-tasks-ready #daily-tasks-ready-milestone{min-height:44px;margin:0;font-size:12px}
 [data-casual] #daily-tasks-ready #daily-tasks-medals{margin:0;min-height:44px}
 
+/* UI250: reserve the field before decorating the chrome. No state-dependent zoom. */
+#app[data-casual][data-screen=game] header{height:44px;padding:0;gap:6px}
+#app[data-casual][data-screen=game] :is(#menu,#wallet-open){min-height:44px}
+#app[data-casual][data-screen=game] .level{min-height:24px;gap:4px}
+#app[data-casual][data-screen=game] #dock{height:58px;gap:5px;padding-top:2px}
+#app[data-casual][data-screen=game] #dock button{width:58px;min-width:44px;height:54px;gap:2px;font-size:12px;line-height:14px}
+#app[data-casual][data-screen=game] #dock .helper-icon{width:37px;height:37px;border-width:2px;border-radius:12px}
+#app[data-casual][data-screen=game] #dock .helper-icon svg{width:27px;height:27px}
+#app[data-casual][data-screen=game] #dock .undo-icon{font-size:34px!important}
+#app[data-casual][data-screen=game] #dock #proof-shuffle{min-width:66px}
+#app[data-casual][data-screen=game] #dock #inspect{display:flex;width:48px;min-width:44px;height:54px;align-self:center}
+#app[data-casual][data-screen=game] #inspect .inspect-icon{width:37px;height:37px;border-radius:12px}
+#app[data-casual][data-screen=game] #inspect .inspect-icon img{width:26px;height:26px;object-fit:contain}
+#app[data-casual][data-screen=game] #dock b{top:-3px;right:1px;min-width:21px;height:21px;font-size:12px;color:#674324}
+#app[data-casual][data-screen=game] .bottom-note{height:0}
+#app[data-casual][data-screen=game] #feedback-row{height:18px;min-height:18px;position:relative;z-index:4}
+#app[data-casual][data-screen=game] #message{position:absolute;inset:auto 0 0;margin:0;min-height:0;padding:2px 6px;font-size:12px;line-height:16px;color:#fff4d7;pointer-events:none}
+#app[data-casual][data-screen=game] #message:not(:empty){border-radius:8px;background:#164e59;box-shadow:0 1px 3px #082d3759}
+#app[data-casual][data-screen=game] #no-transfer{font-size:12px;line-height:16px;padding:1px 0}
+#app[data-casual][data-screen=home] :is(#wallet-open,#campaign-lives-open){min-height:44px}
+[data-casual] #cycle-info .series-claim-slot button{min-height:44px}
+[data-casual] #campaign-monthly-bonus{font-size:12px}
+[data-casual] #home #home-unlock-track[data-complete=true]{height:0;min-height:0;margin:0;padding:0;border:0;overflow:hidden}
+#app[data-casual][data-screen=game][data-lesson=true] #feedback-row{height:70px;min-height:70px}
+#app[data-casual][data-screen=game] #feedback-row:has(#stock-recovery:not([hidden])){height:48px;min-height:48px}
+@media(min-height:700px) and (min-width:360px){
+  [data-casual] #home>.brand-scene{flex:1;min-height:160px;max-height:300px}
+  [data-casual] #home>.brand-scene h1{margin-top:9px}
+  [data-casual] #home>.casual-tray{flex:1;align-content:start;gap:11px;padding:12px 14px 16px}
+  [data-casual] #home .casual-shortcuts:has(#calendar-open:not([hidden])):has(#appearance-open:not([hidden])){grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  [data-casual] #home .casual-shortcuts :is(#daily-play,#calendar-open,#daily-bonus-open,#daily-tasks-open){display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto auto;align-content:center;min-height:70px;text-align:start;padding:8px;column-gap:8px;row-gap:3px}
+  [data-casual] #home .casual-shortcuts button>.casual-icon{grid-row:1/3;width:34px;height:34px}
+  [data-casual] #home .casual-shortcuts .casual-short-label{grid-column:2;grid-row:1;font-size:14px;line-height:1.15}
+  [data-casual] #home .casual-shortcuts button small{font-size:12px;line-height:1.2}
+  [data-casual] #home .casual-shortcuts button :is(#daily-date,#daily-status,#daily-bonus-home-status,#daily-tasks-home-status){display:block;grid-column:2;grid-row:2;color:#4e6656;font-size:12px;line-height:1.2}
+  [data-casual] #home .casual-shortcuts #appearance-open{display:grid;grid-column:1/-1;min-height:48px;grid-template-columns:34px minmax(0,1fr) auto;grid-template-rows:auto;gap:8px;text-align:start;padding:7px}
+  [data-casual] #home .casual-shortcuts #appearance-open>.milestone-details{grid-column:3;grid-row:1;width:90px;max-width:none}
+}
+
 [data-casual] #privacy-dialog .sheet-body{font-size:13px;line-height:1.5}
 [data-casual] #privacy-dialog h2{font-size:19px}
 [data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone){grid-template-columns:minmax(128px,1fr) minmax(0,1fr)}
 [data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone[hidden]){grid-template-columns:1fr}
 [data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone) #daily-tasks-medals{grid-template-columns:20px minmax(65px,1fr) 20px;gap:4px;padding:4px 5px;font-size:12px}
 [data-casual] #daily-tasks-ready:has(>#daily-tasks-ready-milestone) #daily-tasks-medals>.casual-icon{width:20px;height:20px}
+/* Action, present state, then acquisition; domain handlers still own every charge. */
+[data-casual] #helpers .helper-offer{grid-template-columns:minmax(0,1fr);gap:5px;padding:10px;margin-bottom:9px}
+[data-casual] #helpers .helper-offer h3{font-size:16px;gap:6px}
+[data-casual] #helpers .helper-offer h3 .casual-icon{width:25px;height:25px}
+[data-casual] #helpers .helper-offer h3 span{flex-basis:auto;margin-inline-start:auto;font-size:12px;white-space:nowrap}
+[data-casual] #helpers .helper-offer p{font-size:12px;line-height:1.35;color:#39575a}
+[data-casual] #helpers .helper-offer button{min-height:44px;padding:7px 9px;font-size:13px;line-height:1.25}
+[data-casual] #helpers .helper-offer button .casual-icon,[data-casual] #helpers .helper-tools button .casual-icon{width:25px;height:25px;vertical-align:middle;margin-right:7px}
+[data-casual] #helpers .helper-acquire{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+[data-casual] #helpers .helper-acquire button:only-child{grid-column:1/-1}
+[data-casual] #helpers .helper-state:empty{display:none}
+[data-casual] #helpers .helper-tools{display:grid;gap:5px;padding:10px 0;border-block:1px solid #d1b997}
+[data-casual] #helpers .helper-tools button{min-height:44px;font-size:13px;margin:0}
+[data-casual] #helpers .helper-tools p{margin:0 3px 6px;font-size:12px;line-height:1.35}
+[data-casual] #helpers #helper-inventory{margin-top:10px}
+[data-casual] #helpers #helper-inventory summary{min-height:44px;align-content:center;font-size:14px;color:#254d58}
+[data-casual] #helpers .inventory-list{grid-template-columns:minmax(0,1fr)}
+[data-casual] #helpers .inventory-list dd{font-size:12px}
+[data-casual] #helpers #helper-inventory h4{font-size:12px;margin:8px 0}
+[data-casual] #helpers .balance-line{overflow-wrap:anywhere;font-size:13px}
+[data-casual] #helpers[data-focus]:not([data-focus=all]) .helper-tools{display:none}
+[data-casual] #helpers #joker-next-attempt{display:none} /* explained beside the manual action */
+[data-casual] #daily-tasks-dialog .task-row{font-size:13px}
+[data-casual] #daily-tasks-dialog .task-row small,[data-casual] #daily-tasks-dialog .task-prize,[data-casual] #daily-tasks-dialog button{font-size:12px;line-height:1.3}
+[data-casual] #daily-tasks-dialog :is(summary,button){min-height:44px}
+[data-casual] #daily-tasks-dialog .sheet-heading .weekly-ready{min-height:0}
+[data-casual] #result[data-won=false] #result-life-note{font-size:12px;line-height:1.35;color:#533e27}
+[data-casual] dialog #wallet-open{min-height:44px;height:auto}
+[data-casual] dialog .small{font-size:12px!important}
+[data-casual] #settings .small{font-size:12px!important}
+[data-casual] #daily-tasks-dialog #daily-tasks-ready{grid-column:1/-1;width:100%;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+[data-casual] #daily-tasks-dialog #daily-tasks-ready-milestone{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:5px;line-height:1.2;padding:6px;min-height:48px}
+[data-casual] #daily-tasks-dialog #daily-tasks-ready-milestone .prize-token{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+[data-casual] #daily-tasks-dialog #daily-tasks-ready-milestone .casual-icon{width:23px;height:23px}
+[data-casual] #daily-tasks-dialog .task-card button small,[data-casual] #daily-tasks-dialog .prize-count,[data-casual] #daily-tasks-milestones button :is(small,b){font-size:12px;line-height:1.25}
+@media(max-height:699px){
+ [data-casual] #home .casual-shortcuts:has(#calendar-open:not([hidden])):has(#appearance-open:not([hidden])){grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ [data-casual] #home .casual-shortcuts .casual-short-label{font-size:12px;line-height:1.15}
+}
+/* Transient feedback overlays the reserved field; teaching/recovery keep their rows above. */
+#app[data-casual][data-screen=game]:not([data-lesson=true]) #feedback-row:not(:has(#stock-recovery:not([hidden]),#dead-end:not([hidden]))){height:0;min-height:0}
+#app[data-casual][data-screen=game] #no-transfer{position:absolute;inset:auto 0 0;margin:0;text-align:center;pointer-events:none;background:#164e59;border-radius:7px}
+[data-casual] .casual-dialog-title h2{overflow-wrap:anywhere;hyphens:auto}
+[data-casual] .casual-dialog-title{max-width:100%}
+[data-casual] #settings :is(label,select,summary){min-width:0;max-width:100%}
+[data-casual] #settings label{min-height:44px}
+
+[data-casual] #settings .casual-dialog-title h2{flex:1 1 auto;overflow-wrap:anywhere}
+[data-casual] #proof-shuffle .helper-icon svg{display:none}
+[data-casual] #proof-shuffle .helper-icon::after{background-image:url('/art/ui/shuffle.svg')}
+[data-casual] #daily-tasks-dialog .sheet-heading{padding-inline-end:0}
+[data-casual] #daily-tasks-dialog .sheet-heading>.casual-dialog-title{padding-inline-end:49px}

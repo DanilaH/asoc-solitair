@@ -63,8 +63,11 @@ export class WalletPresentation {
     if(this.reduced()){this.value=this.goal=Math.min(this.target,this.goal+amount);this.paint();this.land(false);onLanding?.();return;}
     const source=origin.getBoundingClientRect(),icon=this.wallet.querySelector('.coin-icon')??this.wallet,dest=icon.getBoundingClientRect();
     const sx=source.x+source.width/2,sy=source.y+source.height/2,tx=dest.x+dest.width/2,ty=dest.y+dest.height/2;
+    // The result already carries the receipt amount; coins carry motion only.
+    if(!origin.matches('#result-total')) {
     const badge=document.createElement('span');badge.className='coin-gain';badge.textContent=`+${amount}`;badge.setAttribute('role','status');badge.setAttribute('aria-label',`Получено ${amount} монет`);badge.style.left=`${Math.max(30,Math.min(innerWidth-55,sx))}px`;badge.style.top=`${Math.max(20,sy-22)}px`;this.layer.append(badge);
     const animation=badge.animate([{opacity:0,transform:'translate(-50%,0) scale(.85)'},{opacity:1,transform:'translate(-50%,-10px) scale(1.1)',offset:.18},{opacity:1,offset:.7},{opacity:0,transform:'translate(-50%,-22px) scale(1)'}],{duration:950});animation.onfinish=()=>badge.remove();animation.oncancel=()=>badge.remove();
+    }
     const available=this.pool.filter(n=>!this.flights.some(f=>f.node===n));
     if(!available.length){this.goal=Math.min(this.target,this.goal+amount);this.run();onLanding?.();return;}
     if (onLanding) this.afterLanding = onLanding;
@@ -96,7 +99,7 @@ export class WalletPresentation {
     callback?.();
   }
   dispose(){this.clearDebit(true);this.cancel();this.pool.forEach(n=>n.remove());}
-  private paint(){const n=Math.round(this.value);this.counter.textContent=n<100000?String(n):new Intl.NumberFormat('ru-RU',{notation:'compact',maximumFractionDigits:1}).format(n);this.helper.textContent=`${n} монет`;}
+  private paint(){const n=Math.round(this.value);this.counter.textContent=n<100000?String(n):new Intl.NumberFormat('ru-RU',{notation:'compact',maximumFractionDigits:1}).format(n);this.helper.textContent=`${new Intl.NumberFormat('ru-RU').format(n)} монет`;}
   private run(){if(!this.raf){this.last=performance.now();this.raf=requestAnimationFrame(t=>this.tick(t));}}
   private tick(now:number){
     this.raf=0;const dt=Math.min(50,now-this.last);this.last=now;

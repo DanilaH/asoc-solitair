@@ -26,7 +26,7 @@ async function touch(page: Page, deal: Deal, action: BoardCommand) {
   if (action.type !== 'transfer') return tap(grid.stock.x, grid.stock.y);
   const cards = sourceCards(board, action.from, deal, action.root);
   const source = grid.poses.find(pose => pose.id === cards[0])!;
-  const below = grid.poses.find(pose => pose.id === cards[1]);
+  const below = grid.poses.filter(pose => pose.id !== source.id && pose.depth > source.depth && Math.abs(pose.x-source.x)<1 && pose.y>=source.y && pose.y-source.y<cardMetrics(deal).height).sort((a,b)=>a.y-b.y)[0];
   const y = below ? (source.y + below.y) / 2 - cardMetrics(deal).height / 2 : source.y;
   const target = grid.targets.find(target => target.location.kind === action.to.kind && target.location.index === action.to.index)!;
   await tap(source.x, y);

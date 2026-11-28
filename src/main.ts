@@ -278,7 +278,7 @@ function message(text: string, error = false) {
   clearTimeout(messageTimer); $('#message').textContent = text; $('#message').classList.toggle('error', error);
   if (text) messageTimer = setTimeout(() => message(''), error ? 2500 : 1800);
 }
-function setInspect(value: boolean) { inspectMode = value; $('#inspect').setAttribute('aria-pressed', String(value)); scene?.setInspect(value); message(''); }
+function setInspect(value: boolean) { inspectMode = value; $('#inspect').setAttribute('aria-pressed', String(value)); $('#inspect-label').textContent = value ? 'Готово' : 'Слова'; scene?.setInspect(value); message(''); }
 
 function difficultyLabel(item?: Deal): string {
   return item?.difficultyTier === 'superhard' ? 'Очень сложный' : item?.difficultyTier === 'hard' ? 'Сложный' : '';
@@ -448,6 +448,7 @@ try {
   function renderUnlockTrack(element: HTMLElement, features = unlockTrack(save).features, justUnlocked = false) {
     const { progress, goal } = unlockTrack(save);
     element.hidden = false;
+    element.dataset.complete = String(!features.length && !justUnlocked);
     const title = Object.assign(document.createElement('small'), {
       textContent: justUnlocked ? 'Открыто' : features.length ? 'Следующее открытие' : 'Все возможности открыты',
     });
@@ -1016,6 +1017,10 @@ try {
   function openHelpers(focus?: typeof helperFocus, fromSettings = false, resource?: typeof helperResource) {
     helperFocus = focus; helperResource = resource;
     renderHud();
+    // Order once on entry; purchases/count updates cannot move a focused action.
+    const tools = $('#helpers .helper-tools');
+    const offers = ['hint','undo','joker'].map(kind=>({node:$('#'+kind+'-offer'),available:!$<HTMLButtonElement>('#helper-use-'+kind).disabled}));
+    for(const offer of offers.sort((a,b)=>Number(b.available)-Number(a.available))) tools.before(offer.node);
     if (fromSettings) openChildDialog('#helpers', '#settings', $('#helpers-open'));
     else openDialog('#helpers');
     if (resource) $('#helpers .sheet-body').scrollTop = 0;
@@ -1404,6 +1409,7 @@ try {
     if (TASKS_PREVIEW) renderTasks();
     if (dailyBonusEnabled) renderDailyBonus();
     if (productOfferEnabled) renderProductContext();
+    renderHelperActions();
   }
   function showCountdown(element: HTMLElement, at: number | undefined, label: string) {
     if (at === undefined) {
@@ -1442,6 +1448,47 @@ try {
     if (state.phase === 'unavailable') return 'Проверьте дату устройства';
     return 'Доступен';
   }
+  // Presentation forwards to the existing guarded action; never owns charges/quotes.
+  function renderHelperActions() {
+    const here = screen === 'game';
+    const blocked = Boolean(!ready || saving || serviceBusy || store.needsRecovery || runtime.activity.getBlockReasons().some(reason => !['modal', 'screen'].includes(reason)));
+    $('#helper-play').hidden = here;
+    for (const kind of ['hint', 'undo', 'joker'] as const) {
+      const dock = $<HTMLButtonElement>('#' + kind), use = $<HTMLButtonElement>('#helper-use-' + kind);
+      const hasCharge = kind === 'hint' ? availableHintCharges(save) > 0 || freeHintDemo(save, deal) || Boolean(repeatHint())
+        : kind === 'undo' ? save.profile.undos > 0 || freeUndoPractice(save, deal)
+          : save.profile.jokers > 0 || freeJokerPractice(save, deal);
+      use.disabled = !here || blocked || dock.disabled || !hasCharge;
+      const why = !here ? 'Откройте партию, чтобы применить.' : blocked ? 'Дождитесь текущего действия.'
+        : kind === 'joker' && save.attempt.jokerUsed ? 'Уже применён. Оставшийся запас — для следующей партии.'
+        : kind === 'undo' && !save.attempt.undo.length ? 'Появится после первого хода.'
+        : dock.disabled ? save.attempt.board.phase === 'won' ? 'Партия завершена.' : 'Сначала завершите действие на поле.'
+        : !hasCharge ? kind === 'hint' && save.profile.hints > 0 ? 'Заряд ожидает применения в другой партии.' : 'Пополните запас ниже.'
+        : kind === 'hint' && repeatHint() ? 'Повтор показанного хода — бесплатно.' : kind === 'joker' ? 'После нажатия укажите столбец на поле.' : '';
+      $('#helper-state-' + kind).textContent = why;
+      use.textContent = kind === 'hint' ? repeatHint() ? 'Повторить подсказку' : 'Показать ход' : kind === 'undo' ? 'Отменить ход' : 'Выбрать столбец';
+      if (!use.querySelector('img')) use.prepend(casualIcon(kind));
+    }
+    const shuffle = $<HTMLButtonElement>('#helper-use-shuffle'), dock = $<HTMLButtonElement>('#proof-shuffle');
+    shuffle.disabled = Boolean(!here || blocked || dock.hidden || dock.disabled);
+    const count = save.dailyTasks?.inventory.shuffles ?? 0;
+    shuffle.replaceChildren(casualIcon('shuffle'), document.createTextNode('Перемешать · ' + count));
+    $('#helper-state-shuffle').textContent = !here ? 'Применяется в открытой партии.' : !shuffle.disabled ? 'Сменит порядок скрытых карт; открытые останутся на местах.'
+      : save.attempt.shuffleUsed ? 'Уже применено в этой партии.' : !count ? 'Заряд можно получить в наградах.' : 'Заряд сохранён для поля со скрытыми картами.';
+    for(const selector of ['#restore-stock','#unlimited-preview','#random-joker-open']) {
+      const button = $<HTMLButtonElement>(selector);
+      button.disabled ||= blocked || !here && (selector !== '#random-joker-open' || randomJokerCount(save) > 0);
+    }
+    const words = $<HTMLButtonElement>('#helper-use-words');
+    words.disabled = !here || blocked || save.attempt.board.phase !== 'playing';
+    words.replaceChildren(casualIcon('book'), document.createTextNode('Рассмотреть слова · бесплатно'));
+    for (const kind of ['foundation', 'tableau'] as const) {
+      const offer = $<HTMLButtonElement>('#bonus-' + kind), button = $<HTMLButtonElement>('#helper-use-' + kind);
+      button.hidden = !here || offer.hidden;
+      button.disabled = blocked || offer.disabled;
+      button.textContent = (kind === 'foundation' ? 'Верхний слот' : 'Доп. столбец') + (bonusSlotCreditCount(save, kind) ? ' · заработан' : ' · монеты / видео');
+    }
+  }
   function renderHelperInventory() {
     const visible = unlockedLevel(save) >= 2;
     $('#helper-inventory').hidden = !visible || Boolean(helperFocus || helperResource);
@@ -1453,13 +1500,13 @@ try {
         condition: save.profile.hints>0 && availableHintCharges(save)===0 ? 'Ожидает применения в другой партии'
           : stagedHint(save.attempt) ? 'Примените показанный ход'
           : helperUnlocked(save, 'hint', deal) ? 'Показывают ход на поле' : `С уровня ${HELPER_UNLOCK.hint}` },
-      { icon: 'undo', name: 'Отмены', count: save.profile.undos, source: 'Награды и монеты', usable: playing && helperUnlocked(save, 'undo', deal) && Boolean(save.attempt.undo.length),
+      { icon: 'undo', name: 'Отмены', count: save.profile.undos, source: 'Награды и монеты', usable: save.attempt.board.phase !== 'won' && helperUnlocked(save, 'undo', deal) && Boolean(save.attempt.undo.length),
         condition: !helperUnlocked(save, 'undo', deal) ? `С уровня ${HELPER_UNLOCK.undo}` : 'После первого хода' },
       { icon: 'joker', name: 'Ручные Джокеры', count: save.profile.jokers, source: 'Награды и монеты', usable: playing && helperUnlocked(save, 'joker', deal) && !save.attempt.jokerUsed,
         condition: helperUnlocked(save, 'joker', deal) ? 'Один на раздачу' : `С уровня ${HELPER_UNLOCK.joker}` },
       { icon: 'book', name: 'Объяснения', count: definitionCount(save), source: 'Бонус дня и задания', usable: playing,
-        condition: 'В просмотре слова через Aa' },
-      { icon: 'cycle', name: 'Перемешать', count: save.dailyTasks?.inventory.shuffles ?? 0, source: 'Награды', usable: playing && canShuffle(save, deal),
+        condition: 'Через кнопку «Слова»' },
+      { icon: 'shuffle', name: 'Перемешать', count: save.dailyTasks?.inventory.shuffles ?? 0, source: 'Награды', usable: playing && canShuffle(save, deal),
         condition: CAMPAIGN_CORE_STAGE1 ? 'Когда на доске можно перемешать скрытые карты' : 'Уровни ' + SHUFFLE_LEVELS.join(', ') },
       { icon: 'joker', name: 'Случайные Джокеры', count: randomJokerCount(save), source: 'Монеты за отдельный заряд', usable: playing && canRequestRandomJoker(),
         condition: CAMPAIGN_CORE_STAGE1 ? 'Один на подходящую раздачу кампании' : 'На уровне 16, один на раздачу' },
@@ -1797,7 +1844,7 @@ try {
       const movesBonus = freshWin && !casual
         ? sourceReward?.bonus ?? BALANCE.coinsPerRemainingMove * (save.attempt.board.movesLeft ?? 0)
         : 0;
-      const hasCoinFlight = coreCoins > 0 || movesBonus > 0;
+      const hasCoinFlight = !(freshWin && casual) && (coreCoins > 0 || movesBonus > 0);
       const lost = save.attempt.board.phase === 'exhausted';
       // The save/grant is already durable. Only optional sound/haptics/coins
       // follow the visible contact and may be dropped when superseded.
@@ -1810,7 +1857,9 @@ try {
           if (azurInteractionFeedback && major.type === 'draw') runtime.pulse('draw');
           if (['transfer', 'complete', 'coins', 'win', 'undo', 'hint'].includes(major.type)) runtime.pulse(major.type === 'coins' ? 'transfer' : major.type as 'transfer' | 'complete' | 'win' | 'undo' | 'hint');
         }
-        if (coreCoins) coinBurst($('#streak-reward'), coreCoins);
+        // A first-clear receipt includes the last combo reward. Present that
+        // commit once from the result, rather than two competing amounts.
+        if (coreCoins && !(freshWin && casual)) coinBurst($('#streak-reward'), coreCoins);
         if (movesBonus) coinBurst($('#moves'), movesBonus);
       };
       scene?.sync(result.events, cmd.type === 'restart', boardCommand, cmd.type === 'transfer' && major ? { kind: major.type, before, play: present } : undefined);
@@ -2125,6 +2174,14 @@ try {
     readyMilestone.hidden = !firstReady;
     readyMilestone.disabled = busy;
     readyMilestone.textContent = firstReady ? 'Получить · ' + (firstReady.getAttribute('aria-label')?.split(' · ')[1] ?? firstReady.textContent) : '';
+    if (casual && firstReady && week) {
+      const entry = week.milestones.find(entry => !week.claimedMilestones.includes(entry.id) && week.totalMedals >= entry.medals);
+      if (entry) {
+        const label = document.createElement('span'); label.textContent = 'Забрать';
+        readyMilestone.replaceChildren(label, prizeToken(entry.prize));
+        readyMilestone.setAttribute('aria-label', 'Получить награду недели: ' + [entry.prize, ...(entry.bundle ?? [])].map(prizeLabel).join(' + ') + (entry.chest ? ' + сундук' : ''));
+      }
+    }
     readyMilestone.onclick = () => firstReady?.click();
     if (casual && multiWeek) {
       const readyRow = $('#daily-tasks-ready');
@@ -2784,7 +2841,7 @@ try {
     return { rect, backing: getBackingStoreSize(Math.max(1, rect.width), Math.max(1, rect.height), ratio) };
   }
   const initial = size();
-  scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, reducedMotion, command: execute, allows: allowsLesson, praise: showPraise, sound: name => runtime.play(name),
+  scene = new BoardScene({ jokerMode: active => $('#joker').setAttribute('aria-pressed', String(active)), deal, getSave: () => save, reducedMotion, command: execute, allows: allowsLesson, praise: showPraise, sound: name => { runtime.play(name); if(name==='lift')runtime.pulse('button'); },
     inputRoot: () => root, readerZone: () => $('#inspect').getBoundingClientRect(), peek: (id, preview) => peekCard(id, preview, save.attempt.board),
     boardBounds() { const rect = root.getBoundingClientRect(), zoom = game?.scale.zoom ?? initial.rect.width / initial.backing.width;
       return { x: (rect.width ? rect.x : 12) / zoom, y: (rect.height ? rect.y : 76) / zoom,
@@ -3357,6 +3414,16 @@ try {
     const request: HintRequest = { ...pendingHint, board: save.attempt.board, deal };
     hintWorker.postMessage(request); renderHud();
   }, domOptions);
+  for (const [helper, target] of [['hint','hint'], ['undo','undo'], ['joker','joker'], ['shuffle','proof-shuffle'], ['words','inspect'], ['foundation','bonus-foundation'], ['tableau','bonus-tableau']] as const) {
+    $('#helper-use-' + helper).addEventListener('click', () => {
+      renderHelperActions();
+      if ($<HTMLButtonElement>('#helper-use-' + helper).disabled) return;
+      closeDialogs();
+      if (helper === 'words' && inspectMode) return;
+      $<HTMLButtonElement>('#' + target).click();
+    }, domOptions);
+  }
+  $('#helper-play').addEventListener('click', () => { closeDialogs(); $<HTMLButtonElement>('#home-play').click(); }, domOptions);
   $('#helpers-open').addEventListener('click', () => {
     runtime.pulse('button'); offerFact({ trigger: OfferTrigger.Manual, key: 'manual-wallet' }); openHelpers(undefined, true);
   }, domOptions);

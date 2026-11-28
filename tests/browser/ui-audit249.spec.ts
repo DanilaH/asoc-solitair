@@ -66,7 +66,7 @@ async function audit(page:Page,name:string,surface:string,shot=true){
     const rect=(n:Element)=>n.getBoundingClientRect();
     const visible=(n:HTMLElement)=>{const s=getComputedStyle(n),r=rect(n);return r.width>0&&r.height>0&&s.visibility!=='hidden'&&s.display!=='none'&&!n.closest('[hidden],.sr-only,[aria-hidden=true].sr-only');};
     const describe=(n:HTMLElement)=>n.id?'#'+n.id:n.tagName.toLowerCase()+'.'+String(n.className).split(' ').slice(0,2).join('.');
-    const clip:object[]=[],tiny:object[]=[],buttons:object[]=[],overflows:object[]=[],iconIssues:object[]=[],intersect:object[]=[];
+    const clip:object[]=[],tiny:object[]=[],buttons:{node:string;name:string;w:number;h:number;hit:boolean;below44:boolean;inScroller:boolean}[]=[],overflows:object[]=[],iconIssues:object[]=[],intersect:object[]=[];
     const nodes=[root as HTMLElement,...root.querySelectorAll<HTMLElement>('*')].filter(visible);
     const clamp=(n:number)=>Math.round(n*10)/10;
     for(const e of nodes){
@@ -119,7 +119,7 @@ async function audit(page:Page,name:string,surface:string,shot=true){
       dialogs:[...document.querySelectorAll('dialog[open]')].map(d=>d.id)};
   });
   // Collapse duplicate text fragments from wrapping, preserve raw geometry for review.
-  report.push({family,name,surface,...info});
+  report.push({family,name,selector:surface,...info});
   if(shot){
     const path=root+'/'+name+'.png';await page.screenshot({path,scale:'css'});pics.push({name,path});
   }
@@ -223,7 +223,7 @@ test('independent current UI surfaces and feel',async({page},info:TestInfo)=>{
       }
     }
     // Exhausted snapshot on genuine deal; includes recovery menu controls.
-    const exhausted=sample(d,true);exhausted.attempt.board.phase='exhausted';exhausted.attempt.board.movesLeft=0;
+    const exhausted=sample(d,true);exhausted.campaignLives!.remaining=5;delete exhausted.campaignLives!.refillAt;exhausted.attempt.board.phase='exhausted';exhausted.attempt.board.movesLeft=0;
     await load(page,exhausted,banner);
     if(await action(page,'#home-play','#result')){
       await page.waitForTimeout(1600);await audit(page,tag+'-loss','#result');

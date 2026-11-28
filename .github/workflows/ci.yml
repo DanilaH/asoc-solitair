@@ -6,49 +6,17 @@ permissions:
   contents: read
 jobs:
   research-238:
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'research/238-paired-selection-recovery')
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'research/238-paired-distinct-blocks')
     runs-on: ubuntu-24.04
     timeout-minutes: 35
-    strategy:
-      fail-fast: false
-      matrix:
-        shape: [H6, H10, H12, H15a, H15b, A1, A2, A3, A4]
-    env:
-      VITE_ASOC_PROFILE: c8-release-v1
-      ASOC_AD_MODE: disabled
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-      - uses: actions/cache/restore@v4
-        with:
-          path: /home/runner/.npm
-          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
-      - run: node tools/install-dependencies.mjs
-        env:
-          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
-          ASOC_KIT_OFFLINE_CACHE: '1'
-      - run: npm run typecheck
-      - name: Evaluate fixed-population bounded seed selection
-        run: |
-          npx vite build --ssr tools/qa/study-238-selection.ts --outDir .recording/study238-selection-build
-          node .recording/study238-selection-build/study-238-selection.js ${{ matrix.shape }}
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: study-238-selection-${{ matrix.shape }}
-          path: .recording/study238-selection/
-          retention-days: 14
-  research-238-recovery:
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'research/238-paired-selection-recovery')
-    runs-on: ubuntu-24.04
-    timeout-minutes: 25
     permissions:
       contents: read
       actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        family: [current, five, azur]
+        scenario: [{channel: free, supply: partial}, {channel: rv, supply: partial}, {channel: rv-nofill, supply: partial}, {channel: free, supply: no-optional}]
     env:
       VITE_ASOC_PROFILE: c8-release-v1
       ASOC_AD_MODE: disabled
@@ -68,21 +36,29 @@ jobs:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
       - uses: actions/download-artifact@v4
+        if: matrix.family != 'current'
         with:
           pattern: study-238-independent-*
           run-id: 46132719274
           github-token: ${{ github.token }}
           path: .recording/pilot5
+      - uses: actions/download-artifact@v4
+        if: matrix.family != 'current'
+        with:
+          pattern: study-238-selection-*
+          run-id: 46134064192
+          github-token: ${{ github.token }}
+          path: .recording/pilot6
       - run: npm run typecheck
-      - name: Reconstruct exhausted positions and compare equal worker limits
+      - name: Evaluate nonrepeating late campaign block and optional supply
         run: |
-          npx vite build --ssr tools/qa/study-238-recovery.ts --outDir .recording/study238-recovery-build
-          node .recording/study238-recovery-build/study-238-recovery.js
+          npx vite build --ssr tools/qa/study-238-block.ts --outDir .recording/study238-block-build
+          node .recording/study238-block-build/study-238-block.js ${{ matrix.family }} ${{ matrix.scenario.channel }} ${{ matrix.scenario.supply }} 5
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: study-238-recovery
-          path: .recording/study238-recovery/
+          name: study-238-block-${{ matrix.family }}-${{ matrix.scenario.channel }}-${{ matrix.scenario.supply }}
+          path: .recording/study238-block/
           retention-days: 14
   web:
     if: ${{ !startsWith(github.head_ref || github.ref_name, 'research/238-paired-') }}

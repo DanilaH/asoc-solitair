@@ -1,327 +1,128 @@
-name: Verify and build
+name: Isolated Unico level asset research (not product CI)
 on:
   push:
-  pull_request:
+    branches: [research/unico-level-assets-20261128]
 permissions:
   contents: read
 jobs:
-  web:
+  inspect:
     runs-on: ubuntu-24.04
+    timeout-minutes: 8
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-      - name: Restore the accepted pinned dependency cache without writing private source back
-        uses: actions/cache/restore@v4
-        with:
-          path: /home/runner/.npm
-          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
-      - name: Verify all referenced source systems are represented in the real consumer roadmap
-        run: node tools/qa/verify-porting-ledger.mjs
-      - name: Verify autonomous 115-feature 38-packet developer queue
-        run: node tools/qa/verify-delivery-queue.mjs
-      - run: node --test tests/infrastructure/*.test.mjs
-      - name: Report legacy published-passport choice evidence (non-blocking quality warning)
-        run: node tools/qa/audit-c8-decision-evidence.mjs
-      - run: node tools/install-dependencies.mjs
-        env:
-          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
-          ASOC_KIT_OFFLINE_CACHE: '1'
-      - run: npm run check
-      - name: Research Q1b full C8 decision continuations and witness-relative route cost
-        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'audit/c8-q1b-')
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-        run: |
-          npm run qa:campaign-decisions
-          node tools/qa/summarize-c8-route-cost.mjs
-      - name: Research Q1c finite-budget comparison and deeper unknown transfer probes
-        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'audit/c8-q1c-')
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-        run: |
-          npm run qa:campaign-decisions
-          node tools/qa/summarize-c8-route-cost.mjs
-          npm run qa:decision-cost
-          npm run qa:decision-deep
-      - run: npm run qa:hitapps-equality
-      - run: npm run qa:rules
-      - run: npm run content:azur-preset
-      - run: npm run qa:content8
-      - run: npm run qa:content7
-      - run: npm run qa:opening
-      - run: npm run qa:prototypes:build
-      - run: npm run qa:prototypes:validate
-      - run: npx playwright install --with-deps chromium
-      - run: npm run qa:layout
-      - name: Check the compact result action before the full browser suite
-        run: npx playwright test tests/browser/ui-coherence.spec.ts --grep 'dialog actions stay reachable before scroll at 320x480'
-      - run: npm run test:browser
-      - run: npm run qa:content7
-        env:
-          C7_REQUIRE_UI: '1'
-      - name: Verify the integrated profile through the campaign UI
-        env:
-          VITE_ASOC_PROFILE: c8-release-v1
-          ASOC_AD_MODE: disabled
-        run: |
-          npm run build
-          npm run test:browser -- tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: browser-evidence
-          path: |
-            test-results/
-            .recording/layout-audit/
-            .recording/content7-ui/
-            .recording/content7-recordings/
-            .authoring/content8/campaign-decisions.json
-            .authoring/content8/campaign-decision-cost.json
-            .authoring/content8/campaign-unknown-transfer-deep.json
-          retention-days: 7
-  previews:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-      - name: Restore the accepted pinned dependency cache without writing private source back
-        uses: actions/cache/restore@v4
-        with:
-          path: /home/runner/.npm
-          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
-      - run: node tools/install-dependencies.mjs
-        env:
-          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
-          ASOC_KIT_OFFLINE_CACHE: '1'
-      - run: npx playwright install --with-deps chromium
-      - name: Verify the Content 8 preview with actual touch input
-        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-') || startsWith(github.head_ref || github.ref_name, 'audit/c8-') || startsWith(github.head_ref || github.ref_name, 'docs/c8-') || github.base_ref == 'feat/c8-onboarding-dealer-20261119'
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-          VITE_CONTENT8_FROZEN: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p10-') && '1' || '0' }}
-          VITE_CONTENT8_BOUND: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p11-') && '1' || '0' }}
-          VITE_CONTENT8_BEYOND80: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-p33-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p34-')) && '1' || '0' }}
-          VITE_CONTENT8_LOCALE: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p34-') && '1' || '0' }}
-          VITE_CONTENT8_DAILY_TASKS: ${{ (startsWith(github.head_ref || github.ref_name, 'feat/c8-p28-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-wallet-progress-')) && '1' || '0' }}
-          VITE_CONTENT8_PICTURE: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p27-') && '1' || '0' }}
-          VITE_CONTENT8_REWARD_OFFERS: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p20-') && '1' || '0' }}
-          VITE_CONTENT8_SPECIAL: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p12-') && 'puzzle' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p13-') && 'gold' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p14-') && 'starter' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p16-') && 'shuffle' || '' }}
-        run: |
-          npm run build
-          npx playwright test tests/browser/content8-core.spec.ts --output=test-results/content8-core
-      - name: Verify wallet and weekly progress in the UX preview
-        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-wallet-progress-')
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-          VITE_C8_OWNER_PREVIEW: specials
-          VITE_CONTENT8_DAILY_TASKS: '1'
-        run: |
-          npm run build
-          npx playwright test tests/browser/wallet-progress.spec.ts tests/browser/hitapps-specials.spec.ts --output=test-results/wallet-progress
-      - name: Verify the AZUR feel QA profile
-        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-azur-feel-')
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-          VITE_C8_OWNER_PREVIEW: specials
-          VITE_AZUR_FEEL_QA: '1'
-        run: |
-          npm run build
-          npx playwright test tests/browser/azur-feel.spec.ts --output=test-results/azur-feel
-      - name: Verify the isolated AZUR victory reward
-        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-azur-victory-qa-')
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-          VITE_C8_OWNER_PREVIEW: specials
-          VITE_AZUR_FEEL_QA: '1'
-          VITE_AZUR_VICTORY_QA: '1'
-        run: |
-          npm run build
-          npx playwright test tests/browser/azur-victory-reward.spec.ts --output=test-results/azur-victory
-      - name: Verify the approved campaign integration preview
-        if: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-hitapps-combined-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p06-owner-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p08-owner-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p15-owner-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p19-owner-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p21-owner-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p25-owner-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p31-owner-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-owner-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-polish-') }}
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-          VITE_C8_OWNER_PREVIEW: ${{ startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-hitapps-combined-') && 'generation' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p06-owner-') && 'director' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p08-owner-') && 'equality' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p15-owner-') && 'random-joker' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p19-owner-') && 'recovery' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p21-owner-') && 'ad-controls' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p25-owner-') && 'storefront' || startsWith(github.head_ref || github.ref_name, 'feat/c8-p31-owner-') && 'lives' || (startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-owner-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-polish-')) && 'acceptance' || '' }}
-        run: |
-          npm run build
-          npx playwright test tests/browser/owner-campaign.spec.ts --output=test-results/owner-campaign
-      - name: Exercise AZUR offline offer campaign presenters and persistence
-        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-p25-offer-campaigns-')
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-          VITE_C8_OWNER_PREVIEW: offer-campaigns
-        run: |
-          npm run build
-          npx playwright test tests/browser/offer-campaigns.spec.ts --output=test-results/offer-campaigns
-      - name: Exercise Hitapps one-key and pictured specials
-        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-hitapps-specials-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-polish-') || startsWith(github.head_ref || github.ref_name, 'feat/c8-ux-feedback-')
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-          VITE_C8_OWNER_PREVIEW: specials
-        run: |
-          npm run build
-          npx playwright test tests/browser/hitapps-specials.spec.ts --output=test-results/hitapps-specials
-      - name: Audit Hitapps balance and exercise the authoring bank on touch input
-        if: startsWith(github.head_ref || github.ref_name, 'feat/c8-p37-hitapps-')
-        env:
-          VITE_CONTENT8_PREVIEW: '1'
-          VITE_C8_OWNER_PREVIEW: director
-        run: |
-          npm run qa:hitapps-balance
-          npm run build
-          npx playwright test tests/browser/owner-campaign.spec.ts -g 'wins level 15' --output=test-results/hitapps-director
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: previews-evidence
-          path: |
-            test-results/
-            .authoring/hitapps/balance.json
-          retention-days: 7
-  cohesion:
-    runs-on: ubuntu-24.04
-    env:
-      VITE_ASOC_PROFILE: c8-release-v1
-      ASOC_AD_MODE: disabled
-      ASOC_MVP_DEMO: '1'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-      - uses: actions/cache/restore@v4
-        with:
-          path: /home/runner/.npm
-          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
-      - run: node tools/install-dependencies.mjs
-        env:
-          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
-          ASOC_KIT_OFFLINE_CACHE: '1'
-      - run: npm test -- --reporter=default --reporter=json --outputFile=.recording/mvp-unit-results.json
-      - run: npm run build
-      - run: npx playwright install --with-deps chromium
-      - name: Audit all retained and issued Deal geometries in the C8 release profile
+      - name: Read only exact signed candidate local assets
         shell: bash
-        env:
-          ASOC_QA_C8_GEOMETRY: '1'
-        run: npx vitest run tests/unit/c8-ui-geometry.test.ts --disableConsoleIntercept | tee .recording/c8-grid.txt
-      - name: Audit C8 release geometry and capture its UI
-        env:
-          ASOC_CASUAL_RECORD: '1'
-        run: npx playwright test tests/browser/c8-ui-205.spec.ts tests/browser/c8-ftue-210.spec.ts tests/browser/c8-ads-210.spec.ts tests/browser/c8-casual-210.spec.ts tests/browser/c8-surfaces-210.spec.ts --project=compact --output=test-results/c8-ui
-      - name: Record ordinary C8 tutorial first use on both phone sizes
-        env:
-          ASOC_FTUE_RECORD: '1'
-        run: npx playwright test tests/browser/c8-ftue-presets.spec.ts --output=test-results/c8-ftue-presets
-      - name: Verify saved rights and reward lifecycle through ordinary touch UI
-        run: npx playwright test tests/browser/integrated-release.spec.ts tests/browser/mvp-cohesion-core.spec.ts tests/browser/mvp-cohesion-retention.spec.ts tests/browser/mvp-cohesion-shuffle.spec.ts --output=test-results/mvp-cohesion
+        run: |
+          set -euo pipefail
+          umask 077
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          curl --fail --location --silent --show-error --retry 1 --max-time 120 'https://d.apkpure.net/b/XAPK/com.unicostudio.wordsolitaire?version=latest' -o "$tmp/source.xapk"
+          echo '4cd372b97d14711bcd4dfbb3188919fdd6a98b86ec0645163c28424bc08113f7  '"$tmp/source.xapk" | sha256sum -c -
+          python3 -m pip install --quiet --disable-pip-version-check 'UnityPy>=1.20,<2'
+          mkdir -p .recording
+          python3 - "$tmp/source.xapk" <<'PY'
+          import collections, hashlib, json, io, re, struct, sys, zipfile, importlib.metadata, pathlib
+          import UnityPy
+          sha=lambda b:hashlib.sha256(b).hexdigest()
+          z=zipfile.ZipFile(sys.argv[1]); mf=json.loads(z.read('manifest.json'))
+          assert mf['package_name']=='com.unicostudio.wordsolitaire' and str(mf['version_code'])=='37' and mf['version_name']=='1.1.10'
+          pin={'com.unicostudio.wordsolitaire.apk':'e4b15fa0327b2be7d13da88779674a3e4fc312234d467031cd8bc1695af06820','config.arm64_v8a.apk':'b7995bf3e689e98e083d95d7037659ea46d8ebb47c0205fa47cea85fc66675d5'}
+          parts={}; stats=collections.Counter(); errors=collections.Counter(); rows=[]; names=[]; candidate_assets=[]; catalog=[]
+          def n(k):return re.sub(r'[^a-z0-9]','',str(k).lower())
+          fieldset=set('foundationcount maxmoves levelid generatenewseedonshuffle shuffleseed resolveddifficulty generaldifficulty data columns columncount tableau tableaucount stock stockcount categories category categoryid cards cardcount words wordsset words count size piles pilecount levels levelnumber levelindex leveltype difficulty moveslimit moves firstcolumncards foundation foundations groups items seed id text word image cardtype kind type layout deck slots order'.split())
+          def shape(x,depth=0):
+              if isinstance(x,dict):
+                  return {'kind':'object','fieldCount':len(x),'fields':{k:shape(v,depth+1) for k,v in x.items() if n(k) in fieldset and depth<3}}
+              if isinstance(x,list):
+                  return {'kind':'array','count':len(x),'sampleShapes':[shape(v,depth+1) for v in x[:3]] if depth<3 else []}
+              return {'kind':type(x).__name__}
+          def safe_id(x):
+              if isinstance(x,int) and not isinstance(x,bool):return x
+              if isinstance(x,str) and re.fullmatch(r'(?i)(?:level[_ -]?)?[0-9]+',x):return x
+              return {'hash':sha(str(x).encode())} if x is not None else None
+          def walk(x,origin,depth=0):
+              if depth>12:return
+              if isinstance(x,dict):
+                  fields={n(k):v for k,v in x.items()}
+                  if ('maxmoves' in fields and 'foundationcount' in fields) or ('moveslimit' in fields and ('columns' in fields or 'tableau' in fields or 'categories' in fields)):
+                      rec={'origin':origin,'levelId':safe_id(fields.get('levelid',fields.get('levelnumber'))),'numeric':{k:v for k,v in fields.items() if k in fieldset and isinstance(v,(int,float,bool))},'shape':shape(x)}
+                      if 'data' in fields:rec['dataShape']=shape(fields['data'])
+                      rows.append(rec);stats['levelLikeRecords']+=1
+                  for k,v in x.items():
+                      if isinstance(v,(list,dict)):walk(v,origin,depth+1)
+                      elif isinstance(v,str) and len(v)<16_000_000 and v.lstrip().startswith(('{','[')) and re.search(r'max.?moves|foundation.?count|moves.?limit',v,re.I):
+                          try:walk(json.loads(v),origin,depth+1)
+                          except (ValueError,RecursionError):pass
+              elif isinstance(x,list):
+                  for v in x:walk(v,origin,depth+1)
+          def textasset(raw,origin):
+              if isinstance(raw,str):raw=raw.encode('utf-8','surrogateescape')
+              if not isinstance(raw,bytes) or len(raw)>32_000_000:return
+              try:s=raw.decode('utf-8-sig')
+              except UnicodeDecodeError:return
+              if not s.lstrip().startswith(('{','[')):return
+              try:d=json.loads(s)
+              except (ValueError,RecursionError):return
+              stats['jsonParsed']+=1
+              if isinstance(d,dict) and any(k.startswith('m_') and ('Catalog' in k or 'KeyData' in k or 'InternalIds' in k) for k in d):
+                  ids=d.get('m_InternalIds',[])
+                  catalog.append({'origin':origin,'internalIdCount':len(ids) if isinstance(ids,list) else None,'levelNamedIds':sum(bool(re.search(r'level|regular|daily',v,re.I)) for v in ids if isinstance(v,str)) if isinstance(ids,list) else None})
+              walk(d,origin)
+          for i in z.infolist():
+              if not i.filename.endswith('.apk'):continue
+              raw=z.read(i);h=sha(raw)
+              assert h in pin.values(),'unexpected nested APK bytes'
+              parts[i.filename]=h
+              with zipfile.ZipFile(io.BytesIO(raw)) as a:
+                  stats['apkMembers']+=len(a.infolist())
+                  for f in a.infolist():
+                      if not f.filename.startswith('assets/') or f.is_dir():continue
+                      stats['assets']+=1
+                      name=f.filename
+                      if re.search(r'level|regular|daily|catalog',name,re.I):
+                          names.append({'pathHash':sha(name.encode()),'bytes':f.file_size,'suffix':pathlib.Path(name).suffix,'kind':'level' if 'level' in name.lower() else 'catalog-or-other'})
+                      if f.file_size<16 or f.file_size>240_000_000:continue
+                      with a.open(f) as s:head=s.read(24)
+                      isbundle=head.startswith((b'UnityFS',b'UnityRaw',b'UnityWeb'))
+                      isasset=name.endswith(('.assets','.bundle')) or name.startswith('assets/bin/Data/') and pathlib.Path(name).suffix in ('','')
+                      isjson=head.lstrip(b'\xef\xbb\xbf \t\r\n').startswith((b'{',b'['))
+                      if not (isbundle or isasset or isjson):continue
+                      b=a.read(f)
+                      origin={'fileSha256':sha(b),'bytes':len(b),'nameHash':sha(name.encode())}
+                      if isjson:textasset(b,origin);continue
+                      if name.endswith(('.resS','.resource','.dll')):continue
+                      stats['unityFilesAttempted']+=1
+                      try:
+                          env=UnityPy.load(b)
+                          stats['unityFilesOpened']+=1
+                          for obj in env.objects:
+                              kind=obj.type.name
+                              stats['objects:'+kind]+=1
+                              try:
+                                  if kind=='TextAsset':
+                                      t=obj.read()
+                                      nm=str(getattr(t,'m_Name',''))
+                                      rr=getattr(t,'m_Script',None)
+                                      o=dict(origin,objectId=obj.path_id,nameHash=sha(nm.encode()))
+                                      if re.search(r'level|daily|regular|config',nm,re.I):
+                                          candidate_assets.append({'origin':o,'nameShape':re.sub(r'[^0-9]+','_',nm)[:48],'kind':kind,'bytes':len(rr) if rr is not None else None})
+                                      textasset(rr,o)
+                                  elif kind=='MonoBehaviour' and obj.byte_size<=524288:
+                                      try:
+                                          d=obj.read_typetree()
+                                          if isinstance(d,dict):walk(d,dict(origin,objectId=obj.path_id))
+                                      except Exception:errors['mono-no-tree']+=1
+                              except Exception as e:errors['obj:'+type(e).__name__]+=1
+                          del env
+                      except Exception as e:errors['file:'+type(e).__name__]+=1
+          assert len(parts)==2 and set(parts.values())==set(pin.values())
+          report={'tier':'SIGNED_PUBLIC_CANDIDATE_LOCAL_STATIC','xapkSha256':'4cd372b97d14711bcd4dfbb3188919fdd6a98b86ec0645163c28424bc08113f7','publisherTrust':'UNKNOWN','runtimeExecuted':False,'parts':parts,'unityPy':importlib.metadata.version('UnityPy'),'statistics':dict(stats),'errors':dict(errors),'levelRecords':rows,'levelNamedPaths':names,'levelNamedTextAssets':candidate_assets,'catalogSummaries':catalog}
+          pathlib.Path('.recording/unico-level-assets.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          print('SUMMARY',json.dumps({k:v for k,v in report.items() if k not in ('levelRecords','levelNamedPaths','levelNamedTextAssets','catalogSummaries')}))
+          print('COUNTS',json.dumps({'rows':len(rows),'paths':len(names),'assets':len(candidate_assets),'catalogs':catalog,'firstRows':rows[:3]}))
+          PY
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: mvp-cohesion-evidence
+          name: unico-level-assets-numeric
+          path: .recording/unico-level-assets.json
           if-no-files-found: error
-          path: |
-            test-results/mvp-cohesion/
-            test-results/c8-ui/
-            test-results/c8-ftue-presets/
-            .recording/c8-grid.txt
-            .recording/mvp-unit-results.json
-            dist/release-manifest.json
-          retention-days: 7
-  android:
-    runs-on: ubuntu-24.04
-    env:
-      VITE_ASOC_PROFILE: c8-release-v1
-      ASOC_AD_MODE: test
-      ASOC_APK_VARIANT: debug
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-      - name: Restore the accepted pinned dependency cache without writing private source back
-        uses: actions/cache/restore@v4
-        with:
-          path: /home/runner/.npm
-          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-      - uses: android-actions/setup-android@v3
-        with:
-          packages: platform-tools
-          log-accepted-android-sdk-licenses: false
-      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-      - run: node --test tests/infrastructure/*.test.mjs
-      - run: node tools/install-dependencies.mjs
-        env:
-          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
-          ASOC_KIT_OFFLINE_CACHE: '1'
-      - run: npm run check && npm run android:sync
-      - uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/asoc-debug-signing/debug.keystore
-          key: asoc-solitair-preview-signing-v2
-      - name: Ensure the explicit preview signing key exists
-        shell: bash
-        run: |
-          mkdir -p "$RUNNER_TEMP/asoc-debug-signing"
-          if [ ! -s "$RUNNER_TEMP/asoc-debug-signing/debug.keystore" ]; then
-            echo '::error::The existing preview signing identity is required; do not generate a replacement key.'
-            exit 1
-          fi
-      - name: Build signed preview APK
-        shell: bash
-        run: |
-          if ./gradlew --no-daemon testDebugUnitTest assembleDebug 2>&1 | tee "$RUNNER_TEMP/asoc-gradle.log"; then
-            exit 0
-          fi
-          grep -q 'https://repo.maven.apache.org/maven2' "$RUNNER_TEMP/asoc-gradle.log"
-          ASOC_MAVEN_CENTRAL_MIRROR=1 ./gradlew --no-daemon --init-script ci-maven-mirror.gradle testDebugUnitTest assembleDebug
-          echo 'ASOC_MAVEN_CENTRAL_MIRROR=1' >> "$GITHUB_ENV"
-        working-directory: native/android
-        env:
-          ASOC_DEBUG_STORE_FILE: ${{ runner.temp }}/asoc-debug-signing/debug.keystore
-      - name: Verify the preview APK signature
-        run: |
-          $ANDROID_HOME/build-tools/36.0.0/apksigner verify --verbose --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk
-          $ANDROID_HOME/build-tools/36.0.0/apksigner verify --print-certs native/android/app/build/outputs/apk/debug/app-debug.apk | grep -F '0335b87262e17f94803da322f0b8a0ca6ad04101246d0e701f3fc7d358a8b64e'
-          $ANDROID_HOME/build-tools/36.0.0/aapt dump badging native/android/app/build/outputs/apk/debug/app-debug.apk | head -1
-      - run: |
-          python3 tools/qa/verify-release-apk.py native/android/app/build/outputs/apk/debug/app-debug.apk
-          cp dist/release-manifest.json "$RUNNER_TEMP/release-manifest-debug.json"
-      - run: npm run android:sync
-        env:
-          ASOC_AD_MODE: disabled
-          ASOC_APK_VARIANT: release
-      - run: ./gradlew --no-daemon --init-script ci-maven-mirror.gradle assembleRelease
-        working-directory: native/android
-        env:
-          ASOC_AD_MODE: disabled
-          ASOC_UNSIGNED_CHECK: '1'
-      - run: python3 tools/qa/verify-release-apk.py native/android/app/build/outputs/apk/release/app-release-unsigned.apk
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: android-builds
-          path: |
-            ${{ runner.temp }}/release-manifest-debug.json
-            dist/release-manifest.json
-            native/android/app/build/outputs/apk/**/*.apk
-            native/android/app/build/outputs/mapping/release/
-            native/android/app/build/test-results/testDebugUnitTest/
-            native/android/app/build/reports/tests/testDebugUnitTest/
-          retention-days: 7

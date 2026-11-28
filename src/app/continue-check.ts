@@ -15,7 +15,7 @@ export class ContinueCheck {
   get proof() { return this.verified; }
 
   update(attempt: Attempt, deal: Deal, visible: boolean) {
-    if (!visible || !requiresContinueProof(attempt) || attempt.continued ||
+    if (!visible || !requiresContinueProof(attempt) || attempt.continued || attempt.lostLife ||
       attempt.board.phase !== 'exhausted' || attempt.board.movesLeft !== 0 || attempt.dealId !== deal.id) {
       this.clear();
       return;
@@ -27,7 +27,7 @@ export class ContinueCheck {
     try {
       const worker = new Worker(new URL('../game/continue.worker.ts', import.meta.url), { type: 'module' });
       this.worker = worker;
-      const snapshot = { id: attempt.id, dealId: attempt.dealId, board: attempt.board, continued: attempt.continued };
+      const snapshot = { id: attempt.id, dealId: attempt.dealId, board: attempt.board, continued: attempt.continued, lostLife: attempt.lostLife };
       const finish = (result: ContinueResult) => {
         if (this.worker !== worker) return;
         this.stop();

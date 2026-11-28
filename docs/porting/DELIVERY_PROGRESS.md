@@ -205,3 +205,7 @@
 ## №236 · core/meta audit follow-up · 0.21.7 / 58
 
 Current ordinary branch `fix/236-core-meta` is stacked on PR234 `aeb86300`. CA-01 shared inventory before L7 Tasks, CA-02 level-scoped retry history, CA-03 bounded Rules4 directed Hint with independently replayed witness tails, CA-04 typed late earned slot credit and explicit use, CA-05 eligible randomized Joker worker and L2 copy. [Reproductions, raw helper comparison and physical boundaries](../qa/CA236_CORE_META.md). Updated current Daily/weekly/streak/M1 ledger descriptions; historical dated rows above remain historical. Same Rules4/content/M1/runtime pin and full115/38/15/9 roadmap. Project CI supplies exact build/run evidence. Test/demo ads only; no production configuration or publishing work.
+
+## №244 · CA-06 / №246 E0 · 0.21.8 / 59
+
+Separate `fix/244-directed-continue` over exact PR2371ef3db5b. [Source, frozen28-state reproductions and acceptance](../qa/CA244_CONTINUE.md). Bounded Rules4 directed Continue, full finite proof before paid exposure/spend, legacy behavior and earned proof-free video retained. Equal3000/1400 baseline5→11 with six new oracle-verified witnesses and zero lost positives; project CI reruns the comparison. Price900/+10 and M1/content/FTUE/save/SDK/pin unchanged. Physical weak-device latency and actual test SDK remain NEEDS_DEVICE, no original-runtime status upgrade. Candidate campaigns are a separate subsequent stage; ordinary main bank is preserved.

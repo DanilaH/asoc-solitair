@@ -1982,5 +1982,16 @@
       "tests/browser/ca236.spec.ts",
       "tools/qa/audit-ca236.ts"
     ]
+  },
+  "coreAudit244": {
+    "issue": "https://github.com/DanilaH/asoc-solitair/issues/244",
+    "base": "1ef3db5b4d86227b95451de68a5a857f0687d8f4",
+    "implementationBranch": "fix/244-directed-continue",
+    "evidence": "docs/qa/CA244_CONTINUE.md",
+    "scope": [
+      "CA-06"
+    ],
+    "runtime": "bounded Rules4 proof-bearing coin Continue; earned video remains proof-free; M1 900/+10 unchanged",
+    "acceptance": "PROJECT_CI_AND_SIGNED_APK_REPORTED_SEPARATELY; PHYSICAL_LATENCY_AND_TEST_SDK_PENDING"
   }
 }

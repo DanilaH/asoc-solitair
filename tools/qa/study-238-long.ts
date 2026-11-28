@@ -4,6 +4,7 @@ import { isDeepStrictEqual } from 'node:util';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { M1, E4_M1 } from '../../src/config/economy';
+import { M1_VICTORY } from '../../src/domain/azur-victory-reward';
 import { releaseProfile } from '../../src/config/profile';
 import { campaignDeals, campaignIssuance, selectCampaignDeal } from '../../src/content/campaign';
 import { dailyForDay } from '../../src/content/daily';
@@ -40,6 +41,11 @@ assert(E4_M1 && releaseProfile?.id==='c8-release-v1');
 assert.equal(campaignDeals.length,200);
 const family=process.argv[2]??'current', channel=process.argv[3]??'free';
 assert(['current','five','azur'].includes(family));assert(['free','rv'].includes(channel));
+const supply=process.argv[4]??'full';
+const slope=Number(process.argv[5]??5);
+assert(['full','no-daily','no-optional'].includes(supply));assert([2,5].includes(slope));
+// Research-only injection into existing dispatch parameter, preserving M1 offer identity in this model.
+const victory={...M1_VICTORY,coinsPerRemainingMove:slope};
 const outDir='.recording/study238-long';
 mkdirSync(outDir,{recursive:true});
 const head=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
@@ -89,6 +95,7 @@ if(family==='azur'){
   }
 }
 let save=freshSave(campaignDeals[0],'initial');
+let minWallet=save.profile.coins,minWalletLate=Infinity,levelInProgress=0;
 let current:Deal=campaignDeals[0], now=start, launchedAt=start, dayIndex=0, dayWins=0, lastDay=-1, nextId=0, adSequence=0, retryAfter=0;
 const id=(label:string)=>'study3-'+label+'-'+(++nextId);
 const utc=()=>new Date(now).toISOString().slice(0,10);
@@ -96,6 +103,8 @@ const account=(label:string,before:number)=>{
   const delta=save.profile.coins-before;
   if(delta)money[label]=(money[label]??0)+delta;
   assert(Number.isSafeInteger(save.profile.coins)&&save.profile.coins>=0,label+' wallet');
+  minWallet=Math.min(minWallet,save.profile.coins);
+  if(levelInProgress>=81)minWalletLate=Math.min(minWalletLate,save.profile.coins);
 };
 function syncTasks(){
   if(!dailyTasksAvailable(save))return;
@@ -106,7 +115,7 @@ function signal(kind:TaskSignal['kind'],channel:TaskSignal['channel'],amount=1,s
   if(dailyTasksAvailable(save)){syncTasks();recordTaskSignal(save,now,{id:signalId,kind,channel,amount});}
 }
 function collectTasks(){
-  if(!dailyTasksAvailable(save))return;
+  if(supply==='no-optional'||!dailyTasksAvailable(save))return;
   syncTasks();
   // Claims may unlock a milestone; scan again, never fabricate a claim.
   for(let pass=0;pass<3;pass++)for(const row of pendingTaskRewards(save)){
@@ -119,10 +128,12 @@ function collectTasks(){
   }
 }
 function collectFree(){
+  if(supply==='no-optional')return;
   const before=save.profile.coins;
   if(claimShopCoins(save,current,now,true)){account('free-wallet',before);signal('EarnCoins','wallet',save.profile.coins-before);}
 }
 function collectBonus(){
+  if(supply==='no-optional')return;
   const round=openDailyBonusRound(save,now,id('bonus'),rng(238031+dayIndex),'azur-compiled-r1');
   if(!round||round.claimed)return;
   for(let i=0;i<12&&round.won===undefined;i++)if(!round.revealed.includes(i))revealDailyBonusCard(save,round.roundId,i,now);
@@ -133,6 +144,7 @@ function collectBonus(){
   }
 }
 function claimStreak(){
+  if(supply==='no-optional')return;
   const before=save.profile.coins;claimWinStreak(save,save.meta?.winStreak?.claimed??0);account('win-streak',before);
 }
 function modeledFill(label:string){
@@ -195,10 +207,10 @@ function command(cmd:Command,check=true){
   const before=save, coins=save.profile.coins;
   const boardCommand=cmd.type==='draw'||cmd.type==='transfer'||cmd.type==='recycle';
   const oracle=boardCommand&&check?advance(save.attempt.board,cmd,current):undefined;
-  const result=dispatch(save,cmd,current,utc());
+  const result=dispatch(save,cmd,current,utc(),victory);
   assert(result.accepted,result.reason??'accepted action rejected');
   if(boardCommand&&check)assert(isDeepStrictEqual(result.next.attempt.board,oracle),'oracle '+current.id);
-  save=result.next;account('board:'+cmd.type,coins);
+  save=result.next;account((current.daily?'daily:':'campaign:')+cmd.type,coins);
   if(boardCommand){
     bump(current.daily?'daily-actions':'campaign-actions');
     save.attempt.telemetry??={started:true,finished:false,activeMs:0};
@@ -225,7 +237,7 @@ function scripted(){
 }
 function dailySession(){
   if(lastDay===dayIndex)return;lastDay=dayIndex;syncTasks();collectFree();collectBonus();collectTasks();
-  if(dailyModeAvailable(save)){
+  if(supply==='full'&&dailyModeAvailable(save)){
     const campaign=current,daily=dailyForDay(utc());
     switchMode(save,'daily',daily,id('daily'));current=daily;
     scripted();bump('daily-scripted-wins');
@@ -403,6 +415,7 @@ function play():string{
 }
 const rows:Record<string,unknown>[]=[];
 for(let level=1;level<=200;level++){
+  levelInProgress=level;
   if(dayWins>=3)nextDay();
   dailySession();
   collectFree();collectBonus();collectTasks();
@@ -414,7 +427,7 @@ for(let level=1;level<=200;level++){
   if(level<=15)scripted();
   else{
     status=play();
-    if(status==='won')bump('first-policy-wins');
+    if(status==='won'){bump('first-policy-wins');if(!save.attempt.continued)bump('first-without-continue');}
     else{
       bump('first-policy-fail:'+status);retryLevel(level,1);attempts++;
       status=play();
@@ -441,11 +454,11 @@ for(let level=1;level<=200;level++){
     lives:save.campaignLives?.remaining??5,sourceOutcome:save.sourceDifficultyHistory?.at(-1),stats:{...stats}});
   if(level%10===0||level===1){
     writeFileSync(outDir+'/rows.json',JSON.stringify(rows,null,2));
-    console.log('STUDY238_LONG_PROGRESS '+JSON.stringify({family,channel,level,wallet:save.profile.coins,firstWins:stats['first-policy-wins']??0,
+    console.log('STUDY238_LONG_PROGRESS '+JSON.stringify({family,channel,supply,slope,level,wallet:save.profile.coins,firstWins:stats['first-policy-wins']??0,
       retryWins:stats['retry-policy-wins']??0,scriptedRescues:stats['scripted-rescues']??0,penalty:futureDifficultyPenalty(save)}));
   }
 }
-const result={head,family,channel,levels:completedLevels(save),wallet:save.profile.coins,days:dayIndex+1,
+const result={head,family,channel,supply,slope,levels:completedLevels(save),wallet:save.profile.coins,minWallet,minWalletLate,days:dayIndex+1,
   stats,money,inventory:{hint:save.profile.hints,undo:save.profile.undos,joker:save.profile.jokers,shuffle:save.dailyTasks?.inventory.shuffles??0},
   donorIds:[...donors.entries()].map(([g,d])=>[g,d.map(x=>x.id)]),azurIds:[...azur.entries()].map(([t,d])=>[t,d.map(x=>x.id)])};
 writeFileSync(outDir+'/summary.json',JSON.stringify(result,null,2));console.log('STUDY238_LONG_SUMMARY '+JSON.stringify(result));

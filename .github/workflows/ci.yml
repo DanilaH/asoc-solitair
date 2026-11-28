@@ -8,7 +8,53 @@ concurrency:
   group: verify-${{ github.workflow }}-${{ github.event.pull_request.head.sha || github.sha }}
   cancel-in-progress: true
 jobs:
+  research-ui-ux:
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'research/ui-ux-feel-')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [ordinary, azur21-v1, hybrid21-v1]
+    env:
+      VITE_ASOC_PROFILE: c8-release-v1
+      ASOC_AD_MODE: disabled
+      ASOC_MVP_DEMO: '1'
+      VITE_ASOC_CAMPAIGN_PLAYTEST: ${{ matrix.profile == 'ordinary' && '' || matrix.profile }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/.npm
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
+          ASOC_KIT_OFFLINE_CACHE: '1'
+      - name: Build exact profile
+        run: |
+          if [ "${{ matrix.profile }}" = ordinary ]; then unset VITE_ASOC_CAMPAIGN_PLAYTEST; fi
+          npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Independent actual screen audit and recording
+        run: |
+          if [ "${{ matrix.profile }}" = ordinary ]; then unset VITE_ASOC_CAMPAIGN_PLAYTEST; fi
+          npx playwright test tests/browser/ui-audit249.spec.ts --project=compact --workers=1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui-ux-feel-${{ matrix.profile }}
+          path: |
+            .recording/ui-ux-audit/
+            test-results/
+          retention-days: 14
   web:
+    if: "!startsWith(github.head_ref || github.ref_name, 'research/ui-ux-feel-')"
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -90,6 +136,7 @@ jobs:
             .authoring/content8/campaign-unknown-transfer-deep.json
           retention-days: 7
   campaign-playtests:
+    if: "!startsWith(github.head_ref || github.ref_name, 'research/ui-ux-feel-')"
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -148,6 +195,7 @@ jobs:
             dist/release-manifest.json
           retention-days: 7
   campaign-economy-comparison:
+    if: "!startsWith(github.head_ref || github.ref_name, 'research/ui-ux-feel-')"
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -195,6 +243,7 @@ jobs:
           path: .recording/issue246/economy/
           retention-days: 7
   previews:
+    if: "!startsWith(github.head_ref || github.ref_name, 'research/ui-ux-feel-')"
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -298,6 +347,7 @@ jobs:
             .authoring/hitapps/balance.json
           retention-days: 7
   cohesion:
+    if: "!startsWith(github.head_ref || github.ref_name, 'research/ui-ux-feel-')"
     runs-on: ubuntu-24.04
     env:
       VITE_ASOC_PROFILE: c8-release-v1
@@ -408,6 +458,7 @@ jobs:
             .recording/ordinary-release-manifest.json
           retention-days: 7
   android:
+    if: "!startsWith(github.head_ref || github.ref_name, 'research/ui-ux-feel-')"
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false

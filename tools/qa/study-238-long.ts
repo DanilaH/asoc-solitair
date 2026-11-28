@@ -159,8 +159,8 @@ function rewardedHelper(kind:'hint'|'undo'|'continue'){
   if(kind==='continue'&&!quoteContinueVideo(save))return false;
   const a=save.attempt.id, receipt={schema:1 as const,id:id('earned'),attempt:a,dealId:current.id,mode:'campaign' as const,placement:kind};
   bump('opportunity:'+kind);
-  if(!modeledFill(kind)){if(kind==='continue')cancelContinueVideo(save,receipt);return false;}
   if(kind==='continue')recordSourceContinue(save,current);
+  if(!modeledFill(kind)){if(kind==='continue')cancelContinueVideo(save,receipt);return false;}
   const before=save.profile.coins, inv=save.profile[kind==='undo'?'undos':'hints'];
   applyReceipt(save,receipt,{deal:current,unrestrictedVideo:true,offerNow:now});
   if(kind==='continue')assert.equal(save.attempt.board.phase,'playing');
@@ -177,7 +177,8 @@ function acquire(kind:'hint'|'undo'){
   bump('unaffordable:'+kind);return false;
 }
 function cadence(startOfLevel=false){
-  if(current.daily||current.campaignLevel!<=15||current.training||now<retryAfter)return;
+  if(now<retryAfter||current.training||!current.daily&&current.campaignLevel!<=15)return;
+  if(current.daily&&startOfLevel)return;
   if(startOfLevel){
     if(releasePlacementEligible(save,current.campaignLevel!,'level-start',now,launchedAt)){
       bump('opportunity:level-start');modeledFill('level-start');
@@ -315,12 +316,12 @@ function play():string{
       if(proof.status==='PROVEN_RECOVERABLE'){
         assert.equal(replay({...b,movesLeft:10,phase:'playing'},proof.path,current)?.phase,'won','continue oracle');
         bump('continue-proven');
-        const old=save.profile.coins;
-        if(buyContinue(save,{attemptId:save.attempt.id,deal:current,path:proof.path})){
-          // Source Continue is recorded on exhausted state before mutation in UI.
-          // This harness marks the same event on the saved attempt without changing its board.
-          account('buy:continue',old);signal('BuyExtraMoves','continue');bump('continue-coins');seen.clear();continue;
+        const old=save.profile.coins, candidate=structuredClone(save);
+        recordSourceContinue(candidate,current);
+        if(buyContinue(candidate,{attemptId:candidate.attempt.id,deal:current,path:proof.path})){
+          save=candidate;account('buy:continue',old);signal('BuyExtraMoves','continue');bump('continue-coins');seen.clear();continue;
         }
+        bump('continue-coins-denied');
       }else bump('continue-unproven');
       if(rewardedHelper('continue')){seen.clear();continue;}
       return 'exhausted';
@@ -374,9 +375,8 @@ function play():string{
           if(purchaseBonusSlot(save,current,save.attempt.id,kind)){account('buy:slot-'+kind,old);bump('slot-used:'+kind);break;}
           else bump('slot-denied:'+kind);
         }
-        if(visible(b,current)!==visible(save.attempt.board,current))continue;
         // openBonusSlot mutates b in place; re-evaluate legal actions on next turn.
-        if(legalCommands(save.attempt.board,current).length&&pick(save.attempt.board,current,seen))continue;
+        if(pick(save.attempt.board,current,seen))continue;
       }
       if(!askedJoker&&allowsRandomJoker(save.attempt,current)){
         askedJoker=true;bump('joker-need');const old=save.profile.coins;

@@ -1,0 +1,494 @@
+{
+  "numeric": [
+    {
+      "shape": {
+        "groups": 6,
+        "total": 36,
+        "slots": 3,
+        "columns": [
+          3,
+          4,
+          5
+        ],
+        "stock": 24,
+        "sourceBudget": 62
+      },
+      "trials": [
+        {
+          "seed": 2469001,
+          "status": "CERTIFIED"
+        }
+      ],
+      "seed": 2469001,
+      "cost": 63,
+      "budget": 81,
+      "sourceBudgetFit": false,
+      "originalOptimality": "UNKNOWN",
+      "routeHash": "58a0ea0ea6d8aae0a91fb622f6edea72e4249663403c5de7583070ece71c6632",
+      "populationHash": "1c33ddd0aecd60d1e9d3363841b5dde3e6032657930dcc787467a35a42a1a9f3",
+      "status": "QA_ONLY_CERTIFIED_NOT_ISSUED"
+    },
+    {
+      "shape": {
+        "groups": 10,
+        "total": 64,
+        "slots": 4,
+        "columns": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "stock": 42,
+        "sourceBudget": 123
+      },
+      "trials": [
+        {
+          "seed": 2469101,
+          "status": "CERTIFIED"
+        }
+      ],
+      "seed": 2469101,
+      "cost": 134,
+      "budget": 168,
+      "sourceBudgetFit": false,
+      "originalOptimality": "UNKNOWN",
+      "routeHash": "65ddc510e516dbac95ba630e7800a07efc3f3cb44cd581286c31bb5281f193ba",
+      "populationHash": "c7025a0938c89fff56a36bbbd4796f3197f5e70213692ee21584fc46d08926f4",
+      "status": "QA_ONLY_CERTIFIED_NOT_ISSUED"
+    },
+    {
+      "shape": {
+        "groups": 10,
+        "total": 66,
+        "slots": 4,
+        "columns": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "stock": 44,
+        "sourceBudget": 130
+      },
+      "trials": [
+        {
+          "seed": 2469201,
+          "status": "CERTIFIED"
+        }
+      ],
+      "seed": 2469201,
+      "cost": 112,
+      "budget": 140,
+      "sourceBudgetFit": true,
+      "originalOptimality": "UNKNOWN",
+      "routeHash": "a3af4e9ac20070711f8ff53ce881424917c1b1278d0be419756d86a4d5dc9cee",
+      "populationHash": "818d6191ddd19d7235aff7733fa685c310cbf1f0a73b4749ed83fad828336d4a",
+      "status": "QA_ONLY_CERTIFIED_NOT_ISSUED"
+    },
+    {
+      "shape": {
+        "groups": 12,
+        "total": 80,
+        "slots": 4,
+        "columns": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "stock": 54,
+        "sourceBudget": 162
+      },
+      "trials": [
+        {
+          "seed": 2469301,
+          "status": "CERTIFIED"
+        }
+      ],
+      "seed": 2469301,
+      "cost": 140,
+      "budget": 175,
+      "sourceBudgetFit": true,
+      "originalOptimality": "UNKNOWN",
+      "routeHash": "3d6f552b5aa92e4888222d84a8d2dbe874796ff80346d710d937b6411ee73ba3",
+      "populationHash": "3d4cec474bb0857b5f2cdb806f074d7cefa14bbb9f0996c7214e7771cb9b7276",
+      "status": "QA_ONLY_CERTIFIED_NOT_ISSUED"
+    },
+    {
+      "shape": {
+        "groups": 12,
+        "total": 82,
+        "slots": 4,
+        "columns": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "stock": 56,
+        "sourceBudget": 168
+      },
+      "trials": [
+        {
+          "seed": 2469401,
+          "status": "CERTIFIED"
+        }
+      ],
+      "seed": 2469401,
+      "cost": 145,
+      "budget": 182,
+      "sourceBudgetFit": true,
+      "originalOptimality": "UNKNOWN",
+      "routeHash": "25081175526a74563495d0ab16ec8dc55b849db2a3f87fec3793e623b1606127",
+      "populationHash": "3ce83e1b0f8e971cdfc7f6ff49756673f09cde19b17e28453097b1fb5605953f",
+      "status": "QA_ONLY_CERTIFIED_NOT_ISSUED"
+    },
+    {
+      "shape": {
+        "groups": 15,
+        "total": 98,
+        "slots": 5,
+        "columns": [
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "stock": 63,
+        "sourceBudget": 197
+      },
+      "trials": [
+        {
+          "seed": 2469501,
+          "status": "NO_QUALIFYING_CANDIDATE"
+        },
+        {
+          "seed": 2469502,
+          "status": "CERTIFIED"
+        }
+      ],
+      "seed": 2469502,
+      "cost": 196,
+      "budget": 245,
+      "sourceBudgetFit": true,
+      "originalOptimality": "UNKNOWN",
+      "routeHash": "474e42bb5a75faf7866a531f4175c89390326b660fe53fff2665d05a0923fbc5",
+      "populationHash": "8d52a10e2bdd8f156a0921a7b585575e323b6c148ffa6a76ef1cff961e4f14bf",
+      "status": "QA_ONLY_CERTIFIED_NOT_ISSUED"
+    },
+    {
+      "shape": {
+        "groups": 15,
+        "total": 100,
+        "slots": 4,
+        "columns": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "stock": 74,
+        "sourceBudget": 249
+      },
+      "trials": [
+        {
+          "seed": 2469601,
+          "status": "CERTIFIED"
+        }
+      ],
+      "seed": 2469601,
+      "cost": 213,
+      "budget": 267,
+      "sourceBudgetFit": true,
+      "originalOptimality": "UNKNOWN",
+      "routeHash": "5a38331c7923db213acdaf26b1d4b17e3c6c7b302cb7992ebb1a614b46d650b7",
+      "populationHash": "3c50ab2674b2c099eed3b095c7408f9fe1f3006cc3781e1c301da6fc517ece31",
+      "status": "QA_ONLY_CERTIFIED_NOT_ISSUED"
+    }
+  ],
+  "controls": [
+    {
+      "feature": "ordered",
+      "level": 82,
+      "seed": 844604,
+      "matchedOwnPopulation": true,
+      "matchedRequestedSeed": true,
+      "sameFinalGeometry": true,
+      "physicalSpecial": 48,
+      "physicalOrdinary": 48,
+      "semanticNote": "Puzzle halves and starters are physical additions; source pattern reseeds are retained, not silently neutralized",
+      "ordinary": {
+        "status": "PROVEN",
+        "cost": 81,
+        "images": 5
+      },
+      "text": {
+        "status": "PROVEN",
+        "cost": 81,
+        "images": 0
+      },
+      "special": {
+        "status": "PROVEN",
+        "cost": 104,
+        "effects": {
+          "transfer": 52,
+          "flip": 65,
+          "draw": 51,
+          "recycle": 1,
+          "complete": 8
+        },
+        "images": 5
+      },
+      "sameSpecialBudgetFit": true
+    },
+    {
+      "feature": "ice",
+      "level": 84,
+      "seed": 864601,
+      "matchedOwnPopulation": true,
+      "matchedRequestedSeed": true,
+      "sameFinalGeometry": false,
+      "physicalSpecial": 36,
+      "physicalOrdinary": 36,
+      "semanticNote": "Puzzle halves and starters are physical additions; source pattern reseeds are retained, not silently neutralized",
+      "ordinary": {
+        "status": "PROVEN",
+        "cost": 60,
+        "images": 5
+      },
+      "text": {
+        "status": "PROVEN",
+        "cost": 60,
+        "images": 0
+      },
+      "special": {
+        "status": "PROVEN",
+        "cost": 62,
+        "effects": {
+          "transfer": 44,
+          "flip": 32,
+          "ice": 2,
+          "ice:layer": 1,
+          "draw": 18,
+          "ice:thawed": 1,
+          "complete": 6
+        },
+        "images": 5
+      },
+      "sameSpecialBudgetFit": true
+    },
+    {
+      "feature": "lock",
+      "level": 86,
+      "seed": 884601,
+      "matchedOwnPopulation": true,
+      "matchedRequestedSeed": true,
+      "sameFinalGeometry": false,
+      "physicalSpecial": 48,
+      "physicalOrdinary": 48,
+      "semanticNote": "Puzzle halves and starters are physical additions; source pattern reseeds are retained, not silently neutralized",
+      "ordinary": {
+        "status": "PROVEN",
+        "cost": 76,
+        "images": 5
+      },
+      "text": {
+        "status": "PROVEN",
+        "cost": 76,
+        "images": 0
+      },
+      "special": {
+        "status": "PROVEN",
+        "cost": 77,
+        "effects": {
+          "transfer": 51,
+          "flip": 44,
+          "key": 1,
+          "unlock": 1,
+          "draw": 26,
+          "complete": 8
+        },
+        "images": 5
+      },
+      "sameSpecialBudgetFit": true
+    },
+    {
+      "feature": "bound",
+      "level": 88,
+      "seed": 904601,
+      "matchedOwnPopulation": true,
+      "matchedRequestedSeed": true,
+      "sameFinalGeometry": false,
+      "physicalSpecial": 36,
+      "physicalOrdinary": 36,
+      "semanticNote": "Puzzle halves and starters are physical additions; source pattern reseeds are retained, not silently neutralized",
+      "ordinary": {
+        "status": "PROVEN",
+        "cost": 66,
+        "images": 5
+      },
+      "text": {
+        "status": "PROVEN",
+        "cost": 66,
+        "images": 0
+      },
+      "special": {
+        "status": "PROVEN",
+        "cost": 66,
+        "effects": {
+          "cut": 1,
+          "draw": 24,
+          "flip": 33,
+          "transfer": 41,
+          "complete": 6
+        },
+        "images": 5
+      },
+      "sameSpecialBudgetFit": true
+    },
+    {
+      "feature": "puzzle",
+      "level": 90,
+      "seed": 924601,
+      "matchedOwnPopulation": true,
+      "matchedRequestedSeed": true,
+      "sameFinalGeometry": false,
+      "physicalSpecial": 49,
+      "physicalOrdinary": 48,
+      "semanticNote": "Puzzle halves and starters are physical additions; source pattern reseeds are retained, not silently neutralized",
+      "ordinary": {
+        "status": "PROVEN",
+        "cost": 95,
+        "images": 5
+      },
+      "text": {
+        "status": "PROVEN",
+        "cost": 95,
+        "images": 0
+      },
+      "special": {
+        "status": "PROVEN",
+        "cost": 82,
+        "effects": {
+          "transfer": 55,
+          "flip": 45,
+          "draw": 27,
+          "complete": 8,
+          "assemble": 1
+        },
+        "images": 7
+      },
+      "sameSpecialBudgetFit": true
+    },
+    {
+      "feature": "magnet",
+      "level": 92,
+      "seed": 944601,
+      "matchedOwnPopulation": true,
+      "matchedRequestedSeed": true,
+      "sameFinalGeometry": false,
+      "physicalSpecial": 65,
+      "physicalOrdinary": 64,
+      "semanticNote": "Puzzle halves and starters are physical additions; source pattern reseeds are retained, not silently neutralized",
+      "ordinary": {
+        "status": "PROVEN",
+        "cost": 98,
+        "images": 5
+      },
+      "text": {
+        "status": "PROVEN",
+        "cost": 98,
+        "images": 0
+      },
+      "special": {
+        "status": "PROVEN",
+        "cost": 98,
+        "effects": {
+          "transfer": 70,
+          "flip": 60,
+          "draw": 29,
+          "magnet": 1,
+          "complete": 10
+        },
+        "images": 5
+      },
+      "sameSpecialBudgetFit": true
+    },
+    {
+      "feature": "hammer",
+      "level": 94,
+      "seed": 964601,
+      "matchedOwnPopulation": true,
+      "matchedRequestedSeed": true,
+      "sameFinalGeometry": false,
+      "physicalSpecial": 65,
+      "physicalOrdinary": 64,
+      "semanticNote": "Puzzle halves and starters are physical additions; source pattern reseeds are retained, not silently neutralized",
+      "ordinary": {
+        "status": "PROVEN",
+        "cost": 101,
+        "images": 5
+      },
+      "text": {
+        "status": "PROVEN",
+        "cost": 101,
+        "images": 0
+      },
+      "special": {
+        "status": "PROVEN",
+        "cost": 104,
+        "effects": {
+          "transfer": 74,
+          "flip": 60,
+          "draw": 31,
+          "hammer": 1,
+          "complete": 10
+        },
+        "images": 5
+      },
+      "sameSpecialBudgetFit": true
+    },
+    {
+      "feature": "gold",
+      "level": 96,
+      "seed": 984601,
+      "matchedOwnPopulation": true,
+      "matchedRequestedSeed": true,
+      "sameFinalGeometry": true,
+      "physicalSpecial": 48,
+      "physicalOrdinary": 48,
+      "semanticNote": "Puzzle halves and starters are physical additions; source pattern reseeds are retained, not silently neutralized",
+      "ordinary": {
+        "status": "PROVEN",
+        "cost": 80,
+        "images": 5
+      },
+      "text": {
+        "status": "PROVEN",
+        "cost": 80,
+        "images": 0
+      },
+      "special": {
+        "status": "PROVEN",
+        "cost": 80,
+        "effects": {
+          "transfer": 50,
+          "flip": 44,
+          "draw": 30,
+          "complete": 8,
+          "gold": 2,
+          "gold:appeared": 1,
+          "gold:activated": 1
+        },
+        "images": 5
+      },
+      "sameSpecialBudgetFit": true
+    }
+  ],
+  "registryTopics": 119,
+  "ms": 5742,
+  "rss": 327839744,
+  "scope": "own controls only, no new production bank, no original-runtime parity or human difficulty claim"
+}

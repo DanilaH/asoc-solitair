@@ -92,6 +92,7 @@ export interface CampaignIssuance {
   seed?: { value: number; inputHash: string; boardHash: string; routeHash: string };
   equality: 'unknown-cohort' | 'not-eligible';
   rotation?: { level: number; seed: number; used: string[] };
+  admission?: { version: 'campaign-playtest246-v1'; profile: 'azur21-v1' | 'hybrid21-v1'; reserve: 15 | 25 };
 }
 type UnlimitedClock = { timeline: string; elapsed: number; wall: number };
 export interface RecoveryClockReading { timeline: string; elapsed: number; native?: true }
@@ -125,6 +126,7 @@ export interface Attempt {
   verifiedTaskHints?: number;
   combo?: Combo;
   lessonHint?: BoardCommand;
+  stagedHint?: { version: 1; key: string; action: BoardCommand };
   teachingAds?: { version: 1; ordinary: number };
   daily?: { dayId: string; contentVersion: number };
   payout?: RewardGrant[];

@@ -1,4 +1,6 @@
 import { E4_M1 } from '../config/economy';
+import { campaignPlaytest } from '../config/campaign-playtest';
+import { availableHintCharges, stagedHint } from './hint-rights';
 import { recordM1WinOffer } from './reward-offers';
 import { comboDisposition, COMBO_STAGES } from './events/combo';
 import { releaseProfile } from '../config/profile';
@@ -219,7 +221,7 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     if (!helperUnlocked(next, 'undo', deal) || attempt.board.phase === 'won' || !attempt.undo.length || (next.profile.undos <= 0 && !freeUndoPractice(input, deal))) return refuse('Нет доступной отмены');
     const refund = pendingRestoreRefund(attempt);
     if (refund && !Number.isSafeInteger(next.profile.coins + refund.debit)) return refuse('Кошелёк переполнен');
-    delete attempt.lessonHint; const restored = attempt.undo.pop()!;
+    delete attempt.stagedHint; delete attempt.lessonHint; const restored = attempt.undo.pop()!;
     if (refund) {
       next.profile.coins += refund.debit;
       attempt.stockRestores = refund.ordinal - 1;
@@ -234,18 +236,35 @@ export function dispatch(input: Save, cmd: Command, deal: Deal, today = '', vict
     if (!helperUnlocked(next, 'joker', deal) || attempt.jokerUsed || (next.profile.jokers <= 0 && !freeJokerPractice(input, deal))) return refuse('В этой попытке Джокер недоступен');
     const placed = placeJoker(attempt.board, cmd.column, deal);
     if (typeof placed === 'string') return refuse(placed);
-    delete attempt.lessonHint; recordUndo(attempt); attempt.board = placed; attempt.jokerUsed = true; if (next.profile.jokers > 0) next.profile.jokers--;
+    delete attempt.stagedHint; delete attempt.lessonHint; recordUndo(attempt); attempt.board = placed; attempt.jokerUsed = true; if (next.profile.jokers > 0) next.profile.jokers--;
     markTutorial(next, 'joker-used'); events = [{ type: 'joker' }];
   } else if (cmd.type === 'hint') {
     const demo = freeHintDemo(input, deal);
-    if (!helperUnlocked(next, 'hint', deal) || cmd.revision !== input.revision || (!demo && next.profile.hints <= 0) || typeof applyBoard(attempt.board, cmd.action, deal) === 'string') return refuse('Подсказка больше не подходит');
-    if (demo) markTutorial(next, 'hint-demo'); else next.profile.hints--;
+    if (!helperUnlocked(next, 'hint', deal) || cmd.revision !== input.revision || (!demo && availableHintCharges(next) <= 0) || typeof applyBoard(attempt.board, cmd.action, deal) === 'string') return refuse('Подсказка больше не подходит');
+    const deferred = Boolean(campaignPlaytest && !demo && !deal.training);
+    if (demo) markTutorial(next, 'hint-demo');
+    else if (deferred) attempt.stagedHint = { version: 1, key: boardKey(attempt.board), action: cmd.action };
+    else next.profile.hints--;
     if (deal.training === 'hint' && !seenTutorial(next, 'hint-practiced')) attempt.lessonHint = cmd.action;
-    if (attempt.verifiedTaskHints !== undefined) attempt.verifiedTaskHints++;
-    events = [{ type: 'hint' }];
+    if (!deferred && attempt.verifiedTaskHints !== undefined) attempt.verifiedTaskHints++;
+    events = [{ type: 'hint', ...(deferred && { reason: 'offered' }) }];
   } else {
     const result = applyBoard(attempt.board, cmd, deal);
     if (typeof result === 'string') return refuse(result, result !== jokerConflict && cmd.type === 'transfer' && attempt.board.phase === 'playing');
+    const pending = stagedHint(input.attempt);
+    let appliedHint = Boolean(pending && sameBoardCommand(pending.action, cmd));
+    if (pending && !appliedHint) {
+      // A UI default-root transfer and an explicit whole-packet root can be
+      // the same accepted move. Settle by the complete normative transition.
+      const expected = applyBoard(input.attempt.board, pending.action, deal);
+      appliedHint = typeof expected !== 'string' && JSON.stringify(expected.board) === JSON.stringify(result.board);
+    }
+    delete attempt.stagedHint;
+    if (appliedHint && next.profile.hints > 0) {
+      next.profile.hints--;
+      if (attempt.verifiedTaskHints !== undefined) attempt.verifiedTaskHints++;
+      result.events.push({ type: 'hint', reason: 'applied' });
+    }
     if (attempt.lessonHint) {
       if (sameBoardCommand(attempt.lessonHint, cmd)) markTutorial(next, 'hint-practiced');
       delete attempt.lessonHint;

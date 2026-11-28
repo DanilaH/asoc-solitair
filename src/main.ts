@@ -32,6 +32,9 @@ import { destroyRenderer } from '@danilah/mini-games-kit/phaser';
 import { installTouchActivation } from '@danilah/mini-games-kit/feel';
 import { campaignIssuance, campaignDeals, campaignLevelPreview, campaignRedeal, findDeal, hitappsR4Deals, isCurrentCampaignDeal, selectCampaignDeal } from './content/campaign';
 import { CAMPAIGN_LENGTH, HELPER_UNLOCK, RELEASE_UNLOCK, dailyTasksAvailable, dailyModeAvailable, campaignId, completedLevels, unlockedLevel, helperUnlocked, freeHintDemo, freeJokerPractice, freeUndoPractice, markTutorial, seenTutorial } from './domain/progression';
+import { campaignPlaytest, playtestLabel } from './config/campaign-playtest';
+import { newPlaytestCheckpoint } from './app/playtest-checkpoint';
+import { availableHintCharges, stagedHint } from './domain/hint-rights';
 import { beginDeal } from './domain/campaign';
 import { canSwitchCardLanguage, localizedCampaignDeal, LOCALE_PREVIEW } from './content/campaign-v8-locale';
 import { dailyForDay } from './content/daily';
@@ -301,6 +304,8 @@ try {
   let firstLaunch = false;
   const store = new SaveStore(createStorage(), findDeal, () => {
     firstLaunch = true;
+    const checkpoint = campaignPlaytest && newPlaytestCheckpoint(crypto.randomUUID());
+    if (checkpoint) return checkpoint;
     const fresh = freshSave(campaignDeals[0], crypto.randomUUID());
     if (!CAMPAIGN_CORE_STAGE1) return fresh;
     const opening = selectCampaignDeal(fresh, campaignDeals[0]);
@@ -1061,7 +1066,7 @@ try {
   }
   window.addEventListener('pointerup', playDealSound, { ...domOptions, capture: true });
   window.addEventListener('keydown', playDealSound, domOptions);
-  const repeatHint = () => activeHint?.key === boardKey(save.attempt.board) ? activeHint.action : save.attempt.lessonHint;
+  const repeatHint = () => activeHint?.key === boardKey(save.attempt.board) ? activeHint.action : stagedHint(save.attempt)?.action ?? save.attempt.lessonHint;
   let hintSequence = 0;
   let pendingHint: Pick<HintRequest, 'requestId' | 'revision' | 'attemptId'> & { dealId: string } | undefined;
   let cancelShuffle: (() => void) | undefined;
@@ -1443,8 +1448,11 @@ try {
     if (!visible) return;
     const playing = save.attempt.board.phase === 'playing';
     const rows = [
-      { icon: 'hint', name: 'Подсказки', count: save.profile.hints, source: 'Награды и монеты', usable: playing && helperUnlocked(save, 'hint', deal),
-        condition: helperUnlocked(save, 'hint', deal) ? 'Показывают ход на поле' : `С уровня ${HELPER_UNLOCK.hint}` },
+      { icon: 'hint', name: 'Подсказки', count: save.profile.hints, source: 'Награды и монеты',
+        usable: playing && helperUnlocked(save, 'hint', deal) && (availableHintCharges(save)>0 || Boolean(stagedHint(save.attempt))),
+        condition: save.profile.hints>0 && availableHintCharges(save)===0 ? 'Ожидает применения в другой партии'
+          : stagedHint(save.attempt) ? 'Примените показанный ход'
+          : helperUnlocked(save, 'hint', deal) ? 'Показывают ход на поле' : `С уровня ${HELPER_UNLOCK.hint}` },
       { icon: 'undo', name: 'Отмены', count: save.profile.undos, source: 'Награды и монеты', usable: playing && helperUnlocked(save, 'undo', deal) && Boolean(save.attempt.undo.length),
         condition: !helperUnlocked(save, 'undo', deal) ? `С уровня ${HELPER_UNLOCK.undo}` : 'После первого хода' },
       { icon: 'joker', name: 'Ручные Джокеры', count: save.profile.jokers, source: 'Награды и монеты', usable: playing && helperUnlocked(save, 'joker', deal) && !save.attempt.jokerUsed,
@@ -1766,7 +1774,8 @@ try {
       if (cmd.type === 'undo' && result.events[0]?.amount)
         message(`Возврат за колоду · +${result.events[0].amount} монет`);
       if (cmd.type === 'restart') { telemetry.track('level_restart'); announceDeal(); }
-      if (cmd.type === 'hint' || cmd.type === 'undo' || cmd.type === 'place-joker') telemetry.track('helper_used', { helper: cmd.type === 'place-joker' ? 'joker' : cmd.type });
+      if (cmd.type === 'undo' || cmd.type === 'place-joker') telemetry.track('helper_used', { helper: cmd.type === 'place-joker' ? 'joker' : cmd.type });
+      if (result.events.some(event => event.type === 'hint' && event.reason !== 'offered')) telemetry.track('helper_used', { helper: 'hint' });
       if (finished) telemetry.track(save.attempt.board.phase === 'won' ? 'level_win' : 'level_fail');
       for (const event of result.events) if ((event.type === 'coins' || event.type === 'meta-reward' || event.type === 'win' && !save.attempt.daily) && event.amount) telemetry.track('reward_granted', { reason: event.type === 'coins' ? 'core_streak' : event.type === 'meta-reward' ? event.reason! : 'level_win', amount: event.amount });
       if (save.attempt.daily && result.events.some(e => e.type === 'meta-reward' && e.reason === 'daily_completion')) telemetry.track('daily_completion', { dayId: save.attempt.daily.dayId });
@@ -2506,7 +2515,9 @@ try {
     renderMeta(save, !ready || saving || serviceBusy);
     const completed = completedLevels(save), unlocked = unlockedLevel(save), campaign = campaignAttempt(save), campaignDeal = campaign && findDeal(campaign.dealId), current = campaign?.board.phase === 'playing';
     $('#campaign-progress').textContent = `${completed} / ${CAMPAIGN_LENGTH}`;
-    $('#home-progress').textContent = `Пройдено ${completed} из ${CAMPAIGN_LENGTH}`;
+    $('#home-progress').textContent = campaignPlaytest
+      ? `${playtestLabel} · глава 81–101`
+      : `Пройдено ${completed} из ${CAMPAIGN_LENGTH}`;
     $('#campaign-done').hidden = completed < CAMPAIGN_LENGTH;
     $('#campaign-done').textContent = `Все ${CAMPAIGN_LENGTH} уровней пройдены. Любую раздачу можно сыграть ещё раз.`;
     const label = current ? (campaignDeal?.campaignLevel ? `${campaign?.telemetry?.started ? 'Продолжить' : 'Играть'} · уровень ${campaignDeal.campaignLevel}` : 'Продолжить пробную раздачу')
@@ -3311,7 +3322,7 @@ try {
     if (workerDeadline || saving || runtime.activity.isBlocked()) return;
     if (inspectMode) setInspect(false);
     const repeat = repeatHint();
-    if (save.profile.hints === 0 && !freeHintDemo(save, deal) && !repeat) {
+    if (availableHintCharges(save) === 0 && !freeHintDemo(save, deal) && !repeat) {
       offerFact({ trigger: OfferTrigger.OutOfBooster, booster: 'hint', resource: 'hint', key: 'hint-empty' });
       openHelpers('hint'); return;
     }

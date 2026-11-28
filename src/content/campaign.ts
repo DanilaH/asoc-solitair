@@ -39,6 +39,8 @@ import type { Attempt, Board, BoardCommand, CampaignIssuance, Deal, Save } from 
 import { bindHitappsBank, hitappsGeometry, selectHitappsBank } from './hitapps-r4-bank';
 import { CAMPAIGN_CORE_STAGE1, campaignCorePolicy } from '../config/hitapps-r4';
 import { bindCampaignCore, recordCoreRotation, selectCampaignCore } from './campaign-core-stage1';
+import { playtestCore, playtestCoreById } from './campaign-playtest';
+import { campaignPlaytest, playtestReserve } from '../config/campaign-playtest';
 
 export interface CampaignRecord {
   id: string; version: number; campaignLevel: number; title: string; topics: TopicSelection[];
@@ -173,7 +175,9 @@ for (const { deal } of campaignCore.byId.values()) {
   all.set(deal.id, deal);
 }
 const recentExtended = new Map<number, ReturnType<typeof bindCampaignCore>>();
-function coreFor(level: number) {
+function coreFor(level: number, allowPlaytest = true) {
+  const trial = allowPlaytest && playtestCore(level);
+  if (trial) return trial;
   if (level < EXTENDED_CHAPTER.first) return campaignCore;
   let bank = recentExtended.get(level);
   if (!bank) {
@@ -187,12 +191,14 @@ function coreFor(level: number) {
   return bank;
 }
 function coreById(id: string) {
+  const trial = playtestCoreById(id);
+  if (trial) return trial;
   const first = campaignCore.byId.get(id);
   if (first) return first;
   const level = Number(/^campaign-ha4-(\d+)-/.exec(id)?.[1]);
   if (!Number.isSafeInteger(level) || level < EXTENDED_CHAPTER.first ||
       level >= EXTENDED_CHAPTER.first + EXTENDED_CHAPTER.count) return;
-  return coreFor(level).byId.get(id);
+  return coreFor(level, false).byId.get(id);
 }
 
 export const hitappsR4Deals = () => hitappsR4Bank.values();
@@ -275,6 +281,9 @@ export function campaignIssuance(save: Save, target: Deal, selected: Deal, previ
     dealId: selected.id, baseBudget: core.record.deal.initial.movesLeft,
     effectiveBudget: selected.initial.movesLeft, source: 'certified-seed',
     seed: { value: core.record.seed, inputHash: core.record.sourceHash, boardHash: core.hash, routeHash: core.record.routeHash },
+    ...(campaignPlaytest && selected.id.includes('-pt246-') ? { admission: {
+      version: 'campaign-playtest246-v1' as const, profile: campaignPlaytest, reserve: playtestReserve,
+    } } : {}),
     rotation: recordCoreRotation(core, previous), equality: selected.campaignLevel >= 16 ? 'unknown-cohort' : 'not-eligible' };
   const r4 = hitappsR4Bank.get(selected.id);
   if (r4) return { version: 1, profile: releaseProfile.id, policy: releaseProfile.policies.rules4Issuance, baseId: r4.record.baseId,

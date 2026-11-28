@@ -12,6 +12,12 @@ if (process.env.VITE_ASOC_PROFILE !== profile.id) throw Error('Unknown product p
 
 const sdkMode = process.env.ASOC_AD_MODE ?? 'disabled';
 const apkVariant = process.env.ASOC_APK_VARIANT ?? 'web';
+const campaignPlaytest = process.env.VITE_ASOC_CAMPAIGN_PLAYTEST;
+const playtestReserve = Number(process.env.VITE_ASOC_PLAYTEST_RESERVE ?? 25);
+if (campaignPlaytest && (!['azur21-v1','hybrid21-v1'].includes(campaignPlaytest) ||
+    ![15,25].includes(playtestReserve) || sdkMode === 'live' || apkVariant === 'release' ||
+    apkVariant === 'debug' && process.env.ASOC_CAMPAIGN_PLAYTEST !== campaignPlaytest))
+  throw Error('Playtest is limited to explicitly matching test/web applications');
 if (!['disabled', 'test', 'live'].includes(sdkMode)) throw Error('Invalid advertisement SDK mode');
 if (!['debug', 'release', 'web'].includes(apkVariant)) throw Error('Invalid APK variant');
 const fixtureNavigation = process.env.VITE_HITAPPS_FIXTURES === '1';
@@ -57,7 +63,9 @@ const manifest = {
     rewardedOffers: sdkMode === 'test' || (sdkMode === 'live' && process.env.ASOC_REWARD_OFFERS_ADS_READY === '1'),
     impressionRevenue: sdkMode === 'live' && process.env.ASOC_OWNER_ADS_READY === '1',
   },
-  packageId: apkVariant === 'debug' ? appId + suffix : appId,
+  packageId: apkVariant === 'debug' ? appId + suffix + (campaignPlaytest === 'azur21-v1' ? '.azur' : campaignPlaytest === 'hybrid21-v1' ? '.hybrid' : '') : appId,
+  ...(campaignPlaytest ? { campaignPlaytest: { version: 'campaign-playtest246-v1', profile: campaignPlaytest,
+    reserve: playtestReserve, first: 81, last: 101, checkpoint: 'new-install-only', authority: 'PRODUCT_ADAPTED' } } : {}),
   webPayload: {
     algorithm: 'sha256 of sorted path, NUL, file sha256, newline',
     sha256: createHash('sha256').update(Object.entries(files).map(([path, sha]) => `${path}\0${sha}\n`).join('')).digest('hex'),

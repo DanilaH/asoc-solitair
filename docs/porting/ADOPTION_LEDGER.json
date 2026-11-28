@@ -320,11 +320,16 @@
     {
       "id": "hitapps-level-wave",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Content 8 has 80 authored deals. The 16–31 section matches the verified Hitapps EN counts for cards, stock and columns. The 32–80 product wave has seven five-column peaks. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
-      "nextAction": "Play the targeted positions listed in docs/qa/content-v8/Q1_CAMPAIGN_DECISIONS.md on physical Android. Evaluate pacing and keep exact Hitapps geometry beyond the verified local EN31 boundary open.",
+      "currentImplementation": "Ordinary Rules4 campaign has200 levels; L81–200 has360 certified layouts and720 additional -5/+10 budget variants, alongside Daily400. Isolated issue246 A/B adds21-position AZUR/hybrid playtests at L81–101 with G12/G15/G12 peaks, preserving all ordinary and historical definitions. Display tier is not measured objective difficulty.",
+      "nextAction": "Compare pacing on physical Android; late Hitapps upper-slot configuration remains assumed and web numeric evidence unverified. Both five- and seven-position source models remain retained.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
       "stage": "C2",
-      "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
+      "evidenceRef": "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md",
+      "evidenceRefs": [
+        "docs/qa/content-v8/CORE_3_LATE.md",
+        "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md"
+      ],
+      "implementationBranch": "feat/246-campaign-playtests"
     },
     {
       "id": "hitapps-candidate-priority",
@@ -705,10 +710,15 @@
     {
       "id": "azur-topic-rotation",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 positions 32–80 contain 77 original project topics including 24 new ones. At least three other levels intervene before any topic is reused in the late slice. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
-      "nextAction": "Playtest topic recognition and compare longer semantic recurrence to reference evidence before planning an endless bank.",
+      "currentImplementation": "Ordinary200 + Daily400 use95 topic IDs in the extended recipes, measured separate ID gaps13/18. Isolated issue246 uses an expandable119-topic own registry and least-recent/collision-rejecting scheduler; combined Campaign/Daily labels and topic exposure are reported separately. It does not claim AZUR gap162 or semantic equivalence.",
+      "nextAction": "Review normalized overlap and human semantic ambiguity; choose an original vocabulary/art budget and joint scheduling policy before a larger chapter.",
       "stage": "C2",
-      "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
+      "evidenceRef": "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md",
+      "evidenceRefs": [
+        "docs/qa/content-v8/CORE_3_LATE.md",
+        "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md"
+      ],
+      "implementationBranch": "feat/246-campaign-playtests"
     },
     {
       "id": "hitapps-puzzle-event",
@@ -1317,17 +1327,18 @@
     {
       "id": "azur-structured-long-campaign",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "The ordinary 80-level campaign and own C8 chapter geometry/budget profiles remain; the separate P33 81–87 preview is preserved in the roadmap. MVP U4 marks ordinary end80 explicitly, keeps replay/Daily and already earned monthly rewards, and removes an impossible forward win-cycle/monthly-progress promise. Active replay and parked campaign boards are retained rather than rewritten.",
-      "nextAction": "Complete final-branch browser/physical 79/80, 80/80, active replay and parked campaign cases, then continue Q1 late-campaign human playtests. Native long-campaign configuration and P33/source runtime gaps remain open. Retain issue84 recurrence comparison and existing published deal IDs; end80 presentation does not exclude future content.",
+      "currentImplementation": "Ordinary sequential campaign ends atL200, with400 versioned Daily dates. L81–200 remains the existing certified chapter. Issue246 isolates A/B21-position waves, two versioned reserves, current director/history/Easy Deals/rotation and source-seed/oracle proofs. Fresh test apps start at an explicit L81 checkpoint; existing saves bypass it. No main-bank promotion or1000/2000 authorization.",
+      "nextAction": "Complete physical L80/81,L101/102,L200/200 and Campaign/Daily acceptance; select pure AZUR versus hybrid peak cadence and next chapter scope after human data.",
       "stage": "G1",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
+      "evidenceRef": "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md",
       "evidenceRefs": [
         "docs/qa/content-v8/CORE_3_LATE.md",
-        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md"
+        "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
+        "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md"
       ],
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
-      "implementationBranch": "feat/c8-audit-203-recovery"
+      "implementationBranch": "feat/246-campaign-playtests"
     },
     {
       "id": "azur-purchase-receipts",
@@ -1454,20 +1465,30 @@
     {
       "id": "azur-variable-category-sizes",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Late C8 recipes use four to six members per category and vary category count between eight and fifteen per board. Published totals match each product geometry profile. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md.",
-      "nextAction": "Check recognition and pacing on Android. The AZUR art-dependent native sizing rule is tracked separately.",
+      "currentImplementation": "Existing early/late and200-level/Daily400 recipes retain their own variable member/group counts. Isolated issue246 separates structure from own population and verifies physical profiles36/64/66/80/82/98/100, with Puzzle halves and starters counted separately from semantic goals. Each admitted layout has exact finite Rules4 certificates at all issued adaptive budgets.",
+      "nextAction": "Check recognition, latency and5-column phone readability. AZUR native art-dependent size policy and live parameters retain their separate evidence gates.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
+      "evidenceRef": "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md",
+      "evidenceRefs": [
+        "docs/qa/content-v8/CORE_3_LATE.md",
+        "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md"
+      ],
+      "implementationBranch": "feat/246-campaign-playtests"
     },
     {
       "id": "hitapps-mixed-word-image-cards",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Every newly authored CORE-3 layout across 16–80 mixes one whole picture category using original art with word categories. P33 adds an original versioned preview chapter for levels 81–87 with independent paths, variable sizes and mixed images. See docs/porting/P33_BEYOND80.md. C8 issue 205 scales the full card uniformly and uses the existing words and picture art.",
-      "nextAction": "Evaluate card recognition and text fit on physical Android at five-column peaks.",
+      "currentImplementation": "Ordinary200-level campaign retains illustrated cards fromL2 and its approved Card Table B presentation, plus Daily400 and all old art metadata. Issue246 compares matched own text/image/special controls; rendered artwork is counted via real cardArtwork rather than raw image metadata. Existing own assets are reused; no vendor vocabulary/art copied.",
+      "nextAction": "Complete human recognition, long-label fit and special-card comprehension on compact Android, especially the99-card hybrid peak; do not infer semantic usefulness from a solver.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
-      "evidenceRef": "docs/qa/content-v8/CORE_3_LATE.md"
+      "evidenceRef": "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md",
+      "evidenceRefs": [
+        "docs/qa/content-v8/CORE_3_LATE.md",
+        "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md"
+      ],
+      "implementationBranch": "feat/246-campaign-playtests"
     },
     {
       "id": "hitapps-language-change-restart",
@@ -1992,6 +2013,23 @@
       "CA-06"
     ],
     "runtime": "bounded Rules4 proof-bearing coin Continue; earned video remains proof-free; M1 900/+10 unchanged",
-    "acceptance": "PROJECT_CI_AND_SIGNED_APK_REPORTED_SEPARATELY; PHYSICAL_LATENCY_AND_TEST_SDK_PENDING"
+    "acceptance": "ENGINEERING_VERIFIED_CI_46137293691_4_OF_4; PHYSICAL_LATENCY_AND_TEST_SDK_PENDING"
+  },
+  "campaignPlaytest246": {
+    "issue": "https://github.com/DanilaH/asoc-solitair/issues/246",
+    "base": "73b90e193606424fdfe4720147143de51d062762",
+    "implementationBranch": "feat/246-campaign-playtests",
+    "evidence": "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md",
+    "scope": [
+      "E0",
+      "E1",
+      "E2",
+      "E3",
+      "E4"
+    ],
+    "ordinary": "200 levels + Daily400; immutable main bank/M1/Rules4/FTUE retained",
+    "candidate": "separate21-position A/B;72 unique layouts, both reserve policies and exact adaptive certificates; fresh-install-only checkpoint; candidate-only applied Hint settlement",
+    "sourceStatuses": "UNCHANGED; all115/38/15/9 retained",
+    "acceptance": "EXACT_HEAD_PROJECT_CI_AND_APK_REPORT; PHYSICAL_ANDROID_TEST_SDK_AND_HUMAN_BALANCE_PENDING"
   }
 }

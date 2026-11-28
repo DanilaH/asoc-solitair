@@ -3,6 +3,14 @@ import profile from './src/config/c8-release.json' with { type: 'json' };
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
+  if (env.VITE_ASOC_CAMPAIGN_PLAYTEST) {
+    if (env.VITE_ASOC_PROFILE !== profile.id || !['azur21-v1','hybrid21-v1'].includes(env.VITE_ASOC_CAMPAIGN_PLAYTEST))
+      throw Error('Unknown or unscoped campaign playtest');
+    if (Object.keys(env).some(key=>/^VITE_ASOC_ARCHIVE_|VITE_HITAPPS_FIXTURES/.test(key) && env[key] && env[key]!=='0'))
+      throw Error('Campaign playtest cannot use an archived or fixture profile');
+  }
+  if (env.VITE_ASOC_PLAYTEST_RESERVE && (!env.VITE_ASOC_CAMPAIGN_PLAYTEST || !['15','25'].includes(env.VITE_ASOC_PLAYTEST_RESERVE)))
+    throw Error('Unknown or unscoped certified reserve');
   if (env.VITE_ASOC_PROFILE) {
     if (env.VITE_ASOC_PROFILE !== profile.id) throw Error('Unknown product profile');
     const legacy = Object.keys(env).filter(key => /^VITE_(CONTENT8_|C8_OWNER_|AZUR_)/.test(key) && env[key] && env[key] !== '0');

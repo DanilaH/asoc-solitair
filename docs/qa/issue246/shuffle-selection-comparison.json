@@ -1,0 +1,392 @@
+{
+  "source": "73b90e193606424fdfe4720147143de51d062762 src/game/shuffle-proof.ts",
+  "profile": "azur21-v1",
+  "rows": [
+    {
+      "level": 81,
+      "dealId": "campaign-ha4-81-834602-92c7534df564a0d0-7f282dd8-pt246-r25-core-stage1-v1-m1",
+      "prefix": 28,
+      "origin": "reachable off-witness choice",
+      "single": {
+        "proven": true,
+        "ms": 38,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 34,
+        "attempts": [
+          {
+            "seed": 246081,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 34,
+          "classes": {
+            "foundation": 16,
+            "draw": 12,
+            "tableau": 6
+          },
+          "firstCollect": 11,
+          "left": 18
+        }
+      },
+      "consumed": true
+    },
+    {
+      "level": 82,
+      "dealId": "campaign-ha4-82-844607-e1d4c64f4f66bfda-ec297bf0-pt246-r25-core-stage1-v1-m1",
+      "prefix": 44,
+      "origin": "reachable off-witness choice",
+      "single": {
+        "proven": false,
+        "ms": 1825,
+        "error": null
+      },
+      "portfolio": {
+        "proven": false,
+        "ms": 1800,
+        "attempts": [
+          {
+            "seed": 246082,
+            "status": "UNKNOWN"
+          },
+          {
+            "seed": 2654681851,
+            "status": "UNKNOWN"
+          },
+          {
+            "seed": 1014150324,
+            "status": "UNKNOWN"
+          }
+        ],
+        "consumed": false,
+        "policy": null
+      },
+      "consumed": false
+    },
+    {
+      "level": 84,
+      "dealId": "campaign-ha4-84-864603-266d4055cc84222a-535113d1-pt246-r25-core-stage1-v1-m1",
+      "prefix": 27,
+      "origin": "reachable off-witness choice",
+      "single": {
+        "proven": true,
+        "ms": 16,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 332,
+        "attempts": [
+          {
+            "seed": 246084,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 32,
+          "classes": {
+            "tableau": 1,
+            "draw": 13,
+            "foundation": 18
+          },
+          "firstCollect": 7,
+          "left": 20
+        }
+      },
+      "consumed": true
+    },
+    {
+      "level": 86,
+      "dealId": "campaign-ha4-86-884601-6c4f7c2ed41c8a50-7dc5b71c-pt246-r25-core-stage1-v1-m1",
+      "prefix": 34,
+      "origin": "reachable witness prefix",
+      "single": {
+        "proven": true,
+        "ms": 30,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 74,
+        "attempts": [
+          {
+            "seed": 246086,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 54,
+          "classes": {
+            "draw": 24,
+            "foundation": 26,
+            "tableau": 3,
+            "recycle": 1
+          },
+          "firstCollect": 16,
+          "left": 12
+        }
+      },
+      "consumed": true
+    },
+    {
+      "level": 87,
+      "dealId": "campaign-ha4-87-894604-5205ebb181beaa8a-24459cca-pt246-r25-core-stage1-v1-m1",
+      "prefix": 43,
+      "origin": "reachable witness prefix",
+      "single": {
+        "proven": true,
+        "ms": 155,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 160,
+        "attempts": [
+          {
+            "seed": 246087,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 56,
+          "classes": {
+            "draw": 14,
+            "foundation": 31,
+            "tableau": 11
+          },
+          "firstCollect": 10,
+          "left": 24
+        }
+      },
+      "consumed": true
+    },
+    {
+      "level": 88,
+      "dealId": "campaign-ha4-88-904604-f05bdf8f0cec8365-97cdf144-pt246-r25-core-stage1-v1-m1",
+      "prefix": 28,
+      "origin": "reachable off-witness choice",
+      "single": {
+        "proven": true,
+        "ms": 44,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 45,
+        "attempts": [
+          {
+            "seed": 246088,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 53,
+          "classes": {
+            "draw": 25,
+            "foundation": 20,
+            "recycle": 1,
+            "tableau": 7
+          },
+          "firstCollect": 29,
+          "left": 2
+        }
+      },
+      "consumed": true
+    },
+    {
+      "level": 90,
+      "dealId": "campaign-ha4-90-924601-1b2b96a6f5a5a2e4-f32fd3f4-pt246-r25-core-stage1-v1-m1",
+      "prefix": 36,
+      "origin": "reachable off-witness choice",
+      "single": {
+        "proven": true,
+        "ms": 77,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 74,
+        "attempts": [
+          {
+            "seed": 246090,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 47,
+          "classes": {
+            "draw": 20,
+            "foundation": 24,
+            "tableau": 3
+          },
+          "firstCollect": 1,
+          "left": 36
+        }
+      },
+      "consumed": true
+    },
+    {
+      "level": 92,
+      "dealId": "campaign-ha4-92-944602-5ff9c7fe43df7606-f43c2775-pt246-r25-core-stage1-v1-m1",
+      "prefix": 45,
+      "origin": "reachable off-witness choice",
+      "single": {
+        "proven": true,
+        "ms": 162,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 180,
+        "attempts": [
+          {
+            "seed": 246092,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 52,
+          "classes": {
+            "draw": 11,
+            "foundation": 30,
+            "tableau": 11
+          },
+          "firstCollect": 19,
+          "left": 29
+        }
+      },
+      "consumed": true
+    },
+    {
+      "level": 94,
+      "dealId": "campaign-ha4-94-964603-daf3eab4ddd6d575-21707bab-pt246-r25-core-stage1-v1-m1",
+      "prefix": 45,
+      "origin": "reachable witness prefix",
+      "single": {
+        "proven": true,
+        "ms": 282,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 236,
+        "attempts": [
+          {
+            "seed": 246094,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 85,
+          "classes": {
+            "draw": 36,
+            "foundation": 34,
+            "tableau": 13,
+            "recycle": 2
+          },
+          "firstCollect": 23,
+          "left": 0
+        }
+      },
+      "consumed": true
+    },
+    {
+      "level": 96,
+      "dealId": "campaign-ha4-96-984605-27751ae498304547-c2415f7f-pt246-r25-core-stage1-v1-m1",
+      "prefix": 38,
+      "origin": "reachable witness prefix",
+      "single": {
+        "proven": true,
+        "ms": 29,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 242,
+        "attempts": [
+          {
+            "seed": 246096,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 49,
+          "classes": {
+            "draw": 20,
+            "foundation": 22,
+            "tableau": 7
+          },
+          "firstCollect": 8,
+          "left": 21
+        }
+      },
+      "consumed": true
+    },
+    {
+      "level": 101,
+      "dealId": "campaign-ha4-101-1034601-4269a0c7557cc34e-5402a2b6-pt246-r25-core-stage1-v1-m1",
+      "prefix": 44,
+      "origin": "reachable witness prefix",
+      "single": {
+        "proven": true,
+        "ms": 241,
+        "error": null
+      },
+      "portfolio": {
+        "proven": true,
+        "ms": 155,
+        "attempts": [
+          {
+            "seed": 246101,
+            "status": "FOUND"
+          }
+        ],
+        "consumed": true,
+        "policy": {
+          "policy": "foundation",
+          "status": "won",
+          "actions": 68,
+          "classes": {
+            "draw": 24,
+            "foundation": 25,
+            "tableau": 17,
+            "recycle": 2
+          },
+          "firstCollect": 17,
+          "left": 12
+        }
+      },
+      "consumed": true
+    }
+  ]
+}

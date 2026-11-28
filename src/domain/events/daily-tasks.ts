@@ -194,12 +194,12 @@ export function acceptedTaskSignals(before: Save, result: Result, cmd: Command, 
   const win = settledFirstWin(before, next, deal);
   if (win) {
     report('CompleteLevels', 1, `win:${win.id}`);
-    if (before.attempt.verifiedTaskHints === 0) report('WinNoHints', 1, `no-hints:${win.id}`);
+    if (result.next.attempt.verifiedTaskHints === 0) report('WinNoHints', 1, `no-hints:${win.id}`);
   }
   if (cmd.type === 'draw' || cmd.type === 'transfer' || cmd.type === 'recycle') report('ExecuteMoves', 1);
   report('CollectThemes', events.filter(event => event.type === 'complete').length);
   report('DrawCards', events.filter(event => event.type === 'draw').length);
-  report('UseHints', events.filter(event => event.type === 'hint').length);
+  report('UseHints', events.filter(event => event.type === 'hint' && event.reason !== 'offered').length);
   report('UseJokers', events.filter(event => event.type === 'joker').length);
   report('UseRollbacks', events.filter(event => event.type === 'undo').length);
   if (cmd.type !== 'undo') report('EarnCoins', next.profile.coins - before.profile.coins);

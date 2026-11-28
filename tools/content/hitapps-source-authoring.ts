@@ -8,6 +8,7 @@ import { applyBoundPattern, applyGoldPattern, applyIcePattern, applyLockerPatter
   type BoundPattern, type IcePattern, type LockerPattern } from './hitapps-patterns';
 import { redistributePuzzle, type SourceSlot } from './hitapps-puzzle-distribution';
 import { dealOrdinary, EmbeddedRandom } from './plain-dealer';
+import { dealAzur } from './azur-dealer';
 
 type Pattern<T> = { enabled: boolean; seed: number; index: number; minLevel?: number; data: T };
 export interface SourceFeatures {
@@ -29,7 +30,9 @@ type State = { cards: Record<string, Card>; properties: Record<string, SourceCar
 type Appliers = NonNullable<Parameters<typeof prepareSimulatedShuffle<State>>[1]>;
 
 export type SourceInput = { version: 'hitapps-input-v2'; layout: 'fixed' | 'random'; stable: boolean; levelPenalty: number;
-  cardOrder: readonly string[]; features: SourceFeatures };
+  cardOrder: readonly string[]; features: SourceFeatures;
+  /** Separate recovered destination algorithm; the supplied seeded RNG is our adapter. */
+  dealer?: 'azur-exclusive-fy-v1' };
 export const emptyFeatures: SourceFeatures = { revision: 'hitapps-features-v1' };
 
 export function sourceCardOrder(deal: Deal) {
@@ -49,7 +52,8 @@ function requireNatural(value: number, label: string) {
 export function prepareSourceInput(template: Deal, input: SourceInput, effectiveBudget: number) {
   const { features } = input;
   const physical = [...template.initial.stock, ...template.initial.tableau.flat()];
-  if (input.version !== 'hitapps-input-v2' || features.revision !== 'hitapps-features-v1' || !Number.isSafeInteger(effectiveBudget) ||
+  if (input.version !== 'hitapps-input-v2' || input.dealer !== undefined && input.dealer !== 'azur-exclusive-fy-v1' ||
+    features.revision !== 'hitapps-features-v1' || !Number.isSafeInteger(effectiveBudget) ||
     effectiveBudget <= 0 || template.daily || template.training || template.initial.waste.length || template.initial.collected.length ||
     template.initial.foundations.some(pile => pile.length) || physical.length !== input.cardOrder.length ||
     new Set(input.cardOrder).size !== physical.length || input.cardOrder.some(id => !physical.includes(id) || !template.cards[id]))
@@ -101,7 +105,11 @@ export function prepareSourceInput(template: Deal, input: SourceInput, effective
       const draws: Draw[] = [];
       rng = new EmbeddedRandom(requestedSeed, (bound, draw) => draws.push([bound, draw]));
       snapshot.drawStreams.push({ seed: requestedSeed, draws });
-      const base = input.layout === 'fixed' ? template.initial : dealOrdinary(input.cardOrder, template.initial.stock.length, size, rng);
+      const azur = input.layout === 'random' && input.dealer === 'azur-exclusive-fy-v1'
+        ? dealAzur(input.cardOrder, size.length, size[0], (lo, hi) => lo + rng.next(hi-lo)) : undefined;
+      const base = input.layout === 'fixed' ? template.initial : azur
+        ? { tableau: azur.tableau, stock: azur.deckInput.slice().reverse() }
+        : dealOrdinary(input.cardOrder, template.initial.stock.length, size, rng);
       const indexed = new Map<string, SourceSlot>();
       base.stock.forEach((id, position) => indexed.set(id, { id, kind: snapshot.properties[id].kind, container: 0, column: 0, position, flags: 2 }));
       base.tableau.forEach((pile, column) => pile.forEach((id, position) => indexed.set(id, { id, kind: snapshot.properties[id].kind,

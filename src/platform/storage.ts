@@ -22,7 +22,7 @@ import { validCommerceJournal } from '../domain/commerce/orders';
 import { validEventLedger } from '../domain/events/ledger';
 import { validPicture } from '../domain/events/picture';
 import { migrateTaskSignalHistory, validDailyTasks } from '../domain/events/daily-tasks';
-import { applyBoard, assertBoard, boardRules } from '../domain/engine';
+import { applyBoard, assertBoard, boardKey, boardRules } from '../domain/engine';
 import { repairHammerJoker } from '../domain/hitapps-board';
 import { parseSavedState, serializeSave } from './save-undo';
 import { MAX_UNDO_HISTORY } from '../domain/history';
@@ -84,6 +84,20 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
   save.attempt.board = repairHammerJoker(save.attempt.board, history.at(-1), deal) ?? save.attempt.board;
   assertBoard(save.attempt.board, deal);
   if (save.attempt.verifiedTaskHints !== undefined && !natural(save.attempt.verifiedTaskHints)) throw Error('Повреждён учёт подсказок');
+  const staged = save.attempt.stagedHint;
+  if (staged !== undefined) {
+    const command=staged?.action;
+    const location=(loc:{kind:string;index:number})=>loc&&['tableau','foundation','waste'].includes(loc.kind)&&natural(loc.index);
+    if (!staged || staged.version!==1 || typeof staged.key!=='string' || staged.key.length>100000 || !command ||
+      !(['draw','recycle'].includes(command.type) || command.type==='transfer'&&location(command.from)&&location(command.to)))
+      throw Error('Повреждена ожидающая подсказка');
+    // A slot, Shuffle or late receipt may invalidate the offer. No charge was spent.
+    if (staged.key!==boardKey(save.attempt.board)) delete save.attempt.stagedHint;
+    else {
+      try { if (typeof applyBoard(save.attempt.board,command,deal)==='string') delete save.attempt.stagedHint; }
+      catch { delete save.attempt.stagedHint; }
+    }
+  }
   if (save.attempt.lessonHint !== undefined) {
     const command = save.attempt.lessonHint;
     const location = (loc: { kind: string; index: number }) => loc && ['tableau', 'foundation', 'waste'].includes(loc.kind) && natural(loc.index);
@@ -167,6 +181,9 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
     }
   }
   const issuance = save.attempt.issuance;
+  if (issuance?.admission && (issuance.admission.version !== 'campaign-playtest246-v1' ||
+      !['azur21-v1','hybrid21-v1'].includes(issuance.admission.profile) || ![15,25].includes(issuance.admission.reserve) ||
+      !deal.id.includes(`-pt246-r${issuance.admission.reserve}-`))) throw Error('Повреждён допуск плейтеста');
   if (issuance !== undefined && (!issuance || issuance.version !== 1 || deal.daily || !deal.campaignLevel ||
     issuance.dealId !== deal.id || issuance.effectiveBudget !== deal.initial.movesLeft ||
     ![issuance.profile, issuance.policy, issuance.baseId].every(value => typeof value === 'string' && /^[\w-]{1,100}$/.test(value)) ||

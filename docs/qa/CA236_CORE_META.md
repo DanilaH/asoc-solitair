@@ -14,6 +14,8 @@ Base PR234 HEAD was checked twice against `aeb86300005c368ac19f4e647070a1430ab28
 
 The already noted PR234 inventory label wrap is shortened to «Перемешать». The existing helpers/inventory layout is retained.
 
+The ordinary core-stage1 Joker copy says L2. The separately archived PR227 profile keeps its historical L16 applicability text, alongside its original price/eligibility. Both profile contracts remain covered by browser tests.
+
 The additional inventory-only → helper purchase path was also reproduced in the first patch and then guarded. `logTaskAction` now requires actual Tasks availability before scheduling or recording a helper task. The browser CA-01 case claims an old Shuffle, reloads, buys a Hint and asserts zero task weeks and a hidden Tasks button. Early resource ownership cannot indirectly unlock the schedule through another helper.
 
 ## Controlled helper comparison

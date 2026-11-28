@@ -6,14 +6,13 @@ permissions:
   contents: read
 jobs:
   research-238:
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'research/238-paired-supply-sensitivity')
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'research/238-paired-independent-authoring')
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     strategy:
       fail-fast: false
       matrix:
-        family: [current, five, azur]
-        scenario: [{supply: no-daily, slope: 5}, {supply: no-optional, slope: 5}, {supply: full, slope: 2}]
+        shape: [current, H6, H10, H12, H15a, H15b, A1, A2, A3, A4]
     env:
       VITE_ASOC_PROFILE: c8-release-v1
       ASOC_AD_MODE: disabled
@@ -33,15 +32,15 @@ jobs:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
       - run: npm run typecheck
-      - name: Run longitudinal actual-domain model
+      - name: Author and validate independent layouts, reserve controls and alternative choices
         run: |
-          npx vite build --ssr tools/qa/study-238-long.ts --outDir .recording/study238-long-build
-          node .recording/study238-long-build/study-238-long.js ${{ matrix.family }} free ${{ matrix.scenario.supply }} ${{ matrix.scenario.slope }}
+          npx vite build --ssr tools/qa/study-238-independent.ts --outDir .recording/study238-independent-build
+          node .recording/study238-independent-build/study-238-independent.js ${{ matrix.shape }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: study-238-sensitivity-${{ matrix.family }}-${{ matrix.scenario.supply }}-${{ matrix.scenario.slope }}
-          path: .recording/study238-long/
+          name: study-238-independent-${{ matrix.shape }}
+          path: .recording/study238-independent/
           retention-days: 14
   web:
     if: ${{ !startsWith(github.head_ref || github.ref_name, 'research/238-paired-') }}

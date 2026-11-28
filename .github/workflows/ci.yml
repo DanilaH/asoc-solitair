@@ -215,7 +215,7 @@ jobs:
           VITE_ASOC_ARCHIVE_229: '1'
         run: npm test -- --testTimeout=15000 --reporter=default --reporter=json --outputFile=.recording/mvp-unit-results.json
       - name: Verify ordinary campaign, ad accounting, E4-M1 and the functional audit
-        run: npx vitest run tests/unit/campaign-meta.test.ts tests/unit/e4-m1.test.ts tests/unit/functional-audit-225.test.ts --testTimeout=30000 --reporter=default --reporter=json --outputFile=.recording/e4-m1-unit-results.json
+        run: npx vitest run tests/unit/campaign-meta.test.ts tests/unit/e4-m1.test.ts tests/unit/functional-audit-225.test.ts tests/unit/ca236.test.ts --testTimeout=30000 --reporter=default --reporter=json --outputFile=.recording/e4-m1-unit-results.json
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - name: Measure 200 ad-free first-clear witnesses and compare 1,000 repeatable economy trials
@@ -228,6 +228,10 @@ jobs:
         run: |
           npx vite build --ssr tools/qa/audit-campaign-meta.ts --outDir .recording/stage3-generator
           node .recording/stage3-generator/audit-campaign-meta.js
+      - name: Compare core-audit helpers against independently witnessed deviations
+        run: |
+          npx vite build --ssr tools/qa/audit-ca236.ts --outDir .recording/ca236-build
+          node .recording/ca236-build/audit-ca236.js after
       - name: Audit all retained and issued Deal geometries in the C8 release profile
         shell: bash
         env:
@@ -238,7 +242,8 @@ jobs:
           ASOC_CORE_RECORD: '1'
           ASOC_E4_RECORD: '1'
           ASOC_S3_RECORD: '1'
-        run: npx playwright test tests/browser/campaign-core-stage1.spec.ts tests/browser/hitapps-rules4.spec.ts tests/browser/functional-audit-225.spec.ts tests/browser/e4-m1.spec.ts tests/browser/campaign-meta.spec.ts --output=test-results/campaign-core-stage1
+          ASOC_CA236_RECORD: '1'
+        run: npx playwright test tests/browser/campaign-core-stage1.spec.ts tests/browser/hitapps-rules4.spec.ts tests/browser/functional-audit-225.spec.ts tests/browser/e4-m1.spec.ts tests/browser/campaign-meta.spec.ts tests/browser/ca236.spec.ts --output=test-results/campaign-core-stage1
       - name: Recover a fullscreen presentation with no terminal callback
         run: npx vitest run tests/unit/platform.test.ts -t 'recovers presentation on confirmed foreground'
       - name: Verify Card Table B across compact and tall ordinary screens
@@ -285,6 +290,7 @@ jobs:
             .recording/e4-m1-unit-results.json
             .recording/e4-m1/
             .recording/stage3/
+            .recording/ca236/
             .recording/ordinary-release-manifest.json
           retention-days: 7
   android:

@@ -110,8 +110,15 @@ export function applyReceipt(save: Save, receipt: EarnedReceipt, options?: {
     const attempt = save.attempt.daily ? save.parked?.campaign : save.attempt;
     const deal = options?.deal;
     // Only that campaign attempt may get the purchased space, including when parked.
-    if (kind && receipt.mode === 'campaign' && deal?.id === receipt.dealId && attempt?.id === receipt.attempt &&
-      openBonusSlot(attempt, deal, kind)) options?.onBonusUnlocked?.();
+    if (kind && receipt.mode === 'campaign') {
+      if (deal?.id === receipt.dealId && attempt?.id === receipt.attempt && attempt.board.phase === 'playing' &&
+          openBonusSlot(attempt, deal, kind)) options?.onBonusUnlocked?.();
+      else {
+        const credits = state.bonusSlotCredits ??= { version: 1, foundation: 0, tableau: 0 };
+        if (!Number.isSafeInteger(credits[kind] + 1)) throw Error('Переполнен запас слотов');
+        credits[kind]++;
+      }
+    }
   }
   state.receipts.push(receipt.id); save.revision++;
   return 'applied';

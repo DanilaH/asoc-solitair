@@ -33,3 +33,17 @@ export function purchaseBonusSlot(save: Save, deal: Deal, attemptId: string, kin
   save.revision++;
   return true;
 }
+
+/** Late earned space keeps its type and waits for explicit use on an eligible board. */
+export function bonusSlotCreditCount(save: Save, kind: BonusKind): number {
+  return save.platform?.bonusSlotCredits?.[kind] ?? 0;
+}
+
+export function useBonusSlotCredit(save: Save, deal: Deal, attemptId: string, kind: BonusKind): boolean {
+  const credits = save.platform?.bonusSlotCredits;
+  if (!credits || credits[kind] <= 0 || save.attempt.id !== attemptId ||
+      save.attempt.board.phase !== 'playing' || !openBonusSlot(save.attempt, deal, kind)) return false;
+  credits[kind]--;
+  save.revision++;
+  return true;
+}

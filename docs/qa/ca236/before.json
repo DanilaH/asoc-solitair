@@ -1,0 +1,887 @@
+{
+  "phase": "before-final",
+  "shuffle": {
+    "granted": false,
+    "inventory": 0,
+    "tasksAvailable": false
+  },
+  "retry": {
+    "result": "started",
+    "director": null,
+    "sourceDifficulty": null
+  },
+  "lateSlot": {
+    "platform": {
+      "receipts": [
+        "late-slot"
+      ],
+      "continuedAttempts": [],
+      "continueCredits": 0,
+      "lastFullscreenAt": 0,
+      "winsSinceInterstitial": 0,
+      "completedCampaign": [
+        "campaign-001",
+        "campaign-002",
+        "campaign-003",
+        "campaign-004",
+        "campaign-005"
+      ]
+    },
+    "columns": 3
+  },
+  "hints": [
+    {
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 4,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 1445
+    },
+    {
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 776
+    },
+    {
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 0,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 1728
+    },
+    {
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 0,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 3100
+    },
+    {
+      "level": 12,
+      "deal": "campaign-ha4-12-1280003-c9fb33dbd93b1834-7a9fd5bb-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 2730
+    },
+    {
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 5,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 2925
+    },
+    {
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 2,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 6154
+    },
+    {
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 1898
+    },
+    {
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 10181
+    },
+    {
+      "level": 80,
+      "deal": "campaign-ha4-80-80004-cc69ef28590359b4-0c0b90d5-core-stage1-v1-m1",
+      "prefix": 5,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 4413
+    },
+    {
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "UNKNOWN",
+      "ms": 2086
+    }
+  ],
+  "jokers": [
+    {
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 5,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 221
+        },
+        {
+          "column": 1,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 0
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 10
+        }
+      ],
+      "selection": null
+    },
+    {
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 10,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 221
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 14
+        },
+        {
+          "column": 2,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 0
+        }
+      ],
+      "selection": null
+    },
+    {
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 60,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 220
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 221
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 221
+        },
+        {
+          "column": 3,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 220
+        }
+      ],
+      "selection": null
+    },
+    {
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 58,
+      "columns": [
+        {
+          "column": 0,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 0
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 11
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 10
+        },
+        {
+          "column": 3,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 10
+        }
+      ],
+      "selection": null
+    },
+    {
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 62,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 173
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 7
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 8
+        }
+      ],
+      "selection": null
+    },
+    {
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 5,
+      "columns": [
+        {
+          "column": 0,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 0
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 220
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 43
+        },
+        {
+          "column": 3,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 61
+        }
+      ],
+      "selection": null
+    },
+    {
+      "level": 100,
+      "deal": "campaign-ha4-100-1003702-8dfa7547f7017c97-901ce58c-core-stage1-v1-m1",
+      "prefix": 38,
+      "columns": [
+        {
+          "column": 0,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 0
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 221
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 5
+        },
+        {
+          "column": 3,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 5
+        },
+        {
+          "column": 4,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 5
+        }
+      ],
+      "selection": null
+    },
+    {
+      "level": 150,
+      "deal": "campaign-ha4-150-1503702-f48e1c64808998b1-ed860181-core-stage1-v1-m1",
+      "prefix": 11,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 26
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 28
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 30
+        },
+        {
+          "column": 3,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 0
+        },
+        {
+          "column": 4,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 220
+        }
+      ],
+      "selection": null
+    }
+  ],
+  "reachable": [
+    {
+      "sample": 0,
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 5,
+      "status": "UNKNOWN",
+      "ms": 1383
+    },
+    {
+      "sample": 1,
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 28,
+      "status": "SOLVED",
+      "ms": 88
+    },
+    {
+      "sample": 2,
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 35,
+      "status": "UNKNOWN",
+      "ms": 3727
+    },
+    {
+      "sample": 3,
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 55,
+      "status": "UNKNOWN",
+      "ms": 7014
+    },
+    {
+      "sample": 4,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-02",
+      "prefix": 10,
+      "status": "UNKNOWN",
+      "ms": 2146
+    },
+    {
+      "sample": 5,
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 16,
+      "status": "UNKNOWN",
+      "ms": 2308
+    },
+    {
+      "sample": 6,
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 11,
+      "status": "UNKNOWN",
+      "ms": 2814
+    },
+    {
+      "sample": 7,
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 49,
+      "status": "UNKNOWN",
+      "ms": 3632
+    },
+    {
+      "sample": 8,
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 49,
+      "status": "UNKNOWN",
+      "ms": 3191
+    },
+    {
+      "sample": 9,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-07",
+      "prefix": 10,
+      "status": "UNKNOWN",
+      "ms": 2063
+    },
+    {
+      "sample": 10,
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 6,
+      "status": "UNKNOWN",
+      "ms": 2039
+    },
+    {
+      "sample": 11,
+      "level": 100,
+      "deal": "campaign-ha4-100-1003702-8dfa7547f7017c97-901ce58c-core-stage1-v1-m1",
+      "prefix": 50,
+      "status": "UNKNOWN",
+      "ms": 10947
+    },
+    {
+      "sample": 12,
+      "level": 150,
+      "deal": "campaign-ha4-150-1503702-f48e1c64808998b1-ed860181-core-stage1-v1-m1",
+      "prefix": 15,
+      "status": "UNKNOWN",
+      "ms": 3492
+    },
+    {
+      "sample": 13,
+      "level": 200,
+      "deal": "campaign-ha4-200-2003703-1142cca9e9859000-b8d8c2e4-core-stage1-v1-m1",
+      "prefix": 72,
+      "status": "SOLVED",
+      "ms": 239
+    },
+    {
+      "sample": 14,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-12",
+      "prefix": 19,
+      "status": "UNKNOWN",
+      "ms": 4912
+    },
+    {
+      "sample": 15,
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 29,
+      "status": "SOLVED",
+      "ms": 5
+    },
+    {
+      "sample": 16,
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 32,
+      "status": "UNKNOWN",
+      "ms": 3924
+    },
+    {
+      "sample": 17,
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 63,
+      "status": "UNKNOWN",
+      "ms": 9244
+    },
+    {
+      "sample": 18,
+      "level": 12,
+      "deal": "campaign-ha4-12-1280003-c9fb33dbd93b1834-7a9fd5bb-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "UNKNOWN",
+      "ms": 4148
+    },
+    {
+      "sample": 19,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-17",
+      "prefix": 15,
+      "status": "UNKNOWN",
+      "ms": 3991
+    },
+    {
+      "sample": 20,
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 4,
+      "status": "UNKNOWN",
+      "ms": 5298
+    },
+    {
+      "sample": 21,
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 71,
+      "status": "SOLVED",
+      "ms": 16
+    },
+    {
+      "sample": 22,
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 131,
+      "status": "UNKNOWN",
+      "ms": 14277
+    },
+    {
+      "sample": 23,
+      "level": 80,
+      "deal": "campaign-ha4-80-80004-cc69ef28590359b4-0c0b90d5-core-stage1-v1-m1",
+      "prefix": 136,
+      "status": "UNKNOWN",
+      "ms": 4905
+    },
+    {
+      "sample": 24,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-22",
+      "prefix": 14,
+      "status": "UNKNOWN",
+      "ms": 1803
+    },
+    {
+      "sample": 25,
+      "level": 100,
+      "deal": "campaign-ha4-100-1003702-8dfa7547f7017c97-901ce58c-core-stage1-v1-m1",
+      "prefix": 17,
+      "status": "UNKNOWN",
+      "ms": 2981
+    },
+    {
+      "sample": 26,
+      "level": 150,
+      "deal": "campaign-ha4-150-1503702-f48e1c64808998b1-ed860181-core-stage1-v1-m1",
+      "prefix": 15,
+      "status": "UNKNOWN",
+      "ms": 3581
+    },
+    {
+      "sample": 27,
+      "level": 200,
+      "deal": "campaign-ha4-200-2003703-1142cca9e9859000-b8d8c2e4-core-stage1-v1-m1",
+      "prefix": 61,
+      "status": "UNKNOWN",
+      "ms": 15735
+    },
+    {
+      "sample": 28,
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 4,
+      "status": "UNKNOWN",
+      "ms": 1707
+    },
+    {
+      "sample": 29,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-27",
+      "prefix": 18,
+      "status": "UNKNOWN",
+      "ms": 5135
+    },
+    {
+      "sample": 30,
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 41,
+      "status": "UNKNOWN",
+      "ms": 2675
+    },
+    {
+      "sample": 31,
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 43,
+      "status": "UNKNOWN",
+      "ms": 6137
+    },
+    {
+      "sample": 32,
+      "level": 12,
+      "deal": "campaign-ha4-12-1280003-c9fb33dbd93b1834-7a9fd5bb-core-stage1-v1-m1",
+      "prefix": 52,
+      "status": "UNKNOWN",
+      "ms": 6793
+    },
+    {
+      "sample": 33,
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 16,
+      "status": "UNKNOWN",
+      "ms": 2589
+    },
+    {
+      "sample": 34,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-01",
+      "prefix": 15,
+      "status": "UNKNOWN",
+      "ms": 2564
+    },
+    {
+      "sample": 35,
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 49,
+      "status": "UNKNOWN",
+      "ms": 4082
+    },
+    {
+      "sample": 36,
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 10,
+      "status": "UNKNOWN",
+      "ms": 5849
+    },
+    {
+      "sample": 37,
+      "level": 80,
+      "deal": "campaign-ha4-80-80004-cc69ef28590359b4-0c0b90d5-core-stage1-v1-m1",
+      "prefix": 5,
+      "status": "UNKNOWN",
+      "ms": 4613
+    },
+    {
+      "sample": 38,
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "UNKNOWN",
+      "ms": 2157
+    },
+    {
+      "sample": 39,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-06",
+      "prefix": 51,
+      "status": "SOLVED",
+      "ms": 1493
+    },
+    {
+      "sample": 40,
+      "level": 150,
+      "deal": "campaign-ha4-150-1503702-f48e1c64808998b1-ed860181-core-stage1-v1-m1",
+      "prefix": 29,
+      "status": "UNKNOWN",
+      "ms": 6234
+    },
+    {
+      "sample": 41,
+      "level": 200,
+      "deal": "campaign-ha4-200-2003703-1142cca9e9859000-b8d8c2e4-core-stage1-v1-m1",
+      "prefix": 47,
+      "status": "UNKNOWN",
+      "ms": 11959
+    },
+    {
+      "sample": 42,
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 5,
+      "status": "UNKNOWN",
+      "ms": 2130
+    },
+    {
+      "sample": 43,
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "UNKNOWN",
+      "ms": 1190
+    },
+    {
+      "sample": 44,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-11",
+      "prefix": 13,
+      "status": "UNKNOWN",
+      "ms": 3232
+    },
+    {
+      "sample": 45,
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 4,
+      "status": "UNKNOWN",
+      "ms": 2310
+    },
+    {
+      "sample": 46,
+      "level": 12,
+      "deal": "campaign-ha4-12-1280003-c9fb33dbd93b1834-7a9fd5bb-core-stage1-v1-m1",
+      "prefix": 61,
+      "status": "UNKNOWN",
+      "ms": 8863
+    },
+    {
+      "sample": 47,
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 128,
+      "status": "UNKNOWN",
+      "ms": 12174
+    },
+    {
+      "sample": 48,
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 38,
+      "status": "UNKNOWN",
+      "ms": 4844
+    },
+    {
+      "sample": 49,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-16",
+      "prefix": 15,
+      "status": "UNKNOWN",
+      "ms": 3318
+    },
+    {
+      "sample": 50,
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 125,
+      "status": "UNKNOWN",
+      "ms": 17865
+    },
+    {
+      "sample": 51,
+      "level": 80,
+      "deal": "campaign-ha4-80-80004-cc69ef28590359b4-0c0b90d5-core-stage1-v1-m1",
+      "prefix": 6,
+      "status": "UNKNOWN",
+      "ms": 5111
+    },
+    {
+      "sample": 52,
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "UNKNOWN",
+      "ms": 2445
+    },
+    {
+      "sample": 53,
+      "level": 100,
+      "deal": "campaign-ha4-100-1003702-8dfa7547f7017c97-901ce58c-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "UNKNOWN",
+      "ms": 2412
+    },
+    {
+      "sample": 54,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-21",
+      "prefix": 3,
+      "status": "UNKNOWN",
+      "ms": 1575
+    },
+    {
+      "sample": 55,
+      "level": 200,
+      "deal": "campaign-ha4-200-2003703-1142cca9e9859000-b8d8c2e4-core-stage1-v1-m1",
+      "prefix": 0,
+      "status": "UNKNOWN",
+      "ms": 3383
+    },
+    {
+      "sample": 56,
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 6,
+      "status": "UNKNOWN",
+      "ms": 1585
+    },
+    {
+      "sample": 57,
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "UNKNOWN",
+      "ms": 739
+    },
+    {
+      "sample": 58,
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 41,
+      "status": "UNKNOWN",
+      "ms": 2941
+    },
+    {
+      "sample": 59,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-26",
+      "prefix": 9,
+      "status": "UNKNOWN",
+      "ms": 3477
+    }
+  ]
+}

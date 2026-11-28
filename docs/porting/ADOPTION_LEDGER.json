@@ -18,7 +18,20 @@
     "base": "1dead90632f5f86a93066ae2d2ff8d5363d930a2",
     "implementationBranch": "feat/226-release-polish",
     "evidence": "docs/qa/release-polish-226.md",
-    "scope": ["UI-01", "UI-02", "UI-03", "UI-04", "UI-05", "UI-06", "UI-07", "UI-08", "UI-09", "UI-10", "S3-A", "S3-B"],
+    "scope": [
+      "UI-01",
+      "UI-02",
+      "UI-03",
+      "UI-04",
+      "UI-05",
+      "UI-06",
+      "UI-07",
+      "UI-08",
+      "UI-09",
+      "UI-10",
+      "S3-A",
+      "S3-B"
+    ],
     "acceptance": "DEVICE_AND_LIVE_SDK_PENDING"
   },
   "campaignMetaStage3": {
@@ -68,16 +81,35 @@
     "implementationBranch": "feat/228-campaign-core",
     "policy": "campaign-core-stage1-v1",
     "evidence": "docs/qa/campaign-core-stage1-228.md",
-    "scope": ["PT-01", "PT-02", "PT-03", "PT-05", "PT-08", "PT-11", "PT-12", "LEG-01", "LEG-02"],
+    "scope": [
+      "PT-01",
+      "PT-02",
+      "PT-03",
+      "PT-05",
+      "PT-08",
+      "PT-11",
+      "PT-12",
+      "LEG-01",
+      "LEG-02"
+    ],
     "acceptance": "DEVICE_AND_LIVE_SDK_PENDING",
-    "remainingIssues": [228, 226]
+    "remainingIssues": [
+      228,
+      226
+    ]
   },
   "functionalAudit225": {
     "issue": "https://github.com/DanilaH/asoc-solitair/issues/225",
     "base": "9eab55ba6f5406981c28aadee1c5a922ba703fdb",
     "implementationBranch": "fix/mvp-functional-audit-225",
     "evidence": "docs/qa/functional-audit-225.md",
-    "affected": ["Rules4 Joker / Hammer / Magnet / Scissors / Puzzle", "fullscreen cadence", "Daily Tasks", "SaveStore / Undo", "dead-end recovery"],
+    "affected": [
+      "Rules4 Joker / Hammer / Magnet / Scissors / Puzzle",
+      "fullscreen cadence",
+      "Daily Tasks",
+      "SaveStore / Undo",
+      "dead-end recovery"
+    ],
     "acceptance": "DEVICE_AND_LIVE_SDK_PENDING"
   },
   "deliveryBrief": {
@@ -316,7 +348,7 @@
     {
       "id": "hitapps-dynamic-difficulty",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "Ordinary C8 retains its ten-outcome policy. Rules4 issuance reads the same durable source slot history and selects independently certified budget variants without changing an active attempt.",
+      "currentImplementation": "Ordinary C8 retains its ten-outcome policy. Rules4 issuance reads the same durable source slot history and selects independently certified budget variants without changing an active attempt. CA-02 now carries cumulative level losses, all restarts and the source difficulty slot through voluntary new-layout retry as well as fixed/exhausted retry. New-level reset and the existing ten-outcome thresholds are unchanged. See docs/qa/CA236_CORE_META.md.",
       "nextAction": "PR224 includes certified Rules4 budgets in the ordinary C8 profile. Verify the signed playtest candidate on Android and calibrate with human play. See docs/qa/MVP_RELEASE_CANDIDATE_2026-11-27.md.",
       "stage": "B2",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -612,7 +644,7 @@
     {
       "id": "azur-shuffle-helper",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "MVP C2 retains hidden-pool-r1, proof-before-charge, Undo.Clear after success and separate legacy stock-only preview. A versioned one-time L30 intro grant joins the existing inventory. New immutable wrappers apply after actual selection on L33/36/39 without adding recovery capabilities; the manifest lists L30/33/36/39. All 14 new wrappers have a successful proof at a reachable prefix of their certified route. This is not all-initial-random-seed success: initial probes may remain UNKNOWN and must not spend stock. New Daily Bonus draws exclude Shuffle only after all supported forward levels are completed; old stock/frozen rounds remain usable on replay.",
+      "currentImplementation": "Ordinary core-stage1 deals from L2 retain hidden-pool-r1, proof-before-charge, success Undo.Clear, M1 inventory and the legacy stock-only archive. The one-time intro follows L7 Tasks; previously earned Shuffle can be claimed and used earlier in the canonical inventory without opening Tasks. Frozen Daily Bonus prizes remain claimable after campaign end; only new prize eligibility uses future campaign availability. CA-01 verifies old early ready rounds, reload and L7 without changing reward weights or prices. Original RNG/UI parity and physical feedback remain separate evidence.",
       "nextAction": "Complete final-branch CI/browser/physical intro-to-use and later-level acceptance, including timeout/UNKNOWN/stale/save failure and replay of old stock. Preserve the explicit reachable-prefix proof boundary and archived IDs. Original RNG/live entitlement/runtime parity and human value remain open; do not equate structural admission or successful prefixes with universal initial-board success.",
       "stage": "D1",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -691,7 +723,7 @@
     {
       "id": "azur-daily-tasks",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "C8 tasks unlock at L7 on the new schedule and retain earlier access on migrated accounts. Current and ready weekly rewards retain their own surface, and older claims live in a compact archive with a real rollover countdown. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
+      "currentImplementation": "Ordinary sequential campaign unlocks Tasks at L7, retaining migrated access. The shared DailyTaskJournal inventory may now exist with zero scheduled weeks before L7, without granting task access. Stage3 azur-m1-week-r1 issues seven rotating four-task days and five medal milestones 50/100/300/600/1000 with M1 rewards, an existing separate chest and legacy week terms. State, grants, signals and claims use SaveStore. CA-01 preserves ready Shuffle2/3/5 and schedules L7/intro once. See docs/qa/CA236_CORE_META.md and src/config/retention-m1.ts. Larger source task variants remain on the roadmap.",
       "nextAction": "Retain ordinary tasks and saved source-week migration. #138/141/143 prove 28 tuples, 5 milestones, exact chest pool Hint/Undo/Definition/Shuffle (not Joker), saved roll reuse and medals on claim; 1210/960 conditional. Full R1/R2 remains. Trace other medal writes/remote/day and claim lifecycle; physical acceptance open. Video is not MakePurchase.",
       "stage": "F1",
       "implementationBriefRef": "docs/porting/MVP_COHESION_IMPLEMENTATION_TZ_2026-11-24.md",
@@ -779,8 +811,8 @@
     },
     {
       "id": "hitapps-win-streak",
-      "status": "ROADMAPPED",
-      "currentImplementation": "Existing 5-first-win cycle differs from loss-sensitive WinStreak An independent offline streak model is tested in P30. See docs/porting/P30_STREAK_TRIALS.md. Текущий продуктовый цикл из пяти побед отображает прогресс в результате. См. docs/qa/UX_WALLET_PROGRESS.md.",
+      "status": "IMPLEMENTED_UNVERIFIED",
+      "currentImplementation": "Stage3 ordinary campaign has the source-informed loss-sensitive versioned WinStreak in src/domain/events/win-streak.ts. Repeating stages require 2/3/5 wins and pay M1-adapted 30 coins, 70+1 Hint, 100+1 Hint by explicit claims. Earned stages survive loss/reload, current progress follows genuine loss, and legacy five-win state remains compatible. Source original rewards/config are not claimed as identical. Larger Hitapps variants remain in the source roadmap; physical player acceptance remains pending.",
       "nextAction": "Implement distinct event stage/overflow/key/ordered claim ledger, current milestone-only reset, preserve earned-unclaimed on loss and expiry; own event schedule and receipt policy. See docs/porting/HITAPPS_AZUR_STREAK_COMBO_TZ_2026-11-26.md.",
       "stage": "F1",
       "comboStreakHandoff": {
@@ -1245,7 +1277,7 @@
     {
       "id": "unico-daily-puzzles",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "The own local-calendar Daily Level and fixed 28-deal bank remain separate from Bonus and Tasks. MVP F3 sends the active daily attempt dayId with daily_start/daily_completion so these events satisfy the existing analytics contract, including an old attempt resumed on another date. U3 clarifies completed, replay-without-reward and next-local-date states without changing its award ledger.",
+      "currentImplementation": "The own ordinary Rules4 Daily now has versioned date generation verified over 400 dates, distinct from Daily Bonus, login rewards and Tasks. Saved older 28-pool IDs and active/parked dayId remain addressable. Stage3 preserves old rewards and M1 progression. This implemented product adaptation does not assert original Unico generator parity; larger source variants remain roadmapped.",
       "nextAction": "Complete final-branch browser/physical actual-date telemetry and repeat/reload acceptance, then verify the permitted analytics export. Compare original Unico seed, failure-retry and award rules separately; the 28-deal own bank and engineering events are not full original-source parity. 27 Nov candidate investigation: 28-day cycle and missed/unlocked states; separate login calendar candidate. Own fixed date bank not source retry generator. See docs/porting/UNICO_CANDIDATE_TZ_2026-11-27.md; publisher trust/native execution pending.",
       "stage": "C2",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/41",
@@ -1553,7 +1585,7 @@
     {
       "id": "azur-bonus-lower-column",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "New eligible ordinary definitions offer the lower column from L12 with separate count and compatibility checks. Existing authored first encounters and restore IDs are retained. See docs/qa/issue-210/PLAYTEST_FOLLOWUP_2026-11-26.md.",
+      "currentImplementation": "Ordinary core-stage1 offers early lower space from L6 under the unchanged M1 eligible-deal policy. Active/parked eligible earned placement remains attempt-scoped. CA-04 preserves a late earned slot for a removed/won/already-open board in version1 typed platform bonusSlotCredits. Explicit use opens the matching type on an eligible active board, without coins, automatic unrelated placement or duplicate receipt grant. Saved boards and Undo dimensions retain the existing paid entitlement rules.",
       "nextAction": "Verify physical Android taps, live SDK earned/no-fill/recovery and compare original runtime geometry, source-live prices and eligibility. Product prices and the authored eligibility are explicit preview settings. D1 independent evidence and missing original-runtime gates: docs/qa/content-v8/D1_SPECIAL_RULES_HELPERS_SOURCE_GAP_2026-11-21.md.",
       "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/60",
       "evidenceRef": "docs/qa/content-v8/CORE_4_AZUR_BONUS_SLOTS.md",
@@ -1697,7 +1729,7 @@
     {
       "id": "azur-joker-random-column-insertion",
       "status": "IMPLEMENTED_UNVERIFIED",
-      "currentImplementation": "MVP C1 stores the separate 250-coin unused Random Joker grant in durable profile ownership until successful compatible L16 insertion. Existing active/parked attempt-owned records migrate idempotently by original grant ID and consumed state. Restart, Daily switching and incompatible levels retain unused rights; proof-confirmed insertion consumes one right with board/Undo changes in the same SaveStore transaction. Manual Joker is unchanged.",
+      "currentImplementation": "Ordinary core-stage1 campaign allows the separate M1 300-coin Random Joker charge from L2. Durable unused grants and legacy attempt-owned rights migrate by original ID. CA-05 samples uniformly from actual normative eligible columns including purchased space, then tries randomized remaining columns under one bounded worker deadline. Complete replay proof and revision/attempt checks precede atomic one-charge consume and Undo.Clear. Failed/UNKNOWN/stale/failed-save placement retains the right. Original fixed-min5 uniform source and product proof-filtered fallback are distinct. No manual Joker or M1 change.",
       "nextAction": "Finish final-branch browser/Android acceptance for buy/cancel/retry/Daily/reload/use, duplicate migration and failure/ambiguous writes. L16 applicability and 250-coin price remain candidate decisions; original live bound, zero-target, unlock/SDK and runtime parity remain UNKNOWN. Preserve full P15 research direction.",
       "stage": "D1",
       "evidenceRef": "docs/qa/mvp-20261124/MVP_COHESION_IMPLEMENTATION.md",
@@ -1726,7 +1758,7 @@
       "id": "azur-greedy-hint-order",
       "stage": "D2",
       "status": "ROADMAPPED",
-      "currentImplementation": "C8 resolveHint uses independently verified winning continuation/solver, not the original AZUR five-stage first-success greedy MoveHintSystem; this is an intentional PRODUCT_ADAPTED policy. Собственный Hint на замках/Puzzle ищет выигрыш по штатным командам и точному ключу доски. Воспроизведены законные выигрышные пути обеих аудиторских позиций L17/L26.",
+      "currentImplementation": "CA-03 reuses progress-first findReferenceRoute for Rules4 as well as existing Rules3, with a request-local witness-tail candidate index and full actual-board replay. AZUR native five-group order and proven hidden-source/empty-target guard guide ordering, never prune a needed move or replace a win proof. Same-category ordinary card substitutions propose tails only; actual specials/gold/budget validate normatively. Search remains bounded in the existing worker; UNKNOWN spends no Hint. This is PRODUCT_ADAPTED, not original greedy/full Joker truth-table parity. The source-exact diagnostic and original Android output remain roadmapped. See docs/qa/CA236_CORE_META.md.",
       "nextAction": "P04 source native upgraded kit PR #98: exact MoveHintSystem Joker useless predicate (wouldUncoverHidden, alternative movable nonJoker, prior foundation) distinct from MoveValidator.HasAnyValidMove Joker predicate (CountJokersOnBoard>1 bypass, hidden previous/source, foundation). Native 5-stage hint class priority unchanged; keep current safe solver-backed Hint PRODUCT_ADAPTED, optional independently tested diagnostic and original Android P36 still needed. Issue #123 and docs/qa/content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md.",
       "evidenceRef": "docs/qa/content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md",
       "evidenceRefs": [
@@ -1903,5 +1935,19 @@
     "candidateRegister": "docs/porting/UNICO_CANDIDATE_SYSTEMS.json",
     "candidateCount": 9,
     "scope": "Preserve all 115 canonical IDs / 38 packets / 15 commerce families; nine candidate systems mapped, no exclusion, no status promotion, no runtime/IAP change."
+  },
+  "coreAudit236": {
+    "issue": "https://github.com/DanilaH/asoc-solitair/issues/236",
+    "base": "aeb86300005c368ac19f4e647070a1430ab280c8",
+    "implementationBranch": "fix/236-core-meta",
+    "evidence": "docs/qa/CA236_CORE_META.md",
+    "scope": [
+      "CA-01",
+      "CA-02",
+      "CA-03",
+      "CA-04",
+      "CA-05"
+    ],
+    "acceptance": "PROJECT_CI_AND_PHYSICAL_DEMO_PENDING"
   }
 }

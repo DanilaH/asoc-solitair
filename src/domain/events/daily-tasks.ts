@@ -55,6 +55,13 @@ export interface DailyTaskJournal {
   inventory: { definitions: number; shuffles: number; chestKeys: string[]; cardBack: boolean; weeklyChests?: Record<string, TaskPrize> };
 }
 
+/** Shared helper inventory may exist before any task day is scheduled. */
+export function taskJournal(save: Save): DailyTaskJournal {
+  return save.dailyTasks ??= { version: 1, lastUtc: '0001-01-01', weeks: [], seenSignals: [],
+    signalHistoryVersion: 1, hintedAttempts: [], loginDaysUtc: [],
+    inventory: { definitions: 0, shuffles: 0, chestKeys: [], cardBack: false } };
+}
+
 const DAY = 86_400_000;
 const token = (value: unknown): value is string => typeof value === 'string' && /^[0-9A-Za-z_.:-]{1,160}$/.test(value);
 const natural = (n: number) => Number.isSafeInteger(n) && n >= 0;
@@ -140,8 +147,7 @@ export function scheduleTasks(save: Save, now: number, definitions: readonly Tas
   if (!utc || !definitions.length || !milestones.every(validMilestone) ||
     new Set(milestones.map(item => item.id)).size !== milestones.length || definitions.some(definition => !validTask(definition)) ||
     new Set(definitions.map(definition => definition.id)).size !== definitions.length || utc < (save.dailyTasks?.lastUtc ?? '')) return false;
-  const state = save.dailyTasks ??= { version: 1, lastUtc: utc, weeks: [], seenSignals: [], signalHistoryVersion: 1, hintedAttempts: [], loginDaysUtc: [],
-    inventory: { definitions: 0, shuffles: 0, chestKeys: [], cardBack: false } };
+  const state = taskJournal(save);
   const weekStart = weekOf(utc);
   let week = state.weeks.find(entry => entry.startUtc === weekStart);
   if (!week) {
@@ -257,8 +263,8 @@ export function grantEventPrize(save: Save, prize: TaskPrize): boolean {
     offers.definitions += prize.quantity;
     return true;
   }
-  if (prize.kind === 'Shuffle' && save.dailyTasks && natural(save.dailyTasks.inventory.shuffles + prize.quantity)) {
-    save.dailyTasks.inventory.shuffles += prize.quantity;
+  if (prize.kind === 'Shuffle' && natural((save.dailyTasks?.inventory.shuffles ?? 0) + prize.quantity)) {
+    taskJournal(save).inventory.shuffles += prize.quantity;
     return true;
   }
   return false;

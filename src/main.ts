@@ -23,7 +23,7 @@ import { claimShopProgress, freeCampaignBonusState, PASS_GOAL, PIGGY_LIMIT, prod
 import { CAMPAIGN_PRODUCTS } from './domain/commerce/catalog';
 import { AD_BREAK_GAP_MS, adBreakBlocker, adFree, coffeeBlocker, coffeeEligibleAt, releaseAdCadence, releasePlacementEligible, type CampaignInterstitialPlacement, ADS_CONTROLS_PREVIEW, authorizeCoffee, cancelCoffee, eligibleAdBreak, matchesCoffee } from './domain/campaign-advertising';
 import { beginUnlimited, buyUnlimitedAccess, canBuyUnlimitedAccess, expireUnlimited, quotePurchasedUnlimited, quoteUnlimitedAccess, RECOVERY_GAMEPLAY, RECOVERY_PREVIEW, requiresNativeRecoveryClock, restoreCampaignStock, restoreQuote, supportsUnlimited, unlimitedRemaining, usePurchasedUnlimited, useUnlimitedAccess } from './domain/campaign-recovery';
-import { allowsRandomJoker, buyRandomJokerAccess, placeRandomJoker, randomJokerCount, randomJokerReady, proveRandomJoker, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
+import { allowsRandomJoker, buyRandomJokerAccess, randomJokerCount, randomJokerReady, RANDOM_JOKER_PREVIEW, randomJokerColumn, settleRandomJoker } from './domain/random-joker';
 import { loadEqualityPreviewPolicy } from './content/campaign-v8-equality';
 import { GENERATION_PREVIEW, recordSourceContinue, SOURCE_DIFFICULTY_PREVIEW } from './domain/difficulty';
 import Phaser from 'phaser';
@@ -56,7 +56,7 @@ import { SHOP_FREE_COINS, SHOP_VIDEO_COINS, REWARD_OFFER_PREVIEW, COIN_WALLET_LE
 import { openingShuffleProof } from './domain/shuffle-intro-proof';
 import { canShuffle, commitShuffle, prepareShuffleBoard, type ShuffleRequest } from './domain/proof-shuffle';
 import { requiresContinueProof, verifiesContinue } from './domain/continuation';
-import { bonusKinds, bonusOffer, bonusPlacements, openBonusSlot, pilesFor, purchaseBonusSlot } from './domain/bonus-slots';
+import { bonusKinds, bonusKindFor, bonusOffer, bonusPlacements, openBonusSlot, pilesFor, purchaseBonusSlot, bonusSlotCreditCount, useBonusSlotCredit } from './domain/bonus-slots';
 import type { BoardCommand, BonusKind, Command, Deal } from './domain/types';
 import { CARD_H, GRID_GAP, boardFrame, layout } from './game/layout';
 import { cardArtwork } from './game/art';
@@ -936,15 +936,17 @@ try {
     }),
     async commit(receipt) {
       const placement = receipt.placement;
-      let openedBonus = false, earnedContinue = false, grantedOfferCoins = 0;
+      let openedBonus = false, earnedContinue = false, grantedOfferCoins = 0, creditedBonus = false;
       const result = await store.mutate(next => {
         const hadContinue = next.platform?.continuedAttempts.includes(receipt.attempt);
+        const slotKind = bonusKindFor(placement), beforeSlots = slotKind ? bonusSlotCreditCount(next, slotKind) : 0;
         const beforeCoins = next.profile.coins, hadExtra = next.attempt.continued;
         const applied = applyReceipt(next, receipt, {
           offerNow: Date.now(),
           deal: findDeal(receipt.dealId), onBonusUnlocked: () => { openedBonus = true; }, continueProof: continueCheck.proof, unrestrictedVideo: casual,
         });
         grantedOfferCoins = next.profile.coins - beforeCoins;
+        creditedBonus = Boolean(slotKind && bonusSlotCreditCount(next, slotKind) > beforeSlots);
         if (applied === 'applied' && grantedOfferCoins > 0)
           logTaskAction(next, 'EarnCoins', 'wallet', grantedOfferCoins, `rewarded:${receipt.id}`);
         if (placement === 'continue' && !hadExtra && next.attempt.continued) logTaskAction(next, 'BuyExtraMoves', 'continue');
@@ -952,7 +954,8 @@ try {
         return applied;
       });
       const amount = placement === 'continue' ? Number(earnedContinue) * BALANCE.continueMoves : placement === 'hint' || placement === 'undo'
-        ? BALANCE.rewardedCharges[placement] : isOfferPlacement(placement) || placement === 'coffee-break' ? grantedOfferCoins : Number(openedBonus);
+        ? BALANCE.rewardedCharges[placement] : isOfferPlacement(placement) || placement === 'coffee-break' ? grantedOfferCoins : Number(openedBonus || creditedBonus);
+      if (result === 'applied' && creditedBonus) message('Заработанный слот сохранён. Откройте подходящий «+» на поле, чтобы применить его.');
       if (result === 'applied' && amount) telemetry.track('reward_granted', { attemptId: receipt.attempt, dealId: receipt.dealId, mode: receipt.mode, reason: `rewarded_${placement}`, amount });
       // Ack failure must not freeze spending/restart or replay the already durable grant.
       if (runtime.activity.getBlockReasons().every(r => r === 'modal')) { scene?.sync(); if (save.attempt.board.phase === 'playing' && $<HTMLDialogElement>('#result').open) closeDialogs(); }
@@ -992,6 +995,11 @@ try {
     const offer = selectedBonus();
     const busy = saving || serviceBusy || store.needsRecovery;
     const buy = $<HTMLButtonElement>('#bonus-buy'), video = $<HTMLButtonElement>('#bonus-video');
+    const credit = $<HTMLButtonElement>('#bonus-credit');
+    const count = bonusSelection ? bonusSlotCreditCount(save, bonusSelection.kind) : 0;
+    credit.hidden = !offer || count === 0;
+    credit.disabled = busy || credit.hidden;
+    credit.textContent = `Использовать заработанный слот · ${count}`;
     buy.disabled = busy || !offer || save.profile.coins < offer.coins;
     video.hidden = !offer || !ads.status.rewarded;
     video.disabled = busy || video.hidden;
@@ -1057,6 +1065,7 @@ try {
   let hintSequence = 0;
   let pendingHint: Pick<HintRequest, 'requestId' | 'revision' | 'attemptId'> & { dealId: string } | undefined;
   let cancelShuffle: (() => void) | undefined;
+  let cancelRandomJoker: (() => void) | undefined;
 
   runtime.setMute(!save.settings.sfx); runtime.setHaptics(save.settings.haptics);
   function coinBurst(origin = $('#streak-reward'), amount?: number) { wallet?.collect(origin, amount); }
@@ -1442,7 +1451,7 @@ try {
         condition: helperUnlocked(save, 'joker', deal) ? 'Один на раздачу' : `С уровня ${HELPER_UNLOCK.joker}` },
       { icon: 'book', name: 'Объяснения', count: definitionCount(save), source: 'Бонус дня и задания', usable: playing,
         condition: 'В просмотре слова через Aa' },
-      { icon: 'cycle', name: 'Перемешивания', count: save.dailyTasks?.inventory.shuffles ?? 0, source: 'Награды', usable: playing && canShuffle(save, deal),
+      { icon: 'cycle', name: 'Перемешать', count: save.dailyTasks?.inventory.shuffles ?? 0, source: 'Награды', usable: playing && canShuffle(save, deal),
         condition: CAMPAIGN_CORE_STAGE1 ? 'Когда на доске можно перемешать скрытые карты' : 'Уровни ' + SHUFFLE_LEVELS.join(', ') },
       { icon: 'joker', name: 'Случайные Джокеры', count: randomJokerCount(save), source: 'Монеты за отдельный заряд', usable: playing && canRequestRandomJoker(),
         condition: CAMPAIGN_CORE_STAGE1 ? 'Один на подходящую раздачу кампании' : 'На уровне 16, один на раздачу' },
@@ -3444,6 +3453,15 @@ try {
   $('#bonus-video').addEventListener('click', () => {
     if (bonusSelection && selectedBonus()) void rewarded(bonusPlacements[bonusSelection.kind]);
   }, domOptions);
+  $('#bonus-credit').addEventListener('click', async () => {
+    const selection = bonusSelection, source = deal;
+    if (!selection || !selectedBonus() || saving || serviceBusy) return;
+    try {
+      if (await write(next => useBonusSlotCredit(next, source, selection.attemptId, selection.kind))) {
+        closeDialogs(); scene?.sync(); game?.loop.wake(); showGuidance();
+      }
+    } catch { $('#bonus-error').textContent = 'Не удалось сохранить слот. Он остался в запасе.'; $('#bonus-error').hidden = false; }
+  }, domOptions);
   for (const helper of ['hint', 'undo'] as const) {
     $(`#buy-${helper}`).addEventListener('click', async () => {
       if (serviceBusy || saving) return;
@@ -3791,7 +3809,7 @@ try {
     if (buy && (cost === undefined || randomJokerCount(save) > 0 || !allowsRandomJoker(save.attempt, deal))) return;
     randomJokerIntent = { attemptId: save.attempt.id, dealId: deal.id, buy, cost };
     $('#random-joker-copy').textContent = buy
-      ? 'Отдельный заряд стоит ' + cost + ' монет и применяется на уровне 16. До применения он сохраняется после перезапуска и смены уровня. Ручные Джокеры остаются в отдельном запасе. Размещение — отдельное действие.'
+      ? 'Отдельный заряд стоит ' + cost + ' монет и доступен с уровня 2. До применения он сохраняется после перезапуска и смены уровня. Ручные Джокеры остаются в отдельном запасе. Размещение — отдельное действие.'
       : 'Джокер попадёт в случайный подходящий столбец. Успешное размещение потратит заряд и очистит историю отмен. Если путь к победе не подтверждён, заряд сохранится.';
     $('#random-joker-confirm').textContent = buy ? 'Купить заряд · ' + cost + ' монет' : deal.randomJokerCost ? 'Потратить 1 Джокера' : 'Разместить';
     openDialog('#random-joker-warning');
@@ -3806,30 +3824,41 @@ try {
         if (await write(next => next.attempt.id === attemptId && next.attempt.dealId === source.id &&
             source.extraHelpers?.randomJokerCoins === intent.cost && buyRandomJokerAccess(next, source, crypto.randomUUID(), Date.now()))) {
           randomJokerIntent = undefined; closeDialogs();
-          message('Заряд сохранён в запасе. Примените его на уровне 16, когда понадобится.');
+          message('Заряд сохранён в запасе. Разместите Джокера, когда понадобится.');
         }
       } catch { message('Не удалось сохранить заряд.', true); }
       return;
     }
     if (!canRequestRandomJoker()) return;
     const id = 'azj-' + crypto.randomUUID();
-    const candidate = placeRandomJoker(save.attempt, source, randomJokerColumn, () => id);
-    const path = candidate && proveRandomJoker(candidate, source, performance.now() + 220);
-    if (!candidate?.joker || !path) {
-      randomJokerIntent = undefined; closeDialogs();
-      message('В этом столбце нет проверенного продолжения. Джокер сохранён.', true);
-      return;
-    }
+    serviceBusy = true; renderHud();
     try {
-      const column = candidate.joker.column;
+      const proof = await new Promise<{ column: number; id: string; path: BoardCommand[] } | null>(resolve => {
+        const worker = new Worker(new URL('./game/random-joker.worker.ts', import.meta.url), { type: 'module' });
+        const finish = (proof: { column: number; id: string; path: BoardCommand[] } | null) => {
+          clearTimeout(timeout); worker.terminate(); cancelRandomJoker = undefined; resolve(proof);
+        };
+        const timeout = setTimeout(() => finish(null), 4500);
+        cancelRandomJoker = () => finish(null);
+        worker.onmessage = event => finish(event.data);
+        worker.onerror = () => finish(null);
+        worker.postMessage({ attempt: save.attempt, deal: source, id });
+      });
+      if (!alive || save.revision !== revision || save.attempt.id !== attemptId || deal.id !== source.id) return;
+      if (!proof) {
+        randomJokerIntent = undefined; closeDialogs();
+        message('Не удалось подтвердить продолжение. Джокер сохранён.', true);
+        return;
+      }
       if (await write(next => {
-        const applied = settleRandomJoker(next, source, { attemptId, revision, column, id, path });
+        const applied = settleRandomJoker(next, source, { attemptId, revision, ...proof });
         if (applied) logTaskAction(next, 'UseJokers', 'helper');
         return applied;
       })) {
         randomJokerIntent = undefined; closeDialogs(); scene?.sync();
       }
     } catch { message('Проверьте сохранение перед повторной попыткой.', true); }
+    finally { serviceBusy = false; if (alive) renderHud(); }
   }, domOptions);
   $('#result-continue').addEventListener('click', async () => {
     const button = $<HTMLButtonElement>('#result-continue');
@@ -3930,7 +3959,7 @@ try {
     telemetry.track('session_end'); cancelAnimationFrame(deadEndPaint); clearInterval(checkpoint); clearInterval(dayRefresh); clearInterval(countdownTick); clearInterval(recoveryHudTick); clearTimeout(guideTimer); clearTimeout(adBreakTimer); clearTimeout(recoveryClock); removeForeground?.(); banner?.destroy(); ads.destroy(); telemetry.destroy();
     finishRewardClaim();
     abort.abort(); removeTouch(); removeBonusTouch(); wallet?.dispose();
-    clearTimeout(themeExpiry); worker?.terminate(); cancelShuffle?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
+    clearTimeout(themeExpiry); worker?.terminate(); cancelShuffle?.(); cancelRandomJoker?.(); continueCheck.clear(); resize.disconnect(); resultResize.disconnect(); unblock(); runtime.destroy(); destroyRenderer(renderer);
   };
   window.addEventListener('pagehide', event => { if (!event.persisted) cleanup(); }, domOptions);
   window.addEventListener('pageshow', () => { if (alive) renderer.loop.wake(); }, domOptions);

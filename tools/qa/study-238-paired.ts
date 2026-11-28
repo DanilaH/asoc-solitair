@@ -181,7 +181,7 @@ function run(spec:Spec,policy:Policy,help:boolean):Episode{
         if(save.profile.hints>0||purchaseHelper(save,'hint')){
           hintSpent+=oldCoins-save.profile.coins;
           const h=dispatch(save,{type:'hint',revision:save.revision,action:answer.path[0]},d);
-          assert(h.accepted,h.reason);
+          assert(h.accepted,h.reason ?? 'Hint rejected');
           assert.equal(h.next.profile.hints,save.profile.hints-1);
           save=h.next;used++;
           if(JSON.stringify(action)!==JSON.stringify(answer.path[0])) different++;
@@ -199,7 +199,7 @@ function run(spec:Spec,policy:Policy,help:boolean):Episode{
       stockSpent+=cost;
     }else{
       const oracle=advance(b,action,d), result=dispatch(save,action,d,'2026-11-28');
-      assert(result.accepted,result.reason);
+      assert(result.accepted,result.reason ?? 'Legal command rejected');
       assert(isDeepStrictEqual(result.next.attempt.board,oracle),'move oracle '+d.id);
       save=result.next;
     }

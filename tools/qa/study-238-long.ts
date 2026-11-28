@@ -264,8 +264,8 @@ function retryLevel(level:number,retry:number){
   if(real){
     const q=quoteLayoutRetry(save);
     if(q){
-      let r=commitAdaptiveRetry(save,q,id('retry'),now);
-      if(r==='lives'){now+=300000;bump('life-wait-ms',300000);r=commitAdaptiveRetry(save,q,id('retry'),now);}
+      let r=commitAdaptiveRetry(save,q,id('retry'),now,quoteLayoutRetry);
+      if(r==='lives'){now+=300000;bump('life-wait-ms',300000);r=commitAdaptiveRetry(save,q,id('retry'),now,quoteLayoutRetry);}
       assert.equal(r,'started','retry issuance');current=q.selected;bump('layout-retry');return;
     }
   }

@@ -118,6 +118,9 @@ export function decodeSave(raw: string, source: DealSource, migrateRights = true
           ['campaign', 'daily'].includes(row.mode) && ['pending', 'credit'].includes(row.status)) ||
         new Set(videos.quotes.map(row => row.attempt)).size !== videos.quotes.length)) throw Error('Повреждена история видео');
     const cadence = p.fullscreenCadence;
+    const slots = p.bonusSlotCredits;
+    if (slots !== undefined && (!slots || slots.version !== 1 || !natural(slots.foundation) || !natural(slots.tableau)))
+      throw Error('Повреждён запас слотов');
     if (cadence !== undefined && (!cadence || cadence.version !== 1 ||
       typeof cadence.lastShownId !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(cadence.lastShownId) || p.lastFullscreenAt === 0)) {
       throw Error('Повреждена история показов');

@@ -1,0 +1,1122 @@
+{
+  "phase": "after",
+  "shuffle": {
+    "granted": true,
+    "inventory": 2,
+    "tasksAvailable": false
+  },
+  "retry": {
+    "result": "started",
+    "director": {
+      "restarts": 3,
+      "previousLosses": 2
+    },
+    "sourceDifficulty": {
+      "outcome": "Restart",
+      "restarts": 3
+    }
+  },
+  "lateSlot": {
+    "platform": {
+      "receipts": [
+        "late-slot"
+      ],
+      "continuedAttempts": [],
+      "continueCredits": 0,
+      "lastFullscreenAt": 0,
+      "winsSinceInterstitial": 0,
+      "completedCampaign": [
+        "campaign-001",
+        "campaign-002",
+        "campaign-003",
+        "campaign-004",
+        "campaign-005"
+      ],
+      "bonusSlotCredits": {
+        "version": 1,
+        "foundation": 0,
+        "tableau": 1
+      }
+    },
+    "columns": 3
+  },
+  "hints": [
+    {
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 4,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      "oracle": true,
+      "ms": 6
+    },
+    {
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "oracle": true,
+      "ms": 6
+    },
+    {
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 0,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      "oracle": true,
+      "ms": 13
+    },
+    {
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 0,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "oracle": true,
+      "ms": 29
+    },
+    {
+      "level": 12,
+      "deal": "campaign-ha4-12-1280003-c9fb33dbd93b1834-7a9fd5bb-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 1
+        }
+      },
+      "oracle": true,
+      "ms": 51
+    },
+    {
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 5,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 0
+        }
+      },
+      "oracle": true,
+      "ms": 103
+    },
+    {
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 2,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 0
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "oracle": true,
+      "ms": 50
+    },
+    {
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "oracle": true,
+      "ms": 24
+    },
+    {
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "tableau",
+          "index": 2
+        }
+      },
+      "oracle": true,
+      "ms": 146
+    },
+    {
+      "level": 80,
+      "deal": "campaign-ha4-80-80004-cc69ef28590359b4-0c0b90d5-core-stage1-v1-m1",
+      "prefix": 5,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 2
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 1
+        }
+      },
+      "oracle": true,
+      "ms": 145
+    },
+    {
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 1,
+      "witnessed": true,
+      "status": "SOLVED",
+      "action": {
+        "type": "transfer",
+        "from": {
+          "kind": "tableau",
+          "index": 1
+        },
+        "to": {
+          "kind": "foundation",
+          "index": 0
+        }
+      },
+      "oracle": true,
+      "ms": 9
+    }
+  ],
+  "jokers": [
+    {
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 5,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 5
+        },
+        {
+          "column": 1,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 0
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 4
+        }
+      ],
+      "selection": {
+        "column": 0,
+        "oracle": true,
+        "ms": 5
+      }
+    },
+    {
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 10,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 27
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 8
+        },
+        {
+          "column": 2,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 0
+        }
+      ],
+      "selection": {
+        "column": 0,
+        "oracle": true,
+        "ms": 29
+      }
+    },
+    {
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 60,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": false,
+          "ms": 222
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 117
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 71
+        },
+        {
+          "column": 3,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 68
+        }
+      ],
+      "selection": {
+        "column": 1,
+        "oracle": true,
+        "ms": 893
+      }
+    },
+    {
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 58,
+      "columns": [
+        {
+          "column": 0,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 1
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 37
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 30
+        },
+        {
+          "column": 3,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 34
+        }
+      ],
+      "selection": {
+        "column": 1,
+        "oracle": true,
+        "ms": 39
+      }
+    },
+    {
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 62,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 17
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 14
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 13
+        }
+      ],
+      "selection": {
+        "column": 0,
+        "oracle": true,
+        "ms": 16
+      }
+    },
+    {
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 5,
+      "columns": [
+        {
+          "column": 0,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 0
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 12
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 6
+        },
+        {
+          "column": 3,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 5
+        }
+      ],
+      "selection": {
+        "column": 1,
+        "oracle": true,
+        "ms": 12
+      }
+    },
+    {
+      "level": 100,
+      "deal": "campaign-ha4-100-1003702-8dfa7547f7017c97-901ce58c-core-stage1-v1-m1",
+      "prefix": 38,
+      "columns": [
+        {
+          "column": 0,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 1
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 14
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 13
+        },
+        {
+          "column": 3,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 13
+        },
+        {
+          "column": 4,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 13
+        }
+      ],
+      "selection": {
+        "column": 1,
+        "oracle": true,
+        "ms": 19
+      }
+    },
+    {
+      "level": 150,
+      "deal": "campaign-ha4-150-1503702-f48e1c64808998b1-ed860181-core-stage1-v1-m1",
+      "prefix": 11,
+      "columns": [
+        {
+          "column": 0,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 10
+        },
+        {
+          "column": 1,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 10
+        },
+        {
+          "column": 2,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 9
+        },
+        {
+          "column": 3,
+          "empty": true,
+          "placed": false,
+          "proved": false,
+          "ms": 1
+        },
+        {
+          "column": 4,
+          "empty": false,
+          "placed": true,
+          "proved": true,
+          "ms": 9
+        }
+      ],
+      "selection": {
+        "column": 0,
+        "oracle": true,
+        "ms": 14
+      }
+    }
+  ],
+  "reachable": [
+    {
+      "sample": 0,
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 5,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 3
+    },
+    {
+      "sample": 1,
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 28,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 4
+    },
+    {
+      "sample": 2,
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 35,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 11
+    },
+    {
+      "sample": 3,
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 55,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 20
+    },
+    {
+      "sample": 4,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-02",
+      "prefix": 10,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 6
+    },
+    {
+      "sample": 5,
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 16,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 110
+    },
+    {
+      "sample": 6,
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 11,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 135
+    },
+    {
+      "sample": 7,
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 49,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 22
+    },
+    {
+      "sample": 8,
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 49,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 146
+    },
+    {
+      "sample": 9,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-07",
+      "prefix": 10,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 5
+    },
+    {
+      "sample": 10,
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 6,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 8
+    },
+    {
+      "sample": 11,
+      "level": 100,
+      "deal": "campaign-ha4-100-1003702-8dfa7547f7017c97-901ce58c-core-stage1-v1-m1",
+      "prefix": 50,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 20
+    },
+    {
+      "sample": 12,
+      "level": 150,
+      "deal": "campaign-ha4-150-1503702-f48e1c64808998b1-ed860181-core-stage1-v1-m1",
+      "prefix": 15,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 11
+    },
+    {
+      "sample": 13,
+      "level": 200,
+      "deal": "campaign-ha4-200-2003703-1142cca9e9859000-b8d8c2e4-core-stage1-v1-m1",
+      "prefix": 72,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 28
+    },
+    {
+      "sample": 14,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-12",
+      "prefix": 19,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 4
+    },
+    {
+      "sample": 15,
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 29,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 4
+    },
+    {
+      "sample": 16,
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 32,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 9
+    },
+    {
+      "sample": 17,
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 63,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 18
+    },
+    {
+      "sample": 18,
+      "level": 12,
+      "deal": "campaign-ha4-12-1280003-c9fb33dbd93b1834-7a9fd5bb-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 23
+    },
+    {
+      "sample": 19,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-17",
+      "prefix": 15,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 11
+    },
+    {
+      "sample": 20,
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 4,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 49
+    },
+    {
+      "sample": 21,
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 71,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 17
+    },
+    {
+      "sample": 22,
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 131,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 104
+    },
+    {
+      "sample": 23,
+      "level": 80,
+      "deal": "campaign-ha4-80-80004-cc69ef28590359b4-0c0b90d5-core-stage1-v1-m1",
+      "prefix": 136,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 129
+    },
+    {
+      "sample": 24,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-22",
+      "prefix": 14,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 3
+    },
+    {
+      "sample": 25,
+      "level": 100,
+      "deal": "campaign-ha4-100-1003702-8dfa7547f7017c97-901ce58c-core-stage1-v1-m1",
+      "prefix": 17,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 37
+    },
+    {
+      "sample": 26,
+      "level": 150,
+      "deal": "campaign-ha4-150-1503702-f48e1c64808998b1-ed860181-core-stage1-v1-m1",
+      "prefix": 15,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 11
+    },
+    {
+      "sample": 27,
+      "level": 200,
+      "deal": "campaign-ha4-200-2003703-1142cca9e9859000-b8d8c2e4-core-stage1-v1-m1",
+      "prefix": 61,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 27
+    },
+    {
+      "sample": 28,
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 4,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 3
+    },
+    {
+      "sample": 29,
+      "level": "Daily",
+      "deal": "daily-v2-2026-12-27",
+      "prefix": 18,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 6
+    },
+    {
+      "sample": 30,
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 41,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 10
+    },
+    {
+      "sample": 31,
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 43,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 21
+    },
+    {
+      "sample": 32,
+      "level": 12,
+      "deal": "campaign-ha4-12-1280003-c9fb33dbd93b1834-7a9fd5bb-core-stage1-v1-m1",
+      "prefix": 52,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 20
+    },
+    {
+      "sample": 33,
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 16,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 106
+    },
+    {
+      "sample": 34,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-01",
+      "prefix": 15,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 4
+    },
+    {
+      "sample": 35,
+      "level": 39,
+      "deal": "campaign-ha4-39-39001-ee8998bb61910fa3-d1de4738-core-stage1-v1-m1",
+      "prefix": 49,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 22
+    },
+    {
+      "sample": 36,
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 10,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 146
+    },
+    {
+      "sample": 37,
+      "level": 80,
+      "deal": "campaign-ha4-80-80004-cc69ef28590359b4-0c0b90d5-core-stage1-v1-m1",
+      "prefix": 5,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 146
+    },
+    {
+      "sample": 38,
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 7
+    },
+    {
+      "sample": 39,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-06",
+      "prefix": 51,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 9
+    },
+    {
+      "sample": 40,
+      "level": 150,
+      "deal": "campaign-ha4-150-1503702-f48e1c64808998b1-ed860181-core-stage1-v1-m1",
+      "prefix": 29,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 9
+    },
+    {
+      "sample": 41,
+      "level": 200,
+      "deal": "campaign-ha4-200-2003703-1142cca9e9859000-b8d8c2e4-core-stage1-v1-m1",
+      "prefix": 47,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 27
+    },
+    {
+      "sample": 42,
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 5,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 3
+    },
+    {
+      "sample": 43,
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 5
+    },
+    {
+      "sample": 44,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-11",
+      "prefix": 13,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 4
+    },
+    {
+      "sample": 45,
+      "level": 10,
+      "deal": "campaign-ha4-10-1080010-bfeb5b24d5bd2cee-6e1a1c9f-core-stage1-v1-m1",
+      "prefix": 4,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 77
+    },
+    {
+      "sample": 46,
+      "level": 12,
+      "deal": "campaign-ha4-12-1280003-c9fb33dbd93b1834-7a9fd5bb-core-stage1-v1-m1",
+      "prefix": 61,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 17
+    },
+    {
+      "sample": 47,
+      "level": 16,
+      "deal": "campaign-ha4-16-16110-639058cd53a423ae-5756e68b-core-stage1-v1-m1",
+      "prefix": 128,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 84
+    },
+    {
+      "sample": 48,
+      "level": 23,
+      "deal": "campaign-ha4-23-2302002-9eb00297b423fd67-4d39fbb5-core-stage1-v1-m1",
+      "prefix": 38,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 48
+    },
+    {
+      "sample": 49,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-16",
+      "prefix": 15,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 7
+    },
+    {
+      "sample": 50,
+      "level": 66,
+      "deal": "campaign-ha4-66-6602003-f24390a1ad57ed4c-1d37b91f-core-stage1-v1-m1",
+      "prefix": 125,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 106
+    },
+    {
+      "sample": 51,
+      "level": 80,
+      "deal": "campaign-ha4-80-80004-cc69ef28590359b4-0c0b90d5-core-stage1-v1-m1",
+      "prefix": 6,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 259
+    },
+    {
+      "sample": 52,
+      "level": 81,
+      "deal": "campaign-ha4-81-813703-87414443f6f7190a-135f1f2c-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 7
+    },
+    {
+      "sample": 53,
+      "level": 100,
+      "deal": "campaign-ha4-100-1003702-8dfa7547f7017c97-901ce58c-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 24
+    },
+    {
+      "sample": 54,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-21",
+      "prefix": 3,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 4
+    },
+    {
+      "sample": 55,
+      "level": 200,
+      "deal": "campaign-ha4-200-2003703-1142cca9e9859000-b8d8c2e4-core-stage1-v1-m1",
+      "prefix": 0,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 37
+    },
+    {
+      "sample": 56,
+      "level": 2,
+      "deal": "campaign-ha4-2-280006-4f50c85dae3c8c5f-272bb506-core-stage1-v1-m1",
+      "prefix": 6,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 3
+    },
+    {
+      "sample": 57,
+      "level": 3,
+      "deal": "campaign-ha4-3-380008-377ec5c1f0a35e78-3f87df5b-core-stage1-v1-m1",
+      "prefix": 1,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 5
+    },
+    {
+      "sample": 58,
+      "level": 6,
+      "deal": "campaign-ha4-6-680057-a9d537d3500896af-9524f5b7-core-stage1-v1-m1",
+      "prefix": 41,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 8
+    },
+    {
+      "sample": 59,
+      "level": "Daily",
+      "deal": "daily-v2-2027-01-26",
+      "prefix": 9,
+      "status": "SOLVED",
+      "oracle": true,
+      "ms": 9
+    }
+  ]
+}

@@ -48,6 +48,68 @@ export function knownContinuation(board: Board, deal: Deal): BoardCommand[] | nu
   return null;
 }
 
+/** Request-local witness index. Slot permutations are matched, budgets are replayed. */
+export function continuationLookup(initial: Board, deal: Deal, deadline = Infinity) {
+  // Same-category ordinary words may trade places after draw/transfer changes.
+  // This is a candidate-tail index, never a search-state equivalence. IDs and
+  // last-transition marks remain untouched on the actual board. Full normative
+  // replay below rejects any special-card, order, gold or budget mismatch.
+  const contents = (board: Board, pile: string[]) => JSON.stringify(pile.map(id => {
+    const card = deal.cards[id], source = board.hitapps?.cards[id];
+    return [card.category, card.leader, card.rank, board.faceUp.includes(id), source?.kind, source?.order,
+      source?.puzzle, source?.bound, source?.scissors, source?.ice, source?.lock?.collected,
+      source?.key?.used, source?.gold?.health];
+  }));
+  const key = (board: Board) => JSON.stringify([boardRules(board), board.tableau.map(pile=>contents(board,pile)),
+    board.foundations.map(pile=>contents(board,pile)).sort(), contents(board,board.stock), contents(board,board.waste),
+    contents(board,board.collected.slice().sort()), board.joker, board.keys, board.recyclesLeft, board.retainedMoves,
+    board.hitapps?.generatedGold, board.hitapps?.spent.length]);
+  const routes = boardRules(initial) === 2 ? [deal.legacyWinningPath ?? deal.winningPath]
+    : [deal.winningPath, ...(deal.recoveryPaths ?? [])];
+  const index = new Map<string, { foundations: string[]; path: BoardCommand[] }[]>();
+  for (const witness of routes) {
+    if (performance.now() >= deadline) break;
+    let current: Board = { ...structuredClone(deal.initial), rulesVersion: boardRules(initial), movesLeft: null };
+    for (const kind of bonusKinds) {
+      const offer = bonusOffer(deal, kind);
+      if (offer && pilesFor(initial, kind).length > offer.index) pilesFor(current, kind).push([]);
+    }
+    for (let i = 0; i < witness.length && performance.now() < deadline; i++) {
+      const id = key(current), rows = index.get(id) ?? [];
+      rows.push({ foundations: current.foundations.map(pile=>contents(current,pile)), path: witness.slice(i) }); index.set(id, rows);
+      const next = applyBoard(current, witness[i], deal);
+      if (typeof next === 'string') break;
+      current = next.board;
+    }
+  }
+  return (board: Board): BoardCommand[] | null => {
+    if (performance.now() >= deadline) return null;
+    for (const row of index.get(key(board)) ?? []) {
+      if (performance.now() >= deadline) return null;
+      const used = new Set<number>();
+      const slots = row.foundations.map(pile => {
+        const at = board.foundations.findIndex((other, i) => !used.has(i) && contents(board,other) === pile);
+        used.add(at); return at;
+      });
+      if (slots.some(at => at < 0)) continue;
+      const path = row.path.map(action => action.type === 'transfer' ? { ...action,
+        from: action.from.kind === 'foundation' ? { ...action.from, index: slots[action.from.index] } : action.from,
+        to: action.to.kind === 'foundation' ? { ...action.to, index: slots[action.to.index] } : action.to,
+      } : action);
+      let replay = board;
+      let valid = true;
+      for (const action of path) {
+        if (performance.now() >= deadline) return null;
+        const next = applyBoard(replay, action, deal);
+        if (typeof next === 'string') { valid = false; break; }
+        replay = next.board;
+      }
+      if (valid && replay.phase === 'won') return path;
+    }
+    return null;
+  };
+}
+
 function matchRoute(board: Board, deal: Deal, witness: BoardCommand[]): BoardCommand[] | null {
   let current: Board = { ...structuredClone(deal.initial), rulesVersion: boardRules(board), movesLeft: null };
   for (const kind of bonusKinds) {

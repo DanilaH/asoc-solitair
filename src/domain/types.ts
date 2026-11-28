@@ -142,6 +142,7 @@ export interface PlatformState {
   continuedAttempts: string[];
   continueCredits: number;
   continueVideos?: { version: 1; quotes: ContinueVideoQuote[] };
+  bonusSlotCredits?: { version: 1; foundation: number; tableau: number };
   completedCampaign: string[];
   winsSinceInterstitial: number;
   lastFullscreenAt: number;

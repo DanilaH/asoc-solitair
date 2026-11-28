@@ -38,5 +38,5 @@ export function dailyModeAvailable(save: Save) {
 }
 export function dailyTasksAvailable(save: Save) {
   const threshold = save.unlockSchedule?.legacyTasks || !save.unlockSchedule ? 2 : RELEASE_UNLOCK.tasks;
-  return completedLevels(save) >= threshold - 1 || Boolean(save.dailyTasks);
+  return completedLevels(save) >= threshold - 1 || Boolean(save.dailyTasks?.weeks.length);
 }

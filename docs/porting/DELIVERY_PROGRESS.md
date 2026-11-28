@@ -201,3 +201,7 @@
 ## №233 · финальная приёмка 0.21.6 (57)
 
 Переносы целых слов и редакторских слогов, компактная недельная выдача, независимая проверка production prerequisites в CI. Rules4/M1, immutable content, SaveStore и 115/38/15/9 сохраняются. Физические SDK и production-подпись проверяются отдельно. [Протокол и действия владельца](../release/RC233_ANDROID.md). Материалы витрины хранятся в design/asoc-solitair/rustore.
+
+## №236 · core/meta audit follow-up · 0.21.7 / 58
+
+Current ordinary branch `fix/236-core-meta` is stacked on PR234 `aeb86300`. CA-01 shared inventory before L7 Tasks, CA-02 level-scoped retry history, CA-03 bounded Rules4 directed Hint with independently replayed witness tails, CA-04 typed late earned slot credit and explicit use, CA-05 eligible randomized Joker worker and L2 copy. [Reproductions, raw helper comparison and physical boundaries](../qa/CA236_CORE_META.md). Updated current Daily/weekly/streak/M1 ledger descriptions; historical dated rows above remain historical. Same Rules4/content/M1/runtime pin and full115/38/15/9 roadmap. Project CI supplies exact build/run evidence. Test/demo ads only; no production configuration or publishing work.

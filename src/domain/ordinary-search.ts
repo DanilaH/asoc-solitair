@@ -47,7 +47,7 @@ const key = (board: Board) => JSON.stringify([
 ]);
 
 export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allowLower = true, deadline = Infinity,
-  mode?: 'verified-specials') {
+  mode?: 'verified-specials', continuation?: (board: Board) => BoardCommand[] | null) {
   const plainR4 = initial.rulesVersion === 4 && initial.hitapps && !deal.hitapps?.assemblies.length && !deal.hitapps?.gold && !initial.joker &&
     Object.values(initial.hitapps.cards).every(card => !card.bound && !card.scissors && !card.ice && !card.lock && !card.key && card.kind <= 1);
   const identity = plainR4 ? key : mode === 'verified-specials' || initial.rulesVersion === 4 ? boardKey : key;
@@ -102,12 +102,22 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
     const node = pop();
     if ((seen.get(node.key) ?? Infinity) < node.steps) continue;
     visited++;
-    if (node.board.phase === 'won') {
+    const tail = node.board.phase === 'won' ? [] : continuation?.(node.board);
+    if (tail) {
       const path: BoardCommand[] = [];
       for (let n: Node = node; n.parent; n = n.parent) path.push(n.action!);
-      return { status: 'FOUND' as const, path: path.reverse(), visited };
+      return { status: 'FOUND' as const, path: [...path.reverse(), ...tail], visited };
     }
-    for (const action of referenceActions(node.board, deal)) {
+    // AZUR's five native hint groups guide exploration, never replace a win proof.
+    const priority = (action: BoardCommand) => action.type !== 'transfer' ? 4
+      : action.to.kind === 'foundation' ? (action.from.kind === 'waste' ? 0 : 1)
+      : action.from.kind === 'waste' ? 2
+      : action.from.kind === 'tableau' && action.to.kind === 'tableau' && !node.board.tableau[action.to.index].length &&
+        !node.board.tableau[action.from.index].some(id => !node.board.faceUp.includes(id)) ? 3.5 : 3;
+    const actions = referenceActions(node.board, deal);
+    if (continuation) actions.sort((a, b) => priority(a) - priority(b));
+    for (const action of actions) {
+      if (continuation && performance.now() >= deadline) break;
       if (!allowLower && action.type === 'transfer' && action.to.kind === 'tableau') continue;
       const result = applyBoard(node.board, action, deal);
       if (typeof result === 'string') {
@@ -116,6 +126,12 @@ export function findReferenceRoute(deal: Deal, initial: Board, cap: number, allo
         throw Error(result);
       }
       if (result.board.phase === 'exhausted') continue;
+      const tail = continuation?.(result.board);
+      if (tail) {
+        const path: BoardCommand[] = [action];
+        for (let n: Node = node; n.parent; n = n.parent) path.push(n.action!);
+        return { status: 'FOUND' as const, path: [...path.reverse(), ...tail], visited };
+      }
       push(result.board, node.steps + (result.consumedMoves ?? 1), node, action);
     }
   }

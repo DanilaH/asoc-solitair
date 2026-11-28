@@ -4,6 +4,9 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
 jobs:
   web:
     runs-on: ubuntu-24.04
@@ -85,6 +88,111 @@ jobs:
             .authoring/content8/campaign-decisions.json
             .authoring/content8/campaign-decision-cost.json
             .authoring/content8/campaign-unknown-transfer-deep.json
+          retention-days: 7
+  campaign-playtests:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [azur21-v1, hybrid21-v1]
+    env:
+      VITE_ASOC_PROFILE: c8-release-v1
+      VITE_ASOC_CAMPAIGN_PLAYTEST: ${{ matrix.profile }}
+      ASOC_AD_MODE: disabled
+      ASOC_PLAYTEST_RECORD: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/.npm
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
+          ASOC_KIT_OFFLINE_CACHE: '1'
+      - run: npm run typecheck
+      - run: npx vitest run tests/unit/playtest246.test.ts
+      - name: Replay all admitted budgets and exact generator seeds with an independent oracle
+        run: |
+          npx vite build --ssr tools/qa/audit-playtest246.ts --outDir .recording/playtest246-build
+          node .recording/playtest246-build/audit-playtest246.js
+          npx vite build --ssr tools/qa/audit-playtest246-helpers.ts --outDir .recording/playtest246-helpers
+          node .recording/playtest246-helpers/audit-playtest246-helpers.js
+      - name: Verify independent numeric sizes, matched art/special controls and capacity planning
+        if: matrix.profile == 'azur21-v1'
+        run: |
+          npx vite build --ssr tools/qa/audit-playtest246-authoring.ts --outDir .recording/playtest246-authoring
+          node .recording/playtest246-authoring/audit-playtest246-authoring.js
+          npx vite build --ssr tools/qa/playtest246-capacity.ts --outDir .recording/playtest246-capacity
+          node .recording/playtest246-capacity/playtest246-capacity.js
+          VITE_ASOC_CAMPAIGN_PLAYTEST= npx vite build --ssr tools/qa/audit-playtest246.ts --outDir .recording/playtest246-control
+          node .recording/playtest246-control/audit-playtest246.js
+          VITE_ASOC_CAMPAIGN_PLAYTEST= npx vite build --ssr tools/qa/audit-playtest246-helpers.ts --outDir .recording/playtest246-control-helpers
+          node .recording/playtest246-control-helpers/audit-playtest246-helpers.js
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Exercise candidate touch input, all eight specials, Hint, restoration and retained L200 Continue
+        run: npx playwright test tests/browser/playtest246.spec.ts tests/browser/ca236.spec.ts tests/browser/ca244.spec.ts --output=test-results/playtest246
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: campaign-playtest-${{ matrix.profile }}
+          path: |
+            .recording/issue246/
+            test-results/playtest246/
+            dist/release-manifest.json
+          retention-days: 7
+  campaign-economy-comparison:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        supply: [full, partial, no-optional]
+        channel: [free, rv, rv-nofill]
+    env:
+      VITE_ASOC_PROFILE: c8-release-v1
+      ASOC_AD_MODE: disabled
+      ASOC_ECONOMY_SUPPLY: ${{ matrix.supply }}
+      ASOC_ECONOMY_CHANNEL: ${{ matrix.channel }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/.npm
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
+          ASOC_KIT_OFFLINE_CACHE: '1'
+      - name: Compare current/A/B under identical M1 prefix, acquisition and provider scenarios
+        shell: bash
+        run: |
+          for asoc_case_profile in current azur21-v1 hybrid21-v1; do
+            asoc_case_mode="$asoc_case_profile"
+            if [ "$asoc_case_profile" = current ]; then asoc_case_mode=''; fi
+            VITE_ASOC_CAMPAIGN_PLAYTEST="$asoc_case_mode" npx vite build --ssr tools/qa/audit-playtest246-economy.ts --outDir ".recording/economy-build-$asoc_case_profile"
+            node ".recording/economy-build-$asoc_case_profile/audit-playtest246-economy.js" "$asoc_case_profile" "$ASOC_ECONOMY_CHANNEL" "$ASOC_ECONOMY_SUPPLY" 5 regular
+            node ".recording/economy-build-$asoc_case_profile/audit-playtest246-economy.js" "$asoc_case_profile" "$ASOC_ECONOMY_CHANNEL" "$ASOC_ECONOMY_SUPPLY" 5 regular test-checkpoint
+            if [ "$ASOC_ECONOMY_CHANNEL" = free ] && [ "$ASOC_ECONOMY_SUPPLY" = partial ]; then
+              node ".recording/economy-build-$asoc_case_profile/audit-playtest246-economy.js" "$asoc_case_profile" free partial 2 regular
+              node ".recording/economy-build-$asoc_case_profile/audit-playtest246-economy.js" "$asoc_case_profile" free partial 5 rare
+            fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: campaign-economy-${{ matrix.supply }}-${{ matrix.channel }}
+          path: .recording/issue246/economy/
           retention-days: 7
   previews:
     runs-on: ubuntu-24.04
@@ -215,7 +323,7 @@ jobs:
           VITE_ASOC_ARCHIVE_229: '1'
         run: npm test -- --testTimeout=15000 --reporter=default --reporter=json --outputFile=.recording/mvp-unit-results.json
       - name: Verify ordinary campaign, ad accounting, E4-M1 and the functional audit
-        run: npx vitest run tests/unit/campaign-meta.test.ts tests/unit/e4-m1.test.ts tests/unit/functional-audit-225.test.ts tests/unit/ca236.test.ts tests/unit/ca244.test.ts --testTimeout=30000 --reporter=default --reporter=json --outputFile=.recording/e4-m1-unit-results.json
+        run: npx vitest run tests/unit/campaign-meta.test.ts tests/unit/e4-m1.test.ts tests/unit/functional-audit-225.test.ts tests/unit/ca236.test.ts tests/unit/ca244.test.ts tests/unit/playtest246.test.ts --testTimeout=30000 --reporter=default --reporter=json --outputFile=.recording/e4-m1-unit-results.json
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - name: Measure 200 ad-free first-clear witnesses and compare 1,000 repeatable economy trials
@@ -301,10 +409,22 @@ jobs:
           retention-days: 7
   android:
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: ordinary
+            campaign: ''
+          - profile: azur21-v1
+            campaign: azur21-v1
+          - profile: hybrid21-v1
+            campaign: hybrid21-v1
     env:
       VITE_ASOC_PROFILE: c8-release-v1
       ASOC_AD_MODE: test
       ASOC_APK_VARIANT: debug
+      VITE_ASOC_CAMPAIGN_PLAYTEST: ${{ matrix.campaign }}
+      ASOC_CAMPAIGN_PLAYTEST: ${{ matrix.campaign }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -332,6 +452,7 @@ jobs:
           MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
           ASOC_KIT_OFFLINE_CACHE: '1'
       - name: Check production prerequisites without exposing their values
+        if: matrix.profile == 'ordinary'
         env:
           ASOC_STORE_BASE64: ${{ secrets.ASOC_STORE_BASE64 }}
           ASOC_STORE_PASSWORD: ${{ secrets.ASOC_STORE_PASSWORD }}
@@ -378,21 +499,25 @@ jobs:
           $ANDROID_HOME/build-tools/36.0.0/aapt dump badging native/android/app/build/outputs/apk/debug/app-debug.apk | head -1
       - run: |
           python3 tools/qa/verify-release-apk.py native/android/app/build/outputs/apk/debug/app-debug.apk
+          python3 tools/qa/verify-android-identity.py native/android/app/build/outputs/apk/debug/app-debug.apk
           cp dist/release-manifest.json "$RUNNER_TEMP/release-manifest-debug.json"
       - run: npm run android:sync
+        if: matrix.profile == 'ordinary'
         env:
           ASOC_AD_MODE: disabled
           ASOC_APK_VARIANT: release
       - run: ./gradlew --no-daemon --init-script ci-maven-mirror.gradle assembleRelease
+        if: matrix.profile == 'ordinary'
         working-directory: native/android
         env:
           ASOC_AD_MODE: disabled
           ASOC_UNSIGNED_CHECK: '1'
       - run: python3 tools/qa/verify-release-apk.py native/android/app/build/outputs/apk/release/app-release-unsigned.apk
+        if: matrix.profile == 'ordinary'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: android-builds
+          name: android-builds-${{ matrix.profile }}
           path: |
             .recording/release-readiness.json
             ${{ runner.temp }}/release-manifest-debug.json

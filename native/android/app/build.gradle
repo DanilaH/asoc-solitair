@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+def campaignPlaytest = System.getenv('ASOC_CAMPAIGN_PLAYTEST') ?: ''
+if (!(campaignPlaytest in ['', 'azur21-v1', 'hybrid21-v1'])) throw new GradleException('Unknown campaign playtest')
 
 android {
     namespace = "com.danilah.asocsolitair"
@@ -7,8 +9,8 @@ android {
         applicationId "com.danilah.asocsolitair"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 59
-        versionName "0.21.8"
+        versionCode 60
+        versionName "0.21.9"
         manifestPlaceholders = [asocAppLabel: '@string/app_name']
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -39,6 +41,13 @@ android {
         debug {
             applicationIdSuffix '.debug'
             manifestPlaceholders.asocAppLabel = 'Ассоциации · тест'
+            if (campaignPlaytest == 'azur21-v1') {
+                applicationIdSuffix '.debug.azur'
+                manifestPlaceholders.asocAppLabel = 'Ассоциации A · AZUR'
+            } else if (campaignPlaytest == 'hybrid21-v1') {
+                applicationIdSuffix '.debug.hybrid'
+                manifestPlaceholders.asocAppLabel = 'Ассоциации B · гибрид'
+            }
         }
         release {
             minifyEnabled true

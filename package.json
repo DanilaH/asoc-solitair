@@ -1,6 +1,6 @@
 {
   "name": "asoc-solitair",
-  "version": "0.21.8",
+  "version": "0.21.9",
   "private": true,
   "type": "module",
   "engines": {
@@ -44,7 +44,10 @@
     "qa:hitapps-source-r4": "vite build --ssr tools/qa/verify-hitapps-source-r4.ts --outDir .authoring/hitapps-r4-fixtures && node .authoring/hitapps-r4-fixtures/verify-hitapps-source-r4.js",
     "qa:porting": "node tools/qa/verify-porting-ledger.mjs",
     "qa:decision-cost": "node tools/qa/c8-decision-cost.mjs",
-    "qa:decision-deep": "VITE_CONTENT8_PREVIEW=1 vite build --ssr tools/qa/deepen-c8-unknown-transfers.ts --outDir .authoring/content8/deep-build && node .authoring/content8/deep-build/deepen-c8-unknown-transfers.js"
+    "qa:decision-deep": "VITE_CONTENT8_PREVIEW=1 vite build --ssr tools/qa/deepen-c8-unknown-transfers.ts --outDir .authoring/content8/deep-build && node .authoring/content8/deep-build/deepen-c8-unknown-transfers.js",
+    "content:playtest246": "vite build --ssr tools/content/build-playtest246.ts --outDir .authoring/playtest246-build && node .authoring/playtest246-build/build-playtest246.js && node tools/content/pack-playtest246.mjs",
+    "qa:playtest246": "vite build --ssr tools/qa/audit-playtest246.ts --outDir .recording/playtest246-build && node .recording/playtest246-build/audit-playtest246.js",
+    "qa:playtest246:helpers": "vite build --ssr tools/qa/audit-playtest246-helpers.ts --outDir .recording/playtest246-helpers && node .recording/playtest246-helpers/audit-playtest246-helpers.js"
   },
   "dependencies": {
     "@capacitor/android": "8.6.0",

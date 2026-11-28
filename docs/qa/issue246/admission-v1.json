@@ -1,0 +1,2003 @@
+[
+  {
+    "key": "azur-81",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-81",
+      "level": 81,
+      "slots": 3,
+      "columns": [
+        3,
+        4,
+        5
+      ],
+      "groups": 6,
+      "physical": 36,
+      "displayTier": 1,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "games",
+        "books",
+        "fasteners",
+        "mail",
+        "islands",
+        "tools"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 834601,
+        "status": "CERTIFIED",
+        "layoutHash": "c6c75ce9a4e844d85e9049749af88f2e94a859a28761da88bcd93d50f0fca6bc",
+        "cost": 63,
+        "routeHash": "bcc905ac1a318c55deebd7f20610aa3b4ef82fccc7de27ea6ea401eb8ceac6be",
+        "effects": {
+          "draw": 24,
+          "flip": 33,
+          "transfer": 39,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 834602,
+        "status": "CERTIFIED",
+        "layoutHash": "95353967ccf3f62718d9d05123b467ba1ec17619a95052e3f11eda9cee662133",
+        "cost": 63,
+        "routeHash": "8941d3d1a937202507e302ac1f8c7654d67644a31bc78c780d70a433ae921546",
+        "effects": {
+          "draw": 24,
+          "flip": 33,
+          "transfer": 39,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 834603,
+        "status": "CERTIFIED",
+        "layoutHash": "d865a195f73658f44308367558953519157e47ab37e33aafd939896d30828683",
+        "cost": 62,
+        "routeHash": "0778310ecfadb0c7b39a0026b07b44eb0ffbbe0f5fa4d5845d44e0ff09cbfaf5",
+        "effects": {
+          "transfer": 38,
+          "flip": 33,
+          "draw": 24,
+          "complete": 6
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 142
+  },
+  {
+    "key": "azur-82",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-82",
+      "level": 82,
+      "slots": 3,
+      "columns": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "groups": 8,
+      "physical": 48,
+      "displayTier": 2,
+      "feature": "ordered",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "spices",
+        "grains",
+        "dairy",
+        "cutlery",
+        "appliances",
+        "portable",
+        "computer",
+        "dishes"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 844601,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 844602,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 844603,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 844604,
+        "status": "CERTIFIED",
+        "layoutHash": "09837137406851a5f59a4912ce062c3b60a6ea8d1ec5cdc1960126bb5b8aa05f",
+        "cost": 104,
+        "routeHash": "f8e80335173c93b23b5405c1f37b58a53dc8dde258703ab9d146a84bb66295c5",
+        "effects": {
+          "transfer": 52,
+          "flip": 65,
+          "draw": 51,
+          "recycle": 1,
+          "complete": 8,
+          "ordered": 8
+        }
+      },
+      {
+        "seed": 844605,
+        "status": "CERTIFIED",
+        "layoutHash": "6bebd5cb5943b0578cc60fd0bf3df1df98d716ce17eb08803aff054244c1c44b",
+        "cost": 98,
+        "routeHash": "a9217389ffa39dffd8411ddcd5b1982f7141e09159f173e4c13fdb460329f9ee",
+        "effects": {
+          "transfer": 56,
+          "flip": 55,
+          "ordered": 15,
+          "draw": 41,
+          "complete": 8,
+          "recycle": 1
+        }
+      },
+      {
+        "seed": 844606,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 844607,
+        "status": "CERTIFIED",
+        "layoutHash": "97ba4bcf9a6e64eddb000d0810f35c8db2e793e98627a50b72126e23707ee370",
+        "cost": 98,
+        "routeHash": "63563eda238090a2e5e131c4b861190c6dde93e7214692db6ed0ce6315351478",
+        "effects": {
+          "transfer": 51,
+          "flip": 60,
+          "draw": 46,
+          "ordered": 6,
+          "complete": 8,
+          "recycle": 1
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 3858
+  },
+  {
+    "key": "azur-83",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-83",
+      "level": 83,
+      "slots": 4,
+      "columns": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "groups": 8,
+      "physical": 48,
+      "displayTier": 3,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "sports",
+        "road",
+        "water",
+        "air",
+        "space",
+        "weather",
+        "shapes",
+        "office"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 854601,
+        "status": "CERTIFIED",
+        "layoutHash": "c9c3412df029b6a5d5b8d4561951947a81052e66c62fa2935a49a43748c4dc4e",
+        "cost": 76,
+        "routeHash": "0ccdd8e805131eecd1ced5e323f734f3bfa50cc266aaa762fedb4e2463e2ac49",
+        "effects": {
+          "transfer": 50,
+          "flip": 44,
+          "draw": 26,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 854602,
+        "status": "CERTIFIED",
+        "layoutHash": "6a8308567f691488881da0ef70607fe465608573cf840094d71cabbaef8cc519",
+        "cost": 79,
+        "routeHash": "23fdc10fa3bd296d9591bb704f5c0c562856a8e3a461ca5f1cae992ff7d96ad4",
+        "effects": {
+          "transfer": 53,
+          "flip": 44,
+          "draw": 26,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 854603,
+        "status": "CERTIFIED",
+        "layoutHash": "300ba9106036ef9733d04054e23136880fcf9843b88e22ba02162f172a3c0121",
+        "cost": 78,
+        "routeHash": "37de80adf7233180db47478c0ab9e110b6ff6b8da532caab02a6374bcab031f3",
+        "effects": {
+          "transfer": 52,
+          "flip": 44,
+          "draw": 26,
+          "complete": 8
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 200
+  },
+  {
+    "key": "azur-84",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-84",
+      "level": 84,
+      "slots": 3,
+      "columns": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "groups": 6,
+      "physical": 36,
+      "displayTier": 2,
+      "feature": "ice",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "fruit",
+        "vegetables",
+        "birds",
+        "flowers",
+        "trees",
+        "clothes"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 864601,
+        "status": "CERTIFIED",
+        "layoutHash": "9c5dab0e40d1412b2a326859ae478abd3ee736051aaaa5728c9c48a9f1d0ede2",
+        "cost": 62,
+        "routeHash": "b2a42f85e17dc1ddb8034eb14094d6e6ce479c5ec588eb2c6d03789b6055db2c",
+        "effects": {
+          "transfer": 44,
+          "flip": 32,
+          "ice": 2,
+          "ice:layer": 1,
+          "draw": 18,
+          "ice:thawed": 1,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 864602,
+        "status": "CERTIFIED",
+        "layoutHash": "c7cdb31cf2b4be7097d3216951e7fcfe66d7b539592f6e93fc4921b9324472d7",
+        "cost": 59,
+        "routeHash": "2041b48fc2b832c07711a0f66b635ddf86cbf74fc1eb41f7a541c6559f8548c6",
+        "effects": {
+          "transfer": 41,
+          "flip": 32,
+          "ice": 2,
+          "ice:layer": 1,
+          "draw": 18,
+          "ice:thawed": 1,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 864603,
+        "status": "CERTIFIED",
+        "layoutHash": "875577e5e29cc1323b8520de8fe425a0e38a3a41c89dbdf34d1dc25c7a6bf4cc",
+        "cost": 60,
+        "routeHash": "05abdd9bb0ad49d38dc2b9b9d0d78be319654d98384963b13b774ec30f0d6cc1",
+        "effects": {
+          "draw": 18,
+          "flip": 32,
+          "transfer": 42,
+          "ice": 2,
+          "ice:layer": 1,
+          "ice:thawed": 1,
+          "complete": 6
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 104
+  },
+  {
+    "key": "azur-85",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-85",
+      "level": 85,
+      "slots": 5,
+      "columns": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "groups": 10,
+      "physical": 64,
+      "displayTier": 4,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "insects",
+        "fish",
+        "shoes",
+        "hats",
+        "ru85-4",
+        "ru85-5",
+        "ru86-1",
+        "ru86-6",
+        "ru87-1",
+        "furniture"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 874601,
+        "status": "CERTIFIED",
+        "layoutHash": "f415ae48800073795114bd0c70b52b9a0771496683cef6ffa085c548c651c479",
+        "cost": 103,
+        "routeHash": "1a5a1fe20d63d1726e6b93a1e5c84b8d65aa86dea1feff97dd90ae062d35093a",
+        "effects": {
+          "transfer": 74,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 874602,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 874603,
+        "status": "CERTIFIED",
+        "layoutHash": "131dbbf2a8a5ccfcaeae0541cd214490390f59d18733b3a394b2708b0f10351a",
+        "cost": 97,
+        "routeHash": "2a9e39394baa0c5dd1431ca225747159d7b5685d95e4623193f8d57a02e68972",
+        "effects": {
+          "transfer": 68,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 874604,
+        "status": "CERTIFIED",
+        "layoutHash": "806573b6fd337299277078f9aa1f4fc756c432448b2afeb716324a2d60f99fd8",
+        "cost": 98,
+        "routeHash": "cbce65efb577e4ad567a01883941f98de7025f7aa25d4b69f4ff85163191722a",
+        "effects": {
+          "transfer": 69,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 1450
+  },
+  {
+    "key": "azur-86",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-86",
+      "level": 86,
+      "slots": 4,
+      "columns": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "groups": 8,
+      "physical": 48,
+      "displayTier": 3,
+      "feature": "lock",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "ru82-4",
+        "ru83-1",
+        "ru83-3",
+        "ru83-5",
+        "ru84-1",
+        "ru84-3",
+        "ru84-5",
+        "lights"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 884601,
+        "status": "CERTIFIED",
+        "layoutHash": "d4af52aa16ca65c04c30b5ef6aae971cbd67659ba8e4f0f9e80478101c7937cf",
+        "cost": 77,
+        "routeHash": "2f911ef9f54a5fded23ed845b4f5d50b87ea5277c1733a9946741893871178f8",
+        "effects": {
+          "transfer": 51,
+          "flip": 44,
+          "key": 1,
+          "unlock": 1,
+          "draw": 26,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 884602,
+        "status": "CERTIFIED",
+        "layoutHash": "da3b0a14550f022ffa60f44ce35f4e763990beb59fcb64c61d99dda63f03f417",
+        "cost": 77,
+        "routeHash": "769339791eccab2fa80512c3f56f99f5e10740e7de0867af66e913b12681df4e",
+        "effects": {
+          "transfer": 51,
+          "flip": 44,
+          "key": 1,
+          "unlock": 1,
+          "draw": 26,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 884603,
+        "status": "CERTIFIED",
+        "layoutHash": "ac3f222f12a7b830db896a0f94df85aeae47511e8a889e0e82a8c2e6333869eb",
+        "cost": 80,
+        "routeHash": "fc74f8de5051655bacbfb8230f99041eed8bcbda71312a93e3812d299e784bbe",
+        "effects": {
+          "draw": 26,
+          "flip": 44,
+          "key": 1,
+          "unlock": 1,
+          "transfer": 54,
+          "complete": 8
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 301
+  },
+  {
+    "key": "azur-87",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-87",
+      "level": 87,
+      "slots": 5,
+      "columns": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "groups": 10,
+      "physical": 64,
+      "displayTier": 4,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "dogs",
+        "sewing",
+        "fuels",
+        "camping",
+        "printmedia",
+        "weeks",
+        "gemstoneshapes",
+        "bakerytools",
+        "writing",
+        "music"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 894601,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 894602,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 894603,
+        "status": "CERTIFIED",
+        "layoutHash": "9be17ab6e895ed8e3eeccb8b33153bff3c7786e2327e44475da796c5c32c1d7b",
+        "cost": 98,
+        "routeHash": "3230484cdf0bd36b20d817ee7717c32925d2f0e9591073b423a6dfbff13f0cf5",
+        "effects": {
+          "transfer": 69,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 894604,
+        "status": "CERTIFIED",
+        "layoutHash": "e1715fe1a3949b47a159c05fac21c50c08a7d86bf1b4804a29d8432809c035bd",
+        "cost": 96,
+        "routeHash": "b847b6b0d86c5213da01dd3889372fe8cb50e12acc291a762676b48febe24fdb",
+        "effects": {
+          "transfer": 67,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 894605,
+        "status": "CERTIFIED",
+        "layoutHash": "fc5042139d1f57fde457a036b9cb0463a8882037e714eae1d26c35bb86650166",
+        "cost": 97,
+        "routeHash": "14ad166460a4dd508f6790644965156530b729149ecc32edcbb0556485c8d29f",
+        "effects": {
+          "transfer": 68,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 2127
+  },
+  {
+    "key": "hybrid-87",
+    "source": "Hitapps numeric web geometry THIRD_PARTY_WEB_UNVERIFIED; foundation count ASSUMED; own G12/G15/G12 cadence",
+    "recipe": {
+      "key": "hybrid-87",
+      "level": 87,
+      "slots": 4,
+      "columns": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "groups": 12,
+      "physical": 82,
+      "displayTier": 4,
+      "dealer": "hitapps-ten-pass-v1",
+      "topics": [
+        "baking",
+        "soups",
+        "drinks",
+        "building",
+        "jobs",
+        "gems",
+        "fabrics",
+        "rivers",
+        "cliffs",
+        "drawing",
+        "ru81-1",
+        "sweets"
+      ],
+      "source": "Hitapps numeric web geometry THIRD_PARTY_WEB_UNVERIFIED; foundation count ASSUMED; own G12/G15/G12 cadence"
+    },
+    "attempts": [
+      {
+        "seed": 894601,
+        "status": "CERTIFIED",
+        "layoutHash": "436a991c4592b213e5309978c11f9f788ed9bb4a13fc337aaed755882987aead",
+        "cost": 143,
+        "routeHash": "546b5a33735f0d3de7aee4b56ee4889dcfd12b6c36e532874327669d0e085601",
+        "effects": {
+          "transfer": 87,
+          "flip": 78,
+          "draw": 56,
+          "complete": 12
+        }
+      },
+      {
+        "seed": 894602,
+        "status": "CERTIFIED",
+        "layoutHash": "cdebf45fdf3364c29282ae86b71ad03bdbfc935c4ba51843099d0de9247bbb1f",
+        "cost": 166,
+        "routeHash": "e0a1d7e050498c62d0a9c034fecf228f0e2af59ff4e7542e3290206e52eff219",
+        "effects": {
+          "transfer": 86,
+          "flip": 101,
+          "draw": 79,
+          "complete": 12,
+          "recycle": 1
+        }
+      },
+      {
+        "seed": 894603,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 894604,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 894605,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 894606,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 894607,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 894608,
+        "status": "CERTIFIED",
+        "layoutHash": "97ad247e49c4426043bc90cde920fa73640d3532e350527f9981823b19e0a112",
+        "cost": 166,
+        "routeHash": "9c7455fafdbb202f9c30ea93f560003cded8b99e0a4b9acb4a23b3903f6798f4",
+        "effects": {
+          "transfer": 87,
+          "flip": 100,
+          "draw": 78,
+          "complete": 12,
+          "recycle": 1
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 4876
+  },
+  {
+    "key": "azur-88",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-88",
+      "level": 88,
+      "slots": 3,
+      "columns": [
+        3,
+        4,
+        5
+      ],
+      "groups": 6,
+      "physical": 36,
+      "displayTier": 1,
+      "feature": "bound",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "boardgames",
+        "gardening",
+        "waterbodies",
+        "punctuation",
+        "stage",
+        "tools"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 904601,
+        "status": "CERTIFIED",
+        "layoutHash": "4d8164c03d718f9dd3617cb6b37a57771cac9daea45a68ff1785a468c91ee42e",
+        "cost": 66,
+        "routeHash": "e3ac15eb6514ca8334f8f9018c26b2e3d3686dee4c6377feda53ceb888630a40",
+        "effects": {
+          "cut": 1,
+          "draw": 24,
+          "flip": 33,
+          "transfer": 41,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 904602,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 904603,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 904604,
+        "status": "CERTIFIED",
+        "layoutHash": "144f8d956d812778ed166cdc22fa751ff6876467aa6bae9b3a63a0de2ca001ef",
+        "cost": 64,
+        "routeHash": "21277c1f84d1a8f03f67d4ede7f7d7088741ee8cd4cb46af812b254c3370b25c",
+        "effects": {
+          "cut": 1,
+          "draw": 24,
+          "flip": 33,
+          "transfer": 39,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 904605,
+        "status": "CERTIFIED",
+        "layoutHash": "ed47b0d82eddbbcf36fbb90a611759a8930c46583752b2060b15003e2c53de16",
+        "cost": 63,
+        "routeHash": "df38503aaa6e138ba66dbba8e2b69947650bf43956cef5a01c39a2a1651e16eb",
+        "effects": {
+          "cut": 1,
+          "draw": 24,
+          "flip": 33,
+          "transfer": 38,
+          "complete": 6
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 1480
+  },
+  {
+    "key": "azur-89",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-89",
+      "level": 89,
+      "slots": 3,
+      "columns": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "groups": 8,
+      "physical": 48,
+      "displayTier": 2,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "bath",
+        "house",
+        "metals",
+        "genres",
+        "dances",
+        "city",
+        "movies",
+        "dishes"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 914601,
+        "status": "CERTIFIED",
+        "layoutHash": "ae07d94d789fd7e04138f255aa6f68731420d2cef2fba2f69a1ac151cb192d35",
+        "cost": 101,
+        "routeHash": "5aa11d1eb54a436fe6785ae99fee40ca7e9858d527080db2163a979ef631736f",
+        "effects": {
+          "draw": 48,
+          "flip": 62,
+          "transfer": 52,
+          "complete": 8,
+          "recycle": 1
+        }
+      },
+      {
+        "seed": 914602,
+        "status": "CERTIFIED",
+        "layoutHash": "c8b704256d7928c6162a2acd9429b9cebdce0de5f616d61036f85329a6bbc563",
+        "cost": 81,
+        "routeHash": "b198fcc8d66bfaf9bb4f223df2f4eea0fb28e871fedaa865bc7381e9ee332c5f",
+        "effects": {
+          "transfer": 51,
+          "flip": 44,
+          "draw": 30,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 914603,
+        "status": "CERTIFIED",
+        "layoutHash": "4bcf77f274548eb13401ef8831887aa0b476386e4860ce2f833ef0e9977b6370",
+        "cost": 83,
+        "routeHash": "7bddc1a35534884f59f823bdef16c562c96cc75ae06838df0adfd91d1497406f",
+        "effects": {
+          "transfer": 53,
+          "flip": 44,
+          "draw": 30,
+          "complete": 8
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 346
+  },
+  {
+    "key": "azur-90",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-90",
+      "level": 90,
+      "slots": 4,
+      "columns": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "groups": 8,
+      "physical": 48,
+      "displayTier": 3,
+      "feature": "puzzle",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "pets",
+        "sea",
+        "reptiles",
+        "berries",
+        "nuts",
+        "lengthunits",
+        "pasta",
+        "sports"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 924601,
+        "status": "CERTIFIED",
+        "layoutHash": "60ac0fe97c1ce019f894a1c23feb53eb15e3c0a0e95664e20bd76a2510a80a37",
+        "cost": 82,
+        "routeHash": "0fb8a8edb088b35a1534beb9f8365911a763866b77e8669bb762644e70290cb6",
+        "effects": {
+          "transfer": 55,
+          "flip": 45,
+          "draw": 27,
+          "complete": 8,
+          "assemble": 1
+        }
+      },
+      {
+        "seed": 924602,
+        "status": "CERTIFIED",
+        "layoutHash": "7c011e109db9073411f4de7ab344e41f80e81f978369a57514cdc4d0bd8423de",
+        "cost": 96,
+        "routeHash": "cd7ddfb4b2781249ce8ad45c124b3e02ce131c16aec91dec11ae416a9c76f7de",
+        "effects": {
+          "transfer": 53,
+          "flip": 60,
+          "draw": 42,
+          "complete": 8,
+          "assemble": 1,
+          "recycle": 1
+        }
+      },
+      {
+        "seed": 924603,
+        "status": "CERTIFIED",
+        "layoutHash": "2dabfad67a78ab0ce3d716baf5de09afe03ef68352dfdd4c4b12ca25d3a4bd84",
+        "cost": 79,
+        "routeHash": "d7f4c1efbe894012dd099a30b1e2ee43a6d54a93504460809366efd400eedece",
+        "effects": {
+          "transfer": 52,
+          "flip": 45,
+          "draw": 27,
+          "complete": 8,
+          "assemble": 1
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 369
+  },
+  {
+    "key": "azur-91",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-91",
+      "level": 91,
+      "slots": 3,
+      "columns": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "groups": 6,
+      "physical": 36,
+      "displayTier": 2,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "forest",
+        "kitchen",
+        "legumes",
+        "ru81-2",
+        "ru82-1",
+        "shapes"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 934601,
+        "status": "CERTIFIED",
+        "layoutHash": "abdac1e3b5a5d6c3daf356d5f6fe71c4c60bcec05a3064cc72bb3bf60b6275bc",
+        "cost": 60,
+        "routeHash": "41055aa5d23afe6020284fb60a23ed12ddf147c8f1ca4dc65f140bccd6f2c425",
+        "effects": {
+          "transfer": 42,
+          "flip": 32,
+          "draw": 18,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 934602,
+        "status": "CERTIFIED",
+        "layoutHash": "547d4dead77d2f572f05da937f153f2b9f647d1823ef031a1131e517011fd419",
+        "cost": 58,
+        "routeHash": "6ea6648cedd3830a7ccb4065fee55f36e267da25c44fa440ac39722083df8149",
+        "effects": {
+          "transfer": 40,
+          "flip": 32,
+          "draw": 18,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 934603,
+        "status": "CERTIFIED",
+        "layoutHash": "d8844a361b9509c6cfcbe08ac09f1757a75f39eba239516cec0f296ccfbb10e1",
+        "cost": 58,
+        "routeHash": "4624eab97b48258695610b4a86db95213d87ccb250e3a0a05e559d399052fb71",
+        "effects": {
+          "draw": 18,
+          "flip": 32,
+          "transfer": 40,
+          "complete": 6
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 98
+  },
+  {
+    "key": "azur-92",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-92",
+      "level": 92,
+      "slots": 5,
+      "columns": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "groups": 10,
+      "physical": 64,
+      "displayTier": 4,
+      "feature": "magnet",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "games",
+        "fasteners",
+        "mail",
+        "islands",
+        "ru86-2",
+        "ru87-5",
+        "ru87-6",
+        "ru82-2",
+        "ru85-1",
+        "office"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 944601,
+        "status": "CERTIFIED",
+        "layoutHash": "3f2f9c4aafff526ef526c03e3a8d32926baf9b6ea44b224503b80995e2bacbce",
+        "cost": 98,
+        "routeHash": "58c128354de9aaa4e60f90ee9f07938a43c36b1a48d8b650f22c900f4e77ad41",
+        "effects": {
+          "transfer": 70,
+          "flip": 60,
+          "draw": 29,
+          "magnet": 1,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 944602,
+        "status": "CERTIFIED",
+        "layoutHash": "66242cb064c78ee3456277ead09ef257153cacfdc493d52ac97fcc90efb98da9",
+        "cost": 101,
+        "routeHash": "9113e818537a74398def9fa6878baeee029ac33db930f6c5411bbb48bc33ab8c",
+        "effects": {
+          "draw": 29,
+          "flip": 60,
+          "transfer": 73,
+          "magnet": 1,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 944603,
+        "status": "CERTIFIED",
+        "layoutHash": "570aedcc35d6b9f80bef4801c4cd8da7061e89755cae54f2408bffbdec0586ef",
+        "cost": 100,
+        "routeHash": "2a738207360de5630ed6c45e283fadc0db1671f272c461ebabcfa5baac991fc0",
+        "effects": {
+          "transfer": 72,
+          "flip": 60,
+          "draw": 29,
+          "magnet": 1,
+          "complete": 10
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 347
+  },
+  {
+    "key": "azur-93",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-93",
+      "level": 93,
+      "slots": 4,
+      "columns": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "groups": 8,
+      "physical": 48,
+      "displayTier": 3,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "books",
+        "spices",
+        "grains",
+        "dairy",
+        "cutlery",
+        "appliances",
+        "portable",
+        "clothes"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 954601,
+        "status": "CERTIFIED",
+        "layoutHash": "5e2d9fc0855e8d1b5efae02537bb884524da35b7c7ea47fe6cdc80b96590890d",
+        "cost": 80,
+        "routeHash": "50c73a651339c0ff7cc288582cd2dc9e3bac59a893d065efff89ea4408a3c04d",
+        "effects": {
+          "transfer": 54,
+          "flip": 44,
+          "draw": 26,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 954602,
+        "status": "CERTIFIED",
+        "layoutHash": "23aab6236919b40c3c28af09e59fc2f1f6d0a00384c9636fd36843a2c00a16ce",
+        "cost": 77,
+        "routeHash": "ee251bac611146800a17163c24e228f4addceed508c8e01aa47c183006b5dc2c",
+        "effects": {
+          "transfer": 51,
+          "flip": 44,
+          "draw": 26,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 954603,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 954604,
+        "status": "CERTIFIED",
+        "layoutHash": "665555e9615c1571b208fe2f7a94b3d0fdc485db3b83f446f6f2e4488a0c9fc9",
+        "cost": 77,
+        "routeHash": "70cc15cb6da514269a6cd96f626f951ba04baa8734b8a1f5908fb67d0a6e04e9",
+        "effects": {
+          "transfer": 51,
+          "flip": 44,
+          "draw": 26,
+          "complete": 8
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 924
+  },
+  {
+    "key": "azur-94",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-94",
+      "level": 94,
+      "slots": 5,
+      "columns": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "groups": 10,
+      "physical": 64,
+      "displayTier": 4,
+      "feature": "hammer",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "road",
+        "water",
+        "air",
+        "space",
+        "computer",
+        "weather",
+        "fruit",
+        "vegetables",
+        "birds",
+        "hats"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 964601,
+        "status": "CERTIFIED",
+        "layoutHash": "7057929d4e50d280da87aec0418d8902f2daf3ea41747d89df1afbbde00f432c",
+        "cost": 104,
+        "routeHash": "abbb1eb3341e7515fbbd9cfb601668cdcbd1b78b0cf6daf9b31ada95ee3fb738",
+        "effects": {
+          "transfer": 74,
+          "flip": 60,
+          "draw": 31,
+          "hammer": 1,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 964602,
+        "status": "CERTIFIED",
+        "layoutHash": "f5415007f510fc1dd4bc5fbe8772f66d7d42a136d597c6c0c7470f8dd83d16fc",
+        "cost": 103,
+        "routeHash": "010731181d7fc46548294b35ad4bd74c4efaf220ae3fd9921a2a29325279ab97",
+        "effects": {
+          "transfer": 73,
+          "flip": 60,
+          "draw": 31,
+          "hammer": 1,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 964603,
+        "status": "CERTIFIED",
+        "layoutHash": "b2218548147c57758638bc20902d5e0af925ab92ff5ae4618a8051a7ba6dd53b",
+        "cost": 101,
+        "routeHash": "092494fbd4e1b777590830311ac4c3363bbcfa04038b75a5e3a653e4f324d054",
+        "effects": {
+          "transfer": 71,
+          "flip": 60,
+          "draw": 31,
+          "hammer": 1,
+          "complete": 10
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 423
+  },
+  {
+    "key": "hybrid-94",
+    "source": "Hitapps numeric web geometry THIRD_PARTY_WEB_UNVERIFIED; foundation count ASSUMED; own G12/G15/G12 cadence",
+    "recipe": {
+      "key": "hybrid-94",
+      "level": 94,
+      "slots": 5,
+      "columns": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "groups": 15,
+      "physical": 98,
+      "displayTier": 4,
+      "feature": "hammer",
+      "dealer": "hitapps-ten-pass-v1",
+      "topics": [
+        "flowers",
+        "trees",
+        "insects",
+        "fish",
+        "shoes",
+        "furniture",
+        "ru84-1",
+        "lights",
+        "ru85-4",
+        "ru85-5",
+        "ru86-1",
+        "ru87-1",
+        "ru82-4",
+        "ru83-1",
+        "music"
+      ],
+      "source": "Hitapps numeric web geometry THIRD_PARTY_WEB_UNVERIFIED; foundation count ASSUMED; own G12/G15/G12 cadence"
+    },
+    "attempts": [
+      {
+        "seed": 964601,
+        "status": "CERTIFIED",
+        "layoutHash": "e50cae2f2d384871ff149e256ddf48dca5821f5b36706b4cb2b8155b1be8e921",
+        "cost": 173,
+        "routeHash": "1171dd93fc80b1e4dfc4c563c9b07eea64a948f15c2cce7aed875804532a77e3",
+        "effects": {
+          "transfer": 109,
+          "flip": 94,
+          "draw": 65,
+          "hammer": 1,
+          "complete": 15
+        }
+      },
+      {
+        "seed": 964602,
+        "status": "CERTIFIED",
+        "layoutHash": "a7f51199a1adcca43c24a7d5b4d45d29e1b84f08372693220b2b8a59e9610596",
+        "cost": 190,
+        "routeHash": "34bce06dc505c5ba3678157b44869447bd23415ff3376c0862d3abf5e2a6b81a",
+        "effects": {
+          "transfer": 107,
+          "flip": 112,
+          "draw": 83,
+          "hammer": 1,
+          "complete": 15,
+          "recycle": 1
+        }
+      },
+      {
+        "seed": 964603,
+        "status": "CERTIFIED",
+        "layoutHash": "07458b42f94391580609181cd45370f4a976bf86e96b8430443f0c574d454d5c",
+        "cost": 173,
+        "routeHash": "334f66c5a1a82bee36e843baefcd623de4915268ff48eeaa9a25765db5a82472",
+        "effects": {
+          "transfer": 109,
+          "flip": 94,
+          "draw": 65,
+          "hammer": 1,
+          "complete": 15
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 928
+  },
+  {
+    "key": "azur-95",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-95",
+      "level": 95,
+      "slots": 3,
+      "columns": [
+        3,
+        4,
+        5
+      ],
+      "groups": 6,
+      "physical": 36,
+      "displayTier": 1,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "ru86-6",
+        "ru83-3",
+        "ru83-5",
+        "ru84-3",
+        "ru84-5",
+        "baking"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 974601,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 974602,
+        "status": "CERTIFIED",
+        "layoutHash": "dd1554206daee8253fee4621c057c157c3cd941e697939a987b252506a5cdb23",
+        "cost": 61,
+        "routeHash": "2e66672fa0894851823d5df8327af47afb60d3ee491d0c919c44664b3fc1a7c5",
+        "effects": {
+          "transfer": 37,
+          "flip": 33,
+          "draw": 24,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 974603,
+        "status": "CERTIFIED",
+        "layoutHash": "271134908ac399c4f62593dafb7dc31975109b33ab52a59fd7ec3ee3c357fd6a",
+        "cost": 65,
+        "routeHash": "ea95ab813ae61fa4c436a9e64c8102ecf1c5e1ba7e8d73512487ad594cf81d42",
+        "effects": {
+          "draw": 24,
+          "flip": 33,
+          "transfer": 41,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 974604,
+        "status": "CERTIFIED",
+        "layoutHash": "693903f67edd2c0cb7fbb260a2f80730eb61916df0979a08e9c4114ee190cdda",
+        "cost": 62,
+        "routeHash": "d2154d25567d1d018606af31de9d6b7933d79c0e6df9045be1e8d3b3063e250d",
+        "effects": {
+          "draw": 24,
+          "flip": 33,
+          "transfer": 38,
+          "complete": 6
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 949
+  },
+  {
+    "key": "azur-96",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-96",
+      "level": 96,
+      "slots": 3,
+      "columns": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "groups": 8,
+      "physical": 48,
+      "displayTier": 2,
+      "feature": "gold",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "building",
+        "jobs",
+        "gems",
+        "fabrics",
+        "rivers",
+        "cliffs",
+        "drawing",
+        "sweets"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 984601,
+        "status": "CERTIFIED",
+        "layoutHash": "dd2c3b468b1de4c5e7a639795e0ba6036f33ceb1b943fbc3758bb966031f0b8d",
+        "cost": 80,
+        "routeHash": "b65e55c7196e7fd0debef084cc7764fd5579fdb396c56ba92aae37c8c3824870",
+        "effects": {
+          "transfer": 50,
+          "flip": 44,
+          "draw": 30,
+          "complete": 8,
+          "gold": 2,
+          "gold:appeared": 1,
+          "gold:activated": 1
+        }
+      },
+      {
+        "seed": 984602,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 984603,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 984604,
+        "status": "CERTIFIED",
+        "layoutHash": "72aaaeb4c90315e319a504330bb2261b13d924a0903cb0640e518f26124c706a",
+        "cost": 83,
+        "routeHash": "bd72df336fe95294eae3a7f6845c177b002c62410a2f65cca5bf80db24d85512",
+        "effects": {
+          "transfer": 53,
+          "flip": 44,
+          "draw": 30,
+          "complete": 8,
+          "gold": 2,
+          "gold:appeared": 1,
+          "gold:activated": 1
+        }
+      },
+      {
+        "seed": 984605,
+        "status": "CERTIFIED",
+        "layoutHash": "94147e54bbfc8d0c47299e7034647dc1651ab32826cf32ff4ea6af52599491e1",
+        "cost": 86,
+        "routeHash": "a9e49b912fa875f413b0fdc5a5e85c2ce557c81bcfa4a558648312b61bab18c1",
+        "effects": {
+          "transfer": 56,
+          "flip": 44,
+          "draw": 30,
+          "gold": 2,
+          "gold:appeared": 1,
+          "gold:activated": 1,
+          "complete": 8
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 2090
+  },
+  {
+    "key": "azur-97",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-97",
+      "level": 97,
+      "slots": 4,
+      "columns": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "groups": 8,
+      "physical": 48,
+      "displayTier": 3,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "soups",
+        "drinks",
+        "dogs",
+        "sewing",
+        "fuels",
+        "camping",
+        "printmedia",
+        "tools"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 994601,
+        "status": "CERTIFIED",
+        "layoutHash": "063135deba4804a9be1f6a0a168da58a9392b919c28d52e278edcd999ca167db",
+        "cost": 80,
+        "routeHash": "aeda01f00ab6dd744570facfe0a323b70ccb0a655c99d7779c79e00b36ff05fe",
+        "effects": {
+          "transfer": 54,
+          "flip": 44,
+          "draw": 26,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 994602,
+        "status": "CERTIFIED",
+        "layoutHash": "444de140a2ee2dc80f2c5c5718604181bb284b091a036d1e257c27fa134c9c56",
+        "cost": 76,
+        "routeHash": "f67e6595db3f398bc7afe503e828f77f1500b74f0099c620bda85d7f04caf7f5",
+        "effects": {
+          "transfer": 50,
+          "flip": 44,
+          "draw": 26,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 994603,
+        "status": "CERTIFIED",
+        "layoutHash": "2246025b6d2073005ba1308e59f8e4dcd9e816ff606b138792b2599e4465b1fc",
+        "cost": 78,
+        "routeHash": "9ce95b5768aef58c644ba8f71e22003c0fa1caadaa7f60833650275b71f7ca54",
+        "effects": {
+          "transfer": 52,
+          "flip": 44,
+          "draw": 26,
+          "complete": 8
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 146
+  },
+  {
+    "key": "azur-98",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-98",
+      "level": 98,
+      "slots": 3,
+      "columns": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "groups": 6,
+      "physical": 36,
+      "displayTier": 2,
+      "feature": "ordered",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "weeks",
+        "gemstoneshapes",
+        "bakerytools",
+        "writing",
+        "ru81-1",
+        "dishes"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 1004601,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 1004602,
+        "status": "CERTIFIED",
+        "layoutHash": "e985a60098bc66a32d8903e5da49db66ce58cb98679851b1f5b48556d84e9adf",
+        "cost": 58,
+        "routeHash": "fda1c73ec36382b9b1d600cb55ef8397cbaa1cd8d0dea48659ee0ee6c2efd8a8",
+        "effects": {
+          "transfer": 40,
+          "flip": 32,
+          "ordered": 8,
+          "draw": 18,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 1004603,
+        "status": "CERTIFIED",
+        "layoutHash": "d8ad0e4b51593b7b17b635847252fd36b657f6ad7afe1ebf44b9826fc2c76f23",
+        "cost": 59,
+        "routeHash": "e4889d4bfd9ae67c12a7b155b96929a0562fc7d198dcd98911aa5bc8923a19e6",
+        "effects": {
+          "transfer": 41,
+          "flip": 32,
+          "draw": 18,
+          "ordered": 8,
+          "complete": 6
+        }
+      },
+      {
+        "seed": 1004604,
+        "status": "CERTIFIED",
+        "layoutHash": "6431f9ce9bf30cd1e371dabf7579bbfb1db5a2640fd1adb3b3a25de93112c09f",
+        "cost": 59,
+        "routeHash": "d8f04f9789d7f5610ec8af01d60367ddc6cb4425ace80209f2949054b0039fb9",
+        "effects": {
+          "transfer": 41,
+          "flip": 32,
+          "ordered": 7,
+          "draw": 18,
+          "complete": 6
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 673
+  },
+  {
+    "key": "azur-99",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-99",
+      "level": 99,
+      "slots": 5,
+      "columns": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "groups": 10,
+      "physical": 64,
+      "displayTier": 4,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "boardgames",
+        "gardening",
+        "waterbodies",
+        "punctuation",
+        "stage",
+        "bath",
+        "house",
+        "metals",
+        "genres",
+        "sports"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 1014601,
+        "status": "CERTIFIED",
+        "layoutHash": "5a7081928da05998cb511d4ea10966d1fc0334ab7048f8e861126d02274f5f0e",
+        "cost": 104,
+        "routeHash": "e38e7937b0057d1146d7336ad6e27e2b87efb62e54c86c76861e02e1fbf1fed4",
+        "effects": {
+          "transfer": 75,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 1014602,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 1014603,
+        "status": "CERTIFIED",
+        "layoutHash": "1993e88bc8dc109966b6509424cb26a832cb62d5de8329028b6fd87429df18d6",
+        "cost": 103,
+        "routeHash": "c7a1e1e7dacf6c687ec7b9281836e15972a77baf1278bc189bd3c26cfe2ba366",
+        "effects": {
+          "transfer": 74,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 1014604,
+        "status": "CERTIFIED",
+        "layoutHash": "70e92a917c014ba2d69222ecfce41960015fdfd8b437f1b54e570e28e6744c5a",
+        "cost": 107,
+        "routeHash": "8b41e1725cd25fcabd1476ab8d335a532f57bdb85e0a30a4bb406fde2acd1a5f",
+        "effects": {
+          "transfer": 78,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 1154
+  },
+  {
+    "key": "azur-100",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-100",
+      "level": 100,
+      "slots": 4,
+      "columns": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "groups": 8,
+      "physical": 48,
+      "displayTier": 3,
+      "feature": "ice",
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "dances",
+        "city",
+        "movies",
+        "pets",
+        "sea",
+        "reptiles",
+        "berries",
+        "shapes"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 1024601,
+        "status": "CERTIFIED",
+        "layoutHash": "bf7a15c00568e23aeff64b14def18052d25d5b199b540844e4f2815da7f9ee8d",
+        "cost": 81,
+        "routeHash": "a9097e682386fa1c22b206105d929df0ea6ce25c88b0eab9eb3e72a478061d1e",
+        "effects": {
+          "draw": 26,
+          "flip": 44,
+          "transfer": 55,
+          "ice": 2,
+          "ice:layer": 1,
+          "ice:thawed": 1,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 1024602,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 1024603,
+        "status": "CERTIFIED",
+        "layoutHash": "c04be68d70bcff879b6907d29e6d421108119f65f06fc2cd13ed563a1e2087f5",
+        "cost": 82,
+        "routeHash": "fb9e59071febd1c77177c99e30634263b202f4c52baadceab3d25bea666f7712",
+        "effects": {
+          "transfer": 56,
+          "flip": 44,
+          "ice": 2,
+          "ice:layer": 1,
+          "ice:thawed": 1,
+          "draw": 26,
+          "complete": 8
+        }
+      },
+      {
+        "seed": 1024604,
+        "status": "CERTIFIED",
+        "layoutHash": "d6989746ba64309756be828dbc11c8eb3f9b86610cabfa26bdabf7f9e2092a2a",
+        "cost": 77,
+        "routeHash": "824ef69010724c7d01b574dbcd84d4dbb1461f327a5d96d56d46f24d185cf81f",
+        "effects": {
+          "draw": 26,
+          "flip": 44,
+          "transfer": 51,
+          "ice": 2,
+          "ice:layer": 1,
+          "ice:thawed": 1,
+          "complete": 8
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 1042
+  },
+  {
+    "key": "azur-101",
+    "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets",
+    "recipe": {
+      "key": "azur-101",
+      "level": 101,
+      "slots": 5,
+      "columns": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "groups": 10,
+      "physical": 64,
+      "displayTier": 4,
+      "dealer": "azur-exclusive-fy-v1",
+      "topics": [
+        "lengthunits",
+        "pasta",
+        "legumes",
+        "office",
+        "nuts",
+        "ru81-2",
+        "ru82-1",
+        "forest",
+        "kitchen",
+        "clothes"
+      ],
+      "source": "AZUR static551–2000 geometry; own counts, words, features, RNG adapter and certified budgets"
+    },
+    "attempts": [
+      {
+        "seed": 1034601,
+        "status": "CERTIFIED",
+        "layoutHash": "d1392dfc859882be87d936103a14f509d94d83251730e9d946bf8eae704ca403",
+        "cost": 98,
+        "routeHash": "264f098c01187992a8be5e53101e78174843af5df2b36925a4eb9121e02b5587",
+        "effects": {
+          "transfer": 69,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 1034602,
+        "status": "CERTIFIED",
+        "layoutHash": "4a8eb52b782f83f4ed4b1020f69352636e55046cbb92642a734812f8d2d1e1fa",
+        "cost": 97,
+        "routeHash": "074f29cb15b2f435c69b4d6c8c88fcb49deef222ccf43172ba0385b8e377ddf9",
+        "effects": {
+          "transfer": 68,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      },
+      {
+        "seed": 1034603,
+        "status": "CERTIFIED",
+        "layoutHash": "06c154eff1e4b57e6e0ed2fc3c5d46be9a68bfa6317cbe20423dd3772a02894c",
+        "cost": 99,
+        "routeHash": "8e1ac05e70d6540dd8d13000ab466174d66aa6ddef4e5599bb45e6ce194140f7",
+        "effects": {
+          "transfer": 70,
+          "flip": 59,
+          "draw": 29,
+          "complete": 10
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 568
+  },
+  {
+    "key": "hybrid-101",
+    "source": "Hitapps numeric web geometry THIRD_PARTY_WEB_UNVERIFIED; foundation count ASSUMED; own G12/G15/G12 cadence",
+    "recipe": {
+      "key": "hybrid-101",
+      "level": 101,
+      "slots": 4,
+      "columns": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "groups": 12,
+      "physical": 82,
+      "displayTier": 4,
+      "dealer": "hitapps-ten-pass-v1",
+      "topics": [
+        "games",
+        "fasteners",
+        "mail",
+        "islands",
+        "appliances",
+        "ru84-1",
+        "fruit",
+        "vegetables",
+        "birds",
+        "flowers",
+        "ru82-2",
+        "hats"
+      ],
+      "source": "Hitapps numeric web geometry THIRD_PARTY_WEB_UNVERIFIED; foundation count ASSUMED; own G12/G15/G12 cadence"
+    },
+    "attempts": [
+      {
+        "seed": 1034601,
+        "status": "NO_QUALIFYING_CANDIDATE",
+        "phases": [
+          "PRODUCT_PROOF_UNKNOWN"
+        ]
+      },
+      {
+        "seed": 1034602,
+        "status": "CERTIFIED",
+        "layoutHash": "d2010160e3f1e585d5cb64041cf59579c5b44e901b8c796abdd5fb9fe6fcbbc1",
+        "cost": 172,
+        "routeHash": "619216b9fd5f4dd21cd45a5e250b44d07a63d82873eccde2bcd86450a5dc6edf",
+        "effects": {
+          "transfer": 86,
+          "flip": 107,
+          "draw": 85,
+          "complete": 12,
+          "recycle": 1
+        }
+      },
+      {
+        "seed": 1034603,
+        "status": "CERTIFIED",
+        "layoutHash": "eb6b2e80b50e280fe7463d28319e3c87ec5e5288ee76f638ca95e3963068b97c",
+        "cost": 176,
+        "routeHash": "dba4f43772c83cab3a1a613322f2a6916782f93dc43c4be463711435dd5ce81d",
+        "effects": {
+          "transfer": 92,
+          "flip": 104,
+          "draw": 82,
+          "complete": 12,
+          "recycle": 2
+        }
+      },
+      {
+        "seed": 1034604,
+        "status": "CERTIFIED",
+        "layoutHash": "a4561423436edeaf95864d15f07da80882a48952e8942ecdab910fc4bdccc001",
+        "cost": 167,
+        "routeHash": "c84608b1ce228f7ddbbb9e30a261dc832b9bf86ddcabdc7da0fb08a507589d5f",
+        "effects": {
+          "transfer": 86,
+          "flip": 102,
+          "draw": 80,
+          "complete": 12,
+          "recycle": 1
+        }
+      }
+    ],
+    "selected": 3,
+    "ms": 1460
+  }
+]

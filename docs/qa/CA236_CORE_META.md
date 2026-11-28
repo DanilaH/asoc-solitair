@@ -1,6 +1,6 @@
 # №236 · core and small meta audit · 0.21.7 / 58
 
-Base PR234 HEAD was checked twice against `aeb86300005c368ac19f4e647070a1430ab280c8`, version0.21.6/code57. Branch `fix/236-core-meta`. Issue [236](https://github.com/DanilaH/asoc-solitair/issues/236). KIT IMPACT · REUSE. Runtime kit pin unchanged. This package changes neither Rules4, content, M1 prices/reward weights nor production configuration. Test ads only. No events or meta expansion.
+Base PR234 HEAD was checked twice against `aeb86300005c368ac19f4e647070a1430ab280c8`, version0.21.6/code57. Branch `fix/236-core-meta`, [PR237](https://github.com/DanilaH/asoc-solitair/pull/237) and [current checks](https://github.com/DanilaH/asoc-solitair/pull/237/checks). Issue [236](https://github.com/DanilaH/asoc-solitair/issues/236). KIT IMPACT · REUSE. Runtime kit pin unchanged. This package changes neither Rules4, content, M1 prices/reward weights nor production configuration. Test ads only. No events or meta expansion.
 
 ## Reproduction and correction
 
@@ -23,15 +23,15 @@ Raw [baseline](ca236/before.json) comes from a separate clean base worktree. [Lo
 | Metric | 0.21.6 base | 0.21.7 local |
 | --- | --- | --- |
 | Selected off-witness Hint | 0/11 SOLVED | 11/11 SOLVED,11 oracle wins |
-| Hint median / p95 / max | 2730 /10181 /10181ms | 26 /296 /296ms |
+| Hint median / p95 / max | 2730 /10181 /10181ms | 29 /146 /146ms |
 | Additional randomized off-witness Hint | 5/60 SOLVED | 60/60 SOLVED,60 oracle wins |
-| Additional median / p95 / max | 3350.5 /12174 /17865ms | 16.5 /137 /147ms |
+| Additional median / p95 / max | 3350.5 /12174 /17865ms | 14 /146 /259ms |
 | Calls exceeding UI5s, selected / additional | 2/11 and16/60 | 0/11 and0/60 |
 | Fixed-column Joker proofs, same220ms slice | 16/31 | 24/31 |
 | Empty columns among31 probes | 6, rejected after sampling | 6 excluded before sampling |
 | Randomized eligible search,8 control states | Single220ms column only | 8/8 full oracle wins |
 
-The eight new selection times were4/30/1080/37/15/13/19/13ms using a deterministic first-index RNG for reproducible fallback. This does not claim the final successful column is uniform when some columns fail proof. Uniformity applies to the first eligible candidate and sampling of remaining candidates. Production uses crypto RNG. Baseline fixed probes are31 attempts rather than31 random player activations. Exact L2 andL6 IDs from the audit are preserved; other controlled deals are listed in raw data.
+The eight new selection times were5/29/893/39/16/12/19/14ms using a deterministic first-index RNG for reproducible fallback. This does not claim the final successful column is uniform when some columns fail proof. Uniformity applies to the first eligible candidate and sampling of remaining candidates. Production uses crypto RNG. Baseline fixed probes are31 attempts rather than31 random player activations. Exact L2 andL6 IDs from the audit are preserved; other controlled deals are listed in raw data.
 
 ## Verification and evidence
 
@@ -43,6 +43,6 @@ Canonical roadmaps115 systems/38 packets/15 commerce families/9 Unico candidates
 
 ## Evidence boundaries and physical demo checklist
 
-The AZUR source is native-static, not an executed original game. Primary [five groups and filters](https://github.com/DanilaH/mini-games-kit/blob/a88b61a55e1bee1a745f281507ffdbb29897863/research/games/association-solitaire/2026-11-21-azur-shuffle-hint-native/HINT_COLUMN_FILTERS_2026-11-21.md), [source/product matrix](content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md) and [two Joker predicates](content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md) were consulted. The proven hidden-source/empty-target guard only affects hint search ordering. Unknown compound Joker branches and original remote config remain unknown. The proof-filtered bounded search and category-tail index are explicitly our adaptation, not a claim of native algorithm identity.
+The AZUR source is native-static, not an executed original game. Primary [five groups and filters](https://github.com/DanilaH/mini-games-kit/blob/a88b61a55e1bee1a745f281507ffdbb29897863/research/games/association-solitaire/2026-11-21-azur-shuffle-hint-native/HINT_COLUMN_FILTERS_2026-11-21.md), [source/product matrix](content-v8/P16_AZUR_SHUFFLE_AND_GREEDY_HINT_ORIGINAL_NATIVE_2026-11-21.md) and [two Joker predicates](content-v8/P05_ORIGINAL_AZUR_USEFUL_MOVE_JOKER_FILTERS_2026-11-22.md) were consulted. The proven hidden-source/empty-target guard only affects hint search ordering. The later [PR98 native report](https://github.com/DanilaH/mini-games-kit/blob/5022d48a273c92e40708233f4fc61fadd7b08751/research/games/association-solitaire/2026-11-22-azur-useful-moves/README.md) recovers two distinct local Joker predicates in full bounded branch order; these are not unknown and are not interchangeable. The product keeps a winning-route proof rather than claiming source-exact greedy output. Original delegate/UI subscribers, live remote config and actual Android candidate choices remain unknown. The proof-filtered bounded search and category-tail index are explicitly our adaptation, not a claim of native algorithm identity.
 
 Physical Android remains to be run on the supplied signed demo APK. Upgrade without clearing0.21.6 data, compare resources and active/parked boards, claim a pre-L7 ready Shuffle, use it and reachL7. On L81 lose twice, continue/Undo/reload/reroll and check history/lives. Check hint/Joker latency and background/cancel/rotation on a compact low-power phone. With real Yandex test SDK show/earned/close, delay an earned slot across foreground recovery and explicit reroll, then use exactly one saved matching slot after relaunch. Repeat no-fill, cancelled video, duplicate/ack failure and storage failure when reproducible. Confirm actual cooldown, native logs and no false reward. Browser bridge tests do not establish those physical SDK outcomes. Production settings, commercial fill, new events and publication are outside this task.

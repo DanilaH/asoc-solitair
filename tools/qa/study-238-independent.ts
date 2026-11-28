@@ -74,7 +74,8 @@ function shapeFor(i:number):Shape{
 }
 function draft(shape:Shape,seed:number){
   const {cards,chosen}=population(shape.groups,shape.total,seed);
-  const ids=Object.keys(cards);
+  const values=Object.values(cards);
+  const ids=values.filter(card=>card.leader).flatMap(leader=>[leader.id,...values.filter(card=>!card.leader&&card.category===leader.category).map(card=>card.id)]);
   const r=rng(seed);
   const layout=shape.kind==='azur'?dealAzur(ids,shape.columns.length,shape.columns[0],(lo,hi)=>lo+r(hi-lo))
     :undefined;

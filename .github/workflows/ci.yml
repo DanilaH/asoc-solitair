@@ -407,6 +407,61 @@ jobs:
             .recording/ca244/
             .recording/ordinary-release-manifest.json
           retention-days: 7
+  ui250:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {profile: ordinary, mode: ''}
+          - {profile: azur21-v1, mode: azur21-v1}
+          - {profile: hybrid21-v1, mode: hybrid21-v1}
+    env:
+      VITE_ASOC_PROFILE: c8-release-v1
+      ASOC_AD_MODE: disabled
+      VITE_ASOC_CAMPAIGN_PLAYTEST: ${{ matrix.mode }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/.npm
+          key: node-cache-Linux-x64-npm-a4df24577ed48de6d871f0577006637c44d25e4ee405b275d4a7b579b77d534b
+      - run: node tools/install-dependencies.mjs
+        env:
+          MINI_GAMES_KIT_READ_TOKEN: ${{ secrets.MINI_GAMES_KIT_READ_TOKEN }}
+          ASOC_KIT_OFFLINE_CACHE: '1'
+      - run: npx playwright install --with-deps chromium
+      - name: Capture exact accepted base with the corrected visible-hit harness
+        shell: bash
+        run: |
+          git worktree add --detach .recording/ui250-base 3e1b61814016b92cf7aef3aba9573d22228aa715
+          ln -s "$PWD/node_modules" .recording/ui250-base/node_modules
+          cp tests/browser/ui250-baseline.spec.ts .recording/ui250-base/tests/browser/
+          cd .recording/ui250-base
+          npm run build
+          ASOC_UI250_BASE=1 ASOC_UI250_OUT=.recording/ui250-before npx playwright test tests/browser/ui250-baseline.spec.ts --project=compact --workers=1 --output=test-results/ui250-before
+      - run: npm run build
+      - name: Assert final UI, text150, helper routing and capture real before/after input
+        env:
+          ASOC_UI250_RECORD: '1'
+        run: npx playwright test tests/browser/ui250.spec.ts --project=compact --workers=1 --output=test-results/ui250
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ui250-${{ matrix.profile }}
+          retention-days: 14
+          path: |
+            .recording/ui250/
+            test-results/ui250/
+            .recording/ui250-base/.recording/ui250-before/
+            .recording/ui250-base/test-results/ui250-before/
+            dist/release-manifest.json
   android:
     runs-on: ubuntu-24.04
     strategy:

@@ -31,8 +31,14 @@ export function boardFrame(width: number, height: number, deckPosition: 'top' | 
   const columns = Math.max(4, columnCount(deal));
   const gridWidth = columns * CARD_W + Math.max(0, columns - 1) * GRID_GAP;
   const fanWidth = deck ? 2 * CARD_W + GRID_GAP + 2 * FAN_STEP : 0;
-  const unit = Math.min(width / Math.max(gridWidth, fanWidth), height / (minimumHeight(deck, deckPosition === 'bottom') + pileRoom(deal)));
-  return { unit, offsetX: 0, width: width / unit, height: height / unit };
+  // A browser landscape table has two play rows and a separate stock/waste rail.
+  // Android stays portrait; preferences and the immutable deal still own the layout.
+  const sideDeck = deck && width > height * 2 && height < 360;
+  const railWidth = CARD_W + 2 * FAN_STEP + 24;
+  const tableWidth = sideDeck ? gridWidth + railWidth + DECK_GAP : Math.max(gridWidth, fanWidth);
+  const tableHeight = minimumHeight(sideDeck ? false : deck, deckPosition === 'bottom') + pileRoom(deal);
+  const unit = Math.min(width / tableWidth, height / tableHeight, .8);
+  return { unit, offsetX: (width - tableWidth * unit) / 2, width: tableWidth, height: height / unit, sideDeck };
 }
 export interface Pose { id: string; x: number; y: number; depth: number; faceUp: boolean }
 export interface Target { location: Location; x: number; y: number; width: number; height: number }
@@ -65,31 +71,34 @@ export function dragTarget(targets: Target[], finger: { x: number; y: number }, 
   const near = dropTarget(targets, finger.x, finger.y, tolerance);
   return near && valid(near) ? near : directCard ?? directFinger ?? near;
 }
-export function layout(board: Board, deal: Deal, frame: Pick<ReturnType<typeof boardFrame>, 'width' | 'height'> | number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; offers: BonusTarget[]; stock: { x: number; y: number; thickness: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
+export function layout(board: Board, deal: Deal, frame: (Pick<ReturnType<typeof boardFrame>, 'width' | 'height'> & { sideDeck?: boolean }) | number, deckSide: 'left' | 'right' = 'right', deckPosition: 'top' | 'bottom' = 'top'): { poses: Pose[]; targets: Target[]; offers: BonusTarget[]; stock: { x: number; y: number; thickness: number }; waste: { x: number; y: number }; joker?: { x: number; y: number; depth: number } } {
   const poses: Pose[] = [], targets: Target[] = [], offers: BonusTarget[] = [];
   let joker: { x: number; y: number; depth: number } | undefined;
   const cardW = CARD_W, cardH = CARD_H;
   const { width, height } = typeof frame === 'number' ? { width: WIDTH, height: frame } : frame;
-  const center = (index: number) => cardW / 2 + index * (cardW + GRID_GAP);
   const deck = hasDeck(deal), bottom = deckPosition === 'bottom' && deck;
   const left = deckSide === 'left' && deck;
-  const spacing = Math.min(14, Math.max(0, (height - minimumHeight(deck, bottom) - pileRoom(deal)) / 4));
-  const deckY = bottom ? height - cardH / 2 - BOTTOM_MARGIN : cardH / 2 + TOP_MARGIN + STOCK_DEPTH;
+  const side = typeof frame !== 'number' && frame.sideDeck;
+  const railWidth = CARD_W + 2 * FAN_STEP + 24;
+  const center = (index: number) => (side && left ? railWidth + DECK_GAP : 0) + cardW / 2 + index * (cardW + GRID_GAP);
+  const spacing = Math.min(14, Math.max(0, (height - minimumHeight(side ? false : deck, bottom) - pileRoom(deal)) / 4));
+  const top = cardH / 2 + TOP_MARGIN + FOUNDATION_TAB + spacing + (deck && !bottom && !side ? STOCK_DEPTH + cardH + DECK_GAP : 0);
+  const deckY = bottom ? height - cardH / 2 - BOTTOM_MARGIN : side ? top + STOCK_DEPTH : cardH / 2 + TOP_MARGIN + STOCK_DEPTH;
   const originalStock = deal.initial.stock.length + deal.initial.waste.length;
   const thickness = board.stock.length > 1 ? 3 + (STOCK_DEPTH - 3) * Math.min(1, (board.stock.length - 1) / Math.max(1, originalStock - 1)) : 0;
-  const stock = { x: left ? cardW / 2 : width - cardW / 2, y: deckY - thickness, thickness };
+  const stock = { x: side ? left ? railWidth / 2 : width - railWidth / 2 : left ? cardW / 2 : width - cardW / 2, y: deckY - thickness, thickness };
   // The first card lands beside the stock; further draws open away from it.
   // Preserve earlier positions while the initial three-card fan is opening.
   const fanWidth = Math.max(0, Math.min(3, board.waste.length) - 1) * FAN_STEP;
-  const waste = { x: stock.x + (left ? 1 : -1) * (cardW + GRID_GAP + fanWidth), y: deckY };
-  const top = cardH / 2 + TOP_MARGIN + FOUNDATION_TAB + spacing + (deck && !bottom ? STOCK_DEPTH + cardH + DECK_GAP : 0);
+  const waste = { x: side ? stock.x + (left ? 1 : -1) * (fanWidth - FAN_STEP) : stock.x + (left ? 1 : -1) * (cardW + GRID_GAP + fanWidth),
+    y: side ? bottom ? top : height - cardH / 2 - BOTTOM_MARGIN : deckY };
   board.foundations.forEach((ids, index) => {
     const x = center(index);
     targets.push({ location: { kind: 'foundation', index }, x, y: top, width: cardW + 8, height: cardH + 8 });
     ids.forEach((id, i) => poses.push({ id, x, y: top, depth: 20 + i, faceUp: true }));
   });
   // Keep the same floor when the stock fan empties, recycles or is restored.
-  const tableauBottom = bottom ? deckY - cardH / 2 - STOCK_DEPTH - ROW_GAP - spacing : height - BOTTOM_MARGIN;
+  const tableauBottom = bottom && !side ? deckY - cardH / 2 - STOCK_DEPTH - ROW_GAP - spacing : height - BOTTOM_MARGIN;
   const tableauY = top + cardH + ROW_GAP + spacing;
   board.tableau.forEach((_, index) => {
     const x = center(index);

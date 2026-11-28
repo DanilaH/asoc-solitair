@@ -4,7 +4,7 @@ export const recordedCues: Record<string, readonly string[]> = {
   flip: ['card-flip-1','card-flip-2'], draw: ['card-draw-1','card-draw-2','card-draw-3'],
   gather: ['card-flip-2'], recycle: ['card-shuffle'], undo: ['card-undo'],
   deal: ['card-deal'], coins: ['coins-arrive'],
-  ui: ['ui-tap'], win: ['card-flip-1'], complete: ['card-place-2'],
+  ui: ['ui-tap'],
 };
 export function decodePcm16(raw: ArrayBuffer): { samples: Float32Array<ArrayBuffer>; rate: number } {
   const v = new DataView(raw), tag = (at: number) => String.fromCharCode(...new Uint8Array(raw, at, 4));

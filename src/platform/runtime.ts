@@ -29,6 +29,9 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
   const recordings = preloadRecordedSounds();
   const buffers = new Map<string, AudioBuffer>();
   const variants = new Map<string, number>();
+  // Distinct, game-owned reward chimes. Prepare PCM outside the input/landing path.
+  const rewardPcm = new Map<string,{samples:Float32Array<ArrayBuffer>;rate:number}>(['complete','win'].flatMap(name=>[0,1,2].map(variant=>
+    [`${name}:${variant}`,{samples:cueSamples(name,22050,variant),rate:22050}] as const)));
   const eligibility = () => {
     const reasons = activity.getBlockReasons();
     audio.setEligibility({ gameplay: audioFocused && !mute && reasons.length === 0, ui: audioFocused && !mute && reasons.every(r => r === 'modal' || r === 'screen') });
@@ -69,11 +72,11 @@ export function createRuntime(onCancel: () => void, onBack: () => void) {
       const variant = (variants.get(name) ?? 0) % 3; variants.set(name, variant + 1);
       const key = `${name}:${variant}`;
       const group = name === 'deal' ? 'deal' : name === 'coins' ? 'coin' : ['win', 'complete'].includes(name) ? 'reward' : ['invalid', 'loss', 'streak-break'].includes(name) ? 'negative' : name === 'gather' ? 'packet' : name === 'flip' ? 'flip' : name === 'ui' ? 'ui' : 'card';
-      const gain = recordedCues[name] ? name === 'ui' ? .35 : name === 'lift' ? .4 : name === 'deal' ? .46 : name === 'coins' ? .52 : .5 : .22;
+      const gain = name==='win' ? .34 : name==='complete' ? .30 : recordedCues[name] ? name === 'ui' ? .35 : name === 'lift' ? .4 : name === 'deal' ? .46 : name === 'coins' ? .52 : .5 : .22;
       return audio.play({ group, channel: name === 'ui' ? 'ui' : channel, gain, buffer(ctx) {
         let buffer = buffers.get(key);
         if (!buffer) {
-          const files = recordedCues[name], pcm = files && recordings.data.get(files[variant % files.length]);
+          const files = recordedCues[name], pcm = rewardPcm.get(key) ?? (files && recordings.data.get(files[variant % files.length]));
           if (files && !pcm) return null;
           const samples = pcm?.samples ?? cueSamples(name, ctx.sampleRate, variant);
           buffer = ctx.createBuffer(1, samples.length, pcm?.rate ?? ctx.sampleRate);

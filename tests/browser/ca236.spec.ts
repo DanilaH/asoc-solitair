@@ -118,7 +118,7 @@ test('CA-03 off-route paid hint is responsive and charges once', async ({page},i
     if(action.type!=='transfer')await tap(grid.stock.x,grid.stock.y);
     else {
       const cards=sourceCards(state.attempt.board,action.from,deal,action.root);
-      const source=grid.poses.find(p=>p.id===cards[0])!,below=grid.poses.find(p=>p.id===cards[1]);
+      const source=grid.poses.find(p=>p.id===cards[0])!,below=grid.poses.filter(p=>p.id!==source.id&&p.depth>source.depth&&Math.abs(p.x-source.x)<1&&p.y>=source.y&&p.y-source.y<cardMetrics(deal).height).sort((a,b)=>a.y-b.y)[0];
       const target=grid.targets.find(t=>t.location.kind===action.to.kind&&t.location.index===action.to.index)!;
       await tap(source.x,below?(source.y+below.y)/2-cardMetrics(deal).height/2:source.y);
       await tap(target.x,target.y);

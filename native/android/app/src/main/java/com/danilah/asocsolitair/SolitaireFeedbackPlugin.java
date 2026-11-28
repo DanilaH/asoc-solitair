@@ -23,7 +23,7 @@ public class SolitaireFeedbackPlugin extends Plugin {
         String cue = call.getString("cue", "");
         long issued = call.getLong("issuedAt", 0L), epoch = call.getLong("generation", -1L), now = SystemClock.uptimeMillis();
         boolean rejectedPlacement = cue.equals("invalid-heavy");
-        if (epoch < generation || issued <= stoppedAt || Math.abs(System.currentTimeMillis() - issued) > 250 || !foreground || (now - lastPulse < 60 && !cue.equals("loss") && !cue.equals("streak-break") && !rejectedPlacement)) { call.resolve(); return; }
+        if (epoch < generation || issued <= stoppedAt || Math.abs(System.currentTimeMillis() - issued) > 250 || !foreground || (now - lastPulse < 60 && !cue.equals("complete") && !cue.equals("win") && !cue.equals("loss") && !cue.equals("streak-break") && !rejectedPlacement)) { call.resolve(); return; }
         if (!cue.matches("button|transfer|complete|invalid|hint|undo|coins|win|loss|streak-break|draw|invalid-heavy|coin-land")) { call.reject("Invalid haptic cue"); return; }
         generation = epoch;
         try {

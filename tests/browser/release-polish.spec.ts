@@ -6,6 +6,7 @@ import { dailyForDay } from '../../src/content/daily';
 import { m1WeekRows, scheduleTasks } from '../../src/domain/events/daily-tasks';
 import { addWinStreakProgress } from '../../src/domain/events/win-streak';
 import { openDailyBonusRound } from '../../src/domain/events/daily-bonus';
+import { cueSamples } from '../../src/platform/sounds';
 import { decodePcm16 } from '../../src/platform/recorded-sounds';
 import { openPictureEvent } from '../../src/domain/events/picture';
 import { layout, boardFrame, cardMetrics } from '../../src/game/layout';
@@ -104,7 +105,7 @@ test('UI-01 ordinary board, compact captions and stable card geometry', async ({
     const name = `${width}x${height}-${banner}-${deal.campaignLevel ?? 'Daily-v2'}`;
     await capture(page, info, 'UI01-' + name);
     if (save.attempt.board.stock.length) {
-      await page.touchscreen.tap(area.x + frame.stock.x * geometry.unit, area.y + frame.stock.y * geometry.unit);
+      await page.touchscreen.tap(area.x + geometry.offsetX + frame.stock.x * geometry.unit, area.y + frame.stock.y * geometry.unit);
       await expect.poll(async () => (await read(page)).attempt.board.stock.length).toBeLessThan(save.attempt.board.stock.length);
       const nextArea = (await page.locator('#game-root').boundingBox())!;
       expect(Math.abs(area.width - nextArea.width) + Math.abs(area.height - nextArea.height)).toBeLessThanOrEqual(1);
@@ -248,7 +249,7 @@ test('UI-09 durable Daily Bonus match respects audio, haptics and motion indepen
   test.setTimeout(150_000);
   const raw = await readFile('public/audio/card-place-2.wav');
   const sound = decodePcm16(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength));
-  const expected = `${sound.rate}/${sound.samples.length}`;
+  const expected = before ? `${sound.rate}/${sound.samples.length}` : `22050/${cueSamples('complete',22050).length}`;
   await page.addInitScript(() => {
     const cues = { audio: [] as string[], haptic: [] as string[] };
     const start = AudioBufferSourceNode.prototype.start;

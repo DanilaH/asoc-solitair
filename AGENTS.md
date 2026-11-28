@@ -1,5 +1,9 @@
 # Project contract
 
+## Current scoped assignment · issue250 · 28 November2026
+
+Owner approved the full Card Table B visual/UX/feel pass from [issue250](https://github.com/DanilaH/asoc-solitair/issues/250). Work on PR248 final `3e1b61814016b92cf7aef3aba9573d22228aa715`,0.21.9/code60,CI46143066585 17/17. Read [UI250 protocol](docs/qa/UI250_POLISH.md). Preserve #246 ordinary/A/B, M1, Rules4, FTUE, all content/saves/rights/ads, runtime pin and115/38/15/9. UX01–07 are in scope, not a new art-direction gate. Use actual before/after screenshot/video and full project CI; do not merge PR249 research workflow. No publication, SDK activation, economy/bank promotion. Physical Android sound/haptic/SDK evidence remains separate.
+
 ## Current scoped assignment · issue246 · 28 November2026
 
 Read [the candidate protocol](docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md). Verified base PR2371ef3db5b. Separate CA-06 [PR247](https://github.com/DanilaH/asoc-solitair/pull/247) 0.21.8/59 passed full ordinary CI46137293691,4/4. The current scoped0.21.9/60 branch is `feat/246-campaign-playtests`: separate A/B21-position L81–101 admission, not a production bank replacement. Ordinary remains200 levels,360 late layouts/720 additional budget variants and Daily400. Historical80/81–87 paragraphs below describe their dated snapshots. Keep all immutable definitions, exact FTUE, M1, Rules4, saves, ads/lives/retry and the115/38/15/9 source roadmap. A/B have separate app IDs and a fresh-install-only L81 checkpoint with closed prefix reward rights; never reset an existing save. Hint settlement on applied action is candidate-only. Both reserve policies, numeric36–100 profiles, source confidence and all failed seeds are reported. Run full ordinary CI plus candidate/helper/economy jobs in this repository only. No publication, live SDK switch, IAP, main-bank/economy promotion, or research status upgrade by engineering evidence.

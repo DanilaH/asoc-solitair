@@ -145,8 +145,11 @@ for(const level of levels){
   }
   {
     let next=clone(save);
-    const timed=buyUnlimitedAccess(next,deal,'audit-restore-clock-'+level,1000);
-    if(timed)for(const expected of [0,100,150]){
+    if(!deal.recovery)for(const expected of [0,100,150])record('Stock restore',clone(save),{
+      available:false,quote:null,ladderControl:expected,acquired:false,consumed:false,failure:'NO_RESTORE_POLICY_ON_THIS_DEAL'});
+    else {
+    const timed=buyUnlimitedAccess(next,deal,'audit-restore-clock-'+level,1000);assert(timed);
+    for(const expected of [0,100,150]){
       let count=0;
       while(restoreQuote(next.attempt,deal)===undefined&&count++<400){
         const result=dispatch(next,{type:next.attempt.board.stock.length?'draw':'recycle'},deal);
@@ -166,6 +169,7 @@ for(const level of levels){
       assert(twice.accepted);assert.equal(twice.next.profile.coins,afterPurchase);
       record('Stock restore',next,{available:true,quote,acquired:true,consumed:true,undoRefund:expected,
         origin:'reachable draw/recycle control under purchased Unlimited; fixed functional clock, no human timing claim',failure:null},before);
+    }
     }
   }
   {

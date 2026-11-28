@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { findDeal } from '../../src/content/campaign';
-import { applyBoard, freshSave } from '../../src/domain/engine';
+import { applyBoard, freshSave, sourceCards } from '../../src/domain/engine';
+import { boardFrame, cardMetrics, layout } from '../../src/game/layout';
 import { campaignId } from '../../src/domain/progression';
 import type { Deal, Save } from '../../src/domain/types';
 import { read } from './wallet-fixture';
@@ -100,9 +101,32 @@ test('CA-03 off-route paid hint is responsive and charges once', async ({page},i
   await seed(page,save);
   const hints=(await read(page)).profile.hints;
   await page.locator('#hint').tap();
-  await expect.poll(async()=>(await read(page)).profile.hints).toBe(hints-1);
+  const deferred=Boolean(process.env.VITE_ASOC_CAMPAIGN_PLAYTEST);
+  if(deferred) {
+    await expect.poll(async()=>(await read(page)).attempt.stagedHint?.version).toBe(1);
+    expect((await read(page)).profile.hints).toBe(hints);
+  } else await expect.poll(async()=>(await read(page)).profile.hints).toBe(hints-1);
   await page.screenshot({path:info.outputPath('CA03-off-route-hint.png')});
   await page.locator('#hint').tap();
+  expect((await read(page)).profile.hints).toBe(deferred?hints:hints-1);
+  if(deferred) {
+    const state=await read(page),action=state.attempt.stagedHint!.action;
+    const rect=(await page.locator('#game-root').boundingBox())!;
+    const frame=boardFrame(rect.width,rect.height,state.settings.deckPosition,deal);
+    const grid=layout(state.attempt.board,deal,frame,state.settings.deckSide,state.settings.deckPosition);
+    const tap=(x:number,y:number)=>page.touchscreen.tap(rect.x+frame.offsetX+x*frame.unit,rect.y+y*frame.unit);
+    if(action.type!=='transfer')await tap(grid.stock.x,grid.stock.y);
+    else {
+      const cards=sourceCards(state.attempt.board,action.from,deal,action.root);
+      const source=grid.poses.find(p=>p.id===cards[0])!,below=grid.poses.find(p=>p.id===cards[1]);
+      const target=grid.targets.find(t=>t.location.kind===action.to.kind&&t.location.index===action.to.index)!;
+      await tap(source.x,below?(source.y+below.y)/2-cardMetrics(deal).height/2:source.y);
+      await tap(target.x,target.y);
+    }
+    const expected=applyBoard(state.attempt.board,action,deal);if(typeof expected==='string')throw Error(expected);
+    await expect.poll(async()=>(await read(page)).attempt.board).toEqual(expected.board);
+    expect((await read(page)).attempt.stagedHint).toBeUndefined();
+  }
   expect((await read(page)).profile.hints).toBe(hints-1);
 });
 test('CA-05 L2 copy, worker placement, one right and no empty target', async ({page},info) => {

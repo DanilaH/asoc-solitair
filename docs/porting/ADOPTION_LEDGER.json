@@ -2019,6 +2019,7 @@
     "issue": "https://github.com/DanilaH/asoc-solitair/issues/246",
     "base": "73b90e193606424fdfe4720147143de51d062762",
     "implementationBranch": "feat/246-campaign-playtests",
+    "implementationPR": "https://github.com/DanilaH/asoc-solitair/pull/248",
     "evidence": "docs/qa/ISSUE246_CAMPAIGN_PLAYTEST.md",
     "scope": [
       "E0",
